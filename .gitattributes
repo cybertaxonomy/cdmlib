@@ -1037,6 +1037,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/SchemaU
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_30_31.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_311_312.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_312_313.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_313_314.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_31_311.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text

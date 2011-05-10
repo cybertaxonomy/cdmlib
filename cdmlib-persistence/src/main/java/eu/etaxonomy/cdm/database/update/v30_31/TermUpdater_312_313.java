@@ -56,8 +56,6 @@ public class TermUpdater_312_313 extends TermUpdaterBase implements ITermUpdater
 	protected List<ITermUpdaterStep> getUpdaterList() {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 
-		//THIS CLASS IS FOR FUTURE USE. NOT NEEDED YET.
-		
 		
 		String description;
 		String label;
@@ -69,23 +67,23 @@ public class TermUpdater_312_313 extends TermUpdaterBase implements ITermUpdater
 		UUID uuidLang;
 		String stepName;
 
-		// reported in error
-		UUID uuidTerm = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
-		description = "reported in error";
-		label = "reported in error";
-		abbrev = "f";
-		dtype = AbsenceTerm.class.getSimpleName();
-		isOrdered = true;
-		uuidVocabulary = UUID.fromString("5cd438c8-a8a1-4958-842e-169e83e2ceee");
-		uuidAfterTerm = UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
-		uuidLang = Language.uuidEnglish;
-		stepName = "Add 'reported in error' to absence terms";
-		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
-
-		String updateQuery = "UPDATE DefinedTermBase SET defaultColor = 'cccccc' WHERE uuid = '38604788-cf05-4607-b155-86db456f7680'";
-		stepName = "Add 'colour schema' to reported in error";
-		SimpleSchemaUpdaterStep colourUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
-		list.add(colourUpdater);
+//		// reported in error
+//		UUID uuidTerm = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
+//		description = "reported in error";
+//		label = "reported in error";
+//		abbrev = "f";
+//		dtype = AbsenceTerm.class.getSimpleName();
+//		isOrdered = true;
+//		uuidVocabulary = UUID.fromString("5cd438c8-a8a1-4958-842e-169e83e2ceee");
+//		uuidAfterTerm = UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
+//		uuidLang = Language.uuidEnglish;
+//		stepName = "Add 'reported in error' to absence terms";
+//		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+//
+//		String updateQuery = "UPDATE DefinedTermBase SET defaultColor = 'cccccc' WHERE uuid = '38604788-cf05-4607-b155-86db456f7680'";
+//		stepName = "Add 'colour schema' to reported in error";
+//		SimpleSchemaUpdaterStep colourUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+//		list.add(colourUpdater);
 		
 		return list;
 	}
@@ -96,7 +94,7 @@ public class TermUpdater_312_313 extends TermUpdaterBase implements ITermUpdater
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_313_314.NewInstance();
 	}
 
 	/* (non-Javadoc)

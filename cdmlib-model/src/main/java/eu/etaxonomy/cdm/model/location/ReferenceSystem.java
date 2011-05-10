@@ -51,6 +51,8 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 
 	private static final UUID uuidWGS84 = UUID.fromString("63f4dd55-00fa-49e7-96fd-2b7059a1c1ee");
 	private static final UUID uuidGoogleEarth = UUID.fromString("1bb67042-2814-4b09-9e76-c8c1e68aa281");
+	private static final UUID uuidGazetteer = UUID.fromString("e35f1d1c-9347-4190-bd47-a3b00632fcf3");
+	
 	
 	/**
 	 * Factory method
@@ -109,6 +111,10 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 		return getTermByUuid(uuidGoogleEarth);
 	}
 
+	public static final ReferenceSystem GAZETTEER(){
+		return getTermByUuid(uuidGazetteer);
+	}
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<ReferenceSystem> termVocabulary){
 		termMap = new HashMap<UUID, ReferenceSystem>();

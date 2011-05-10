@@ -53,6 +53,8 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	private static final UUID uuidNF=UUID.fromString("61cee840-801e-41d8-bead-015ad866c2f1");
 	private static final UUID uuidIF=UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
 	private static final UUID uuidCF=UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
+	private static final UUID uuidNE=UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
+	private static final UUID uuidIE=UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
 	
 
 	/** 
@@ -140,12 +142,22 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 		return getTermByUuid(uuidIF);
 	}
 
+	public static final AbsenceTerm NATIVE_FORMERLY_NATIVE(){
+		return getTermByUuid(uuidNE);
+	}
+
+	public static final AbsenceTerm INTRODUCED_FORMERLY_INTRODUCED(){
+		return getTermByUuid(uuidIE);
+	}
+	
 	//TODO make automatic like in TDWGArea
 	public static AbsenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
 		} else if (abbrev.equalsIgnoreCase("cf")) { return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("if")) { return AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("nf")) { return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("ne")) { return AbsenceTerm.NATIVE_FORMERLY_NATIVE();
+		} else if (abbrev.equalsIgnoreCase("ie")) { return AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
 		} else {
 			logger.warn("Unknown absence status term: " + abbrev);
 			return null;
