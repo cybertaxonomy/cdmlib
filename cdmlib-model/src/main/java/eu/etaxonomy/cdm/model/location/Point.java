@@ -449,40 +449,58 @@ public class Point implements Cloneable, Serializable {
 	
 	
 	public static Double parseLatitude(String string) throws ParseException{
-		string = setCurrentDoubleSeparator(string);
-		if (isDouble(string)){
-			Double result = Double.valueOf(string);
-			if (Math.abs(result) > 90.0){
-				throw new ParseException("Latitude could not be parsed", 0);
+		try{
+			if (string == null){
+				return null;
 			}
-			return result;
-		}else{
-			CoordinateConverter converter = new CoordinateConverter();
-			ConversionResults result = converter.tryConvert(string);
-			if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
-				throw new ParseException("Latitude could not be parsed", 0);
+			string = setCurrentDoubleSeparator(string);
+			if (isDouble(string)){
+				Double result = Double.valueOf(string);
+				if (Math.abs(result) > 90.0){
+					throw new ParseException("Latitude could not be parsed", 0);
+				}
+				return result;
 			}else{
-				return result.convertedCoord;
+				CoordinateConverter converter = new CoordinateConverter();
+				ConversionResults result = converter.tryConvert(string);
+				if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
+					throw new ParseException("Latitude could not be parsed", 0);
+				}else{
+					return result.convertedCoord;
+				}
 			}
+		} catch (Exception e) {
+			String message = "Latitude %s could not be parsed";
+			message = String.format(message, string);
+			throw new ParseException(message, 0);
 		}
 	}
 	
 	public static Double parseLongitude(String string) throws ParseException{
-		string = setCurrentDoubleSeparator(string);
-		if (isDouble(string)){
-			Double result = Double.valueOf(string);
-			if (Math.abs(result) > 180.0){
-				throw new ParseException("Longitude could not be parsed", 0);
+		try {
+			if (string == null){
+				return null;
 			}
-			return result;
-		}else{
-			CoordinateConverter converter = new CoordinateConverter();
-			ConversionResults result = converter.tryConvert(string);
-			if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
-				throw new ParseException("Longitude could not be parsed", 0);
+			string = setCurrentDoubleSeparator(string);
+			if (isDouble(string)){
+				Double result = Double.valueOf(string);
+				if (Math.abs(result) > 180.0){
+					throw new ParseException("Longitude could not be parsed", 0);
+				}
+				return result;
 			}else{
-				return result.convertedCoord;
+				CoordinateConverter converter = new CoordinateConverter();
+				ConversionResults result = converter.tryConvert(string);
+				if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
+					throw new ParseException("Longitude could not be parsed", 0);
+				}else{
+					return result.convertedCoord;
+				}
 			}
+		} catch (Exception e) {
+			String message = "Longitude %s could not be parsed";
+			message = String.format(message, string);
+			throw new ParseException(message, 0);
 		}
 	}
 
