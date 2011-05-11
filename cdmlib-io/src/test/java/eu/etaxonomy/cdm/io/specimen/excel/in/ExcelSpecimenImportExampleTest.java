@@ -16,8 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -42,7 +40,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 10.05.2011
  * @version 1.0
  */
-//@Ignore
+//@Ignore //currently jenkins throws an exception
 public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
