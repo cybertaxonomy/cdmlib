@@ -73,6 +73,13 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
           <xs:element name="DerivedFrom" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="AccessionNumber" type="xs:string" minOccurs="0"/>
           <xs:element name="CollectorsNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="SpecimenTypeDesignations" minOccurs="0">
+           <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpecimenTypeDesignation" type="name:SpecimenTypeDesignation" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+            </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

@@ -57,7 +57,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "derivedFrom",
     "accessionNumber",
     "collectorsNumber",
-    "barcode"
+    "barcode",
+    "specimenTypeDesignations"
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
@@ -112,13 +113,13 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
-	/*
+	
 	@XmlElementWrapper(name = "SpecimenTypeDesignations")
 	@XmlElement(name = "SpecimenTypeDesignation")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "typeSpecimen")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
-*/
+
 	/**
 	 * Constructor
 	 */
@@ -234,7 +235,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;
 	}
-	/*
+	
 	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
 		specimenTypeDesignations.add(specimenTypeDesignation);
 	}
@@ -242,7 +243,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		return specimenTypeDesignations;
 	}
-	*/
+	
 //*********** CLONE **********************************/	
 	
 	/** 
