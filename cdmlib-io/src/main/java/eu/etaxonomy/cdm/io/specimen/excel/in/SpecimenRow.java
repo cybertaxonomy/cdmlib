@@ -9,21 +9,12 @@
 
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -31,6 +22,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 public class SpecimenRow {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenRow.class);
 
 	private UUID uuid = null; 
@@ -38,20 +30,44 @@ public class SpecimenRow {
 	private String country;
 	private String isoCountry;
 	private String locality;
+	private String latitude;
+	private String longitude;
 	private String fieldNotes;
 	private String fieldNumber;
 	private String accessionNumber;
+	private String barcode;
+	private String author;
+	private String absoluteElevation;
+	private String family;
+	private String genus;
+	private String specificEpithet;
+	private String collector;
+	private String sex;
+	private String ecology;
+	private String plantDescription;
+	private String collectionCode;
+	private String collectingDate;
+	private String collectingDateEnd;
+	private String collectorsNumber;
+	private String sourceId;
+	private String source;
+	private String referenceSystem;
+	private String errorRadius;
 	
 	
-	
-	private Map<String, List<String>> commonNames = new HashMap<String, List<String>>();
+//	private Map<String, List<String>> commonNames = new HashMap<String, List<String>>();
+
+
 	
 	
 	public SpecimenRow() {
 
-		commonNames = new HashMap<String, List<String>>();
+//		commonNames = new HashMap<String, List<String>>();
 	}
 
+	
+// **************************** GETTER / SETTER *********************************/	
+	
 
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
@@ -131,8 +147,315 @@ public class SpecimenRow {
 	public String getFieldNumber() {
 		return fieldNumber;
 	}
+
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
 	
-// **************************** GETTER / SETTER *********************************/	
+	/**
+	 * @return the author
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+
+	/**
+	 * @return the absoluteElevation
+	 */
+	public String getAbsoluteElevation() {
+		return absoluteElevation;
+	}
+
+
+	/**
+	 * @param absoluteElevation the absoluteElevation to set
+	 */
+	public void setAbsoluteElevation(String absoluteElevation) {
+		this.absoluteElevation = absoluteElevation;
+	}
+
+
+	/**
+	 * @return the family
+	 */
+	public String getFamily() {
+		return family;
+	}
+
+
+	/**
+	 * @param family the family to set
+	 */
+	public void setFamily(String family) {
+		this.family = family;
+	}
+
+
+	/**
+	 * @return the genus
+	 */
+	public String getGenus() {
+		return genus;
+	}
+
+
+	/**
+	 * @param genus the genus to set
+	 */
+	public void setGenus(String genus) {
+		this.genus = genus;
+	}
+
+
+	/**
+	 * @return the specificEpithet
+	 */
+	public String getSpecificEpithet() {
+		return specificEpithet;
+	}
+
+
+	/**
+	 * @param specificEpithet the specificEpithet to set
+	 */
+	public void setSpecificEpithet(String specificEpithet) {
+		this.specificEpithet = specificEpithet;
+	}
+
+
+	/**
+	 * @return the collector
+	 */
+	public String getCollector() {
+		return collector;
+	}
+
+
+	/**
+	 * @param collector the collector to set
+	 */
+	public void setCollector(String collector) {
+		this.collector = collector;
+	}
+
+
+	/**
+	 * @return the ecology
+	 */
+	public String getEcology() {
+		return ecology;
+	}
+
+
+	/**
+	 * @param ecology the ecology to set
+	 */
+	public void setEcology(String ecology) {
+		this.ecology = ecology;
+	}
+
+
+	/**
+	 * @return the plantDescription
+	 */
+	public String getPlantDescription() {
+		return plantDescription;
+	}
+
+
+	/**
+	 * @param plantDescription the plantDescription to set
+	 */
+	public void setPlantDescription(String plantDescription) {
+		this.plantDescription = plantDescription;
+	}
+
+
+	/**
+	 * @return the collectionCode
+	 */
+	public String getCollectionCode() {
+		return collectionCode;
+	}
+
+
+	/**
+	 * @param collectionCode the collectionCode to set
+	 */
+	public void setCollectionCode(String collectionCode) {
+		this.collectionCode = collectionCode;
+	}
+
+
+	/**
+	 * @return the collectingDate
+	 */
+	public String getCollectingDate() {
+		return collectingDate;
+	}
+
+
+	/**
+	 * @param collectingDate the collectingDate to set
+	 */
+	public void setCollectingDate(String collectingDate) {
+		this.collectingDate = collectingDate;
+	}
+
+
+	/**
+	 * @return the collectorsNumber
+	 */
+	public String getCollectorsNumber() {
+		return collectorsNumber;
+	}
+
+
+	/**
+	 * @param collectorsNumber the collectorsNumber to set
+	 */
+	public void setCollectorsNumber(String collectorsNumber) {
+		this.collectorsNumber = collectorsNumber;
+	}
+
+
+	/**
+	 * @return the barcode
+	 */
+	public String getBarcode() {
+		return barcode;
+	}
+
+
+	/**
+	 * @return the collectingDateEnd
+	 */
+	public String getCollectingDateEnd() {
+		return collectingDateEnd;
+	}
+
+
+	/**
+	 * @param collectingDateEnd the collectingDateEnd to set
+	 */
+	public void setCollectingDateEnd(String collectingDateEnd) {
+		this.collectingDateEnd = collectingDateEnd;
+	}
+
+
+	/**
+	 * @return the latitude
+	 */
+	public String getLatitude() {
+		return latitude;
+	}
+
+
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+
+	/**
+	 * @return the longitude
+	 */
+	public String getLongitude() {
+		return longitude;
+	}
+
+
+	/**
+	 * @param longitude the longitude to set
+	 */
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+
+	public String getSourceId() {
+		return this.sourceId;
+	}
+
+
+	/**
+	 * @return the source
+	 */
+	public String getSource() {
+		return source;
+	}
+
+
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+
+	/**
+	 * @param sourceId the sourceId to set
+	 */
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
+	}
+
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+
+	public String getSex() {
+		return sex;
+	}
+
+
+	/**
+	 * @return the referenceSystem
+	 */
+	public String getReferenceSystem() {
+		return referenceSystem;
+	}
+
+
+	/**
+	 * @param referenceSystem the referenceSystem to set
+	 */
+	public void setReferenceSystem(String referenceSystem) {
+		this.referenceSystem = referenceSystem;
+	}
+
+
+	/**
+	 * @return the errorRadius
+	 */
+	public String getErrorRadius() {
+		return errorRadius;
+	}
+
+
+	/**
+	 * @param errorRadius the errorRadius to set
+	 */
+	public void setErrorRadius(String errorRadius) {
+		this.errorRadius = errorRadius;
+	}
+
+	
 	
 
 

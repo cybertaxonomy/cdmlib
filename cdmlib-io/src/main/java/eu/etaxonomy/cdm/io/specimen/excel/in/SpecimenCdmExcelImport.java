@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,10 +24,16 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * @author p.kelbert
- * @created 29.10.2008
+ * @author a.mueller
+ * @created 10.05.2011
  * @version 1.0
  */
 @Component
@@ -35,20 +43,36 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String WORKSHEET_NAME = "Specimen";
 
 	private static final String UUID_COLUMN = "UUID";
-
 	private static final String BASIS_OF_RECORD_COLUMN = "BasisOfRecord";
-
 	private static final String COUNTRY_COLUMN = "Country";
-
 	private static final String ISO_COUNTRY_COLUMN = "ISOCountry";
-
 	private static final String LOCALITY_COLUMN = "Locality";
-
+	private static final String ABSOLUTE_ELEVATION_COLUMN = "AbsoluteElevation";
+	private static final String COLLECTION_DATE_COLUMN = "CollectionDate";
+	private static final String COLLECTION_DATE_END_COLUMN = "CollectionDateEnd";
+	private static final String COLLECTOR_COLUMN = "Collector";
+	private static final String LONGITUDE_COLUMN = "Longitude";
+	private static final String LATITUDE_COLUMN = "Latitude";
+	private static final String REFERENCE_SYSTEM_COLUMN = "ReferenceSystem";
+	private static final String ERROR_RADIUS_COLUMN = "ErrorRadius";
+	
+	
+	private static final String COLLECTORS_NUMBER_COLUMN = "CollectorsNumber";
+	private static final String ECOLOGY_COLUMN = "Ecology";
+	private static final String PLANT_DESCRIPTION_COLUMN = "PlantDescription";
 	private static final String FIELD_NOTES_COLUMN = "FieldNotes";
-
-	private static final String FIELD_NUMBER_COLUMN = "FieldNumber";
-
+	private static final String SEX_COLUMN = "Sex";
+	
+	
 	private static final String ACCESSION_NUMBER_COLUMN = "AccessionNumber";
+	private static final String BARCODE_COLUMN = "Barcode";
+	private static final String COLLECTION_CODE_COLUMN = "CollectionCode";
+	
+	private static final String SPECIFIC_EPITHET_COLUMN = "SpecificEpithet";
+	private static final String FAMILY_COLUMN = "Family";
+	private static final String GENUS_COLUMN = "Genus";
+	private static final String AUTHOR_COLUMN = "Author";
+	
 
 
 	public SpecimenCdmExcelImport() {
@@ -89,29 +113,56 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
     		
     		if (key.equalsIgnoreCase(UUID_COLUMN)) {
     			row.setUuid(UUID.fromString(value)); //VALIDATE UUID
-    			
-			} else if(key.equalsIgnoreCase(BASIS_OF_RECORD_COLUMN)) {
+ 			} else if(key.equalsIgnoreCase(BASIS_OF_RECORD_COLUMN)) {
 				row.setBasisOfRecord(value);
-				
 			} else if(key.equalsIgnoreCase(COUNTRY_COLUMN)) {
 				row.setCountry(value);
-				
 			} else if(key.equalsIgnoreCase(ISO_COUNTRY_COLUMN)) {
 				row.setIsoCountry(value);
-    			
 			} else if(key.equalsIgnoreCase(LOCALITY_COLUMN)) {
 				row.setLocality(value);
-
 			} else if(key.equalsIgnoreCase(FIELD_NOTES_COLUMN)) {
 				row.setLocality(value);
-
-			} else if(key.equalsIgnoreCase(FIELD_NUMBER_COLUMN)) {
-				row.setLocality(value);	
-
+			} else if(key.equalsIgnoreCase(ABSOLUTE_ELEVATION_COLUMN)) {
+				row.setAbsoluteElevation(value);		
+			} else if(key.equalsIgnoreCase(COLLECTOR_COLUMN)) {
+				row.setCollector(value);		
+			} else if(key.equalsIgnoreCase(ECOLOGY_COLUMN)) {
+				row.setEcology(value);
+			} else if(key.equalsIgnoreCase(PLANT_DESCRIPTION_COLUMN)) {
+				row.setCollector(value);		
+			} else if(key.equalsIgnoreCase(SEX_COLUMN)) {
+				row.setSex(value);
+			} else if(key.equalsIgnoreCase(COLLECTION_DATE_COLUMN)) {
+				row.setCollectingDate(value);		
+			} else if(key.equalsIgnoreCase(COLLECTION_DATE_END_COLUMN)) {
+				row.setCollectingDateEnd(value);		
+			} else if(key.equalsIgnoreCase(COLLECTORS_NUMBER_COLUMN)) {
+				row.setCollectorsNumber(value);		
+			} else if(key.equalsIgnoreCase(LONGITUDE_COLUMN)) {
+				row.setLongitude(value);		
+			} else if(key.equalsIgnoreCase(LATITUDE_COLUMN)) {
+				row.setLatitude(value);		
+			} else if(key.equalsIgnoreCase(REFERENCE_SYSTEM_COLUMN)) {
+				row.setReferenceSystem(value);		
+			} else if(key.equalsIgnoreCase(ERROR_RADIUS_COLUMN)) {
+				row.setErrorRadius(value);		
+			
 			} else if(key.equalsIgnoreCase(ACCESSION_NUMBER_COLUMN)) {
 				row.setLocality(value);		
-				
- 			} else {
+			} else if(key.equalsIgnoreCase(BARCODE_COLUMN)) {
+				row.setBarcode(value);		
+			} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
+				row.setAuthor(value);		
+			} else if(key.equalsIgnoreCase(FAMILY_COLUMN)) {
+				row.setFamily(value);		
+			} else if(key.equalsIgnoreCase(GENUS_COLUMN)) {
+				row.setGenus(value);		
+			} else if(key.equalsIgnoreCase(SPECIFIC_EPITHET_COLUMN)) {
+				row.setSpecificEpithet(value);		
+			} else if(key.equalsIgnoreCase(COLLECTION_CODE_COLUMN)) {
+				row.setCollectionCode(value);		
+			} else {
 				success = false;
 				logger.error("Unexpected column header " + key);
 			}
@@ -126,9 +177,32 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		
 		//basis of record
 		DerivedUnitType type = DerivedUnitType.valueOf2(row.getBasisOfRecord());
+		if (type == null){
+			String message = "%s is not a valid BasisOfRecord. 'Unknown' is used instead.";
+			message = String.format(message, row.getBasisOfRecord());
+			logger.warn(message);
+			type = DerivedUnitType.DerivedUnit;
+		}
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(type);
 		
+		//country
+		handleCountry(facade, row, state);
 		
+		facade.setGatheringPeriod(getTimePeriod(row.getCollectingDate(), row.getCollectingDateEnd()));
+		facade.setLocality(row.getLocality());
+		facade.setFieldNotes(row.getFieldNotes());
+		facade.setFieldNumber(row.getCollectorsNumber());
+		facade.setEcology(row.getEcology());
+		facade.setPlantDescription(row.getPlantDescription());
+//		facade.setSex(row.get)
+		handleExactLocation(facade, row, state);
+		
+		
+		//derivedUnit
+		facade.setBarcode(row.getBarcode());
+		facade.setAccessionNumber(row.getAccessionNumber());
+		Reference<?> source = getSource(row);
+		facade.innerDerivedUnit().addSource(row.getSourceId(), null, source, null);
 		
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
@@ -136,9 +210,90 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	}
 
 
+	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		try {
+			String longitude = row.getLongitude();
+			String latitude = row.getLatitude();
+			ReferenceSystem refSys = null;
+			if (StringUtils.isNotBlank(row.getReferenceSystem())){
+				String strRefSys = row.getReferenceSystem().trim().replaceAll("\\s", "").toLowerCase();
+				//TODO move to reference system class ??
+				if (strRefSys.equals("wgs84")){
+					refSys = ReferenceSystem.WGS84();
+				}else if (strRefSys.equals("gazetteer")){
+					refSys = ReferenceSystem.GAZETTEER();
+				}else if (strRefSys.equals("googleearth")){
+					refSys = ReferenceSystem.GOOGLE_EARTH();
+				}else{
+					String message = "Reference system %s not recognized in line %d";
+					message = String.format(message, strRefSys, state.getCurrentLine());
+					logger.warn(message);
+				}
+				
+			}
+			Integer errorRadius = null;
+			if (StringUtils.isNotBlank(row.getErrorRadius())){
+				try {
+					errorRadius = Integer.valueOf(row.getErrorRadius());
+				} catch (NumberFormatException e) {
+					String message = "Error radius %s could not be transformed to Integer in line %d";
+					message = String.format(message, row.getErrorRadius(), state.getCurrentLine());
+					logger.warn(message);
+				}
+			}
+			facade.setExactLocationByParsing(longitude, latitude, refSys, errorRadius);
+		} catch (ParseException e) {
+			String message = "Problems when parsing exact location for line %d";
+			message = String.format(message, state.getCurrentLine());
+			logger.warn(message);
+			
+		}
+		
+		
+	}
+
+	//	TODO
+	private Reference<?> getSource(SpecimenRow row) {
+		return null;
+	}
+
+	/*
+	 * Set the current Country
+	 * Search in the DB if the isoCode is known
+	 * If not, search if the country name is in the DB
+	 * If not, create a new Label with the Level Country
+	 * @param iso: the country iso code
+	 * @param fullName: the country's full name
+	 * @param app: the CDM application controller
+	 */
+	private void handleCountry(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		
+		if (StringUtils.isNotBlank(row.getIsoCountry())){
+			NamedArea country = getOccurrenceService().getCountryByIso(row.getIsoCountry());
+			if (country != null){
+				facade.setCountry(country);
+				return;
+			}
+		}
+		if (StringUtils.isNotBlank(row.getCountry())){
+			List<WaterbodyOrCountry> countries = getOccurrenceService().getWaterbodyOrCountryByName(row.getCountry());
+			if (countries.size() >0){
+				facade.setCountry(countries.get(0));
+			}else{
+				UUID uuid = UUID.randomUUID();
+				String label = row.getCountry();
+				String text = row.getCountry();
+				String labelAbbrev = null;
+				NamedAreaType areaType = NamedAreaType.ADMINISTRATION_AREA();
+				NamedAreaLevel level = NamedAreaLevel.COUNTRY();
+				NamedArea newCountry = this.getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level);
+				facade.setCountry(newCountry);
+			}
+		}
+	}
+		
 
 	private DerivedUnitType getDerivedUnitType(String basisOfRecord) {
-		
 		return null;
 	}
 
@@ -148,6 +303,18 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		return true;
 	}
 
+
+	@Override
+	protected String getWorksheetName() {
+		return WORKSHEET_NAME;
+	}
+	
+	@Override
+	protected boolean needsNomenclaturalCode() {
+		return false;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
@@ -157,9 +324,6 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		return true;
 	}
 
-	protected String getWorksheetName() {
-		return WORKSHEET_NAME;
-	}
 
 
 	@Override

@@ -67,7 +67,6 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	protected String unitID;
 	protected String recordBasis;
 	protected String accessionNumber;
-	protected String collectorsNumber;
 	protected String fieldNumber;
 	protected Double longitude;
 	protected Double latitude;
@@ -133,9 +132,6 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 
 		try {this.fieldNumber = unit.get("field number").replaceAll("None", null);
 		} catch (Exception e) {this.fieldNumber = "";}
-
-		try {this.collectorsNumber = unit.get("collector number").replaceAll("None", null);
-		} catch (Exception e) {this.collectorsNumber = "";}
 
 		try {
 			String url =unit.get("url");		
@@ -376,8 +372,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			//set catalogue number (unitID)
 			derivedThing.setCatalogNumber(this.unitID);
 			derivedThing.setAccessionNumber(this.accessionNumber);
-			derivedThing.setCollectorsNumber(this.collectorsNumber);
-
+			
 
 			/**
 			 * INSTITUTION & COLLECTION

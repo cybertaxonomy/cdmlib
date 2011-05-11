@@ -23,18 +23,25 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase> extend
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
 
+	private Integer currentLine;
+
+	public Integer getCurrentLine() {
+		return currentLine;
+	}
+
+	public void setCurrentLine(Integer currentLine) {
+		this.currentLine = currentLine;
+	}
+	
+	/**
+	 * Increments the current line
+	 */
+	public void incCurrentLine(){
+		this.currentLine++;
+	}
 	
 	public ExcelImportState(CONFIG config) {
 		super(config);
 	}
-	
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(ExcelImportConfiguratorBase config) {
-//				
-//	}
 
 }

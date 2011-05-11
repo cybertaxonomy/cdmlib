@@ -24,6 +24,7 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportState.class);
 
 	private SpecimenRow specimenRow;
+
 	
 	public SpecimenCdmExcelImportState(SpecimenCdmExcelImportConfigurator config) {
 		super(config);
@@ -36,14 +37,6 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	public void setSpecimenRow(SpecimenRow specimenRow) {
 		this.specimenRow = specimenRow;
 	}
-	
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(SpecimenImportConfigurator config) {
-//				
-//	}
+
 
 }

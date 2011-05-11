@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -88,7 +87,7 @@ public class UnitsGatheringArea {
 	public void setCountry(String iso, String fullName, IOccurrenceService occurrenceService){
 		WaterbodyOrCountry country = null;
 		List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
-		if (StringUtils.isBlank(iso)){
+		if (StringUtils.isNotBlank(iso)){
 			//TODO move to termservice
 			country = occurrenceService.getCountryByIso(iso);
 		}
