@@ -336,4 +336,46 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		throw new UnsupportedOperationException("suggestQuery is not supported for objects of class " + type.getName());
 	}
 
+	@Override
+	public Integer countByTitle(String queryString) {
+		return countByTitle(queryString, null);
+	}
+
+	@Override
+	public Integer countByTitle(String queryString, CdmBase sessionObject) {
+		Session session = getSession();
+		if ( sessionObject != null ) {
+			session.update(sessionObject);
+		}
+		checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
+		Criteria crit = session.createCriteria(type);
+		crit.add(Restrictions.ilike("titleCache", queryString));
+		Integer result =  (Integer)crit.setProjection(Projections.rowCount()).uniqueResult();
+		return result;
+	}
+
+	@Override
+	public Integer countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+		checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
+		Criteria crit = getSession().createCriteria(type);
+		if (matchMode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("titleCache", matchMode.queryStringFrom(queryString)));
+		} else {
+//			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+			crit.add(Restrictions.like("titleCache", matchMode.queryStringFrom(queryString)));
+		}
+		
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+				
+		
+		Integer result = (Integer)crit.setProjection(Projections.rowCount()).uniqueResult();
+		return result;
+	}
+
+	
+
 }

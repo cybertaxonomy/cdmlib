@@ -44,4 +44,26 @@ public interface ITitledDao<T extends CdmBase> {
 	 */
 	public List<T> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria);
 	
+	/**
+	 * @param queryString
+	 * @return
+	 */
+	public Integer countByTitle(String queryString);
+
+	/**
+	 * @param queryString
+	 * @param sessionObject
+	 * @return
+	 */
+	public Integer countByTitle(String queryString, CdmBase sessionObject);
+	
+	/**
+	 * @param queryString
+	 * @param matchAnywhere
+	 * @param page
+	 * @param pagesize
+	 * @param criteria TODO
+	 * @return
+	 */
+	public Integer countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria);
 }
