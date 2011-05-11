@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @date 03.06.2010
  *
  */
-public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnitBase> {
+public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<FieldObservation> {
 	private static final long serialVersionUID = 1578628591216605619L;
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldObservationCacheStrategy.class);
 
@@ -56,67 +57,66 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
 	 */
 	@Override
-	public String getTitleCache(DerivedUnitBase derivedUnit) {
-		return getFieldData(derivedUnit);
-	}
-	
-
-	private String getFieldData(DerivedUnitBase derivedUnit) {
-		String ALTITUDE_PREFIX = "alt. ";
-		String ALTITUDE_POSTFIX = " m";
-		
-		String result = "";
-		
+	public String getTitleCache(FieldObservation fieldObservation) {
 		DerivedUnitFacade facade;
-		try {
-			facade = DerivedUnitFacade.NewInstance(derivedUnit);
-			
-			//country
-			String strCountry = null;
-			NamedArea country = facade.getCountry();
-			Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
-			//TODO currently the label is the 3 digit representation of the country and text is the full text.
-			//this is against the common way of handling text, label and labelabbrev in defined terms
-			strCountry = repCountry == null ? null: repCountry.getText();
-			result = CdmUtils.concat(", ", result, strCountry);
-			
-			//locality
-			result = CdmUtils.concat(", ", result, facade.getLocalityText());
-			
-			//elevation
-			if (facade.getAbsoluteElevation() != null){
-				result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
-				result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
-			}
-			
-			//exact locality
-			if (facade.getExactLocation() != null){
-				String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
-				result = CdmUtils.concat(", ", result, exactLocation);
-			}
-			
-			//ecology
-			result = CdmUtils.concat(", ", result, facade.getEcology());
-			
-			//gathering period
-			//TODO period.toString ??
-			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
-			result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
-			
-			//collector (team) and field number
-			String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
-			result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
-			
-		} catch (DerivedUnitFacadeNotSupportedException e) {
-			e.printStackTrace();
-		}
-		
+		String result = "";
+		facade = DerivedUnitFacade.NewInstance(DerivedUnitType.FieldObservation, fieldObservation);
+		result = getFieldData(facade);	
+		result = addPlantDescription(result, facade);
 		
 		return result;
 	}
 	
 
-	public String addPlantDescription(DerivedUnitBase derivedUnit, String result, DerivedUnitFacade facade) {
+	protected String getFieldData(DerivedUnitFacade facade) {
+		String ALTITUDE_PREFIX = "alt. ";
+		String ALTITUDE_POSTFIX = " m";
+		
+		String result = "";
+		
+			
+		//country
+		String strCountry = null;
+		NamedArea country = facade.getCountry();
+		Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
+		//TODO currently the label is the 3 digit representation of the country and text is the full text.
+		//this is against the common way of handling text, label and labelabbrev in defined terms
+		strCountry = repCountry == null ? null: repCountry.getText();
+		result = CdmUtils.concat(", ", result, strCountry);
+		
+		//locality
+		result = CdmUtils.concat(", ", result, facade.getLocalityText());
+		
+		//elevation
+		if (facade.getAbsoluteElevation() != null){
+			result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
+			result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
+		}
+		
+		//exact locality
+		if (facade.getExactLocation() != null){
+			String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
+			result = CdmUtils.concat(", ", result, exactLocation);
+		}
+		
+		//ecology
+		result = CdmUtils.concat(", ", result, facade.getEcology());
+		
+		//gathering period
+		//TODO period.toString ??
+		TimePeriod gatheringPeriod = facade.getGatheringPeriod();
+		result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
+		
+		//collector (team) and field number
+		String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
+		result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
+
+		
+		return result;
+	}
+	
+
+	protected String addPlantDescription(String result, DerivedUnitFacade facade) {
 		
 		//plant description
 		result = CdmUtils.concat("; ", result, facade.getPlantDescription());

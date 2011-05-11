@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
@@ -67,10 +68,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class DerivedUnitFacade {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(DerivedUnitFacade.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
 
 	private static final String notSupportMessage = "A specimen facade not supported exception has occurred at a place where this should not have happened. The developer should implement not support check properly during class initialization ";
+
+	private static final boolean CREATE = true;
+	private static final boolean CREATE_NOT = false;
 
 	/**
 	 * Enum that defines the class the "Specimen" belongs to. Some methods of
@@ -78,8 +81,14 @@ public class DerivedUnitFacade {
 	 * Exception when invoking them.
 	 */
 	public enum DerivedUnitType {
-		Specimen("Specimen"), Observation("Observation"), LivingBeing(
-				"Living Being"), Fossil("Fossil"), DerivedUnit("Derived Unit");
+		Specimen("Specimen"), 
+		Observation("Observation"), 
+		LivingBeing("Living Being"), 
+		Fossil("Fossil"), 
+		DerivedUnit("Derived Unit"),
+		//Field Observation is experimental, please handle with care (it is the only type which does not
+		//have a derivedUnit and therefore throws exceptions for all method on derivedUnit attributes
+		FieldObservation("FieldObservation");
 
 		String representation;
 
@@ -98,19 +107,19 @@ public class DerivedUnitFacade {
 			if (this == DerivedUnitType.Specimen) {
 				return eu.etaxonomy.cdm.model.occurrence.Specimen.NewInstance();
 			} else if (this == DerivedUnitType.Observation) {
-				return eu.etaxonomy.cdm.model.occurrence.Observation
-						.NewInstance();
+				return eu.etaxonomy.cdm.model.occurrence.Observation.NewInstance();
 			} else if (this == DerivedUnitType.LivingBeing) {
-				return eu.etaxonomy.cdm.model.occurrence.LivingBeing
-						.NewInstance();
+				return eu.etaxonomy.cdm.model.occurrence.LivingBeing.NewInstance();
 			} else if (this == DerivedUnitType.Fossil) {
 				return eu.etaxonomy.cdm.model.occurrence.Fossil.NewInstance();
 			} else if (this == DerivedUnitType.DerivedUnit) {
-				return eu.etaxonomy.cdm.model.occurrence.DerivedUnit
-						.NewInstance();
+				return eu.etaxonomy.cdm.model.occurrence.DerivedUnit.NewInstance();
+			} else if (this == DerivedUnitType.FieldObservation) {
+				return null;
 			} else {
-				throw new IllegalStateException("Unknown derived unit type "
-						+ this.getRepresentation());
+				String message = "Unknown derived unit type %s";
+				message = String.format(message, this.getRepresentation());
+				throw new IllegalStateException(message);
 			}
 		}
 
@@ -127,6 +136,8 @@ public class DerivedUnitFacade {
 				return Observation;
 			} else if (type.equals("fossil")) {
 				return Fossil;
+			} else if (type.equals("fieldobservation")) {
+				return DerivedUnitType.FieldObservation;
 			} else if (type.equals("unknown")) {
 				return DerivedUnitType.DerivedUnit;
 			} else if (type.equals("derivedunit")) {
@@ -161,7 +172,18 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(DerivedUnitType type) {
-		return new DerivedUnitFacade(type);
+		return new DerivedUnitFacade(type, null);
+	}
+	
+	/**
+	 * Creates a derived unit facade for a new derived unit of type
+	 * <code>type</code>.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static DerivedUnitFacade NewInstance(DerivedUnitType type, FieldObservation fieldObservation) {
+		return new DerivedUnitFacade(type, fieldObservation);
 	}
 
 	/**
@@ -183,15 +205,19 @@ public class DerivedUnitFacade {
 		return new DerivedUnitFacade(derivedUnit, config);
 	}
 
-	// ****************** CONSTRUCTOR
-	// ****************************************************
+	// ****************** CONSTRUCTOR ******************************************
 
-	private DerivedUnitFacade(DerivedUnitType type) {
+	private DerivedUnitFacade(DerivedUnitType type, FieldObservation fieldObservation) {
 		this.config = DerivedUnitFacadeConfigurator.NewInstance();
-
+		
 		// derivedUnit
 		derivedUnit = type.getNewDerivedUnitInstance();
-		setCacheStrategy();
+		setFieldObservation(fieldObservation);
+		if (derivedUnit != null){
+			setCacheStrategy();
+		}else{
+			setFieldObservationCacheStrategy();
+		}
 	}
 
 	private DerivedUnitFacade(DerivedUnitBase derivedUnit,
@@ -205,11 +231,10 @@ public class DerivedUnitFacade {
 
 		// derived unit
 		this.derivedUnit = derivedUnit;
-		setCacheStrategy();
-
+		
 		// derivation event
 		if (this.derivedUnit.getDerivedFrom() != null) {
-			DerivationEvent derivationEvent = getDerivationEvent(true);
+			DerivationEvent derivationEvent = getDerivationEvent(CREATE);
 			// fieldObservation
 			Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(
 					derivationEvent, null);
@@ -228,27 +253,10 @@ public class DerivedUnitFacade {
 				throw new IllegalStateException("Illegal state");
 			}
 		}
-		// #### derivedUnit = getInitializedDerivedUnit(derivedUnit);
-
-		// test if unsupported
-
-		// media
-		// specimen
-		// String objectTypeExceptionText = "Specimen";
-		// SpecimenDescription imageGallery =
-		// getImageGalleryWithSupportTest(derivedUnit, objectTypeExceptionText,
-		// false);
-		// getImageTextDataWithSupportTest(imageGallery,
-		// objectTypeExceptionText);
+		
 		this.derivedUnitMediaTextData = inititializeTextDataWithSupportTest(
 				Feature.IMAGE(), this.derivedUnit, false, true);
 
-		// field observation
-		// objectTypeExceptionText = "Field observation";
-		// imageGallery = getImageGalleryWithSupportTest(fieldObservation,
-		// objectTypeExceptionText, false);
-		// getImageTextDataWithSupportTest(imageGallery,
-		// objectTypeExceptionText);
 		fieldObjectMediaTextData = initializeFieldObjectTextDataWithSupportTest(
 				Feature.IMAGE(), false, true);
 
@@ -288,6 +296,9 @@ public class DerivedUnitFacade {
 				Feature.ECOLOGY(), false, false);
 		plantDescription = initializeFieldObjectTextDataWithSupportTest(
 				Feature.DESCRIPTION(), false, false);
+		
+		setCacheStrategy();
+
 	}
 
 	private DerivedUnitBase getInitializedDerivedUnit(
@@ -487,8 +498,17 @@ public class DerivedUnitFacade {
 		if (derivedUnit == null) {
 			throw new NullPointerException(
 					"Facade's derviedUnit must not be null to set cache strategy");
+		}else{
+			derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
+			setFieldObservationCacheStrategy();
 		}
-		derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
+	}
+
+	private void setFieldObservationCacheStrategy() {
+		if (this.hasFieldObject()){
+			DerivedUnitFacadeFieldObservationCacheStrategy strategy = new DerivedUnitFacadeFieldObservationCacheStrategy();
+			this.fieldObservation.setCacheStrategy(strategy);
+		}
 	}
 
 	/**
@@ -718,8 +738,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private TextData getImageGalleryTextData(
-			SpecimenOrObservationBase specimen, String specimenExceptionText)
+	private TextData getImageGalleryTextData(SpecimenOrObservationBase specimen, String specimenExceptionText)
 			throws DerivedUnitFacadeNotSupportedException {
 		TextData result;
 		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(
@@ -826,11 +845,9 @@ public class DerivedUnitFacade {
 	 * @param createNewIfNotExists
 	 * @return
 	 */
-	private SpecimenDescription getImageGallery(
-			SpecimenOrObservationBase<?> specimen, boolean createIfNotExists) {
+	private SpecimenDescription getImageGallery(SpecimenOrObservationBase<?> specimen, boolean createIfNotExists) {
 		SpecimenDescription result = null;
-		Set<SpecimenDescription> descriptions = specimen
-				.getSpecimenDescriptions();
+		Set<SpecimenDescription> descriptions = specimen.getSpecimenDescriptions();
 		for (SpecimenDescription description : descriptions) {
 			if (description.isImageGallery()) {
 				result = description;
@@ -1674,29 +1691,40 @@ public class DerivedUnitFacade {
 	 */
 	public FieldObservation getFieldObservation(boolean createIfNotExists) {
 		if (fieldObservation == null && createIfNotExists) {
-			fieldObservation = FieldObservation.NewInstance();
-			fieldObservation
-					.addPropertyChangeListener(getNewEventPropagationListener());
-			DerivationEvent derivationEvent = getDerivationEvent(true);
-			derivationEvent.addOriginal(fieldObservation);
+			setFieldObservation(FieldObservation.NewInstance());
 		}
 		return this.fieldObservation;
 	}
+	
 
-	// ****************** Specimen
-	// **************************************************
+	private void setFieldObservation(FieldObservation fieldObservation) {
+		this.fieldObservation = fieldObservation;
+		if (fieldObservation != null){
+			fieldObservation.addPropertyChangeListener(getNewEventPropagationListener());
+			if (derivedUnit != null){
+				DerivationEvent derivationEvent = getDerivationEvent(CREATE);
+				derivationEvent.addOriginal(fieldObservation);
+			}
+			setFieldObservationCacheStrategy();
+		}
+	}
+
+	// ****************** Specimen *******************************************
 
 	// Definition
 	public void addDerivedUnitDefinition(String text, Language language) {
-		derivedUnit.addDefinition(text, language);
+		innerDerivedUnit().putDefinition(language, text);
 	}
 
 	@Transient
 	public Map<Language, LanguageString> getDerivedUnitDefinitions() {
+		testDerivedUnit();
 		return this.derivedUnit.getDefinition();
 	}
 
+
 	public String getDerivedUnitDefinition(Language language) {
+		testDerivedUnit();
 		Map<Language, LanguageString> languageMap = derivedUnit.getDefinition();
 		LanguageString languageString = languageMap.get(language);
 		if (languageString != null) {
@@ -1707,16 +1735,19 @@ public class DerivedUnitFacade {
 	}
 
 	public void removeDerivedUnitDefinition(Language lang) {
+		testDerivedUnit();
 		derivedUnit.removeDefinition(lang);
 	}
 
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
+		testDerivedUnit();
 		derivedUnit.addDetermination(determination);
 	}
 
 	@Transient
 	public DeterminationEvent getPreferredDetermination() {
+		testDerivedUnit();
 		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
@@ -1734,6 +1765,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public void setPreferredDetermination(DeterminationEvent newEvent) {
+		testDerivedUnit();
 		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
@@ -1752,6 +1784,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getOtherDeterminations() {
+		testDerivedUnit();
 		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
 		Set<DeterminationEvent> result = new HashSet<DeterminationEvent>();
 		for (DeterminationEvent event : events){
@@ -1769,15 +1802,18 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getDeterminations() {
+		testDerivedUnit();
 		return derivedUnit.getDeterminations();
 	}
 
 	public void removeDetermination(DeterminationEvent determination) {
+		testDerivedUnit();
 		derivedUnit.removeDetermination(determination);
 	}
 
 	// Media
 	public boolean addDerivedUnitMedia(Media media) {
+		testDerivedUnit();
 		try {
 			return addMedia(media, derivedUnit);
 		} catch (DerivedUnitFacadeNotSupportedException e) {
@@ -1793,8 +1829,8 @@ public class DerivedUnitFacade {
 		return (getImageGallery(derivedUnit, false) != null);
 	}
 
-	public SpecimenDescription getDerivedUnitImageGallery(
-			boolean createIfNotExists) {
+	public SpecimenDescription getDerivedUnitImageGallery(boolean createIfNotExists) {
+		testDerivedUnit();
 		TextData textData;
 		try {
 			textData = inititializeTextDataWithSupportTest(Feature.IMAGE(),
@@ -1812,6 +1848,7 @@ public class DerivedUnitFacade {
 
 	public void setDerivedUnitImageGallery(SpecimenDescription imageGallery)
 			throws DerivedUnitFacadeNotSupportedException {
+		testDerivedUnit();
 		SpecimenDescription existingGallery = getDerivedUnitImageGallery(false);
 
 		// test attached specimens contain this.derivedUnit
@@ -1835,11 +1872,9 @@ public class DerivedUnitFacade {
 	 * @param imageGallery
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private void testSpecimenInImageGallery(SpecimenDescription imageGallery,
-			SpecimenOrObservationBase specimen)
-			throws DerivedUnitFacadeNotSupportedException {
-		Set<SpecimenOrObservationBase> imageGallerySpecimens = imageGallery
-				.getDescribedSpecimenOrObservations();
+	private void testSpecimenInImageGallery(SpecimenDescription imageGallery, SpecimenOrObservationBase specimen)
+				throws DerivedUnitFacadeNotSupportedException {
+		Set<SpecimenOrObservationBase> imageGallerySpecimens = imageGallery.getDescribedSpecimenOrObservations();
 		if (imageGallerySpecimens.size() < 1) {
 			throw new DerivedUnitFacadeNotSupportedException(
 					"Image Gallery has no Specimen attached. Please attache according specimen or field observation.");
@@ -1857,6 +1892,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public List<Media> getDerivedUnitMedia() {
+		testDerivedUnit();
 		try {
 			List<Media> result = getMedia(derivedUnit, false);
 			return result == null ? new ArrayList<Media>() : result;
@@ -1866,6 +1902,7 @@ public class DerivedUnitFacade {
 	}
 
 	public boolean removeDerivedUnitMedia(Media media) {
+		testDerivedUnit();
 		try {
 			return removeMedia(media, derivedUnit);
 		} catch (DerivedUnitFacadeNotSupportedException e) {
@@ -1876,28 +1913,34 @@ public class DerivedUnitFacade {
 	// Accession Number
 	@Transient
 	public String getAccessionNumber() {
+		testDerivedUnit();
 		return derivedUnit.getAccessionNumber();
 	}
 
 	public void setAccessionNumber(String accessionNumber) {
+		testDerivedUnit();
 		derivedUnit.setAccessionNumber(accessionNumber);
 	}
 
 	@Transient
 	public String getCatalogNumber() {
+		testDerivedUnit();
 		return derivedUnit.getCatalogNumber();
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
+		testDerivedUnit();
 		derivedUnit.setCatalogNumber(catalogNumber);
 	}
 
 	@Transient
 	public String getBarcode() {
+		testDerivedUnit();
 		return derivedUnit.getBarcode();
 	}
 
 	public void setBarcode(String barcode) {
+		testDerivedUnit();
 		derivedUnit.setBarcode(barcode);
 	}
 
@@ -1910,8 +1953,8 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	@Transient
-	public PreservationMethod getPreservationMethod()
-			throws MethodNotSupportedByDerivedUnitTypeException {
+	public PreservationMethod getPreservationMethod() throws MethodNotSupportedByDerivedUnitTypeException {
+		testDerivedUnit();
 		if (derivedUnit.isInstanceOf(Specimen.class)) {
 			return CdmBase.deproxy(derivedUnit, Specimen.class)
 					.getPreservation();
@@ -1934,6 +1977,7 @@ public class DerivedUnitFacade {
 	 */
 	public void setPreservationMethod(PreservationMethod preservation)
 			throws MethodNotSupportedByDerivedUnitTypeException {
+		testDerivedUnit();
 		if (derivedUnit.isInstanceOf(Specimen.class)) {
 			CdmBase.deproxy(derivedUnit, Specimen.class).setPreservation(
 					preservation);
@@ -1951,41 +1995,38 @@ public class DerivedUnitFacade {
 	// Stored under name
 	@Transient
 	public TaxonNameBase getStoredUnder() {
+		testDerivedUnit();
 		return derivedUnit.getStoredUnder();
 	}
 
 	public void setStoredUnder(TaxonNameBase storedUnder) {
+		testDerivedUnit();
 		derivedUnit.setStoredUnder(storedUnder);
 	}
 
-	
-//	// colletors number
-//	@Transient
-//	public String getCollectorsNumber() {
-//		return derivedUnit.getCollectorsNumber();
-//	}
-//
-//	public void setCollectorsNumber(String collectorsNumber) {
-//		this.derivedUnit.setCollectorsNumber(collectorsNumber);
-//	}
-
 	// title cache
 	public String getTitleCache() {
-		if (!derivedUnit.isProtectedTitleCache()) {
+		SpecimenOrObservationBase<?> titledUnit = getTitledUnit();
+		
+		if (!titledUnit.isProtectedTitleCache()) {
 			// always compute title cache anew as long as there are no property
 			// change listeners on
 			// field observation, gathering event etc
-			derivedUnit.setTitleCache(null, false);
+			titledUnit.setTitleCache(null, false);
 		}
-		return this.derivedUnit.getTitleCache();
+		return titledUnit.getTitleCache();
+	}
+	
+	private SpecimenOrObservationBase<?> getTitledUnit(){
+		return (derivedUnit != null )? derivedUnit : fieldObservation;
 	}
 
 	public boolean isProtectedTitleCache() {
-		return derivedUnit.isProtectedTitleCache();
+		return getTitledUnit().isProtectedTitleCache();
 	}
 
 	public void setTitleCache(String titleCache, boolean isProtected) {
-		this.derivedUnit.setTitleCache(titleCache, isProtected);
+		this.getTitledUnit().setTitleCache(titleCache, isProtected);
 	}
 
 	/**
@@ -1996,6 +2037,26 @@ public class DerivedUnitFacade {
 	public DerivedUnitBase innerDerivedUnit() {
 		return this.derivedUnit;
 	}
+	
+//	/**
+//	 * Returns the derived unit itself.
+//	 * 
+//	 * @return the derived unit
+//	 */
+//	public DerivedUnitBase innerDerivedUnit(boolean createIfNotExists) {
+//		DerivedUnit result = this.derivedUnit; 
+//		if (result == null && createIfNotExists){
+//			if (this.fieldObservation == null){
+//				String message = "Field observation must exist to create derived unit.";
+//				throw new IllegalStateException(message);
+//			}else{
+//				DerivedUnit = 
+//				DerivationEvent derivationEvent = getDerivationEvent(true);
+//				derivationEvent.addOriginal(fieldObservation);
+//				return this.derivedUnit;
+//			}
+//		}
+//	}
 
 	private boolean hasDerivationEvent() {
 		return getDerivationEvent() == null ? false : true;
@@ -2005,9 +2066,20 @@ public class DerivedUnitFacade {
 		return getDerivationEvent(false);
 	}
 
+	/**
+	 * Returns the derivation event. If no derivation event exists and <code>createIfNotExists</code>
+	 * is <code>true</code> a new derivation event is created and returned. 
+	 * Otherwise <code>null</code> is returned.
+	 * @param createIfNotExists
+	 */
 	private DerivationEvent getDerivationEvent(boolean createIfNotExists) {
-		DerivationEvent result = derivedUnit.getDerivedFrom();
-		if (result == null) {
+		DerivationEvent result = null;
+		if (derivedUnit != null){
+			result = derivedUnit.getDerivedFrom();
+		}else{
+			return null;
+		}
+		if (result == null && createIfNotExists) {
 			result = DerivationEvent.NewInstance();
 			derivedUnit.setDerivedFrom(result);
 		}
@@ -2017,6 +2089,7 @@ public class DerivedUnitFacade {
 	@Transient
 	public String getExsiccatum()
 			throws MethodNotSupportedByDerivedUnitTypeException {
+		testDerivedUnit();
 		if (derivedUnit.isInstanceOf(Specimen.class)) {
 			return CdmBase.deproxy(derivedUnit, Specimen.class).getExsiccatum();
 		} else {
@@ -2031,6 +2104,7 @@ public class DerivedUnitFacade {
 	}
 
 	public void setExsiccatum(String exsiccatum) throws Exception {
+		testDerivedUnit();
 		if (derivedUnit.isInstanceOf(Specimen.class)) {
 			CdmBase.deproxy(derivedUnit, Specimen.class).setExsiccatum(
 					exsiccatum);
@@ -2047,6 +2121,7 @@ public class DerivedUnitFacade {
 
 	// **** sources **/
 	public void addSource(IdentifiableSource source) {
+		testDerivedUnit();
 		this.derivedUnit.addSource(source);
 	}
 
@@ -2060,19 +2135,20 @@ public class DerivedUnitFacade {
 	 */
 	public IdentifiableSource addSource(Reference reference,
 			String microReference, String originalNameString) {
-		IdentifiableSource source = IdentifiableSource.NewInstance(reference,
-				microReference);
+		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
 		source.setOriginalNameString(originalNameString);
-		derivedUnit.addSource(source);
+		addSource(source);
 		return source;
 	}
 
 	@Transient
 	public Set<IdentifiableSource> getSources() {
+		testDerivedUnit();
 		return derivedUnit.getSources();
 	}
 
 	public void removeSource(IdentifiableSource source) {
+		testDerivedUnit();
 		this.derivedUnit.removeSource(source);
 	}
 
@@ -2081,6 +2157,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Collection getCollection() {
+		testDerivedUnit();
 		return derivedUnit.getCollection();
 	}
 
@@ -2089,25 +2166,28 @@ public class DerivedUnitFacade {
 	 *            the collection to set
 	 */
 	public void setCollection(Collection collection) {
+		testDerivedUnit();
 		derivedUnit.setCollection(collection);
 	}
 
 	// annotation
 	public void addAnnotation(Annotation annotation) {
+		testDerivedUnit();
 		this.derivedUnit.addAnnotation(annotation);
 	}
 
 	@Transient
 	public void getAnnotations() {
+		testDerivedUnit();
 		this.derivedUnit.getAnnotations();
 	}
 
 	public void removeAnnotation(Annotation annotation) {
+		testDerivedUnit();
 		this.derivedUnit.removeAnnotation(annotation);
 	}
 
-	// ******************************* Events
-	// *********************************************
+	// ******************************* Events ***************************
 
 	/**
 	 * @return
@@ -2116,9 +2196,14 @@ public class DerivedUnitFacade {
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				derivedUnit.firePropertyChange(event);
+				if (derivedUnit != null){
+					derivedUnit.firePropertyChange(event);
+				}else{
+					if (! event.getSource().equals(fieldObservation)){
+						fieldObservation.firePropertyChange(event);
+					}
+				}
 			}
-
 		};
 		return listener;
 	}
@@ -2143,8 +2228,9 @@ public class DerivedUnitFacade {
 	public Specimen addDuplicate(Collection collection, String catalogNumber,
 			String accessionNumber,
 			TaxonNameBase storedUnder, PreservationMethod preservation) {
+		testDerivedUnit();
 		Specimen duplicate = Specimen.NewInstance();
-		duplicate.setDerivedFrom(getDerivationEvent(true));
+		duplicate.setDerivedFrom(getDerivationEvent(CREATE));
 		duplicate.setCollection(collection);
 		duplicate.setCatalogNumber(catalogNumber);
 		duplicate.setAccessionNumber(accessionNumber);
@@ -2155,14 +2241,16 @@ public class DerivedUnitFacade {
 
 	public void addDuplicate(DerivedUnitBase duplicateSpecimen) {
 		// TODO check derivedUnitType
-		getDerivationEvent(true).addDerivative(duplicateSpecimen);
+		testDerivedUnit();
+		getDerivationEvent(CREATE).addDerivative(duplicateSpecimen);
 	}
 
 	@Transient
 	public Set<Specimen> getDuplicates() {
+		testDerivedUnit();
 		Set<Specimen> result = new HashSet<Specimen>();
 		if (hasDerivationEvent()) {
-			for (DerivedUnitBase derivedUnit : getDerivationEvent(true)
+			for (DerivedUnitBase derivedUnit : getDerivationEvent(CREATE)
 					.getDerivatives()) {
 				if (derivedUnit.isInstanceOf(Specimen.class)
 						&& !derivedUnit.equals(this.derivedUnit)) {
@@ -2174,8 +2262,17 @@ public class DerivedUnitFacade {
 	}
 
 	public void removeDuplicate(Specimen duplicateSpecimen) {
+		testDerivedUnit();
 		if (hasDerivationEvent()) {
-			getDerivationEvent(true).removeDerivative(duplicateSpecimen);
+			getDerivationEvent(CREATE).removeDerivative(duplicateSpecimen);
+		}
+	}
+	
+	
+
+	private void testDerivedUnit() {
+		if (derivedUnit == null){
+			throw new IllegalStateException("This method is not allowed for this specimen or observation type. Probably you have tried to add specimen(derived unit) information to a field observation");
 		}
 	}
 
