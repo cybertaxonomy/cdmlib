@@ -92,7 +92,7 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
 		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
 			
-//		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 		
 	}
 
