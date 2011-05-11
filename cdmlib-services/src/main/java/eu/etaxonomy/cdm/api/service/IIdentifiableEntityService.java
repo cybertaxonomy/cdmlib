@@ -131,10 +131,10 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
 	 * @param criteria additional criteria to filter by
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 *
 	 * @return 
 	 */
-    public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, List<String> propertyPaths);
+    public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria);
    
 	/**
 	 * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode

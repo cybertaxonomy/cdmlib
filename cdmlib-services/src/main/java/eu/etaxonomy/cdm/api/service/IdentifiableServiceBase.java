@@ -91,7 +91,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = true)
-	protected Integer countByTitle(IIdentifiableEntityServiceConfigurator config){
+	public Integer countByTitle(IIdentifiableEntityServiceConfigurator config){
 		return ((IIdentifiableDao)dao).countByTitle(config.getTitleSearchString(),
 				config.getMatchMode(), null);
 		
@@ -391,7 +391,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return result;
 	}	
 	
-	 public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, List<String> propertyPaths){
+	 public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 		 
 		 return numberOfResults;
