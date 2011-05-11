@@ -157,8 +157,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         	public void propertyChange(PropertyChangeEvent e) {
         		if (!e.getPropertyName().equals("titleCache") && !e.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
         			titleCache = null;
-        		}else{
-        			logger.debug("");
         		}
         	}
     	};
