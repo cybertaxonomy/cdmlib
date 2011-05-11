@@ -13,6 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -91,8 +96,17 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
 		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
-			
-		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+		
+		try {
+			String filePath = System.getProperty("java.io.tmpdir")+File.separator+"excelSpecimenOutput.xml";
+			File file = new File(filePath);
+			FileOutputStream myOut = new FileOutputStream(file);
+			System.out.println(file.getAbsolutePath());
+			printDataSet(myOut, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
