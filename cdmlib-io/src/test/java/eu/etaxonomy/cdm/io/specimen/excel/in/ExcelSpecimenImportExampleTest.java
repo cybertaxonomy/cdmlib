@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 10.05.2011
  * @version 1.0
  */
-@Ignore
+//@Ignore
 public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
@@ -72,17 +72,17 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
-	
-	@Test
-	public void testDoInvoke() {
-		boolean result = defaultImport.invoke(configurator);
-		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
-		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
-			
-		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
-		
-	}
+//	
+//	@Test
+//	public void testDoInvoke() {
+//		boolean result = defaultImport.invoke(configurator);
+//		assertTrue("Return value for import.invoke should be true", result);
+//		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
+//		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
+//			
+////		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+//		
+//	}
 	
 	@Test
 	@ExpectedDataSet
@@ -92,7 +92,7 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
 		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
 			
-		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+//		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 		
 	}
 
