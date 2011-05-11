@@ -18,6 +18,7 @@ import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 10.05.2011
  * @version 1.0
  */
-//@Ignore 
+@Ignore
 public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
