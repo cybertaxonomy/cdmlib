@@ -72,7 +72,6 @@ public class ExcelUtils {
     				}
     			}
     		}
-    		HashMap<String, String> headers = null;
     		ArrayList<String> columns = new ArrayList<String>();
     		row = sheet.getRow(0);
     		for (int c = 0; c < cols; c++){
@@ -86,12 +85,11 @@ public class ExcelUtils {
     		}
     		for(int r = 1; r < rows; r++) {
     			row = sheet.getRow(r);
-    			headers = new HashMap<String, String>();
+    			HashMap<String, String> headers = new HashMap<String, String>();
     			boolean notEmpty = false;
-    			for (int j = 0; j<row.getRowNum(); j++){
+    			for (int j = 0; j<row.getLastCellNum(); j++){
     				if (row.getCell(j) != null){
     					notEmpty = true;
-    					break;
     				}
     			}
     			if(row != null && notEmpty) {
