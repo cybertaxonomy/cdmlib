@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
@@ -62,6 +64,7 @@ public class Group extends CdmBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	
 	protected Group(){
