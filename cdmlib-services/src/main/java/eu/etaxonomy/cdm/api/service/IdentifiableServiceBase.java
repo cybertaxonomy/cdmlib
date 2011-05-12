@@ -83,19 +83,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	@Transactional(readOnly = true)
-	protected List<T> findByTitle(IIdentifiableEntityServiceConfigurator config){
-		return ((IIdentifiableDao)dao).findByTitle(config.getTitleSearchString(),
-				config.getMatchMode(), 0, -1, null);
-		// TODO: Implement parameters pageSize, pageNumber, and criteria
-	}
-	
-	@Transactional(readOnly = true)
-	public Integer countByTitle(IIdentifiableEntityServiceConfigurator config){
-		return ((IIdentifiableDao)dao).countByTitle(config.getTitleSearchString(),
-				config.getMatchMode(), null);
-		
-	}
 	
 	@Transactional(readOnly = false)
 	public T replace(T x, T y) {
@@ -158,6 +145,11 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 }
 			
 		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	@Transactional(readOnly = true)
+	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+		return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	}
 	
 	@Transactional(readOnly = true)
@@ -396,6 +388,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 
 		 return numberOfResults;
 	 }
+	 
+	@Transactional(readOnly = true)
+	public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
+				config.getMatchMode(), config.getCriteria());
+		
+	}
 
 }
 

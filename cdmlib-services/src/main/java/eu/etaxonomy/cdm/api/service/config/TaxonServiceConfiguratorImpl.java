@@ -9,15 +9,14 @@
  */
 
 
-package eu.etaxonomy.cdm.api.service.config.impl;
+package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -25,8 +24,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @created 20.01.2009
  * @version 1.0
  */
-public class TaxonServiceConfiguratorImpl extends IdentifiableServiceConfiguratorBase
-implements ITaxonServiceConfigurator {
+public class TaxonServiceConfiguratorImpl<T extends TaxonBase> extends IdentifiableServiceConfiguratorImpl<T>
+implements ITaxonServiceConfigurator<T> {
 	
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
@@ -101,14 +100,6 @@ implements ITaxonServiceConfigurator {
 	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa) {
 		this.doNamesWithoutTaxa = doNamesWithoutTaxa;
 	}
-	
-	public String getSearchString() {
-		return searchString;
-	}
-	
-	public void setSearchString(String searchString) {
-		this.searchString = searchString;
-	}
 
 	public MatchMode getMatchMode() {
 		return matchMode;
@@ -160,6 +151,7 @@ implements ITaxonServiceConfigurator {
 		return synonymPropertyPath;
 	}
 	
+	@Override
 	public void setSynonymPropertyPath(List<String> synonymPropertyPath){
 		this.synonymPropertyPath = synonymPropertyPath;
 	}

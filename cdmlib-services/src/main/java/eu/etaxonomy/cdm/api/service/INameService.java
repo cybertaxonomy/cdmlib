@@ -83,14 +83,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	
 	public List findNamesByTitle(String title, CdmBase sessionObject);
 	
-	/**
-	 * Finds taxon name(s) according to specifications in configurator
-	 * 
-	 * @param configurator
-	 * @return
-	 */
-	public List<TaxonNameBase> findByTitle(IIdentifiableEntityServiceConfigurator config);
-
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
 	@Deprecated

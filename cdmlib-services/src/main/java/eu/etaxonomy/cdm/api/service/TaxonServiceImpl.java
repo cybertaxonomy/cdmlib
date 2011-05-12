@@ -489,7 +489,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		
-		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+		result = dao.getTaxaByNameForEditor(clazz, configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 		return result;
 	}
 	/* (non-Javadoc)
@@ -525,13 +525,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if(configurator.getPageSize() != null){ // no point counting if we need all anyway
 				numberTaxaResults = 
 					dao.countTaxaByName(clazz, 
-						configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
+						configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
 						configurator.getNamedAreas());
 			}
 			
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
-					configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
+					configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
 					configurator.getPageNumber(), propertyPath);
 			}
@@ -550,7 +550,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             int numberNameResults = 0;
            
 			List<? extends TaxonNameBase<?,?>> names = 
-				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
+				nameDao.findByName(configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
 			if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
 			if (names.size() > 0) {
@@ -571,10 +571,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			taxa = null;
 			numberTaxaResults = 0;
 			if(configurator.getPageSize() != null){// no point counting if we need all anyway
-				numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+				numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 			}
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+				taxa = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			}
 			if(taxa != null){
 				results.addAll(taxa);

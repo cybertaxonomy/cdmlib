@@ -1728,12 +1728,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBas
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/INameServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorBase.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/IdentifiableServiceConfiguratorImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/NameServiceConfiguratorImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/TaxonServiceConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorFactory.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataMapper.java -text

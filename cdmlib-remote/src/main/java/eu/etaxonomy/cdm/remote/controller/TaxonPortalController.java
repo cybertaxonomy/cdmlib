@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -362,7 +362,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
 		config.setPageNumber(pageNumber);
 		config.setPageSize(pageSize);
-		config.setSearchString(query);
+		config.setTitleSearchString(query);
 		config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
 		config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );
 		config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );

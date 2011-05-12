@@ -20,17 +20,14 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.impl.IdentifiableServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -171,8 +168,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
-    	IdentifiableServiceConfiguratorImpl config = 
-    		IdentifiableServiceConfiguratorImpl.NewInstance();
+    	IdentifiableServiceConfiguratorImpl<TaxonNameBase> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonNameBase.class);
     	config.setTitleSearchString(taxonName);
     	config.setMatchMode(MatchMode.BEGINNING);
     	
