@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>3.0.4-SNAPSHOT</version>
+	<version>3.0.4</version>
 	<name>CDM Library</name>
 	<description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -25,9 +25,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
-		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
-		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
+		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.0.4</connection>
+		<developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.0.4</developerConnection>
+		<url>scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.0.4</url>
 	</scm>
 	<mailingLists>
 		<mailingList>
