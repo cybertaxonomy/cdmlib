@@ -17,7 +17,7 @@
   <packaging>bundle</packaging>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</developerConnection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-service/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-service/</url>
   </scm>
   <build>

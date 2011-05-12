@@ -16,7 +16,7 @@
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-io/</url>
   </scm>
   <build>

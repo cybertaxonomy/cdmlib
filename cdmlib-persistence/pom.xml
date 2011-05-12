@@ -13,7 +13,7 @@
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
   </scm>
   <build>

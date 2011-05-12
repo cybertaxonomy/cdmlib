@@ -11,7 +11,7 @@
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</developerConnection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-model/</url>
   </scm>
   <build>
