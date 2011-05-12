@@ -73,9 +73,14 @@
 	<!--  
     ======= Security ======= 
     -->
+    
+    <security:global-method-security secured-annotations="enabled" />
+    
     <security:http realm="SecRemoting" use-expressions="true">
         <security:http-basic/>
         <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="any"/>
+        <!-- <security:intercept-url pattern="/security.service" access="isAuthenticated()" requires-channel="any"/> -->
+        <!-- <security:intercept-url pattern="/**" access="hasRole('ROLE_USER1')" requires-channel="any"/> -->
         <security:port-mappings>
 			<security:port-mapping http="8080" https="8443"/>
 		</security:port-mappings>
