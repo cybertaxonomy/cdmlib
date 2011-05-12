@@ -22,6 +22,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -140,21 +141,25 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	@Transactional(readOnly = false)
+	@Secured("ROLE_ADMIN")
 	public Map<UUID, T> save(Collection<T> newInstances) {
 		return dao.saveAll(newInstances);
 	}
 
 	@Transactional(readOnly = false)
+	@Secured("ROLE_ADMIN")
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}
 
 	@Transactional(readOnly = false)
+	@Secured("ROLE_ADMIN")
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
 	}
 	
 	@Transactional(readOnly = false)
+	@Secured("ROLE_ADMIN")
 	public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
 		return dao.saveOrUpdateAll(transientInstances);
 	}
