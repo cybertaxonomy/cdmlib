@@ -73,16 +73,6 @@
 				<prop key="/term.service">httpTermService</prop>
 				<prop key="/user.service">httpUserService</prop>
 				<prop key="/vocabulary.service">httpVocabularyService</prop>
-				<prop key="/workingset.service">httpWorkingService</prop>
-				
-				<!-- spring security -->
-				<prop key="/security.service">httpSecurityService</prop>
-				
-				<!-- only for simple tests -->
-<!-- 
-				<prop key="/demo.service">httpDemoService</prop>
-				<prop key="/list.service">httpListService</prop>
- -->
 			</props>
 		</property>
 	</bean>

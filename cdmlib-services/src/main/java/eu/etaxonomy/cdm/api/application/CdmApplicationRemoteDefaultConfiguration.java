@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.ISecurityService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -108,9 +107,6 @@ public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplication
 	private IPolytomousKeyService polytomousKeyService;
 	@Autowired
 	private IPolytomousKeyNodeService polytomousKeyNodeService;
-	@Autowired
-	private ISecurityService securityService;
-
 	
 //	@Autowired
 	//@Qualifier("mainService")
@@ -301,9 +297,4 @@ public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplication
 		return null;
 	}
 	
-	@Override
-	public ISecurityService getSecurityService() {
-	return securityService;
-	}
-
 }

@@ -344,41 +344,6 @@
 		</property>
 	</bean>
 
-	<bean id="securityService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<property name="serviceUrl">
-			<value>http://${serverName}/${contextPath}/security.service</value>
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.api.service.ISecurityService</value>
-		</property>
-		<property name="httpInvokerRequestExecutor">
-			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
-		</property>
-	</bean>
-
-	<!-- only for simple tests -->
-<!-- 
-	<bean id="demoService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<property name="serviceUrl">
-			<value>http://${serverName}/${contextPath}/demo.service</value>
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.remoting.httpinvoker.DemoService</value>
-		</property>
-	</bean>
-
-	<bean id="listService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<property name="serviceUrl">
-			<value>http://${serverName}/${contextPath}/list.service</value>
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.remoting.httpinvoker.ListService</value>
-		</property>
-	</bean>
- -->
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="/eu/etaxonomy/cdm/config.properties" />

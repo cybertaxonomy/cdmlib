@@ -273,46 +273,5 @@
 		</property>
 	</bean>
 
-	<!-- spring security -->
-	
-	<bean id="httpSecurityService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-		<property name="service">
-			<ref bean="securityServiceImpl" />
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.api.service.ISecurityService</value>
-		</property>
-	</bean>
-	
-
-	<!-- only for simple tests -->
-<!-- 
-	<bean id="httpDemoService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-		<property name="service">
-			<ref bean="demoService" />
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.remoting.httpinvoker.DemoService</value>
-		</property>
-	</bean>
-
-	<bean id="demoService" class="eu.etaxonomy.cdm.remoting.httpinvoker.DemoServiceImpl">
-	</bean>
-
-	<bean id="httpListService"
-		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-		<property name="service">
-			<ref bean="listService" />
-		</property>
-		<property name="serviceInterface">
-			<value>eu.etaxonomy.cdm.remoting.httpinvoker.ListService</value>
-		</property>
-	</bean>
-
-	<bean id="listService" class="eu.etaxonomy.cdm.remoting.httpinvoker.ListServiceImpl">
-	</bean>
- -->
  
 </beans>

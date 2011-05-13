@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.ISecurityService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -311,10 +310,6 @@ public class CdmApplicationRemoteController implements ICdmApplicationRemoteConf
 	public ProviderManager getAuthenticationManager() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public final ISecurityService getSecurityService(){
-		return configuration.getSecurityService();
 	}
 
 }
