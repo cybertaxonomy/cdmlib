@@ -101,10 +101,10 @@ public class EditGeoServiceUtilities {
 			 * 
 			 * TODO remove according line from
 			 * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
-			 * cyprus ar no further needed !!
+			 * cyprus are no further needed !!
 			 */
 			String onlyTest = System.getProperty("ONLY-A-TEST"); // 
-			if(onlyTest.equals("TRUE")){
+			if(onlyTest != null && onlyTest.equals("TRUE")){
 				return defaultPresenceAbsenceTermBaseColors;
 			}
 			//special colors for flora of cyprus !!! see HACK above !!!
