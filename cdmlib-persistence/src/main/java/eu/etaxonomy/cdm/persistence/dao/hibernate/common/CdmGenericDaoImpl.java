@@ -107,7 +107,6 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		String propertyName;
 		Class<? extends CdmBase> otherClass;
 		Class<? extends CdmBase> itemClass;
-		Field field;
 		public boolean isCollection(){return itemClass != null;};
 		public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
 	}
