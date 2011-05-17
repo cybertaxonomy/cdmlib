@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
-import javax.persistence.EnumType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
@@ -51,6 +50,7 @@ import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.EntityType;
+import org.hibernate.type.EnumType;
 import org.hibernate.type.FloatType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
