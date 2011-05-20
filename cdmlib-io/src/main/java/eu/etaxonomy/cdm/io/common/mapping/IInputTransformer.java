@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 
 /**
@@ -54,6 +55,13 @@ public interface IInputTransformer {
 	
 	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException;
  
+	
+	//SpecimenTypeDesignationStatus
+	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException;
+		
+	public UUID getSpecimenTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException;
+		
+	
 	//Presence Term
 	public PresenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException;
 
