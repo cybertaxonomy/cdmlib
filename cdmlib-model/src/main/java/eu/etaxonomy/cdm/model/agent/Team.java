@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.agent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -36,7 +35,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -286,6 +284,7 @@ public class Team extends TeamOrPersonBase<Team> {
 			result = generateTitle();
 			result = replaceEmptyTitleByNomTitle(result);
 			result = getTruncatedCache(result);
+			this.titleCache = result;
 		}
 		isGeneratingTitleCache = false;
 		return result;
