@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -33,9 +34,14 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -74,6 +80,11 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String BARCODE_COLUMN = "Barcode";
 	private static final String COLLECTION_CODE_COLUMN = "CollectionCode";
 	private static final String COLLECTION_COLUMN = "Collection";
+	
+	private static final String TYPE_CATEGORY_COLUMN = "TypeCategory";
+	private static final String TYPIFIED_NAME_COLUMN = "TypifiedName";
+	
+	
 	private static final String SOURCE_COLUMN = "Source";
 	private static final String ID_IN_SOURCE_COLUMN = "IdInSource";
 	
@@ -178,6 +189,12 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			} else if(key.equalsIgnoreCase(COLLECTION_COLUMN)) {
 				row.setCollection(value);		
 			
+			} else if(key.equalsIgnoreCase(TYPE_CATEGORY_COLUMN)) {
+				row.putTypeCategory(index, getSpecimenTypeStatus(state, value));	
+			} else if(key.equalsIgnoreCase(TYPIFIED_NAME_COLUMN)) {
+				row.putTypifiedName(index, getTaxonName(state, value));		
+			
+			
 			} else if(key.equalsIgnoreCase(SOURCE_COLUMN)) {
 				row.putSourceReference(index, getOrMakeReference(state, value));	
 			} else if(key.equalsIgnoreCase(ID_IN_SOURCE_COLUMN)) {
@@ -225,13 +242,18 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		for (IdentifiableSource source : row.getSources()){
 			facade.addSource(source);
 		}
+		for (SpecimenTypeDesignation designation : row.getTypeDesignations()){
+			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
+		}
+		
+		
 		
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
 		return true;
 	}
 
-	private AgentBase getOrMakeAgent(SpecimenCdmExcelImportState state, List<String> agents) {
+	private AgentBase<?> getOrMakeAgent(SpecimenCdmExcelImportState state, List<String> agents) {
 		if (agents.size() == 0){
 			return null;
 		}else if (agents.size() == 1){
@@ -287,8 +309,48 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			state.putCollection(collectionCode, result);
 		}
 		return result;
+	}
+	
+
+	private TaxonNameBase<?, ?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
+		TaxonNameBase result = null;
+		result = state.getName(name);
+		if (result != null){
+			return result;
+		}
+		List<TaxonNameBase> list = getNameService().findNamesByTitle(name);
+		//TODO better strategy to find best name, e.g. depending on the classification it is used in
+		if (! list.isEmpty()){
+			result = list.get(0);
+		}
+		if (result == null){
+			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
+			result = parser.parseFullName(name, code, null);
+			
+		}
+		if (result != null){
+			state.putName(name, result);
+		}
+		return result;
+	}
+
+	private SpecimenTypeDesignationStatus getSpecimenTypeStatus(SpecimenCdmExcelImportState state, String key)  {
+		SpecimenTypeDesignationStatus result = null;
+		try {
+			result = state.getTransformer().getSpecimenTypeDesignationStatusByKey(key);
+			if (result == null){
+				String message = "Type status not recognized for %s %d";
+				message = String.format(message, key, state.getCurrentLine());
+			}
+			return result;
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException("getSpecimenTypeDesignationStatusByKey not yet implemented");
+		}
+		
 		
 	}
+
 
 	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		try {

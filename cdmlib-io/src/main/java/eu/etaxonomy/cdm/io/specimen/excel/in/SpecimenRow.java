@@ -17,6 +17,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -55,8 +58,12 @@ public class SpecimenRow {
 	private String referenceSystem;
 	private String errorRadius;
 	
+	
 	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
 	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
+	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
+	
+	
 	
 
 	
@@ -390,6 +397,8 @@ public class SpecimenRow {
 		return getOrdered(collectors);
 	}
 	
+	
+	
 	/**
 	 * @param key
 	 * @return
@@ -402,6 +411,33 @@ public class SpecimenRow {
 		}
 		return source;
 	}
+	
+
+	public void putTypeCategory(int key, SpecimenTypeDesignationStatus status){
+		SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
+		designation.setTypeStatus(status);
+	}
+	public void putTypifiedName(int key, TaxonNameBase<?,?> name){
+		if (name != null){
+			SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
+			name.addTypeDesignation(designation, false);
+		}
+	}
+
+	public List<SpecimenTypeDesignation> getTypeDesignations() {
+		return getOrdered(types);
+	}
+
+
+	private SpecimenTypeDesignation getOrMakeTypeDesignation(int key) {
+		SpecimenTypeDesignation designation = types.get(key);
+		if (designation == null){
+			designation = SpecimenTypeDesignation.NewInstance();
+			types.put(key, designation);
+		}
+		return designation;
+	}
+	
 	
 	private<T extends Object> List<T> getOrdered(TreeMap<Integer, T> tree) {
 		List<T> result = new ArrayList<T>();

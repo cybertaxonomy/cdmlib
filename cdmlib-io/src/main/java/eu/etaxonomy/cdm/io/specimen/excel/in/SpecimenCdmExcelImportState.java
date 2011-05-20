@@ -16,9 +16,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -37,6 +37,8 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	private Map<String, Person> persons = new HashMap<String, Person>();
 	private Map<String, Team> teams = new HashMap<String, Team>();
+	private Map<String, TaxonNameBase<?, ?>> names = new HashMap<String, TaxonNameBase<?,?>>();
+	
 	
 	public SpecimenCdmExcelImportState(SpecimenCdmExcelImportConfigurator config) {
 		super(config);
@@ -81,6 +83,15 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	public Team putTeam(String key, Team value){
 		return this.teams.put(key, value);
 	}
+
+	public TaxonNameBase getName(String key) {
+		return names.get(key);
+	}
+	
+	public TaxonNameBase putName(String key, TaxonNameBase value){
+		return this.names.put(key, value);
+	}
+	
 
 
 }

@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
@@ -24,17 +26,14 @@ public final class SpecimenCdmExcelTransformer extends InputTransformerBase {
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelTransformer.class);
 	
 	//Languages
-
 	
-//	@Override
-//	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException {
-//		if (CdmUtils.isEmpty(key)){return null;
-//		
-//		}else if (key.equalsIgnoreCase("Kinyarwanda")){return uuidKinyarwanda;
-//		}else{
-//			return null;
-//		}
-//	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getMarkerTypeByKey(java.lang.String)
+	 */
+	@Override
+	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
+		return super.getSpecimenTypeDesignationStatusByKey(key);
+	}
 	
 	
 	
