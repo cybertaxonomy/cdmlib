@@ -159,10 +159,10 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 		if (this.typeSpecimen != null){
 			this.typeSpecimen.removeSpecimenTypeDesignation(this);
 		}
-		this.typeSpecimen = typeSpecimen;
 		if (typeSpecimen != null && ! typeSpecimen.getSpecimenTypeDesignations().contains(this)){
 			typeSpecimen.addSpecimenTypeDesignation(this);
 		}
+		this.typeSpecimen = typeSpecimen;
 	}
 
 	/* (non-Javadoc)

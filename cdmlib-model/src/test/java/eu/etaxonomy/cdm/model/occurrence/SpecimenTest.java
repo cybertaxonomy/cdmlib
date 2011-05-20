@@ -127,8 +127,12 @@ public class SpecimenTest {
 		
 		desig1.setTypeSpecimen(null);
 		Assert.assertEquals("Desig1 should not have a specimen anymore", null, desig1.getTypeSpecimen());
-		Assert.assertEquals("Specimen1 should have no designation", 1, specimen.getSpecimenTypeDesignations().size());
+		Assert.assertEquals("Specimen1 should have 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
 		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen.getSpecimenTypeDesignations().iterator().next());
+		
+		desig1.setTypeSpecimen(specimen);
+		Assert.assertEquals("Desig1 should have specimen1 as specimen again", specimen, desig1.getTypeSpecimen());
+		Assert.assertEquals("Specimen1 should have 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
 		
 	}
 	

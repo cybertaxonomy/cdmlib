@@ -70,7 +70,7 @@ public class SpecimenTypeDesignationTest {
 	@Test
 	public void testBidirectionalRelationship(){
 		term2 = new SpecimenTypeDesignation(Specimen.NewInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
-				null, null, null, false);;
+				null, null, null, false);
 		Specimen specimen = (Specimen) term2.getTypeSpecimen();
 		Set<SpecimenTypeDesignation> set = specimen.getSpecimenTypeDesignations();
 		boolean contains = false;
