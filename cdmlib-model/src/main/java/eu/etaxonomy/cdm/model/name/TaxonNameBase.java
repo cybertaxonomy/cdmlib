@@ -166,7 +166,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	//TODO @Cascade({CascadeType.DELETE_ORPHAN})
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
 	private Set<TypeDesignationBase<?>> typeDesignations = new HashSet<TypeDesignationBase<?>>();
