@@ -237,9 +237,26 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	}
 	
 	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
+		if (specimenTypeDesignation.getTypeSpecimen() == this){
+			return ;
+		}else if (specimenTypeDesignation.getTypeSpecimen() != null){
+			specimenTypeDesignation.getTypeSpecimen().removeSpecimenTypeDesignation(specimenTypeDesignation);
+			
+		}
 		specimenTypeDesignations.add(specimenTypeDesignation);
+		specimenTypeDesignation.setTypeSpecimen(this);
 	}
 	
+	public void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
+		if (specimenTypeDesignation == null){
+			return;
+		}
+		if (specimenTypeDesignations.contains(specimenTypeDesignation)){
+			specimenTypeDesignations.remove(specimenTypeDesignation);
+			specimenTypeDesignation.setTypeSpecimen(null);
+		}
+	}
+		
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		return specimenTypeDesignations;
 	}

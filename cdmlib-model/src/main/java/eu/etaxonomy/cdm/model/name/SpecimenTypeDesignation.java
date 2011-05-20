@@ -148,12 +148,21 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	public DerivedUnitBase getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
+	
 	/**
 	 * @see  #getTypeSpecimen()
 	 */
 	public void setTypeSpecimen(DerivedUnitBase typeSpecimen){
+		if (this.typeSpecimen == typeSpecimen){
+			return;
+		}
+		if (this.typeSpecimen != null){
+			this.typeSpecimen.removeSpecimenTypeDesignation(this);
+		}
 		this.typeSpecimen = typeSpecimen;
-		typeSpecimen.addSpecimenTypeDesignation(this);
+		if (typeSpecimen != null && ! typeSpecimen.getSpecimenTypeDesignations().contains(this)){
+			typeSpecimen.addSpecimenTypeDesignation(this);
+		}
 	}
 
 	/* (non-Javadoc)

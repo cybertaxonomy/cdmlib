@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
@@ -92,6 +94,44 @@ public class SpecimenTest {
 		assertSame(preservation, specimen.getPreservation());
 		specimen.setPreservation(null);
 	}
+	
+	@Test
+	public void testBidirectionalTypeDesignation(){
+		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
+		SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();
+		Specimen specimen2 = Specimen.NewInstance();
+		
+		specimen.addSpecimenTypeDesignation(desig1);
+		Assert.assertEquals("Specimen1 should be the designations specimen", specimen, desig1.getTypeSpecimen());
+		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
+		Assert.assertEquals("specimen1's designation should be desig1", desig1, specimen.getSpecimenTypeDesignations().iterator().next());
+		
+		specimen.addSpecimenTypeDesignation(desig2);
+		Assert.assertEquals("Specimen1 should be the desig2's specimen", specimen, desig2.getTypeSpecimen());
+		Assert.assertEquals("specimen1 should have exactly 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
+		
+		specimen2.addSpecimenTypeDesignation(desig2);
+		Assert.assertEquals("Specimen2 should have replaced specimen1 as desig2's specimen", specimen2, desig2.getTypeSpecimen());
+		Assert.assertEquals("Specimen2 should have exactly 1 designation", 1, specimen2.getSpecimenTypeDesignations().size());
+		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen2.getSpecimenTypeDesignations().iterator().next());
+		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
+		
+		specimen2.removeSpecimenTypeDesignation(desig2);
+		Assert.assertEquals("Desig2 should not have a specimen anymore", null, desig2.getTypeSpecimen());
+		Assert.assertEquals("Specimen2 should have no designation", 0, specimen2.getSpecimenTypeDesignations().size());
+		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
+		
+		specimen.addSpecimenTypeDesignation(desig2);
+		Assert.assertEquals("Specimen1 should be the desig2's specimen", specimen, desig2.getTypeSpecimen());
+		Assert.assertEquals("specimen1 should have exactly 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
+		
+		desig1.setTypeSpecimen(null);
+		Assert.assertEquals("Desig1 should not have a specimen anymore", null, desig1.getTypeSpecimen());
+		Assert.assertEquals("Specimen1 should have no designation", 1, specimen.getSpecimenTypeDesignations().size());
+		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen.getSpecimenTypeDesignations().iterator().next());
+		
+	}
+	
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#clone()}.
@@ -149,7 +189,6 @@ public class SpecimenTest {
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setCollection(collection);
-		specimen.setCollectorsNumber(collectorsNumber);
 		specimen.setCreated(created);
 //		specimen.setCreatedBy(createdBy);
 		specimen.setDerivedFrom(derivedFrom);
@@ -167,7 +206,7 @@ public class SpecimenTest {
 		specimen.setUuid(uuid);
 		
 		specimen.addAnnotation(annotation);
-		specimen.addDefinition(definition, Language.DEFAULT());
+		specimen.putDefinition(Language.DEFAULT(), definition);
 		specimen.addDerivationEvent(derivationEvent);
 		specimen.addDescription(description);
 		specimen.addDetermination(determination);
@@ -197,7 +236,6 @@ public class SpecimenTest {
 		assertEquals(accessionNumber, specimenClone.getAccessionNumber());
 		assertEquals(catalogNumber, specimenClone.getCatalogNumber());
 		assertEquals(collection, specimenClone.getCollection());
-		assertEquals(collectorsNumber, specimenClone.getCollectorsNumber());
 		assertEquals(derivedFrom, specimenClone.getDerivedFrom());
 		assertEquals(lifeStage, specimenClone.getLifeStage());
 		assertEquals(lsid, specimenClone.getLsid());
