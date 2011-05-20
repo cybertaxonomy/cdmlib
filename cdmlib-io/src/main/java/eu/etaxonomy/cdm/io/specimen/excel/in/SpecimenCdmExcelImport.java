@@ -24,12 +24,18 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -67,6 +73,10 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String ACCESSION_NUMBER_COLUMN = "AccessionNumber";
 	private static final String BARCODE_COLUMN = "Barcode";
 	private static final String COLLECTION_CODE_COLUMN = "CollectionCode";
+	private static final String COLLECTION_COLUMN = "Collection";
+	private static final String SOURCE_COLUMN = "Source";
+	private static final String ID_IN_SOURCE_COLUMN = "IdInSource";
+	
 	
 	private static final String SPECIFIC_EPITHET_COLUMN = "SpecificEpithet";
 	private static final String FAMILY_COLUMN = "Family";
@@ -88,13 +98,14 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
     	state.setSpecimenRow(row);
     	
     	for (String originalKey: keys) {
+    		Integer index = 0;
     		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
     		String[] split = indexedKey.split("_");
     		String key = split[0];
     		if (split.length > 1){
-    			String indexString = split[1];
+    			String indexString = split[split.length - 1];
     			try {
-    				Integer.valueOf(indexString);
+    				index = Integer.valueOf(indexString);
 				} catch (NumberFormatException e) {
 					String message = "Index must be integer";
 					logger.error(message);
@@ -126,17 +137,19 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			} else if(key.equalsIgnoreCase(ABSOLUTE_ELEVATION_COLUMN)) {
 				row.setAbsoluteElevation(value);		
 			} else if(key.equalsIgnoreCase(COLLECTOR_COLUMN)) {
-				row.setCollector(value);		
+				row.putCollector(index, value);		
 			} else if(key.equalsIgnoreCase(ECOLOGY_COLUMN)) {
 				row.setEcology(value);
 			} else if(key.equalsIgnoreCase(PLANT_DESCRIPTION_COLUMN)) {
-				row.setCollector(value);		
+				row.setPlantDescription(value);		
 			} else if(key.equalsIgnoreCase(SEX_COLUMN)) {
 				row.setSex(value);
 			} else if(key.equalsIgnoreCase(COLLECTION_DATE_COLUMN)) {
 				row.setCollectingDate(value);		
 			} else if(key.equalsIgnoreCase(COLLECTION_DATE_END_COLUMN)) {
 				row.setCollectingDateEnd(value);		
+			} else if(key.equalsIgnoreCase(COLLECTOR_COLUMN)) {
+				row.putCollector(index, value);	
 			} else if(key.equalsIgnoreCase(COLLECTORS_NUMBER_COLUMN)) {
 				row.setCollectorsNumber(value);		
 			} else if(key.equalsIgnoreCase(LONGITUDE_COLUMN)) {
@@ -162,14 +175,20 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 				row.setSpecificEpithet(value);		
 			} else if(key.equalsIgnoreCase(COLLECTION_CODE_COLUMN)) {
 				row.setCollectionCode(value);		
-			} else {
+			} else if(key.equalsIgnoreCase(COLLECTION_COLUMN)) {
+				row.setCollection(value);		
+			
+			} else if(key.equalsIgnoreCase(SOURCE_COLUMN)) {
+				row.putSourceReference(index, getOrMakeReference(state, value));	
+			} else if(key.equalsIgnoreCase(ID_IN_SOURCE_COLUMN)) {
+				row.putIdInSource(index, value);		
+			}else {
 				success = false;
 				logger.error("Unexpected column header " + key);
 			}
     	}
     	return success;
 	}
-
 
 	@Override
 	protected boolean firstPass(SpecimenCdmExcelImportState state) {
@@ -196,19 +215,80 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		facade.setPlantDescription(row.getPlantDescription());
 //		facade.setSex(row.get)
 		handleExactLocation(facade, row, state);
+		facade.setCollector(getOrMakeAgent(state, row.getCollectors()));
 		
 		
 		//derivedUnit
 		facade.setBarcode(row.getBarcode());
 		facade.setAccessionNumber(row.getAccessionNumber());
-		Reference<?> source = getSource(row);
-		facade.innerDerivedUnit().addSource(row.getSourceId(), null, source, null);
+		facade.setCollection(getOrMakeCollection(state, row.getCollectionCode(), row.getCollection()));
+		for (IdentifiableSource source : row.getSources()){
+			facade.addSource(source);
+		}
 		
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
 		return true;
 	}
 
+	private AgentBase getOrMakeAgent(SpecimenCdmExcelImportState state, List<String> agents) {
+		if (agents.size() == 0){
+			return null;
+		}else if (agents.size() == 1){
+			return getOrMakePerson(state, agents.get(0));
+		}else{
+			return getOrMakeTeam(state, agents);
+		}
+	}
+
+	private Team getOrMakeTeam(SpecimenCdmExcelImportState state, List<String> agents) {
+		String key = CdmUtils.concat("_", agents.toArray(new String[0]));
+		
+		Team result = state.getTeam(key);
+		if (result == null){
+			result = Team.NewInstance();
+			for (String member : agents){
+				Person person = getOrMakePerson(state, member);
+				result.addTeamMember(person);
+			}
+			state.putTeam(key, result);
+		}
+		return result;
+	}
+
+	private Person getOrMakePerson(SpecimenCdmExcelImportState state, String value) {
+		Person result = state.getPerson(value);
+		if (result == null){
+			result = Person.NewInstance();
+			result.setTitleCache(value, true);
+			state.putPerson(value, result);
+		}
+		return result;
+	}
+
+	private Reference<?> getOrMakeReference(SpecimenCdmExcelImportState state, String value) {
+		Reference<?> result = state.getReference(value);
+		if (result == null){
+			result = ReferenceFactory.newGeneric();
+			result.setTitleCache(value, true);
+			state.putReference(value, result);
+		}
+		return result;
+	}
+
+
+
+	private Collection getOrMakeCollection(SpecimenCdmExcelImportState state, String collectionCode, String collectionString) {
+		Collection result = state.getCollection(collectionCode);
+		if (result == null){
+			result = Collection.NewInstance();
+			result.setCode(collectionCode);
+			result.setName(collectionString);
+			state.putCollection(collectionCode, result);
+		}
+		return result;
+		
+	}
 
 	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		try {
@@ -252,10 +332,6 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		
 	}
 
-	//	TODO
-	private Reference<?> getSource(SpecimenRow row) {
-		return null;
-	}
 
 	/*
 	 * Set the current Country

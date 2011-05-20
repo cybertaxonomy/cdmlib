@@ -100,10 +100,10 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 			File file = new File(filePath);
 			FileOutputStream myOut = new FileOutputStream(file);
 			System.out.println(file.getAbsolutePath());
-			printDataSet(myOut, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+			printDataSet(myOut, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent","OriginalSourceBase",
+					"Reference","Collection","AgentBase"});
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Assert.fail(e.getLocalizedMessage());
 		}
 		
 	}

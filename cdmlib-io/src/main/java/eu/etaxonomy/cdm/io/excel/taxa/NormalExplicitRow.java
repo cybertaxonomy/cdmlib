@@ -208,9 +208,9 @@ public class NormalExplicitRow {
 		return getOrdered(images);
 	}
 
-	private List<String> getOrdered(TreeMap<Integer, String> distributions) {
+	private List<String> getOrdered(TreeMap<Integer, String> tree) {
 		List<String> result = new ArrayList<String>();
-		for (String distribution : distributions.values()){
+		for (String distribution : tree.values()){
 			result.add(distribution);
 		}
 		return result;

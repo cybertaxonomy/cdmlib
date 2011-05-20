@@ -9,12 +9,15 @@
 
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -41,24 +44,21 @@ public class SpecimenRow {
 	private String family;
 	private String genus;
 	private String specificEpithet;
-	private String collector;
 	private String sex;
 	private String ecology;
 	private String plantDescription;
 	private String collectionCode;
+	private String collection;
 	private String collectingDate;
 	private String collectingDateEnd;
 	private String collectorsNumber;
-	private String sourceId;
-	private String source;
 	private String referenceSystem;
 	private String errorRadius;
 	
+	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
+	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
 	
-//	private Map<String, List<String>> commonNames = new HashMap<String, List<String>>();
 
-
-	
 	
 	public SpecimenRow() {
 
@@ -234,22 +234,6 @@ public class SpecimenRow {
 
 
 	/**
-	 * @return the collector
-	 */
-	public String getCollector() {
-		return collector;
-	}
-
-
-	/**
-	 * @param collector the collector to set
-	 */
-	public void setCollector(String collector) {
-		this.collector = collector;
-	}
-
-
-	/**
 	 * @return the ecology
 	 */
 	public String getEcology() {
@@ -385,35 +369,48 @@ public class SpecimenRow {
 	}
 
 
-	public String getSourceId() {
-		return this.sourceId;
+	public void putIdInSource(int key, String id){
+		IdentifiableSource source = getOrMakeSource(key);
+		source.setIdInSource(id);
+	}
+	public void putSourceReference(int key, Reference<?> reference){
+		IdentifiableSource source = getOrMakeSource(key);
+		source.setCitation(reference);
 	}
 
+	public List<IdentifiableSource> getSources() {
+		return getOrdered(sources);
+	}
 
+	public void putCollector(int key, String collector){
+		this.collectors.put(key, collector);
+	}
+
+	public List<String> getCollectors() {
+		return getOrdered(collectors);
+	}
+	
 	/**
-	 * @return the source
+	 * @param key
+	 * @return
 	 */
-	public String getSource() {
+	private IdentifiableSource getOrMakeSource(int key) {
+		IdentifiableSource  source = sources.get(key);
+		if (source == null){
+			source = IdentifiableSource.NewInstance();
+			sources.put(key, source);
+		}
 		return source;
 	}
-
-
-	/**
-	 * @param source the source to set
-	 */
-	public void setSource(String source) {
-		this.source = source;
+	
+	private<T extends Object> List<T> getOrdered(TreeMap<Integer, T> tree) {
+		List<T> result = new ArrayList<T>();
+		for (T value : tree.values()){
+			result.add(value);
+		}
+		return result;
 	}
-
-
-	/**
-	 * @param sourceId the sourceId to set
-	 */
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
-	}
-
-
+	
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
@@ -455,6 +452,15 @@ public class SpecimenRow {
 		this.errorRadius = errorRadius;
 	}
 
+
+	public void setCollection(String collection) {
+		this.collection = collection;
+	}
+
+
+	public String getCollection() {
+		return collection;
+	}
 	
 	
 
