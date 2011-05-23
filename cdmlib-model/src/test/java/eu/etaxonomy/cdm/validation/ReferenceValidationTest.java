@@ -20,7 +20,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import junit.framework.Assert;
@@ -36,6 +38,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
@@ -46,10 +49,11 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+
 
 /**
  * 
@@ -57,19 +61,22 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 @SuppressWarnings("unused")
-@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
-public class ReferenceValidationTest extends CdmIntegrationTest {
+//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+public class ReferenceValidationTest  {
 	private static final Logger logger = Logger.getLogger(ReferenceValidationTest.class);
 	
-	@SpringBeanByType
+	
 	private Validator validator;
 	
 	private IBook book;
-	ReferenceFactory refFactory;
+	
 	@Before
 	public void setUp() {
-		refFactory = ReferenceFactory.newInstance();
-		book = refFactory.newBook();
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		validator = validatorFactory.getValidator();
+		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
 	}
 	
@@ -81,7 +88,7 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testLevel2ValidationWithValidBook() {
-        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
+        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class, Default.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
@@ -110,14 +117,40 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
-	@Test
+	/*@Test
 	public final void testLevel2ValidationWithInValidUri() {
 		try {
-			book.setUri(new URI("http://www.e-\taxonomy.eu"));
+			book.setUri(new URI("http://java-tutor.com/index.html"));
 		} catch (URISyntaxException e) {
 			Assert.fail("URI is not valid");	
 		}
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
-        assertFalse("There should be a constraint violation as this book has an invalid URI",constraintViolations.isEmpty());
+        assertTrue("There should be a constraint violation as this book has an invalid URI",constraintViolations.isEmpty());
 	}
+	*/
+	@Test
+	public final void testLevel2ValidationWithInValidInReference() {
+		
+		IBookSection bookSection = ReferenceFactory.newBookSection();
+		bookSection.setTitleCache("test", true);
+		bookSection.setTitle("");
+		bookSection.setInReference((Reference)book);
+		Set<ConstraintViolation<IBookSection>> constraintViolations  = validator.validate(bookSection, Level2.class);
+		//assertTrue("There should be no constraint violation as this book has a valid Ref",constraintViolations.isEmpty());
+		System.err.println("nr of violations " + constraintViolations.size() );
+        for (ConstraintViolation conViol: constraintViolations){
+        	System.err.println(conViol.getMessage() + " - "+conViol.getPropertyPath() + " - " + conViol.getInvalidValue());
+        }
+        Reference article = ReferenceFactory.newArticle();
+        article.setTitleCache("article");
+		bookSection.setInReference(ReferenceFactory.newArticle());
+        constraintViolations  = validator.validate(bookSection, Level2.class);
+        assertFalse("There should be a constraint violation as this book has an invalid inReference",constraintViolations.isEmpty());
+        System.err.println("nr of violations " + constraintViolations.size() );
+        for (ConstraintViolation conViol: constraintViolations){
+        	System.err.println(conViol.getMessage() + " - "+conViol.getPropertyPath() + " - " + conViol.getInvalidValue());
+        }
+        
+	}
+	
 }

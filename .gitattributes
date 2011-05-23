@@ -966,6 +966,11 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonName
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/EntityTestBase.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/CorrectEpithetsForRankTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/MustHaveAuthorityTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/NameValidCharactersTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/ReferenceValidationTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAcceptedAndSynonymTest.java -text
 cdmlib-model/src/test/resources/log4j.properties -text
 cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
@@ -1805,11 +1810,6 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegr
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonServices.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/CorrectEpithetsForRankTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/MustHaveAuthorityTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/NameValidCharactersTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ReferenceValidationTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAcceptedAndSynonymTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetDerivedUnitImageGallery-result.xml -text

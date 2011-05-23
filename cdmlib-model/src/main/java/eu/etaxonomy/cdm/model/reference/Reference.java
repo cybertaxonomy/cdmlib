@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -63,6 +64,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import eu.etaxonomy.cdm.validation.annotation.InReference;
 
 /**
  * The upmost (abstract) class for references (information sources). 
@@ -109,7 +111,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-//@InReference(groups = Level2.class)
+@InReference(groups = Level2.class)
 //public abstract class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
 public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
@@ -125,7 +127,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Lob
 	@Field(index=Index.TOKENIZED)
 	@Match(MatchMode.EQUAL_REQUIRED)
-	@NullOrNotEmpty
+	@NullOrNotEmpty(groups = Level2.class)
 	@Length(max = 4096)
 	private String title;
 	
@@ -224,7 +226,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    //@InReference(groups=Level2.class)
+    @InReference(groups=Level2.class)
    	protected Reference inReference;
     
 //    @XmlElement(name = "FullReference")
@@ -260,13 +262,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Length(max = 65536)
 	private String referenceAbstract;  //abstract is a reserved term in Java
 	
+	
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@NullOrNotEmpty
-	@Length(max = 255)
-	//TODO still needed since it is a java.net.URI now??
-	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
+	
 	@Type(type="uriUserType")
 	private URI uri;
 	

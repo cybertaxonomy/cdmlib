@@ -14,7 +14,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -22,13 +24,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though 
@@ -39,11 +42,11 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author ben.clark
  *
  */
-@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
-public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest {
+//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+public class TaxonNameCannotBeAcceptedAndSynonymTest{
 	private static final Logger logger = Logger.getLogger(TaxonNameCannotBeAcceptedAndSynonymTest.class);
 	
-	@SpringBeanByType
+	
 	private Validator validator;
 	
 	private BotanicalName name1;
@@ -57,6 +60,10 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
 	
 	@Before
 	public void setUp() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		validator = validatorFactory.getValidator();
 		name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name2 = BotanicalName.NewInstance(Rank.SPECIES());
 		name3 = BotanicalName.NewInstance(Rank.SPECIES());

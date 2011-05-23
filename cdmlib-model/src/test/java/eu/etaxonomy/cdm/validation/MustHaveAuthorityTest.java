@@ -18,7 +18,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import junit.framework.Assert;
@@ -31,10 +33,11 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though 
@@ -45,17 +48,20 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author ben.clark
  *
  */
-@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
-public class MustHaveAuthorityTest extends CdmIntegrationTest {
+//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+public class MustHaveAuthorityTest  {
 	private static final Logger logger = Logger.getLogger(MustHaveAuthorityTest.class);
 	
-	@SpringBeanByType
 	private Validator validator;
 	
 	private BotanicalName name;
 	
 	@Before
 	public void setUp() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		validator = validatorFactory.getValidator();
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setGenusOrUninomial("Aus");

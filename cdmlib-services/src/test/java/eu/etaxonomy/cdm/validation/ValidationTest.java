@@ -18,7 +18,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import junit.framework.Assert;
@@ -27,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -34,6 +37,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
@@ -57,7 +61,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 @SuppressWarnings("unused")
-@Ignore //FIXME ignoring just for today 9.6.2010 a.kohlbecker !!!!!!!!!!!!!!!!!!!!!
+//@Ignore //FIXME ignoring just for today 9.6.2010 a.kohlbecker !!!!!!!!!!!!!!!!!!!!!
 public class ValidationTest extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(ValidationTest.class);
 	
@@ -68,6 +72,10 @@ public class ValidationTest extends CdmIntegrationTest {
 	
 	@Before
 	public void setUp() {
+		/*DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		validator = validatorFactory.getValidator();*/
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 	}
 	
@@ -169,7 +177,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setTitleCache("Abies alba Mill.", true);
 		name.setFullTitleCache("Abies alba Mill.");
 		name.setNomenclaturalReference(null);
-		name.setNomenclaturalMicroReference(null);
+		//name.setNomenclaturalMicroReference(" ");
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default and second level",constraintViolations.isEmpty());
