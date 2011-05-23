@@ -20,6 +20,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -166,7 +168,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+//	@JoinTable(
+//        name="TypeDesignationBase_TaxonNameBase",
+//        joinColumns=@JoinColumn(name="typifiednames_id"),
+//        inverseJoinColumns=@javax.persistence.JoinColumn(name="TypeDesignationBase_id")
+//    )
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
 	private Set<TypeDesignationBase<?>> typeDesignations = new HashSet<TypeDesignationBase<?>>();
 
