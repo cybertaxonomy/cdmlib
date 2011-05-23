@@ -815,16 +815,19 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserHisto
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level2.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/ValidationException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/BasionymsMustShareEpithetsAndAuthors.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustBeLowerRankThanParent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustDeriveNameFromParent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustNotSkipRanks.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/CorrectEpithetsForRank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/HomotypicSynonymsShouldBelongToGroup.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/InReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/MustHaveAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NamesWithHomotypicRelationshipsMustBelongToSameGroup.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoDuplicateNames.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NullOrNotEmpty.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ReferenceCheck.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/TaxonNameCannotBeAcceptedAndSynonym.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/BasionymsMustShareEpithetsAndAuthorsValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustBeLowerRankThanParentValidator.java -text
@@ -835,6 +838,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/HomotypicSynon
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/MustHaveAuthorityValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NullOrNotEmptyValidator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ReferenceCheckValidation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/StubValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/TaxonNameCannotBeAcceptedAndSynonymValidator.java -text
 cdmlib-model/src/main/resources/ValidationMessages.properties -text
