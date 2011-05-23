@@ -33,6 +33,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -68,6 +69,9 @@ public class ValidationTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private Validator validator;
 	
+	@SpringBeanByType
+	private ITermService termService;
+
 	private BotanicalName name;
 	
 	@Before
@@ -76,7 +80,9 @@ public class ValidationTest extends CdmIntegrationTest {
 		vocabularyStore.initialize();
 		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 		validator = validatorFactory.getValidator();*/
-		name = BotanicalName.NewInstance(Rank.SPECIES());
+		
+		Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
+		name = BotanicalName.NewInstance(speciesRank);
 	}
 	
 	

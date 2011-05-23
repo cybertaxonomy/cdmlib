@@ -37,7 +37,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	private ITaxonService service;
 	
 	@SpringBeanByType
-	private INameService nameService;
+	private ITermService termService;
 	
 /****************** TESTS *****************************/
 	
@@ -120,8 +120,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public final void testMakeTaxonSynonym() {
-		Rank rank = Rank.SPECIES();
-		HomotypicalGroup group = HomotypicalGroup.NewInstance();
+		Rank rank = (Rank)termService.find(Rank.uuidSpecies);
 		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
 		tax1.addHomotypicSynonym(synonym, null, null);
