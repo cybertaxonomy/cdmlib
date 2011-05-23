@@ -120,6 +120,7 @@ public class InputTransformerBase implements IInputTransformer {
 	 */
 	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.matches("(?i)(T|Type)")){return SpecimenTypeDesignationStatus.TYPE();
 		}else if (key.matches("(?i)(HT|Holotype)")){return SpecimenTypeDesignationStatus.HOLOTYPE();
 		}else if (key.matches("(?i)(LT|Lectotype)")){return SpecimenTypeDesignationStatus.LECTOTYPE();
 		}else if (key.matches("(?i)(NT|Neotype)")){return SpecimenTypeDesignationStatus.NEOTYPE();
