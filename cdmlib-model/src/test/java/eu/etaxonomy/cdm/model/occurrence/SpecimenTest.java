@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.lsid.MalformedLSIDException;
@@ -152,7 +151,6 @@ public class SpecimenTest {
 		String catalogNumber = "catNumber";
 		Collection collection = Collection.NewInstance();
 		collection.setCode("code");
-		String collectorsNumber = "collNumber";
 		DateTime created = new DateTime();
 		Person createdBy = Person.NewTitledInstance("creator");
 		DerivationEvent derivedFrom = DerivationEvent.NewInstance();
