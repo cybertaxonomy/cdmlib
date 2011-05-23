@@ -835,6 +835,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustD
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustNotSkipRanksValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/CorrectEpithetsForRankValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/HomotypicSynonymsShouldBelongToGroupValidator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/InReferenceValidation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/MustHaveAuthorityValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NullOrNotEmptyValidator.java -text
