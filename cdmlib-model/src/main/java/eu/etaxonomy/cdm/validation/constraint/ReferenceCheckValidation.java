@@ -12,7 +12,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 public class ReferenceCheckValidation implements
 ConstraintValidator<ReferenceCheck, Reference>{
 	
-	@Override
+	//@Override
 	public boolean isValid(Reference value,
 			ConstraintValidatorContext constraintValidatorContext) {
 		boolean isValid = true;
@@ -41,7 +41,7 @@ ConstraintValidator<ReferenceCheck, Reference>{
 
 
 
-	@Override
+	//@Override
 	public void initialize(ReferenceCheck constraintAnnotation) {
 		// TODO Auto-generated method stub
 		
