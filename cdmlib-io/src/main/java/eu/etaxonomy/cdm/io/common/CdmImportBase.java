@@ -62,7 +62,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase> extends CdmIoBase<STATE> implements ICdmImport<CONFIG, STATE>{
 	private static Logger logger = Logger.getLogger(CdmImportBase.class);
-	protected static final boolean CREATE = false;
+	
+	protected static final boolean CREATE = true;
+	protected static final boolean IMAGE_GALLERY = true;
 
 	
 	protected Classification makeTree(STATE state, Reference reference){
