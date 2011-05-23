@@ -40,8 +40,11 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	private boolean doAreaLevels = true;
 	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry 
 	private PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
-	private boolean useHexagesimalCoordinates;
 	
+	//if true, determinations are imported also as individualAssociations	
+	private boolean makeIndividualAssociations = true;
+	private boolean firstDeterminationIsStoredUnder = false;
+	private boolean determinationsAreDeterminationEvent = true;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -156,6 +159,37 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	public boolean isDoAreaLevels() {
 		return doAreaLevels;
 	}
+
+	public void setMakeIndividualAssociations(boolean makeIndividualAssociations) {
+		this.makeIndividualAssociations = makeIndividualAssociations;
+	}
+
+	public boolean isMakeIndividualAssociations() {
+		return makeIndividualAssociations;
+	}
+
+	public boolean isFirstDeterminationIsStoredUnder() {
+		return firstDeterminationIsStoredUnder ;
+	}
+
+	/**
+	 * @param firstDeterminationIsStoredUnder the firstDeterminationIsStoredUnder to set
+	 */
+	public void setFirstDeterminationIsStoredUnder(boolean firstDeterminationIsStoredUnder) {
+		this.firstDeterminationIsStoredUnder = firstDeterminationIsStoredUnder;
+	}
+	
+	public boolean isDeterminationsAreDeterminationEvent() {
+		return determinationsAreDeterminationEvent ;
+	}
+
+	/**
+	 * @param determinationsAreDeterminationEvent the determinationsAreDeterminationEvent to set
+	 */
+	public void setDeterminationsAreDeterminationEvent(	boolean determinationsAreDeterminationEvent) {
+		this.determinationsAreDeterminationEvent = determinationsAreDeterminationEvent;
+	}
+
 	
 	
 	

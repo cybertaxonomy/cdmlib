@@ -32,6 +32,7 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportState.class);
 
 	private SpecimenRow specimenRow;
+	private boolean preferNameCache = true;
 
 	private Map<String, Reference<?>> references = new HashMap<String, Reference<?>>();
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
@@ -90,6 +91,17 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	
 	public TaxonNameBase putName(String key, TaxonNameBase value){
 		return this.names.put(key, value);
+	}
+
+	public boolean isPreferNameCache() {
+		return this.preferNameCache;
+	}
+
+	/**
+	 * @param preferNameCache the preferNameCache to set
+	 */
+	public void setPreferNameCache(boolean preferNameCache) {
+		this.preferNameCache = preferNameCache;
 	}
 	
 

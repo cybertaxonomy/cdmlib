@@ -21,26 +21,45 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.DeterminationLight;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
@@ -89,12 +108,19 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String ID_IN_SOURCE_COLUMN = "IdInSource";
 	
 	
-	private static final String SPECIFIC_EPITHET_COLUMN = "SpecificEpithet";
+	private static final String RANK_COLUMN = "Rank";
+	private static final String FULL_NAME_COLUMN = "FullName";
 	private static final String FAMILY_COLUMN = "Family";
 	private static final String GENUS_COLUMN = "Genus";
-	private static final String AUTHOR_COLUMN = "Author";
+	private static final String SPECIFIC_EPITHET_COLUMN = "SpecificEpithet";
+	private static final String INFRASPECIFIC_EPITHET_COLUMN = "InfraSpecificEpithet";
+	private static final String DETERMINATION_AUTHOR_COLUMN = "Author";
+	private static final String DETERMINATION_MODIFIER_COLUMN = "DeterminationModifier";
+	private static final String DETERMINED_BY_COLUMN = "DeterminationBy";
+	private static final String DETERMINED_WHEN_COLUMN = "DeterminationWhen";
+	private static final String DETERMINATION_NOTES_COLUMN = "DeterminationNote";
 	
-
+	
 
 	public SpecimenCdmExcelImport() {
 		super();
@@ -131,7 +157,6 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
     		}else{
     			continue;
     		}
-    		
     		
     		if (key.equalsIgnoreCase(UUID_COLUMN)) {
     			row.setUuid(UUID.fromString(value)); //VALIDATE UUID
@@ -176,14 +201,32 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 				row.setLocality(value);		
 			} else if(key.equalsIgnoreCase(BARCODE_COLUMN)) {
 				row.setBarcode(value);		
-			} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
+			} else if(key.equalsIgnoreCase(DETERMINATION_AUTHOR_COLUMN)) {
 				row.setAuthor(value);		
+			
 			} else if(key.equalsIgnoreCase(FAMILY_COLUMN)) {
-				row.setFamily(value);		
+				row.putDeterminationFamily(index, value);		
 			} else if(key.equalsIgnoreCase(GENUS_COLUMN)) {
-				row.setGenus(value);		
+				row.putDeterminationGenus(index, value);		
 			} else if(key.equalsIgnoreCase(SPECIFIC_EPITHET_COLUMN)) {
-				row.setSpecificEpithet(value);		
+				row.putDeterminationSpeciesEpi(index, value);			
+			} else if(key.equalsIgnoreCase(INFRASPECIFIC_EPITHET_COLUMN)) {
+				row.putDeterminationInfraSpeciesEpi(index, value);			
+			} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
+				row.putDeterminationRank(index, value);			
+			} else if(key.equalsIgnoreCase(FULL_NAME_COLUMN)) {
+				row.putDeterminationFullName(index, value);			
+			} else if(key.equalsIgnoreCase(DETERMINATION_AUTHOR_COLUMN)) {
+				row.putDeterminationAuthor(index, value);			
+			} else if(key.equalsIgnoreCase(DETERMINATION_MODIFIER_COLUMN)) {
+				row.putDeterminationDeterminationModifier(index, value);			
+			} else if(key.equalsIgnoreCase(DETERMINATION_NOTES_COLUMN)) {
+				row.putDeterminationDeterminationNotes(index, value);			
+			} else if(key.equalsIgnoreCase(DETERMINED_BY_COLUMN)) {
+				row.putDeterminationDeterminedBy(index, value);			
+			} else if(key.equalsIgnoreCase(DETERMINED_WHEN_COLUMN)) {
+				row.putDeterminationDeterminedWhen(index, value);			
+			
 			} else if(key.equalsIgnoreCase(COLLECTION_CODE_COLUMN)) {
 				row.setCollectionCode(value);		
 			} else if(key.equalsIgnoreCase(COLLECTION_COLUMN)) {
@@ -245,12 +288,165 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		for (SpecimenTypeDesignation designation : row.getTypeDesignations()){
 			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
 		}
-		
+		boolean isFirstDetermination = true;
+		for (DeterminationLight determinationLight : row.getDetermination()){
+			Taxon taxon = findBestMatchingTaxon(state, determinationLight, true);
+			TaxonNameBase<?,?> name = findBestMatchingName(state, determinationLight);
+			if (state.getConfig().isMakeIndividualAssociations()){
+				IndividualsAssociation indivAssociciation = IndividualsAssociation.NewInstance();
+				indivAssociciation.setAssociatedSpecimenOrObservation(facade.innerDerivedUnit());
+				getTaxonDescription(taxon).addElement(indivAssociciation);
+			}
+			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
+				facade.setStoredUnder(name);
+			}
+			if (state.getConfig().isDeterminationsAreDeterminationEvent()){
+				DeterminationEvent detEvent = makeDeterminationEvent(state, determinationLight, taxon);
+				facade.addDetermination(detEvent);
+			}
+			isFirstDetermination = false;
+		}
 		
 		
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
 		return true;
+	}
+
+	/**
+	 * This method tries to find the best matching taxon depending on the import configuration,
+	 * the taxon name information and the concept information available.
+	 * 
+	 * 
+	 * @param state
+	 * @param determinationLight
+	 * @param createIfNotExists
+	 * @return
+	 */
+	private Taxon findBestMatchingTaxon(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, boolean createIfNotExists) {
+		NonViralName name = makeTaxonName(state, determinationLight);
+		
+		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
+		
+		
+		
+		if (! StringUtils.isBlank(titleCache)){
+			MatchingTaxonConfigurator matchConfigurator = MatchingTaxonConfigurator.NewInstance();
+			matchConfigurator.setTaxonNameTitle(determinationLight.fullName);
+			Taxon taxon = getTaxonService().findBestMatchingTaxon(matchConfigurator);
+		
+			if(taxon == null && createIfNotExists){
+				logger.info("creating new Taxon from TaxonName '" + titleCache+"'");
+				UUID secUuid = null; //TODO
+				Reference sec = null;
+				if (secUuid != null){
+					sec = getReferenceService().find(secUuid);
+				}
+				taxon = Taxon.NewInstance(name, sec);
+			}
+			return taxon;
+		}else {
+			return null;
+		}
+	}
+
+	/**
+	 * @param state
+	 * @param determinationLight
+	 * @param name
+	 * @return
+	 */
+	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state,
+			DeterminationLight determinationLight, NonViralName name) {
+		String titleCache = determinationLight.fullName;
+		if (! state.isPreferNameCache()){
+			String computedTitleCache = name.getTitleCache();
+			if (StringUtils.isBlank(computedTitleCache)){
+				titleCache = computedTitleCache;
+			}
+			
+		}
+		return titleCache;
+	}
+
+	/**
+	 * @param state
+	 * @param determinationLight
+	 * @return
+	 */
+	private NonViralName makeTaxonName(SpecimenCdmExcelImportState state,
+			DeterminationLight determinationLight) {
+		//TODO correct type by config.nc
+		NonViralName name =NonViralName.NewInstance(null);
+		name.setGenusOrUninomial(determinationLight.genus);
+		name.setSpecificEpithet(determinationLight.genus);
+		name.setInfraSpecificEpithet(determinationLight.infraSpeciesEpi);
+		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+		try {
+			name.setRank(Rank.getRankByNameOrAbbreviation(determinationLight.rank, nc, true));
+		} catch (UnknownCdmTypeException e) {
+			String message = "Rank not found: %s: ";
+			message = String.format(message, determinationLight.rank);
+			logger.warn(message);
+		}
+		if (StringUtils.isBlank(name.getInfraSpecificEpithet()) && StringUtils.isNotBlank(name.getSpecificEpithet() )){
+			name.setRank(Rank.SPECIES());
+		}
+		if (StringUtils.isBlank(name.getSpecificEpithet()) && StringUtils.isNotBlank(name.getGenusOrUninomial() )){
+			name.setRank(Rank.SPECIES());
+		}
+		if (StringUtils.isBlank(name.getTitleCache())){
+			//TODO test
+			name.setTitleCache(determinationLight.fullName, true);
+		}
+		return name;
+	}
+
+	private TaxonNameBase findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
+		
+		NonViralName name = makeTaxonName(state, determinationLight);
+		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
+		
+		//TODO
+		List<TaxonNameBase> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT, null, null, null, null, null).getRecords();
+		if (matchingNames.size() > 0){
+			return matchingNames.get(0);
+		} else if (matchingNames.size() > 0){
+			logger.warn("Get best matching taxon name not yet fully implemeted for specimen import");
+			return matchingNames.get(0);
+		}else{
+			return null;	
+		}
+		
+	}
+
+	
+	private DeterminationEvent makeDeterminationEvent(SpecimenCdmExcelImportState state, DeterminationLight determination, Taxon taxon) {
+		DeterminationEvent event = DeterminationEvent.NewInstance();
+		//date
+		TimePeriod date = TimePeriod.parseString(determination.determinedWhen);
+		event.setTimeperiod(date);
+		//by
+		//TODO teams also possible?
+		AgentBase<?> agent = Person.NewTitledInstance(determination.author);
+		event.setActor(agent);
+		
+		//TODO
+		if (StringUtils.isNotBlank(determination.modifier)){
+			logger.warn("DeterminationModifiers not yet implemented for specimen import");
+		}
+//		DeterminationModifier modifier = DeterminationModifier.NewInstance(term, label, labelAbbrev);
+//		determination.modifier;
+		//notes
+		Annotation annotation = Annotation.NewInstance(determination.notes, AnnotationType.EDITORIAL(), Language.DEFAULT());
+		event.addAnnotation(annotation);
+		return event;
+	}
+
+	private TaxonDescription getTaxonDescription(Taxon taxon) {
+		logger.warn("Get taxon description not yet really implemented");
+		TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+		return desc;
 	}
 
 	private AgentBase<?> getOrMakeAgent(SpecimenCdmExcelImportState state, List<String> agents) {
@@ -313,12 +509,12 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	
 
 	private TaxonNameBase<?, ?> getTaxonName(SpecimenCdmExcelImportState state, String name) {
-		TaxonNameBase result = null;
+		TaxonNameBase<?,?> result = null;
 		result = state.getName(name);
 		if (result != null){
 			return result;
 		}
-		List<TaxonNameBase> list = getNameService().findNamesByTitle(name);
+		List<TaxonNameBase<?,?>> list = getNameService().findNamesByTitle(name);
 		//TODO better strategy to find best name, e.g. depending on the classification it is used in
 		if (! list.isEmpty()){
 			result = list.get(0);

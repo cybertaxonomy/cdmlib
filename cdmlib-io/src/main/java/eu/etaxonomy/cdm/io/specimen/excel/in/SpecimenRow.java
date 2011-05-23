@@ -17,9 +17,13 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -44,9 +48,9 @@ public class SpecimenRow {
 	private String barcode;
 	private String author;
 	private String absoluteElevation;
-	private String family;
-	private String genus;
-	private String specificEpithet;
+//	private String family;
+//	private String genus;
+//	private String specificEpithet;
 	private String sex;
 	private String ecology;
 	private String plantDescription;
@@ -62,16 +66,30 @@ public class SpecimenRow {
 	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
 	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
-	
-	
+	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
+
 	
 
 	
 	public SpecimenRow() {
-
-//		commonNames = new HashMap<String, List<String>>();
 	}
 
+	
+	//	may be public if necessary
+	protected class DeterminationLight{
+		String family;
+		String genus;
+		String rank;
+		String fullName;
+		String speciesEpi;
+		String infraSpeciesEpi;
+		String author;
+		String modifier;
+		String determinedBy;
+		String determinedWhen;
+		String notes;
+	}
+	
 	
 // **************************** GETTER / SETTER *********************************/	
 	
@@ -191,53 +209,6 @@ public class SpecimenRow {
 		this.absoluteElevation = absoluteElevation;
 	}
 
-
-	/**
-	 * @return the family
-	 */
-	public String getFamily() {
-		return family;
-	}
-
-
-	/**
-	 * @param family the family to set
-	 */
-	public void setFamily(String family) {
-		this.family = family;
-	}
-
-
-	/**
-	 * @return the genus
-	 */
-	public String getGenus() {
-		return genus;
-	}
-
-
-	/**
-	 * @param genus the genus to set
-	 */
-	public void setGenus(String genus) {
-		this.genus = genus;
-	}
-
-
-	/**
-	 * @return the specificEpithet
-	 */
-	public String getSpecificEpithet() {
-		return specificEpithet;
-	}
-
-
-	/**
-	 * @param specificEpithet the specificEpithet to set
-	 */
-	public void setSpecificEpithet(String specificEpithet) {
-		this.specificEpithet = specificEpithet;
-	}
 
 
 	/**
@@ -438,7 +409,77 @@ public class SpecimenRow {
 		return designation;
 	}
 	
+	public void putDeterminationFamily(int key, String family){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.family = family;
+	}
+
+	public void putDeterminationFullName(int key, String fullName){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.fullName = fullName;
+	}
+
+	public void putDeterminationRank(int key, String rank){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.rank = rank;
+	}
+
+	public void putDeterminationGenus(int key, String genus){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.genus = genus;
+	}
 	
+	public void putDeterminationSpeciesEpi(int key, String speciesEpi){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.speciesEpi = speciesEpi;
+	}
+
+	public void putDeterminationInfraSpeciesEpi(int key, String infraSpeciesEpi){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.infraSpeciesEpi = infraSpeciesEpi;
+	}
+
+	public void putDeterminationAuthor(int key, String author){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.author = author;
+	}
+
+	public void putDeterminationDeterminedBy(int key, String determinedBy){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.determinedBy = determinedBy;
+	}
+
+	public void putDeterminationDeterminedWhen(int key, String determinedWhen){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.determinedWhen = determinedWhen;
+	}
+
+	public void putDeterminationDeterminationNotes(int key, String notes){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.notes = notes;
+	}
+	
+	public void putDeterminationDeterminationModifier(int key, String modifier){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.modifier = modifier;
+	}
+	
+	public List<DeterminationLight> getDetermination() {
+		return getOrdered(determinations);
+	}
+	
+	
+	
+	private DeterminationLight getOrMakeDetermination(int key) {
+		DeterminationLight determination = this.determinations.get(key);
+		if (determination == null){
+			determination = new DeterminationLight();
+			this.determinations.put(key, determination);
+		}
+		return determination;
+	}
+	
+
 	private<T extends Object> List<T> getOrdered(TreeMap<Integer, T> tree) {
 		List<T> result = new ArrayList<T>();
 		for (T value : tree.values()){
