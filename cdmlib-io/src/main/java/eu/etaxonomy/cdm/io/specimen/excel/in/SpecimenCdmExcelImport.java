@@ -340,8 +340,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		try {
 			result = state.getTransformer().getSpecimenTypeDesignationStatusByKey(key);
 			if (result == null){
-				String message = "Type status not recognized for %s %d";
+				String message = "Type status not recognized for %s in line %d";
 				message = String.format(message, key, state.getCurrentLine());
+				logger.warn(message);
 			}
 			return result;
 		} catch (UndefinedTransformerMethodException e) {
