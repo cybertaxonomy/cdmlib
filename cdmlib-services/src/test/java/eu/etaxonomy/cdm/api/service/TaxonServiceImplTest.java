@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -123,7 +124,9 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		Rank rank = (Rank)termService.find(Rank.uuidSpecies);
 		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-		tax1.addHomotypicSynonym(synonym, null, null);
+		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		termService.saveOrUpdate(synonymType);
+		tax1.addSynonym(synonym, synonymType, null, null);
 		UUID uuidTaxon = service.save(tax1);
 		UUID uuidSyn = service.save(synonym);
 		
