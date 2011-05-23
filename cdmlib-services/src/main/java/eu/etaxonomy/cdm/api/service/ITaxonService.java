@@ -16,6 +16,7 @@ import java.util.Set;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -453,6 +454,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public Taxon findBestMatchingTaxon(String taxonName);
+	
+	public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config);
 	
 	public Synonym findBestMatchingSynonym(String taxonName);
 	

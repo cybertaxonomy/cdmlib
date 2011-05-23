@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
@@ -705,40 +707,79 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 */
 	@Override
 	public Taxon findBestMatchingTaxon(String taxonName) {
+		MatchingTaxonConfigurator config = MatchingTaxonConfigurator.NewInstance();
+		config.setTaxonNameTitle(taxonName);
+		return findBestMatchingTaxon(config);
+	}
+	
+	
+	
+	@Override
+	public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config) {
 		
 		Taxon matchedTaxon = null;
 		try{
 			// 1. search for acceptet taxa
-			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
-			for(IdentifiableEntity taxonBaseCandidate : taxonList){
+			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
+			boolean matchesSecUuid = false;
+			boolean isInClassification = false;
+			int countEqualCandidates = 0;
+			for(TaxonBase taxonBaseCandidate : taxonList){
 				if(taxonBaseCandidate instanceof Taxon){
-					matchedTaxon = (Taxon)taxonBaseCandidate;
-					if(taxonList.size() > 1){
-						logger.info(taxonList.size() + " TaxonBases found, using first accepted Taxon: " + matchedTaxon.getTitleCache());
-						return matchedTaxon;
-					} else {
-						logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());
-						return matchedTaxon;
+					Taxon newCanditate = CdmBase.deproxy(taxonBaseCandidate, Taxon.class);
+					boolean candidateMatchesSecUuid = isMatchesSecUuid(newCanditate, config);
+					if (! candidateMatchesSecUuid && config.isOnlyMatchingSecUuid() ){
+						continue;
+					}else if(candidateMatchesSecUuid && ! matchesSecUuid){
+						matchedTaxon = newCanditate;
+						countEqualCandidates = 1;
+						continue;
 					}
-					//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found 
+					
+					boolean candidateInClassification = isInClassification(newCanditate, config);
+					if (! candidateInClassification && config.isOnlyMatchingClassificationUuid()){
+						continue;
+					}else if (candidateInClassification && ! isInClassification){
+						matchedTaxon = newCanditate;
+						countEqualCandidates = 1;
+						continue;
+					}
+					
+				}else{  //not Taxon.class
+					continue;
+				}
+				countEqualCandidates++;
+
+			}
+			if (matchedTaxon != null){
+				if(countEqualCandidates > 1){
+					logger.info(countEqualCandidates + " equally matching TaxonBases found, using first accepted Taxon: " + matchedTaxon.getTitleCache());
+					return matchedTaxon;
+				} else {
+					logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());
+					return matchedTaxon;
 				}
 			}
 			
+			
 			// 2. search for synonyms
-			List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
-			for(TaxonBase taxonBase : synonymList){
-				if(taxonBase instanceof Synonym){
-					Set<Taxon> acceptetdCandidates = ((Synonym)taxonBase).getAcceptedTaxa();
-					if(!acceptetdCandidates.isEmpty()){
-						matchedTaxon = acceptetdCandidates.iterator().next();
-						if(acceptetdCandidates.size() == 1){
-							logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + matchedTaxon.getTitleCache());
-							return matchedTaxon;
-						} else {
-							logger.info("using accepted Taxon " +  matchedTaxon.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
-							return matchedTaxon;
+			if (config.isIncludeSynonyms()){
+				List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
+				for(TaxonBase taxonBase : synonymList){
+					if(taxonBase instanceof Synonym){
+						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+						Set<Taxon> acceptetdCandidates = synonym.getAcceptedTaxa();
+						if(!acceptetdCandidates.isEmpty()){
+							matchedTaxon = acceptetdCandidates.iterator().next();
+							if(acceptetdCandidates.size() == 1){
+								logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + matchedTaxon.getTitleCache());
+								return matchedTaxon;
+							} else {
+								logger.info("using accepted Taxon " +  matchedTaxon.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
+								return matchedTaxon;
+							}
+							//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found
 						}
-						//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found
 					}
 				}
 			}
@@ -748,6 +789,29 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		return matchedTaxon;
+	}
+
+	private boolean isInClassification(Taxon taxon, MatchingTaxonConfigurator config) {
+		UUID configClassificationUuid = config.getClassificationUuid();
+		if (configClassificationUuid == null){
+			return false;
+		}
+		for (TaxonNode node : taxon.getTaxonNodes()){
+			UUID classUuid = node.getClassification().getUuid();
+			if (configClassificationUuid.equals(classUuid)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isMatchesSecUuid(Taxon taxon, MatchingTaxonConfigurator config) {
+		UUID configSecUuid = config.getSecUuid();
+		if (configSecUuid == null){
+			return false;
+		}
+		UUID taxonSecUuid = (taxon.getSec() == null)? null : taxon.getSec().getUuid();
+		return configSecUuid.equals(taxonSecUuid);
 	}
 
 	/* (non-Javadoc)

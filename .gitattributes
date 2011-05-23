@@ -1742,6 +1742,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableE
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/MatchingTaxonConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataService.java -text
