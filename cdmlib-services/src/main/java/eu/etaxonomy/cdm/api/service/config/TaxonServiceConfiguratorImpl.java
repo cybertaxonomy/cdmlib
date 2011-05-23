@@ -24,14 +24,19 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @created 20.01.2009
  * @version 1.0
  */
-public class TaxonServiceConfiguratorImpl<T extends TaxonBase> extends IdentifiableServiceConfiguratorImpl<T>
-implements ITaxonServiceConfigurator<T> {
+public class TaxonServiceConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
+			implements ITaxonServiceConfigurator<T> {
+
+
+	public static TaxonServiceConfiguratorImpl NewInstance() {
+		return new TaxonServiceConfiguratorImpl();
+	}
+
 	
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
 	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
-	private String searchString;
 	private Classification classification = null;
 	private List<String> taxonPropertyPath;
 	private List<String> synonymPropertyPath;
@@ -51,10 +56,6 @@ implements ITaxonServiceConfigurator<T> {
 	 */
 	public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath) {
 		this.taxonNamePropertyPath = taxonNamePropertyPath;
-	}
-
-	public static TaxonServiceConfiguratorImpl NewInstance() {
-		return new TaxonServiceConfiguratorImpl();
 	}
 	
 	public boolean isDoTaxa() {
