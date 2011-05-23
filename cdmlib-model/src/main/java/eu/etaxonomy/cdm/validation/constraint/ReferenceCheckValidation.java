@@ -16,17 +16,30 @@ ConstraintValidator<ReferenceCheck, Reference>{
 	public boolean isValid(Reference value,
 			ConstraintValidatorContext constraintValidatorContext) {
 		boolean isValid = true;
-		// oder besser andersherum, bestimmte Referenzen dürfen keine ISBN haben?
-		/*
-		 * if (value.getType() == ReferenceType.Article || value.getType() == ReferenceType.Journal || value.getType() == ReferenceType.BookSection || value.getType() == ReferenceType.WebPage || value.getType() == ReferenceType.InProceedings ){
-		 * 		if (!value.getIsbn().isEmpty()) isValid = false;
-		 * }
-		 */
 		
-		if ((value.getType() != ReferenceType.Book || value.getType() != ReferenceType.Proceedings) && !value.getIsbn().isEmpty()) isValid = false;
+		isValid &= validIsbn(value, constraintValidatorContext); 
+		if (value.getType() == ReferenceType.Journal ) {
+			isValid = false;
+			constraintValidatorContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveDatePublished.message}");
+		}
 		
 		return isValid;
 	}
+	
+	
+	
+	private boolean validIsbn(Reference value, ConstraintValidatorContext constraintValidatorContext){
+		boolean isValid = true;
+		if ((value.getType() != ReferenceType.Book && value.getType() != ReferenceType.Proceedings) ) {
+			if (value.getIsbn()!= null){
+				isValid = false;
+				constraintValidatorContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.ReferenceShouldNotHaveIsbn.message}");
+			}
+		}
+		return isValid;
+	}
+
+
 
 	@Override
 	public void initialize(ReferenceCheck constraintAnnotation) {
@@ -34,5 +47,8 @@ ConstraintValidator<ReferenceCheck, Reference>{
 		
 	}
 
+
+
+	
 	
 }
