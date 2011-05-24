@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
@@ -665,9 +664,9 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @return  the rank
 	 */
 	public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc,  boolean useUnknown) 
-	throws UnknownCdmTypeException{
-
-		if (nc.equals(NomenclaturalCode.ICZN)) {
+		throws UnknownCdmTypeException{
+		
+		if (nc != null && nc.equals(NomenclaturalCode.ICZN)) {
 			if (abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION_ZOOLOGY();
 			} else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION_ZOOLOGY();
 			}
