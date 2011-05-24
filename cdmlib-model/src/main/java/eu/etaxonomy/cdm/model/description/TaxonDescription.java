@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
@@ -120,7 +119,9 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 	 */
 	public static TaxonDescription NewInstance(Taxon taxon){
 		TaxonDescription description = new TaxonDescription();
-		taxon.addDescription(description);
+		if (taxon != null){
+			taxon.addDescription(description);
+		}
 		return description;
 	}
 	
