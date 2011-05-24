@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -39,6 +38,8 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	//new
 	private boolean doSpecimen = true;
 	private boolean doAreaLevels = true;
+	private boolean doExtensionTypes = true;
+	
 	
 	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry 
 	private PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
@@ -55,7 +56,8 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			NamedAreaLevelExcelImport.class,
-			SpecimenCdmExcelImport.class
+			SpecimenCdmExcelImport.class,
+			ExtensionTypeExcelImport.class
 		};
 	}
 	
@@ -201,6 +203,14 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 
 	public boolean isPreferNameCache() {
 		return preferNameCache;
+	}
+
+	public void setDoExtensionTypes(boolean doExtensionTypes) {
+		this.doExtensionTypes = doExtensionTypes;
+	}
+
+	public boolean isDoExtensionTypes() {
+		return doExtensionTypes;
 	}
 
 	

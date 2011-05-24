@@ -68,6 +68,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
 	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
+	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	
 	
 	protected Classification makeTree(STATE state, Reference reference){
@@ -122,6 +123,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 	
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
+	}
+	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -131,8 +135,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (extensionType == null){
 				extensionType = ExtensionType.NewInstance(text, label, labelAbbrev);
 				extensionType.setUuid(uuid);
-				UUID uuidExtensionTypeVoc = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
-				TermVocabulary voc = getVocabularyService().find(uuidExtensionTypeVoc);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered);
+				}
 				voc.addTerm(extensionType);
 				getTermService().save(extensionType);
 			}

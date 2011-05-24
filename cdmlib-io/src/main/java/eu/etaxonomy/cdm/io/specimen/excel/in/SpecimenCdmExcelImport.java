@@ -29,13 +29,15 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.DeterminationLight;
-import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.LeveledArea;
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.PostfixTerm;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -120,6 +122,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String DETERMINED_BY_COLUMN = "DeterminationBy";
 	private static final String DETERMINED_WHEN_COLUMN = "DeterminationWhen";
 	private static final String DETERMINATION_NOTES_COLUMN = "DeterminationNote";
+	private static final String EXTENSION_COLUMN = "Ext(ension)?";
+	
+	
 
 	public SpecimenCdmExcelImport() {
 		super();
@@ -249,6 +254,14 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 				row.putSourceReference(index, getOrMakeReference(state, value));	
 			} else if(key.equalsIgnoreCase(ID_IN_SOURCE_COLUMN)) {
 				row.putIdInSource(index, value);		
+			} else if(key.matches(EXTENSION_COLUMN)) {
+				if (postfix != null){
+					row.addExtensionTypes(postfix, value);		
+				}else{
+					logger.warn("Extension without postfix not yet implemented");
+				}
+			
+			
 			}else {
 				success = false;
 				logger.error("Unexpected column header " + key);
@@ -298,6 +311,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 //			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
 		}
 		handleDeterminations(state, row, facade);
+		handleExtensions(facade,row, state);
 		
 		
 		//save
@@ -305,17 +319,32 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		return true;
 	}
 
-	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
-		List<LeveledArea> areas = row.getLeveledAreas();
+	private void handleExtensions(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		List<PostfixTerm> extensionTypes = row.getExtensionTypes();
 		
-		for (LeveledArea lArea : areas){
+		for (PostfixTerm exType : extensionTypes){
+			ExtensionType extensionType = state.getPostfixExtensionType(exType.postfix);
+			
+			Extension extension = Extension.NewInstance();
+			extension.setType(extensionType);
+			extension.setValue(exType.term);
+			facade.innerDerivedUnit().addExtension(extension);
+		}
+		
+	}
+
+
+	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		List<PostfixTerm> areas = row.getLeveledAreas();
+		
+		for (PostfixTerm lArea : areas){
 			String description = null;
 			String abbrev = null;
 			NamedAreaType type = null;
-			String key = lArea.areaLevel + "_" + lArea.area;
+			String key = lArea.postfix + "_" + lArea.term;
 			UUID areaUuid = state.getArea(key);
-			NamedAreaLevel level = state.getPostfixLevel(lArea.areaLevel);
-			NamedArea area = getNamedArea(state, areaUuid, lArea.area, description, abbrev, type, level);
+			NamedAreaLevel level = state.getPostfixLevel(lArea.postfix);
+			NamedArea area = getNamedArea(state, areaUuid, lArea.term, description, abbrev, type, level);
 			facade.addCollectingArea(area);
 			if (areaUuid == null){
 				state.putArea(key, area.getUuid());

@@ -11,23 +11,15 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.LeveledArea;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -71,16 +63,17 @@ public class SpecimenRow {
 	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
 	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
-	private List<LeveledArea> levels  = new ArrayList<LeveledArea>(); 
+	private List<PostfixTerm> levels  = new ArrayList<PostfixTerm>(); 
+	private List<PostfixTerm> extensionTypes  = new ArrayList<PostfixTerm>(); 
 	
 
 	
 	public SpecimenRow() {
 	}
 	
-	protected class LeveledArea{
-		String area;
-		String areaLevel;
+	protected class PostfixTerm{
+		String term;
+		String postfix;
 	}
 	
 
@@ -551,14 +544,26 @@ public class SpecimenRow {
 
 
 	public void addLeveledArea(String levelPostfix, String value) {
-		LeveledArea area = new LeveledArea();
-		area.area = value;
-		area.areaLevel = levelPostfix;
+		PostfixTerm area = new PostfixTerm();
+		area.term = value;
+		area.postfix = levelPostfix;
 		this.levels.add(area);
 	}
 	
-	public List<LeveledArea> getLeveledAreas(){
+	public List<PostfixTerm> getLeveledAreas(){
 		return levels;
+	}
+	
+
+	public void addExtensionTypes(String levelPostfix, String value) {
+		PostfixTerm term = new PostfixTerm();
+		term.term = value;
+		term.postfix = levelPostfix;
+		this.extensionTypes.add(term);
+	}
+	
+	public List<PostfixTerm> getExtensionTypes(){
+		return extensionTypes;
 	}
 
 	

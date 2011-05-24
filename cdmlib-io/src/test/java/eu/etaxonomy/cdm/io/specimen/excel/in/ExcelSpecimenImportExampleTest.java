@@ -103,7 +103,7 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 			FileOutputStream myOut = new FileOutputStream(file);
 			System.out.println(file.getAbsolutePath());
 			printDataSet(myOut, new String[]{"AgentBase","Collection","DerivationEvent","DeterminationEvent","DescriptionElementBase",
-					"DescriptionBase","GatheringEvent","LanguageString","OriginalSourceBase",
+					"DescriptionBase","Extension","GatheringEvent","LanguageString","OriginalSourceBase",
 					"Reference","TaxonBase","TaxonNameBase","TypeDesignationBase",
 					"TypeDesignationBase_taxonnamebase","SpecimenOrObservationBase","DefinedTermBase","TermVocabulary","Representation"});
 //			printDataSet(myOut);

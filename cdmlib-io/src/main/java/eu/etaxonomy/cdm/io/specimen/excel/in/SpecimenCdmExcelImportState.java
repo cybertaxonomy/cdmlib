@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -46,6 +46,8 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	
 	
 	private Map<String, NamedAreaLevel> postfixLevels = new HashMap<String, NamedAreaLevel>();
+	private Map<String, ExtensionType> postfixExtensionTypes = new HashMap<String, ExtensionType>();
+	
 	
 	
 	public SpecimenCdmExcelImportState(SpecimenCdmExcelImportConfigurator config) {
@@ -114,6 +116,15 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	
 	public NamedAreaLevel putPostfixLevel(String postfix, NamedAreaLevel level) {
 		return this.postfixLevels.put(postfix, level);
+		
+	}
+	
+	public ExtensionType getPostfixExtensionType(String postfix){
+		return this.postfixExtensionTypes.get(postfix);
+	}
+	
+	public ExtensionType putPostfixExtensionType(String postfix, ExtensionType type) {
+		return this.postfixExtensionTypes.put(postfix, type);
 		
 	}
 
