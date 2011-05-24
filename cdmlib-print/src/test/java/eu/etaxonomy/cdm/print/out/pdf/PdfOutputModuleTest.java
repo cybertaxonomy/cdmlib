@@ -10,9 +10,19 @@
 
 package eu.etaxonomy.cdm.print.out.pdf;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 
 
 /**
@@ -24,13 +34,31 @@ public class PdfOutputModuleTest {
 
 	
 	/**
+	 * @throws IOException 
 	 * 
 	 */
 	@Test
-	public void testGetXslt() {
+	public void testGetXslt() throws IOException {
 		PdfOutputModule outputModule = new PdfOutputModule();
 		
-		assertNotNull(outputModule.getXslt());
+		InputStream xslt = outputModule.getXsltInputStream();
+		
+		assertNotNull(xslt);
+		assertTrue(xslt.available() > 0);
 	}
+	
+	@Test
+	public void testGetStylesheetByLocation() throws IOException {
+		PdfOutputModule outputModule = new PdfOutputModule();
+		
+		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");		
+		File shippedStylesheetsDir = new File(shippedStylesheetsResource.getFile());
+		
+		List<File> stylesheets = outputModule.getStylesheetsByLocation(shippedStylesheetsDir);
+		
+		assertNotNull("There should be stylesheets", stylesheets);
+		assertEquals("There should be one stylesheet", 1, stylesheets.size());
+	}
+	
 	
 }

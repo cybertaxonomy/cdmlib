@@ -11,12 +11,24 @@
 package eu.etaxonomy.cdm.print.out;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+
+import javax.imageio.stream.FileImageInputStream;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 
 /**
@@ -35,6 +47,16 @@ public abstract class AbstractPublishOutputModule implements IPublishOutputModul
 	 * The date format used by {@link #generateFilenameWithDate(String, String)}
 	 */
 	public static final String DATE_FORMAT_NOW = "yyyyMMdd-HHmm";
+
+	private FilenameFilter filter = new FilenameFilter() {
+		
+		@Override
+		public boolean accept(File dir, String fileName) {
+			return fileName.substring(fileName.length() - 3).equals("xsl");
+		}
+	};
+
+	private File xslt;
 		
 	/**
 	 * Generates a string containing the current date followed by the given name.
@@ -78,5 +100,74 @@ public abstract class AbstractPublishOutputModule implements IPublishOutputModul
 		String message = "Running output module: " + this.getClass().getSimpleName();
 		logger.trace(message);
 		progressMonitor.subTask(message);
+	}
+	
+
+	@Override
+	public List<File> getStylesheets() throws IOException {
+		List<File> stylesheets = new ArrayList<File>();
+		
+		for(File directory : getStylesheetLocations()){
+			if(directory.exists() && directory.isDirectory()){
+				stylesheets.addAll(getStylesheetsByLocation(directory));
+			}else{
+				logger.info(String.format("Tried to read styleshets from '%s', but it does not exist or is not a directory", directory));
+			}
+		}
+		
+		return stylesheets;
+		
+	}
+	
+	private List<File> getStylesheetLocations() throws IOException {
+		List<File> locationList = new ArrayList<File>();
+		
+		String l = File.separator;
+		
+		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");		
+		File shippedStylesheetsDir = new File(shippedStylesheetsResource.getFile());
+		locationList.add(shippedStylesheetsDir);
+		
+		// TODO this should be configured in a central place, see #2387
+		String cdmlibHomeDir = CdmUtils.getHomeDir() + l + ".cdmLibrary";
+		
+		File userdir = new File(cdmlibHomeDir + l + "stylesheets"  + l + getOutputFileSuffix());
+		locationList.add(userdir);
+		
+		return locationList;
+	}
+	
+	@Override
+	public File getXslt() {
+		return xslt;
+	}
+	
+	@Override
+	public void setXslt(File xslt){
+		this.xslt = xslt;
+	}
+	
+	public InputStream getXsltInputStream(){
+		if(getXslt() == null){
+			return getDefaultXsltInputStream();
+		}
+		
+		try {
+			return new FileInputStream(getXslt());
+		} catch (FileNotFoundException e) {
+			logger.error(e);
+		}
+		return null;
+	}
+	
+	protected InputStream getDefaultXsltInputStream() {
+		return null;
+	}
+
+	public List<File> getStylesheetsByLocation(File stylesheetFolder){
+		
+		File[] stylesheets = stylesheetFolder.listFiles(filter);
+		
+		return Arrays.asList(stylesheets);
 	}
 }

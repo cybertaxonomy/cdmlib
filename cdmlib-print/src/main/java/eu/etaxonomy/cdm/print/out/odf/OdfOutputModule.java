@@ -4,7 +4,9 @@
 package eu.etaxonomy.cdm.print.out.odf;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -27,18 +29,16 @@ public class OdfOutputModule extends AbstractPublishOutputModule {
 	private static final Logger logger = Logger
 		.getLogger(OdfOutputModule.class);
 	
-	public static String STYLESHEET_RESOURCE_DEFAULT = "/eu/etaxonomy/cdm/print/out/odf/cdmToOdfText.xsl";
+	public static String STYLESHEET_RESOURCE_DEFAULT = "/stylesheets/odf/cdmToOdfText.xsl";
 	
 	private DocumentCreator documentCreator;
 	private Transformator transformator;
-
-	private InputStream stylesheet;
 	
 	public OdfOutputModule() {
-		stylesheet = OdfOutputModule.class.getResourceAsStream(STYLESHEET_RESOURCE_DEFAULT);
+		InputStream xslt = getXsltInputStream();
 		documentCreator = new DocumentCreator();
 		try {
-			transformator = new Transformator(stylesheet);	
+			transformator = new Transformator(xslt);	
 		} 
 		catch (XSLTransformException e) {
 			logger.error("XSLTransformException while creating ODF output module", e);
@@ -75,5 +75,9 @@ public class OdfOutputModule extends AbstractPublishOutputModule {
 	public String getOutputFileSuffix() {
 		return "odf";
 	}
-
+	
+	@Override
+	protected InputStream getDefaultXsltInputStream() {
+		return OdfOutputModule.class.getResourceAsStream(STYLESHEET_RESOURCE_DEFAULT);
+	}
 }

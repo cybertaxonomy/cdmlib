@@ -1369,10 +1369,10 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/StylesFactory.java -te
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/pdf/PdfOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/taxpub/TaxPubOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/xml/XMLOutputModule.java -text
-cdmlib-print/src/main/resources/eu/etaxonomy/cdm/print/out/odf/cdmToOdfText.xsl -text
-cdmlib-print/src/main/resources/eu/etaxonomy/cdm/print/out/pdf/cdmToPdf.xsl -text
 cdmlib-print/src/main/resources/eu/etaxonomy/cdm/print/package.html -text
 cdmlib-print/src/main/resources/log4j.properties -text
+cdmlib-print/src/main/resources/stylesheets/odf/cdmToOdfText.xsl -text
+cdmlib-print/src/main/resources/stylesheets/pdf/cdmToPdf.xsl -text
 cdmlib-print/src/site/apt/download.apt -text
 cdmlib-print/src/site/apt/formats.apt -text
 cdmlib-print/src/site/apt/getting-started.apt -text

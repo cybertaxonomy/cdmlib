@@ -11,6 +11,8 @@
 package eu.etaxonomy.cdm.print.out.taxpub;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;

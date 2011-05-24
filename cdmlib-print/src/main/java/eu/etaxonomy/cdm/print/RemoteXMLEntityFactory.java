@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 
 /**
  * Implementation of an IXMLEntityFactory that is connected to a CDM Community Server on 
- * a remote machine. API call will be executed by accessing the the servers REST API.
+ * a remote machine. API call will be executed by accessing the servers REST API.
  * 
  * @author n.hoffmann
  * @created Apr 6, 2010
