@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * NOTE: After moving validation tests from this package to cdmlib-model
  * there came up an issue with termloading in TaxonServiceHibernateImplTest.
  * Therefore this dummy class was created.
- * It is still unclear what the reason is. See ticket #
+ * It is still unclear what the reason is. See ticket #2397
  *
  *	
  */
