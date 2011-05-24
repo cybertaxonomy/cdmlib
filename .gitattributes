@@ -1819,6 +1819,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegr
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonServices.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/NeededForCorrectTermLoadingTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetDerivedUnitImageGallery-result.xml -text
