@@ -36,6 +36,7 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 		TaxonNode node = (TaxonNode)bean;
 		JSONObject json = new JSONObject();
 		json.element("class", "TaxonNodeDao");
+		json.element("uuid", node.getUuid(), jsonConfig);
 		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
 		List<TaggedText> taggedTitle = TaggedTextGenerator.getTaggedName(node.getTaxon().getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
