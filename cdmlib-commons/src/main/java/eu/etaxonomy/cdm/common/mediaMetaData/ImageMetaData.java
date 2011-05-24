@@ -13,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 
 import org.apache.http.HttpException;
@@ -35,59 +33,57 @@ import eu.etaxonomy.cdm.common.UriUtils;
  */
 public  class ImageMetaData extends MediaMetaData {
 	private static Logger logger = Logger.getLogger(ImageMetaData.class);
-		protected ImageMetaData(){
-			this.metaData = new HashMap<String, String>();
-		}
-		
-		protected int width, height, bitPerPixel;
-		
-		public int getWidth() {
-			return width;
-		}
+	
+	protected ImageMetaData(){
+		this.metaData = new HashMap<String, String>();
+	}
+	
+	protected int width, height, bitPerPixel;
+	
+	public int getWidth() {
+		return width;
+	}
 
-		public void setWidth(int width) {
-			this.width = width;
-		}
+	public void setWidth(int width) {
+		this.width = width;
+	}
 
-		public int getHeight() {
-			return height;
-		}
+	public int getHeight() {
+		return height;
+	}
 
-		public void setHeight(int height) {
-			this.height = height;
-		}
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
-		public int getBitPerPixel() {
-			return bitPerPixel;
-		}
+	public int getBitPerPixel() {
+		return bitPerPixel;
+	}
 
-		public void setBitPerPixel(int bitPerPixel) {
-			this.bitPerPixel = bitPerPixel;
-		}
+	public void setBitPerPixel(int bitPerPixel) {
+		this.bitPerPixel = bitPerPixel;
+	}
 
-		public String getFormatName() {
-			return formatName;
-		}
+	public String getFormatName() {
+		return formatName;
+	}
 
-		public void setFormatName(String formatName) {
-			this.formatName = formatName;
-		}
+	public void setFormatName(String formatName) {
+		this.formatName = formatName;
+	}
 
-		public String getMimeType() {
-			return mimeType;
-		}
+	public String getMimeType() {
+		return mimeType;
+	}
 
-		public void setMimeType(String mimeType) {
-			this.mimeType = mimeType;
-		}
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
 
-		@Override
-		public String toString(){
-            return formatName + " [" + mimeType+ "] w:" + width + " h:" + height + " depth:" + bitPerPixel;
-		}
-		
-		
-		
+	@Override
+	public String toString(){
+        return formatName + " [" + mimeType+ "] w:" + width + " h:" + height + " depth:" + bitPerPixel;
+	}
 	
 	
 	private  void readImageInfo(ImageInfo imageInfo) {
@@ -99,7 +95,6 @@ public  class ImageMetaData extends MediaMetaData {
 		
 	}
 	
-		
 
 	public void readImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException{
 		
