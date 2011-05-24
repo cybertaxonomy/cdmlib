@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 10.05.2011
  * @version 1.0
  */
-//@Ignore //currently jenkins throws an exception
+@Ignore //currently jenkins throws an exception
 public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
