@@ -552,22 +552,14 @@ public class SpecimenRow {
 
 	public void addLeveledArea(String levelPostfix, String value) {
 		LeveledArea area = new LeveledArea();
+		area.area = value;
+		area.areaLevel = levelPostfix;
 		this.levels.add(area);
-//		getOrMakeLeveledArea(level);
 	}
 	
 	public List<LeveledArea> getLeveledAreas(){
 		return levels;
 	}
-	
-//	private NamedAreaLevel getOrMakeLeveledArea(String key) {
-//		NamedAreaLevel level = this.levels.get(key);
-//		if (level == null){
-//			level = new NamedAreaLevel();
-//			this.levels.put(key, level);
-//		}
-//		return level;
-//	}
-	
+
 	
 }

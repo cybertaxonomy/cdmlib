@@ -66,6 +66,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
 
+	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
+	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
+	
 	
 	protected Classification makeTree(STATE state, Reference reference){
 		Reference ref = CdmBase.deproxy(reference, Reference.class);
@@ -199,7 +202,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return annotationType;
 	}
 	
-	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
 	/**
 	 * Returns a named area for a given uuid by first . If the named area does not
 	 * @param state
@@ -239,8 +241,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return namedArea;
 	}
 	
-	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
-
+	
 	protected NamedAreaLevel getNamedAreaLevel(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();

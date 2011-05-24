@@ -105,7 +105,7 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 			printDataSet(myOut, new String[]{"AgentBase","Collection","DerivationEvent","DeterminationEvent","DescriptionElementBase",
 					"DescriptionBase","GatheringEvent","LanguageString","OriginalSourceBase",
 					"Reference","TaxonBase","TaxonNameBase","TypeDesignationBase",
-					"TypeDesignationBase_taxonnamebase","SpecimenOrObservationBase"});
+					"TypeDesignationBase_taxonnamebase","SpecimenOrObservationBase","DefinedTermBase","TermVocabulary","Representation"});
 //			printDataSet(myOut);
 		} catch (FileNotFoundException e) {
 			Assert.fail(e.getLocalizedMessage());

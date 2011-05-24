@@ -12,12 +12,14 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -33,13 +35,15 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportState.class);
 
 	private SpecimenRow specimenRow;
-	private NamedAreaLevellRow namedAreaLabelRow;
+	private NamedAreaLevellRow namedAreaLevelRow;
 	
 	private Map<String, Reference<?>> references = new HashMap<String, Reference<?>>();
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	private Map<String, Person> persons = new HashMap<String, Person>();
 	private Map<String, Team> teams = new HashMap<String, Team>();
 	private Map<String, TaxonNameBase<?, ?>> names = new HashMap<String, TaxonNameBase<?,?>>();
+	private Map<String, UUID> areas = new HashMap<String, UUID>();
+	
 	
 	private Map<String, NamedAreaLevel> postfixLevels = new HashMap<String, NamedAreaLevel>();
 	
@@ -97,11 +101,11 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	}
 
 	public void setNamedAreaLabelRow(NamedAreaLevellRow namedAreaLabelRow) {
-		this.namedAreaLabelRow = namedAreaLabelRow;
+		this.namedAreaLevelRow = namedAreaLabelRow;
 	}
 
 	public NamedAreaLevellRow getNamedAreaLabelRow() {
-		return namedAreaLabelRow;
+		return namedAreaLevelRow;
 	}
 
 	public NamedAreaLevel getPostfixLevel(String postfix){
@@ -111,6 +115,14 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	public NamedAreaLevel putPostfixLevel(String postfix, NamedAreaLevel level) {
 		return this.postfixLevels.put(postfix, level);
 		
+	}
+
+	public UUID putArea(String key, UUID areaUuid) {
+		return this.areas.put(key, areaUuid);
+	}
+
+	public UUID getArea(String key) {
+		return areas.get(key);
 	}
 	
 

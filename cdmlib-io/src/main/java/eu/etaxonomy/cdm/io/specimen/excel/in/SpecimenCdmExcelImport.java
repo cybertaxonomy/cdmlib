@@ -199,8 +199,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 				row.setErrorRadius(value);		
 			} else if(key.equalsIgnoreCase(AREA_COLUMN)) {
 				if (postfix != null){
-					NamedAreaLevel level = state.getPostfixLevel(postfix);
 					row.addLeveledArea(postfix, value);		
+				}else{
+					logger.warn("Not yet implemented");
 				}
 			
 				
@@ -307,14 +308,18 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		List<LeveledArea> areas = row.getLeveledAreas();
 		
-		
 		for (LeveledArea lArea : areas){
 			String description = null;
 			String abbrev = null;
 			NamedAreaType type = null;
+			String key = lArea.areaLevel + "_" + lArea.area;
+			UUID areaUuid = state.getArea(key);
 			NamedAreaLevel level = state.getPostfixLevel(lArea.areaLevel);
-			NamedArea area = getNamedArea(state, null, lArea.area, description, abbrev, type, level);
+			NamedArea area = getNamedArea(state, areaUuid, lArea.area, description, abbrev, type, level);
 			facade.addCollectingArea(area);
+			if (areaUuid == null){
+				state.putArea(key, area.getUuid());
+			}
 		}
 	}
 
