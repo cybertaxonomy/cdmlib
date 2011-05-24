@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -58,6 +59,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<UUID, AnnotationType>();
 	
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
+	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
@@ -206,6 +208,15 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putNamedArea(NamedArea namedArea){
 		namedAreaMap.put(namedArea.getUuid(), namedArea);
+	}
+	
+	public NamedAreaLevel getNamedAreaLevel(UUID uuid){
+		return namedAreaLevelMap.get(uuid);
+	}
+
+	
+	public void putNamedAreaLevel(NamedAreaLevel namedAreaLevel){
+		namedAreaLevelMap.put(namedAreaLevel.getUuid(), namedAreaLevel);
 	}
 
 	

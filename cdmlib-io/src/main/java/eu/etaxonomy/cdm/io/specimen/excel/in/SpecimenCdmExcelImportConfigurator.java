@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -38,6 +39,7 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	//new
 	private boolean doSpecimen = true;
 	private boolean doAreaLevels = true;
+	
 	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry 
 	private PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
 	
@@ -46,11 +48,14 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	private boolean firstDeterminationIsStoredUnder = false;
 	private boolean determinationsAreDeterminationEvent = true;
 	
+	private boolean preferNameCache = true;
+
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-			SpecimenCdmExcelImport.class,
+			NamedAreaLevelExcelImport.class,
+			SpecimenCdmExcelImport.class
 		};
 	}
 	
@@ -188,6 +193,14 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	 */
 	public void setDeterminationsAreDeterminationEvent(	boolean determinationsAreDeterminationEvent) {
 		this.determinationsAreDeterminationEvent = determinationsAreDeterminationEvent;
+	}
+
+	public void setPreferNameCache(boolean preferNameCache) {
+		this.preferNameCache = preferNameCache;
+	}
+
+	public boolean isPreferNameCache() {
+		return preferNameCache;
 	}
 
 	

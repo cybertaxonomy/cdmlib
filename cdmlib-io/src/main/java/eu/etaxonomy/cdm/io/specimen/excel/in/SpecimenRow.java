@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.LeveledArea;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -46,7 +50,7 @@ public class SpecimenRow {
 	private String fieldNumber;
 	private String accessionNumber;
 	private String barcode;
-	private String author;
+//	private String author;
 	private String absoluteElevation;
 //	private String family;
 //	private String genus;
@@ -67,12 +71,18 @@ public class SpecimenRow {
 	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
 	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
-
+	private List<LeveledArea> levels  = new ArrayList<LeveledArea>(); 
 	
 
 	
 	public SpecimenRow() {
 	}
+	
+	protected class LeveledArea{
+		String area;
+		String areaLevel;
+	}
+	
 
 	
 	//	may be public if necessary
@@ -177,21 +187,21 @@ public class SpecimenRow {
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
-	
-	/**
-	 * @return the author
-	 */
-	public String getAuthor() {
-		return author;
-	}
-
-
-	/**
-	 * @param author the author to set
-	 */
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+//	
+//	/**
+//	 * @return the author
+//	 */
+//	public String getAuthor() {
+//		return author;
+//	}
+//
+//
+//	/**
+//	 * @param author the author to set
+//	 */
+//	public void setAuthor(String author) {
+//		this.author = author;
+//	}
 
 
 	/**
@@ -480,7 +490,7 @@ public class SpecimenRow {
 	}
 	
 
-	private<T extends Object> List<T> getOrdered(TreeMap<Integer, T> tree) {
+	private<T extends Object> List<T> getOrdered(TreeMap<?, T> tree) {
 		List<T> result = new ArrayList<T>();
 		for (T value : tree.values()){
 			result.add(value);
@@ -538,9 +548,26 @@ public class SpecimenRow {
 	public String getCollection() {
 		return collection;
 	}
-	
-	
 
 
+	public void addLeveledArea(String levelPostfix, String value) {
+		LeveledArea area = new LeveledArea();
+		this.levels.add(area);
+//		getOrMakeLeveledArea(level);
+	}
+	
+	public List<LeveledArea> getLeveledAreas(){
+		return levels;
+	}
+	
+//	private NamedAreaLevel getOrMakeLeveledArea(String key) {
+//		NamedAreaLevel level = this.levels.get(key);
+//		if (level == null){
+//			level = new NamedAreaLevel();
+//			this.levels.put(key, level);
+//		}
+//		return level;
+//	}
+	
 	
 }

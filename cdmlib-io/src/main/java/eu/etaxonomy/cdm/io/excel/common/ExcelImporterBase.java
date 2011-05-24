@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -57,7 +56,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     	
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 		if (nc == null && needsNomenclaturalCode()) {
-			logger.error("Nomenclatural code could not be determined.");
+			logger.error("Nomenclatural code could not be determined. Skip invoke.");
 			return false;
 		}
 		// read and save all rows of the excel worksheet

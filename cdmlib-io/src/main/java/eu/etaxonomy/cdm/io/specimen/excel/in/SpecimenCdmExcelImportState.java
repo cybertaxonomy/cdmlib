@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -32,13 +33,15 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportState.class);
 
 	private SpecimenRow specimenRow;
-	private boolean preferNameCache = true;
-
+	private NamedAreaLevellRow namedAreaLabelRow;
+	
 	private Map<String, Reference<?>> references = new HashMap<String, Reference<?>>();
 	private Map<String, Collection> collections = new HashMap<String, Collection>();
 	private Map<String, Person> persons = new HashMap<String, Person>();
 	private Map<String, Team> teams = new HashMap<String, Team>();
 	private Map<String, TaxonNameBase<?, ?>> names = new HashMap<String, TaxonNameBase<?,?>>();
+	
+	private Map<String, NamedAreaLevel> postfixLevels = new HashMap<String, NamedAreaLevel>();
 	
 	
 	public SpecimenCdmExcelImportState(SpecimenCdmExcelImportConfigurator config) {
@@ -93,15 +96,21 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 		return this.names.put(key, value);
 	}
 
-	public boolean isPreferNameCache() {
-		return this.preferNameCache;
+	public void setNamedAreaLabelRow(NamedAreaLevellRow namedAreaLabelRow) {
+		this.namedAreaLabelRow = namedAreaLabelRow;
 	}
 
-	/**
-	 * @param preferNameCache the preferNameCache to set
-	 */
-	public void setPreferNameCache(boolean preferNameCache) {
-		this.preferNameCache = preferNameCache;
+	public NamedAreaLevellRow getNamedAreaLabelRow() {
+		return namedAreaLabelRow;
+	}
+
+	public NamedAreaLevel getPostfixLevel(String postfix){
+		return this.postfixLevels.get(postfix);
+	}
+	
+	public NamedAreaLevel putPostfixLevel(String postfix, NamedAreaLevel level) {
+		return this.postfixLevels.put(postfix, level);
+		
 	}
 	
 

@@ -239,6 +239,30 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return namedArea;
 	}
 	
+	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
+
+	protected NamedAreaLevel getNamedAreaLevel(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
+		NamedAreaLevel namedAreaLevel = state.getNamedAreaLevel(uuid);
+		if (namedAreaLevel == null){
+			namedAreaLevel = CdmBase.deproxy(getTermService().find(uuid), NamedAreaLevel.class);
+			if (namedAreaLevel == null){
+				namedAreaLevel = NamedAreaLevel.NewInstance(text, label, labelAbbrev);
+				if (voc == null){
+					boolean isOrdered = true;
+					voc = getVocabulary(uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered);
+				}
+				voc.addTerm(namedAreaLevel);
+				namedAreaLevel.setUuid(uuid);
+				getTermService().save(namedAreaLevel);
+			}
+			state.putNamedAreaLevel(namedAreaLevel);
+		}
+		return namedAreaLevel;
+	}
+	
 	/**
 	 * Returns a feature for a given uuid by first ...
 	 * @param state

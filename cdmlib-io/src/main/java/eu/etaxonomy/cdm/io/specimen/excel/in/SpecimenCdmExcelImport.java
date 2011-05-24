@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,13 +24,12 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.DeterminationLight;
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.LeveledArea;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -52,12 +53,11 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -76,6 +76,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String UUID_COLUMN = "UUID";
 	private static final String BASIS_OF_RECORD_COLUMN = "BasisOfRecord";
 	private static final String COUNTRY_COLUMN = "Country";
+	private static final String AREA_COLUMN = "Area";
 	private static final String ISO_COUNTRY_COLUMN = "ISOCountry";
 	private static final String LOCALITY_COLUMN = "Locality";
 	private static final String ABSOLUTE_ELEVATION_COLUMN = "AbsoluteElevation";
@@ -119,12 +120,11 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private static final String DETERMINED_BY_COLUMN = "DeterminationBy";
 	private static final String DETERMINED_WHEN_COLUMN = "DeterminationWhen";
 	private static final String DETERMINATION_NOTES_COLUMN = "DeterminationNote";
-	
-	
 
 	public SpecimenCdmExcelImport() {
 		super();
 	}
+
 	
 	@Override
 	protected boolean analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
@@ -136,18 +136,19 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
     	
     	for (String originalKey: keys) {
     		Integer index = 0;
+    		String postfix = null;
     		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
     		String[] split = indexedKey.split("_");
     		String key = split[0];
     		if (split.length > 1){
-    			String indexString = split[split.length - 1];
-    			try {
-    				index = Integer.valueOf(indexString);
-				} catch (NumberFormatException e) {
-					String message = "Index must be integer";
-					logger.error(message);
-					continue;
-				}
+    			for (int i = 1 ; i < split.length ; i++ ){
+    				String indexString = split[i];
+        			if (isInteger(indexString)){
+        				index = Integer.valueOf(indexString);
+        			}else{
+        				postfix = split[i];
+        			}
+    			}
     		}
     		
     		String value = (String) record.get(indexedKey);
@@ -196,13 +197,18 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 				row.setReferenceSystem(value);		
 			} else if(key.equalsIgnoreCase(ERROR_RADIUS_COLUMN)) {
 				row.setErrorRadius(value);		
+			} else if(key.equalsIgnoreCase(AREA_COLUMN)) {
+				if (postfix != null){
+					NamedAreaLevel level = state.getPostfixLevel(postfix);
+					row.addLeveledArea(postfix, value);		
+				}
 			
+				
+				
 			} else if(key.equalsIgnoreCase(ACCESSION_NUMBER_COLUMN)) {
 				row.setLocality(value);		
 			} else if(key.equalsIgnoreCase(BARCODE_COLUMN)) {
 				row.setBarcode(value);		
-			} else if(key.equalsIgnoreCase(DETERMINATION_AUTHOR_COLUMN)) {
-				row.setAuthor(value);		
 			
 			} else if(key.equalsIgnoreCase(FAMILY_COLUMN)) {
 				row.putDeterminationFamily(index, value);		
@@ -266,6 +272,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		
 		//country
 		handleCountry(facade, row, state);
+		handleAreas(facade,row, state);
 		
 		facade.setGatheringPeriod(getTimePeriod(row.getCollectingDate(), row.getCollectingDateEnd()));
 		facade.setLocality(row.getLocality());
@@ -286,15 +293,47 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			facade.addSource(source);
 		}
 		for (SpecimenTypeDesignation designation : row.getTypeDesignations()){
-			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
+			//FIXME
+//			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
 		}
+		handleDeterminations(state, row, facade);
+		
+		
+		//save
+		getOccurrenceService().save(facade.innerDerivedUnit());
+		return true;
+	}
+
+	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		List<LeveledArea> areas = row.getLeveledAreas();
+		
+		
+		for (LeveledArea lArea : areas){
+			String description = null;
+			String abbrev = null;
+			NamedAreaType type = null;
+			NamedAreaLevel level = state.getPostfixLevel(lArea.areaLevel);
+			NamedArea area = getNamedArea(state, null, lArea.area, description, abbrev, type, level);
+			facade.addCollectingArea(area);
+		}
+	}
+
+
+	/**
+	 * @param state
+	 * @param row
+	 * @param facade
+	 */
+	private void handleDeterminations(SpecimenCdmExcelImportState state,SpecimenRow row, DerivedUnitFacade facade) {
 		boolean isFirstDetermination = true;
 		for (DeterminationLight determinationLight : row.getDetermination()){
 			Taxon taxon = findBestMatchingTaxon(state, determinationLight, true);
+			getTaxonService().saveOrUpdate(taxon);
 			TaxonNameBase<?,?> name = findBestMatchingName(state, determinationLight);
-			if (state.getConfig().isMakeIndividualAssociations()){
+			if (state.getConfig().isMakeIndividualAssociations() && taxon != null){
 				IndividualsAssociation indivAssociciation = IndividualsAssociation.NewInstance();
-				indivAssociciation.setAssociatedSpecimenOrObservation(facade.innerDerivedUnit());
+				DerivedUnitBase<?> du = facade.innerDerivedUnit();
+				indivAssociciation.setAssociatedSpecimenOrObservation(du);
 				getTaxonDescription(taxon).addElement(indivAssociciation);
 			}
 			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
@@ -306,11 +345,6 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			}
 			isFirstDetermination = false;
 		}
-		
-		
-		//save
-		getOccurrenceService().save(facade.innerDerivedUnit());
-		return true;
 	}
 
 	/**
@@ -327,8 +361,6 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		NonViralName name = makeTaxonName(state, determinationLight);
 		
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
-		
-		
 		
 		if (! StringUtils.isBlank(titleCache)){
 			MatchingTaxonConfigurator matchConfigurator = MatchingTaxonConfigurator.NewInstance();
@@ -356,12 +388,12 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	 * @param name
 	 * @return
 	 */
-	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state,
-			DeterminationLight determinationLight, NonViralName name) {
+	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, 
+				NonViralName name) {
 		String titleCache = determinationLight.fullName;
-		if (! state.isPreferNameCache()){
+		if (! state.getConfig().isPreferNameCache() || StringUtils.isBlank(titleCache) ){
 			String computedTitleCache = name.getTitleCache();
-			if (StringUtils.isBlank(computedTitleCache)){
+			if (StringUtils.isNotBlank(computedTitleCache)){
 				titleCache = computedTitleCache;
 			}
 			
@@ -374,16 +406,26 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	 * @param determinationLight
 	 * @return
 	 */
-	private NonViralName makeTaxonName(SpecimenCdmExcelImportState state,
-			DeterminationLight determinationLight) {
+	private NonViralName makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
 		//TODO correct type by config.nc
 		NonViralName name =NonViralName.NewInstance(null);
 		name.setGenusOrUninomial(determinationLight.genus);
-		name.setSpecificEpithet(determinationLight.genus);
+		name.setSpecificEpithet(determinationLight.speciesEpi);
 		name.setInfraSpecificEpithet(determinationLight.infraSpeciesEpi);
+		
+		//FIXME bracketAuthors and teams not yet implemented!!!
+		List<String> authors = new ArrayList<String>();
+		if (StringUtils.isNotBlank(determinationLight.author)){
+			authors.add(determinationLight.author);
+		}
+		TeamOrPersonBase agent = (TeamOrPersonBase)getOrMakeAgent(state, authors);
+		name.setCombinationAuthorTeam(agent);
+		
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		try {
-			name.setRank(Rank.getRankByNameOrAbbreviation(determinationLight.rank, nc, true));
+			if (StringUtils.isNotBlank(determinationLight.rank) ){
+				name.setRank(Rank.getRankByNameOrAbbreviation(determinationLight.rank, nc, true));
+			}
 		} catch (UnknownCdmTypeException e) {
 			String message = "Rank not found: %s: ";
 			message = String.format(message, determinationLight.rank);
@@ -427,9 +469,13 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		TimePeriod date = TimePeriod.parseString(determination.determinedWhen);
 		event.setTimeperiod(date);
 		//by
-		//TODO teams also possible?
-		AgentBase<?> agent = Person.NewTitledInstance(determination.author);
-		event.setActor(agent);
+		//FIXME bracketAuthors and teams not yet implemented!!!
+		List<String> authors = new ArrayList<String>();
+		if (StringUtils.isNotBlank(determination.determinedBy)){
+			authors.add(determination.determinedBy);
+		}
+		AgentBase actor = getOrMakeAgent(state, authors);
+		event.setActor(actor);
 		
 		//TODO
 		if (StringUtils.isNotBlank(determination.modifier)){
@@ -444,8 +490,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	}
 
 	private TaxonDescription getTaxonDescription(Taxon taxon) {
-		logger.warn("Get taxon description not yet really implemented");
-		TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+		TaxonDescription desc = this.getTaxonDescription(taxon, ! IMAGE_GALLERY, CREATE);
 		return desc;
 	}
 
@@ -628,8 +673,15 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	}
 		
 
-	private DerivedUnitType getDerivedUnitType(String basisOfRecord) {
-		return null;
+	
+	
+	protected boolean isInteger(String value){
+		try {
+			Integer.valueOf(value);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -40,7 +41,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 10.05.2011
  * @version 1.0
  */
-@Ignore //currently jenkins throws an exception
+//@Ignore //currently jenkins throws an exception
 public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
@@ -88,6 +89,7 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 //	}
 	
 	@Test
+	@DataSet
 	@ExpectedDataSet
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator);
@@ -100,8 +102,11 @@ public class ExcelSpecimenImportExampleTest extends CdmTransactionalIntegrationT
 			File file = new File(filePath);
 			FileOutputStream myOut = new FileOutputStream(file);
 			System.out.println(file.getAbsolutePath());
-			printDataSet(myOut, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent","OriginalSourceBase",
-					"Reference","Collection","AgentBase"});
+			printDataSet(myOut, new String[]{"AgentBase","Collection","DerivationEvent","DeterminationEvent","DescriptionElementBase",
+					"DescriptionBase","GatheringEvent","LanguageString","OriginalSourceBase",
+					"Reference","TaxonBase","TaxonNameBase","TypeDesignationBase",
+					"TypeDesignationBase_taxonnamebase","SpecimenOrObservationBase"});
+//			printDataSet(myOut);
 		} catch (FileNotFoundException e) {
 			Assert.fail(e.getLocalizedMessage());
 		}
