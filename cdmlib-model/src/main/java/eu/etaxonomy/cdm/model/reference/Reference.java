@@ -22,7 +22,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -112,8 +111,8 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-//@InReference(groups = Level2.class)
-//@ReferenceCheck(groups = Level2.class)
+@InReference(groups = Level2.class)
+@ReferenceCheck(groups = Level2.class)
 //public abstract class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
 public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
@@ -129,7 +128,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Lob
 	@Field(index=Index.TOKENIZED)
 	@Match(MatchMode.EQUAL_REQUIRED)
-	@NullOrNotEmpty(groups = Level2.class)
+	@NullOrNotEmpty
 	@Length(max = 4096)
 	private String title;
 	
@@ -225,7 +224,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
    // @InReference(groups=Level2.class)

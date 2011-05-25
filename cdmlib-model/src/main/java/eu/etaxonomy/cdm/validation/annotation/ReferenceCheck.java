@@ -13,15 +13,15 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import eu.etaxonomy.cdm.validation.constraint.ReferenceCheckValidation;
+import eu.etaxonomy.cdm.validation.constraint.ReferenceCheckValidator;
 
 
 @Target( { TYPE, METHOD, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ReferenceCheckValidation.class)
+@Constraint(validatedBy = ReferenceCheckValidator.class)
 @Documented
 public @interface ReferenceCheck {
-	String message() default "{eu.etaxonomy.cdm.validation.annotation.ISBNe.wrongISBNForReferenceType.message}";
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.InReference.ReferenceShouldNotHaveIsbn.message}";
 	Class<? extends Payload>[] payload() default {};
 	Class<?>[] groups() default {};
 

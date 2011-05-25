@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
-public class ReferenceCheckValidation implements
+public class ReferenceCheckValidator implements
 ConstraintValidator<ReferenceCheck, Reference>{
 	
 	//@Override
@@ -30,6 +30,7 @@ ConstraintValidator<ReferenceCheck, Reference>{
 	
 	private boolean validIsbn(Reference value, ConstraintValidatorContext constraintValidatorContext){
 		boolean isValid = true;
+		
 		if ((value.getType() != ReferenceType.Book && value.getType() != ReferenceType.Proceedings) ) {
 			if (value.getIsbn()!= null){
 				isValid = false;

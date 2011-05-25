@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  */
 @SuppressWarnings("unused")
-@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 public class ReferenceValidationTest  {
 	private static final Logger logger = Logger.getLogger(ReferenceValidationTest.class);
 	
@@ -78,6 +78,7 @@ public class ReferenceValidationTest  {
 		validator = validatorFactory.getValidator();
 		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
+		book.setIsbn("1-919795-99-5");
 	}
 	
 	
@@ -94,7 +95,7 @@ public class ReferenceValidationTest  {
 	
 	@Test
 	public final void testLevel2ValidationWithValidISBN() {
-		book.setIsbn("1-919795-99-5");
+		
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
         
@@ -129,22 +130,23 @@ public class ReferenceValidationTest  {
 		bookSection.setTitle("");
 		bookSection.setInReference((Reference)book);
 		Set<ConstraintViolation<IBookSection>> constraintViolations  = validator.validate(bookSection, Level2.class);
-		assertTrue("There should be one constraint violation as this book has a valid Ref",constraintViolations.size() == 1);
+		assertTrue("There should be one constraint violation as this book has a valid Ref",constraintViolations.size() == 0);
 		
         Reference article = ReferenceFactory.newArticle();
         article.setTitleCache("article");
-		bookSection.setInReference(ReferenceFactory.newArticle());
+        bookSection.setInReference(article);
         constraintViolations  = validator.validate(bookSection, Level2.class);
-        assertTrue("There should be a constraint violation as this book has an invalid inReference",constraintViolations.size() == 2);
+        assertTrue("There should be a constraint violation as this book has an invalid inReference",constraintViolations.size() == 1);
         
         
         
 	}
-	/*
+	@Test
 	public final void testValidationAfterCasting(){
+		
 		((Reference)book).castReferenceToArticle();
-		Set<ConstraintViolation<IBookSection>> constraintViolations  = validator.validate(book, Level2.class);
+		Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be one constraint violations as this article is not valid at level 2 (has an isbn)",constraintViolations.isEmpty());
 	}
-	*/
+	
 }

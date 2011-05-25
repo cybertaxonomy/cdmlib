@@ -13,12 +13,12 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import eu.etaxonomy.cdm.validation.constraint.InReferenceValidation;
+import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
 
 
 @Target( { TYPE, METHOD, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = InReferenceValidation.class)
+@Constraint(validatedBy = InReferenceValidator.class)
 @Documented
 public @interface InReference {
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.InReference.wrongInReferenceForReferenceType.message}";

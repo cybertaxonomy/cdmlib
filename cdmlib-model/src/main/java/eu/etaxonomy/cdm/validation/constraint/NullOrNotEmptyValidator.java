@@ -20,12 +20,13 @@ public class NullOrNotEmptyValidator implements
 	public void initialize(NullOrNotEmpty nullOrNotEmpty) { }
 
 	public boolean isValid(String string, ConstraintValidatorContext constraintContext) {
+		boolean isValid = false;
 		if(string == null) {
-			return true;
+			isValid = true;
 		} else if(string.trim().length() > 0) {
-			return true;
-		} else {
-			return false;
+			isValid =  true;
 		}
+		
+		return isValid;
 	}
 }
