@@ -7,7 +7,7 @@
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
-    
+
     <bean id="genericApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
        <property name="includeToOneRelations" value="false" />
        <property name="includeToManyRelations" value="false" />
@@ -19,19 +19,19 @@
 
              <value>TreeNode.data</value>
              <value>TreeNode.data</value>
-             
+
              <value>PolytomousKey.root</value>
              <value>PolytomousKeyNode.children</value>
              <value>PolytomousKeyNode.question</value>
              <value>PolytomousKeyNode.statement</value>
-             <value>PolytomousKeyNode.modifyingText</value> 
-             
+             <value>PolytomousKeyNode.modifyingText</value>
+
              <value>Media.representations</value>
              <value>MediaRepresentation.parts</value>
-             
+
              <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
-             <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> --> 
-             
+             <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
+
              <value>TextData.feature</value>
              <value>CategoricalData.feature</value>
              <value>CommonTaxonName.feature</value>
@@ -45,9 +45,9 @@
        </property>
      </bean>
 
-	<!-- 
+	<!--
          =================================================
-            default configuration for RESTful read(/write) service         
+            default configuration for RESTful read(/write) service
          =================================================
     -->
 	<bean name="jsonConfig" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
@@ -87,6 +87,10 @@
             <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
                 <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
             </entry>
+            <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
+                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+            </entry>
+
 		  </map>
 		</property>
 		<property name="jsonPropertyFilter">
@@ -129,7 +133,7 @@
 				</entry>
 			    <entry key="java.net.URI">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
-                </entry>     
+                </entry>
 			</map>
 		</property>
 		<property name="ignoreDefaultExcludes" value="true" />
@@ -145,9 +149,9 @@
 		</property>
 	</bean>
 
-	<!-- 
+	<!--
          =================================================
-            configuration for RESTful classification service 
+            configuration for RESTful classification service
          =================================================
     -->
 	<bean name="jsonConfigClassification" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
@@ -208,7 +212,7 @@
                 </entry>
                 <entry key="java.net.URI">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
-                </entry>    
+                </entry>
 			</map>
 		</property>
 		<property name="ignoreDefaultExcludes" value="true" />
@@ -224,9 +228,9 @@
 		</property>
 	</bean>
 
-	<!-- 
+	<!--
 	     =================================================
-	       configuration for RESTful portal service 
+	       configuration for RESTful portal service
 	     =================================================
 	-->
 
@@ -343,7 +347,7 @@
                 </entry>
                 <entry key="java.net.URI">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
-                </entry>    
+                </entry>
 			</map>
 		</property>
 		<property name="ignoreDefaultExcludes" value="true" />
@@ -360,5 +364,5 @@
 				<value>inDescription</value>
 			</list>
 		</property>
-	</bean> 
+	</bean>
 </beans>

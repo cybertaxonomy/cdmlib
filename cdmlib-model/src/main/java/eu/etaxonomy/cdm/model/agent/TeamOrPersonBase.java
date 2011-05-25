@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 /**
  * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
  * for authorship of {@link eu.etaxonomy.cdm.model.reference.Reference references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
- * 
+ *
  * @author a.mueller
  * @version 1.0
  * @created 17-APR-2008
@@ -56,11 +56,11 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	@Transient
 	@XmlTransient
 	protected boolean isGeneratingTitleCache = false;
-	
+
 	/**
 	 * Returns the identification string (nomenclatural abbreviation) used in
 	 * nomenclature for this {@link Person person} or this {@link Team team}.
-	 * 
+	 *
 	 * @see  INomenclaturalAuthor#getNomenclaturalTitle()
 	 */
 	@Transient
@@ -72,7 +72,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 		return result;
 	}
 
-	/** 
+	/**
 	 * @see     #getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
@@ -83,7 +83,16 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
-	@Transient //TODO a.kohlbecker remove??
+	@Transient /*
+				TODO  is this still needed, can't we remove this ??
+				@Transient is an absolutely special case and thus leads to several
+				special implementations in order to harmonize this exception again
+				in other parts of the library:
+				 - eu.etaxonomy.cdm.remote.controller.AgentController.doGetTitleCache()
+				 - eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor
+
+				[a.kohlbecker May 2011]
+	 	*/
 	public String getTitleCache() {
 		isGeneratingTitleCache = true;
 		String result = super.getTitleCache();
@@ -105,6 +114,6 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 		}
 		return result;
 	}
-	
-	
+
+
 }
