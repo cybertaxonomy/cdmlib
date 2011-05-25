@@ -108,7 +108,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	 * move to termService
 	 */
 	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name) {
-		List<? extends DefinedTermBase> terms = this.definedTermDao.getDefinedTermByRepresentationText(name, WaterbodyOrCountry.class);
+		List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(WaterbodyOrCountry.class, name, null, null, null, null, null, null) ;
 		List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
 		for (int i=0;i<terms.size();i++){
 			countries.add((WaterbodyOrCountry)terms.get(i));
