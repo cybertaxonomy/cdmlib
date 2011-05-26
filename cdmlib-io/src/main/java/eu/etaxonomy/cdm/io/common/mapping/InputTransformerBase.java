@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
@@ -188,7 +189,25 @@ public class InputTransformerBase implements IInputTransformer {
 		String warning = "getNamedAreaUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+
+	@Override
+	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.matches("(?i)(wgs84)")){return ReferenceSystem.WGS84();
+		}else if (key.matches("(?i)(googleearth)")){return ReferenceSystem.GOOGLE_EARTH();
+		}else if (key.matches("(?i)(gazetteer)")){return ReferenceSystem.GAZETTEER();
+		}else{
+			String warning = "getReferenceSystemByKey is not implemented in implementing transformer class";
+			throw new UndefinedTransformerMethodException(warning);
+		}
+	}
 	
+	@Override
+	public UUID getReferenceSystemUuid(String key) throws UndefinedTransformerMethodException {
+
+		String warning = "getReferenceSystemUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
 	
 	
 }

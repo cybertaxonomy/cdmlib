@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -63,6 +64,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
+	
+	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
 	
 
 	
@@ -243,6 +246,16 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putLanguage(Language language){
 		languageMap.put(language.getUuid(), language);
 	}
+	
+	
+	public ReferenceSystem getReferenceSystem(UUID uuid){
+		return referenceSystemMap.get(uuid);
+	}
+	
+	public void putReferenceSystem(ReferenceSystem referenceSystem){
+		referenceSystemMap.put(referenceSystem.getUuid(), referenceSystem);
+	}
+	
 	
 	//TODO make this abstract or find another way to force that the
 	//transformer exists

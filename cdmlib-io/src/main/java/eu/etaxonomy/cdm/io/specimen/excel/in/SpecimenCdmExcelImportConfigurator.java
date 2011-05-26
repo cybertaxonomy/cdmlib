@@ -50,14 +50,16 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	private boolean determinationsAreDeterminationEvent = true;
 	
 	private boolean preferNameCache = true;
+	private boolean createTaxonIfNotExists;
+//	private boolean includeSynonymsForTaxonMatching = false;
 
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			NamedAreaLevelExcelImport.class,
-			SpecimenCdmExcelImport.class,
-			ExtensionTypeExcelImport.class
+			ExtensionTypeExcelImport.class,
+			SpecimenCdmExcelImport.class
 		};
 	}
 	
@@ -211,6 +213,14 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 
 	public boolean isDoExtensionTypes() {
 		return doExtensionTypes;
+	}
+
+	public void setCreateTaxonIfNotExists(boolean createTaxonIfNotExists) {
+		this.createTaxonIfNotExists = createTaxonIfNotExists;
+	}
+
+	public boolean isCreateTaxonIfNotExists() {
+		return createTaxonIfNotExists;
 	}
 
 	

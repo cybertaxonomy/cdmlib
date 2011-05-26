@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -69,6 +70,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
 	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
+	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	
 	
 	protected Classification makeTree(STATE state, Reference reference){
@@ -206,6 +208,30 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putAnnotationType(annotationType);
 		}
 		return annotationType;
+	}
+	
+	
+	protected ReferenceSystem getReferenceSystem(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
+		ReferenceSystem refSystem = state.getReferenceSystem(uuid);
+		if (refSystem == null){
+			refSystem = (ReferenceSystem)getTermService().find(uuid);
+			if (refSystem == null){
+				refSystem = ReferenceSystem.NewInstance(text, label, labelAbbrev);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for named areas", "User Defined Reference System", null, null, isOrdered);
+				}
+				voc.addTerm(refSystem);
+				refSystem.setUuid(uuid);
+				getTermService().save(refSystem);
+			}
+			state.putReferenceSystem(refSystem);
+		}
+		return refSystem;
+		
 	}
 	
 	/**

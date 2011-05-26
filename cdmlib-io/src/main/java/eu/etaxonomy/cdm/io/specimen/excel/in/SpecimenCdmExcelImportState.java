@@ -102,11 +102,11 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 		return this.names.put(key, value);
 	}
 
-	public void setNamedAreaLabelRow(NamedAreaLevellRow namedAreaLabelRow) {
+	public void setNamedAreaLevelRow(NamedAreaLevellRow namedAreaLabelRow) {
 		this.namedAreaLevelRow = namedAreaLabelRow;
 	}
 
-	public NamedAreaLevellRow getNamedAreaLabelRow() {
+	public NamedAreaLevellRow getNamedAreaLevelRow() {
 		return namedAreaLevelRow;
 	}
 

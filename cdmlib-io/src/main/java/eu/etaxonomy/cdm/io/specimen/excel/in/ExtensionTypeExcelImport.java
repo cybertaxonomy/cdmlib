@@ -50,7 +50,7 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
     	Set<String> keys = record.keySet();
     	
     	NamedAreaLevellRow row = new NamedAreaLevellRow();
-    	state.setNamedAreaLabelRow(row);
+    	state.setNamedAreaLevelRow(row);
     	
     	for (String originalKey: keys) {
     		Integer index = 0;
@@ -97,7 +97,7 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 
 	@Override
 	protected boolean firstPass(SpecimenCdmExcelImportState state) {
-		NamedAreaLevellRow row = state.getNamedAreaLabelRow();
+		NamedAreaLevellRow row = state.getNamedAreaLevelRow();
 		
 		//level
 		UUID uuid = row.getUuid();

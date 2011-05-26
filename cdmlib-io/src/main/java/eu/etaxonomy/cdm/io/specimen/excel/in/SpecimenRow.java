@@ -33,38 +33,44 @@ public class SpecimenRow {
 
 	private UUID uuid = null; 
 	private String basisOfRecord;
+
 	private String country;
 	private String isoCountry;
 	private String locality;
 	private String latitude;
 	private String longitude;
+	private String referenceSystem;
+	private String errorRadius;
+	private String altitude;
+	private String altitudeMax;
 	private String fieldNotes;
-	private String fieldNumber;
-	private String accessionNumber;
-	private String barcode;
-//	private String author;
-	private String absoluteElevation;
-//	private String family;
-//	private String genus;
-//	private String specificEpithet;
-	private String sex;
-	private String ecology;
-	private String plantDescription;
-	private String collectionCode;
-	private String collection;
 	private String collectingDate;
 	private String collectingDateEnd;
 	private String collectorsNumber;
-	private String referenceSystem;
-	private String errorRadius;
+
+	private String sex;
+	private String ecology;
+	private String plantDescription;
+
+	private String accessionNumber;
+	private String barcode;
+	
+	//	private String author;
+
+//	private String family;
+//	private String genus;
+//	private String specificEpithet;
+	private String collectionCode;
+	private String collection;
 	
 	
 	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
 	private TreeMap<Integer, String> collectors = new TreeMap<Integer, String>();
+	private TreeMap<Integer, String> unitNotes = new TreeMap<Integer, String>();
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
 	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
 	private List<PostfixTerm> levels  = new ArrayList<PostfixTerm>(); 
-	private List<PostfixTerm> extensionTypes  = new ArrayList<PostfixTerm>(); 
+	private List<PostfixTerm> extensions  = new ArrayList<PostfixTerm>(); 
 	
 
 	
@@ -167,16 +173,6 @@ public class SpecimenRow {
 	}
 
 
-	public void setFieldNumber(String fieldNumber) {
-		this.fieldNumber = fieldNumber;
-	}
-
-
-	public String getFieldNumber() {
-		return fieldNumber;
-	}
-
-
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
@@ -200,16 +196,16 @@ public class SpecimenRow {
 	/**
 	 * @return the absoluteElevation
 	 */
-	public String getAbsoluteElevation() {
-		return absoluteElevation;
+	public String getAltitude() {
+		return altitude;
 	}
 
 
 	/**
 	 * @param absoluteElevation the absoluteElevation to set
 	 */
-	public void setAbsoluteElevation(String absoluteElevation) {
-		this.absoluteElevation = absoluteElevation;
+	public void setAltitude(String altitude) {
+		this.altitude = altitude;
 	}
 
 
@@ -369,6 +365,14 @@ public class SpecimenRow {
 
 	public List<String> getCollectors() {
 		return getOrdered(collectors);
+	}
+	
+	public void putUnitNote(int key, String unitNote){
+		this.unitNotes.put(key, unitNote);
+	}
+
+	public List<String> getUnitNotes() {
+		return getOrdered(unitNotes);
 	}
 	
 	
@@ -555,15 +559,25 @@ public class SpecimenRow {
 	}
 	
 
-	public void addExtensionTypes(String levelPostfix, String value) {
+	public void addExtension(String levelPostfix, String value) {
 		PostfixTerm term = new PostfixTerm();
 		term.term = value;
 		term.postfix = levelPostfix;
-		this.extensionTypes.add(term);
+		this.extensions.add(term);
 	}
 	
-	public List<PostfixTerm> getExtensionTypes(){
-		return extensionTypes;
+	public List<PostfixTerm> getExtensions(){
+		return extensions;
+	}
+
+
+	public void setAltitudeMax(String altitudeMax) {
+		this.altitudeMax = altitudeMax;
+	}
+
+
+	public String getAltitudeMax() {
+		return altitudeMax;
 	}
 
 	

@@ -13,13 +13,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+
+import sun.security.util.DerEncoder;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -75,55 +77,59 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 
 	private static final String WORKSHEET_NAME = "Specimen";
 
-	private static final String UUID_COLUMN = "UUID";
-	private static final String BASIS_OF_RECORD_COLUMN = "BasisOfRecord";
-	private static final String COUNTRY_COLUMN = "Country";
-	private static final String AREA_COLUMN = "Area";
-	private static final String ISO_COUNTRY_COLUMN = "ISOCountry";
-	private static final String LOCALITY_COLUMN = "Locality";
-	private static final String ABSOLUTE_ELEVATION_COLUMN = "AbsoluteElevation";
-	private static final String COLLECTION_DATE_COLUMN = "CollectionDate";
-	private static final String COLLECTION_DATE_END_COLUMN = "CollectionDateEnd";
-	private static final String COLLECTOR_COLUMN = "Collector";
-	private static final String LONGITUDE_COLUMN = "Longitude";
-	private static final String LATITUDE_COLUMN = "Latitude";
-	private static final String REFERENCE_SYSTEM_COLUMN = "ReferenceSystem";
-	private static final String ERROR_RADIUS_COLUMN = "ErrorRadius";
+	private static final String UUID_COLUMN = "(?i)(UUID)";
+	private static final String BASIS_OF_RECORD_COLUMN = "(?i)(BasisOfRecord)";
+	private static final String COUNTRY_COLUMN = "(?i)(Country)";
+	private static final String AREA_COLUMN = "(?i)(Area)";
+	private static final String ISO_COUNTRY_COLUMN = "(?i)(ISOCountry|CountryCode)";
+	private static final String LOCALITY_COLUMN = "(?i)(Locality)";
+	private static final String ALTITUDE_COLUMN = "(?i)(AbsoluteElevation|Altitude)";
+	private static final String ALTITUDE_MAX_COLUMN = "(?i)(AbsoluteElevation|Altitude)Max(imum)?";
+	private static final String COLLECTION_DATE_COLUMN = "(?i)(CollectionDate)";
+	private static final String COLLECTION_DATE_END_COLUMN = "(?i)(CollectionDateEnd)";
+	private static final String COLLECTOR_COLUMN = "(?i)(Collector)";
+	private static final String LONGITUDE_COLUMN = "(?i)(Longitude)";
+	private static final String LATITUDE_COLUMN = "(?i)(Latitude)";
+	private static final String REFERENCE_SYSTEM_COLUMN = "(?i)(ReferenceSystem)";
+	private static final String ERROR_RADIUS_COLUMN = "(?i)(ErrorRadius)";
 	
 	
-	private static final String COLLECTORS_NUMBER_COLUMN = "CollectorsNumber";
-	private static final String ECOLOGY_COLUMN = "Ecology";
-	private static final String PLANT_DESCRIPTION_COLUMN = "PlantDescription";
-	private static final String FIELD_NOTES_COLUMN = "FieldNotes";
-	private static final String SEX_COLUMN = "Sex";
+	private static final String COLLECTORS_NUMBER_COLUMN = "(?i)((Collectors|Field)Number)";
+	private static final String ECOLOGY_COLUMN = "(?i)(Ecology|Habitat)";
+	private static final String PLANT_DESCRIPTION_COLUMN = "(?i)(PlantDescription)";
+	private static final String FIELD_NOTES_COLUMN = "(?i)(FieldNotes)";
+	private static final String SEX_COLUMN = "(?i)(Sex)";
 	
 	
-	private static final String ACCESSION_NUMBER_COLUMN = "AccessionNumber";
-	private static final String BARCODE_COLUMN = "Barcode";
-	private static final String COLLECTION_CODE_COLUMN = "CollectionCode";
-	private static final String COLLECTION_COLUMN = "Collection";
-	
-	private static final String TYPE_CATEGORY_COLUMN = "TypeCategory";
-	private static final String TYPIFIED_NAME_COLUMN = "TypifiedName";
+	private static final String ACCESSION_NUMBER_COLUMN = "(?i)(AccessionNumber)";
+	private static final String BARCODE_COLUMN = "(?i)(Barcode)";
+	private static final String COLLECTION_CODE_COLUMN = "(?i)(CollectionCode)";
+	private static final String COLLECTION_COLUMN = "(?i)(Collection)";
+	private static final String UNIT_NOTES_COLUMN = "(?i)((Unit)?Notes)";
 	
 	
-	private static final String SOURCE_COLUMN = "Source";
-	private static final String ID_IN_SOURCE_COLUMN = "IdInSource";
+	private static final String TYPE_CATEGORY_COLUMN = "(?i)(TypeCategory)";
+	private static final String TYPIFIED_NAME_COLUMN = "(?i)(TypifiedName|TypeOf)";
 	
 	
-	private static final String RANK_COLUMN = "Rank";
-	private static final String FULL_NAME_COLUMN = "FullName";
-	private static final String FAMILY_COLUMN = "Family";
-	private static final String GENUS_COLUMN = "Genus";
-	private static final String SPECIFIC_EPITHET_COLUMN = "SpecificEpithet";
-	private static final String INFRASPECIFIC_EPITHET_COLUMN = "InfraSpecificEpithet";
-	private static final String DETERMINATION_AUTHOR_COLUMN = "Author";
-	private static final String DETERMINATION_MODIFIER_COLUMN = "DeterminationModifier";
-	private static final String DETERMINED_BY_COLUMN = "DeterminationBy";
-	private static final String DETERMINED_WHEN_COLUMN = "DeterminationWhen";
-	private static final String DETERMINATION_NOTES_COLUMN = "DeterminationNote";
-	private static final String EXTENSION_COLUMN = "Ext(ension)?";
+	private static final String SOURCE_COLUMN = "(?i)(Source)";
+	private static final String ID_IN_SOURCE_COLUMN = "(?i)(IdInSource)";
 	
+	
+	private static final String RANK_COLUMN = "(?i)(Rank)";
+	private static final String FULL_NAME_COLUMN = "(?i)(FullName)";
+	private static final String FAMILY_COLUMN = "(?i)(Family)";
+	private static final String GENUS_COLUMN = "(?i)(Genus)";
+	private static final String SPECIFIC_EPITHET_COLUMN = "(?i)(SpecificEpi(thet)?)";
+	private static final String INFRASPECIFIC_EPITHET_COLUMN = "(?i)(InfraSpecificEpi(thet)?)";
+	private static final String DETERMINATION_AUTHOR_COLUMN = "(?i)(Author)";
+	private static final String DETERMINATION_MODIFIER_COLUMN = "(?i)(DeterminationModifier)";
+	private static final String DETERMINED_BY_COLUMN = "(?i)(DeterminationBy)";
+	private static final String DETERMINED_WHEN_COLUMN = "(?i)(DeterminationWhen)";
+	private static final String DETERMINATION_NOTES_COLUMN = "(?i)(DeterminationNote)";
+	private static final String EXTENSION_COLUMN = "(?i)(Ext(ension)?)";
+	
+	private static final String IGNORE_COLUMN = "(?i)(Ignore|Not)";
 	
 
 	public SpecimenCdmExcelImport() {
@@ -164,45 +170,47 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
     			continue;
     		}
     		
-    		if (key.equalsIgnoreCase(UUID_COLUMN)) {
+    		if (key.matches(UUID_COLUMN)) {
     			row.setUuid(UUID.fromString(value)); //VALIDATE UUID
- 			} else if(key.equalsIgnoreCase(BASIS_OF_RECORD_COLUMN)) {
+ 			} else if(key.matches(BASIS_OF_RECORD_COLUMN)) {
 				row.setBasisOfRecord(value);
-			} else if(key.equalsIgnoreCase(COUNTRY_COLUMN)) {
+			} else if(key.matches(COUNTRY_COLUMN)) {
 				row.setCountry(value);
-			} else if(key.equalsIgnoreCase(ISO_COUNTRY_COLUMN)) {
+			} else if(key.matches(ISO_COUNTRY_COLUMN)) {
 				row.setIsoCountry(value);
-			} else if(key.equalsIgnoreCase(LOCALITY_COLUMN)) {
+			} else if(key.matches(LOCALITY_COLUMN)) {
 				row.setLocality(value);
-			} else if(key.equalsIgnoreCase(FIELD_NOTES_COLUMN)) {
+			} else if(key.matches(FIELD_NOTES_COLUMN)) {
 				row.setLocality(value);
-			} else if(key.equalsIgnoreCase(ABSOLUTE_ELEVATION_COLUMN)) {
-				row.setAbsoluteElevation(value);		
-			} else if(key.equalsIgnoreCase(COLLECTOR_COLUMN)) {
+			} else if(key.matches(ALTITUDE_COLUMN)) {
+				row.setAltitude(value);		
+			} else if(key.matches(ALTITUDE_MAX_COLUMN)) {
+				row.setAltitudeMax(value);		
+			} else if(key.matches(COLLECTOR_COLUMN)) {
 				row.putCollector(index, value);		
-			} else if(key.equalsIgnoreCase(ECOLOGY_COLUMN)) {
+			} else if(key.matches(ECOLOGY_COLUMN)) {
 				row.setEcology(value);
-			} else if(key.equalsIgnoreCase(PLANT_DESCRIPTION_COLUMN)) {
+			} else if(key.matches(PLANT_DESCRIPTION_COLUMN)) {
 				row.setPlantDescription(value);		
-			} else if(key.equalsIgnoreCase(SEX_COLUMN)) {
+			} else if(key.matches(SEX_COLUMN)) {
 				row.setSex(value);
-			} else if(key.equalsIgnoreCase(COLLECTION_DATE_COLUMN)) {
+			} else if(key.matches(COLLECTION_DATE_COLUMN)) {
 				row.setCollectingDate(value);		
-			} else if(key.equalsIgnoreCase(COLLECTION_DATE_END_COLUMN)) {
+			} else if(key.matches(COLLECTION_DATE_END_COLUMN)) {
 				row.setCollectingDateEnd(value);		
-			} else if(key.equalsIgnoreCase(COLLECTOR_COLUMN)) {
+			} else if(key.matches(COLLECTOR_COLUMN)) {
 				row.putCollector(index, value);	
-			} else if(key.equalsIgnoreCase(COLLECTORS_NUMBER_COLUMN)) {
+			} else if(key.matches(COLLECTORS_NUMBER_COLUMN)) {
 				row.setCollectorsNumber(value);		
-			} else if(key.equalsIgnoreCase(LONGITUDE_COLUMN)) {
+			} else if(key.matches(LONGITUDE_COLUMN)) {
 				row.setLongitude(value);		
-			} else if(key.equalsIgnoreCase(LATITUDE_COLUMN)) {
+			} else if(key.matches(LATITUDE_COLUMN)) {
 				row.setLatitude(value);		
-			} else if(key.equalsIgnoreCase(REFERENCE_SYSTEM_COLUMN)) {
+			} else if(key.matches(REFERENCE_SYSTEM_COLUMN)) {
 				row.setReferenceSystem(value);		
-			} else if(key.equalsIgnoreCase(ERROR_RADIUS_COLUMN)) {
+			} else if(key.matches(ERROR_RADIUS_COLUMN)) {
 				row.setErrorRadius(value);		
-			} else if(key.equalsIgnoreCase(AREA_COLUMN)) {
+			} else if(key.matches(AREA_COLUMN)) {
 				if (postfix != null){
 					row.addLeveledArea(postfix, value);		
 				}else{
@@ -211,60 +219,64 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			
 				
 				
-			} else if(key.equalsIgnoreCase(ACCESSION_NUMBER_COLUMN)) {
+			} else if(key.matches(ACCESSION_NUMBER_COLUMN)) {
 				row.setLocality(value);		
-			} else if(key.equalsIgnoreCase(BARCODE_COLUMN)) {
+			} else if(key.matches(BARCODE_COLUMN)) {
 				row.setBarcode(value);		
+			} else if(key.matches(UNIT_NOTES_COLUMN)) {
+				row.putUnitNote(index, value);		
 			
-			} else if(key.equalsIgnoreCase(FAMILY_COLUMN)) {
+				
+			} else if(key.matches(FAMILY_COLUMN)) {
 				row.putDeterminationFamily(index, value);		
-			} else if(key.equalsIgnoreCase(GENUS_COLUMN)) {
+			} else if(key.matches(GENUS_COLUMN)) {
 				row.putDeterminationGenus(index, value);		
-			} else if(key.equalsIgnoreCase(SPECIFIC_EPITHET_COLUMN)) {
+			} else if(key.matches(SPECIFIC_EPITHET_COLUMN)) {
 				row.putDeterminationSpeciesEpi(index, value);			
-			} else if(key.equalsIgnoreCase(INFRASPECIFIC_EPITHET_COLUMN)) {
+			} else if(key.matches(INFRASPECIFIC_EPITHET_COLUMN)) {
 				row.putDeterminationInfraSpeciesEpi(index, value);			
-			} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
+			} else if(key.matches(RANK_COLUMN)) {
 				row.putDeterminationRank(index, value);			
-			} else if(key.equalsIgnoreCase(FULL_NAME_COLUMN)) {
+			} else if(key.matches(FULL_NAME_COLUMN)) {
 				row.putDeterminationFullName(index, value);			
-			} else if(key.equalsIgnoreCase(DETERMINATION_AUTHOR_COLUMN)) {
+			} else if(key.matches(DETERMINATION_AUTHOR_COLUMN)) {
 				row.putDeterminationAuthor(index, value);			
-			} else if(key.equalsIgnoreCase(DETERMINATION_MODIFIER_COLUMN)) {
+			} else if(key.matches(DETERMINATION_MODIFIER_COLUMN)) {
 				row.putDeterminationDeterminationModifier(index, value);			
-			} else if(key.equalsIgnoreCase(DETERMINATION_NOTES_COLUMN)) {
+			} else if(key.matches(DETERMINATION_NOTES_COLUMN)) {
 				row.putDeterminationDeterminationNotes(index, value);			
-			} else if(key.equalsIgnoreCase(DETERMINED_BY_COLUMN)) {
+			} else if(key.matches(DETERMINED_BY_COLUMN)) {
 				row.putDeterminationDeterminedBy(index, value);			
-			} else if(key.equalsIgnoreCase(DETERMINED_WHEN_COLUMN)) {
+			} else if(key.matches(DETERMINED_WHEN_COLUMN)) {
 				row.putDeterminationDeterminedWhen(index, value);			
 			
-			} else if(key.equalsIgnoreCase(COLLECTION_CODE_COLUMN)) {
+			} else if(key.matches(COLLECTION_CODE_COLUMN)) {
 				row.setCollectionCode(value);		
-			} else if(key.equalsIgnoreCase(COLLECTION_COLUMN)) {
+			} else if(key.matches(COLLECTION_COLUMN)) {
 				row.setCollection(value);		
 			
-			} else if(key.equalsIgnoreCase(TYPE_CATEGORY_COLUMN)) {
+			} else if(key.matches(TYPE_CATEGORY_COLUMN)) {
 				row.putTypeCategory(index, getSpecimenTypeStatus(state, value));	
-			} else if(key.equalsIgnoreCase(TYPIFIED_NAME_COLUMN)) {
+			} else if(key.matches(TYPIFIED_NAME_COLUMN)) {
 				row.putTypifiedName(index, getTaxonName(state, value));		
 			
 			
-			} else if(key.equalsIgnoreCase(SOURCE_COLUMN)) {
+			} else if(key.matches(SOURCE_COLUMN)) {
 				row.putSourceReference(index, getOrMakeReference(state, value));	
-			} else if(key.equalsIgnoreCase(ID_IN_SOURCE_COLUMN)) {
+			} else if(key.matches(ID_IN_SOURCE_COLUMN)) {
 				row.putIdInSource(index, value);		
 			} else if(key.matches(EXTENSION_COLUMN)) {
 				if (postfix != null){
-					row.addExtensionTypes(postfix, value);		
+					row.addExtension(postfix, value);		
 				}else{
 					logger.warn("Extension without postfix not yet implemented");
 				}
-			
-			
+				
+			} else if(key.matches(IGNORE_COLUMN)) {
+				logger.debug("Ignored column" + originalKey);		
 			}else {
 				success = false;
-				logger.error("Unexpected column header " + key);
+				logger.error("Unexpected column header " + originalKey);
 			}
     	}
     	return success;
@@ -297,6 +309,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 //		facade.setSex(row.get)
 		handleExactLocation(facade, row, state);
 		facade.setCollector(getOrMakeAgent(state, row.getCollectors()));
+		handleAbsoluteElevation(facade, row, state);
 		
 		
 		//derivedUnit
@@ -312,17 +325,78 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		}
 		handleDeterminations(state, row, facade);
 		handleExtensions(facade,row, state);
-		
+		for (String note : row.getUnitNotes()){
+			Annotation annotation = Annotation.NewInstance(note, AnnotationType.EDITORIAL(), Language.DEFAULT());
+			facade.addAnnotation(annotation);
+		}
 		
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
 		return true;
 	}
 
-	private void handleExtensions(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
-		List<PostfixTerm> extensionTypes = row.getExtensionTypes();
+	private void handleAbsoluteElevation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		//altitude
 		
-		for (PostfixTerm exType : extensionTypes){
+		try {
+			String altitude = row.getAltitude();
+			if (StringUtils.isBlank(altitude)){
+				return;
+			}
+			if (altitude.endsWith(".0")){
+				altitude = altitude.substring(0, altitude.length() -2);
+			}
+			int value = Integer.valueOf(altitude);
+			facade.setAbsoluteElevation(value);
+		} catch (NumberFormatException e) {
+			String message = "Absolute elevation / Altitude '%s' is not an integer number in line %d";
+			message = String.format(message, row.getAltitude(), state.getCurrentLine());
+			logger.warn(message);
+			return;
+		}
+		
+		//max
+		
+		try {
+			String max = row.getAltitudeMax();
+			if (StringUtils.isBlank(max)){
+				return;
+			}
+			if (max.endsWith(".0")){
+				max = max.substring(0, max.length() -2);
+			}
+			int value = Integer.valueOf(max);
+			//TODO avoid unequal distance
+			int min = facade.getAbsoluteElevation();
+			if ( (value - min) % 2 == 1 ){
+				String message = "Altitude min-max difference ist not equal. Max reduced by 1 in line %d";
+				message = String.format(message, state.getCurrentLine());
+				logger.warn(message);
+				value--;
+			}
+			facade.setAbsoluteElevationRange(min, value);
+			facade.setAbsoluteElevation(value);
+		} catch (NumberFormatException e) {
+			String message = "Absolute elevation / Altitude maximum '%s' is not an integer number in line %d";
+			message = String.format(message, row.getAltitudeMax(), state.getCurrentLine());
+			logger.warn(message);
+			return;
+		}catch (Exception e){
+			String message = "Error occurred when trying to write Absolute elevation / Altitude maximum '%s' in line %d";
+			message = String.format(message, row.getAltitudeMax(), state.getCurrentLine());
+			logger.warn(message);
+			return;
+			
+		}
+		
+		
+	}
+
+
+	private void handleExtensions(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		List<PostfixTerm> extensions = row.getExtensions();
+		
+		for (PostfixTerm exType : extensions){
 			ExtensionType extensionType = state.getPostfixExtensionType(exType.postfix);
 			
 			Extension extension = Extension.NewInstance();
@@ -361,21 +435,33 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	private void handleDeterminations(SpecimenCdmExcelImportState state,SpecimenRow row, DerivedUnitFacade facade) {
 		boolean isFirstDetermination = true;
 		for (DeterminationLight determinationLight : row.getDetermination()){
-			Taxon taxon = findBestMatchingTaxon(state, determinationLight, true);
-			getTaxonService().saveOrUpdate(taxon);
+			Taxon taxon = findBestMatchingTaxon(state, determinationLight, state.getConfig().isCreateTaxonIfNotExists());
 			TaxonNameBase<?,?> name = findBestMatchingName(state, determinationLight);
-			if (state.getConfig().isMakeIndividualAssociations() && taxon != null){
-				IndividualsAssociation indivAssociciation = IndividualsAssociation.NewInstance();
-				DerivedUnitBase<?> du = facade.innerDerivedUnit();
-				indivAssociciation.setAssociatedSpecimenOrObservation(du);
-				getTaxonDescription(taxon).addElement(indivAssociciation);
+			if (taxon != null){
+				getTaxonService().saveOrUpdate(taxon);
+				if (state.getConfig().isMakeIndividualAssociations() && taxon != null){
+					IndividualsAssociation indivAssociciation = IndividualsAssociation.NewInstance();
+					DerivedUnitBase<?> du = facade.innerDerivedUnit();
+					indivAssociciation.setAssociatedSpecimenOrObservation(du);
+					getTaxonDescription(taxon).addElement(indivAssociciation);
+					Feature feature = Feature.INDIVIDUALS_ASSOCIATION();
+					if (facade.getType().equals(DerivedUnitType.Specimen)){
+						feature = Feature.SPECIMEN();
+					}else if (facade.getType().equals(DerivedUnitType.Observation)){
+						feature = Feature.OBSERVATION();
+					}
+					indivAssociciation.setFeature(feature);
+				}
+				if (state.getConfig().isDeterminationsAreDeterminationEvent()){
+					DeterminationEvent detEvent = makeDeterminationEvent(state, determinationLight, taxon);
+					detEvent.setPreferredFlag(isFirstDetermination);
+					facade.addDetermination(detEvent);
+				}
 			}
-			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
-				facade.setStoredUnder(name);
-			}
-			if (state.getConfig().isDeterminationsAreDeterminationEvent()){
-				DeterminationEvent detEvent = makeDeterminationEvent(state, determinationLight, taxon);
-				facade.addDetermination(detEvent);
+			if (name != null){
+				if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
+					facade.setStoredUnder(name);
+				}
 			}
 			isFirstDetermination = false;
 		}
@@ -392,23 +478,28 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	 * @return
 	 */
 	private Taxon findBestMatchingTaxon(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, boolean createIfNotExists) {
-		NonViralName name = makeTaxonName(state, determinationLight);
+		NonViralName<?> name = makeTaxonName(state, determinationLight);
 		
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 		
 		if (! StringUtils.isBlank(titleCache)){
 			MatchingTaxonConfigurator matchConfigurator = MatchingTaxonConfigurator.NewInstance();
-			matchConfigurator.setTaxonNameTitle(determinationLight.fullName);
+			matchConfigurator.setTaxonNameTitle(titleCache);
+			matchConfigurator.setIncludeSynonyms(false);
 			Taxon taxon = getTaxonService().findBestMatchingTaxon(matchConfigurator);
 		
 			if(taxon == null && createIfNotExists){
 				logger.info("creating new Taxon from TaxonName '" + titleCache+"'");
 				UUID secUuid = null; //TODO
-				Reference sec = null;
+				Reference<?> sec = null;
 				if (secUuid != null){
 					sec = getReferenceService().find(secUuid);
 				}
 				taxon = Taxon.NewInstance(name, sec);
+			}else if (taxon == null){
+				String message = "Taxon '%s' not found in line %d";
+				message = String.format(message, titleCache, state.getCurrentLine());
+				logger.warn(message);
 			}
 			return taxon;
 		}else {
@@ -499,6 +590,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 	
 	private DeterminationEvent makeDeterminationEvent(SpecimenCdmExcelImportState state, DeterminationLight determination, Taxon taxon) {
 		DeterminationEvent event = DeterminationEvent.NewInstance();
+		//taxon
+		event.setTaxon(taxon);
+		
 		//date
 		TimePeriod date = TimePeriod.parseString(determination.determinedWhen);
 		event.setTimeperiod(date);
@@ -520,6 +614,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		//notes
 		Annotation annotation = Annotation.NewInstance(determination.notes, AnnotationType.EDITORIAL(), Language.DEFAULT());
 		event.addAnnotation(annotation);
+
 		return event;
 	}
 
@@ -630,25 +725,32 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 
 	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		try {
-			String longitude = row.getLongitude();
-			String latitude = row.getLatitude();
+			
+			//reference system
 			ReferenceSystem refSys = null;
 			if (StringUtils.isNotBlank(row.getReferenceSystem())){
-				String strRefSys = row.getReferenceSystem().trim().replaceAll("\\s", "").toLowerCase();
-				//TODO move to reference system class ??
-				if (strRefSys.equals("wgs84")){
-					refSys = ReferenceSystem.WGS84();
-				}else if (strRefSys.equals("gazetteer")){
-					refSys = ReferenceSystem.GAZETTEER();
-				}else if (strRefSys.equals("googleearth")){
-					refSys = ReferenceSystem.GOOGLE_EARTH();
-				}else{
-					String message = "Reference system %s not recognized in line %d";
-					message = String.format(message, strRefSys, state.getCurrentLine());
-					logger.warn(message);
+				String strRefSys = row.getReferenceSystem().trim().replaceAll("\\s", "");
+				UUID refUuid;
+				try {
+					refSys = state.getTransformer().getReferenceSystemByKey(strRefSys);
+					if (refSys == null){
+						refUuid = state.getTransformer().getReferenceSystemUuid(strRefSys);
+						if (refUuid == null){
+							String message = "Unknown reference system %s in line %d";
+							message = String.format(message, strRefSys, state.getCurrentLine());
+							logger.warn(message);
+						}
+						refSys = getReferenceSystem(state, refUuid, strRefSys, strRefSys, strRefSys, null);
+					}
+					
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
 				}
-				
 			}
+			
+			// lat/ long /error
+			String longitude = row.getLongitude();
+			String latitude = row.getLatitude();
 			Integer errorRadius = null;
 			if (StringUtils.isNotBlank(row.getErrorRadius())){
 				try {
@@ -659,6 +761,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 					logger.warn(message);
 				}
 			}
+			//all
 			facade.setExactLocationByParsing(longitude, latitude, refSys, errorRadius);
 		} catch (ParseException e) {
 			String message = "Problems when parsing exact location for line %d";

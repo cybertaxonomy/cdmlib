@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
@@ -67,8 +68,12 @@ public interface IInputTransformer {
 
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException;
 
-	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException;;	
+	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException;	
 
-	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException;;	
-	
+	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException;
+
+	public UUID getReferenceSystemUuid(String key)  throws UndefinedTransformerMethodException;	
+
+	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException;
+
 }
