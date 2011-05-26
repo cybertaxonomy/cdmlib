@@ -93,7 +93,9 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	 * Creates a new empty individuals association instance.
 	 */
 	public static IndividualsAssociation NewInstance(){
-		return new IndividualsAssociation();
+		IndividualsAssociation result =  new IndividualsAssociation();
+		result.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
+		return result;
 	}
 	
 
