@@ -20,6 +20,7 @@ import java.util.UUID;
 import net.sf.json.JsonConfig;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
 import eu.etaxonomy.cdm.remote.controller.ClassificationController;
 import eu.etaxonomy.cdm.remote.controller.ClassificationListController;
@@ -430,10 +433,9 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 	 * @return
 	 */
 	private Element render(Object result) {
-		Document document = new Document();
 		File tmpFile = null;
-
 		try {
+			Document document = new Document();
 			tmpFile = File.createTempFile("printpublisher", null);
 
 			PrintWriter writer = new PrintWriter(tmpFile, "UTF-8");
@@ -442,19 +444,20 @@ public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
 
 			document = builder.build(tmpFile);
 
+			Element root = document.getRootElement();
+
+			return root;
+			
 		} catch (IOException e) {
 			monitor.warning(e.getLocalizedMessage(), e);
 			throw new RuntimeException(e);
 		} catch (Exception e) {
 			monitor.warning(e.getLocalizedMessage(), e);
-			throw new RuntimeException(e);
 		} finally {
 			if (tmpFile != null)
 				tmpFile.delete();
 		}
 
-		Element root = document.getRootElement();
-
-		return root;
+		return new Element("somethingWentWrong");
 	}
 }
