@@ -57,7 +57,7 @@ public class PdfOutputModuleTest {
 		List<File> stylesheets = outputModule.getStylesheetsByLocation(shippedStylesheetsDir);
 		
 		assertNotNull("There should be stylesheets", stylesheets);
-		assertEquals("There should be one stylesheet", 1, stylesheets.size());
+		assertEquals("There should be one stylesheet", 2, stylesheets.size());
 	}
 	
 	
