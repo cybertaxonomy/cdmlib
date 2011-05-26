@@ -485,15 +485,18 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 		StringBuilder title = new StringBuilder();
 		Representation representation = area.getPreferredRepresentation(language);
 		if (representation != null){
-			title.append(representation.getDescription());
-			title.append(" - ");
-			title.append(area.getClass().getSimpleName());
+			String areaString = getPreferredAreaLabel(namedArea, representation);
+			
+			title.append(areaString);
+			if (! area.getClass().equals(NamedArea.class)){
+				title.append(" - ");
+				title.append(area.getClass().getSimpleName());
+			}
 			if(area.getLevel() != null){
 				title.append(" - ");
 				Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
-				if (levelRepresentation != null){
-					title.append(levelRepresentation.getLabel());
-				}
+				String levelString = getPreferredAreaLabel(area.getLevel(), levelRepresentation);
+				title.append(levelString);
 			}
 			if(! CdmUtils.isEmpty(representation.getAbbreviatedLabel())){
 				title.append(" - ");
@@ -501,6 +504,31 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 			}
 		}
 		return title.toString();
+	}
+
+	/**
+	 * @param namedArea
+	 * @param representation
+	 * @return
+	 */
+	private static String getPreferredAreaLabel(DefinedTermBase<?> namedArea, Representation representation) {
+		String areaString = null;
+		if (representation != null){
+			areaString = representation.getLabel();
+			if (areaString == null){
+				areaString = representation.getAbbreviatedLabel();
+			}
+			if (areaString == null){
+				areaString = representation.getText();
+			}
+		}
+		if (areaString == null){
+			areaString = namedArea.getTitleCache();
+		}
+		if (areaString == null){
+			areaString = "no title";
+		}
+		return areaString;
 	}
 	
 	//*********************************** CLONE *****************************************/
