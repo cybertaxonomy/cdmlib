@@ -145,6 +145,26 @@ public class DerivedUnitFacade {
 			}
 			return null;
 		}
+		
+		public static DerivedUnitType valueOf2(Class<? extends SpecimenOrObservationBase> clazz) {
+			if (clazz == null) {
+				return null;
+			}
+			if (clazz.equals(Specimen.class)) {
+				return Specimen;
+			} else if (clazz.equals(eu.etaxonomy.cdm.model.occurrence.LivingBeing.class)) {
+				return LivingBeing;
+			} else if (clazz.equals(eu.etaxonomy.cdm.model.occurrence.Observation.class)) {
+				return Observation;
+			} else if (clazz.equals(eu.etaxonomy.cdm.model.occurrence.Fossil.class)) {
+				return Fossil;
+			} else if (clazz.equals(FieldObservation.class)) {
+				return DerivedUnitType.FieldObservation;
+			} else if (clazz.equals(DerivedUnit.class)) {
+				return DerivedUnitType.DerivedUnit;
+			}
+			return null;
+		}
 
 	}
 
@@ -209,7 +229,7 @@ public class DerivedUnitFacade {
 
 	private DerivedUnitFacade(DerivedUnitType type, FieldObservation fieldObservation) {
 		this.config = DerivedUnitFacadeConfigurator.NewInstance();
-		
+		this.type = type;
 		// derivedUnit
 		derivedUnit = type.getNewDerivedUnitInstance();
 		setFieldObservation(fieldObservation);
@@ -231,6 +251,7 @@ public class DerivedUnitFacade {
 
 		// derived unit
 		this.derivedUnit = derivedUnit;
+		this.type = DerivedUnitType.valueOf2(this.derivedUnit.getClass());
 		
 		// derivation event
 		if (this.derivedUnit.getDerivedFrom() != null) {
@@ -1742,6 +1763,7 @@ public class DerivedUnitFacade {
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
 		testDerivedUnit();
+		determination.setIdentifiedUnit(derivedUnit);
 		derivedUnit.addDetermination(determination);
 	}
 
@@ -2274,6 +2296,14 @@ public class DerivedUnitFacade {
 		if (derivedUnit == null){
 			throw new IllegalStateException("This method is not allowed for this specimen or observation type. Probably you have tried to add specimen(derived unit) information to a field observation");
 		}
+	}
+
+	public void setType(DerivedUnitType type) {
+		this.type = type;
+	}
+
+	public DerivedUnitType getType() {
+		return type;
 	}
 
 }
