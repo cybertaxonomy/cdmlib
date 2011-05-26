@@ -717,30 +717,37 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Override
 	public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config) {
 		
-		Taxon matchedTaxon = null;
+		Taxon bestCandidate = null;
 		try{
 			// 1. search for acceptet taxa
 			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
-			boolean matchesSecUuid = false;
-			boolean isInClassification = false;
+			boolean bestCandidateMatchesSecUuid = false;
+			boolean bestCandidateIsInClassification = false;
 			int countEqualCandidates = 0;
 			for(TaxonBase taxonBaseCandidate : taxonList){
 				if(taxonBaseCandidate instanceof Taxon){
 					Taxon newCanditate = CdmBase.deproxy(taxonBaseCandidate, Taxon.class);
-					boolean candidateMatchesSecUuid = isMatchesSecUuid(newCanditate, config);
-					if (! candidateMatchesSecUuid && config.isOnlyMatchingSecUuid() ){
+					boolean newCandidateMatchesSecUuid = isMatchesSecUuid(newCanditate, config);
+					if (! newCandidateMatchesSecUuid && config.isOnlyMatchingSecUuid() ){
 						continue;
-					}else if(candidateMatchesSecUuid && ! matchesSecUuid){
-						matchedTaxon = newCanditate;
+					}else if(newCandidateMatchesSecUuid && ! bestCandidateMatchesSecUuid){
+						bestCandidate = newCanditate;
 						countEqualCandidates = 1;
+						bestCandidateMatchesSecUuid = true;
 						continue;
 					}
 					
-					boolean candidateInClassification = isInClassification(newCanditate, config);
-					if (! candidateInClassification && config.isOnlyMatchingClassificationUuid()){
+					boolean newCandidateInClassification = isInClassification(newCanditate, config);
+					if (! newCandidateInClassification && config.isOnlyMatchingClassificationUuid()){
 						continue;
-					}else if (candidateInClassification && ! isInClassification){
-						matchedTaxon = newCanditate;
+					}else if (newCandidateInClassification && ! bestCandidateIsInClassification){
+						bestCandidate = newCanditate;
+						countEqualCandidates = 1;
+						bestCandidateIsInClassification = true;
+						continue;
+					}
+					if (bestCandidate == null){
+						bestCandidate = newCanditate;
 						countEqualCandidates = 1;
 						continue;
 					}
@@ -751,13 +758,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				countEqualCandidates++;
 
 			}
-			if (matchedTaxon != null){
+			if (bestCandidate != null){
 				if(countEqualCandidates > 1){
-					logger.info(countEqualCandidates + " equally matching TaxonBases found, using first accepted Taxon: " + matchedTaxon.getTitleCache());
-					return matchedTaxon;
+					logger.info(countEqualCandidates + " equally matching TaxonBases found, using first accepted Taxon: " + bestCandidate.getTitleCache());
+					return bestCandidate;
 				} else {
-					logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());
-					return matchedTaxon;
+					logger.info("using accepted Taxon: " + bestCandidate.getTitleCache());
+					return bestCandidate;
 				}
 			}
 			
@@ -770,13 +777,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 						Set<Taxon> acceptetdCandidates = synonym.getAcceptedTaxa();
 						if(!acceptetdCandidates.isEmpty()){
-							matchedTaxon = acceptetdCandidates.iterator().next();
+							bestCandidate = acceptetdCandidates.iterator().next();
 							if(acceptetdCandidates.size() == 1){
-								logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + matchedTaxon.getTitleCache());
-								return matchedTaxon;
+								logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + bestCandidate.getTitleCache());
+								return bestCandidate;
 							} else {
-								logger.info("using accepted Taxon " +  matchedTaxon.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
-								return matchedTaxon;
+								logger.info("using accepted Taxon " +  bestCandidate.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
+								return bestCandidate;
 							}
 							//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found
 						}
@@ -788,7 +795,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			logger.error(e);
 		}
 		
-		return matchedTaxon;
+		return bestCandidate;
 	}
 
 	private boolean isInClassification(Taxon taxon, MatchingTaxonConfigurator config) {
