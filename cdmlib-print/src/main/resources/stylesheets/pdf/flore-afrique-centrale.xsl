@@ -300,7 +300,6 @@
   <xsl:template match="name">
     <xsl:apply-templates select="taggedName"/>
     <xsl:apply-templates select="nomenclaturalReference"/>
-    <xsl:call-template name="citations"/>
   </xsl:template>
 
   <xsl:template match="taggedName">
@@ -325,8 +324,9 @@
 
   <xsl:template match="nomenclaturalReference">
     <xsl:text> (</xsl:text>
-    <fo:inline><xsl:value-of
-        select="authorTeam/titleCache"/>
+    <fo:inline>
+      <xsl:value-of select="authorTeam/titleCache"/>
+      <xsl:text> </xsl:text>
       <xsl:value-of select="datePublished/start"/>:
     </fo:inline>
     <xsl:text> </xsl:text>
@@ -422,6 +422,10 @@
         text-indent="-{$taxon-name-indentation}" start-indent="{$taxon-name-indentation}">
         <xsl:apply-templates select="../name"/>
         <!--xsl:call-template name="citations"/-->
+        <xsl:call-template name="citations">
+          <xsl:with-param name="descriptionelements" select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+          <xsl:with-param name="name-uuid" select="../name/uuid"/>
+        </xsl:call-template>
         <xsl:text>.</xsl:text>
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="../name/typeDesignations"/>
@@ -443,6 +447,10 @@
         text-indent="-{$taxon-name-indentation}" start-indent="{$taxon-name-indentation}">
         <xsl:for-each select="e">
           <xsl:apply-templates select="name"/>
+          <xsl:call-template name="citations">
+            <xsl:with-param name="descriptionelements" select="../../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+            <xsl:with-param name="name-uuid" select="name/uuid"/>
+          </xsl:call-template>
         </xsl:for-each>
         <xsl:apply-templates select="e[1]/name/typeDesignations" />
       </fo:block>
@@ -450,13 +458,17 @@
   </xsl:template>
 
   <xsl:template name="citations">
+    <xsl:param name="name-uuid"/>
+    <xsl:param name="descriptionelements" />
+    <!--xsl:for-each
+      select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements/descriptionelement"-->
     <xsl:for-each
-      select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements/descriptionelement">
+      select="$descriptionelements/descriptionelement">
       <!-- TODO sorting only works for the first citation, implement correctly -->
       <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
       <xsl:for-each select="sources/e">
-        <xsl:if test="true">
-        <xsl:text>; </xsl:text>
+        <xsl:if test="nameUsedInSource/uuid=$name-uuid">
+          <xsl:text>; </xsl:text>
           <fo:inline>
             <xsl:value-of select="citation/authorTeam/titleCache"/>
             <xsl:text> (</xsl:text>
