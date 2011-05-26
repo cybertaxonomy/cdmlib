@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -488,44 +489,39 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 			String areaString = getPreferredAreaLabel(namedArea, representation);
 			
 			title.append(areaString);
-			if (! area.getClass().equals(NamedArea.class)){
+			if (area.getLevel() == null){
 				title.append(" - ");
 				title.append(area.getClass().getSimpleName());
-			}
-			if(area.getLevel() != null){
+			}else{
 				title.append(" - ");
 				Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
 				String levelString = getPreferredAreaLabel(area.getLevel(), levelRepresentation);
 				title.append(levelString);
-			}
-			if(! CdmUtils.isEmpty(representation.getAbbreviatedLabel())){
-				title.append(" - ");
-				title.append(representation.getAbbreviatedLabel());
 			}
 		}
 		return title.toString();
 	}
 
 	/**
-	 * @param namedArea
+	 * @param definedTerm
 	 * @param representation
 	 * @return
 	 */
-	private static String getPreferredAreaLabel(DefinedTermBase<?> namedArea, Representation representation) {
+	private static String getPreferredAreaLabel(DefinedTermBase<?> definedTerm, Representation representation) {
 		String areaString = null;
 		if (representation != null){
 			areaString = representation.getLabel();
-			if (areaString == null){
+			if (StringUtils.isBlank(areaString)){
 				areaString = representation.getAbbreviatedLabel();
 			}
-			if (areaString == null){
+			if (StringUtils.isBlank(areaString)){
 				areaString = representation.getText();
 			}
 		}
-		if (areaString == null){
-			areaString = namedArea.getTitleCache();
+		if (StringUtils.isBlank(areaString)){
+			areaString = definedTerm.getTitleCache();
 		}
-		if (areaString == null){
+		if (StringUtils.isBlank(areaString)){
 			areaString = "no title";
 		}
 		return areaString;

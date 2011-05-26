@@ -920,6 +920,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNodeT
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/NamedAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/TdwgAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaTest.java -text
