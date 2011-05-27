@@ -129,6 +129,7 @@ public class PointTest {
 	public void testGetLongitudeSexagesimal(){
 		Assert.assertEquals("23\u00B07'24.801\"E", point1.getLongitudeSexagesimal().toString(true, false));
 		
+		
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
 		Assert.assertEquals((Integer)22, (Integer)point2.getLongitudeSexagesimal().minutes);
 		Assert.assertEquals((Integer)0, (Integer)point2.getLongitudeSexagesimal().seconds);
@@ -142,6 +143,7 @@ public class PointTest {
 		Sexagesimal sexagesimal2 = Sexagesimal.NewInstance(2, 2, 2, Direction.WEST);
 		Assert.assertNotSame("", sexagesimal1, sexagesimal2);
 	
+			
 	}
 
 	@Test
@@ -174,6 +176,10 @@ public class PointTest {
 		} catch (ParseException e) {
 			Assert.assertTrue("Longitude can not be S", true);
 		}
+		
+		
+		 
+
 
 		
 		
@@ -239,6 +245,11 @@ public class PointTest {
 			Assert.fail("Longitude can be > 180°");
 		} catch (ParseException e) {
 			Assert.assertTrue("Longitude can not > 180°", true);
+		}
+		try {
+			point1.setLatitudeByParsing("2°39'38,5956\"S");
+		} catch (ParseException e) {
+			Assert.fail("String '2°39'38,5956\"S'should be parsable");
 		}
 }
 	
