@@ -168,6 +168,17 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
+	
+	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
+		
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+			results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
+		}
+		
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
 
 	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
 		return languageStringDao.list(limit, start);

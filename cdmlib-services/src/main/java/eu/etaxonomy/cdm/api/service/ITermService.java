@@ -99,7 +99,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
-	 * Return a paged list of terms which have representations that match the supplied string
+	 * Return a paged list of terms which have representations that match the supplied string in the text (description)
 	 * 
 	 * @param label a string to match (exactly)
 	 * @param pageSize The maximum number of terms returned (can be null for all terms)
@@ -107,6 +107,17 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 	 * @return a Pager of DefinedTerms
 	 */
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz,  Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Return a paged list of terms which have representations that match the supplied string in the abbreviated label
+	 * 
+	 * @param label a string to match (exactly)
+	 * @param pageSize The maximum number of terms returned (can be null for all terms)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a Pager of DefinedTerms
+	 */
+	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber);
+		 	    
 	
 	/**
 	 * 
