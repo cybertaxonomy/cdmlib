@@ -509,11 +509,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	public void testGetSetAbsoluteElevation() {
-		Assert.assertEquals("Absolute elevation must be same",
-				absoluteElevation, specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
 		specimenFacade.setAbsoluteElevation(400);
-		Assert.assertEquals("Absolute elevation must be 400",
-				Integer.valueOf(400), specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("Absolute elevation must be 400",Integer.valueOf(400), specimenFacade.getAbsoluteElevation());
 	}
 
 	/**
@@ -523,43 +521,42 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	public void testGetSetAbsoluteElevationError() {
-		Assert.assertEquals("Absolute elevation error must be same",
-				absoluteElevationError,
-				specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("Absolute elevation error must be same",absoluteElevationError, specimenFacade.getAbsoluteElevationError());
 		specimenFacade.setAbsoluteElevationError(4);
-		Assert.assertEquals("Absolute elevation error must be 4",
-				Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("Absolute elevation error must be 4",Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
+		
 	}
 
 	@Test()
 	public void testGetSetAbsoluteElevationRange() {
 		Integer expected = absoluteElevation - 2;
-		Assert.assertEquals("", expected,
-				specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", expected, specimenFacade.getAbsoluteElevationMinimum());
 		expected = absoluteElevation + 2;
-		Assert.assertEquals("", expected,
-				specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", expected,specimenFacade.getAbsoluteElevationMaximum());
+		
 		specimenFacade.setAbsoluteElevationRange(30, 36);
-		Assert.assertEquals("", Integer.valueOf(36),
-				specimenFacade.getAbsoluteElevationMaximum());
-		Assert.assertEquals("", Integer.valueOf(30),
-				specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(33),specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("", Integer.valueOf(3),specimenFacade.getAbsoluteElevationError());
+		
+		
 		try {
 			specimenFacade.setAbsoluteElevationRange(30, 35);
 			Assert.fail("Odd distance needs to throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue("Exception needs to be thrown", true);
 		}
+		
 		specimenFacade.setAbsoluteElevationRange(41, null);
-		Assert.assertEquals("", Integer.valueOf(41),
-				specimenFacade.getAbsoluteElevationMaximum());
-		Assert.assertEquals("", Integer.valueOf(41),
-				specimenFacade.getAbsoluteElevationMinimum());
-		Assert.assertEquals("", Integer.valueOf(41),
-				specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
 		Assert.assertNotNull("", specimenFacade.getAbsoluteElevationError());
-		Assert.assertEquals("", Integer.valueOf(0),
-				specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("", Integer.valueOf(0),specimenFacade.getAbsoluteElevationError());
+		
 		specimenFacade.setAbsoluteElevationRange(null, null);
 		Assert.assertNull("", specimenFacade.getAbsoluteElevation());
 		Assert.assertNull("", specimenFacade.getAbsoluteElevationError());
