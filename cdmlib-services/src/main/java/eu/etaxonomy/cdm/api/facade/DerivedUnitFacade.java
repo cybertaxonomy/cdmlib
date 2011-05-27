@@ -1092,9 +1092,9 @@ public class DerivedUnitFacade {
 	 *            minimum of the range
 	 * @param maximumElevation
 	 *            maximum of the range
+	 * @throws IllegalArgumentException
 	 */
-	public void setAbsoluteElevationRange(Integer minimumElevation,
-			Integer maximumElevation) {
+	public void setAbsoluteElevationRange(Integer minimumElevation, Integer maximumElevation) throws IllegalArgumentException{
 		if (minimumElevation == null || maximumElevation == null) {
 			Integer elevation = minimumElevation;
 			Integer error = 0;
@@ -1762,7 +1762,7 @@ public class DerivedUnitFacade {
 
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
-		testDerivedUnit();
+		testDerivedUnit(); 
 		determination.setIdentifiedUnit(derivedUnit);
 		derivedUnit.addDetermination(determination);
 	}
