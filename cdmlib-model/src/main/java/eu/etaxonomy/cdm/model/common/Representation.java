@@ -41,7 +41,6 @@ import javax.xml.bind.annotation.XmlType;
 @Audited
 public class Representation extends LanguageStringBase {
 	private static final long serialVersionUID = -4202420199587324532L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Representation.class);
 
     @XmlElement(name = "Label")
