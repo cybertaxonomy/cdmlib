@@ -23,7 +23,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -363,6 +362,51 @@ public class TimePeriodTest {
 		Assert.assertEquals(Integer.valueOf(1806), tpC.getStartYear());
 		Assert.assertEquals(Integer.valueOf(1810), tpC.getEndYear());
 		Assert.assertEquals("1806-1810", tpC.getYear());
+		
+		//1.1.2011
+		String strDotDate = "1.2.2011";
+		TimePeriod tp = TimePeriod.parseString(strDotDate);
+		assertNotNull(tp);
+		Assert.assertEquals(strDotDate, tp.toString());
+		Assert.assertEquals("2011", tp.getYear());
+		Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+		Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
+		
+		strDotDate = "31.03.2012";
+		tp = TimePeriod.parseString(strDotDate);
+		assertNotNull(tp);
+		Assert.assertEquals("31.3.2012", tp.toString());
+		Assert.assertEquals("2012", tp.getYear());
+		Assert.assertEquals(Integer.valueOf(3), tp.getStartMonth());
+		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
+		
+		strDotDate = "00.04.2013";
+		tp = TimePeriod.parseString(strDotDate);
+		assertNotNull(tp);
+		Assert.assertEquals("4.2013", tp.toString());
+		Assert.assertEquals("2013", tp.getYear());
+		Assert.assertEquals(Integer.valueOf(4), tp.getStartMonth());
+		Assert.assertEquals(null, tp.getStartDay());
+		
+		strDotDate = "13.00.2014";
+		tp = TimePeriod.parseString(strDotDate);
+		assertNotNull(tp);
+		Assert.assertEquals("13.xx.2014", tp.toString());
+		Assert.assertEquals("2014", tp.getYear());
+		Assert.assertEquals(null, tp.getStartMonth());
+		Assert.assertEquals(Integer.valueOf(13), tp.getStartDay());
+		
+		strDotDate = "31.12.2015 - 02.01.2016";
+		tp = TimePeriod.parseString(strDotDate);
+		assertNotNull(tp);
+		Assert.assertEquals("31.12.2015-2.1.2016", tp.toString());
+		Assert.assertEquals("2015-2016", tp.getYear());
+		Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
+		Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
+		Assert.assertEquals(Integer.valueOf(2016), tp.getEndYear());
+		Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
+		Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
 		
 	}
 	

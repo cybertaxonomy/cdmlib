@@ -444,6 +444,9 @@ public class TimePeriod implements Cloneable, Serializable {
 	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
 	//standard
 	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-(\\s*\\d{2,4})?)?");
+	private static final String strDotDate = "[0-3]?\\d\\.[01]?\\d\\.\\d{4,4}";
+	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s?)?", strDotDate, strDotDate);
+	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriodPattern);
 	
 	
 	public static TimePeriod parseString(TimePeriod timePeriod, String periodString){
@@ -480,40 +483,85 @@ public class TimePeriod implements Cloneable, Serializable {
 				String endYear = yearMatcher.group();
 				result.setEndYear(Integer.valueOf(endYear));
 			}
+		}else if (dotDatePattern.matcher(periodString).matches()){
+			parseDotDatePattern(periodString, result);
 		}else if (standardPattern.matcher(periodString).matches()){
-			String[] years = periodString.split("-");
-			Partial dtStart = null;
-			Partial dtEnd = null;
-			
-			if (years.length > 2 || years.length <= 0){
-				logger.warn("More than 1 '-' in period String: " + periodString);
-			}else {
-				try {
-					//start
-					if (! CdmUtils.isEmpty(years[0])){
-						dtStart = parseSingleDate(years[0].trim());
-					}
-					
-					//end
-					if (years.length >= 2 && ! CdmUtils.isEmpty(years[1])){
-						years[1] = years[1].trim();
-						if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
-							years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
-						}
-						dtEnd = parseSingleDate(years[1]);
-					}
-					
-					result.setStart(dtStart);
-					result.setEnd(dtEnd);
-				} catch (IllegalArgumentException e) {
-					//logger.warn(e.getMessage());
-					result.setFreeText(periodString);
-				}
-			}
+			parseStandardPattern(periodString, result);
 		}else{
 			result.setFreeText(periodString);
 		}
 		return result;
+	}
+
+	/**
+	 * @param periodString
+	 * @param result
+	 */
+	private static void parseDotDatePattern(String periodString,TimePeriod result) {
+		String[] dates = periodString.split("-");
+		Partial dtStart = null;
+		Partial dtEnd = null;
+		
+		if (dates.length > 2 || dates.length <= 0){
+			logger.warn("More than 1 '-' in period String: " + periodString);
+			result.setFreeText(periodString);
+		}else {
+			try {
+				//start
+				if (! CdmUtils.isEmpty(dates[0])){
+					dtStart = parseSingleDotDate(dates[0].trim());
+				}
+				
+				//end
+				if (dates.length >= 2 && ! CdmUtils.isEmpty(dates[1])){
+					dtEnd = parseSingleDotDate(dates[1].trim());
+				}
+				
+				result.setStart(dtStart);
+				result.setEnd(dtEnd);
+			} catch (IllegalArgumentException e) {
+				//logger.warn(e.getMessage());
+				result.setFreeText(periodString);
+			}
+		}
+	}
+	
+	
+	/**
+	 * @param periodString
+	 * @param result
+	 */
+	private static void parseStandardPattern(String periodString,
+			TimePeriod result) {
+		String[] years = periodString.split("-");
+		Partial dtStart = null;
+		Partial dtEnd = null;
+		
+		if (years.length > 2 || years.length <= 0){
+			logger.warn("More than 1 '-' in period String: " + periodString);
+		}else {
+			try {
+				//start
+				if (! CdmUtils.isEmpty(years[0])){
+					dtStart = parseSingleDate(years[0].trim());
+				}
+				
+				//end
+				if (years.length >= 2 && ! CdmUtils.isEmpty(years[1])){
+					years[1] = years[1].trim();
+					if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
+						years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
+					}
+					dtEnd = parseSingleDate(years[1]);
+				}
+				
+				result.setStart(dtStart);
+				result.setEnd(dtEnd);
+			} catch (IllegalArgumentException e) {
+				//logger.warn(e.getMessage());
+				result.setFreeText(periodString);
+			}
+		}
 	}
 	
 	public static TimePeriod parseString(String strPeriod) {
@@ -543,6 +591,45 @@ public class TimePeriod implements Cloneable, Serializable {
 			}
 		}else{
 			throw new IllegalArgumentException("Until now only years can be parsed as single dates. But date is: " + singleDateString);
+		}
+		return partial;
+
+	}
+	
+	protected static Partial parseSingleDotDate(String singleDateString) throws IllegalArgumentException{
+		Partial partial =  new Partial();
+		singleDateString = singleDateString.trim();
+		String[] split = singleDateString.split("\\.");
+		int length = split.length;
+		if (length > 3){
+			throw new IllegalArgumentException(String.format("More than 2 dots in date '%s'", singleDateString));
+		}
+		String strYear = split[split.length-1];
+		String strMonth = length >= 2? split[split.length-2]: null;
+		String strDay = length >= 3? split[split.length-3]: null;
+		
+		
+		try {
+			Integer year = Integer.valueOf(strYear.trim());
+			Integer month = Integer.valueOf(strMonth.trim());
+			Integer day = Integer.valueOf(strDay.trim());
+			if (year < 1000 && year > 2100){
+				logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
+			}else if (year < 1700 && year > 2100){
+				logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
+				partial = partial.with(YEAR_TYPE, year);
+			}else{
+				partial = partial.with(YEAR_TYPE, year);
+			}
+			if (month != null && month != 0){
+				partial = partial.with(MONTH_TYPE, month);
+			}
+			if (day != null && day != 0){
+				partial = partial.with(DAY_TYPE, day);
+			}
+		} catch (NumberFormatException e) {
+			logger.debug("Not a Integer format somewhere in " + singleDateString);
+			throw new IllegalArgumentException(e);
 		}
 		return partial;
 
