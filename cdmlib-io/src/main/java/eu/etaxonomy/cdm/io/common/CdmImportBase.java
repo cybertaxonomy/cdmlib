@@ -15,11 +15,13 @@ import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -72,6 +74,43 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	
+	private static final String UuidOnly = "UUIDOnly";
+	private static final String UuidLabel = "UUID or label";
+	private static final String UuidLabelAbbrev = "UUID, label or abbreviation";
+	private static final String UuidAbbrev = "UUID or abbreviation";
+	
+	public enum TermMatchMode{
+		UUID_ONLY(0, UuidOnly)
+		,UUID_LABEL(1, UuidLabel)
+		,UUID_LABEL_ABBREVLABEL(2, UuidLabelAbbrev)
+		,UUID_ABBREVLABEL(3, UuidAbbrev)
+		;
+		
+		
+		private int id;
+		private String representation;
+		private TermMatchMode(int id, String representation){
+			this.id = id;
+			this.representation = representation;
+		}
+		public int getId() {
+			return id;
+		}
+		public String getRepresentation() {
+			return representation;
+		}
+		public TermMatchMode valueOf(int id){
+			switch (id){
+				case 0: return UUID_ONLY;
+				case 1: return UUID_LABEL;
+				case 2: return UUID_LABEL_ABBREVLABEL;
+				case 3: return UUID_ABBREVLABEL;
+				default: return UUID_ONLY;
+			}
+ 		}
+		
+		
+	}
 	
 	protected Classification makeTree(STATE state, Reference reference){
 		Reference ref = CdmBase.deproxy(reference, Reference.class);
@@ -246,16 +285,31 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
-		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null);
+		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, null, null);
 	}
 
-	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc){
+	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
+		if (matchMode == null){
+			matchMode = TermMatchMode.UUID_ONLY;
+		}
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
+			//TODO matching still experimental
 			namedArea = (NamedArea)getTermService().find(uuid);
+			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_LABEL)){
+				logger.warn("UUID_LABEL not yet implemented");
+			}
+			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_ABBREVLABEL)){
+				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, NamedArea.class, null, null);
+				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
+			}
+			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL)){
+				logger.warn("UUID_LABEL not yet implemented");
+			}
+			
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
@@ -274,6 +328,24 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	
+	private NamedArea findBestMatchingArea(Pager<NamedArea> areaPager, UUID uuid, String label, String text, String abbrev,
+			NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc) {
+		// TODO preliminary implementation
+		List<NamedArea> list = areaPager.getRecords();
+		if (list.size() == 0){
+			return null;
+		}else if (list.size() == 1){
+			return list.get(0);
+		}else if (list.size() > 1){
+			String message = "There is more than 1 matching area for %s, %s, %s. As a preliminary implementation I take the first";
+			message = String.format(message, label, abbrev, text);
+			logger.warn(message);
+			return list.get(0);
+		}
+		return null;
+	}
+
+
 	protected NamedAreaLevel getNamedAreaLevel(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();

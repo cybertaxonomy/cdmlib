@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
@@ -343,9 +344,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			if (StringUtils.isBlank(altitude)){
 				return;
 			}
-			if (altitude.endsWith(".0")){
-				altitude = altitude.substring(0, altitude.length() -2);
-			}
+//			if (altitude.endsWith(".0")){
+//				altitude = altitude.substring(0, altitude.length() -2);
+//			}
 			int value = Integer.valueOf(altitude);
 			facade.setAbsoluteElevation(value);
 		} catch (NumberFormatException e) {
@@ -362,9 +363,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			if (StringUtils.isBlank(max)){
 				return;
 			}
-			if (max.endsWith(".0")){
-				max = max.substring(0, max.length() -2);
-			}
+//			if (max.endsWith(".0")){
+//				max = max.substring(0, max.length() -2);
+//			}
 			int value = Integer.valueOf(max);
 			//TODO avoid unequal distance
 			int min = facade.getAbsoluteElevation();
@@ -375,7 +376,6 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 				value--;
 			}
 			facade.setAbsoluteElevationRange(min, value);
-			facade.setAbsoluteElevation(value);
 		} catch (NumberFormatException e) {
 			String message = "Absolute elevation / Altitude maximum '%s' is not an integer number in line %d";
 			message = String.format(message, row.getAltitudeMax(), state.getCurrentLine());
@@ -418,7 +418,9 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			String key = lArea.postfix + "_" + lArea.term;
 			UUID areaUuid = state.getArea(key);
 			NamedAreaLevel level = state.getPostfixLevel(lArea.postfix);
-			NamedArea area = getNamedArea(state, areaUuid, lArea.term, description, abbrev, type, level);
+			
+			TermMatchMode matchMode = state.getConfig().getAreaMatchMode();
+			NamedArea area = getNamedArea(state, areaUuid, lArea.term, description, abbrev, type, level, null, matchMode);
 			facade.addCollectingArea(area);
 			if (areaUuid == null){
 				state.putArea(key, area.getUuid());
@@ -450,6 +452,10 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 					}else if (facade.getType().equals(DerivedUnitType.Observation)){
 						feature = Feature.OBSERVATION();
 					}
+					if (state.getConfig().isUseMaterialsExaminedForIndividualsAssociations()){
+						feature = Feature.MATERIALS_EXAMINED();
+					}
+					
 					indivAssociciation.setFeature(feature);
 				}
 				if (state.getConfig().isDeterminationsAreDeterminationEvent()){

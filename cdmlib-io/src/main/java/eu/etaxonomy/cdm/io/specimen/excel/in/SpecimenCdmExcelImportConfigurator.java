@@ -15,6 +15,7 @@ import java.net.URI;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
@@ -36,23 +37,30 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	private String taxonReference = null;
 	
 	//new
-	private boolean doSpecimen = true;
-	private boolean doAreaLevels = true;
-	private boolean doExtensionTypes = true;
+	private boolean doSpecimen = true;  //reads the specimen worksheet
+	private boolean doAreaLevels = true;  //reads the areaLevels worksheet
+	private boolean doExtensionTypes = true;  //reads the extensionType worksheet
 	
 	
 	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry 
+	//tries to match areas by the abbreviated label
+	//TODO still needs to be refined as this may hold only for certain vocabularies, levels, ...
+	//there also maybe more strategies like first label, then abbreviated label, ....
+	private TermMatchMode areaMatchMode = TermMatchMode.UUID_ONLY;
 	private PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
 	
 	//if true, determinations are imported also as individualAssociations	
 	private boolean makeIndividualAssociations = true;
+	private boolean useMaterialsExaminedForIndividualsAssociations = true;
 	private boolean firstDeterminationIsStoredUnder = false;
 	private boolean determinationsAreDeterminationEvent = true;
 	
 	private boolean preferNameCache = true;
-	private boolean createTaxonIfNotExists;
+	private boolean createTaxonIfNotExists = false;
 //	private boolean includeSynonymsForTaxonMatching = false;
 
+		
+	
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
@@ -221,6 +229,23 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 
 	public boolean isCreateTaxonIfNotExists() {
 		return createTaxonIfNotExists;
+	}
+
+	public void setUseMaterialsExaminedForIndividualsAssociations(
+			boolean useMaterialsExaminedForIndividualsAssociations) {
+		this.useMaterialsExaminedForIndividualsAssociations = useMaterialsExaminedForIndividualsAssociations;
+	}
+
+	public boolean isUseMaterialsExaminedForIndividualsAssociations() {
+		return useMaterialsExaminedForIndividualsAssociations;
+	}
+
+	public void setAreaMatchMode(TermMatchMode areaMatchMode) {
+		this.areaMatchMode = areaMatchMode;
+	}
+
+	public TermMatchMode getAreaMatchMode() {
+		return areaMatchMode;
 	}
 
 	

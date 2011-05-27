@@ -32,6 +32,7 @@ public final class SpecimenCdmExcelTransformer extends InputTransformerBase {
 	public static final UUID uuidRefSysMap = UUID.fromString("6d72d148-458a-42eb-97b0-9824abcffc91");
 	public static final UUID uuidRefSysEstimated = UUID.fromString("3b625520-e5cf-4d9c-9599-0cb048e0e8d2");
 	public static final UUID uuidRefSysLabel = UUID.fromString("c72335ed-c9aa-4d1c-b6fc-9f307d207862");
+	public static final UUID uuidRefSysGps = UUID.fromString("b3c36751-b2ac-47f7-8ac1-3dc5c129e0b2");
 	
 	
 	//Languages
@@ -65,6 +66,7 @@ public final class SpecimenCdmExcelTransformer extends InputTransformerBase {
 		}else if (key.matches("(?i)(map)")){return uuidRefSysMap;
 		}else if (key.matches("(?i)(estimated)")){return uuidRefSysEstimated;
 		}else if (key.matches("(?i)(label)")){return uuidRefSysLabel;
+		}else if (key.matches("(?i)(gps)")){return uuidRefSysLabel;
 		}
 		return null;
 	}
