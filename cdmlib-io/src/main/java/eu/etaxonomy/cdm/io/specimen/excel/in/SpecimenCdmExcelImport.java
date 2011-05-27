@@ -412,8 +412,8 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 		List<PostfixTerm> areas = row.getLeveledAreas();
 		
 		for (PostfixTerm lArea : areas){
-			String description = null;
-			String abbrev = null;
+			String description = lArea.term;
+			String abbrev = lArea.term;
 			NamedAreaType type = null;
 			String key = lArea.postfix + "_" + lArea.term;
 			UUID areaUuid = state.getArea(key);
@@ -422,7 +422,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			TermMatchMode matchMode = state.getConfig().getAreaMatchMode();
 			NamedArea area = getNamedArea(state, areaUuid, lArea.term, description, abbrev, type, level, null, matchMode);
 			facade.addCollectingArea(area);
-			if (areaUuid == null){
+			if (areaUuid == null){ 
 				state.putArea(key, area.getUuid());
 			}
 		}
@@ -730,31 +730,33 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 
 
 	private void handleExactLocation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
-		try {
 			
-			//reference system
-			ReferenceSystem refSys = null;
-			if (StringUtils.isNotBlank(row.getReferenceSystem())){
-				String strRefSys = row.getReferenceSystem().trim().replaceAll("\\s", "");
-				UUID refUuid;
-				try {
-					refSys = state.getTransformer().getReferenceSystemByKey(strRefSys);
-					if (refSys == null){
-						refUuid = state.getTransformer().getReferenceSystemUuid(strRefSys);
-						if (refUuid == null){
-							String message = "Unknown reference system %s in line %d";
-							message = String.format(message, strRefSys, state.getCurrentLine());
-							logger.warn(message);
-						}
-						refSys = getReferenceSystem(state, refUuid, strRefSys, strRefSys, strRefSys, null);
+		//reference system
+		ReferenceSystem refSys = null;
+		if (StringUtils.isNotBlank(row.getReferenceSystem())){
+			String strRefSys = row.getReferenceSystem().trim().replaceAll("\\s", "");
+			UUID refUuid;
+			try {
+				refSys = state.getTransformer().getReferenceSystemByKey(strRefSys);
+				if (refSys == null){
+					refUuid = state.getTransformer().getReferenceSystemUuid(strRefSys);
+					if (refUuid == null){
+						String message = "Unknown reference system %s in line %d";
+						message = String.format(message, strRefSys, state.getCurrentLine());
+						logger.warn(message);
 					}
-					
-				} catch (UndefinedTransformerMethodException e) {
-					throw new RuntimeException(e);
+					refSys = getReferenceSystem(state, refUuid, strRefSys, strRefSys, strRefSys, null);
 				}
+				
+			} catch (UndefinedTransformerMethodException e) {
+				throw new RuntimeException(e);
 			}
-			
-			// lat/ long /error
+		}
+
+		
+		
+		// lat/ long /error
+		try {
 			String longitude = row.getLongitude();
 			String latitude = row.getLatitude();
 			Integer errorRadius = null;
@@ -775,6 +777,7 @@ public class SpecimenCdmExcelImport  extends ExcelImporterBase<SpecimenCdmExcelI
 			logger.warn(message);
 			
 		}
+		
 		
 		
 	}
