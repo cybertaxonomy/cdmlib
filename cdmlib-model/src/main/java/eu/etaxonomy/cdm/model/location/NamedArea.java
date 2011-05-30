@@ -335,7 +335,18 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	
 	
 	
-	public NamedAreaNode getHiearchieList(List<NamedArea> areaList){
+	/**
+	 * This method returns a sorted tree structure which sorts areas by it's level and within the same level
+	 * alphabetically (TODO to be tested).
+	 * The structure returned is a tree with alternating nodes that represent an area and an areaLevel.
+	 * This way also area the have children belonging to different levels can be handled.<BR>
+	 * The root node is always an empty area node which holds the list of top level areaLevels.
+	 * AreaLevels with no level defined are handled as if they have a separate level (level="null").
+	 * 
+	 * @param areaList
+	 * @return
+	 */
+	public static NamedAreaNode getHiearchieList(List<NamedArea> areaList){
 		NamedAreaNode result = new NamedAreaNode();
 		for (NamedArea area : areaList){
 			List<NamedArea> areaHierarchie  = area.getAllLevelList();
@@ -345,7 +356,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	}
 	
 	
-	public class LevelNode {
+	public static class LevelNode {
 		NamedAreaLevel level;
 		List<NamedAreaNode> areaList = new ArrayList<NamedAreaNode>();
 
@@ -367,18 +378,43 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 		}
 
 		public String toString() {
-			return level.getTitleCache();
+			return toString(false, 0);
+		}
+		public String toString(boolean recursive, int identation) {
+			String result = level == null? "" :level.getTitleCache();
+			if (recursive == false){
+				return result;
+			}else{
+				int areaSize = this.areaList.size();
+				if (areaSize > 0){
+					result = "\n" + StringUtils.leftPad("", identation) + result  + "[";
+				}
+				boolean isFirst = true;
+				for (NamedAreaNode level: this.areaList){
+					if (isFirst){
+						isFirst = false;
+					}else{
+						result += ",";
+					}
+					result += level.toString(recursive, identation+1);
+				}
+				if (areaSize > 0){
+					result += "]";
+					
+				}
+				return result;
+			}
 		}
 
 	}
 
-	public class NamedAreaNode {
+	public static class NamedAreaNode {
 		NamedArea area;
 		List<LevelNode> levelList = new ArrayList<LevelNode>();
 		
 		public LevelNode getLevelNode(NamedAreaLevel level) {
 			for (LevelNode node : levelList) {
-				if (node.level.equals(level)) {
+				if (node.level != null &&  node.level.equals(level)) {
 					return node;
 				}
 			}
@@ -410,24 +446,52 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 		}
 
 		public String toString() {
-			if (area == null) {
-				return "";
+			return toString(false, 0);
+		}
+		
+		public String toString(boolean recursive, int identation) {
+			String result = "";
+			if (area != null) {
+				result = area.getTitleCache();
 			}
-			return area.getTitleCache();
+			if (recursive){
+				int levelSize = this.levelList.size();
+				if (levelSize > 0){
+					result = "\n" + StringUtils.leftPad("", identation) + result  + "[";
+				}
+				boolean isFirst = true;
+				for (LevelNode level: this.levelList){
+					if (isFirst){
+						isFirst = false;
+					}else{
+						result += ";";
+					}
+					result += level.toString(recursive, identation+1);
+				}
+				if (levelSize > 0){
+					result += "]";
+					
+				}
+				return result;
+			}else{
+				int levelSize = this.levelList.size();
+				return result + "[" + levelSize + " sublevel(s)]";
+			}
 		}
 	}
 
-	private void mergeIntoResult(NamedAreaNode root,
-			List<NamedArea> areaHierarchie) {
+	private static void mergeIntoResult(NamedAreaNode root, List<NamedArea> areaHierarchie) {
 		if (areaHierarchie.isEmpty()) {
 			return;
 		}
 		NamedArea highestArea = areaHierarchie.get(0);
 		NamedAreaLevel level = highestArea.getLevel();
 		NamedAreaNode namedAreaNode;
-		if (!root.contains(level)) {
+		if (! root.contains(level)) {
 			LevelNode node = root.add(level);
 			namedAreaNode = node.add(highestArea);
+			//NEW
+//			root.area = highestArea;
 		} else {
 			LevelNode levelNode = root.getLevelNode(level);
 			namedAreaNode = levelNode.getNamedAreaNode(highestArea);
@@ -435,8 +499,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 				namedAreaNode = levelNode.add(highestArea);
 			}
 		}
-		List<NamedArea> newList = areaHierarchie.subList(1, areaHierarchie
-				.size());
+		List<NamedArea> newList = areaHierarchie.subList(1, areaHierarchie.size());
 		mergeIntoResult(namedAreaNode, newList);
 
 	}
