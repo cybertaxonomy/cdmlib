@@ -430,7 +430,7 @@
           <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <preparationGoals>clean verify install</preparationGoals>
-		  <preparationGoals>deploy</preparationGoals><!-- skipping site-deploy by explicitly configuring the goal here -->
+		  <goals>deploy</goals><!-- skipping site-deploy by explicitly configuring the goal here -->
           <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
         </configuration>
       </plugin>
