@@ -495,7 +495,7 @@ public class EditGeoServiceUtilities {
 	private static String getWMSLayerName(NamedArea area){
 		TermVocabulary<NamedArea> voc = area.getVocabulary();
 		//TDWG areas
-		if (false && voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
+		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
 			NamedAreaLevel level = area.getLevel();
 			if (level != null) {
 				//TODO integrate into CDM
