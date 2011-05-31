@@ -87,7 +87,7 @@ public class EditGeoService implements IEditGeoService{
 		if(backLayer == null){
 			backLayer = DEFAULT_BACK_LAYER;
 		}
-		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
 
 		return uriParams;
 	}
@@ -128,7 +128,7 @@ public class EditGeoService implements IEditGeoService{
 			backLayer = DEFAULT_BACK_LAYER;
 		}
 		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distCollection,
-			presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+			presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
 
 		return uriParams;
 	}
