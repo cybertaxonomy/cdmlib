@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,33 +32,33 @@ import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
  */
 public class PdfOutputModuleTest {
 
-	
+
 	/**
-	 * @throws IOException 
-	 * 
+	 * @throws IOException
+	 *
 	 */
 	@Test
 	public void testGetXslt() throws IOException {
 		PdfOutputModule outputModule = new PdfOutputModule();
-		
+
 		InputStream xslt = outputModule.getXsltInputStream();
-		
+
 		assertNotNull(xslt);
 		assertTrue(xslt.available() > 0);
 	}
-	
+
 	@Test
 	public void testGetStylesheetByLocation() throws IOException {
 		PdfOutputModule outputModule = new PdfOutputModule();
-		
-		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");		
+
+		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");
 		File shippedStylesheetsDir = new File(shippedStylesheetsResource.getFile());
-		
+		System.out.println("########" + shippedStylesheetsResource);
 		List<File> stylesheets = outputModule.getStylesheetsByLocation(shippedStylesheetsDir);
-		
+
 		assertNotNull("There should be stylesheets", stylesheets);
 		assertEquals("There should be two stylesheets", 2, stylesheets.size());
 	}
-	
-	
+
+
 }
