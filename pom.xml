@@ -157,7 +157,7 @@
 			<!-- your SVN account id please! -->
 			<id>f.revilla</id>
 			<name>
-				Francisco Revilla	
+				Francisco Revilla
 			</name>
 			<email>f.revilla [at] bgbm.org</email>
 			<organization>
@@ -370,17 +370,17 @@
 					<htmlStylesheet>resources/css/html.css</htmlStylesheet>
 					<xincludeSupported>true</xincludeSupported>
 					<!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
-					<!-- if anyone can get the xsl-fo customization to work properly, then by all 
-               means use it
-            <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-          -->
+					<!-- if anyone can get the xsl-fo customization to work properly, then by all
+						means use it
+						<foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+					-->
 					<entities>
 						<entity>
 							<name>version</name>
 							<value>${project.version}</value>
 						</entity>
 					</entities>
-					<!--We want the final documentation and the required resources to end up in 
+					<!--We want the final documentation and the required resources to end up in
               the right place-->
 					<postProcess>
 						<copy todir="target/site/reference">
@@ -429,7 +429,8 @@
         <configuration>
           <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <preparationGoals>clean install</preparationGoals> 
+          <preparationGoals>clean verify install</preparationGoals>
+		  <preparationGoals>deploy</preparationGoals><!-- skipping site-deploy by explicitly configuring the goal here -->
           <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
         </configuration>
       </plugin>
@@ -509,7 +510,7 @@
 					</executions>
 				-->
 			</plugin>
-			<!--			
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
@@ -551,14 +552,14 @@
 			</plugin>
 			-->
 			<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
-			<!-- 
+			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changelog-maven-plugin</artifactId>
 			</plugin>
 			-->
 		</plugins>
-          
+
 	</reporting>
 	<!--	 DISTRIBUTION MANAGEMENT -->
 	<distributionManagement>
