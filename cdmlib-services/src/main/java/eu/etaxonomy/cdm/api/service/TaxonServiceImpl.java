@@ -218,7 +218,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			throw new IllegalArgumentException(message);
 		}
 		
-		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
+		Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());
 		
 		SynonymRelationshipType relType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 		List<Synonym> heteroSynonyms = synonymHomotypicGroup.getSynonymsInGroup(acceptedTaxon.getSec());
@@ -230,11 +230,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		
-//		synonym.getName().removeTaxonBase(synonym);
+		//synonym.getName().removeTaxonBase(synonym);
 		//TODO correct delete handling still needs to be implemented / checked
 		if (deleteSynonym){
 			try {
+				this.dao.flush();
 				this.delete(synonym);
+				
 			} catch (Exception e) {
 				logger.info("Can't delete old synonym from database");
 			}

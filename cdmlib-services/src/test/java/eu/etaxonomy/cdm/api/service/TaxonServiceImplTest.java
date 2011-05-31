@@ -10,8 +10,11 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -22,8 +25,11 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -137,5 +143,26 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		assertEquals(groupTest, groupTest2);
 	}
 	
+	@Test
+	public final void testMakeSynonymTaxon(){
+		Rank rank = Rank.SPECIES();
+		//HomotypicalGroup group = HomotypicalGroup.NewInstance();
+		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
+		Taxon tax2 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+		//tax2.addHeterotypicSynonymName(synonym.getName());
+		tax2.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		BotanicalName name = (BotanicalName)synonym.getName();
+		UUID uuidTaxon = service.save(tax1);
+		UUID uuidSyn = service.save(synonym);
+		UUID uuidGenus = service.save(tax2);
+		
+		Taxon tax = service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
+		TaxonBase syn = service.find(uuidSyn);
+		assertNull(syn);
+		
+		
+	
+	}
 
 }
