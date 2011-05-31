@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -48,12 +49,12 @@ public class PdfOutputModuleTest {
 	}
 
 	@Test
-	public void testGetStylesheetByLocation() throws IOException {
+	public void testGetStylesheetByLocation() throws IOException, URISyntaxException{
 		PdfOutputModule outputModule = new PdfOutputModule();
 
 		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");
-		File shippedStylesheetsDir = new File(shippedStylesheetsResource.getFile());
-		System.out.println("########" + shippedStylesheetsResource);
+		File shippedStylesheetsDir = new File(shippedStylesheetsResource.toURI());
+
 		List<File> stylesheets = outputModule.getStylesheetsByLocation(shippedStylesheetsDir);
 
 		assertNotNull("There should be stylesheets", stylesheets);
