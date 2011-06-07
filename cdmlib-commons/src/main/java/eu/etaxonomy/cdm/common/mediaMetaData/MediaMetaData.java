@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
+import org.apache.sanselan.ImageReadException;
 
 /**
  * 

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.apache.http.HttpException;
+import org.apache.sanselan.ImageReadException;
 
 
 /**

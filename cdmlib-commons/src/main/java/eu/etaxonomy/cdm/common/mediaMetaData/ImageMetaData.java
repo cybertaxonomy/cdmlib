@@ -117,6 +117,7 @@ public  class ImageMetaData extends MediaMetaData {
 			throw e;
 		} catch (ImageReadException e) {
 			logger.error("Could not open url: " + imageUri + ". " + e.getMessage());
+			throw new IOException(e);
 		}
 				
 	}
@@ -148,6 +149,7 @@ public  class ImageMetaData extends MediaMetaData {
 			}
 		} catch (ImageReadException e) {
 			logger.warn(e.getLocalizedMessage());
+			throw new IOException(e);
 		} catch (IOException e) {
 			logger.warn("The image server is not available!");
 			throw e;
