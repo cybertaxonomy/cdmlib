@@ -10,17 +10,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -68,46 +60,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
-
-	
-	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
-	public ImageInfo getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException{
-		ImageInfo imageInfo = ImageInfo.NewInstance(imageUri, timeOut);
-		imageInfo.readMetaData(timeOut);
-		
-		return imageInfo;
-	}
-	
-	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException{
-		
-		ImageInfo imageInfo = ImageInfo.NewInstance(imageUri, timeOut);		
-		
-		return imageInfo.getMetaData();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IMediaService#getImageSize(java.net.URI, java.lang.Integer)
-	 */
-	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
-	public Integer getImageSize(URI imageUri, Integer timeOut) {
-		try {
-			URL url = imageUri.toURL();
-			HttpURLConnection.setFollowRedirects(false);
-			
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			
-			return connection.getContentLength();
-			
-		} catch (MalformedURLException e) {
-			logger.trace("MalformedURLException when trying to get filesize for: " +imageUri);
-		} catch (IOException e) {
-			logger.trace("IOException when trying to get filesize for: " +imageUri);
-		}
-		return null;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)

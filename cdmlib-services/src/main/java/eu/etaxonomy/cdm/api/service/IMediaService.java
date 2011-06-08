@@ -10,16 +10,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.http.HttpException;
-
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -69,34 +63,4 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * 
-	 * 
-	 * @param imageUri
-	 * @param timeOut
-	 * @return
-	 */
-	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
-	public Integer getImageSize(URI imageUri, Integer timeOut);
-	
-	/**
-	 * 
-	 * @param imageUri
-	 * @param timeOut
-	 * @return
-	 * @throws IOException 
-	 */
-	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
-	public ImageInfo getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException;
-	
-	/**
-	 * 
-	 * @param imageUri
-	 * @param timeOut
-	 * @return
-	 * @throws IOException 
-	 */
-	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
-	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException;
 }

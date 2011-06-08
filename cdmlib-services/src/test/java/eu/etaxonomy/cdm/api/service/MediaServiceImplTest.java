@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Map;
 
@@ -28,21 +29,5 @@ public class MediaServiceImplTest extends CdmIntegrationTest{
 	public void setUp() throws Exception {
 	}
 	
-
-	@Test
-	public void testGetImageMetaData() throws IOException, HttpException {
-		File imageFile;
-		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg");
-		URI uri = imageFile.toURI();
-		Map<String,String> metaData = service.getImageMetaData(uri, 0);
-		
-		
-		assertEquals("The list of metaData should contain 48 entries",48, metaData.size());
-		
-		imageFile = new File("./src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif");
-		uri = imageFile.toURI();
-		metaData = service.getImageMetaData(uri, 0);
-			
-		assertEquals("The list of metaData should contain 15 entries",15, metaData.size());
-	}
+	
 }
