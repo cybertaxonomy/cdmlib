@@ -23,6 +23,7 @@ public abstract class MediaInfo {
 	private String formatName;
 	private String mimeType;
 	private long length;
+	private String suffix;
 	
 
 	public void setMimeType(String mimeType) {
@@ -47,6 +48,14 @@ public abstract class MediaInfo {
 
 	public long getLength() {
 		return length;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+
+	public String getSuffix() {
+		return suffix;
 	}
 	
 }

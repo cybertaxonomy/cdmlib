@@ -191,6 +191,18 @@ public class ImageInfoTest {
 			Assert.assertEquals(9143, getRemotePngInstance().getLength());
 		}
 	}
+	
+	@Test
+	public void testGetSuffix(){
+		Assert.assertEquals("jpg", getJpegInstance().getSuffix());
+		Assert.assertEquals("tif", getTifInstance().getSuffix());
+		
+		if(UriUtils.isInternetAvailable(remotePngUri)){
+			Assert.assertEquals("png", getRemotePngInstance().getSuffix());
+		}
+	}
+	
+	
 
 	@Test
 	public void testReadMetaDataJpeg() throws IOException, HttpException{

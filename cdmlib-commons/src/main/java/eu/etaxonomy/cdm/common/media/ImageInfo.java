@@ -15,7 +15,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
@@ -42,6 +44,8 @@ public  class ImageInfo extends MediaInfo {
 	
 	public static ImageInfo NewInstance(URI imageUri, Integer timeOut) throws IOException, HttpException {
 		ImageInfo instance = new ImageInfo(imageUri);
+		instance.readSuffix();
+		instance.readImageLength();
 		instance.readImageInfo(timeOut);
 		return instance;
 	}
@@ -81,17 +85,25 @@ public  class ImageInfo extends MediaInfo {
         return getFormatName() + " [" + getMimeType()+ "] w:" + width + " h:" + height + " depth:" + bitPerPixel;
 	}
 	
+	private void readSuffix(){
+		String path = imageUri.getPath();
+				
+		String suffix = path.substring(StringUtils.lastIndexOf(path, '.') + 1);
+		setSuffix(suffix);
+	}
+	
+	private void readImageLength() throws ClientProtocolException, IOException, HttpException{
+		long length = UriUtils.getResourceLength(imageUri, null); 
+		setLength(length);
+	}
+	
 	private void readImageInfo(Integer timeOut) throws IOException, HttpException{
 		
 		InputStream inputStream;
 		try {
-			
-			long length = UriUtils.getResourceLength(imageUri, null); 
-			
 			inputStream = UriUtils.getInputStream(imageUri);
 			org.apache.sanselan.ImageInfo imageInfo = Sanselan.getImageInfo(inputStream, null);
-			
-			setLength(length);
+						
 			setFormatName(imageInfo.getFormatName());
 			setMimeType(imageInfo.getMimeType());
 			width = imageInfo.getWidth();
