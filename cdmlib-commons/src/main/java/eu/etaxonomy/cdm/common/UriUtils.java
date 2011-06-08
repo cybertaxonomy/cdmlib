@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -85,7 +86,52 @@ public class UriUtils {
 			File file = new File(uri);
 			return new FileInputStream(file);
 		}else{
-			throw new RuntimeException("Protokoll not yet handled: " + uri.getScheme()); 
+			throw new RuntimeException("Protocol not handled yet: " + uri.getScheme()); 
+		}
+	}
+	
+	/**
+	 * Retrieves the size of the resource defined by the given uri in bytes 
+	 * 
+	 * @param uri the resource
+	 * @param requestHeaders additional headers. May be <code>null</code>
+	 * @return the size of the resource in bytes
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws HttpException
+	 */
+	public static long getResourceLength(URI uri, Map<String, String> requestHeaders) throws ClientProtocolException, IOException, HttpException{
+		if(requestHeaders == null){
+			requestHeaders = new HashMap<String, String>();
+		}
+		
+		if (uri.getScheme().equals("http") || uri.getScheme().equals("https")){
+			HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
+			if(UriUtils.isOk(response)){
+	        	Header[] contentLengths = response.getHeaders("Content-Length");
+	        	
+	        	if(contentLengths == null || contentLengths.length == 0){
+	        		throw new HttpException("Could not retrieve Content-Length");
+	        	}
+	        	
+	        	if(contentLengths.length > 1){
+	        		throw new HttpException("Multiple Conten-Length headers sent");
+	        	}
+	        	
+	        	Header contentLength = contentLengths[0];
+	        	String value = contentLength.getValue();
+	        	
+	        	return Long.valueOf(value);
+	        	
+	        } else {
+	        	throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
+	        }
+		}else if (uri.getScheme().equals("file")){
+			File file = new File(uri);
+			return file.length();
+		}else{
+			throw new RuntimeException("Protocol not handled yet: " + uri.getScheme()); 
 		}
 	}
 	

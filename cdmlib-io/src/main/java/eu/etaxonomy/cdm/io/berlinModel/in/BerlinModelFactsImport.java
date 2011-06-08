@@ -10,10 +10,8 @@
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -27,7 +25,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelFactsImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
@@ -441,7 +439,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		TaxonDescription taxonDescription = null;
 		Reference sourceRef = state.getConfig().getSourceReference();
 		Integer size = null; 
-		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		ImageInfo imageMetaData = null;
 		URI uri;
 		try {
 			uri = new URI(fact.trim());
@@ -450,7 +448,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return null;
 		}
 		try {
-			imageMetaData.readMetaData(uri, 0);
+			imageMetaData = ImageInfo.NewInstance(uri, 0);
 		} catch (IOException e) {
 			logger.error("IOError reading image metadata." , e);
 		} catch (HttpException e) {

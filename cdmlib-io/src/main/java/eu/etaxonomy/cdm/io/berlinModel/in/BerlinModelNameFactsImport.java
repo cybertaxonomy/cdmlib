@@ -10,9 +10,8 @@
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_ALSO_PUBLISHED_IN;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_PROTOLOGUE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_BIBLIOGRAPHY;
-
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_PROTOLOGUE;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelNameFactsImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
@@ -375,12 +374,12 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
-		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		ImageInfo imageMetaData = null;
 		URI uri;
 		try {
 			uri = new URI(imageUri);
 			try {
-				imageMetaData.readMetaData(uri, 0);
+				imageMetaData = ImageInfo.NewInstance(uri, 0);
 			} catch (IOException e) {
 				logger.error("IOError reading image metadata." , e);
 			} catch (HttpException e) {

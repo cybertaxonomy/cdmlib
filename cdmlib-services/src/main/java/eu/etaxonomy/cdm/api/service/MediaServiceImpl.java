@@ -29,17 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 
 @Service
 @Transactional(readOnly=true, propagation = Propagation.SUPPORTS)
@@ -72,28 +69,28 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException{
-		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		imageMetaData.readImageInfo(imageUri, timeOut);
-		imageMetaData.readMetaData(imageUri, timeOut);
+	
+	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
+	public ImageInfo getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException{
+		ImageInfo imageInfo = ImageInfo.NewInstance(imageUri, timeOut);
+		imageInfo.readMetaData(timeOut);
 		
-		return imageMetaData;
+		return imageInfo;
 	}
 	
+	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
 	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException{
 		
-		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		imageMetaData.readMetaData(imageUri, timeOut);
+		ImageInfo imageInfo = ImageInfo.NewInstance(imageUri, timeOut);		
 		
-		
-		return imageMetaData.getMetaData();
+		return imageInfo.getMetaData();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IMediaService#getImageSize(java.net.URI, java.lang.Integer)
 	 */
+	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
 	public Integer getImageSize(URI imageUri, Integer timeOut) {
 		try {
 			URL url = imageUri.toURL();

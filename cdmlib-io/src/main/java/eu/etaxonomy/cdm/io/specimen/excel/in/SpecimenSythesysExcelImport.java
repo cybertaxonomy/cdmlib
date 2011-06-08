@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.MediaInfo;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
@@ -410,17 +410,16 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			if(this.multimediaObjects.size()>0){
 				MediaRepresentation representation;
 				Media media;
-				MediaMetaData mmd ;
-				ImageMetaData imd ;
+				MediaInfo mmd ;
+				ImageInfo imd ;
 				URL url ;
 				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
 					if(this.multimediaObjects.get(i) != null){
 						//mmd = new MediaMetaData();
-						imd = ImageMetaData.newInstance();
+						
 						url = new URL(this.multimediaObjects.get(i));
-						//imd = MediaMetaData.readImageMetaData(url, imd);
-						imd.readMetaData(url.toURI(), 0);
+						imd = ImageInfo.NewInstance(url.toURI(), 0);
 						if (imd != null){
 							System.out.println("image not null");
 							representation = MediaRepresentation.NewInstance();

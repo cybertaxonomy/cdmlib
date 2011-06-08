@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -646,13 +646,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if( multimediaObject == null){
 			return null;
 		} else {
-			ImageMetaData imd = ImageMetaData.newInstance();
+			ImageInfo imd = null;
 			URI uri;
 			try {
 				uri = new URI(multimediaObject);
 				try {
 					if (readDataFromUrl){
-						imd.readMetaData(uri, 0);
+						imd = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {
 					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();

@@ -311,6 +311,9 @@
               <entry key="eu.etaxonomy.cdm.model.location.Point">
                 <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
               </entry>
+				<entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
+					<bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+				</entry>
 			</map>
 		</property>
         <property name="jsonPropertyFilter">

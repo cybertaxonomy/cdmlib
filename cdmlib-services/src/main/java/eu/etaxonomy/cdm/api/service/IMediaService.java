@@ -19,7 +19,7 @@ import java.util.Set;
 import org.apache.http.HttpException;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -77,6 +77,7 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @param timeOut
 	 * @return
 	 */
+	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
 	public Integer getImageSize(URI imageUri, Integer timeOut);
 	
 	/**
@@ -86,7 +87,8 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @return
 	 * @throws IOException 
 	 */
-	public ImageMetaData getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException;
+	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
+	public ImageInfo getImageInfo(URI imageUri, Integer timeOut) throws IOException, HttpException;
 	
 	/**
 	 * 
@@ -95,5 +97,6 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @return
 	 * @throws IOException 
 	 */
+	@Deprecated // it does not make much sense to have this encapsulated in a service method, use ImageInfo directly
 	public Map<String,String> getImageMetaData(URI imageUri, Integer timeOut) throws IOException, HttpException;
 }
