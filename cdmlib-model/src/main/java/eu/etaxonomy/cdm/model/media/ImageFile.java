@@ -60,12 +60,12 @@ public class ImageFile extends MediaRepresentationPart {
 		return new ImageFile(uri, size, height, width);
 	}
 	
-	public static ImageFile NewInstance(URI uri, Integer size, ImageInfo imageMetaData){
+	public static ImageFile NewInstance(URI uri, Integer size, ImageInfo imageInfo){
 		ImageFile imageFile = NewInstance(uri, size);
 		
-		if(imageMetaData != null){
-			imageFile.setHeight(imageMetaData.getHeight());
-			imageFile.setWidth(imageMetaData.getWidth());
+		if(imageInfo != null){
+			imageFile.setHeight(imageInfo.getHeight());
+			imageFile.setWidth(imageInfo.getWidth());
 		}
 		
 		return imageFile;

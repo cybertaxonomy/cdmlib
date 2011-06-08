@@ -439,7 +439,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		TaxonDescription taxonDescription = null;
 		Reference sourceRef = state.getConfig().getSourceReference();
 		Integer size = null; 
-		ImageInfo imageMetaData = null;
+		ImageInfo imageInfo = null;
 		URI uri;
 		try {
 			uri = new URI(fact.trim());
@@ -448,15 +448,15 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return null;
 		}
 		try {
-			imageMetaData = ImageInfo.NewInstance(uri, 0);
+			imageInfo = ImageInfo.NewInstance(uri, 0);
 		} catch (IOException e) {
 			logger.error("IOError reading image metadata." , e);
 		} catch (HttpException e) {
 			logger.error("HttpException reading image metadata." , e);
 		}
-		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
+		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageInfo.getMimeType(), null);
 		media.addRepresentation(mediaRepresentation);
-		ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
+		ImageFile image = ImageFile.NewInstance(uri, size, imageInfo);
 		mediaRepresentation.addRepresentationPart(image);
 		
 		taxonDescription = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());

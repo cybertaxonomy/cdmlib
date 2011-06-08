@@ -646,22 +646,24 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if( multimediaObject == null){
 			return null;
 		} else {
-			ImageInfo imd = null;
+			ImageInfo imageInfo = null;
 			URI uri;
 			try {
 				uri = new URI(multimediaObject);
 				try {
 					if (readDataFromUrl){
-						imd = ImageInfo.NewInstance(uri, 0);
+						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {
 					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
 					logger.warn(message);
 				}
-				ImageFile imf = ImageFile.NewInstance(uri, null, imd);
+				ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
 				MediaRepresentation representation = MediaRepresentation.NewInstance();
-				representation.setMimeType(imd.getMimeType());
-				representation.addRepresentationPart(imf);
+				if(imageInfo != null){
+					representation.setMimeType(imageInfo.getMimeType());
+				}
+				representation.addRepresentationPart(imageFile);
 				Media media = Media.NewInstance();
 				media.addRepresentation(representation);
 				return media;
