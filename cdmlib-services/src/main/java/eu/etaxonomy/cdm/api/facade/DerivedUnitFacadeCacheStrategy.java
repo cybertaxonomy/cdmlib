@@ -64,7 +64,9 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		
 		DerivedUnitFacade facade;
 		try {
-			facade = DerivedUnitFacade.NewInstance(derivedUnit);
+			DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
+			config.setFirePropertyChangeEvents(false);
+			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 			result += fieldStrategy.getFieldData(facade);
 //			//country
 //			String strCountry = null;

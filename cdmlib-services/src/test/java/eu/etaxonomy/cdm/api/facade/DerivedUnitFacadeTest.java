@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -29,12 +31,14 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -66,8 +70,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * 
  */
 public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger
-			.getLogger(DerivedUnitFacadeTest.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
 	@SpringBeanByType
 	private IOccurrenceService service;
@@ -1592,4 +1595,34 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		// this should not throw exceptions
 		specimenFacade.setAbsoluteElevationRange(minimum, maximum);
 	}
+	
+	@SpringBeanByType
+	private IUserService userService;
+	
+	/**
+	 * 
+	 * See https://dev.e-taxonomy.eu/trac/ticket/2426
+	 * This test doesn't handle the above issue yet as it doesn't fire events as 
+	 * expected (at least it does not reproduce the behaviour in the Taxonomic Editor).
+	 * In the meanwhile the property change framework for the facade has been changed
+	 * so the original problem may have disappeared.
+	 * 
+	 */
+	@Test
+	public void testNoRecursiveChangeEvents(){
+		String username = "username";
+		String password = "password";
+		User user = User.NewInstance(username, password);
+		userService.save(user);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, password);
+		SecurityContextHolder.getContext().setAuthentication(token);
+		
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		facade.setLocality("testLocality");
+		facade.getTitleCache();
+//		facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);
+		this.service.save(facade.innerDerivedUnit());
+		
+	}
+	
 }
