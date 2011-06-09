@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -74,9 +73,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Autowired
 	private ITaxonNameDao nameDao;
 	
-	@Autowired 
-	private IDescriptionDao descriptionDao;
-
 	@Autowired
 	private IOrderedTermVocabularyDao orderedVocabularyDao;
 	
@@ -115,17 +111,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getAllTaxa(limit, start);
 	}
 
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(Reference sec, ..., ...)
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)
-	 */
-	public List<Taxon> getRootTaxa(Reference sec){
-		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
-	}
-
 	/**
 	 * FIXME Candidate for harmonization
 	 * merge with getRootTaxa(Reference sec, ..., ...)
@@ -138,23 +123,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
 	}
-	
-	/**
- 	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(Reference sec, ..., ...)
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
-	 */
-	public List<Taxon> getRootTaxa(Reference sec, boolean onlyWithChildren,
-			boolean withMisapplications) {
-		return dao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
-	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
 	 */
-	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,
-			boolean withMisapplications, List<String> propertyPaths) {
+	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,boolean withMisapplications, List<String> propertyPaths) {
 		return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
 	}
 

@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -48,21 +49,13 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 /****************** TESTS *****************************/
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao)}.
-	 */
-	@Test
-	public final void testSetDao() {
-		logger.warn("Not implemented yet");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getTaxonByUuid(java.util.UUID)}.
 	 */
 	@Test
 	public final void testGetTaxonByUuid() {
 		Taxon expectedTaxon = Taxon.NewInstance(null, null);
 		UUID uuid = service.save(expectedTaxon);
-		TaxonBase actualTaxon = service.find(uuid);
+		TaxonBase<?> actualTaxon = service.find(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 	}
 
@@ -73,7 +66,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	public final void testSaveTaxon() {
 		Taxon expectedTaxon = Taxon.NewInstance(null, null);
 		UUID uuid = service.save(expectedTaxon);
-		TaxonBase actualTaxon = service.find(uuid);
+		TaxonBase<?> actualTaxon = service.find(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 	}
 
@@ -85,7 +78,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
 		UUID uuid = service.save(taxon);
 		service.delete(taxon);
-		TaxonBase actualTaxon = service.find(uuid);
+		TaxonBase<?> actualTaxon = service.find(uuid);
 		assertNull(actualTaxon);
 	}
 	
@@ -109,15 +102,6 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)}
-	 * .
-	 */
-	@Test
-	public final void testGetRootTaxa() {
-		logger.warn("Not yet implemented"); // TODO
-	}
 	
 	@Test
 	public final void testPrintDataSet() {
@@ -127,7 +111,6 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public final void testMakeTaxonSynonym() {
 		Rank rank = Rank.SPECIES();
-		HomotypicalGroup group = HomotypicalGroup.NewInstance();
 		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
 		tax1.addHomotypicSynonym(synonym, null, null);
@@ -136,8 +119,8 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		
 		service.swapSynonymAndAcceptedTaxon(synonym, tax1);
 		
-		TaxonBase tax = service.find(uuidTaxon);
-		TaxonBase syn = service.find(uuidSyn);
+		TaxonBase<?> tax = service.find(uuidTaxon);
+		TaxonBase<?> syn = service.find(uuidSyn);
 		HomotypicalGroup groupTest = tax.getHomotypicGroup();
 		HomotypicalGroup groupTest2 = syn.getHomotypicGroup();
 		assertEquals(groupTest, groupTest2);
@@ -158,7 +141,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		UUID uuidGenus = service.save(tax2);
 		
 		Taxon tax = service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
-		TaxonBase syn = service.find(uuidSyn);
+		TaxonBase<?> syn = service.find(uuidSyn);
 		assertNull(syn);
 		
 		
