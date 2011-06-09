@@ -106,10 +106,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
-public class PolytomousKeyNode extends VersionableEntity implements
-		IMultiLanguageTextHolder {
-	private static final Logger logger = Logger
-			.getLogger(PolytomousKeyNode.class);
+public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
+	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
 
 	// This is the main key a node belongs to. Although other keys may also
 	// reference
