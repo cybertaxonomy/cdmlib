@@ -2178,8 +2178,7 @@ public class DerivedUnitFacade {
 	 * @param originalNameString
 	 * @return
 	 */
-	public IdentifiableSource addSource(Reference reference,
-			String microReference, String originalNameString) {
+	public IdentifiableSource addSource(Reference reference, String microReference, String originalNameString) {
 		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
 		source.setOriginalNameString(originalNameString);
 		addSource(source);
