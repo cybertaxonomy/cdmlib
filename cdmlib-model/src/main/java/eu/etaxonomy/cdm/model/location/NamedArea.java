@@ -538,12 +538,16 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	
 
 	/**
-	 * Returns the label of the named area together with the area level label and the abbreviated label
+	 * Returns the label of the named area together with the area level label and the abbreviated label.
+	 * This is kind of a formatter method which may be moved to a better place in future. 
 	 * @param namedArea the area
 	 * @param language the preferred language
-	 * @return
+	 * @return null if namedArea == null, the labelWithLevel otherwise
 	 */
 	public static String labelWithLevel(NamedArea namedArea, Language language) {
+		if (namedArea == null){
+			return null;
+		}
 		NamedArea area = (NamedArea) HibernateProxyHelper.deproxy(namedArea);
 		
 		StringBuilder title = new StringBuilder();
