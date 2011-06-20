@@ -333,7 +333,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(rights, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS);
 		print(rightsHolder, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS_HOLDER);
 		print(accessRights, writer, IS_NOT_FIRST, TermUris.DC_ACCESS_RIGHTS);
-		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION, config.getDefaultBibliographicCitation());
 		print(informationWithheld, writer, IS_NOT_FIRST, TermUris.DWC_INFORMATION_WITHHELD);
 		print(datasetId, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_ID);
 		print(datasetName, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_NAME);

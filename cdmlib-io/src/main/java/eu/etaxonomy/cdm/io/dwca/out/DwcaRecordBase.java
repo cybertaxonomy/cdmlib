@@ -186,12 +186,20 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
-		print(value, writer, addSeparator, fieldKey.getUriString());
+		print(value, writer, addSeparator, fieldKey, null);
+	}
+
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey, String defaultValue) {
+		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
 	}
 	
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(value, writer, addSeparator, fieldKey, null);
+	}
+	
+	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
 		if (count == 1 && addSeparator == IS_NOT_FIRST){
-			registerFieldKey(URI.create(fieldKey));
+			registerFieldKey(URI.create(fieldKey), defaultValue);
 		}
 		String strToPrint = addSeparator ? SEP : "";
 		if (StringUtils.isNotBlank(value)){
@@ -200,8 +208,8 @@ public abstract class DwcaRecordBase {
 		writer.print(strToPrint);
 	}
 	
-	private void registerFieldKey(URI key) {
-		this.metaDataRecord.addFieldEntry(key);
+	private void registerFieldKey(URI key, String defaultValue) {
+		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}
 
 	

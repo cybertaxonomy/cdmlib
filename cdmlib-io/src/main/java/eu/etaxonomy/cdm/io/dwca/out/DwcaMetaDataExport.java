@@ -17,6 +17,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +75,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 				writer.writeAttribute("http://www.w3.org/2001/XMLSchema-instance", "schemaLocation", "http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd");
 				
 				for (DwcaMetaDataRecord metaRecord : metaRecords){
-					if (! metaDataRecord.isMetaData()){
+					if (! metaRecord.isMetaData()){
 						writeMetaDataRecord(writer, config, metaRecord);
 					}
 				}
@@ -120,17 +121,20 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			List<FieldEntry> entryList = metaRecord.getEntries();
 			for (FieldEntry fieldEntry : entryList){
 				if (fieldEntry.index != 0){
-					writeFieldLine(writer, fieldEntry.index, fieldEntry.term);
+					writeFieldLine(writer, fieldEntry.index, fieldEntry.term, fieldEntry.defaultValue);
 				}
 			}
 	
 		writer.writeEndElement();
 	}
 
-	private void writeFieldLine(XMLStreamWriter writer, int index, URI term) throws XMLStreamException {
+	private void writeFieldLine(XMLStreamWriter writer, int index, URI term, String defaultValue) throws XMLStreamException {
 		writer.writeStartElement("field");
 		writer.writeAttribute("index", String.valueOf(index));
 		writer.writeAttribute("term", term.toString());
+		if (StringUtils.isNotBlank(defaultValue)){
+			writer.writeAttribute("default", defaultValue);
+		}
 		writer.writeEndElement();
 		
 	}

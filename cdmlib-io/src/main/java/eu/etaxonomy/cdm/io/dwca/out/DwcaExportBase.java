@@ -53,6 +53,18 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
 	
 	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#countSteps()
+	 */
+	@Override
+	public int countSteps() {
+		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+		return allNodes.size();
+	}
+
+	
+	
 	/**
 	 * Returns the list of taxon nodes that are part in one of the given classifications 
 	 * and do have a taxon attached (empty taxon nodes should not but do exist in CDM databases).
@@ -232,4 +244,5 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 			}
 		}
 	}
+
 }

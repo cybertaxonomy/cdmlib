@@ -48,6 +48,8 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
 	
+	private String defaultBibliographicCitation = null;
+	
 	private DwcaEmlRecord emlRecord;
 
 	
@@ -280,6 +282,16 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	public boolean isDoEml() {
 		return doEml;
+	}
+
+
+	public void setDefaultBibliographicCitation(String defaultBibliographicCitation) {
+		this.defaultBibliographicCitation = defaultBibliographicCitation;
+	}
+
+
+	public String getDefaultBibliographicCitation() {
+		return defaultBibliographicCitation;
 	}
 
 }

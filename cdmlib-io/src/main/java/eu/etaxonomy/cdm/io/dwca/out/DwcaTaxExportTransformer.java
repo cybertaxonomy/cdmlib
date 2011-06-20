@@ -60,7 +60,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = nomStatusMapping.getTerm(nomStatus.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("Nom. Status (" + nomStatus.getLabel() + ") could not be mapped. Use CDM status label.");
+				logger.info("Nom. Status (" + nomStatus.getLabel() + ") could not be mapped. Use CDM status label.");
 			}
 			return result;
 		}
@@ -113,7 +113,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = rankMapping.getTerm(term.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("Rank (" + term.getLabel() + ") could not be mapped. Use CDM abbreviated label instead.");
+				logger.info("Rank (" + term.getLabel() + ") could not be mapped. Use CDM abbreviated label instead.");
 			}
 			return result;
 		}
@@ -132,7 +132,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = specimenTypeMapping.getTerm(status.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("Specimen type status (" + status.getLabel() + ") could not be mapped. Use CDM status label.");
+				logger.info("Specimen type status (" + status.getLabel() + ") could not be mapped. Use CDM status label.");
 			}
 			return result;
 		}
@@ -152,7 +152,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = nameTypeMapping.getTerm(status.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("Name type status (" + status.getLabel() + ") could not be mapped. Use CDM status label.");
+				logger.info("Name type status (" + status.getLabel() + ") could not be mapped. Use CDM status label.");
 			}
 			return result;
 		}
@@ -171,7 +171,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = sexMapping.getTerm(sex.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("Sex (" + sex.getLabel() + ") could not be mapped. Use CDM status label.");
+				logger.info("Sex (" + sex.getLabel() + ") could not be mapped. Use CDM status label.");
 			}
 			return result;
 		}
@@ -190,7 +190,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = lifeStageMapping.getTerm(stage.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("Life stage (" + stage.getLabel() + ") could not be mapped. Use CDM status label.");
+				logger.info("Life stage (" + stage.getLabel() + ") could not be mapped. Use CDM status label.");
 			}
 			return result;
 		}
@@ -209,7 +209,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = occStatusMapping.getTerm(status.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("PresenceAbsence term (" + status.getLabel() + ") could not be mapped to GBIF occurrence status. Use CDM status label.");
+				logger.info("PresenceAbsence term (" + status.getLabel() + ") could not be mapped to GBIF occurrence status. Use CDM status label.");
 			}
 			return result;
 		}
@@ -228,7 +228,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 			}
 			String result = establishmentMeansMapping.getTerm(status.getUuid());
 			if (StringUtils.isBlank(result)){
-				logger.warn("PresenceAbsence term (" + status.getLabel() + ") could not be mapped to GBIF establishment means. Use CDM status label.");
+				logger.info("PresenceAbsence term (" + status.getLabel() + ") could not be mapped to GBIF establishment means. Use CDM status label.");
 			}
 			return result;
 		}
