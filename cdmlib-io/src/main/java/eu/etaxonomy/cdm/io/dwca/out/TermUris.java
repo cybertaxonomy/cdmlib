@@ -120,6 +120,10 @@ public enum TermUris {
 	DWC_START_DAY_OF_YEAR("http://rs.tdwg.org/dwc/terms/startDayOfYear"),
 	DWC_END_DAY_OF_YEAR("http://rs.tdwg.org/dwc/terms/endDayOfYear"),
 	DWC_OCCURRENCE_REMARKS("http://rs.tdwg.org/dwc/terms/occurrenceRemarks"),
+	
+	TDWG_UNINOMIAL("http://rs.tdwg.org/ontology/voc/TaxonName#uninomial"),
+	TDWG_GENUSPART("http://rs.tdwg.org/ontology/voc/TaxonName#genusPart"),
+	TDWG_INFRAGENERICEPITHET("http://rs.tdwg.org/ontology/voc/TaxonName#infragenericEpithet");
 	;
 	
 	

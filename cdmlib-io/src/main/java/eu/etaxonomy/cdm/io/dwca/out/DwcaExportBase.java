@@ -26,11 +26,15 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -148,6 +152,17 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	 */
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
+	}
+	
+
+	protected String getSources(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
+		String result = "";
+		for (IOriginalSource source: sourceable.getSources()){
+			if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
+				CdmUtils.concat(config.getSetSeparator(), result, source.getCitation().getTitleCache());
+			}
+		}
+		return result;
 	}
 	
 

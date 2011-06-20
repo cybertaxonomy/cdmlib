@@ -54,6 +54,12 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
+
+	private String taxonSourceDefault;
+
+	private boolean withHigherClassification = false;
+
+	private String setSeparator;
 	
 	
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
@@ -293,5 +299,52 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public String getDefaultBibliographicCitation() {
 		return defaultBibliographicCitation;
 	}
+
+
+	/**
+	 * The default value for the taxon.source column. This may be a column linking to a url that provides 
+	 * data about the given taxon. The id is replaced by a placeholder, 
+	 * e.g. http://wp6-cichorieae.e-taxonomy.eu/portal/?q=cdm_dataportal/taxon/{id}.
+	 * NOTE: This may be replaced in future versions by concrete CDM server implementations.
+	 * 
+	 * @return the taxonSourceDefault
+	 */
+	public String getTaxonSourceDefault() {
+		return taxonSourceDefault;
+	}
+	
+	public void setTaxonSourceDefault(String taxonSourceDefault) {
+		this.taxonSourceDefault = taxonSourceDefault;
+	}
+
+
+	public boolean isWithHigherClassification() {
+		return withHigherClassification;
+	}
+
+
+	public void setWithHigherClassification(boolean withHigherClassification) {
+		this.withHigherClassification = withHigherClassification;
+	}
+
+	/**
+	 * @return the setSeparator
+	 */
+	public String getSetSeparator() {
+		return setSeparator;
+	}
+
+
+	/**
+	 * @param setSeparator the setSeparator to set
+	 */
+	public void setSetSeparator(String setSeparator) {
+		this.setSeparator = setSeparator;
+	}
+
+
+
+
+
 
 }

@@ -83,7 +83,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 									! recordExists(el)){
 								DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
 								TextData textData = CdmBase.deproxy(el,TextData.class);
-								handleDescription(record, textData, taxon);
+								handleDescription(record, textData, taxon, config);
 								record.write(writer);
 								addExistingRecord(textData);
 							}
@@ -110,7 +110,7 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	}
 
 
-	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon) {
+	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
 		
@@ -135,8 +135,8 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 			record.setLanguage(languageText.getLanguage());
 		}
 		
-		//FIXME multiple sources
-		record.setSource(null);
+		//sources
+		record.setSource(getSources(textData, config));
 		
 		//TODO missing , relationship to credits?
 		record.setCreator(null);

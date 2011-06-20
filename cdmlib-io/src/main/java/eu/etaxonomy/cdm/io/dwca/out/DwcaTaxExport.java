@@ -92,7 +92,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
-					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false);
+					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false, config);
 					record.write(writer);
 					this.addExistingRecord(taxon);
 				}
@@ -141,7 +141,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
 			if (! this.recordExists(synonym)){
-				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
+				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial, config);
 				record.write(writer);
 				this.addExistingRecord(synonym);
 			}
@@ -162,7 +162,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
 			if (! this.recordExists(misappliedName)){
-				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false);
+				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false, config);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
@@ -183,7 +183,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 */
 	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, NonViralName<?> name, 
 			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification, 
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial) {
+			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, DwcaTaxExportConfigurator config) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 		
@@ -228,18 +228,25 @@ public class DwcaTaxExport extends DwcaExportBase {
 		record.setTaxonConceptId(taxonBase.getUuid());
 		
 		//Classification
-		//FIXME all classification and rank specific fields are meant to represent the classification
-		//currently the information is only compiled for the exact same range but it should be compiled
-		//for all ranks above the rank of this taxon
-		//TODO we do not support this yet
-		record.setHigherClassification(null);
-		//... higher ranks
-		handleUninomialOrGenus(record, name);
-		if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
-			record.setSubgenus(name.getNameCache());	
+		if (config.isWithHigherClassification()){
+			//FIXME all classification and rank specific fields are meant to represent the classification
+			//currently the information is only compiled for the exact same range but it should be compiled
+			//for all ranks above the rank of this taxon
+			//TODO we do not support this yet
+			record.setHigherClassification(null);
+			//... higher ranks
+			handleUninomialOrGenus(record, name);
+			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
+				record.setSubgenus(name.getNameCache());	
+			}
+			//record.setSubgenus(name.getInfraGenericEpithet());
 		}
-		//record.setSubgenus(name.getInfraGenericEpithet());
-		
+		if (name.getRank() != null &&  (name.getRank().isSupraGeneric() || name.getRank().isGenus())){
+			record.setUninomial(name.getGenusOrUninomial());
+		}else{
+			record.setGenus(name.getGenusOrUninomial());
+		}
+		record.setInfraGenericEpithet(name.getInfraGenericEpithet());
 		
 		record.setSpecificEpithet(name.getSpecificEpithet());
 		record.setInfraspecificEpithet(name.getInfraSpecificEpithet());

@@ -57,6 +57,9 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String family;
 	private String genus;
 	private String subgenus;
+	private String uninomial;
+	private String genusPart;
+	private String infraGenericEpithet;
 	private String specificEpithet;
 	private String infraspecificEpithet;
 	
@@ -308,15 +311,21 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(originalNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ORIGINAL_NAME_USAGE);
 		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUris.DWC_NAME_ACCORDING_TO);
 		print(namePublishedIn, writer, IS_NOT_FIRST, TermUris.DWC_NAME_PUBLISHED_IN);
-		print(higherClassification, writer, IS_NOT_FIRST, TermUris.DWC_HIGHER_CLASSIFICATION);
 		
-		print(kingdom, writer, IS_NOT_FIRST, TermUris.DWC_KINGDOM);
-		print(phylum, writer, IS_NOT_FIRST, TermUris.DWC_PHYLUM);
-		print(clazz, writer, IS_NOT_FIRST, TermUris.DWC_CLASS);
-		print(order, writer, IS_NOT_FIRST, TermUris.DWC_ORDER);
-		print(family, writer, IS_NOT_FIRST, TermUris.DWC_FAMILY);
-		print(genus, writer, IS_NOT_FIRST, TermUris.DWC_GENUS);
-		print(subgenus, writer, IS_NOT_FIRST, TermUris.DWC_SUBGENUS);
+		if (config.isWithHigherClassification()){
+			print(higherClassification, writer, IS_NOT_FIRST, TermUris.DWC_HIGHER_CLASSIFICATION);
+			print(kingdom, writer, IS_NOT_FIRST, TermUris.DWC_KINGDOM);
+			print(phylum, writer, IS_NOT_FIRST, TermUris.DWC_PHYLUM);
+			print(clazz, writer, IS_NOT_FIRST, TermUris.DWC_CLASS);
+			print(order, writer, IS_NOT_FIRST, TermUris.DWC_ORDER);
+			print(family, writer, IS_NOT_FIRST, TermUris.DWC_FAMILY);
+			print(genus, writer, IS_NOT_FIRST, TermUris.DWC_GENUS);
+			print(subgenus, writer, IS_NOT_FIRST, TermUris.DWC_SUBGENUS);
+		}
+		print(uninomial, writer, IS_NOT_FIRST, TermUris.TDWG_UNINOMIAL);
+		print(genusPart, writer, IS_NOT_FIRST, TermUris.TDWG_GENUSPART);
+		print(infraGenericEpithet, writer, IS_NOT_FIRST, TermUris.TDWG_INFRAGENERICEPITHET);
+		
 		print(specificEpithet, writer, IS_NOT_FIRST, TermUris.DWC_SPECIFIC_EPI);
 		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUris.DWC_INFRA_SPECIFIC_EPI);
 		
@@ -609,6 +618,41 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	
 	public void setInfraspecificEpithet(String infraspecificEpithet) {
 		this.infraspecificEpithet = infraspecificEpithet;
+	}
+
+	/**
+	 * @return the uninomial
+	 */
+	public String getUninomial() {
+		return uninomial;
+	}
+
+	/**
+	 * @param uninomial the uninomial to set
+	 */
+	public void setUninomial(String uninomial) {
+		this.uninomial = uninomial;
+	}
+
+	/**
+	 * @return the infraGenericEpithet
+	 */
+	public String getInfraGenericEpithet() {
+		return infraGenericEpithet;
+	}
+
+	/**
+	 * @param infraGenericEpithet the infraGenericEpithet to set
+	 */
+	public void setInfraGenericEpithet(String infraGenericEpithet) {
+		this.infraGenericEpithet = infraGenericEpithet;
+	}
+
+	/**
+	 * @param scientificNameId the scientificNameId to set
+	 */
+	public void setScientificNameId(DwcaId scientificNameId) {
+		this.scientificNameId = scientificNameId;
 	}
 
 	

@@ -20,6 +20,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import com.sun.tools.jxc.gen.config.Config;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -77,7 +79,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 							if (! recordExists(el)){
 								DwcaDistributionRecord record = new DwcaDistributionRecord(metaRecord, config);
 								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-								handleDistribution(record, distribution, taxon);
+								handleDistribution(record, distribution, taxon, config);
 								record.write(writer);
 								this.addExistingRecord(distribution);
 							}
@@ -109,7 +111,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 
 
 
-	private void handleDistribution(DwcaDistributionRecord record, Distribution distribution, Taxon taxon) {
+	private void handleDistribution(DwcaDistributionRecord record, Distribution distribution, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
 		handleArea(record, distribution.getArea(), taxon, true);
@@ -126,7 +128,7 @@ public class DwcaDistributionExport extends DwcaExportBase {
 		//TODO missing
 		record.setSeasonalDate(null);
 		//FIXME
-		record.setSource(null);
+		record.setSource(getSources(distribution, config));
 		//FIXME
 		record.setOccurrenceRemarks(null);
 		
