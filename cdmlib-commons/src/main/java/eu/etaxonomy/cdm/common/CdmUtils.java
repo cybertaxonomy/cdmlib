@@ -202,13 +202,13 @@ public class CdmUtils {
 	 * @param seperator
 	 * @return String 
 	 */
-	static public String concat(CharSequence seperator, String[] strings){
+	static public String concat(CharSequence separator, String[] strings){
 		String result = "";
 		boolean allNull = true;
 		for (String string : strings){
 			if (string != null){
 				if (result.length() > 0 && string.length() > 0){
-					result += seperator;
+					result += separator;
 				}
 				result += string;
 				allNull = false;
@@ -232,9 +232,9 @@ public class CdmUtils {
 	 * @param string2
 	 * @return String 
 	 */
-	static public String concat(CharSequence seperator, String string1, String string2){
+	static public String concat(CharSequence separator, String string1, String string2){
 		String[] strings = {string1, string2};
-		return concat(seperator, strings);
+		return concat(separator, strings);
 	}
 
 	
