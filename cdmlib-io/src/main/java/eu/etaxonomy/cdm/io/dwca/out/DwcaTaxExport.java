@@ -244,7 +244,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		if (name.getRank() != null &&  (name.getRank().isSupraGeneric() || name.getRank().isGenus())){
 			record.setUninomial(name.getGenusOrUninomial());
 		}else{
-			record.setGenus(name.getGenusOrUninomial());
+			record.setGenusPart(name.getGenusOrUninomial());
 		}
 		record.setInfraGenericEpithet(name.getInfraGenericEpithet());
 		

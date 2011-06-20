@@ -159,7 +159,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 		String result = "";
 		for (IOriginalSource source: sourceable.getSources()){
 			if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
-				CdmUtils.concat(config.getSetSeparator(), result, source.getCitation().getTitleCache());
+				result = CdmUtils.concat(config.getSetSeparator(), result, source.getCitation().getTitleCache());
 			}
 		}
 		return result;

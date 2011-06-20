@@ -655,5 +655,19 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		this.scientificNameId = scientificNameId;
 	}
 
+	/**
+	 * @return the genusPart
+	 */
+	public String getGenusPart() {
+		return genusPart;
+	}
+
+	/**
+	 * @param genusPart the genusPart to set
+	 */
+	public void setGenusPart(String genusPart) {
+		this.genusPart = genusPart;
+	}
+
 	
 }

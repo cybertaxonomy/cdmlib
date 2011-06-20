@@ -59,7 +59,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	private boolean withHigherClassification = false;
 
-	private String setSeparator;
+	private String setSeparator = ";";
 	
 	
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
