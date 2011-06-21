@@ -2,10 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+   	http://www.springframework.org/schema/security 
+    http://www.springframework.org/schema/security/spring-security-3.0.4.xsd">
     
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <property name="providers">
@@ -26,5 +29,16 @@
     <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
         <property name="userPropertyToUse" value="getUsername"/>
     </bean>
+    
+    <security:global-method-security pre-post-annotations="enabled">
+		<security:expression-handler ref="expressionHandler"/>
+	</security:global-method-security>
+
+	<bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="cdmPermissionEvaluator"/>
+	</bean>
+	
+	
+ 	<bean class="eu.etaxonomy.cdm.model.permissionEval.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
     
 </beans>

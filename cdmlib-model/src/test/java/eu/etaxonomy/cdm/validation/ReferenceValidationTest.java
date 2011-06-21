@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  */
 @SuppressWarnings("unused")
-//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 public class ReferenceValidationTest  {
 	private static final Logger logger = Logger.getLogger(ReferenceValidationTest.class);
 	

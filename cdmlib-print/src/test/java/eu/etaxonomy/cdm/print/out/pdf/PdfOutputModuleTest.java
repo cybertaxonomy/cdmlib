@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.print.out.pdf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
+import org.junit.Ignore;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
  * @created Jan 11, 2011
  * @version 1.0
  */
+ @Ignore
 public class PdfOutputModuleTest {
 
 	

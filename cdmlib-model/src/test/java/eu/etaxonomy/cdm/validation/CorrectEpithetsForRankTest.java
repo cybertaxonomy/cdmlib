@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author ben.clark
  *
  */
-//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 public class CorrectEpithetsForRankTest  {
 	private static final Logger logger = Logger.getLogger(CorrectEpithetsForRankTest.class);
 	

@@ -22,6 +22,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -149,6 +150,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.save(newInstance);
 	}
 
+	//@PostFilter("hasPermission(filterObject, 'edit')")
+	//@PreAuthorize("hasRole('ROLE_EDIT')")
 	@Transactional(readOnly = false)
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);

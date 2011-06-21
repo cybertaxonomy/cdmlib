@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author ben.clark
  *
  */
-//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
+@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 public class TaxonNameCannotBeAcceptedAndSynonymTest{
 	private static final Logger logger = Logger.getLogger(TaxonNameCannotBeAcceptedAndSynonymTest.class);
 	
