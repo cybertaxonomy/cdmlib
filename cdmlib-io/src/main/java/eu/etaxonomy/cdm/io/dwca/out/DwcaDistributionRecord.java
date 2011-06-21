@@ -12,12 +12,17 @@ package eu.etaxonomy.cdm.io.dwca.out;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
 /**
  * @author a.mueller
@@ -29,6 +34,7 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private static final Logger logger = Logger.getLogger(DwcaDistributionRecord.class);
 	
 	private DwcaId locationId;
+	private String locationIdString;
 	private String locality;
 	private String countryCode;
 	private Stage lifeStage;
@@ -94,7 +100,11 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		print(locationId, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
+		if (StringUtils.isNotBlank(locationIdString)){
+			print(locationIdString, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
+		}else{
+			print(locationId, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
+		}
 		print(locality, writer, IS_NOT_FIRST, TermUris.DWC_LOCALITY);
 		print(countryCode, writer, IS_NOT_FIRST, TermUris.DWC_COUNTRY_CODE);
 		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUris.DWC_LIFESTAGE);
@@ -153,8 +163,17 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		return locationId.getId();
 	}
 
-	public void setLocationId(NamedArea locationId) {
-		this.locationId.setId(locationId);
+	public void setLocationId(NamedArea area) {
+		if (area.isInstanceOf(TdwgArea.class)){
+			String locationId = "TDWG:" + area.getRepresentation(Language.ENGLISH()).getAbbreviatedLabel();
+			this.locationIdString = locationId;
+		}else if (area.isInstanceOf(WaterbodyOrCountry.class)){
+			WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);
+			String locationId = "ISO3166:" + country.getIso3166_A2();
+			this.locationIdString = locationId;
+		}else{
+			this.locationId.setId(area);
+		}
 	}
 
 	public PresenceAbsenceTermBase<?> getOccurrenceStatus() {

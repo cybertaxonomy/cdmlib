@@ -306,7 +306,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(namePublishedInId, writer, IS_NOT_FIRST, TermUris.DWC_NAME_PUBLISHED_IN_ID);
 		print(taxonConceptId, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_CONCEPT_ID);
 		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
-		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ACCEPTED_NAME_USAGE_ID);
+		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ACCEPTED_NAME_USAGE);
 		print(parentNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_PARENT_NAME_USAGE);
 		print(originalNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ORIGINAL_NAME_USAGE);
 		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUris.DWC_NAME_ACCORDING_TO);
