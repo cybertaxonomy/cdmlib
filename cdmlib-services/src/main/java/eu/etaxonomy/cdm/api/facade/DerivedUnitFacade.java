@@ -2233,6 +2233,10 @@ public class DerivedUnitFacade {
 
 	// ******************************* Events ***************************
 	
+	//set of events that were currently fired by this facades field observation
+	//to avoid recursive fireing of the same event
+	private Set<PropertyChangeEvent> fireingEvents = new HashSet<PropertyChangeEvent>();
+	
 	/**
 	 * @return
 	 */
@@ -2250,8 +2254,10 @@ public class DerivedUnitFacade {
 				if (derivedUnit != null){
 					derivedUnit.firePropertyChange(event);
 				}else{
-					if (! event.getSource().equals(fieldObservation)){
+					if (! event.getSource().equals(fieldObservation) && ! fireingEvents.contains(event)  ){
+						fireingEvents.add(event);
 						fieldObservation.firePropertyChange(event);
+						fireingEvents.remove(event);
 					}
 				}
 			}
