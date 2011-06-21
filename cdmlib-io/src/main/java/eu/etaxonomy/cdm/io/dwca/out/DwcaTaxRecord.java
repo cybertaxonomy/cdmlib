@@ -346,7 +346,7 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(informationWithheld, writer, IS_NOT_FIRST, TermUris.DWC_INFORMATION_WITHHELD);
 		print(datasetId, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_ID);
 		print(datasetName, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_NAME);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE, config.getDefaultTaxonSource());
 		writer.println();
 	}
 

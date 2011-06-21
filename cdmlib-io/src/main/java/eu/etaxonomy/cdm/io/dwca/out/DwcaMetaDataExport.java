@@ -130,11 +130,12 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 
 	private void writeFieldLine(XMLStreamWriter writer, int index, URI term, String defaultValue) throws XMLStreamException {
 		writer.writeStartElement("field");
-		writer.writeAttribute("index", String.valueOf(index));
-		writer.writeAttribute("term", term.toString());
 		if (StringUtils.isNotBlank(defaultValue)){
 			writer.writeAttribute("default", defaultValue);
+		}else{
+			writer.writeAttribute("index", String.valueOf(index));
 		}
+		writer.writeAttribute("term", term.toString());
 		writer.writeEndElement();
 		
 	}

@@ -55,7 +55,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 
-	private String taxonSourceDefault;
+	private String defaultTaxonSource;
 
 	private boolean withHigherClassification = false;
 
@@ -309,12 +309,12 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 * 
 	 * @return the taxonSourceDefault
 	 */
-	public String getTaxonSourceDefault() {
-		return taxonSourceDefault;
+	public String getDefaultTaxonSource() {
+		return defaultTaxonSource;
 	}
 	
-	public void setTaxonSourceDefault(String taxonSourceDefault) {
-		this.taxonSourceDefault = taxonSourceDefault;
+	public void setDefaultTaxonSource(String taxonSourceDefault) {
+		this.defaultTaxonSource = taxonSourceDefault;
 	}
 
 
@@ -341,10 +341,6 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public void setSetSeparator(String setSeparator) {
 		this.setSeparator = setSeparator;
 	}
-
-
-
-
 
 
 }

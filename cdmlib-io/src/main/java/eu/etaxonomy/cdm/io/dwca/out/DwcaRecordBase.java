@@ -201,11 +201,13 @@ public abstract class DwcaRecordBase {
 		if (count == 1 && addSeparator == IS_NOT_FIRST){
 			registerFieldKey(URI.create(fieldKey), defaultValue);
 		}
-		String strToPrint = addSeparator ? SEP : "";
-		if (StringUtils.isNotBlank(value)){
-			strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
+		if (StringUtils.isBlank(defaultValue)){
+			String strToPrint = addSeparator ? SEP : "";
+			if (StringUtils.isNotBlank(value)){
+				strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
+			}
+			writer.print(strToPrint);
 		}
-		writer.print(strToPrint);
 	}
 	
 	private void registerFieldKey(URI key, String defaultValue) {
