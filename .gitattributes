@@ -701,9 +701,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservati
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/overview.html -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/permissionEval/CdmPermission.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/permissionEval/CdmPermissionEvaluator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/permissionEval/EvalClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IArticle.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IBook.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IBookSection.java -text
