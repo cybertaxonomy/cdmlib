@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  *
  */
+
 public class SruServiceWrapperTest {
 	public static final Logger logger = Logger.getLogger(SruServiceWrapperTest.class);
 
@@ -47,7 +49,7 @@ public class SruServiceWrapperTest {
 // ******************************* TESTS ******************************************************/
 
 	@Test
-	//@Ignore // ignore web accessing tests
+	@Ignore // ignore web accessing tests
 	public void testDoSearchRetrieve(){
 		
 		List<Reference> refList_1 = sruServiceWrapper.doSearchRetrieve("pica.tit=\"Linnaei Species Plantarum\"", "dc");
