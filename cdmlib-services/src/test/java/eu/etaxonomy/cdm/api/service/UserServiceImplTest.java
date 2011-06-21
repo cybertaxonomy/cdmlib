@@ -54,9 +54,9 @@ import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.permissionEval.CdmPermission;
-import eu.etaxonomy.cdm.model.permissionEval.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
