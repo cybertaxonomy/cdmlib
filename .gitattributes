@@ -754,8 +754,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/GlobalAuditEventC
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/InheritableThreadLocalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/ThreadLocalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermission.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/EvalClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TagEnum.java -text

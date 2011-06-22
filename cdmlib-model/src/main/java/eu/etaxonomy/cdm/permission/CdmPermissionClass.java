@@ -1,5 +1,5 @@
 package eu.etaxonomy.cdm.permission;
 
-public enum EvalClass {
+public enum CdmPermissionClass {
 	USER, TAXONNODE, DESCRIPTION;
 }
