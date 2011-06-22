@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.*;
-
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,7 +10,9 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -54,6 +55,12 @@ public class UriUtilsTest {
 		}
 	}
 
+	@Test
+	public void testGetResourceLength() throws ClientProtocolException, IOException, HttpException{
+		URI uri = URI.create("http://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
+		Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
+	}
+	
 	@Test
 	public void testIsInternetAvailable() {
 		URI firstUri = URI.create("http://www.gmx.de/");

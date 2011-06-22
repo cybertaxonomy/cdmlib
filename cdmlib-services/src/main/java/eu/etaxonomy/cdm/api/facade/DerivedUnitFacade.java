@@ -169,6 +169,8 @@ public class DerivedUnitFacade {
 	}
 
 	private final DerivedUnitFacadeConfigurator config;
+	
+	private Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
 
 	// private GatheringEvent gatheringEvent;
 	private DerivedUnitType type; // needed?
@@ -192,7 +194,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(DerivedUnitType type) {
-		return new DerivedUnitFacade(type, null);
+		return new DerivedUnitFacade(type, null, null);
 	}
 	
 	/**
@@ -203,9 +205,24 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(DerivedUnitType type, FieldObservation fieldObservation) {
-		return new DerivedUnitFacade(type, fieldObservation);
+		return new DerivedUnitFacade(type, fieldObservation, null);
 	}
 
+	/**
+	 * Creates a derived unit facade for a new derived unit of type
+	 * <code>type</code>.
+	 * 
+	 * @param type
+	 * @param fieldObservation the field observation to use
+	 * @param config the facade configurator to use
+	 * //TODO are there any ambiguities to solve with defining a field observation or a configurator 
+	 * @return
+	 */
+	public static DerivedUnitFacade NewInstance(DerivedUnitType type, FieldObservation fieldObservation, DerivedUnitFacadeConfigurator config) {
+		return new DerivedUnitFacade(type, fieldObservation, config);
+	}
+
+	
 	/**
 	 * Creates a derived unit facade for a given derived unit using the default
 	 * configuration.
@@ -227,8 +244,11 @@ public class DerivedUnitFacade {
 
 	// ****************** CONSTRUCTOR ******************************************
 
-	private DerivedUnitFacade(DerivedUnitType type, FieldObservation fieldObservation) {
-		this.config = DerivedUnitFacadeConfigurator.NewInstance();
+	private DerivedUnitFacade(DerivedUnitType type, FieldObservation fieldObservation, DerivedUnitFacadeConfigurator config) {
+		if (config == null){
+			config = DerivedUnitFacadeConfigurator.NewInstance();
+		}
+		this.config = config;
 		this.type = type;
 		// derivedUnit
 		derivedUnit = type.getNewDerivedUnitInstance();
@@ -268,8 +288,9 @@ public class DerivedUnitFacade {
 				fieldObservation = fieldOriginals.iterator().next();
 				// ###fieldObservation =
 				// getInitializedFieldObservation(fieldObservation);
-				fieldObservation
-						.addPropertyChangeListener(getNewEventPropagationListener());
+				if (config.isFirePropertyChangeEvents()){
+					addNewEventPropagationListener(fieldObservation);
+				}
 			} else {
 				throw new IllegalStateException("Illegal state");
 			}
@@ -1721,7 +1742,9 @@ public class DerivedUnitFacade {
 	private void setFieldObservation(FieldObservation fieldObservation) {
 		this.fieldObservation = fieldObservation;
 		if (fieldObservation != null){
-			fieldObservation.addPropertyChangeListener(getNewEventPropagationListener());
+			if (config.isFirePropertyChangeEvents()){
+				addNewEventPropagationListener(fieldObservation);
+			}
 			if (derivedUnit != null){
 				DerivationEvent derivationEvent = getDerivationEvent(CREATE);
 				derivationEvent.addOriginal(fieldObservation);
@@ -1762,7 +1785,7 @@ public class DerivedUnitFacade {
 
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
-		testDerivedUnit(); 
+		testDerivedUnit();
 		determination.setIdentifiedUnit(derivedUnit);
 		derivedUnit.addDetermination(determination);
 	}
@@ -2155,8 +2178,7 @@ public class DerivedUnitFacade {
 	 * @param originalNameString
 	 * @return
 	 */
-	public IdentifiableSource addSource(Reference reference,
-			String microReference, String originalNameString) {
+	public IdentifiableSource addSource(Reference reference, String microReference, String originalNameString) {
 		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
 		source.setOriginalNameString(originalNameString);
 		addSource(source);
@@ -2210,28 +2232,42 @@ public class DerivedUnitFacade {
 	}
 
 	// ******************************* Events ***************************
-
+	
+	//set of events that were currently fired by this facades field observation
+	//to avoid recursive fireing of the same event
+	private Set<PropertyChangeEvent> fireingEvents = new HashSet<PropertyChangeEvent>();
+	
 	/**
 	 * @return
 	 */
-	private PropertyChangeListener getNewEventPropagationListener() {
+	private void addNewEventPropagationListener(CdmBase listeningObject) {
+		//if there is already a listener, don't do anything
+		for (PropertyChangeListener listener : this.listeners.keySet()){
+			if (listeners.get(listener) == listeningObject){
+				return;
+			}
+		}
+		//create new listener
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (derivedUnit != null){
 					derivedUnit.firePropertyChange(event);
 				}else{
-					if (! event.getSource().equals(fieldObservation)){
+					if (! event.getSource().equals(fieldObservation) && ! fireingEvents.contains(event)  ){
+						fireingEvents.add(event);
 						fieldObservation.firePropertyChange(event);
+						fireingEvents.remove(event);
 					}
 				}
 			}
 		};
-		return listener;
+		//add listener to listening object and to list of listeners
+		listeningObject.addPropertyChangeListener(listener);
+		listeners.put(listener, listeningObject);
 	}
 
-	// **************** Other Collections
-	// ***************************************************
+	// **************** Other Collections ********************************
 
 	/**
 	 * Creates a duplicate specimen which derives from the same derivation event
@@ -2306,4 +2342,15 @@ public class DerivedUnitFacade {
 		return type;
 	}
 
+	
+	/**
+	 * Closes this facade. As a minimum this method removes all listeners created by this facade from their 
+	 * listening objects.
+	 */
+	public void close(){
+		for (PropertyChangeListener listener : this.listeners.keySet()){
+			CdmBase listeningObject = listeners.get(listener);
+			listeningObject.removePropertyChangeListener(listener);
+		}
+	}
 }

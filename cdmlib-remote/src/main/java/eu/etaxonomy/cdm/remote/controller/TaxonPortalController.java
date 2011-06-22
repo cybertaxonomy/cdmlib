@@ -157,6 +157,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
 			"synonymRelations.synonym.name.combinationAuthorTeam.$",
 			
+			"name.typeDesignations",
+			
 			"name.homotypicalGroup.$",
 			"name.homotypicalGroup.typifiedNames.$",
 			"name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",

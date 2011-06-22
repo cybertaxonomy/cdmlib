@@ -94,7 +94,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 						if (el.isInstanceOf(IndividualsAssociation.class)){
 							DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 							IndividualsAssociation individualAssociation = CdmBase.deproxy(el,IndividualsAssociation.class);
-							if (! this.recordExistsUuid(individualAssociation) && handleSpecimen(record, individualAssociation, null, taxon)){
+							if (! this.recordExistsUuid(individualAssociation) && handleSpecimen(record, individualAssociation, null, taxon, config)){
 								record.write(writer);
 								this.addExistingRecordUuid(individualAssociation);
 							}
@@ -142,7 +142,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		Set<TypeDesignationBase<?>> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
-			if (! this.recordExistsUuid(designation) && handleSpecimen(record, null, designation, taxonBase)){
+			if (! this.recordExistsUuid(designation) && handleSpecimen(record, null, designation, taxonBase, config)){
 				record.write(writer);
 				addExistingRecordUuid(designation);
 			}
@@ -151,7 +151,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 	}
 	
 
-	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase) {
+	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
 		TypeDesignationStatusBase<?> status = null;
 		DerivedUnitFacade facade = null;
 		if (individualsAssociation != null){
@@ -189,7 +189,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		record.setSex(facade.getSex());
 		record.setRecordedBy(facade.getCollector());
 		//TODO ???
-		record.setSource(null);
+		record.setSource(getSources(facade.innerDerivedUnit(), config));
 		record.setEventDate(facade.getGatheringPeriod());
 		//TODO missing
 		record.setVerbatimLabel(null);

@@ -21,6 +21,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -78,7 +81,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 			writer = createPrintWriter(fileName, state);
 
 			List<TaxonNode> allNodes =  getAllNodes(null);
+			int i = 0;
 			for (TaxonNode node : allNodes){
+				i++;
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				DwcaTaxRecord record = new DwcaTaxRecord(metaRecord, config);
 				
@@ -87,7 +92,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 				TaxonNameBase<?, ?> basionym = name.getBasionym();
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
-					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false);
+					handleTaxonBase(record, taxon, name, taxon, parent, basionym, classification, null, false, false, config);
 					record.write(writer);
 					this.addExistingRecord(taxon);
 				}
@@ -136,7 +141,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
 			if (! this.recordExists(synonym)){
-				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial);
+				handleTaxonBase(record, synonym, name, taxon, parent, basionym, classification, type, isProParte, isPartial, config);
 				record.write(writer);
 				this.addExistingRecord(synonym);
 			}
@@ -157,22 +162,13 @@ public class DwcaTaxExport extends DwcaExportBase {
 			TaxonNameBase<?, ?> basionym = name.getBasionym();
 			
 			if (! this.recordExists(misappliedName)){
-				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false);
+				handleTaxonBase(record, misappliedName, name, taxon, parent, basionym, classification, relType, false, false, config);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
 		}	
 	}
 
-	/**
-	 * @param record
-	 * @param taxon
-	 * @param name
-	 * @param parent
-	 * @param basionym
-	 * @param type 
-	 * @return
-	 */
 	/**
 	 * @param record
 	 * @param taxonBase
@@ -187,16 +183,31 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 */
 	private void handleTaxonBase(DwcaTaxRecord record, TaxonBase<?> taxonBase, NonViralName<?> name, 
 			Taxon acceptedTaxon, Taxon parent, TaxonNameBase<?, ?> basionym, Classification classification, 
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial) {
+			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, DwcaTaxExportConfigurator config) {
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 		
+		//maybe wrong as according to the DwC-A documentation only resolvable ids are allowed, this differs from DwC documentation
 		record.setScientificNameId(name);
+		record.setScientificName(name.getTitleCache());
 		
 		record.setAcceptedNameUsageId(acceptedTaxon.getUuid());
-		record.setParentNameUsageId(parent == null ? null : parent.getUuid());
+		record.setAcceptedNameUsage(acceptedTaxon.getName() == null? acceptedTaxon.getTitleCache() : acceptedTaxon.getName().getTitleCache());
+		
+		//parentNameUsage
+		if (parent != null){
+			record.setParentNameUsageId(parent.getUuid());
+			record.setParentNameUsage(parent.getTitleCache());
+		}
+		
+		//originalNameUsage
 		// ??? - is not a name usage (concept)
-//			record.setOriginalNameUsageId(basionym.getId());
+		if (basionym != null){
+			record.setOriginalNameUsageId(basionym.getUuid());
+			record.setOriginalNameUsage(basionym.getTitleCache());
+		}
+		
+		//nameAccordingTo
 		Reference<?> sec = taxonBase.getSec();
 		if (sec == null){
 			String message = "There is a taxon without sec " + taxonBase.getTitleCache() + "( " + taxonBase.getId() + ")";
@@ -205,49 +216,78 @@ public class DwcaTaxExport extends DwcaExportBase {
 			record.setNameAccordingToId(taxonBase.getSec().getUuid());
 			record.setNameAccordingTo(taxonBase.getSec().getTitleCache());
 		}
-		record.setNamePublishedInId(name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getUuid());
-		// what is the difference to id
+		
+		//namePublishedIn
+		// ??? is not a nameUsage (concept)
+		if (name.getNomenclaturalReference() != null){
+			record.setNamePublishedInId(name.getNomenclaturalReference().getUuid());
+			record.setNamePublishedIn(name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getTitleCache());
+		}
+			
+		// what is the exact difference to id and acceptedNameUsageId
 		record.setTaxonConceptId(taxonBase.getUuid());
 		
-		record.setScientificName(name.getTitleCache());
-		// ???
-		record.setAcceptedNameUsage(acceptedTaxon.getTitleCache());
-		record.setParentNameUsage(parent == null ? null : parent.getTitleCache());
-		// ??? is not a nameUsage (concept)
-		record.setOriginalNameUsage(basionym == null ? null : basionym.getTitleCache());
-		record.setNamePublishedIn(name.getNomenclaturalReference() == null ? null : name.getNomenclaturalReference().getTitleCache());
+		//Classification
+		if (config.isWithHigherClassification()){
+			//FIXME all classification and rank specific fields are meant to represent the classification
+			//currently the information is only compiled for the exact same range but it should be compiled
+			//for all ranks above the rank of this taxon
+			//TODO we do not support this yet
+			record.setHigherClassification(null);
+			//... higher ranks
+			handleUninomialOrGenus(record, name);
+			if (name.getRank() != null &&  name.getRank().equals(Rank.SUBGENUS())){
+				record.setSubgenus(name.getNameCache());	
+			}
+			//record.setSubgenus(name.getInfraGenericEpithet());
+		}
+		if (name.getRank() != null &&  (name.getRank().isSupraGeneric() || name.getRank().isGenus())){
+			record.setUninomial(name.getGenusOrUninomial());
+		}else{
+			record.setGenusPart(name.getGenusOrUninomial());
+		}
+		record.setInfraGenericEpithet(name.getInfraGenericEpithet());
 		
-		//???
-		record.setHigherClassification(null);
-		
-		//... higher ranks
-		handleUninomialOrGenus(record, name);
-		
-		//TODO other subgneric ranks ??
-		record.setSubgenus(name.getInfraGenericEpithet());
 		record.setSpecificEpithet(name.getSpecificEpithet());
 		record.setInfraspecificEpithet(name.getInfraSpecificEpithet());
 		
 		record.setTaxonRank(name.getRank());
 		if (name.getRank() != null){
-			record.setVerbatimTaxonRank(name.getRank().getTitleCache());
+			record.setVerbatimTaxonRank(name.getRank().getAbbreviation());
 		}else{
 			String message = "No rank available for " + name.getTitleCache() + "(" + name.getId() + ")";
 			logger.warn(message);
 		}
+		
 		record.setScientificNameAuthorship(name.getAuthorshipCache());
 		
-		// ??? - use for TextData names?
+		// ??? - use for TextData common names?
 		record.setVernacularName(null);
 		
 		record.setNomenclaturalCode(name.getNomenclaturalCode());
 		// ??? TODO Misapplied Names, inferred synonyms
 		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
 		handleNomStatus(record, taxonBase, name);
-		// ???
-		record.setTaxonRemarks(null);
-		// ??? which date is needed here (taxon, name, sec, ... ?)
+		
+		// TODO we need to differentiate technical
+		String taxonRemarks = "";
+		for (Annotation annotation : taxonBase.getAnnotations()){
+			if (AnnotationType.EDITORIAL().equals(annotation.getAnnotationType())){
+				taxonRemarks += CdmUtils.Nz(annotation.getText());
+			}
+		}
+		for (Annotation annotation : name.getAnnotations()){
+			if (AnnotationType.EDITORIAL().equals(annotation.getAnnotationType())){
+				taxonRemarks += CdmUtils.Nz(annotation.getText());
+			}
+		}
+		if (StringUtils.isNotBlank(taxonRemarks)){
+			record.setTaxonRemarks(taxonRemarks);
+		}
+		
+		// TODO which date is needed here (taxon, name, sec, ... ?)
 		record.setModified(taxonBase.getUpdated());
+		
 		// ???
 		record.setLanguage(null);
 		
@@ -256,12 +296,15 @@ public class DwcaTaxExport extends DwcaExportBase {
 		//TODO
 		record.setRightsHolder(null);
 		record.setAccessRights(null);
+		
+		//TODO currently only via default value
 		record.setBibliographicCitation(null);
 		record.setInformationWithheld(null);
 		
 		record.setDatasetId(classification);
 		record.setDatasetName(classification.getTitleCache());
 		
+		//TODO
 		record.setSource(null);
 		
 		return;

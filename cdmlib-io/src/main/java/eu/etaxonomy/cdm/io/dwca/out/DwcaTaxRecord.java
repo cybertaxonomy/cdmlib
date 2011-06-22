@@ -57,6 +57,9 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	private String family;
 	private String genus;
 	private String subgenus;
+	private String uninomial;
+	private String genusPart;
+	private String infraGenericEpithet;
 	private String specificEpithet;
 	private String infraspecificEpithet;
 	
@@ -303,20 +306,26 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(namePublishedInId, writer, IS_NOT_FIRST, TermUris.DWC_NAME_PUBLISHED_IN_ID);
 		print(taxonConceptId, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_CONCEPT_ID);
 		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
-		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ACCEPTED_NAME_USAGE_ID);
+		print(acceptedNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ACCEPTED_NAME_USAGE);
 		print(parentNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_PARENT_NAME_USAGE);
 		print(originalNameUsage, writer, IS_NOT_FIRST, TermUris.DWC_ORIGINAL_NAME_USAGE);
 		print(nameAccordingTo, writer, IS_NOT_FIRST, TermUris.DWC_NAME_ACCORDING_TO);
 		print(namePublishedIn, writer, IS_NOT_FIRST, TermUris.DWC_NAME_PUBLISHED_IN);
-		print(higherClassification, writer, IS_NOT_FIRST, TermUris.DWC_HIGHER_CLASSIFICATION);
 		
-		print(kingdom, writer, IS_NOT_FIRST, TermUris.DWC_KINGDOM);
-		print(phylum, writer, IS_NOT_FIRST, TermUris.DWC_PHYLUM);
-		print(clazz, writer, IS_NOT_FIRST, TermUris.DWC_CLASS);
-		print(order, writer, IS_NOT_FIRST, TermUris.DWC_ORDER);
-		print(family, writer, IS_NOT_FIRST, TermUris.DWC_FAMILY);
-		print(genus, writer, IS_NOT_FIRST, TermUris.DWC_GENUS);
-		print(subgenus, writer, IS_NOT_FIRST, TermUris.DWC_SUBGENUS);
+		if (config.isWithHigherClassification()){
+			print(higherClassification, writer, IS_NOT_FIRST, TermUris.DWC_HIGHER_CLASSIFICATION);
+			print(kingdom, writer, IS_NOT_FIRST, TermUris.DWC_KINGDOM);
+			print(phylum, writer, IS_NOT_FIRST, TermUris.DWC_PHYLUM);
+			print(clazz, writer, IS_NOT_FIRST, TermUris.DWC_CLASS);
+			print(order, writer, IS_NOT_FIRST, TermUris.DWC_ORDER);
+			print(family, writer, IS_NOT_FIRST, TermUris.DWC_FAMILY);
+			print(genus, writer, IS_NOT_FIRST, TermUris.DWC_GENUS);
+			print(subgenus, writer, IS_NOT_FIRST, TermUris.DWC_SUBGENUS);
+		}
+		print(uninomial, writer, IS_NOT_FIRST, TermUris.TDWG_UNINOMIAL);
+		print(genusPart, writer, IS_NOT_FIRST, TermUris.TDWG_GENUSPART);
+		print(infraGenericEpithet, writer, IS_NOT_FIRST, TermUris.TDWG_INFRAGENERICEPITHET);
+		
 		print(specificEpithet, writer, IS_NOT_FIRST, TermUris.DWC_SPECIFIC_EPI);
 		print(infraspecificEpithet, writer, IS_NOT_FIRST, TermUris.DWC_INFRA_SPECIFIC_EPI);
 		
@@ -333,11 +342,11 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 		print(rights, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS);
 		print(rightsHolder, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS_HOLDER);
 		print(accessRights, writer, IS_NOT_FIRST, TermUris.DC_ACCESS_RIGHTS);
-		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION, config.getDefaultBibliographicCitation());
 		print(informationWithheld, writer, IS_NOT_FIRST, TermUris.DWC_INFORMATION_WITHHELD);
 		print(datasetId, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_ID);
 		print(datasetName, writer, IS_NOT_FIRST, TermUris.DWC_DATASET_NAME);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
+		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE, config.getDefaultTaxonSource());
 		writer.println();
 	}
 
@@ -609,6 +618,55 @@ public class DwcaTaxRecord extends DwcaRecordBase{
 	
 	public void setInfraspecificEpithet(String infraspecificEpithet) {
 		this.infraspecificEpithet = infraspecificEpithet;
+	}
+
+	/**
+	 * @return the uninomial
+	 */
+	public String getUninomial() {
+		return uninomial;
+	}
+
+	/**
+	 * @param uninomial the uninomial to set
+	 */
+	public void setUninomial(String uninomial) {
+		this.uninomial = uninomial;
+	}
+
+	/**
+	 * @return the infraGenericEpithet
+	 */
+	public String getInfraGenericEpithet() {
+		return infraGenericEpithet;
+	}
+
+	/**
+	 * @param infraGenericEpithet the infraGenericEpithet to set
+	 */
+	public void setInfraGenericEpithet(String infraGenericEpithet) {
+		this.infraGenericEpithet = infraGenericEpithet;
+	}
+
+	/**
+	 * @param scientificNameId the scientificNameId to set
+	 */
+	public void setScientificNameId(DwcaId scientificNameId) {
+		this.scientificNameId = scientificNameId;
+	}
+
+	/**
+	 * @return the genusPart
+	 */
+	public String getGenusPart() {
+		return genusPart;
+	}
+
+	/**
+	 * @param genusPart the genusPart to set
+	 */
+	public void setGenusPart(String genusPart) {
+		this.genusPart = genusPart;
 	}
 
 	

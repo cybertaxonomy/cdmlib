@@ -186,22 +186,32 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
-		print(value, writer, addSeparator, fieldKey.getUriString());
+		print(value, writer, addSeparator, fieldKey, null);
+	}
+
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey, String defaultValue) {
+		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
 	}
 	
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
-		if (count == 1 && addSeparator == IS_NOT_FIRST){
-			registerFieldKey(URI.create(fieldKey));
-		}
-		String strToPrint = addSeparator ? SEP : "";
-		if (StringUtils.isNotBlank(value)){
-			strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
-		}
-		writer.print(strToPrint);
+		print(value, writer, addSeparator, fieldKey, null);
 	}
 	
-	private void registerFieldKey(URI key) {
-		this.metaDataRecord.addFieldEntry(key);
+	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
+		if (count == 1 && addSeparator == IS_NOT_FIRST){
+			registerFieldKey(URI.create(fieldKey), defaultValue);
+		}
+		if (StringUtils.isBlank(defaultValue)){
+			String strToPrint = addSeparator ? SEP : "";
+			if (StringUtils.isNotBlank(value)){
+				strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
+			}
+			writer.print(strToPrint);
+		}
+	}
+	
+	private void registerFieldKey(URI key, String defaultValue) {
+		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}
 
 	

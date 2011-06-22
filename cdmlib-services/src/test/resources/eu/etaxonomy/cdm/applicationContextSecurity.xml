@@ -95,7 +95,7 @@
 	</bean>
 	
 	
- 	<bean class="eu.etaxonomy.cdm.model.permissionEval.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
+ 	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
     
       <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
     	 

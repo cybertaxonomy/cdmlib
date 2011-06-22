@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.common.mediaMetaData;
+package eu.etaxonomy.cdm.common.media;
 
 
 
@@ -17,18 +17,18 @@ package eu.etaxonomy.cdm.common.mediaMetaData;
  *
  */
 public enum MimeType {
-TIFF ("image/tiff"),
-JPEG ("image/jpeg"),
-IMAGE ("image"),
-UNKNOWN ("unknown");
+	TIFF ("image/tiff"),
+	JPEG ("image/jpeg"),
+	IMAGE ("image"),
+	UNKNOWN ("unknown"), 
+	PNG ("image/png");
+		
+	private final String mimeType;
 	
-private final String mimeType;
-
-MimeType(String mimeType){
-	this.mimeType = mimeType;
-}
-public String getMimeType(){
-	return mimeType;
-}
-
+	MimeType(String mimeType){
+		this.mimeType = mimeType;
+	}
+	public String getMimeType(){
+		return mimeType;
+	}
 }

@@ -21,7 +21,11 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -79,7 +83,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 							DwcaVernacularRecord record = new DwcaVernacularRecord(metaRecord, config);
 							CommonTaxonName commonTaxonName = CdmBase.deproxy(el, CommonTaxonName.class);
 							if (! this.recordExists(commonTaxonName)){
-								handleCommonTaxonName(record, commonTaxonName, taxon);
+								handleCommonTaxonName(record, commonTaxonName, taxon, config);
 								record.write(writer);
 								this.addExistingRecord(commonTaxonName);
 							}
@@ -112,7 +116,7 @@ public class DwcaVernacularExport extends DwcaExportBase {
 
 
 
-	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon) {
+	private void handleCommonTaxonName(DwcaVernacularRecord record, CommonTaxonName commonTaxonName, Taxon taxon, DwcaTaxExportConfigurator config) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
 		if (StringUtils.isBlank(commonTaxonName.getName())){
@@ -121,14 +125,15 @@ public class DwcaVernacularExport extends DwcaExportBase {
 		}else{
 			record.setVernacularName(commonTaxonName.getName());
 		}
-		//TODO mulitple sources 
-		record.setSource(null);
+		//sources
+		record.setSource(getSources(commonTaxonName, config));
 		record.setLanguage(commonTaxonName.getLanguage());
 		// does not exist in CDM
 		record.setTemporal(null);
 		
 		handleArea(record, commonTaxonName.getArea(), taxon, false);
 	}
+
 
 	@Override
 	protected boolean doCheck(DwcaTaxExportState state) {

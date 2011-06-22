@@ -51,13 +51,15 @@ public class DwcaMetaDataRecord  {
 	protected class FieldEntry{
 		int index;
 		URI term = null;
+		String defaultValue = null;
 		String elementName = "field";
 	}
 	
-	public void addFieldEntry(URI term){
+	public void addFieldEntry(URI term, String defaultValue){
 		FieldEntry fieldEntry = new FieldEntry();
 		fieldEntry.index = currentIndex++;
 		fieldEntry.term = term;
+		fieldEntry.defaultValue = defaultValue;
 		this.fieldEntryList.add(fieldEntry);
 	}
 	

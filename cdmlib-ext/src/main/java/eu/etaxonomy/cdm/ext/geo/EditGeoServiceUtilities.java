@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -56,16 +56,16 @@ public class EditGeoServiceUtilities {
 	private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
 	private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
-	
+
 	private static IDefinedTermDao termDao;
-	
+
 	/**
 	 * @param termDao
 	 */
 	public static void setTermDao(IDefinedTermDao termDao) {
 		EditGeoServiceUtilities.termDao= termDao;
 	}
-	
+
 	private static HashMap<Class<? extends SpecimenOrObservationBase>, Color> defaultSpecimenOrObservationTypeColors = null;
 
 	private static HashMap<Class<? extends SpecimenOrObservationBase>, Color> getDefaultSpecimenOrObservationTypeColors() {
@@ -75,7 +75,7 @@ public class EditGeoServiceUtilities {
 			defaultSpecimenOrObservationTypeColors.put(DerivedUnit.class, Color.RED);
 			defaultSpecimenOrObservationTypeColors.put(LivingBeing.class, Color.GREEN);
 			defaultSpecimenOrObservationTypeColors.put(Observation.class, Color.ORANGE);
-			defaultSpecimenOrObservationTypeColors.put(Specimen.class, Color.GRAY);			
+			defaultSpecimenOrObservationTypeColors.put(Specimen.class, Color.GRAY);
 		}
 		return defaultSpecimenOrObservationTypeColors;
 	}
@@ -93,59 +93,59 @@ public class EditGeoServiceUtilities {
 			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
 			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
 			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
-			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));	
-			
+			defaultPresenceAbsenceTermBaseColors.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
+
 			/*
 			 * and now something very hacky ...
 			 * ONLY-A-TEST is set by the Test class EditGeoServiceTest
-			 * 
+			 *
 			 * TODO remove according line from
 			 * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
 			 * cyprus are no further needed !!
 			 */
-			String onlyTest = System.getProperty("ONLY-A-TEST"); // 
+			String onlyTest = System.getProperty("ONLY-A-TEST"); //
 			if(onlyTest != null && onlyTest.equals("TRUE")){
 				return defaultPresenceAbsenceTermBaseColors;
 			}
 			//special colors for flora of cyprus !!! see HACK above !!!
 			UUID indigenousUuid = UUID.fromString("b325859b-504b-45e0-9ef0-d5c1602fcc0f");
 			UUID indigenousQUuid = UUID.fromString("17bc601f-53eb-4997-a4bc-c03ce5bfd1d3");
-			
+
 			UUID cultivatedQUuid = UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
-			
+
 			UUID casualUuid = UUID.fromString("5e81353c-38a3-4ca6-b979-0d9abc93b877");
 			UUID casualQUuid = UUID.fromString("73f75493-1185-4a3e-af1e-9a1f2e8dadb7");
-			
+
 			UUID naturalizedNonInvasiveUuid = UUID.fromString("1b025e8b-901a-42e8-9739-119b410c6f03");
 			UUID naturalizedNonInvasiveQUuid = UUID.fromString("11f56e2f-c16c-4b3d-a870-bb5d3b20e624");
-			
+
 			UUID naturalizedInvasiveUuid = UUID.fromString("faf2d271-868a-4bf7-b0b8-a1c5ab309de2");
 			UUID naturalizedInvasiveQUuid = UUID.fromString("ac429d5f-e8ad-49ae-a41c-e4779b58b96a");
-			
+
 			UUID questionablelUuid = UUID.fromString("4b48f675-a6cf-49f3-a5ba-77e2c2979eb3");
 			UUID questionableQUuid = UUID.fromString("914e7393-1314-4632-bc45-5eff3dc1e424");
-			
+
 			UUID reportedInErrorUuid = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(indigenousUuid), Color.decode("0x339966"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(indigenousQUuid), Color.decode("0x339966"));
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(cultivatedQUuid), Color.decode("0xbdb76b"));
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(casualUuid), Color.decode("0xffff00"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(casualQUuid), Color.decode("0xffff00"));
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedNonInvasiveUuid), Color.decode("0xff9900"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedNonInvasiveQUuid), Color.decode("0xff9900"));
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedInvasiveUuid), Color.decode("0xff0000"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(naturalizedInvasiveQUuid), Color.decode("0xff0000"));
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(questionablelUuid), Color.decode("0x00ccff"));
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(questionableQUuid), Color.decode("0x00ccff"));
-			
+
 			defaultPresenceAbsenceTermBaseColors.put((PresenceAbsenceTermBase<?>) termDao.load(reportedInErrorUuid), Color.decode("0xcccccc"));
-			
+
 		}
 		return defaultPresenceAbsenceTermBaseColors;
 	}
@@ -157,14 +157,14 @@ public class EditGeoServiceUtilities {
 	static final String ID_FROM_VALUES_SEPARATOR = ":";
 	static final String VALUE_LIST_ENTRY_SEPARATOR = "|";
 	static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
-	
+
 
 
 	//preliminary implementation for TDWG areas
 	/**
 	 * Returns the parameter String for the EDIT geo webservice to create a
 	 * dsitribution map.
-	 * 
+	 *
 	 * @param distributions
 	 *            A set of distributions that should be shown on the map
 	 * @param presenceAbsenceTermColors
@@ -180,6 +180,10 @@ public class EditGeoServiceUtilities {
 	 * @param bbox
 	 *            The maps bounding box (e.g. "-180,-90,180,90" for the whole
 	 *            world)
+	 * @param projectToLayer
+	 *            name of a layer which is representing a specific
+	 *            {@link NamedAreaLevel} Supply this parameter if you to project
+	 *            all other distribution area levels to this layer.
 	 * @param layer
 	 *            The layer that is responsible for background borders and
 	 *            colors. Use the name for the layer. If null 'earth' is taken
@@ -189,14 +193,15 @@ public class EditGeoServiceUtilities {
 	 */
 	@Transient
 	public static String getDistributionServiceRequestParameterString(
-			Set<Distribution> distributions, 
-			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors, 
-			int width, 
-			int height, 
-			String bbox, 
-			String backLayer,
+			Set<Distribution> distributions,
+			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
+			int width,
+			int height,
+			String bbox,
+			String baseLayerName,
+			String projectToLayer,
 			List<Language> languages){
-		
+
 
 		/**
 		 * generateMultipleAreaDataParameters switches between the two possible styles:
@@ -209,23 +214,23 @@ public class EditGeoServiceUtilities {
 		List<String> areaStyles = new ArrayList<String>();
 		List<String> legendLabels = new ArrayList<String>();
 
-		
+
 		String borderWidth = "0.1";
 		String borderColorRgb = "";
 		String borderDashingPattern = "";
-		
-		
+
+
 		if(distributions == null || distributions.size() == 0){
 			return "";
 		}
-		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>(); 
+		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 		groupStylesAndLayers(distributions, layerMap, statusList);
-				
+
 		presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		
+
 		//bbox
 		if (bbox != null){
 			parameters.put("bbox", bbox);
@@ -236,17 +241,17 @@ public class EditGeoServiceUtilities {
 			parameters.put("ms", ms);
 		}
 		//layer
-		if (StringUtils.isBlank(backLayer)){
-			backLayer = "earth"; 
+		if (StringUtils.isBlank(baseLayerName)){
+			baseLayerName = "earth";
 		}
-		parameters.put("l", backLayer);
-		
+		parameters.put("l", baseLayerName);
+
 		//style
 		int i = 0;
 		for (PresenceAbsenceTermBase<?> status: statusList){
-			
+
 			char styleId = getStyleAbbrev(i);
-			
+
 			//getting the area title
 			if (languages == null){
 				languages = new ArrayList<Language>();
@@ -259,7 +264,7 @@ public class EditGeoServiceUtilities {
 			//statusLabel.replace('introduced: ', '');
 			statusLabel = statusLabel.replace("introduced: ", "introduced, ");
 			statusLabel = statusLabel.replace("native: ", "native,  ");
-			
+
 			//getting the area color
 			Color statusColor = presenceAbsenceTermColors.get(status);
 			String fillColorRgb;
@@ -272,20 +277,20 @@ public class EditGeoServiceUtilities {
 					fillColorRgb = defaultStatus.getDefaultColor();
 				}
 			}
-			String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');			
+			String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
 			areaStyles.add(styleId + ID_FROM_VALUES_SEPARATOR + styleValues);
 			legendLabels.add(styleId + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
-			i++;			
+			i++;
 		}
-		
+
 		if(areaStyles.size() > 0){
 			parameters.put("as", StringUtils.join(areaStyles.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
 		}
 		if(legendLabels.size() > 0){
 			parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
 		}
-		
+
 		// area data
 		List<String> stylesPerLayer;
 		List<String> areasPerStyle;
@@ -306,7 +311,7 @@ public class EditGeoServiceUtilities {
 			}
 			perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(stylesPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
 		}
-		
+
 		if(generateMultipleAreaDataParameters){
 			// not generically possible since parameters can not contain duplicate keys with value "ad"
 		} else {
@@ -315,13 +320,14 @@ public class EditGeoServiceUtilities {
 
 		String queryString = makeQueryString(parameters);
 		logger.debug("getDistributionServiceRequestParameterString(): " + queryString);
-		
+
 		return queryString;
 	}
 
 	private static void groupStylesAndLayers(Set<Distribution> distributions,
 			Map<String, Map<Integer, Set<Distribution>>> layerMap,
 			List<PresenceAbsenceTermBase<?>> statusList) {
+
 		//iterate through distributions and group styles and layers
 		//and collect necessary information
 		for (Distribution distribution:distributions){
@@ -333,21 +339,47 @@ public class EditGeoServiceUtilities {
 			if (! statusList.contains(status)){
 				statusList.add(status);
 			}
-			//group by layers and styles
+			//group areas by layers and styles
 			NamedArea area = distribution.getArea();
-			if (area != null){
-				String geoLayerString = getWMSLayerName(area);
-				if(geoLayerString != null){
-					Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
-					if (styleMap == null){
-						styleMap = new HashMap<Integer, Set<Distribution>>();
-						layerMap.put(geoLayerString, styleMap);
-					}
-					addDistributionToMap(distribution, styleMap, statusList);
+
+			addArea(layerMap, statusList, distribution, area);
+
+		}
+	}
+
+	/**
+	 * @param layerMap
+	 * @param statusList
+	 * @param distribution
+	 * @param area
+	 */
+	private static void addArea(Map<String, Map<Integer, Set<Distribution>>> layerMap, List<PresenceAbsenceTermBase<?>> statusList,
+			Distribution distribution, NamedArea area) {
+
+		if (area != null){
+			String geoLayerString = getWMSLayerName(area);
+
+			if(geoLayerString == null){
+
+				// if no layer is mapped this area descend into sub areas in order to project
+				// the distribution to those
+				for(NamedArea subArea : area.getIncludes()){
+					addArea(layerMap, statusList, distribution, subArea);
 				}
+
+			} else {
+
+				Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
+				if (styleMap == null) {
+					styleMap = new HashMap<Integer, Set<Distribution>>();
+					layerMap.put(geoLayerString, styleMap);
+				}
+				addDistributionToMap(distribution, styleMap, statusList);
+
 			}
 		}
 	}
+
 
 	private static String compileMapSizeParameterValue(int width, int height) {
 
@@ -381,11 +413,11 @@ public class EditGeoServiceUtilities {
 		}
 		return encoded;
 	}
-	
+
 	/**
 	 * combine parameter into a URI query string fragment. The values will be
 	 * escaped correctly.
-	 * 
+	 *
 	 * @param parameters
 	 * @return a URI query string fragment
 	 */
@@ -396,14 +428,14 @@ public class EditGeoServiceUtilities {
 				queryString.append('&');
 			}
 			if(key.equals("od") || key.equals("os") || key.equals("ms") || key.equals("ad") || key.equals("as") || key.equals("title") || key.equals("bbox")){
-				queryString.append(key).append('=').append(parameters.get(key));				
+				queryString.append(key).append('=').append(parameters.get(key));
 			} else {
 				queryString.append(key).append('=').append(encode(parameters.get(key)));
 			}
 		}
 		return queryString.toString();
 	}
-	
+
 	private static String getAreaAbbrev(Distribution distribution){
 		NamedArea area = distribution.getArea();
 		Representation representation = area.getRepresentation(Language.DEFAULT());
@@ -413,18 +445,60 @@ public class EditGeoServiceUtilities {
 		}
 		return CdmUtils.Nz(areaAbbrev, "-");
 	}
-	
 
-	//Preliminary as long as user defined areas are not fully implemented  
+
+	//Preliminary as long as user defined areas are not fully implemented
 	public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
-	
+
+	private static List<String> projectToWMSSubLayer(NamedArea area){
+
+		List<String> layerNames = new ArrayList<String>();
+		String matchedLayerName = null;
+		TermVocabulary<NamedArea> voc = area.getVocabulary();
+		//TDWG areas
+		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
+			NamedAreaLevel level = area.getLevel();
+			if (level != null) {
+				//TODO integrate into CDM
+				if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
+					matchedLayerName = "tdwg1" ;
+				} else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
+					matchedLayerName = "tdwg2";
+				}else if (level.equals(NamedAreaLevel.TDWG_LEVEL3())) {
+					matchedLayerName = "tdwg3";
+				}else if (level.equals(NamedAreaLevel.TDWG_LEVEL4())) {
+					matchedLayerName = "tdwg4";
+				}
+			}
+			//unrecognized tdwg area
+
+		}
+		//TODO hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
+		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
+			matchedLayerName = "cyprusdivs:bdcode";
+		}
+
+		// check if the matched layer equals the layer to project to
+		// if not: recurse into the sub-level in order to find the specified one.
+		String[] matchedLayerNameTokens = StringUtils.split(matchedLayerName, ':');
+//		if(matchedLayerNameTokens.length > 0 &&  matchedLayerNameTokens[0] != projectToLayer){
+//			for (NamedArea subArea : area.getIncludes()){
+//
+//			}
+			//
+			// add all sub areas
+//		}
+
+		return null;
+	}
+
 	private static String getWMSLayerName(NamedArea area){
 		TermVocabulary<NamedArea> voc = area.getVocabulary();
 		//TDWG areas
 		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
 			NamedAreaLevel level = area.getLevel();
 			if (level != null) {
-				//TODO integrate into CDM 
+				//TODO integrate into CDM
 				if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
 					return "tdwg1";
 				} else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
@@ -437,7 +511,7 @@ public class EditGeoServiceUtilities {
 			}
 			//unrecognized tdwg area
 			return null;
-		
+
 		}
 		//hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
 		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
@@ -445,8 +519,8 @@ public class EditGeoServiceUtilities {
 		}
 		return null;
 	}
-	
-	
+
+
 	private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
 			List<PresenceAbsenceTermBase<?>> statusList) {
 		PresenceAbsenceTermBase<?> status = distribution.getStatus();
@@ -461,7 +535,7 @@ public class EditGeoServiceUtilities {
 		}
 		distributionSet.add(distribution);
 	}
-	
+
 	/**
 	 * @param fieldObservationPoints
 	 * @param derivedUnitPoints
@@ -487,9 +561,9 @@ public class EditGeoServiceUtilities {
 			List<Point> derivedUnitPoints,
 			Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors,
 			Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
-		
+
 			specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
-			
+
 			Map<String, String> parameters = new HashMap<String, String>();
 			parameters.put("legend", "0");
 			parameters.put("image", doReturnImage != null && doReturnImage ? "true" : "false");
@@ -500,19 +574,19 @@ public class EditGeoServiceUtilities {
 			if(width != null || height != null){
 				parameters.put("ms", compileMapSizeParameterValue(width, height));
 			}
-			
+
 			Map<String, String> styleAndData = new HashMap<String, String>();
-			
+
 			addToStyleAndData(fieldObservationPoints, FieldObservation.class, specimenOrObservationTypeColors, styleAndData);
 			addToStyleAndData(derivedUnitPoints, DerivedUnit.class, specimenOrObservationTypeColors, styleAndData);
-			
+
 			parameters.put("os", StringUtils.join(styleAndData.keySet().iterator(), "||"));
 			parameters.put("od", StringUtils.join(styleAndData.values().iterator(), "||"));
-			
+
 			String queryString = makeQueryString(parameters);
-			
+
 			logger.info(queryString);
-			
+
 		return queryString;
 	}
 
@@ -526,7 +600,7 @@ public class EditGeoServiceUtilities {
 	private static <T, S> Map<T, S> mergeMaps(Map<T, S> defaultMap, Map<T, S> overrideMap) {
 		Map<T, S> tmpMap = new HashMap<T, S>();
 		tmpMap.putAll(defaultMap);
-		if(overrideMap != null){				
+		if(overrideMap != null){
 			tmpMap.putAll(overrideMap);
 		}
 		return tmpMap;
@@ -538,7 +612,7 @@ public class EditGeoServiceUtilities {
 			Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors, Map<String, String> styleAndData) {
 
 		//TODO add markerShape and size and Label to specimenOrObservationTypeColors -> Map<Class<SpecimenOrObservationBase<?>>, MapStyle>
-		
+
 		if(points != null && points.size()>0){
 			String style =  "c/" + Integer.toHexString(specimenOrObservationTypeColors.get(specimenOrObservationType).getRGB()).substring(2) + "/10/noLabel";
 			StringBuilder data = new StringBuilder();
@@ -552,8 +626,8 @@ public class EditGeoServiceUtilities {
 			styleAndData.put(index + ":" +style, index + ":" +data.toString());
 		}
 	}
-	
-	
+
+
 	/**
 	 * transform an integer (style counter) into a valid character representing a style.
 	 * 0-25 => a-z<br>

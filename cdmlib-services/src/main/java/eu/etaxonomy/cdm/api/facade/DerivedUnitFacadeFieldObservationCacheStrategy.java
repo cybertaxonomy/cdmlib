@@ -60,10 +60,12 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 	public String getTitleCache(FieldObservation fieldObservation) {
 		DerivedUnitFacade facade;
 		String result = "";
-		facade = DerivedUnitFacade.NewInstance(DerivedUnitType.FieldObservation, fieldObservation);
+		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
+		config.setFirePropertyChangeEvents(false);
+		facade = DerivedUnitFacade.NewInstance(DerivedUnitType.FieldObservation, fieldObservation, config);
 		result = getFieldData(facade);	
 		result = addPlantDescription(result, facade);
-		
+		facade.close();
 		return result;
 	}
 	

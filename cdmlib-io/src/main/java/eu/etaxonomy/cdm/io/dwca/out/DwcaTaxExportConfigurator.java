@@ -48,10 +48,18 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
 	
+	private String defaultBibliographicCitation = null;
+	
 	private DwcaEmlRecord emlRecord;
 
 	
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
+
+	private String defaultTaxonSource;
+
+	private boolean withHigherClassification = false;
+
+	private String setSeparator = ";";
 	
 	
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
@@ -281,5 +289,58 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	public boolean isDoEml() {
 		return doEml;
 	}
+
+
+	public void setDefaultBibliographicCitation(String defaultBibliographicCitation) {
+		this.defaultBibliographicCitation = defaultBibliographicCitation;
+	}
+
+
+	public String getDefaultBibliographicCitation() {
+		return defaultBibliographicCitation;
+	}
+
+
+	/**
+	 * The default value for the taxon.source column. This may be a column linking to a url that provides 
+	 * data about the given taxon. The id is replaced by a placeholder, 
+	 * e.g. http://wp6-cichorieae.e-taxonomy.eu/portal/?q=cdm_dataportal/taxon/{id}.
+	 * NOTE: This may be replaced in future versions by concrete CDM server implementations.
+	 * 
+	 * @return the taxonSourceDefault
+	 */
+	public String getDefaultTaxonSource() {
+		return defaultTaxonSource;
+	}
+	
+	public void setDefaultTaxonSource(String taxonSourceDefault) {
+		this.defaultTaxonSource = taxonSourceDefault;
+	}
+
+
+	public boolean isWithHigherClassification() {
+		return withHigherClassification;
+	}
+
+
+	public void setWithHigherClassification(boolean withHigherClassification) {
+		this.withHigherClassification = withHigherClassification;
+	}
+
+	/**
+	 * @return the setSeparator
+	 */
+	public String getSetSeparator() {
+		return setSeparator;
+	}
+
+
+	/**
+	 * @param setSeparator the setSeparator to set
+	 */
+	public void setSetSeparator(String setSeparator) {
+		this.setSeparator = setSeparator;
+	}
+
 
 }

@@ -32,7 +32,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
@@ -1563,13 +1563,13 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 						Element elSource = elMO.getChild("Source",sddNamespace);
 						String href = elSource.getAttributeValue("href");
 
-						ImageMetaData imageMetaData = ImageMetaData.newInstance();
+						ImageInfo imageMetaData = null;
 						ImageFile image = null;
 						if (href.substring(0,7).equals("http://")) {
 							try{
 								URL url = new URL(href);
 								
-								imageMetaData.readMetaData(url.toURI(), 0);
+								imageMetaData = ImageInfo.NewInstance(url.toURI(), 0);
 								image = ImageFile.NewInstance(url.toURI(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
@@ -1580,7 +1580,7 @@ public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportSta
 							File parent = f.getParentFile();
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
-							imageMetaData.readMetaData(new URI(fi), 0); //file
+							imageMetaData  = ImageInfo.NewInstance(new URI(fi), 0); //file
 							image = ImageFile.NewInstance(file.toURI(), null, imageMetaData);
 						}
 						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);

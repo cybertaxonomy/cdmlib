@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
 	private static final long serialVersionUID = 6582191171369439163L;
-	@SuppressWarnings(value="unused")
 	private static final Logger logger = Logger.getLogger(User.class);
 	
 	protected User(){

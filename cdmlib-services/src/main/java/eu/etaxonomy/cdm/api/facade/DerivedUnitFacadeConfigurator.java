@@ -34,6 +34,8 @@ public class DerivedUnitFacadeConfigurator {
 	private boolean moveDerivedUnitMediaToGallery = false;
 	
 	private boolean throwExceptionForNonSpecimenPreservationMethodRequest = true;
+	
+	private boolean firePropertyChangeEvents = true;
 
 	
 	//needed if inititialization via property paths is required
@@ -108,6 +110,14 @@ public class DerivedUnitFacadeConfigurator {
 	 */
 	public boolean isThrowExceptionForNonSpecimenPreservationMethodRequest() {
 		return throwExceptionForNonSpecimenPreservationMethodRequest;
+	}
+
+	public void setFirePropertyChangeEvents(boolean firePropertyChangeEvents) {
+		this.firePropertyChangeEvents = firePropertyChangeEvents;
+	}
+
+	public boolean isFirePropertyChangeEvents() {
+		return firePropertyChangeEvents;
 	}
 	
 	

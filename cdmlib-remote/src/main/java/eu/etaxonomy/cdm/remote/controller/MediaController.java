@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
-import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 
@@ -77,7 +75,9 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 			if (mediaRep instanceof MediaRepresentation){
 				MediaRepresentation medRep = (MediaRepresentation) mediaRep;
 				URI uri = medRep.getParts().get(0).getUri();
-				result = service.getImageMetaData(uri, 3000);
+				ImageInfo imageInfo = ImageInfo.NewInstance(uri, 3000);
+				imageInfo.readMetaData(3000);
+				result = imageInfo.getMetaData();
 				mv.addObject(result);
 			}
 		} catch (HttpException e) {

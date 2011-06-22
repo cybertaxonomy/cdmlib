@@ -35,6 +35,10 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	protected String ioName = null;
 
 	protected abstract boolean doInvoke(STATE state);
+	
+	public int countSteps(){
+		return 1;
+	}
 
 
 	/* (non-Javadoc)
@@ -180,10 +184,10 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	
 	@Override
 	public void updateProgress(STATE state, String message, int worked) {
-		if(state.getConfig().getProgressMonitor() != null){
-			IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-			monitor.worked(worked);
-			monitor.subTask(message);
+		IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
+		if(progressMonitor != null){
+			progressMonitor.worked(worked);
+			progressMonitor.subTask(message);
 		}
 	}
 	
