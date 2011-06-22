@@ -20,12 +20,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class CdmPermissionEvaluator implements PermissionEvaluator {
 
 private class AuthorityPermission{
-	String className;
+	CdmPermissionClass className;
 	CdmPermission permission;
 	UUID targetUuid;
 	
 	public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
-		this.className = className;
+		this.className = CdmPermissionClass.valueOf(className);
 		this.permission = permission;
 		targetUuid = uuid;
 	}
@@ -34,9 +34,9 @@ private class AuthorityPermission{
 		String permissionString;
 		int firstPoint = authority.indexOf(".");
 		if (firstPoint == -1){
-			className = authority;
+			className = CdmPermissionClass.valueOf(authority);
 		}else{
-			className = authority.substring(0, firstPoint);
+			className = CdmPermissionClass.valueOf(authority.substring(0, firstPoint));
 			int bracket = authority.indexOf("{");
 			if (bracket == -1){
 				permissionString = authority.substring(firstPoint+1);
@@ -90,12 +90,9 @@ private class AuthorityPermission{
 						return true;
 					}
 				}
-			}else{
-				if ((authorityPermission.className.equals(targetDomainObject.getClass().getName())|| (authorityPermission.className.equals(targetDomainObject.getClass().getSuperclass().getName()) )&& authorityPermission.permission.equals(CdmPermission.valueOf(permissionString)))){
-					return true;
-				}
 			}
-			if (authorityPermission.className.equals("TaxonNode") && targetDomainObject.getClass().equals(TaxonNode.class)){
+			
+			if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().equals(CdmPermissionClass.TAXONNODE)){
 				//TODO: walk through the tree and look for the uuid
 				TaxonNode node = (TaxonNode)targetDomainObject;
 				TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
