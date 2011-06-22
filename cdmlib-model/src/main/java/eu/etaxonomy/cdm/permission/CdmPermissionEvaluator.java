@@ -68,46 +68,7 @@ private class AuthorityPermission{
 		
 		AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName(), CdmPermission.valueOf(permissionString), ((CdmBase)targetDomainObject).getUuid());
 		
-		for (GrantedAuthority authority: groupAuthorities){
-			AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
-			
-			//evaluate authorities
-			if (authorityPermission.className.equals(evalPermission.className) && authorityPermission.permission.equals(evalPermission.permission)){
-				if (authorityPermission.targetUuid != null){
-					//TODO
-					
-				}else{
-					return true;
-				}
-				
-			}
-			
-			
-						
-			if (authorityPermission.targetUuid != null){
-				if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
-					if (authorityPermission.permission.equals(permission)){
-						return true;
-					}
-				}
-			}
-			
-			if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().equals(CdmPermissionClass.TAXONNODE)){
-				//TODO: walk through the tree and look for the uuid
-				TaxonNode node = (TaxonNode)targetDomainObject;
-				TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
-				if (targetNode != null){
-					if (permission.equals(authorityPermission.permission)){
-						return true;
-					}
-				}
-			}
-			
-			
-			
-			
-				
-		}
+		
 				
 		// TODO Auto-generated method stub
 		return false;
@@ -126,6 +87,44 @@ private class AuthorityPermission{
 			Serializable targetId, String targetType, Object permission) {
 		System.out.println("hasPermission returns false");
 		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	public boolean evalPermission(Set<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
+		
+		for (GrantedAuthority authority: authorities){
+			AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
+			//evaluate authorities
+			if (authorityPermission.className.equals(evalPermission.className) && authorityPermission.permission.equals(evalPermission.permission)){
+				if (authorityPermission.targetUuid != null){
+					//TODO
+					
+				}else{
+					return true;
+				}
+				
+			}
+									
+			if (authorityPermission.targetUuid != null){
+				if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
+					if (authorityPermission.permission.equals(evalPermission.permission)){
+						return true;
+					}
+				}
+			}
+			
+			if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().equals(CdmPermissionClass.TAXONNODE)){
+				//TODO: walk through the tree and look for the uuid
+				TaxonNode node = (TaxonNode)targetDomainObject;
+				TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
+				if (targetNode != null){
+					if (evalPermission.permission.equals(authorityPermission.permission)){
+						return true;
+					}
+				}
+			}
+				
+		}
 		return false;
 	}
 
