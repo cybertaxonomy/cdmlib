@@ -19,7 +19,6 @@ import java.util.UUID;
 
 import org.hibernate.LockMode;
 import org.hibernate.Session;
-import org.springframework.security.access.prepost.PreFilter;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -229,7 +228,6 @@ public interface IService<T extends ICdmBase>{
 	 * @param transientObject the entity to be persisted
 	 * @return The unique identifier of the persisted entity
 	 */
-	//@PreFilter("hasPermission(filterObject, 'edit')")
 	public UUID saveOrUpdate(T transientObject);
 	
 	/**
