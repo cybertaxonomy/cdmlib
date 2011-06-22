@@ -20,6 +20,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -161,6 +162,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	}
 
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#user, 'CREATE')")
 	public void createUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -174,6 +176,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	}
 
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#username, 'DELETE')")
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
@@ -186,6 +189,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	}
 
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#user, 'EDIT')")
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		

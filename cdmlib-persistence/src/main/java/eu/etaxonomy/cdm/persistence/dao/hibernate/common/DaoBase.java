@@ -30,7 +30,9 @@ public abstract class DaoBase {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.factory = sessionFactory;
 	}
-	
+	public SessionFactory getSessionFactory() {
+		return factory;
+	}
 	protected Session getSession(){
 		Session session = factory.getCurrentSession();
 		return session;

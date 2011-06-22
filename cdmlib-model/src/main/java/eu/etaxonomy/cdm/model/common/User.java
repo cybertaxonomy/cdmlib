@@ -120,6 +120,7 @@ public class User extends CdmBase implements UserDetails {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	@NotAudited
 	protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	

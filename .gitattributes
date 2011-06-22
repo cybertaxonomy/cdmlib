@@ -753,6 +753,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/AuditEventContext
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/GlobalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/InheritableThreadLocalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/ThreadLocalAuditEventContextHolderStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermission.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/EvalClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TagEnum.java -text
@@ -1845,6 +1848,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadat
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
