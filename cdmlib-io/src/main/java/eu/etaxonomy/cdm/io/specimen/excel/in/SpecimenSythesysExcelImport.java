@@ -416,8 +416,6 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
 					if(this.multimediaObjects.get(i) != null){
-						//mmd = new MediaMetaData();
-						
 						url = new URL(this.multimediaObjects.get(i));
 						imd = ImageInfo.NewInstance(url.toURI(), 0);
 						if (imd != null){
