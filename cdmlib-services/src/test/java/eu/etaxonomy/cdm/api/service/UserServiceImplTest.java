@@ -22,11 +22,8 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.PermissionEvaluator;
@@ -37,28 +34,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
-
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.unitils.database.annotations.TestDataSource;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBean;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.permission.CdmPermission;
 import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -98,10 +82,10 @@ public class UserServiceImplTest {
 		
 		expectedRoles = new HashSet<GrantedAuthority>();
 		
-		GrantedAuthorityImpl edit = GrantedAuthorityImpl.NewInstance();
-		edit.setAuthority("USER.Edit");
-		edit.setUuid(UUID.fromString("14788361-1a7e-4eed-b22f-fd90a0b424ac"));
-		edit.setCreated(new DateTime(2009,2,3,17,52,26,0));
+		GrantedAuthorityImpl update = GrantedAuthorityImpl.NewInstance();
+		update.setAuthority("USER.Update");
+		update.setUuid(UUID.fromString("14788361-1a7e-4eed-b22f-fd90a0b424ac"));
+		update.setCreated(new DateTime(2009,2,3,17,52,26,0));
 		GrantedAuthorityImpl annotate = GrantedAuthorityImpl.NewInstance();
 		annotate.setAuthority("USER.Create");
 		annotate.setUuid(UUID.fromString("fa56073c-0ffd-4384-b459-b2f07e35b689"));
@@ -111,7 +95,7 @@ public class UserServiceImplTest {
 		checkAnnotation.setUuid(UUID.fromString("e5354c0e-657b-4b4d-bb2f-791612199711"));
 		checkAnnotation.setCreated(new DateTime(2009,2,3,17,52,26,0));
 		
-		expectedRoles.add(edit);
+		expectedRoles.add(update);
 		expectedRoles.add(annotate);
 		expectedRoles.add(checkAnnotation);
 		String username = "useradmin";

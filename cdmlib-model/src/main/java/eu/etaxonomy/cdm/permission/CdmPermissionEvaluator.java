@@ -58,13 +58,15 @@ private class AuthorityPermission{
 		String permissionString = (String)permission;
 		
 		Collection<GrantedAuthority> authorities = authentication.getAuthorities();
+		// FIXME this should not be necessary. See User.initAuthorities() and User.getAuthorities(); a User object should always 
+		// return all GrantedAuthorities including its groups authorities. If that is not working correctly please fix it.
 		Set<Group> groups =((User)authentication.getPrincipal()).getGroups();
 		Set<GrantedAuthority> groupAuthorities = new HashSet<GrantedAuthority>();
 		for (Group group: groups){
 			groupAuthorities.addAll(group.getGrantedAuthorities());
 		}
 		groupAuthorities.addAll(authorities);
-		
+		// FIXME END
 		
 		AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), CdmPermission.valueOf(permissionString), ((CdmBase)targetDomainObject).getUuid());
 		

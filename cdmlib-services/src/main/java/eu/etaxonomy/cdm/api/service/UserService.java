@@ -189,7 +189,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	}
 
 	@Transactional(readOnly=false)
-	@PreAuthorize("hasPermission(#user, 'EDIT')")
+	@PreAuthorize("hasPermission(#user, 'UPDATE')")
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
