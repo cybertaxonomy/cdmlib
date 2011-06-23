@@ -36,7 +36,7 @@ private class AuthorityPermission{
 		if (firstPoint == -1){
 			className = CdmPermissionClass.valueOf(authority);
 		}else{
-			className = CdmPermissionClass.valueOf(authority.substring(0, firstPoint));
+			className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
 			int bracket = authority.indexOf("{");
 			if (bracket == -1){
 				permissionString = authority.substring(firstPoint+1);
@@ -68,10 +68,10 @@ private class AuthorityPermission{
 		
 		AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), CdmPermission.valueOf(permissionString), ((CdmBase)targetDomainObject).getUuid());
 		
-		
+		return evalPermission(groupAuthorities, evalPermission, (CdmBase)targetDomainObject);
 				
 		// TODO Auto-generated method stub
-		return false;
+		//return false;
 	}
 
 	private TaxonNode findTargetUuidInTree(UUID targetUuid, TaxonNode node){

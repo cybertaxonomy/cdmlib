@@ -97,23 +97,20 @@ public class UserServiceImplTest {
 		
 		
 		expectedRoles = new HashSet<GrantedAuthority>();
-		GrantedAuthorityImpl publish = GrantedAuthorityImpl.NewInstance();
-		publish.setAuthority("Publish");
-		publish.setUuid(UUID.fromString("441a3c40-0c84-11de-8c30-0800200c9a66"));
-		publish.setCreated(new DateTime(2009,2,3,17,52,26,0));
+		
 		GrantedAuthorityImpl edit = GrantedAuthorityImpl.NewInstance();
-		edit.setAuthority("User.Edit");
+		edit.setAuthority("USER.Edit");
 		edit.setUuid(UUID.fromString("14788361-1a7e-4eed-b22f-fd90a0b424ac"));
 		edit.setCreated(new DateTime(2009,2,3,17,52,26,0));
 		GrantedAuthorityImpl annotate = GrantedAuthorityImpl.NewInstance();
-		annotate.setAuthority("User.Create");
+		annotate.setAuthority("USER.Create");
 		annotate.setUuid(UUID.fromString("fa56073c-0ffd-4384-b459-b2f07e35b689"));
 		annotate.setCreated(new DateTime(2009,2,3,17,52,26,0));
 		GrantedAuthorityImpl checkAnnotation = GrantedAuthorityImpl.NewInstance();
-		checkAnnotation.setAuthority("User.Delete");
+		checkAnnotation.setAuthority("USER.Delete");
 		checkAnnotation.setUuid(UUID.fromString("e5354c0e-657b-4b4d-bb2f-791612199711"));
 		checkAnnotation.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		expectedRoles.add(publish);
+		
 		expectedRoles.add(edit);
 		expectedRoles.add(annotate);
 		expectedRoles.add(checkAnnotation);
@@ -135,6 +132,7 @@ public class UserServiceImplTest {
 	@Test
 	@DataSet
 	public void testCreateUser() {
+		
 		
 		
 		String username = "user2";
@@ -175,11 +173,11 @@ public class UserServiceImplTest {
 	
 	
 	GrantedAuthorityImpl userAdminEdit = GrantedAuthorityImpl.NewInstance();
-	userAdminEdit.setAuthority("User.edit");
+	userAdminEdit.setAuthority("USER.edit");
 	GrantedAuthorityImpl userAdminCreate = GrantedAuthorityImpl.NewInstance();
-	userAdminCreate.setAuthority("User.create");
+	userAdminCreate.setAuthority("USER.create");
 	GrantedAuthorityImpl userAdminDelete = GrantedAuthorityImpl.NewInstance();
-	userAdminDelete.setAuthority("User.delete");
+	userAdminDelete.setAuthority("USER.delete");
 	List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
 	list.add(userAdminEdit);
 	list.add(userAdminDelete);
