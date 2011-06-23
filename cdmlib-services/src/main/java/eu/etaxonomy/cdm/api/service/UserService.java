@@ -115,6 +115,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return newAuthentication;
 	}
 	
+	@Override
 	@Transactional(readOnly=false)
 	public void changePassword(String oldPassword, String newPassword) {
 		Assert.hasText(oldPassword);
@@ -138,6 +139,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 	
+	@Override
 	@Transactional(readOnly=false)
 	public void changePasswordForUser(String username, String newPassword) {
 		Assert.hasText(username);
@@ -161,6 +163,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Override
 	@Transactional(readOnly=false)
 	@PreAuthorize("hasPermission(#user, 'CREATE')")
 	public void createUser(UserDetails user) {
@@ -175,6 +178,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		dao.save((User)user);
 	}
 
+	@Override
 	@Transactional(readOnly=false)
 	@PreAuthorize("hasPermission(#username, 'DELETE')")
 	public void deleteUser(String username) {
@@ -188,6 +192,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(username);
 	}
 
+	@Override
 	@Transactional(readOnly=false)
 	@PreAuthorize("hasPermission(#user, 'UPDATE')")
 	public void updateUser(UserDetails user) {
@@ -197,6 +202,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		userCache.removeUserFromCache(user.getUsername());
 	}
 
+	@Override
 	public boolean userExists(String username) {
 		Assert.hasText(username);
 		
@@ -324,6 +330,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void renameGroup(String oldName, String newName) {
 		Assert.hasText(oldName);
@@ -351,16 +358,19 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return user.getUuid(); 
 	}
 
+	@Override
 	@Transactional(readOnly=false)
 	public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
 		return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
 	}
 	
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
