@@ -66,7 +66,7 @@ private class AuthorityPermission{
 		groupAuthorities.addAll(authorities);
 		
 		
-		AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName(), CdmPermission.valueOf(permissionString), ((CdmBase)targetDomainObject).getUuid());
+		AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), CdmPermission.valueOf(permissionString), ((CdmBase)targetDomainObject).getUuid());
 		
 		
 				
