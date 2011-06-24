@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -90,13 +91,14 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	@SuppressWarnings("unchecked")
 	protected <S extends IImportConfigurator> boolean doCheck(S  config){
 		boolean result = true;
-		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 		
 		//check
 		if (config == null){
 			logger.warn("CdmImportConfiguration is null");
 			return false;
-		}else if (! config.isValid()){
+		}
+		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
+		if (! config.isValid()){
 			logger.warn("CdmImportConfiguration is not valid");
 			return false;
 		}
@@ -110,7 +112,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 				String ioBeanName = getComponentBeanName(ioClass);
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
+					registerObservers(config, cdmIo);
 					result &= cdmIo.check(state);
+					unRegisterObservers(config, cdmIo);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;
@@ -126,6 +130,18 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");
 		return result;
 
+	}
+	
+	private void registerObservers(IImportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.addObserver(observer);
+		}
+	}
+	
+	private void unRegisterObservers(IImportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.deleteObserver(observer);
+		}
 	}
 	
 	
@@ -214,5 +230,5 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		}
 		return ioBean;
 	}
-	
+
 }

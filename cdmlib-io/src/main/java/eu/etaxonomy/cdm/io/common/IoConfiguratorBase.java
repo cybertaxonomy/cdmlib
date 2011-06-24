@@ -6,6 +6,9 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -14,6 +17,7 @@ import eu.etaxonomy.cdm.common.NullProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 /**
+ * Base class for all import/export configurators.
  * @author a.babadshanjan
  * @created 16.11.2008
  */
@@ -29,6 +33,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	
 	private CdmApplicationController cdmApp = null;
 	
+	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	
 	//etc
 
@@ -82,5 +87,17 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	
 	public IProgressMonitor getProgressMonitor(){
 		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
+	}
+
+	public void setObservers(Set<IIoObserver> observers) {
+		this.observers = observers;
+	}
+
+	/**
+	 * Sets the observers for this import/export
+	 * @return
+	 */
+	public Set<IIoObserver> getObservers() {
+		return observers;
 	}
 }

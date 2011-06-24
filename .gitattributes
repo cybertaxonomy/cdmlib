@@ -180,6 +180,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmImporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoEvent.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoObserver.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IMatchingImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedIO.java -text

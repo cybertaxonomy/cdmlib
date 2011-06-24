@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -32,9 +36,51 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration implements ICdmIO<STATE> {
 	private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
+	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	protected String ioName = null;
 
-	protected abstract boolean doInvoke(STATE state);
+//******************** Observers *********************************************************	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#addObserver(eu.etaxonomy.cdm.io.common.IIoObserver)
+	 */
+	public void addObserver(IIoObserver observer){
+		observers.add(observer);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#countObservers()
+	 */
+	public int countObservers(){
+		return observers.size();
+	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ICdmIO#deleteObserver(eu.etaxonomy.cdm.io.common.IIoObserver)
+     */
+	public void deleteObserver(IIoObserver observer){
+		observers.remove(observer);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#deleteObservers()
+	 */
+	public void deleteObservers(){
+		observers.removeAll(observers);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.IIoEvent)
+	 */
+	public void fire(IIoEvent event){
+		for (IIoObserver observer: observers){
+			observer.handleEvent(event);
+		}
+	}
+
+//******************** End Observers *********************************************************	
+
+	
 	
 	public int countSteps(){
 		return 1;
@@ -54,17 +100,34 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		}
 	}
 	
+	/**
+	 * invoke method to be implemented by implementing classes
+	 * @param state
+	 * @return
+	 */
+	protected abstract boolean doInvoke(STATE state);
+
+	
 	@Autowired
 	SessionFactory sessionFactory;
 	
+	/**
+	 * flush the current session
+	 */
 	public void flush() {		
 		sessionFactory.getCurrentSession().flush();
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction()
+	 */
 	public TransactionStatus startTransaction() {
 		return startTransaction(false);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
+	 */
 	public TransactionStatus startTransaction(Boolean readOnly) {
 		
 		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();

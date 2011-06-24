@@ -109,9 +109,11 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		for (Class<ICdmExport> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmExport cdmIo = (ICdmExport)applicationContext.getBean(ioBeanName, ICdmIO.class);
+				ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
+					registerObservers(config, cdmIo);
 					result &= cdmIo.check(state);
+					unRegisterObservers(config, cdmIo);
 				}else{
 					logger.error("cdmIO for class " + (ioClass == null ? "(null)" : ioClass.getSimpleName()) + " was null");
 					result = false;
@@ -127,6 +129,19 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for export from Cdm");
 		return result;
 
+	}
+	
+	
+	private void registerObservers(IExportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.addObserver(observer);
+		}
+	}
+	
+	private void unRegisterObservers(IExportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.deleteObserver(observer);
+		}
 	}
 	
 	
@@ -187,5 +202,5 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		}
 		return ioBean;
 	}
-	
+
 }

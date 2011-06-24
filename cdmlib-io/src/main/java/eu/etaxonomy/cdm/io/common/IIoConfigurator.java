@@ -6,6 +6,8 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.Set;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -62,16 +64,30 @@ public interface IIoConfigurator {
 	 */
 	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation);
 
-	/**
-	 * 
-	 * @param monitor
-	 */
-	public void setProgressMonitor(IProgressMonitor monitor);
 	
 	/**
-	 * 
+	 * Returns the progress monitor.
 	 * @return
 	 */
 	public IProgressMonitor getProgressMonitor();
+	
+	/**
+	 * Sets the progress monitor.
+	 * @see #getProgressMonitor()
+	 * @param monitor
+	 */
+	public void setProgressMonitor(IProgressMonitor monitor);
+
+	/**
+	 * Returns the observers for this import/export
+	 * @return
+	 */
+	public Set<IIoObserver> getObservers();
+
+	/**
+	 * Sets the observers for this import/export
+	 * @param observers
+	 */
+	public void setObservers(Set<IIoObserver> observers);
 
 }
