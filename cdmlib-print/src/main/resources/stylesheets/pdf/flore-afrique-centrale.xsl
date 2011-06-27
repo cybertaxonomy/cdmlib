@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!--
+  
+  CDM XSL Transformation
+  Target Format: Flore d'Afrique Centrale
+  
+-->
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
 
