@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.remote.editor.ClassPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 
@@ -49,7 +49,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
-		binder.registerCustomEditor(Class.class, new ClassPropertyEditor());
+		binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
 	}
 	
 

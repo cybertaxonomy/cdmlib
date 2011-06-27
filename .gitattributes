@@ -937,6 +937,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/NamedAreaTest.java -t
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/PointTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/TdwgAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/media/MediaUtilsTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/molecular/MolecularTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BacterialNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
@@ -1557,7 +1558,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonConcept.ja
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonName.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonRelationshipTerm.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/Team.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/ClassPropertyEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/CdmTypePropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/DateTimeEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/IsoDateTimeEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDAuthorityPropertyEditor.java -text

@@ -302,7 +302,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 								taxonMedia.add(media);
 								
 								//find the best matching representation
-								mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,size, height, widthOrDuration, mimeTypes));
+								mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
 								
 							}
 						}
