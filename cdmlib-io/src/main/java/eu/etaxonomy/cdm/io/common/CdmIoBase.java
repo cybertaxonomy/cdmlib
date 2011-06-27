@@ -24,8 +24,14 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.mysql.jdbc.AssertionFailedException;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.io.common.events.IIoEvent;
+import eu.etaxonomy.cdm.io.common.events.IIoObserver;
+import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
+import eu.etaxonomy.cdm.io.common.events.IoProgressEvent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -264,5 +270,105 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 				monitor.warning(message, e);
 			}
 		}
-	};
+	}
+	
+	protected void fireProgressEvent(String message, String location) {
+		IoProgressEvent event = new IoProgressEvent();
+		event.setThrowingClass(this.getClass());
+		event.setMessage(message);
+		event.setLocation(location);
+		int linenumber = new Exception().getStackTrace()[0].getLineNumber();
+		fire(event);
+	}
+	
+	
+	protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
+		IoProblemEvent event = new IoProblemEvent();
+		event.setThrowingClass(this.getClass());
+		event.setMessage(message);
+		event.setLocation(dataLocation);
+		event.setSeverity(severity);
+		
+		StackTraceElement[] stackTrace = new Exception().getStackTrace();
+		int lineNumber = stackTrace[1].getLineNumber();
+		String methodName = stackTrace[1].getMethodName();
+		//for performance improvement one may read:
+		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
+//		Object o = new SecurityManager().getSecurityContext();
+
+		event.setLineNumber(lineNumber);
+		event.setMethodName(methodName);
+		
+		fire(event);
+	}
+	
+//	/**
+//	   * Returns the first stack trace element of the first class not equal to "StackTraceUtils" or "LogUtils" and aClass. <br />
+//	   * Stored in array of the callstack. <br />
+//	   * Allows to get past a certain class.
+//	   * @param aclass class to get pass in the stack trace. If null, only try to get past StackTraceUtils. 
+//	   * @return stackTraceElement (never null, because if aClass is not found, returns first class past StackTraceUtils)
+//	   * @throws AssertionFailedException if resulting statckTrace is null (RuntimeException)
+//	   */
+//	  public static StackTraceElement getCallingStackTraceElement(final Class aclass) {
+//	    final Throwable           t         = new Throwable();
+//	    final StackTraceElement[] ste       = t.getStackTrace();
+//	    int index = 1;
+//	    final int limit = ste.length;
+//	    StackTraceElement   st        = ste[index];
+//	    String              className = st.getClassName();
+//	    boolean aclassfound = false;
+//	    if(aclass == null) {
+//	        aclassfound = true;
+//	    }
+//	    StackTraceElement   resst = null;
+//	    while(index < limit) {
+//	        if(shouldExamine(className, aclass) == true) {
+//	                if(resst == null) {
+//	                        resst = st;
+//	                }
+//	                if(aclassfound == true) {
+//	                        final StackTraceElement ast = onClassFound(aclass, className, st);
+//	                        if(ast != null) {
+//	                                resst = ast;
+//	                                break;
+//	                        }
+//	                }
+//	                else
+//	                {
+//	                        if(aclass != null && aclass.getName().equals(className) == true) {
+//	                                aclassfound = true;
+//	                        }
+//	                }
+//	        }
+//	        index = index + 1;
+//	        st        = ste[index];
+//	        className = st.getClassName();
+//	    }
+//	    if(resst == null)  {
+//	        throw new AssertionFailedException(StackTraceUtils.getClassMethodLine() + " null argument:" + "stack trace should null"); //$NON-NLS-1$
+//	    }
+//	    return resst;
+//	  }
+//	  
+//	  static private boolean shouldExamine(String className, Class aclass) {
+//	      final boolean res = StackTraceUtils.class.getName().equals(className) == false && (className.endsWith(LOG_UTILS
+//	        	) == false || (aclass !=null && aclass.getName().endsWith(LOG_UTILS)));
+//	      return res;
+//	  }
+//
+//	  static private StackTraceElement onClassFound(Class aclass, String className, StackTraceElement st) {
+//	      StackTraceElement   resst = null;
+//	      if(aclass != null && aclass.getName().equals(className) == false)
+//	      {
+//	          resst = st;
+//	      }
+//	      if(aclass == null)
+//	      {
+//	          resst = st;
+//	      }
+//	      return resst;
+//	  }
+
+
 }

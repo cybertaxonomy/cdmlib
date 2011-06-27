@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import eu.etaxonomy.cdm.io.common.events.IIoEvent;
+import eu.etaxonomy.cdm.io.common.events.IIoObserver;
+
 
 /**
  * @author a.mueller

@@ -46,6 +46,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
+	//States
+	private boolean isCheck;
+	
 	private Map<Object,Classification> treeMap = new HashMap<Object,Classification>();
 
 	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
@@ -266,7 +269,22 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void setTransformer(IInputTransformer transformer){
 		this.inputTransformer = transformer;
 	}
+
+	/**
+	 * Returns true, if this import is in validation state. Flase otherwise
+	 * @return
+	 */
+	public boolean isCheck() {
+		return isCheck;
+	}
 	
+	/**
+	 * @see #isCheck
+	 * @param isCheck
+	 */
+	public void setCheck(boolean isCheck) {
+		this.isCheck = isCheck;
+	}
 
 	
 }
