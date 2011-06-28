@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.XmlImportBase;
+import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -30,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class MarkupImportBase  extends CdmImportBase<MarkupImportConfigurator, MarkupImportState> {
+public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfigurator, MarkupImportState> {
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
 
 	

@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  * @created 11.05.2009
  * @version 1.0
  */
-public class MarkupImportState extends ImportStateBase<MarkupImportConfigurator, MarkupImportBase>{
+public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportState.class);
 	

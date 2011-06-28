@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.io.sdd.SDDTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -92,7 +93,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @version 1.0
  */
 @Component("sddImport")
-public class SDDImport extends CdmImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
+public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
 	private static final Logger logger = Logger.getLogger(SDDImport.class);
 
 	private static int modCount = 1000;

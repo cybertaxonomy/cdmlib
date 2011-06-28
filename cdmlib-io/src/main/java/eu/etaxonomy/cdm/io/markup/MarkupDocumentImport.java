@@ -44,6 +44,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.XmlImportBase;
+import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -2380,5 +2382,6 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	protected boolean isIgnore(MarkupImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
+
 
 }
