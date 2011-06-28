@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * @created 11.05.2009
  * @version 1.0
  */
-public class XmlImportState<CONFIG extends ImportConfiguratorBase, IO extends XmlImportBase> extends ImportStateBase<CONFIG, IO> {
+public class XmlImportState<CONFIG extends XmlImportConfiguratorBase, IO extends XmlImportBase> extends ImportStateBase<CONFIG, IO> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(XmlImportState.class);
 

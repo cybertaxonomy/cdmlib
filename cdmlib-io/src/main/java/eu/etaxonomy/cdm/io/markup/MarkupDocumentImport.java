@@ -12,9 +12,7 @@ package eu.etaxonomy.cdm.io.markup;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +23,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -44,8 +43,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.XmlImportBase;
-import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -150,11 +147,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 
 		//START
 		try {
-			XMLInputFactory factory = XMLInputFactory.newInstance();
-			String fileName = state.getConfig().getSource().toString();
-//			InputStream is = new FileInputStream(fileName);
-			InputStream is = getInputStream(state.getConfig());
-			XMLEventReader reader = factory.createXMLEventReader(fileName, is); 
+			XMLEventReader reader = getStaxReader(state); 
+			
+			 SAXParserFactory saxFactory = SAXParserFactory.newInstance();
 			
 			if (! validateStartOfDocument(reader)){
 				return false;
@@ -242,23 +237,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	}
 
 
-	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEvent next) {
-		String type = "ElementStart";
-		fireSchemaConflictEvent(type, elName, next);
-	}
 
-
-	/**
-	 * @param elName
-	 * @param next
-	 * @param message
-	 * @param type
-	 */
-	private void fireSchemaConflictEvent(String expectedType, String expectedName, XMLEvent next) {
-		String message = "Schema conflict: expected %s '%s' but was %s ";
-		message = String.format(message, expectedType, expectedName, next.toString());
-		fireWarningEvent(message, next.getLocation().toString(), 16);
-	}
 
 
 	private void handlePublication(XMLEventReader reader) {
@@ -266,38 +245,6 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	}
 
 
-	/**
-	 * @param r
-	 * @return
-	 * @throws XMLStreamException
-	 */
-	private boolean validateStartOfDocument(XMLEventReader r) throws XMLStreamException {
-		XMLEvent next = r.nextEvent();
-		if (next.isStartDocument()){
-			return true;
-		}else {
-			fireWarningEvent("Missing start of document", next.getLocation().toString(), 16);
-			return false;
-		}
-	}
-
-	protected InputStream getInputStream(MarkupImportConfigurator config) {
-			try {
-//				URL url = config.getSource().toURL();
-//				Object o = url.getContent()
-				URI uri = config.getSource();
-				File file = new File(uri);
-				InputStream is = new FileInputStream(file);
-				return is;
-//			} catch (MalformedURLException e) {
-//				e.printStackTrace();
-			}catch (Exception e) {
-				String message = "Problem reading source file %s. Import can not be executed. Reason: %s.";
-				message = String.format(message, config.getSource(), e.getMessage());
-				fireWarningEvent(message, "Read file", 16);
-				return null;
-			}
-	}
 
 
 	private void handleTaxonAttributes(Element elTaxon, Taxon taxon, MarkupImportState state) {
