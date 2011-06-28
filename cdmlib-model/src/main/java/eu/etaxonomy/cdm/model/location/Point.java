@@ -31,8 +31,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
