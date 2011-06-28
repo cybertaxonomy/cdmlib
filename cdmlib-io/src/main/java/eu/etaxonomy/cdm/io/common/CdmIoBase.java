@@ -283,21 +283,17 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	
 	
 	protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
-		IoProblemEvent event = new IoProblemEvent();
-		event.setThrowingClass(this.getClass());
-		event.setMessage(message);
-		event.setLocation(dataLocation);
-		event.setSeverity(severity);
-		
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
 		int lineNumber = stackTrace[1].getLineNumber();
 		String methodName = stackTrace[1].getMethodName();
+
+		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, dataLocation, 
+				lineNumber, severity, methodName);
+		
 		//for performance improvement one may read:
 		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
 
-		event.setLineNumber(lineNumber);
-		event.setMethodName(methodName);
 		
 		fire(event);
 	}

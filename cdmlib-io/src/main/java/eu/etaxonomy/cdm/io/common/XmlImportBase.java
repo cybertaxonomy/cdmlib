@@ -11,9 +11,13 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -21,9 +25,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.io.markup.MarkupImportConfigurator;
-import eu.etaxonomy.cdm.io.markup.MarkupImportState;
+import eu.etaxonomy.cdm.io.common.events.IIoEvent;
+import eu.etaxonomy.cdm.io.common.events.IIoObserver;
+import eu.etaxonomy.cdm.io.markup.handler.ImportHandlerBase;
 
 /**
  * Base class for XML imports
@@ -31,7 +37,7 @@ import eu.etaxonomy.cdm.io.markup.MarkupImportState;
  * @date 28.06.2011
  *
  */
-public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STATE>, STATE extends XmlImportState<CONFIG, ?>> extends CdmImportBase<CONFIG, STATE> {
+public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STATE>, STATE extends XmlImportState<CONFIG, ?>> extends CdmImportBase<CONFIG, STATE> implements IIoObserver {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(XmlImportBase.class);
 	
@@ -58,6 +64,11 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		}
 	}
 
+	/**
+	 * Returns an input stream for the given source.
+	 * @param config
+	 * @return
+	 */
 	protected InputStream getInputStream(CONFIG config) {
 			try {
 				URI uri = config.getSource();
@@ -99,6 +110,33 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		XMLInputFactory staxFactory = XMLInputFactory.newInstance();
 		XMLEventReader reader = staxFactory.createXMLEventReader(fileName, is);
 		return reader;
+	}
+	
+
+	/**
+	 * Parses the source file with the given handler
+	 * @param is
+	 * @param handler
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	protected void parseSAX(STATE state, ImportHandlerBase handler)
+			throws ParserConfigurationException, SAXException, IOException {
+		handler.addObserver(this);
+		InputStream is = getInputStream(state.getConfig());
+	    SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+		SAXParser saxParser = saxFactory.newSAXParser();
+		saxParser.parse(is, handler);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.events.IIoObserver#handleEvent(eu.etaxonomy.cdm.io.common.events.IIoEvent)
+	 */
+	@Override
+	public void handleEvent(IIoEvent event) {
+		fire(event);
 	}
 
 }

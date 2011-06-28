@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.markup;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
@@ -38,13 +41,18 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.DefaultHandler2;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
+import eu.etaxonomy.cdm.io.markup.handler.ImportHandlerBase;
+import eu.etaxonomy.cdm.io.markup.handler.PublicationHandler;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -147,27 +155,37 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 
 		//START
 		try {
-			XMLEventReader reader = getStaxReader(state); 
+			//StAX
+//			XMLEventReader reader = getStaxReader(state); 
+//			if (! validateStartOfDocument(reader)){
+//				return false;
+//			}
+//			XMLEvent next = reader.nextEvent();
+//			next.getEventType();
+//			String elName = "publication";
+//			if (next.isStartElement() && next.getEventType() == XMLStreamConstants.START_ELEMENT && next.asStartElement().getName().equals(elName) ){
+//				handlePublication(reader);
+//			}else{
+//				fireSchemaConflictEventExpectedStartTag(elName, next);
+//			}
 			
-			 SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+			//SAX
+			ImportHandlerBase handler= new PublicationHandler(this);
+			parseSAX(state, handler);
 			
-			if (! validateStartOfDocument(reader)){
-				return false;
-			}
-			XMLEvent next = reader.nextEvent();
-			next.getEventType();
-			String elName = "publication";
-			if (next.isStartElement() && next.getEventType() == XMLStreamConstants.START_ELEMENT && next.asStartElement().getName().equals(elName) ){
-				handlePublication(reader);
-			}else{
-				fireSchemaConflictEventExpectedStartTag(elName, next);
-			}
 		} catch (FactoryConfigurationError e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (XMLStreamException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			fireWarningEvent("Some error occurred while setting up xml factory. Data can't be imported", "Start", 16);
+//		} catch (XMLStreamException e1) {
+//			// TODO Auto-generated catch block
+//			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
+		} catch (ParserConfigurationException e) {
+			fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported", "Start", 16);
+		} catch (SAXException e) {
+			fireWarningEvent("A SAXException occurred while parsing. Data can't be imported", "Start", 16);
+		} catch (IOException e) {
+			fireWarningEvent("An IO exception occurred while parsing. Data can't be imported", "Start", 16);
+
 		}
 		 
 		 
@@ -235,9 +253,6 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		
 		return success.getValue();
 	}
-
-
-
 
 
 	private void handlePublication(XMLEventReader reader) {
@@ -2329,6 +2344,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	protected boolean isIgnore(MarkupImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
+
+
 
 
 }

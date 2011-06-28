@@ -16,10 +16,26 @@ package eu.etaxonomy.cdm.io.common.events;
  */
 public class IoProblemEvent extends IoEventBase {
 	
+
+	public static IoProblemEvent NewInstance(Class throwingClass, String message, String location, int lineNumber, int severity, String methodName){
+		IoProblemEvent result = new IoProblemEvent();
+		result.setThrowingClass(throwingClass);
+		result.setMessage(message);
+		result.setLocation(location);
+		result.setLineNumber(lineNumber);
+		result.setSeverity(severity);
+		result.setMethodName(methodName);
+		return result;
+	}
+	
+	protected IoProblemEvent(){
+		super();
+	}
+	
 	private int severity;
 	private int lineNumber;
 	private String methodName;
-
+	
 	public void setSeverity(int severity) {
 		this.severity = severity;
 	}
