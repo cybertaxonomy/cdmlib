@@ -14,7 +14,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.NoSuchElementException;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -29,7 +31,6 @@ import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
-import eu.etaxonomy.cdm.io.markup.handler.ImportHandlerBase;
 
 /**
  * Base class for XML imports
@@ -43,8 +44,9 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 	
 	
 
-	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEvent next) {
+	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
 		String type = "ElementStart";
+		XMLEvent next = reader.nextEvent();
 		fireSchemaConflictEvent(type, elName, next);
 	}
 	
@@ -63,6 +65,58 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 			return false;
 		}
 	}
+	
+
+	/**
+	 * TODO namespace
+	 * @param elName
+	 * @param reader
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected boolean isStartingElement(XMLEventReader reader, String elName) throws XMLStreamException {
+		XMLEvent next;
+		try {
+			next = reader.peek();
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+		return isStartingElement(next, elName);
+	}
+
+	protected boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
+		boolean result = false;
+		boolean isStart = event.isStartElement();
+		if (isStart){
+			QName name = event.asStartElement().getName();
+			boolean equals = name.getLocalPart().equals(elName);
+			result = equals;
+		}
+		return result;
+	}
+
+
+	protected boolean isEndingElement(XMLEventReader reader, String elName) throws XMLStreamException {
+		XMLEvent next;
+		try {
+			next = reader.peek();
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+		return isEndingElement(next, elName);
+	}
+	
+	protected boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
+		boolean result = false;
+		boolean isEnd = event.isEndElement();
+		if (isEnd){
+			QName name = event.asEndElement().getName();
+			boolean equals = name.getLocalPart().equals(elName);
+			result = equals;
+		}
+		return result;
+	}
+
 
 	/**
 	 * Returns an input stream for the given source.
@@ -93,7 +147,8 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 	private void fireSchemaConflictEvent(String expectedType, String expectedName, XMLEvent next) {
 		String message = "Schema conflict: expected %s '%s' but was %s ";
 		message = String.format(message, expectedType, expectedName, next.toString());
-		fireWarningEvent(message, next.getLocation().toString(), 16);
+		String location = "l." + next.getLocation().getLineNumber() + "/c." + next.getLocation().getColumnNumber();
+		fireWarningEvent(message, location, 16);
 	}
 	
 

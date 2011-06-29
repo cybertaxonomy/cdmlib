@@ -9,28 +9,20 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
@@ -40,19 +32,13 @@ import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
-import org.xml.sax.SAXException;
-import org.xml.sax.ext.DefaultHandler2;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
-import eu.etaxonomy.cdm.io.markup.handler.ImportHandlerBase;
-import eu.etaxonomy.cdm.io.markup.handler.PublicationHandler;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -133,64 +119,112 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	public boolean doInvoke(MarkupImportState state){
 		fireProgressEvent("Start import markup document", "Before start of document");
 		fireWarningEvent("Test a warning", "At start", 17);
+		boolean success = false;
+		
+		Queue<CdmBase> outputStream = new LinkedList<CdmBase>();
 		
 		//FIXME reset state
+		doAllTheOldOtherStuff(state);
+
+		//START
+		try {
+			//StAX
+			XMLEventReader reader = getStaxReader(state); 
+			state.setReader(reader);
+			//start document
+			if (! validateStartOfDocument(reader)){
+				return false;
+			}
+			
+			//publication
+			String elName = "publication";
+			while (reader.hasNext()) {
+				if (isStartingElement(reader, elName)){
+					success &= handlePublication(reader, elName);
+				}else{
+					fireSchemaConflictEventExpectedStartTag(elName, reader);
+				}
+			}
+			
+//			//SAX
+//			ImportHandlerBase handler= new PublicationHandler(this);
+//			parseSAX(state, handler);
+			
+		} catch (FactoryConfigurationError e1) {
+			// TODO Auto-generated catch block
+			fireWarningEvent("Some error occurred while setting up xml factory. Data can't be imported", "Start", 16);
+			success = false;
+		} catch (XMLStreamException e1) {
+			// TODO Auto-generated catch block
+			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
+			success = false;
+//		} catch (ParserConfigurationException e) {
+//			fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported", "Start", 16);
+//		} catch (SAXException e) {
+//			fireWarningEvent("A SAXException occurred while parsing. Data can't be imported", "Start", 16);
+//		} catch (IOException e) {
+//			fireWarningEvent("An IO exception occurred while parsing. Data can't be imported", "Start", 16);
+
+		}
+		 
+	
+		return success;
+		
+	}
+
+
+	private boolean handlePublication(XMLEventReader reader, String elName) throws XMLStreamException {
+		boolean success = true;
+		XMLEvent event = reader.nextEvent();
+		if (isEndingElement(event, elName)){
+			//TODO cardinality of alternative
+			return success;
+		}else if(isStartingElement(event, "metaData")){
+			
+		}else if(isStartingElement(event, "treatment")){
+			
+		}else if(isStartingElement(event, "biographies")){
+			
+		}else if(isStartingElement(event, "references")){
+			
+		}else if(isStartingElement(event, "metaData")){
+			
+		}else if(isStartingElement(event, "metaData")){
+			
+		}else if(isStartingElement(event, "metaData")){
+			
+		}
+		return success;
+	}
+	
+
+	
+	/**
+	 * This comes from the old version, needs to be checked on need
+	 * @param state
+	 */
+	private void doAllTheOldOtherStuff(MarkupImportState state) {
 		state.putTree(null, null);
 		if (unmatchedLeads == null){
 			unmatchedLeads = UnmatchedLeads.NewInstance();
 		}
 		state.setUnmatchedLeads(unmatchedLeads);
 		
-		TransactionStatus tx = startTransaction();
+//		TransactionStatus tx = startTransaction();
 		unmatchedLeads.saveToSession(getPolytomousKeyNodeService());
 		
 		
 		//TODO generally do not store the reference object in the config
 		Reference sourceReference = state.getConfig().getSourceReference();
 		getReferenceService().saveOrUpdate(sourceReference);
-		
+	}
+
+
+	private boolean doInvoke_old(MarkupImportState state){
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 
-
-		//START
-		try {
-			//StAX
-//			XMLEventReader reader = getStaxReader(state); 
-//			if (! validateStartOfDocument(reader)){
-//				return false;
-//			}
-//			XMLEvent next = reader.nextEvent();
-//			next.getEventType();
-//			String elName = "publication";
-//			if (next.isStartElement() && next.getEventType() == XMLStreamConstants.START_ELEMENT && next.asStartElement().getName().equals(elName) ){
-//				handlePublication(reader);
-//			}else{
-//				fireSchemaConflictEventExpectedStartTag(elName, next);
-//			}
-			
-			//SAX
-			ImportHandlerBase handler= new PublicationHandler(this);
-			parseSAX(state, handler);
-			
-		} catch (FactoryConfigurationError e1) {
-			// TODO Auto-generated catch block
-			fireWarningEvent("Some error occurred while setting up xml factory. Data can't be imported", "Start", 16);
-//		} catch (XMLStreamException e1) {
-//			// TODO Auto-generated catch block
-//			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
-		} catch (ParserConfigurationException e) {
-			fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported", "Start", 16);
-		} catch (SAXException e) {
-			fireWarningEvent("A SAXException occurred while parsing. Data can't be imported", "Start", 16);
-		} catch (IOException e) {
-			fireWarningEvent("An IO exception occurred while parsing. Data can't be imported", "Start", 16);
-
-		}
-		 
-		 
-		
-//		Element elbody= getBodyElement(state.getConfig());
+	//	Element elbody= getBodyElement(state.getConfig());
 		Element elbody = null;
 		List<Element> elTaxonList = elbody.getChildren();
 		
@@ -214,7 +248,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				Taxon taxon = Taxon.NewInstance(botanicalName, state.getConfig().getSourceReference());
 				
 				handleTaxonAttributes(elTaxon, taxon, state);
-
+	
 				
 				List<Element> children = elTaxon.getChildren();
 				handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,	unhandledDescriptionChildren, taxon, children);
@@ -244,22 +278,17 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		getTaxonService().saveOrUpdate(taxaToSave);
 		getFeatureTreeService().saveOrUpdateFeatureNodesAll(state.getFeatureNodesToSave());
 		state.getFeatureNodesToSave().clear();
-		commitTransaction(tx);
+//		commitTransaction(tx);
 		
 		logger.info("end makeTaxa ...");
 		logger.info("start makeKey ...");
-//		invokeDoKey(state);
+	//	invokeDoKey(state);
 		logger.info("end makeKey ...");
 		
 		return success.getValue();
 	}
 
-
-	private void handlePublication(XMLEventReader reader) {
-		
-	}
-
-
+	
 
 
 	private void handleTaxonAttributes(Element elTaxon, Taxon taxon, MarkupImportState state) {

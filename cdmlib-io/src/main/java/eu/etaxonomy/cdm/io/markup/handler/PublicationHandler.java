@@ -9,13 +9,13 @@
 */
 package eu.etaxonomy.cdm.io.markup.handler;
 
-import java.util.Stack;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import eu.etaxonomy.cdm.io.common.ImportHandlerBase;
 import eu.etaxonomy.cdm.io.common.XmlImportBase;
+
 
 
 /**
@@ -29,7 +29,8 @@ public class PublicationHandler extends ImportHandlerBase{
 	private static final Logger logger = Logger.getLogger(PublicationHandler.class);
 	
 	private boolean isInPublication;
-
+	private ImportHandlerBase currentHandler = null;
+	
 	public PublicationHandler(XmlImportBase importBase) {
 		super(importBase);
 	}
@@ -40,33 +41,37 @@ public class PublicationHandler extends ImportHandlerBase{
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, qName, attributes);
-		//publication
-		if ("publication".equalsIgnoreCase(qName)){
-			this.isInPublication = true;
-			//TODO check attributes
-			return;
-		}else if (this.isInPublication == false){
-			fireUnexpectedStartElement(uri, localName, qName);
-			return;
-		}
-		//children
-		if ("metaData".equalsIgnoreCase(qName)){
-			handleNotYetImplementedElement(uri, localName, qName);
-		}else if ("treatment".equalsIgnoreCase(qName)){
-			fireNotYetImplementedElement(uri, localName, qName);
-		}else if ("biographies".equalsIgnoreCase(qName)){
-			fireNotYetImplementedElement(uri, localName, qName);
-		}else if ("references".equalsIgnoreCase(qName)){
-			fireNotYetImplementedElement(uri, localName, qName);
-		}else if ("textSection".equalsIgnoreCase(qName)){
-			fireNotYetImplementedElement(uri, localName, qName);
-		}else if ("addenda".equalsIgnoreCase(qName)){
-			fireNotYetImplementedElement(uri, localName, qName);
+		if (currentHandler != null){
+			currentHandler.startElement(uri, localName, qName, attributes);
 		}else{
-			handleUnexpectedStartElement(uri, localName, qName);
-		}
-		if (attributes.getLength() > 0){
-			fireUnexptectedAttriubtes(attributes);
+			//publication
+			if ("publication".equalsIgnoreCase(qName)){
+				this.isInPublication = true;
+				//TODO check attributes
+				return;
+			}else if (this.isInPublication == false){
+				handleUnexpectedStartElement(uri, localName, qName);
+				return;
+			}
+			//children
+			if ("metaData".equalsIgnoreCase(qName)){
+				handleNotYetImplementedElement(uri, localName, qName);
+			}else if ("treatment".equalsIgnoreCase(qName)){
+				currentHandler = new TreatmentHandler(this);
+			}else if ("biographies".equalsIgnoreCase(qName)){
+				handleNotYetImplementedElement(uri, localName, qName);
+			}else if ("references".equalsIgnoreCase(qName)){
+				handleNotYetImplementedElement(uri, localName, qName);
+			}else if ("textSection".equalsIgnoreCase(qName)){
+				handleNotYetImplementedElement(uri, localName, qName);
+			}else if ("addenda".equalsIgnoreCase(qName)){
+				handleNotYetImplementedElement(uri, localName, qName);
+			}else{
+				handleUnexpectedStartElement(uri, localName, qName);
+			}
+			if (attributes.getLength() > 0){
+				handleUnexpectedAttributes(attributes);
+			}
 		}
 	}
 
@@ -75,27 +80,31 @@ public class PublicationHandler extends ImportHandlerBase{
 	 */
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		super.endElement(uri, localName, qName);
-		if ("publication".equalsIgnoreCase(qName)){
-			if (this.isInPublication == true){
-				this.isInPublication = false;
-				return;
-			}else{
-				fireUnexpectedEndElement(uri, localName, qName);
-			}
+//		super.endElement(uri, localName, qName);
+		if (currentHandler != null){
+			currentHandler.endElement(uri, localName, qName);
 		}else{
-			if ("metaData".equalsIgnoreCase(qName)){
-				
-			}else if ("treatment".equalsIgnoreCase(qName)){
-				
-				
-			}else if ("biographies".equalsIgnoreCase(qName)){
-				
-			}else if ("references".equalsIgnoreCase(qName)){
-			}else if ("textSection".equalsIgnoreCase(qName)){
-			}else if ("addenda".equalsIgnoreCase(qName)){
+			if ("publication".equalsIgnoreCase(qName)){
+				if (this.isInPublication == true){
+					this.isInPublication = false;
+					return;
+				}else{
+					fireUnexpectedEndElement(uri, localName, qName, 1);
+				}
 			}else{
-				handleUnexpectedEndElement(uri, localName, qName);
+				if ("metaData".equalsIgnoreCase(qName)){
+					System.out.println("Hallo");
+				}else if ("treatment".equalsIgnoreCase(qName)){
+					
+					
+				}else if ("biographies".equalsIgnoreCase(qName)){
+					
+				}else if ("references".equalsIgnoreCase(qName)){
+				}else if ("textSection".equalsIgnoreCase(qName)){
+				}else if ("addenda".equalsIgnoreCase(qName)){
+				}else{
+					handleUnexpectedEndElement(uri, localName, qName);
+				}
 			}
 		}
 	}

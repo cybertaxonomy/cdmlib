@@ -10,6 +10,10 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -21,10 +25,28 @@ public class XmlImportState<CONFIG extends XmlImportConfiguratorBase, IO extends
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(XmlImportState.class);
 
+	private XMLEventReader reader;
+
 	
 	public XmlImportState(CONFIG config) {
 		super(config);
 	}
+
+	
+
+	/**
+	 * @return the reader
+	 */
+	public XMLEventReader getReader() {
+		return reader;
+	}
+
+	public void setReader(XMLEventReader reader) {
+		this.reader = reader;
+		
+	}
+
+
 
 	
 

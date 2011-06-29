@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.markup.handler;
+package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +21,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DefaultHandler2;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
@@ -36,16 +35,22 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	private static final Logger logger = Logger.getLogger(ImportHandlerBase.class);
 	
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
-	private XmlImportBase importBase; 
+	
+	protected XmlImportBase<?,?> importBase; 
+	protected ImportHandlerBase previousHandler;
 	private Locator locator;
 	private boolean stateDocumentStarted = false;
-	protected Stack<String> unhandledElements = new Stack();
+	protected Stack<String> unhandledElements = new Stack<String>();
+	protected Stack<String> handledElements = new Stack<String>();
 	
-
-	
-	
-	protected ImportHandlerBase(XmlImportBase importBase){
+	protected ImportHandlerBase(XmlImportBase<?,?> importBase){
 		this.importBase = importBase;
+	}
+	
+	protected ImportHandlerBase(ImportHandlerBase previousHandler){
+		this.previousHandler = previousHandler;
+		this.importBase = previousHandler.getImportBase();
+		this.locator = previousHandler.locator;
 	}
 	
 
@@ -163,7 +168,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (logger.isDebugEnabled()){
-			logger.debug("startElement");
+			logger.debug("startElement: " + qName);
 		}
 	}
 
@@ -180,8 +185,17 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	 */
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
-		logger.warn("Unexpected parse event: characters: " + ch);
+		logger.info("Unexpected parse event: characters: " );//+ chToString(ch));
 	}
+
+	private String chToString(char[] ch) {
+		StringBuffer str = new StringBuffer(ch.length);
+		for (int i = 0; i < ch.length; i++){
+			str.append(ch[i]);
+		}
+		return str.toString();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.helpers.DefaultHandler#ignorableWhitespace(char[], int, int)
@@ -230,45 +244,78 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	public void fatalError(SAXParseException e) throws SAXException {
 		super.fatalError(e);
 	}
+	
 
-	public void setImportBase(XmlImportBase importBase) {
-		this.importBase = importBase;
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.DefaultHandler2#startCDATA()
+	 */
+	@Override
+	public void startCDATA() throws SAXException {
+		logger.warn("Unexpected parse event: startCDATA");
 	}
 
-	public XmlImportBase getImportBase() {
-		return importBase;
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.DefaultHandler2#endCDATA()
+	 */
+	@Override
+	public void endCDATA() throws SAXException {
+		logger.warn("Unexpected parse event: endCDATA");
 	}
 	
 
-	protected void fireUnexptectedAttriubtes(Attributes attributes) {
+	public void setImportBase(XmlImportBase<?,?> importBase) {
+		this.importBase = importBase;
+	}
+
+	public XmlImportBase<?,?> getImportBase() {
+		return importBase;
+	}
+	
+	
+	public boolean isFinished(){
+		return (handledElements.size() + unhandledElements.size()) == 0;
+	}
+	
+
+	
+
+	protected void handleUnexpectedAttributes(Attributes attributes) {
+		if (this.unhandledElements.size() == 0 ){
+			fireUnexpectedAttributes(attributes, 1);
+		}
+	}
+	
+	protected void fireUnexpectedAttributes(Attributes attributes, int stackDepth) {
 		String attributesString = "";
 		for (int i = 0; i < attributes.getLength(); i++){
 			attributesString = CdmUtils.concat(",", attributesString, attributes.getQName(i));
 		}
 		String message = "Unexpected attributes: %s";
-		IoProblemEvent event = makeProblemEvent(String.format(message, attributesString), 1 );
+		IoProblemEvent event = makeProblemEvent(String.format(message, attributesString), 1 , stackDepth +1 );
 		fire(event);	
 	}
 
 
 
-	protected void fireUnexpectedStartElement(String uri, String localName, String qName) {
+	protected void fireUnexpectedStartElement(String uri, String localName, String qName, int stackDepth) {
 		String message = "Unexpected start element: %s";
-		IIoEvent event = makeProblemEvent(String.format(message, qName), 2);
+		IIoEvent event = makeProblemEvent(String.format(message, qName), 2, stackDepth +1);
 		fire(event);		
 	}
 	
 
-	protected void fireUnexpectedEndElement(String uri, String localName, String qName) {
+	protected void fireUnexpectedEndElement(String uri, String localName, String qName, int stackDepth) {
 		String message = "Unexpected end element: %s";
-		IIoEvent event = makeProblemEvent(String.format(message, qName), 16);
+		IIoEvent event = makeProblemEvent(String.format(message, qName), 16, stackDepth+1);
 		fire(event);		
 	}
 	
 
-	protected void fireNotYetImplementedElement(String uri, String localName, String qName) {
+	protected void fireNotYetImplementedElement(String uri, String localName, String qName, int stackDepth) {
 		String message = "Element not yet implement: %s";
-		IIoEvent event = makeProblemEvent(String.format(message, qName), 1);
+		IIoEvent event = makeProblemEvent(String.format(message, qName), 1, stackDepth+1 );
 		fire(event);		
 	}
 
@@ -279,11 +326,12 @@ public class ImportHandlerBase extends DefaultHandler2 {
 	 * @param severity
 	 * @return
 	 */
-	private IoProblemEvent makeProblemEvent(String message, int severity) {
+	private IoProblemEvent makeProblemEvent(String message, int severity, int stackDepth) {
+		stackDepth++;
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
-		int lineNumber = stackTrace[2].getLineNumber();
-		String methodName = stackTrace[1].getMethodName();
-		String location = locator.getLineNumber() + "/"+ locator.getColumnNumber();
+		int lineNumber = stackTrace[stackDepth].getLineNumber();
+		String methodName = stackTrace[stackDepth].getMethodName();
+		String location = locator == null ? " - no locator - " : "l." + locator.getLineNumber() + "/c."+ locator.getColumnNumber();
 		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, 
 				location, lineNumber, severity, methodName);
 		return event;
@@ -294,7 +342,7 @@ public class ImportHandlerBase extends DefaultHandler2 {
 		if (! unhandledElements.empty()){
 			unhandledElements.push(qName);
 		}else{
-			fireUnexpectedStartElement(uri, localName, qName);
+			fireUnexpectedStartElement(uri, localName, qName, 1);
 		}
 		
 	}
@@ -303,15 +351,16 @@ public class ImportHandlerBase extends DefaultHandler2 {
 		if (unhandledElements.peek().equals(qName)){
 			unhandledElements.pop();
 		}else{
-			fireUnexpectedEndElement(uri, localName, qName);
+			fireUnexpectedEndElement(uri, localName, qName, 1);
 		}
 		
 	}
 
 	protected void handleNotYetImplementedElement(String uri, String localName, String qName) {
 		unhandledElements.push(qName);
-		fireNotYetImplementedElement(uri, localName, qName);
+		fireNotYetImplementedElement(uri, localName, qName, 1);
 	}
+
 
 	
 }

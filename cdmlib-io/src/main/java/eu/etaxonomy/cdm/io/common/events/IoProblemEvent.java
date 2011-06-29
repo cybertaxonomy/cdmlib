@@ -66,7 +66,8 @@ public class IoProblemEvent extends IoEventBase {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s [location=%s; severity=%d; %s/%s:%d]",	getMessage(), getLocation(), getSeverity(), getThrowingClass().getSimpleName(), getMethodName(), getLineNumber());
+		String className = getThrowingClass() == null ? "-" : getThrowingClass().getSimpleName();
+		return String.format("%s [location=%s; severity=%d; %s/%s:%d]",	getMessage(), getLocation(), getSeverity(), className, getMethodName(), getLineNumber());
 	}
 
 	

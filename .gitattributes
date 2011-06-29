@@ -185,6 +185,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportConfiguratorBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHandlerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportWrapper.java -text
@@ -312,14 +313,15 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/WarningTolerantValidationEventHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/package-info.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/UnmatchedLeads.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/ImportHandlerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/PublicationHandler.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/TreatmentHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDescriptionExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportConfigurator.java -text
