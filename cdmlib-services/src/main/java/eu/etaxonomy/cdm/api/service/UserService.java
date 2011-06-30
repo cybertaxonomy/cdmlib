@@ -9,6 +9,7 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +43,8 @@ import org.springframework.util.Assert;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
@@ -117,6 +120,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	
 	@Override
 	@Transactional(readOnly=false)
+	
 	public void changePassword(String oldPassword, String newPassword) {
 		Assert.hasText(oldPassword);
 		Assert.hasText(newPassword);
@@ -141,6 +145,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	
 	@Override
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#username, 'changePassword') or hasRole('USER.Admin')")
 	public void changePasswordForUser(String username, String newPassword) {
 		Assert.hasText(username);
 		Assert.hasText(newPassword);
@@ -381,5 +386,8 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		 }
 		 return results;
 	}
+
+	
+
 	
 } 

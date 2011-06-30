@@ -22,11 +22,14 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -177,5 +180,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	@Transactional(readOnly = true)
 	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
+	}
+	
+	@Transactional(readOnly = true)
+	public boolean hasPermission(Authentication authentication, T target, CdmPermission permission) {
+		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+		return permissionEvaluator.hasPermission(authentication, target, permission);
+		
 	}
 }

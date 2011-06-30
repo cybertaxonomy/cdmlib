@@ -19,9 +19,11 @@ import java.util.UUID;
 
 import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.permission.CdmPermission;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -272,4 +274,14 @@ public interface IService<T extends ICdmBase>{
 	 * @return a list of matching objects
 	 */
 	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+     * Evaluates whether the authenticated user has the rights to perform an specific action on the target object
+     * @param authentication
+     * @param target
+     * @param permission
+     * @return
+     */
+	public boolean hasPermission(Authentication authentication, T target, CdmPermission permission);
+
 }

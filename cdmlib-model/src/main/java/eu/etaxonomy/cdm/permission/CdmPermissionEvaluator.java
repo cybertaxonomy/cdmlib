@@ -18,48 +18,71 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class CdmPermissionEvaluator implements PermissionEvaluator {
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
 
-    private class AuthorityPermission{
+private class AuthorityPermission{
+	CdmPermissionClass className;
+	CdmPermission permission;
+	UUID targetUuid;
+	
+	public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
+		this.className = CdmPermissionClass.valueOf(className);
+		this.permission = permission;
+		targetUuid = uuid;
+	}
+	
+	public AuthorityPermission (String authority){
+		String permissionString;
+		int firstPoint = authority.indexOf(".");
+		if (firstPoint == -1){
+			className = CdmPermissionClass.valueOf(authority);
+		}else{
+			className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
+			int bracket = authority.indexOf("{");
+			if (bracket == -1){
+				permissionString = authority.substring(firstPoint+1);
+			}else{
+				permissionString = authority.substring(firstPoint+1, bracket);
+				int secondBracket = authority.indexOf("}");
+				String uuid = authority.substring(bracket+1, secondBracket);
+				targetUuid = UUID.fromString(uuid);
+			}
+			permission = CdmPermission.valueOf(permissionString.toUpperCase());
+		}
+	}
+	
+	
+}
+	
+
+	public boolean hasPermission(Authentication authentication,
+			Serializable targetId, String targetType, Object permission) {
+		logger.info("hasPermission returns false");
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	
+	
+	
 
 
-        CdmPermissionClass className;
-        CdmPermission permission;
-        UUID targetUuid;
 
-        public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
-            this.className = CdmPermissionClass.valueOf(className);
-            this.permission = permission;
-            targetUuid = uuid;
-        }
-
-        public AuthorityPermission (String authority){
-            String permissionString;
-            int firstPoint = authority.indexOf(".");
-            if (firstPoint == -1){
-                className = CdmPermissionClass.valueOf(authority);
-            }else{
-                className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
-                int bracket = authority.indexOf("{");
-                if (bracket == -1){
-                    permissionString = authority.substring(firstPoint+1);
-                }else{
-                    permissionString = authority.substring(firstPoint+1, bracket);
-                    int secondBracket = authority.indexOf("}");
-                    String uuid = authority.substring(bracket+1, secondBracket);
-                    targetUuid = UUID.fromString(uuid);
-                }
-                permission = CdmPermission.valueOf(permissionString.toUpperCase());
-            }
-        }
-
-    }
 
     public boolean hasPermission(Authentication authentication,
             Object targetDomainObject, Object permission) {
 
-        String permissionString = (String)permission;
-
-        Collection<GrantedAuthority> authorities = authentication.getAuthorities();
-        // FIXME this should not be necessary. See User.initAuthorities() and User.getAuthorities(); a User object should always
+       
+        CdmPermission cdmPermission;
+		if (!(permission instanceof CdmPermission)){
+			String permissionString = (String)permission;
+			if (permissionString.equals("changePassword")){
+				return (targetDomainObject.equals(((User)authentication.getPrincipal()).getUsername()));
+			}
+			cdmPermission = CdmPermission.valueOf(permissionString);
+		}else {
+			cdmPermission = (CdmPermission)permission;
+		}
+        Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
+        /* FIXME this should not be necessary. See User.initAuthorities() and User.getAuthorities(); a User object should always
         // return all GrantedAuthorities including its groups authorities. If that is not working correctly please fix it.
         Set<Group> groups =((User)authentication.getPrincipal()).getGroups();
         Set<GrantedAuthority> groupAuthorities = new HashSet<GrantedAuthority>();
@@ -68,13 +91,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         }
         groupAuthorities.addAll(authorities);
         // FIXME END
+*/
+        AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
 
-        AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), CdmPermission.valueOf(permissionString), ((CdmBase)targetDomainObject).getUuid());
+        return evalPermission(authorities, evalPermission, (CdmBase)targetDomainObject);
 
-        return evalPermission(groupAuthorities, evalPermission, (CdmBase)targetDomainObject);
-
-        // TODO Auto-generated method stub
-        //return false;
+        
     }
 
     private TaxonNode findTargetUuidInTree(UUID targetUuid, TaxonNode node){
@@ -86,14 +108,8 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         return null;
     }
 
-    public boolean hasPermission(Authentication authentication,
-            Serializable targetId, String targetType, Object permission) {
-        logger.info("hasPermission returns false");
-        // TODO Auto-generated method stub
-        return false;
-    }
 
-    public boolean evalPermission(Set<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
+    public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
 
         for (GrantedAuthority authority: authorities){
             AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
