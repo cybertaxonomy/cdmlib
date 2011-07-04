@@ -986,6 +986,7 @@
 		<xsd:attribute name="REV" use="optional" />
 		<xsd:attribute name="SUPPORTSTAXONINTERACTION" use="optional" />
 		<xsd:attribute name="SUPPORTSTEXTDATA" use="optional" />
+		<xsd:attribute name="SUPPORTSUSESUMMARY" use="optional" />
 		<xsd:attribute name="DEFAULTCOLOR" use="optional" />
 		<xsd:attribute name="SYMMETRIC" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
@@ -1210,6 +1211,7 @@
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="SUPPORTSINDIVIDUALASSOCIATION" use="optional" />
 		<xsd:attribute name="SUPPORTSCOMMONTAXONNAME" use="optional" />
+		<xsd:attribute name="SUPPORTSUSESUMMARY" use="optional" />
 		<xsd:attribute name="ORDERINDEX" use="optional" />
 		<xsd:attribute name="SUPPORTSTAXONINTERACTION" use="optional" />
 		<xsd:attribute name="SUPPORTSTEXTDATA" use="optional" />

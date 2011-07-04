@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.AccountStore;
@@ -49,10 +48,10 @@ public class CdmUpdaterTest {
 
 // ******************** TESTS ****************************************************/
 	
-	@Ignore
+//	@Ignore
 	@Test
 	public void testUpdateToCurrentVersion() {
-		CdmUpdater cdmUpdater = new CdmUpdater();
+		/*CdmUpdater cdmUpdater = new CdmUpdater();
 		ICdmDataSource datasource = cdm_test_andreasM();
 		try {
 			boolean connectionAvailable = datasource.testConnection();
@@ -62,9 +61,10 @@ public class CdmUpdaterTest {
 		} catch (SQLException e) {
 			Assert.fail();
 		}
-		cdmUpdater.updateToCurrentVersion(datasource, null); 
+		cdmUpdater.updateToCurrentVersion(datasource, null);*/ 
 	}
 	
+
 	private static ICdmDataSource cdm_test_andreasM(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";

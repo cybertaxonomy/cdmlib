@@ -115,6 +115,7 @@
       <mapping class="eu.etaxonomy.cdm.model.description.TextData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextFormat"/>
       <mapping class="eu.etaxonomy.cdm.model.description.WorkingSet"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.UseSummary"/>
       <!-- Location Package -->
       <mapping class="eu.etaxonomy.cdm.model.location.Continent"/>
       <mapping class="eu.etaxonomy.cdm.model.location.NamedArea"/>

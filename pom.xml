@@ -19,7 +19,7 @@
 		<module>cdmlib-remote</module>
 		<module>cdmlib-print</module>
 		<module>cdmlib-remote-webapp</module>
-	</modules>
+  </modules>
 	<properties>
 		<spring.version>3.0.4.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -551,6 +551,12 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			-->
+			<plugin>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+		          <argLine>-Xmx512M</argLine>
+		        </configuration>
+			</plugin>
 			<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
 			<!--
 			<plugin>

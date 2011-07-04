@@ -795,6 +795,7 @@
         supportsquantitativedata bit,
         supportstaxoninteraction bit,
         supportstextdata bit,
+        supportsusesummary bit,
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
@@ -861,6 +862,7 @@
         supportsquantitativedata bit,
         supportstaxoninteraction bit,
         supportstextdata bit,
+        supportsusesummary bit,
         primary key (id, REV)
     );
 
@@ -1363,6 +1365,8 @@
         unit_id integer,
         taxon2_id integer,
         format_id integer,
+        usesummary varchar(255),
+        --ecoregion_id int,
         primary key (id),
         unique (uuid)
     );

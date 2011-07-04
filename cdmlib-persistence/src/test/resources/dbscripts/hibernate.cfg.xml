@@ -62,6 +62,7 @@
       <mapping class="eu.etaxonomy.cdm.model.description.TaxonNameDescription"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextFormat"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.UseSummary"/>
       <mapping class="eu.etaxonomy.cdm.model.description.WorkingSet"/>
       <!-- Location Package -->
       <mapping class="eu.etaxonomy.cdm.model.location.Continent"/>

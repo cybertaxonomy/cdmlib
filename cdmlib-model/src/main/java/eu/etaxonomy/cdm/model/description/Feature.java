@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "supportsIndividualAssociation",
 	    "supportsTaxonInteraction",
 	    "supportsCommonTaxonName",
+	    "supportsUseSummary",
 	    "supportsCategoricalData",
 	    "recommendedModifierEnumeration",
 	    "recommendedStatisticalMeasures",
@@ -112,6 +113,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	private boolean supportsTaxonInteraction;
 	
 	private boolean supportsCategoricalData;
+	
+	private boolean supportsUseSummary;
 	
 	/*
 	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
@@ -311,6 +314,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsCommonTaxonName() {
 		return supportsCommonTaxonName;
 	}
+	
+	
 
 	/**
 	 * @see	#isSupportsTaxonInteraction() 
@@ -319,6 +324,30 @@ public class Feature extends DefinedTermBase<Feature> {
 		this.supportsCommonTaxonName = supportsCommonTaxonName;
 	}
 
+	
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link UseSummary use summary}
+	 * (true) or not (false). This flag is set if and only if <i>this</i> feature
+	 * is the {@link #USE_SUMMARY() use summary feature}.
+	 *  
+	 * @return  the boolean value of the supportsCommonTaxonName flag
+	 */
+	@XmlElement(name = "SupportsUseSummary")
+	public boolean isSupportsUseSummary() {
+		return supportsUseSummary;
+	}
+	
+	/**
+	 * @see	#isSupportsUseSummary() 
+	 */
+	public void setSupportsUseSummary(boolean supportsUseSummary) {
+		this.supportsUseSummary = supportsUseSummary;
+	}
+
+	
+	
+	
 	/**
 	 * Returns the boolean value of the flag indicating whether <i>this</i>
 	 * feature can be described with {@link CategoricalData categorical data}
@@ -559,6 +588,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidCitation = UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101");
 	private static final UUID uuidAdditionalPublication = UUID.fromString("2c355c16-cb04-4858-92bf-8da8d56dea95");
 	private static final UUID uuidUses = UUID.fromString("e5374d39-b210-47c7-bec1-bee05b5f1cb6");
+	private static final UUID uuidUseSummary = UUID.fromString("e6bd0bb0-7b1a-11e0-819a-0800200c9a66");
 	private static final UUID uuidConservation = UUID.fromString("4518fc20-2492-47de-b345-777d2b83c9cf");
 	private static final UUID uuidCultivation = UUID.fromString("e28965b2-a367-48c5-b954-8afc8ac2c69b");
 	private static final UUID uuidIntroduction = UUID.fromString("e75255ca-8ff4-4905-baad-f842927fe1d3");
@@ -590,13 +620,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, terms); 
 		String text = (String)csvLine.get(4);
-		if (text != null && text.length() >= 6){
+		if (text != null && text.length() >= 7){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);};
 			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);};
 			if ("1".equals(text.substring(2, 3))){newInstance.setSupportsDistribution(true);};
 			if ("1".equals(text.substring(3, 4))){newInstance.setSupportsIndividualAssociation(true);};
 			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);};
 			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);};
+			if ("1".equals(text.substring(6, 7))){newInstance.setSupportsUseSummary(true);};
 			// if ("1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);};
 			//there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
 			newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
@@ -793,6 +824,16 @@ public class Feature extends DefinedTermBase<Feature> {
 		return getTermByUuid(uuidCommonName);
 	}
 	
+	/**
+	 * Returns the "UseSummary" feature. This feature only applies
+	 * to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "UseSummary" feature generalizes all other possible features concerning
+	 * particular uses (for instance "industrial use of seeds").
+	 * @see	#isSupportsUseSummary()
+	 */
+	public static final Feature USE_SUMMARY(){
+		return getTermByUuid(uuidUseSummary);
+	}
 	/**
 	 * Returns the "phenology" feature. This feature can only be described
 	 * with {@link CategoricalData categorical data} or eventually with {@link TextData text data}

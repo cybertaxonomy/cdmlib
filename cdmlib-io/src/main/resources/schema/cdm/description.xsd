@@ -160,6 +160,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
           <xs:element name="SupportsIndividualAssociation" type="xs:boolean"/>
           <xs:element name="SupportsTaxonInteraction" type="xs:boolean"/>
           <xs:element name="SupportsCommonTaxonName" type="xs:boolean"/>
+          <xs:element name="SupportsUseSummary" type="xs:boolean"/>
           <xs:element name="SupportsCategoricalData" type="xs:boolean"/>
           <xs:element name="RecommendedModifierEnumerations" minOccurs="0">
             <xs:complexType>

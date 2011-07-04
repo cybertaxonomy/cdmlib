@@ -170,7 +170,8 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 		if (dtype.equals(Feature.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
 				" supportscategoricaldata = " + getBoolean(false, datasource) + ", " + 
-				" supportscommontaxonname = " + getBoolean(false, datasource) + ", " + 
+				" supportscommontaxonname = " + getBoolean(false, datasource) + ", " +
+				" supportsusesummary = " + getBoolean(false, datasource) + ", " + 
 				" supportsdistribution = " + getBoolean(false, datasource) + ", " +
 				" supportsindividualassociation = " + getBoolean(false, datasource) + ", " +
 				" supportsquantitativedata = " + getBoolean(false, datasource) + ", " +

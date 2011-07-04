@@ -1,5 +1,10 @@
 /*.project
 /.metadata
+cdm-server/.classpath
+cdm-server/.project
+cdm-server/.settings
+cdm-server/dist
+cdm-server/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings

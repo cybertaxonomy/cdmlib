@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="bad_container_name" value="run_cdm-server_jar"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\Programme\Java\jdk1.6.0_11\bin\java.exe"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n&#13;&#10;&#13;&#10;-Xmx1024M&#13;&#10;&#13;&#10;-XX:PermSize=128m &#13;&#10;-XX:MaxPermSize=192m&#13;&#10;&#13;&#10;-XX:+UseConcMarkSweepGC &#13;&#10;-XX:+CMSClassUnloadingEnabled &#13;&#10;-XX:+CMSPermGenSweepingEnabled&#13;&#10;&#13;&#10;-jar cdm-server-2.4.jar"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/cdm-server/target}"/>
+</launchConfiguration>

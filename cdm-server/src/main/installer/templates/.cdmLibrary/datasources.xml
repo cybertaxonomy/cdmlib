@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+    
+    <!-- ======================================================
+       NOTICE: 
+       
+       For each bean defined herein the cdm server will create
+       and start an internal cdm server instance.
+        
+       These id of the datasource beans are being used as name 
+       and root path for the dem server instances
+       
+       ======================================================-->
+       
+     <!-- ======================================================
+       !!! THIS IS A TEMPLATE !!!
+       
+       In order to use it you must edit the 'url', 'username', 'password'
+       and also 'driverClass' if you are not using mySQL.
+       ======================================================-->
+ 
+    <!-- the default data sources can be mapped to a specific URL root folder   -->
+    <bean id="myCDMServerInstance1"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="user" value="edit"/>
+        <property name="password" value="wp5"/>
+        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_1"/>
+    </bean>
+    <!-- additional data sources mapped to other URL rot folders -->
+    <!--  
+        <bean id="myCDMServerInstance2"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="user"/>
+        <property name="password" value="123"/>
+                <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_2"/>
+    </bean>
+     <bean id="myCDMServerInstance3"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="user"/>
+        <property name="password" value="123"/>
+        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
+    </bean>
+    
+    <bean id="palmae"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="edit"/>
+        <property name="password" value="wp5"/>
+        <property name="url" value="jdbc:mysql://160.45.63.201/cdm_edit_palmae_b"/>
+    </bean>
+    
+    -->
+</beans>

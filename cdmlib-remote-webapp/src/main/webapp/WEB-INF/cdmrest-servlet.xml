@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+	<context:component-scan base-package="eu/etaxonomy/cdm/remote" />
+
+
+	<!-- 
+	  ======= HandlerMappings =======
+	  -->
+	<!--
+		first we try to find the controller using the simpleurlmapping, then
+		the classname this follows the principal of "convention over
+		configuration"
+	-->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="order" value="1" />
+		<property name="interceptors">
+			<list>
+				<!--<ref bean="contentNegociationHandlerInterceptor" /> -->
+				<ref bean="localeContextHandlerInterceptor" />
+			</list>
+		</property>
+		<property name="pathMatcher">
+		  <!--  must match the pathMatcher as set in AnnotationMethodHandlerAdapter -->
+		  <bean class="eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher" />
+		</property>
+	</bean>
+
+    <!-- 
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order" value="0" />
+		<property name="mappings">
+			<props>
+				<prop key="/index.do">urlFilenameViewController
+				</prop>
+				<prop key="/">welcomeFileViewController
+				</prop>
+			</props>
+		</property>
+	</bean>
+	 -->
+    
+	<!-- 
+	======= HandlerAdapters =======
+	-->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	   <property name="pathMatcher">
+	        <!--  must match the pathMatcher as set in DefaultAnnotationHandlerMapping -->
+            <bean class="eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher" />
+       </property>
+	</bean>
+
+	<!-- needed when using SimpleUrlHandlerMapping 	-->
+	<bean
+		class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+    
+    
+	<!-- 
+	======= HandlerInterceptors =======
+	-->
+	<!-- 
+	<bean id="datasourceContextHandlerInterceptor"
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" /> -->
+	<bean id="localeContextHandlerInterceptor"
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor" />
+	<!-- 
+	   === no longer needed, replaced by ContentNegotiatingViewResolver ==	   
+	<bean id="contentNegociationHandlerInterceptor"
+		class="eu.etaxonomy.cdm.remote.controller.interceptor.ContentNegociationHandlerInterceptor">
+		<property name="mapping">
+			<map>
+				<entry key="text/json" value="json" />
+				<entry key="application/json" value="json" />
+				<entry key="application/xml" value="xml" />
+			</map>
+		</property>
+		<property name="defaultExtension" value="xml" />
+	</bean>
+	 -->
+
+	<!-- 
+	 ======= ViewControllers =======
+	 -->
+	<bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+	</bean>
+	<!--
+		The welcome-file-list in the web.xml will is ignored since the
+		cdmserver servlet is mapped to the root path [/] So the welcome file
+		list is being replaced by a SimpleUrlHandlerMapping on the root path
+		[/] which is mapped via this ViewController to the [index] view-->
+	<bean id="welcomeFileViewController"
+		class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+		<property name="suffix">
+			<value>index</value>
+		</property>
+	</bean>
+	
+
+
+	<!-- 
+    ======= ViewResolver =======
+    -->
+	<bean id="oaiViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+        <property name="order" value="0"/>
+        <property name="location" value="/WEB-INF/oai-views.xml"/>
+        <!-- FOR DEBUGING ONLY !!!!   
+        <property name="cache" value="false"/> 
+         -->
+    </bean>
+	
+    
+	 <bean id="contentNegotiatingViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+	      <property name="order" value="1" />
+	      <property name="mediaTypes">
+	         <map>
+			    <entry key="xml" value="application/xml" />
+				<entry key="dc" value="application/xml" />
+				<entry key="rdf" value="application/xml" />
+				<entry key="json" value="application/json" />
+				<entry key="json" value="application/json" />
+	         </map>
+	      </property>
+	      <property name="viewResolvers">
+	          <list>
+			    <bean id="xmlTypeViewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
+			        <property name="location" value="/WEB-INF/xml-views.xml"/>
+			        <!--
+			            turn caching off FOR DEBUGING ONLY !!!! 
+			        <property name="cache" value="false"/>
+			        -->
+			    </bean>
+			    <bean id="jsonTypeViewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
+			        <property name="location" value="/WEB-INF/json-views.xml"/>
+			        <!-- 
+			          turn caching off FOR DEBUGING ONLY !!!! 
+			        <property name="cache" value="false"/>
+			        -->
+			    </bean>
+	          </list>
+	      </property>
+	</bean>
+	
+    <!--  
+        === the viewResolverJsp is currently unused ===
+	<bean id="viewResolverJsp"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="order" value="1" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+		<property name="viewNames">
+			<!- -
+				view names (or name patterns) that can be handled
+			- ->
+			<list>
+				<value>index</value>
+			</list>
+		</property>
+	</bean>
+    -->
+
+	<!-- 
+	======= Exception Handling =======
+	-->
+	<bean id="exceptionResolver" class="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver">
+	</bean>
+
+	<!--  
+    ======= Security ======= 
+    -->
+<!--    <bean id="basicProcessingFilter" class="org.springframework.security.ui.basicauth.BasicProcessingFilter">-->
+<!--		<property name="authenticationManager"><ref bean="authenticationManager"/></property>-->
+<!--		<property name="authenticationEntryPoint"><ref bean="authenticationEntryPoint"/></property>-->
+<!--	</bean>-->
+<!--	<bean id="authenticationEntryPoint" class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">-->
+<!--		<property name="realmName"><value>Name Of Your Realm</value></property>-->
+<!--	</bean>-->
+    
+</beans>
