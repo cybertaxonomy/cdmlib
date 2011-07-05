@@ -98,6 +98,7 @@ public class UserServiceImplTest {
 	private Authentication authentication;
 	
 	private PermissionEvaluator permissionEvaluator;
+	UUID uuid;
 	
 	@Before
 	public void setUp() {
@@ -129,7 +130,11 @@ public class UserServiceImplTest {
 		User user = User.NewInstance(username, password);
 		user.setAccountNonExpired(true);
 		user.setGrantedAuthorities(expectedRoles);
-		userService.save(user);
+		uuid = userService.save(user);
+		
+		User standardUser =  User.NewInstance("standardUser", "pw");
+		uuid = userService.save(standardUser);
+		
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
@@ -154,9 +159,61 @@ public class UserServiceImplTest {
 		List<User> userList = userService.listByUsername("user2", MatchMode.EXACT, null, null, null, null, null);
 		Assert.assertNotNull(userList);
 	
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
+		authentication = authenticationManager.authenticate(token);
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		try{
+			userService.createUser(user);
+			Assert.fail();
+		}catch(Exception e){
+			Assert.assertEquals("Access is denied", e.getMessage());
+		}
 		
 		
+	}
+	
+	
+	
+	@Test
+	public void testUpdateUser(){
+		User user= userService.find(uuid);
+		user.setEmailAddress("test@bgbm.org");
+		try{
+		userService.updateUser(user);
+		}catch (Exception e){
+			Assert.fail();
+		}
 		
+		try{
+			userService.update(user);
+			}catch (Exception e){
+				Assert.fail();
+			}
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
+		authentication = authenticationManager.authenticate(token);
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		user.setEmailAddress("user@bgbm.org");
+		try{
+		userService.updateUser(user);
+		Assert.fail();
+		}catch (Exception e){
+			Assert.assertEquals("Access is denied", e.getMessage());
+		}
+		
+		try{
+			userService.saveOrUpdate(user);
+			Assert.fail();
+		}catch (Exception e){
+			Assert.assertEquals("Access is denied", e.getMessage());
+		}
+		try{
+			userService.update(user);
+			Assert.fail();
+		}catch (Exception e){
+			Assert.assertEquals("Access is denied", e.getMessage());
+		}
 		
 	}
 	
@@ -214,6 +271,7 @@ public class UserServiceImplTest {
 	user = User.NewInstance(username, password);
 	try{	
 		userService.createUser(user);
+		Assert.fail();
 	}catch(Exception e){
 		Assert.assertEquals("Access is denied", e.getMessage());
 	}
@@ -245,6 +303,8 @@ public class UserServiceImplTest {
 			System.err.println(e.getMessage());
 			Assert.fail();
 		}
+		
+		
 		
 	}
 	

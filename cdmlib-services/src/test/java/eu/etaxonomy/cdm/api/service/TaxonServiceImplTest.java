@@ -69,7 +69,21 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		TaxonBase<?> actualTaxon = service.find(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 	}
-
+	
+	@Test
+	public final void testSaveOrUpdateTaxon() {
+		Taxon expectedTaxon = Taxon.NewInstance(null, null);
+		UUID uuid = service.save(expectedTaxon);
+		TaxonBase<?> actualTaxon = service.find(uuid);
+		assertEquals(expectedTaxon, actualTaxon);
+		
+		actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
+		try{
+			service.saveOrUpdate(actualTaxon);
+		}catch(Exception e){
+			Assert.fail();
+		}
+	}
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#removeTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
 	 */

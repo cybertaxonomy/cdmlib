@@ -22,6 +22,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasPermission(#transientObject, 'DELETE')")
 	public UUID delete(T persistentObject) {
 		return dao.delete(persistentObject);
 	}
@@ -148,16 +150,19 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasPermission(#transientObject, 'CREATE')")
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}
 
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
 	}
 	
 	@Transactional(readOnly = false)
+	//@PreAuthorize("hasPermission(#transientInstances, 'UPDATE')")
 	public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
 		return dao.saveOrUpdateAll(transientInstances);
 	}
@@ -173,6 +178,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	protected abstract void setDao(DAO dao);
 	
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
 	public UUID update(T transientObject) {
 		return dao.update(transientObject);
 	}
