@@ -82,20 +82,11 @@ private class AuthorityPermission{
 			cdmPermission = (CdmPermission)permission;
 		}
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
-        /* FIXME this should not be necessary. See User.initAuthorities() and User.getAuthorities(); a User object should always
-        // return all GrantedAuthorities including its groups authorities. If that is not working correctly please fix it.
-        Set<Group> groups =((User)authentication.getPrincipal()).getGroups();
-        Set<GrantedAuthority> groupAuthorities = new HashSet<GrantedAuthority>();
-        for (Group group: groups){
-            groupAuthorities.addAll(group.getGrantedAuthorities());
-        }
-        groupAuthorities.addAll(authorities);
-        // FIXME END
-*/
+  
         AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-
-        return evalPermission(authorities, evalPermission, (CdmBase)targetDomainObject);
-
+        if (evalPermission.className.equals(CdmPermissionClass.USER)){
+        	return evalPermission(authorities, evalPermission, (CdmBase)targetDomainObject);
+        }else return true;
         
     }
 
