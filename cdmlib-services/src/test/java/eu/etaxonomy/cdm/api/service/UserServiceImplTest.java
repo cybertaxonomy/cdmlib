@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
 @Transactional
+@Ignore
 public class UserServiceImplTest {
 	protected static final Logger logger = Logger.getLogger(UserServiceImplTest.class);
 	@Autowired
