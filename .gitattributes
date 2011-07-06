@@ -906,6 +906,7 @@ cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
 cdmlib-model/src/main/resources/terms/TextFormat.csv -text
 cdmlib-model/src/main/resources/terms/UndefinedLanguage.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
+cdmlib-model/src/main/resources/update/update_for_security.sql -text
 cdmlib-model/src/main/resources/update/update_r2.1.2.2_r2.4.1.2.mysql.sql -text
 cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
