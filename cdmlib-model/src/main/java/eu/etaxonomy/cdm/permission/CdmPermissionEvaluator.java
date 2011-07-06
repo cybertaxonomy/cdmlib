@@ -1,9 +1,15 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/ 
 package eu.etaxonomy.cdm.permission;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -12,45 +18,52 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+
+/**
+ * @author k.luther
+ * @date 06.07.2011
+ */
 public class CdmPermissionEvaluator implements PermissionEvaluator {
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
 
-private class AuthorityPermission{
-	CdmPermissionClass className;
-	CdmPermission permission;
-	UUID targetUuid;
-	
-	public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
-		this.className = CdmPermissionClass.valueOf(className);
-		this.permission = permission;
-		targetUuid = uuid;
-	}
-	
-	public AuthorityPermission (String authority){
-		String permissionString;
-		int firstPoint = authority.indexOf(".");
-		if (firstPoint == -1){
-			className = CdmPermissionClass.valueOf(authority);
-		}else{
-			className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
-			int bracket = authority.indexOf("{");
-			if (bracket == -1){
-				permissionString = authority.substring(firstPoint+1);
-			}else{
-				permissionString = authority.substring(firstPoint+1, bracket);
-				int secondBracket = authority.indexOf("}");
-				String uuid = authority.substring(bracket+1, secondBracket);
-				targetUuid = UUID.fromString(uuid);
+	private class AuthorityPermission{
+		CdmPermissionClass className;
+		CdmPermission permission;
+		UUID targetUuid;
+		
+		public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
+			try {
+				this.className = CdmPermissionClass.valueOf(className);
+			} catch (IllegalArgumentException e) {
+				//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
+				this.className = null;
 			}
-			permission = CdmPermission.valueOf(permissionString.toUpperCase());
+			this.permission = permission;
+			targetUuid = uuid;
+		}
+		
+		public AuthorityPermission (String authority){
+			String permissionString;
+			int firstPoint = authority.indexOf(".");
+			if (firstPoint == -1){
+				className = CdmPermissionClass.valueOf(authority);
+			}else{
+				className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
+				int bracket = authority.indexOf("{");
+				if (bracket == -1){
+					permissionString = authority.substring(firstPoint+1);
+				}else{
+					permissionString = authority.substring(firstPoint+1, bracket);
+					int secondBracket = authority.indexOf("}");
+					String uuid = authority.substring(bracket+1, secondBracket);
+					targetUuid = UUID.fromString(uuid);
+				}
+				permission = CdmPermission.valueOf(permissionString.toUpperCase());
+			}
 		}
 	}
-	
-	
-}
 	
 
 	public boolean hasPermission(Authentication authentication,
@@ -59,17 +72,10 @@ private class AuthorityPermission{
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	
-	
-	
-
-
 
 
     public boolean hasPermission(Authentication authentication,
             Object targetDomainObject, Object permission) {
-
        
         CdmPermission cdmPermission;
 		if (!(permission instanceof CdmPermission)){
@@ -84,9 +90,19 @@ private class AuthorityPermission{
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
   
         AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-        if (evalPermission.className.equals(CdmPermissionClass.USER)){
-        	return evalPermission(authorities, evalPermission, (CdmBase)targetDomainObject);
-        }else return true;
+        //FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
+		if (evalPermission.className != null) {
+			if (evalPermission.className.equals(CdmPermissionClass.USER)) {
+				return evalPermission(authorities, evalPermission,
+						(CdmBase) targetDomainObject);
+			} else {
+				return true;
+			}
+		}else{
+			//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
+			//see also AuthorityPermission constructor
+			return true;
+		}
         
     }
 
