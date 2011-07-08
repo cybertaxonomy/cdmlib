@@ -146,7 +146,15 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 	 */
 	private void fireSchemaConflictEvent(String expectedType, String expectedName, XMLEvent next) {
 		String message = "Schema conflict: expected %s '%s' but was %s ";
-		message = String.format(message, expectedType, expectedName, next.toString());
+		String eventString;
+		if (next.isStartElement()){
+			eventString = next.asStartElement().getName().getLocalPart();
+		}else if(next.isEndElement()){
+			eventString = next.asStartElement().getName().getLocalPart();
+		}else{
+			eventString = next.toString();
+		}
+		message = String.format(message, expectedType, expectedName, eventString);
 		String location = "l." + next.getLocation().getLineNumber() + "/c." + next.getLocation().getColumnNumber();
 		fireWarningEvent(message, location, 16);
 	}
