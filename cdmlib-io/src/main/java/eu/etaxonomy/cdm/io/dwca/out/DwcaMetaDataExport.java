@@ -108,12 +108,13 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 		String encoding = config.getEncoding();
 		String linesTerminatedBy = config.getLinesTerminatedBy();
 		String fieldsEnclosedBy = config.getFieldsEnclosedBy();
-		String ignoreHeaderLines = config.isIgnoreHeaderLines()? "1":"0";
+		String ignoreHeaderLines = config.isHasHeaderLines()? "1":"0";
+		String fieldsTerminatedBy= config.getFieldsTerminatedBy();
 		
 		// create core element 
 		String elementName = metaRecord.isCore()? "core": "extension";
 		String rowType = metaRecord.getRowType();
-		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy, ignoreHeaderLines, rowType);
+		writeElementStart(writer, elementName, encoding, linesTerminatedBy,	fieldsEnclosedBy, linesTerminatedBy,ignoreHeaderLines, rowType);
 			String filename = metaRecord.getFileLocation();
 			writeFiles(writer, filename );
 			writeId(writer, metaRecord.isCore());
@@ -168,13 +169,14 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	 * @throws XMLStreamException
 	 */
 	private void writeElementStart(XMLStreamWriter writer, String elementName, String encoding,
-			String linesTerminatedBy, String fieldsEnclosedBy,
+			String linesTerminatedBy, String fieldsEnclosedBy, String fieldsTerminatedBy,
 			String ignoreHeaderLines, String rowType)
 			throws XMLStreamException {
 		writer.writeStartElement(elementName); 
 		writer.writeAttribute( "encoding", encoding );
 		writer.writeAttribute( "linesTerminatedBy", linesTerminatedBy );
 		writer.writeAttribute( "fieldsEnclosedBy", fieldsEnclosedBy );
+		writer.writeAttribute("fieldsTerminatedBy", fieldsTerminatedBy);
 		writer.writeAttribute("ignoreHeaderLines", ignoreHeaderLines);
 		writer.writeAttribute("rowType", rowType);
 	}

@@ -91,7 +91,7 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 		print(audience, writer, IS_NOT_FIRST, TermUris.DC_AUDIENCE);
 		print(license, writer, IS_NOT_FIRST, TermUris.DC_LICENSE);
 		print(rightsHolder, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS_HOLDER);
-		writer.println();
+		writer.print(config.getLinesTerminatedBy());
 	}
 
 	public String getSource() {

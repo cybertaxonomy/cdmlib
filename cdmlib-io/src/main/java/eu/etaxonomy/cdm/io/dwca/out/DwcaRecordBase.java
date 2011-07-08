@@ -53,10 +53,10 @@ public abstract class DwcaRecordBase {
 
 	//TODO Collection_SEPARATOR
 	protected static final CharSequence COLLECTION_SEPARATOR = "@";
-	protected static final String FIELD_ENCLOSER = "\"";
+//	protected static final String FIELD_ENCLOSER = "\"";
 	protected static final boolean IS_FIRST = false;
 	protected static final boolean IS_NOT_FIRST = true;
-	protected static final String SEP = ",";
+//	protected static final String SEP = ",";
 	
 	protected Map<String, URI> knownFields = new HashMap<String, URI>();
 	protected Set<TermUris> knownTermFields = new HashSet<TermUris>();
@@ -202,9 +202,10 @@ public abstract class DwcaRecordBase {
 			registerFieldKey(URI.create(fieldKey), defaultValue);
 		}
 		if (StringUtils.isBlank(defaultValue)){
-			String strToPrint = addSeparator ? SEP : "";
+			String strToPrint = addSeparator ? config.getFieldsTerminatedBy() : "";
 			if (StringUtils.isNotBlank(value)){
-				strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
+				value = value.replace(config.getLinesTerminatedBy(), "\\r");
+				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
 			}
 			writer.print(strToPrint);
 		}

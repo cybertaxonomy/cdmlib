@@ -28,6 +28,13 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxExportConfigurator.class);
 
+	private String encoding = "UTF-8";
+	private String linesTerminatedBy = "\r\n";
+	private String fieldsEnclosedBy = "\"";
+	private boolean hasHeaderLines = true;
+	private String fieldsTerminatedBy=",";
+
+	
 	private boolean doTaxa = true;
 	private boolean doResourceRelation = true;
 	private boolean doTypesAndSpecimen = true;
@@ -41,10 +48,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	
 	private boolean isUseIdWherePossible = false;
 	
-	private String encoding = "UTF-8";
-	private String linesTerminatedBy = "\\r\\n";
-	private String fieldsEnclosedBy = "\"";
-	private boolean ignoreHeaderLines = true;
+	
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
 	
@@ -234,12 +238,16 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 		this.fieldsEnclosedBy = fieldsEnclosedBy;
 	}
 
-	public boolean isIgnoreHeaderLines() {
-		return ignoreHeaderLines;
+	/**
+	 * Equals darwin core archive ignoreHeaderLines attribute
+	 * @return
+	 */
+	public boolean isHasHeaderLines() {
+		return hasHeaderLines;
 	}
 
-	public void setIgnoreHeaderLines(boolean ignoreHeaderLines) {
-		this.ignoreHeaderLines = ignoreHeaderLines;
+	public void setHasHeaderLines(boolean hasHeaderLines) {
+		this.hasHeaderLines = hasHeaderLines;
 	}
 
 	public boolean isIncludeBasionymsInResourceRelations() {
@@ -340,6 +348,16 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 */
 	public void setSetSeparator(String setSeparator) {
 		this.setSeparator = setSeparator;
+	}
+
+
+	public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
+		this.fieldsTerminatedBy = fieldsTerminatedBy;
+	}
+
+
+	public String getFieldsTerminatedBy() {
+		return fieldsTerminatedBy;
 	}
 
 
