@@ -1060,6 +1060,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBas
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UniqueIndexDropper.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/VocabularyCreator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/permissions/PermissionsUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SchemaUpdater_24_25.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SortIndexUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/TermUpdater_24_25.java -text
