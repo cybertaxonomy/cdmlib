@@ -1,1 +1,0 @@
-used by CdmUtils.getFolderSeperator() and within cdmlib-services
