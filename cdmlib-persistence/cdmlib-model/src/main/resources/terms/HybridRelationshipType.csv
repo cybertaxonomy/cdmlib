@@ -1,0 +1,9 @@
+fc4abe52-9c25-4cfa-a682-8615bf4bbf07,,HybridRelationshipType,HybridRelationshipType,,,,
+83ae9e56-18f2-46b6-b211-45cdee775bf3,,"First Parent","First Parent",,"Child","Child",FALSE,FALSE
+0485fc3d-4755-4f53-8832-b82774484c43,,"Second Parent","Second Parent",,"Child","Child",FALSE,FALSE
+bfae2780-92ab-4f65-b534-e68826f59e7d,,"Third Parent","Third Parent",,"Child","Child",FALSE,FALSE
+9e92083b-cb9b-4c4d-bca5-c543bbefd3c7,,"Fourth Parent","Fourth Parent",,"Child","Child",FALSE,FALSE
+189a3ed9-6860-4943-8be8-a1f60133be2a,,"Female Parent","Female Parent",,"Child","Child",FALSE,FALSE
+8b7324c5-cc6c-4109-b708-d49b187815c4,,"Male Parent","Male Parent",,"Child","Child",FALSE,FALSE
+da759eea-e3cb-4d3c-ae75-084c2d08f4ed,,"Major Parent","Major Parent",,"Child","Child",FALSE,FALSE
+e556b240-b03f-46b8-839b-ad89df633c5a,,"Minor Parent","Minor Parent",,"Child","Child",FALSE,FALSE

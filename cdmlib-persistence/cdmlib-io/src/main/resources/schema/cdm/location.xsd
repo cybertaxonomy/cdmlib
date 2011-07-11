@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" 
+targetNamespace="http://etaxonomy.eu/cdm/model/location/1.0" 
+xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
+xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
+
+  <xs:element name="Continent" type="location:Continent"/>
+
+  <xs:element name="NamedArea" type="location:NamedArea"/>
+
+  <xs:element name="NamedAreaLevel" type="location:NamedAreaLevel"/>
+
+  <xs:element name="NamedAreaType" type="location:NamedAreaType"/>
+
+  <xs:element name="Point" type="location:Point"/>
+
+  <xs:element name="ReferenceSystem" type="location:ReferenceSystem"/>
+
+  <xs:element name="TdwgArea" type="location:TdwgArea"/>
+
+  <xs:element name="WaterbodyOrCountry" type="location:WaterbodyOrCountry"/>
+
+  <xs:complexType name="WaterbodyOrCountry">
+    <xs:complexContent>
+      <xs:extension base="location:NamedArea">
+        <xs:sequence>
+          <xs:element name="Continents" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Continent" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="iso3166_A2" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NamedArea">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence>
+          <xs:element ref="common:KindOf" minOccurs="0"/>
+          <xs:element ref="common:Generalizations" minOccurs="0"/>
+          <xs:element ref="common:PartOf" minOccurs="0"/>
+          <xs:element ref="common:Includes" minOccurs="0"/>
+          <xs:element name="ValidPeriod" type="common:TimePeriod" minOccurs="0"/>
+          <xs:element name="Shape" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="PointApproximation" type="location:Point" minOccurs="0"/>
+          <xs:element name="WaterbodiesOrCountries" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="WaterbodiesOrCountry" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="NamedAreaType" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="NamedAreaLevel" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Continent">
+    <xs:complexContent>
+      <xs:extension base="location:NamedArea">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Point">
+    <xs:sequence>
+      <xs:element name="Longitude" type="xs:double" minOccurs="0"/>
+      <xs:element name="Latitude" type="xs:double" minOccurs="0"/>
+      <xs:element name="ErrorRadius" type="xs:int" minOccurs="0"/>
+      <xs:element ref="location:ReferenceSystem" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ReferenceSystem">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NamedAreaType">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NamedAreaLevel">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TdwgArea">
+    <xs:complexContent>
+      <xs:extension base="location:NamedArea">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+
