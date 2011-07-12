@@ -112,7 +112,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 						continue;
 					}
 					if (! this.recordExistsUuid(rel)){
-						handleRelationship(record, subject, object, rel);
+						handleRelationship(record, subject, object, rel, false);
 						record.write(writer);
 						this.addExistingRecordUuid(rel);
 					}
@@ -130,12 +130,23 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 				Set<NameRelationship> rels = name.getNameRelations();
 				for (NameRelationship rel : rels){
 					DwcaResourceRelationRecord record = new DwcaResourceRelationRecord(metaRecord, config);
-					IdentifiableEntity<?> subject = rel.getFromName();
-					IdentifiableEntity<?> object = rel.getToName();
+					IdentifiableEntity<?> subject = CdmBase.deproxy(rel.getFromName(), TaxonNameBase.class); 
+					IdentifiableEntity<?> object = CdmBase.deproxy(rel.getToName(), TaxonNameBase.class);
+					boolean isInverse = false;
+					if(subject == name){
+						subject = taxon;
+					}else if(object == name){
+						object= subject;
+						subject = taxon;
+						isInverse = true;
+					}else{
+						String message = "Both, subject and object, are not part of the relationship for " + name.getTitleCache();
+						logger.warn(message);
+					}
 					
 					if (! this.recordExistsUuid(rel)){
 						//????
-						handleRelationship(record, subject, object, rel);
+						handleRelationship(record, subject, object, rel, isInverse);
 						record.write(writer);
 						this.addExistingRecordUuid(rel);
 					}
@@ -162,8 +173,9 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	}
 
 	private void handleRelationship(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, IdentifiableEntity<?> object,
-			RelationshipBase<?,?,?> rel) {
+			RelationshipBase<?,?,?> rel, boolean isInverse) {
 		RelationshipTermBase<?> type = rel.getType();
+		
 		record.setId(subject.getId());
 		record.setUuid(subject.getUuid());
 		
@@ -171,17 +183,23 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 		record.setResourceRelationshipId(rel.getId());
 		record.setResourceRelationshipId(rel.getUuid());
 		//TODO id / uuid / names ??
-		if (subject.isInstanceOf(TaxonBase.class)){
+		if (object.isInstanceOf(TaxonBase.class)){
 			record.setRelatedResourceId(object.getUuid());
 		}
 		//TODO transform to controlled voc
-		record.setRelationshipOfResource(type.getLabel());
+		String relTypeLabel;
+		if (isInverse){
+			relTypeLabel = type.getInverseLabel();
+		}else{
+			relTypeLabel = type.getLabel();
+		}
+		record.setRelationshipOfResource(relTypeLabel);
 		record.setRelationshipAccordingTo(rel.getCitation()== null? null : rel.getCitation().getTitleCache());
 		//TODO missing
 		record.setRelatioshipEstablishedDate(null);
 		record.setRelationshipRemarks(rel.getAnnotations());
-		if (subject.isInstanceOf(TaxonNameBase.class)){
-			record.setScientificName(subject.getTitleCache());
+		if (object.isInstanceOf(TaxonNameBase.class)){
+			record.setScientificName(object.getTitleCache());
 		}
 		
 		

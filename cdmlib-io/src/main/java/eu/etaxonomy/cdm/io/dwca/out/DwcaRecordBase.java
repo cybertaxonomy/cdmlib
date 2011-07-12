@@ -205,6 +205,12 @@ public abstract class DwcaRecordBase {
 			String strToPrint = addSeparator ? config.getFieldsTerminatedBy() : "";
 			if (StringUtils.isNotBlank(value)){
 				value = value.replace(config.getLinesTerminatedBy(), "\\r");
+				
+				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
+				value = value.replace("\r\n", "\\r");
+				value = value.replace("\r", "\\r");
+				value = value.replace("\n", "\\r");
+				
 				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
 			}
 			writer.print(strToPrint);
