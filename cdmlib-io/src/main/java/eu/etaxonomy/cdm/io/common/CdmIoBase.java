@@ -283,9 +283,14 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	
 	
 	protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
+		fireWarningEvent(message, dataLocation, severity, 1);
+	}
+	
+	protected void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
+		stackDepth++;
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
-		int lineNumber = stackTrace[1].getLineNumber();
-		String methodName = stackTrace[1].getMethodName();
+		int lineNumber = stackTrace[stackDepth].getLineNumber();
+		String methodName = stackTrace[stackDepth].getMethodName();
 
 		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, dataLocation, 
 				lineNumber, severity, methodName);
