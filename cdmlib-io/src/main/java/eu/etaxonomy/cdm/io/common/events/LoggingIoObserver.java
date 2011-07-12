@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
 /**
- * This IoObserver loggs all events.
+ * This IoObserver logs all events.
  * @author a.mueller
  * @date 24.06.2011
  *
