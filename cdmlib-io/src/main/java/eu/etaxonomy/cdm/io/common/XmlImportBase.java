@@ -150,7 +150,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		if (next.isStartElement()){
 			eventString = next.asStartElement().getName().getLocalPart();
 		}else if(next.isEndElement()){
-			eventString = next.asStartElement().getName().getLocalPart();
+			eventString = next.asEndElement().getName().getLocalPart();
 		}else{
 			eventString = next.toString();
 		}
