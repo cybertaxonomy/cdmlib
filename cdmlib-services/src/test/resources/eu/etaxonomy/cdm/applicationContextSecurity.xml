@@ -97,15 +97,17 @@
 	
  	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
     
-      <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
-    	 
-    	</bean>
+    <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
+		
+	</bean>      	 
 
    
     <bean id="groupService" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl">
-      
+      	
     </bean>
-    
+    <bean id="termService" class="eu.etaxonomy.cdm.api.service.TermServiceImpl">
+      	
+    </bean>
     
     <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
     

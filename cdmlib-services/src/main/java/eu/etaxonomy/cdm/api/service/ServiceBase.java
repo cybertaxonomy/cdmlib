@@ -150,8 +150,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	//TODO: Tests fail because nobody is authenticated, fix it!!!
-	//@PreAuthorize("hasPermission(#transientObject, 'CREATE')" )
+	@PreAuthorize("hasPermission(#transientObject, 'CREATE')" )
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}

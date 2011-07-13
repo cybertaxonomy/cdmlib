@@ -1139,7 +1139,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 					individualsAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
 				}
 				taxonDescription.addElement(individualsAssociation);
-				getDescriptionService().save(taxonDescription);
+				getDescriptionService().saveOrUpdate(taxonDescription);
 			}
 		}
 
