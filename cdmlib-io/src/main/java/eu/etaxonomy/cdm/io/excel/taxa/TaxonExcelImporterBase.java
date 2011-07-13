@@ -12,13 +12,14 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase;
 
 /**
  * @author a.babadshanjan
  * @created 09.01.2009
  * @version 1.0
  */
-public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExcelImportState> {
+public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportBase<TaxonExcelImportState> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
 

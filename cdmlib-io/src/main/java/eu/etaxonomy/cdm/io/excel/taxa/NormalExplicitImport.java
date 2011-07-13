@@ -40,11 +40,11 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -62,11 +62,6 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	public static Set<String> validMarkers = new HashSet<String>(Arrays.asList(new String[]{"", "valid", "accepted", "a", "v", "t"}));
 	public static Set<String> synonymMarkers = new HashSet<String>(Arrays.asList(new String[]{"", "invalid", "synonym", "s", "i"}));
 	
-	
-	@Override
-	protected boolean isIgnore(TaxonExcelImportState state) {
-		return false;
-	}
 	
 	
 	/* (non-Javadoc)
@@ -88,30 +83,14 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     	state.setTaxonLight(normalExplicitRow);
     	
     	for (String originalKey: keys) {
-    		Integer index = 0;
-    		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
-    		String[] split = indexedKey.split("_");
-    		String key = split[0];
-    		if (split.length > 1){
-    			String indexString = split[1];
-    			try {
-					index = Integer.valueOf(indexString);
-				} catch (NumberFormatException e) {
-					String message = "Index must be integer";
-					logger.error(message);
-					continue;
-				}
-    		}
-    		
-    		String value = (String) record.get(indexedKey);
-    		if (! StringUtils.isBlank(value)) {
-    			if (logger.isDebugEnabled()) { logger.debug(key + ": " + value); }
-        		value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
-    		}else{
+    		KeyValue keyValue = makeKeyValue(record, originalKey);
+    		if (StringUtils.isBlank(keyValue.value)){
     			continue;
     		}
     		
-    		
+    		String key = keyValue.key;
+    		String value = keyValue.value;
+    		Integer index = keyValue.index;
     		if (key.equalsIgnoreCase(ID_COLUMN)) {
     			int ivalue = floatString2IntValue(value);
     			normalExplicitRow.setId(ivalue);
@@ -442,6 +421,11 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			logger.warn("No relationship added for child " + childTaxon.getTitleCache());
 		}
 		return success;
+	}
+	
+	@Override
+	protected boolean isIgnore(TaxonExcelImportState state) {
+		return false;
 	}
 	
 
