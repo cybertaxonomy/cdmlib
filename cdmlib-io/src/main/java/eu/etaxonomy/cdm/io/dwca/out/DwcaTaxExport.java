@@ -203,7 +203,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 		//originalNameUsage
 		// ??? - is not a name usage (concept)
 		if (basionym != null){
-			record.setOriginalNameUsageId(basionym.getUuid());
+			//FIXME needs to be a coreID otherwise use string only
+//			record.setOriginalNameUsageId(basionym.getUuid());
+			record.setOriginalNameUsageId(null);
 			record.setOriginalNameUsage(basionym.getTitleCache());
 		}
 		
