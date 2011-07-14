@@ -13,5 +13,13 @@ package eu.etaxonomy.cdm.permission;
  * @date 06.07.2011
  */
 public enum CdmPermissionClass {
-	USER, TAXONNODE, DESCRIPTION, TAXON;
+	USER, TAXONNODE, DESCRIPTION, TAXON, ALL;
+	
+	public static CdmPermissionClass getValueOf(String s){
+		try{
+			return CdmPermissionClass.valueOf(s);
+		}catch(IllegalArgumentException e){
+			return null;
+		}
+	}
 }

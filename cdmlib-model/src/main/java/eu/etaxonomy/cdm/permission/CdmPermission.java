@@ -15,7 +15,7 @@ package eu.etaxonomy.cdm.permission;
  *
  */
 public enum CdmPermission {
-	CREATE, READ, UPDATE, DELETE, PUBLISH, ANNOTATE , CHECKANNOTATION, ADMIN;
+	CREATE, READ, UPDATE, DELETE, DENYALL, ADMIN;
 }
 
 
