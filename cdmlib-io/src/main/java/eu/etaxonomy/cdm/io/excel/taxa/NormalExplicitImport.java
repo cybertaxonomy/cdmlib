@@ -14,13 +14,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -109,18 +114,34 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			normalExplicitRow.putImage(index, value);
 			
 		} else {
-			success = false;
-			logger.error("Unexpected column header " + key);
+			if (handleFeatures(state, keyValue)){
+				//ok
+			}else{
+				String message = "Unexpected column header " + key;
+				fireWarningEvent(message, state, 10);
+				success = false;
+				logger.error(message);
+			}
 		}
 		return success;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#createDataHolderRow()
-	 */
-	@Override
-	protected NormalExplicitRow createDataHolderRow() {
-		return new NormalExplicitRow();
+
+	private boolean handleFeatures(TaxonExcelImportState state, KeyValue keyValue) {
+		String key = keyValue.key;
+		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
+		if (features.getCount() > 1){
+			String message = "More than one feature found matching key " + key;
+			fireWarningEvent(message, state, 4);
+			return false;
+		}else if (features.getCount() == 0){
+			return false;
+		}else{
+			Feature feature = CdmBase.deproxy(features.getRecords().get(0), Feature.class);
+			NormalExplicitRow row = state.getCurrentRow();
+			row.putFeature(feature.getUuid(), keyValue.index == null? 0:keyValue.index, keyValue.value);
+			return true;
+		}
 	}
 
 
@@ -139,13 +160,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		String nameStatus = taxonDataHolder.getNameStatus();
 		Integer id = taxonDataHolder.getId();
 			
-		if (CdmUtils.isNotEmpty(taxonNameStr)) {
+		TaxonBase taxonBase = null;
+		if (taxonDataHolder.getCdmUuid() != null){
+			taxonBase = getTaxonService().find(taxonDataHolder.getCdmUuid());
+		}else{
+			if (CdmUtils.isNotEmpty(taxonNameStr)) {
 
-			TaxonBase taxonBase = null;
-			if (taxonDataHolder.getCdmUuid() != null){
-				taxonBase = getTaxonService().find(taxonDataHolder.getCdmUuid());
-			}else{
-			
 				// Rank
 				try {
 					rank = Rank.getRankByNameOrAbbreviation(rankStr);
@@ -160,70 +180,88 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				
 	            //taxon
 				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus);
+			}else{
+				return true;
 			}
-			if (taxonBase == null){
-				String message = "Taxon could not be created. Record will not be handled";
-				fireWarningEvent(message, "Record: " + state.getCurrentLine(), 6);
-				return false;
+		}
+		if (taxonBase == null){
+			String message = "Taxon could not be created. Record will not be handled";
+			fireWarningEvent(message, "Record: " + state.getCurrentLine(), 6);
+			logger.warn(message);
+			return false;
+		}
+		
+		//protologue
+		for (String protologue : taxonDataHolder.getProtologues()){
+			TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
+			this.getNameDescription(taxonBase.getName()).addElement(textData);
+			URI uri;
+			try {
+				uri = new URI(protologue);
+				textData.addMedia(Media.NewInstance(uri, null, null, null));
+			} catch (URISyntaxException e) {
+				String warning = "URISyntaxException when trying to convert to URI: " + protologue;
+				logger.error(warning);
+			}	
+		}
+
+		//media
+		for (String imageUrl : taxonDataHolder.getImages()){
+			//TODO
+			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+			TaxonDescription td = taxon.getImageGallery(true);
+			DescriptionElementBase mediaHolder;
+			if (td.getElements().size() != 0){
+				mediaHolder = td.getElements().iterator().next();
+			}else{
+				mediaHolder = TextData.NewInstance(Feature.IMAGE());
+				td.addElement(mediaHolder);
+			}
+			try {
+				Media media = getImageMedia(imageUrl, true);
+				mediaHolder.addMedia(media);
+			} catch (MalformedURLException e) {
+				logger.warn("Can't add media: " + e.getMessage());
+			}
+		}
+
+		//tdwg label
+		for (String tdwg : taxonDataHolder.getDistributions()){
+			//TODO
+			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+			TaxonDescription td = this.getTaxonDescription(taxon, false, true);
+			NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg);
+			if (area == null){
+				area = TdwgArea.getAreaByTdwgLabel(tdwg);
+			}
+			if (area != null){
+				Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+				td.addElement(distribution);
+			}else{
+				String message = "TDWG area could not be recognized: " + tdwg;
+				logger.warn(message);
 			}
 			
-			//protologue
-			for (String protologue : taxonDataHolder.getProtologues()){
-				TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
-				this.getNameDescription(taxonBase.getName()).addElement(textData);
-				URI uri;
-				try {
-					uri = new URI(protologue);
-					textData.addMedia(Media.NewInstance(uri, null, null, null));
-				} catch (URISyntaxException e) {
-					String warning = "URISyntaxException when trying to convert to URI: " + protologue;
-					logger.error(warning);
-				}	
-			}
-
-			//media
-			for (String imageUrl : taxonDataHolder.getImages()){
-				//TODO
-				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-				TaxonDescription td = taxon.getImageGallery(true);
-				DescriptionElementBase mediaHolder;
-				if (td.getElements().size() != 0){
-					mediaHolder = td.getElements().iterator().next();
-				}else{
-					mediaHolder = TextData.NewInstance(Feature.IMAGE());
-					td.addElement(mediaHolder);
-				}
-				try {
-					Media media = getImageMedia(imageUrl, true);
-					mediaHolder.addMedia(media);
-				} catch (MalformedURLException e) {
-					logger.warn("Can't add media: " + e.getMessage());
-				}
-			}
-
-			//tdwg label
-			for (String tdwg : taxonDataHolder.getDistributions()){
+		}
+		
+		//feature
+		for (UUID featureUuid : taxonDataHolder.getFeatures()){
+			Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
+			List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
+			
+			for (String featureText : textList){
 				//TODO
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				TaxonDescription td = this.getTaxonDescription(taxon, false, true);
-				NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg);
-				if (area == null){
-					area = TdwgArea.getAreaByTdwgLabel(tdwg);
-				}
-				if (area != null){
-					Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
-					td.addElement(distribution);
-				}else{
-					String message = "TDWG area could not be recognized: " + tdwg;
-					logger.warn(message);
-				}
-				
+				TextData textData = TextData.NewInstance(feature);
+				textData.putText(Language.DEFAULT(), featureText);
+				td.addElement(textData);
 			}
-			
-			
-			state.putTaxon(id, taxonBase);
-			getTaxonService().save(taxonBase);
 		}
+		
+		state.putTaxon(id, taxonBase);
+		getTaxonService().save(taxonBase);
+
 		return success;
     }
 
@@ -239,6 +277,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			String taxonNameStr, String authorStr, String nameStatus) {
 		// Create the taxon name object depending on the setting of the nomenclatural code 
 		// in the configurator (botanical code, zoological code, etc.) 
+		if (StringUtils.isBlank(taxonNameStr)){
+			return null;
+		}
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 		
 		TaxonBase taxonBase = null;
@@ -293,7 +334,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 							success &= makeParent(state, parentTaxon, childTaxon, citation, microCitation);
 							getTaxonService().saveOrUpdate(parentTaxon);
 						} else {
-							logger.warn("Taxonomic parent not found for " + taxonNameStr);
+							String message = "Taxonomic parent not found for " + taxonNameStr;
+							logger.warn(message);
+							fireWarningEvent(message, state, 6);
 							success = false;
 						}
 					}else{
@@ -320,6 +363,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 		return success;
 	}
+
 
 
 	/**
@@ -432,6 +476,16 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 		return success;
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#createDataHolderRow()
+	 */
+	@Override
+	protected NormalExplicitRow createDataHolderRow() {
+		return new NormalExplicitRow();
+	}
+
 	
 	
 	/* (non-Javadoc)

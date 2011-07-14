@@ -127,7 +127,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	private boolean handleBaseColumn(KeyValue keyValue, ExcelRowBase row) {
 		String key = keyValue.key;
 		String value = keyValue.value;
-		if (key.equalsIgnoreCase(CDM_UUID_COLUMN)) {
+		if (key.matches(CDM_UUID_COLUMN)) {
 			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID	
 		}
 		return true;
@@ -135,7 +135,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 
 	private boolean isBaseColumn(KeyValue keyValue) {
 		String key = keyValue.key;
-		if (key.equalsIgnoreCase(CDM_UUID_COLUMN)){
+		if (key.matches(CDM_UUID_COLUMN)){
 			return true;
 		}
 		return false;
@@ -148,5 +148,11 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		} catch (NumberFormatException e) {
 			return false;
 		}
+	}
+	
+
+
+	protected void fireWarningEvent(String message, STATE state, int severity) {
+		fireWarningEvent(message, "Record" + state.getCurrentLine(), severity, 1);
 	}
 }

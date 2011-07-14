@@ -10,10 +10,15 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * @author a.babadshanjan
@@ -39,6 +44,7 @@ public class NormalExplicitRow extends ExcelRowBase {
 	
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
 	
+	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<UUID, TreeMap<Integer, String>>();
 	
 	
 	public NormalExplicitRow() {
@@ -209,6 +215,30 @@ public class NormalExplicitRow extends ExcelRowBase {
 	public List<String> getImages() {
 		return getOrdered(images);
 	}
+	
+
+	public void putFeature(UUID featureUuid, int index, String value) {
+		TreeMap<Integer, String> featureMap = featureTexts.get(featureUuid);
+		if (featureMap == null){
+			featureMap = new TreeMap<Integer, String>();
+			featureTexts.put(featureUuid, featureMap);
+		}
+		featureMap.put(index, value);
+	}
+
+	public Set<UUID> getFeatures() {
+		return featureTexts.keySet();
+	}
+	
+	public List<String> getFeatureTexts(UUID featureUuid) {
+		TreeMap<Integer, String> map = featureTexts.get(featureUuid);
+		if (map != null){
+			return getOrdered(map);
+		}else{
+			return null;
+		}
+	}
+	
 
 	private List<String> getOrdered(TreeMap<Integer, String> tree) {
 		List<String> result = new ArrayList<String>();
@@ -217,5 +247,6 @@ public class NormalExplicitRow extends ExcelRowBase {
 		}
 		return result;
 	}
+
 	
 }

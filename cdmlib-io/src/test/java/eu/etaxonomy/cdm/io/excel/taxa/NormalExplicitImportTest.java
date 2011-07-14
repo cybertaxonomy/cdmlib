@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -37,14 +38,18 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -70,6 +75,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	IClassificationService classificationService;
 
 	private IImportConfigurator configurator;
+	private IImportConfigurator uuidConfigurator;
 	
 	@Before
 	public void setUp() throws URISyntaxException {
@@ -78,6 +84,13 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN);
 		assertNotNull("Configurator could not be created", configurator);
+		
+		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
+		url = this.getClass().getResource(inputFile);
+	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN);
+		assertNotNull("Configurator could not be created", configurator);
+		
 	}
 	
 	@Test
@@ -145,19 +158,34 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 	
 	@Test
-	@DataSet()
+	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
 	@Ignore //does run standalone, but not in suite (maven)
 	public void testUUID() throws URISyntaxException{
-		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
-		URL url = this.getClass().getResource(inputFile);
-	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN);
-		assertNotNull("Configurator could not be created", configurator);
-		
-		boolean result = defaultImport.invoke(configurator);
+		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
+		//test data set
+		assertEquals("Number of taxa should be 1", 1, taxonService.count(null));
+		Taxon taxon = (Taxon)taxonService.find(taxonUuid);
+		assertNotNull("Taxon with given uuid should exist", taxon);
+		assertEquals("Taxon should have no description", 0, taxon.getDescriptions().size());
+		//import
+		boolean result = defaultImport.invoke(uuidConfigurator);
+		//test result
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
-		List<Classification> treeList = classificationService.list(null, null,null,null,null);
-				
+		assertEquals("Number of taxon names should be 1", 1, nameService.count(null));
+		assertEquals("Number of taxa should be 1", 1, taxonService.count(null));
+		taxon = (Taxon)taxonService.find(taxonUuid);
+		assertEquals("Taxon should have 1 description", 1, taxon.getDescriptions().size());
+		TaxonDescription description = taxon.getDescriptions().iterator().next();
+		assertEquals("Number of description elements should be 1", 1, description.getElements().size());
+		DescriptionElementBase element = description.getElements().iterator().next();
+		assertEquals("Element should be of class TextData", TextData.class, element.getClass());
+		TextData textData = (TextData)element;
+		Feature feature = textData.getFeature();
+		assertEquals("Unexpected feature", Feature.DESCRIPTION(), feature);
+		String text = textData.getText(Language.DEFAULT());
+		String expected = "Description for the first taxon";
+		assertEquals("Unexpected description text", expected, text);
+		
+		
 	}
 }
