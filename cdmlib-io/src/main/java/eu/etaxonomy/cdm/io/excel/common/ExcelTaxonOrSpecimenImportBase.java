@@ -49,7 +49,11 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
     		if (StringUtils.isBlank(keyValue.value)){
     			continue;
     		}
-    		success &= analyzeSingleValue(keyValue, state);
+    		if (isBaseColumn(keyValue)){
+    			success &= handleBaseColumn(keyValue, row);
+    		}else{
+    			success &= analyzeSingleValue(keyValue, state);
+    		}
     	}
     	return success;
 	}
@@ -120,15 +124,16 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	}
 
 	
-	protected void handleBaseColumn(KeyValue keyValue, ExcelRowBase row) {
+	private boolean handleBaseColumn(KeyValue keyValue, ExcelRowBase row) {
 		String key = keyValue.key;
 		String value = keyValue.value;
 		if (key.equalsIgnoreCase(CDM_UUID_COLUMN)) {
 			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID	
 		}
+		return true;
 	}
 
-	protected boolean isBaseColumn(KeyValue keyValue) {
+	private boolean isBaseColumn(KeyValue keyValue) {
 		String key = keyValue.key;
 		if (key.equalsIgnoreCase(CDM_UUID_COLUMN)){
 			return true;

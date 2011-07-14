@@ -133,9 +133,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		SpecimenRow row = state.getCurrentRow();
 		boolean success = true;
 		String value = keyValue.value;
-		if (isBaseColumn(keyValue)){
-			handleBaseColumn(keyValue, row);
-		}else if (keyValue.key.matches(CDM_UUID_COLUMN)) {
+		if (keyValue.key.matches(CDM_UUID_COLUMN)) {
 			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID
 		} else if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
 			row.setBasisOfRecord(value);

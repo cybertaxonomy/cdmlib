@@ -61,16 +61,6 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	public static Set<String> synonymMarkers = new HashSet<String>(Arrays.asList(new String[]{"", "invalid", "synonym", "s", "i"}));
 	
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
-	@Override
-	protected boolean doCheck(TaxonExcelImportState state) {
-		logger.warn("DoCheck not yet implemented for NormalExplicitImport");
-		return true;
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#analyzeSingleValue(eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.KeyValue, eu.etaxonomy.cdm.io.excel.common.ExcelImportState)
 	 */
@@ -82,9 +72,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		String key = keyValue.key;
 		String value = keyValue.value;
 		Integer index = keyValue.index;
-		if (isBaseColumn(keyValue)){
-			handleBaseColumn(keyValue, normalExplicitRow);
-		}else if (key.equalsIgnoreCase(ID_COLUMN)) {
+		if (key.equalsIgnoreCase(ID_COLUMN)) {
 			int ivalue = floatString2IntValue(value);
 			normalExplicitRow.setId(ivalue);
 			
@@ -143,56 +131,44 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     protected boolean firstPass(TaxonExcelImportState state) {
 		boolean success = true;
 		Rank rank = null;
-		NormalExplicitRow taxonLight = state.getCurrentRow();
+		NormalExplicitRow taxonDataHolder = state.getCurrentRow();
 		
-		String rankStr = taxonLight.getRank();
-		String taxonNameStr = taxonLight.getScientificName();
-		String authorStr = taxonLight.getAuthor();
-		String nameStatus = taxonLight.getNameStatus();
-		Integer id = taxonLight.getId();
+		String rankStr = taxonDataHolder.getRank();
+		String taxonNameStr = taxonDataHolder.getScientificName();
+		String authorStr = taxonDataHolder.getAuthor();
+		String nameStatus = taxonDataHolder.getNameStatus();
+		Integer id = taxonDataHolder.getId();
 			
 		if (CdmUtils.isNotEmpty(taxonNameStr)) {
 
-			// Determine the rank
-			try {
-				rank = Rank.getRankByNameOrAbbreviation(rankStr);
-			} catch (UnknownCdmTypeException ex) {
-				try {
-					rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
-				} catch (UnknownCdmTypeException e) {
-					success = false;
-					logger.error(rankStr + " is not a valid rank.");
-				}
-			}
-			
-            // Create the taxon name object depending on the setting of the nomenclatural code 
-			// in the configurator (botanical code, zoological code, etc.) 
-			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-			
 			TaxonBase taxonBase = null;
-			
-			String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
-			if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
-				titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
-				taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
+			if (taxonDataHolder.getCdmUuid() != null){
+				taxonBase = getTaxonService().find(taxonDataHolder.getCdmUuid());
 			}else{
-				taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
-				if (taxonBase != null){
-					logger.info("Matching taxon/synonym found for " + titleCache);
+			
+				// Rank
+				try {
+					rank = Rank.getRankByNameOrAbbreviation(rankStr);
+				} catch (UnknownCdmTypeException ex) {
+					try {
+						rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
+					} catch (UnknownCdmTypeException e) {
+						success = false;
+						logger.error(rankStr + " is not a valid rank.");
+					}
 				}
-			}
-			if (taxonBase != null){
-				logger.info("Matching taxon/synonym found for " + titleCache);
-			}else {
-				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus, nc);
+				
+	            //taxon
+				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus);
 			}
 			if (taxonBase == null){
+				String message = "Taxon could not be created. Record will not be handled";
+				fireWarningEvent(message, "Record: " + state.getCurrentLine(), 6);
 				return false;
 			}
 			
-			
 			//protologue
-			for (String protologue : taxonLight.getProtologues()){
+			for (String protologue : taxonDataHolder.getProtologues()){
 				TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
 				this.getNameDescription(taxonBase.getName()).addElement(textData);
 				URI uri;
@@ -206,7 +182,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 
 			//media
-			for (String imageUrl : taxonLight.getImages()){
+			for (String imageUrl : taxonDataHolder.getImages()){
 				//TODO
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				TaxonDescription td = taxon.getImageGallery(true);
@@ -226,7 +202,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 
 			//tdwg label
-			for (String tdwg : taxonLight.getDistributions()){
+			for (String tdwg : taxonDataHolder.getDistributions()){
 				//TODO
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				TaxonDescription td = this.getTaxonDescription(taxon, false, true);
@@ -250,6 +226,40 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 		return success;
     }
+
+	/**
+	 * @param state
+	 * @param rank
+	 * @param taxonNameStr
+	 * @param authorStr
+	 * @param nameStatus
+	 * @return
+	 */
+	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
+			String taxonNameStr, String authorStr, String nameStatus) {
+		// Create the taxon name object depending on the setting of the nomenclatural code 
+		// in the configurator (botanical code, zoological code, etc.) 
+		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
+		
+		TaxonBase taxonBase = null;
+		
+		String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
+			titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+			taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
+		}else{
+			taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
+			if (taxonBase != null){
+				logger.info("Matching taxon/synonym found for " + titleCache);
+			}
+		}
+		if (taxonBase != null){
+			logger.info("Matching taxon/synonym found for " + titleCache);
+		}else {
+			taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus, nc);
+		}
+		return taxonBase;
+	}
 
 
 
@@ -423,6 +433,19 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		return success;
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(TaxonExcelImportState state) {
+		logger.warn("DoCheck not yet implemented for NormalExplicitImport");
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
 	@Override
 	protected boolean isIgnore(TaxonExcelImportState state) {
 		return false;
