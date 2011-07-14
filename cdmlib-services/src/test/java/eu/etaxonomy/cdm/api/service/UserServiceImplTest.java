@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 @SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
-
+@Transactional
 @DataSet
 //@Ignore
 public class UserServiceImplTest {
@@ -81,16 +81,6 @@ public class UserServiceImplTest {
 	@SpringBeanByName
 	private IGroupService groupService;
 	
-	
-	
-	
-	/*@Autowired
-    public void setDataSource(@Qualifier("myDataSource") DataSource dataSource) {
-        this.dataSource=dataSource;
-    }
-*/
-
-	
 	@TestDataSource
 	protected DataSource dataSource;
 	
@@ -99,16 +89,19 @@ public class UserServiceImplTest {
 	
 	private Authentication authentication;
 	
-	private PermissionEvaluator permissionEvaluator;
-	UUID uuid;
 	
+	UUID uuid;
+	@Before
+	public void setUp(){
+		token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+	}
 	
 	
 	@Test
-	@Transactional
+
 	public void testCreateUser(){
 		
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+		
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
@@ -122,37 +115,11 @@ public class UserServiceImplTest {
 		Assert.assertTrue(userList.size()>0);
 	}
 	
-	/*@Test(expected=AccessDeniedException.class)
-	public void testCreateUserWithoutRights(){	
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		String username = "standardUser";
-		String password = "pw";
-		User user = User.NewInstance(username, password);
-		
-		userService.createUser(user);
-	
-		token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
-		authentication = authenticationManager.authenticate(token);
-		context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		username = "standardUser";
-		password = "pw";
-		user = User.NewInstance(username, password);
-		userService.createUser(user);
-			
-		
-	}*/
-	
 	
 	
 	@Test
 	public void testUpdateUser(){
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+		
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
@@ -165,16 +132,12 @@ public class UserServiceImplTest {
 		
 		userService.updateUser(user);
 		userService.update(user);
-		
-		
-		
-		
 	}
 	
 	@Test
-	@Transactional
+
 	public void testIfAnyGranted() {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+		
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
@@ -188,10 +151,10 @@ public class UserServiceImplTest {
 	}
 	
 	
-	@Transactional
+
 	@Test
 	public void testCreateGroup(){
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+		
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);	
@@ -226,53 +189,12 @@ public class UserServiceImplTest {
 		userService.createUser(user);
 	}
 	
-	/*@Test
-	@Transactional
-	public void testCreateGroupAsAdmin(){
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);	
 	
-	
-		GrantedAuthorityImpl userAdminUpdate = GrantedAuthorityImpl.NewInstance();
-		userAdminUpdate.setAuthority("USER.update");
-		GrantedAuthorityImpl userAdminCreate = GrantedAuthorityImpl.NewInstance();
-		userAdminCreate.setAuthority("USER.create");
-		GrantedAuthorityImpl userAdminDelete = GrantedAuthorityImpl.NewInstance();
-		userAdminDelete.setAuthority("USER.delete");
-		List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-		list.add(userAdminUpdate);
-		list.add(userAdminDelete);
-		list.add(userAdminCreate);
-		
-		
-		userService.createGroup("UserAdmins", list);
-		String username = "user3";
-		String password = "password";
-		User user = User.NewInstance(username, password);
-		userService.createUser(user);
-		List<String> groups = userService.findAllGroups();
-		Assert.assertEquals("CopyEditors", groups.get(0));
-		
-		
-		token = new UsernamePasswordAuthenticationToken(username, password);
-		authentication = authenticationManager.authenticate(token);
-		context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-	
-		groupService.addUserToGroup("user3", "UserAdmins");	
-	
-		System.err.println(context.getAuthentication().getName());
-		userService.createUser(user);
-	
-	
-	}*/
 	
 	
 	@Test
 	public void testHasRole(){
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+		
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
@@ -286,24 +208,10 @@ public class UserServiceImplTest {
 		userService.createUser(user);
 		
 		userService.changePasswordForUser(username, "newPassword");
-		
-		
-		
-		
+				
 	}
 	
-	/*
-	@Test
 	
-	public void testHasPermission(){
-		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
-		boolean hasPermission = taxonService.hasPermission(authentication, taxon, CdmPermission.UPDATE);	
-		assertFalse(hasPermission);
-		User testUser = User.NewInstance("username123", "1234");
-		hasPermission = userService.hasPermission(authentication, testUser, CdmPermission.UPDATE);	
-		assertTrue(hasPermission);
-	}
-	*/
 
      
 	
