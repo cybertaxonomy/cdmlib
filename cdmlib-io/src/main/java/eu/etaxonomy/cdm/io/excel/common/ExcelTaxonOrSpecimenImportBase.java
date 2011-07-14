@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.excel.common;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -20,11 +22,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * @author a.mueller
  * @date 12.07.2011
  */
-public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase>> extends ExcelImporterBase<STATE> {
+public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ROW>, ROW extends ExcelRowBase> extends ExcelImporterBase<STATE> {
 	private static final Logger logger = Logger.getLogger(ExcelTaxonOrSpecimenImportBase.class);
 
 
-	protected static final String UUID_COLUMN = "(?i)(UUID)";
+	protected static final String CDM_UUID_COLUMN = "(?i)(CdmUuid)";
 
 	
 	protected static final String RANK_COLUMN = "(?i)(Rank)";
@@ -34,17 +36,51 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected static final String SPECIFIC_EPITHET_COLUMN = "(?i)(SpecificEpi(thet)?)";
 	protected static final String INFRASPECIFIC_EPITHET_COLUMN = "(?i)(InfraSpecificEpi(thet)?)";
 
+	@Override
+	protected boolean analyzeRecord(HashMap<String, String> record, STATE state) {
+		boolean success = true;
+    	Set<String> keys = record.keySet();
+    	
+    	ROW row = createDataHolderRow();
+    	state.setCurrentRow(row);
+    	
+    	for (String originalKey: keys) {
+    		KeyValue keyValue = makeKeyValue(record, originalKey);
+    		if (StringUtils.isBlank(keyValue.value)){
+    			continue;
+    		}
+    		success &= analyzeSingleValue(keyValue, state);
+    	}
+    	return success;
+	}
 	
+	protected abstract ROW createDataHolderRow();
+
+	/**
+	 * Analyzes a single record value and fills the row instance accordingly.
+	 * @param keyValue
+	 * @param state 
+	 * @return
+	 */
+	protected abstract boolean analyzeSingleValue(KeyValue keyValue, STATE state);
+
+	/**
+	 *	DataHolder class for all key and value information for a cell.
+	 * Value is the value of the cell (as String). Key is the main attribute, further defined by postfix,
+	 * and in case of multiple values indexed.
+	 * TODO doc for refXXX
+	 */
 	protected class KeyValue{
 		public KeyValue() {}
 		
-		public String key;
 		public String value;
+		public String key;
 		public String postfix;
 		public Integer index;
 		public String ref;
 		public String refAuthor;
 		public String refIndex;
+		public String originalKey;
 	}
 	
 
@@ -56,6 +92,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	 */
 	protected KeyValue makeKeyValue(HashMap<String, String> record, String originalKey) {
 		KeyValue keyValue = new KeyValue();
+		keyValue.originalKey = originalKey;
 		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
 		String[] split = indexedKey.split("_");
 		keyValue.key = split[0];
@@ -82,6 +119,22 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		return keyValue;
 	}
 
+	
+	protected void handleBaseColumn(KeyValue keyValue, ExcelRowBase row) {
+		String key = keyValue.key;
+		String value = keyValue.value;
+		if (key.equalsIgnoreCase(CDM_UUID_COLUMN)) {
+			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID	
+		}
+	}
+
+	protected boolean isBaseColumn(KeyValue keyValue) {
+		String key = keyValue.key;
+		if (key.equalsIgnoreCase(CDM_UUID_COLUMN)){
+			return true;
+		}
+		return false;
+	}
 	
 	protected boolean isInteger(String value){
 		try {

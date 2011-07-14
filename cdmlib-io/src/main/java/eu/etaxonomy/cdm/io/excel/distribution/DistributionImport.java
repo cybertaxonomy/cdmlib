@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -45,7 +46,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @version 1.0
  */
 @Component
-public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportConfiguratorBase>> implements ICdmIO<ExcelImportState<ExcelImportConfiguratorBase>> {
+public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> implements ICdmIO<ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> {
+	private static final Logger logger = Logger.getLogger(DistributionImport.class);
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";
@@ -63,13 +65,12 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
 //    private static final String PAGE_NUMBER_COLUMN = "Page";
 //    private static final String INFO_COLUMN = "Info";
     
-	private static final Logger logger = Logger.getLogger(DistributionImport.class);
 	
 	// Stores already processed descriptions
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
-	protected boolean doInvoke(ExcelImportState<ExcelImportConfiguratorBase> state) {
+	protected boolean doInvoke(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	

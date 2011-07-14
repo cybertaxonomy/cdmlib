@@ -11,9 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,9 +24,9 @@ import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.PostfixTerm;
 import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.DeterminationLight;
-import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow.PostfixTerm;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -70,7 +68,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<SpecimenCdmExcelImportState>  implements ICdmIO<SpecimenCdmExcelImportState> {
+public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<SpecimenCdmExcelImportState, SpecimenRow>  implements ICdmIO<SpecimenCdmExcelImportState> {
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImport.class);
 
 	private static final String WORKSHEET_NAME = "Specimen";
@@ -128,138 +126,131 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 	
+
+
 	@Override
-	protected boolean analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
+	protected boolean analyzeSingleValue(KeyValue keyValue, SpecimenCdmExcelImportState state) {
+		SpecimenRow row = state.getCurrentRow();
 		boolean success = true;
-    	Set<String> keys = record.keySet();
-    	
-    	SpecimenRow row = new SpecimenRow();
-    	state.setSpecimenRow(row);
-    	
-    	for (String originalKey: keys) {
-    		
-    		KeyValue keyValue = makeKeyValue(record, originalKey);
-    		if (StringUtils.isBlank(keyValue.value)){
-    			continue;
-    		}
-    		
-    		String value = keyValue.value;
-    		if (keyValue.key.matches(UUID_COLUMN)) {
-    			row.setUuid(UUID.fromString(value)); //VALIDATE UUID
- 			} else if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
-				row.setBasisOfRecord(value);
-			} else if(keyValue.key.matches(COUNTRY_COLUMN)) {
-				row.setCountry(value);
-			} else if(keyValue.key.matches(ISO_COUNTRY_COLUMN)) {
-				row.setIsoCountry(value);
-			} else if(keyValue.key.matches(LOCALITY_COLUMN)) {
-				row.setLocality(value);
-			} else if(keyValue.key.matches(FIELD_NOTES_COLUMN)) {
-				row.setLocality(value);
-			} else if(keyValue.key.matches(ALTITUDE_COLUMN)) {
-				row.setAltitude(value);		
-			} else if(keyValue.key.matches(ALTITUDE_MAX_COLUMN)) {
-				row.setAltitudeMax(value);		
-			} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
-				row.putCollector(keyValue.index, value);		
-			} else if(keyValue.key.matches(ECOLOGY_COLUMN)) {
-				row.setEcology(value);
-			} else if(keyValue.key.matches(PLANT_DESCRIPTION_COLUMN)) {
-				row.setPlantDescription(value);		
-			} else if(keyValue.key.matches(SEX_COLUMN)) {
-				row.setSex(value);
-			} else if(keyValue.key.matches(COLLECTION_DATE_COLUMN)) {
-				row.setCollectingDate(value);		
-			} else if(keyValue.key.matches(COLLECTION_DATE_END_COLUMN)) {
-				row.setCollectingDateEnd(value);		
-			} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
-				row.putCollector(keyValue.index, value);	
-			} else if(keyValue.key.matches(COLLECTORS_NUMBER_COLUMN)) {
-				row.setCollectorsNumber(value);		
-			} else if(keyValue.key.matches(LONGITUDE_COLUMN)) {
-				row.setLongitude(value);		
-			} else if(keyValue.key.matches(LATITUDE_COLUMN)) {
-				row.setLatitude(value);		
-			} else if(keyValue.key.matches(REFERENCE_SYSTEM_COLUMN)) {
-				row.setReferenceSystem(value);		
-			} else if(keyValue.key.matches(ERROR_RADIUS_COLUMN)) {
-				row.setErrorRadius(value);		
-			} else if(keyValue.key.matches(AREA_COLUMN)) {
-				if (keyValue.postfix != null){
-					row.addLeveledArea(keyValue.postfix, value);		
-				}else{
-					logger.warn("Not yet implemented");
-				}
-			
-				
-				
-			} else if(keyValue.key.matches(ACCESSION_NUMBER_COLUMN)) {
-				row.setLocality(value);		
-			} else if(keyValue.key.matches(BARCODE_COLUMN)) {
-				row.setBarcode(value);		
-			} else if(keyValue.key.matches(UNIT_NOTES_COLUMN)) {
-				row.putUnitNote(keyValue.index, value);		
-			
-				
-			} else if(keyValue.key.matches(FAMILY_COLUMN)) {
-				row.putDeterminationFamily(keyValue.index, value);		
-			} else if(keyValue.key.matches(GENUS_COLUMN)) {
-				row.putDeterminationGenus(keyValue.index, value);		
-			} else if(keyValue.key.matches(SPECIFIC_EPITHET_COLUMN)) {
-				row.putDeterminationSpeciesEpi(keyValue.index, value);			
-			} else if(keyValue.key.matches(INFRASPECIFIC_EPITHET_COLUMN)) {
-				row.putDeterminationInfraSpeciesEpi(keyValue.index, value);			
-			} else if(keyValue.key.matches(RANK_COLUMN)) {
-				row.putDeterminationRank(keyValue.index, value);			
-			} else if(keyValue.key.matches(FULL_NAME_COLUMN)) {
-				row.putDeterminationFullName(keyValue.index, value);			
-			} else if(keyValue.key.matches(DETERMINATION_AUTHOR_COLUMN)) {
-				row.putDeterminationAuthor(keyValue.index, value);			
-			} else if(keyValue.key.matches(DETERMINATION_MODIFIER_COLUMN)) {
-				row.putDeterminationDeterminationModifier(keyValue.index, value);			
-			} else if(keyValue.key.matches(DETERMINATION_NOTES_COLUMN)) {
-				row.putDeterminationDeterminationNotes(keyValue.index, value);			
-			} else if(keyValue.key.matches(DETERMINED_BY_COLUMN)) {
-				row.putDeterminationDeterminedBy(keyValue.index, value);			
-			} else if(keyValue.key.matches(DETERMINED_WHEN_COLUMN)) {
-				row.putDeterminationDeterminedWhen(keyValue.index, value);			
-			
-			} else if(keyValue.key.matches(COLLECTION_CODE_COLUMN)) {
-				row.setCollectionCode(value);		
-			} else if(keyValue.key.matches(COLLECTION_COLUMN)) {
-				row.setCollection(value);		
-			
-			} else if(keyValue.key.matches(TYPE_CATEGORY_COLUMN)) {
-				row.putTypeCategory(keyValue.index, getSpecimenTypeStatus(state, value));	
-			} else if(keyValue.key.matches(TYPIFIED_NAME_COLUMN)) {
-				row.putTypifiedName(keyValue.index, getTaxonName(state, value));		
-			
-			
-			} else if(keyValue.key.matches(SOURCE_COLUMN)) {
-				row.putSourceReference(keyValue.index, getOrMakeReference(state, value));	
-			} else if(keyValue.key.matches(ID_IN_SOURCE_COLUMN)) {
-				row.putIdInSource(keyValue.index, value);		
-			} else if(keyValue.key.matches(EXTENSION_COLUMN)) {
-				if (keyValue.postfix != null){
-					row.addExtension(keyValue.postfix, value);		
-				}else{
-					logger.warn("Extension without postfix not yet implemented");
-				}
-				
-			} else if(keyValue.key.matches(IGNORE_COLUMN)) {
-				logger.debug("Ignored column" + originalKey);		
-			}else {
-				success = false;
-				logger.error("Unexpected column header " + originalKey);
+		String value = keyValue.value;
+		if (isBaseColumn(keyValue)){
+			handleBaseColumn(keyValue, row);
+		}else if (keyValue.key.matches(CDM_UUID_COLUMN)) {
+			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID
+		} else if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
+			row.setBasisOfRecord(value);
+		} else if(keyValue.key.matches(COUNTRY_COLUMN)) {
+			row.setCountry(value);
+		} else if(keyValue.key.matches(ISO_COUNTRY_COLUMN)) {
+			row.setIsoCountry(value);
+		} else if(keyValue.key.matches(LOCALITY_COLUMN)) {
+			row.setLocality(value);
+		} else if(keyValue.key.matches(FIELD_NOTES_COLUMN)) {
+			row.setLocality(value);
+		} else if(keyValue.key.matches(ALTITUDE_COLUMN)) {
+			row.setAltitude(value);		
+		} else if(keyValue.key.matches(ALTITUDE_MAX_COLUMN)) {
+			row.setAltitudeMax(value);		
+		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
+			row.putCollector(keyValue.index, value);		
+		} else if(keyValue.key.matches(ECOLOGY_COLUMN)) {
+			row.setEcology(value);
+		} else if(keyValue.key.matches(PLANT_DESCRIPTION_COLUMN)) {
+			row.setPlantDescription(value);		
+		} else if(keyValue.key.matches(SEX_COLUMN)) {
+			row.setSex(value);
+		} else if(keyValue.key.matches(COLLECTION_DATE_COLUMN)) {
+			row.setCollectingDate(value);		
+		} else if(keyValue.key.matches(COLLECTION_DATE_END_COLUMN)) {
+			row.setCollectingDateEnd(value);		
+		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
+			row.putCollector(keyValue.index, value);	
+		} else if(keyValue.key.matches(COLLECTORS_NUMBER_COLUMN)) {
+			row.setCollectorsNumber(value);		
+		} else if(keyValue.key.matches(LONGITUDE_COLUMN)) {
+			row.setLongitude(value);		
+		} else if(keyValue.key.matches(LATITUDE_COLUMN)) {
+			row.setLatitude(value);		
+		} else if(keyValue.key.matches(REFERENCE_SYSTEM_COLUMN)) {
+			row.setReferenceSystem(value);		
+		} else if(keyValue.key.matches(ERROR_RADIUS_COLUMN)) {
+			row.setErrorRadius(value);		
+		} else if(keyValue.key.matches(AREA_COLUMN)) {
+			if (keyValue.postfix != null){
+				row.addLeveledArea(keyValue.postfix, value);		
+			}else{
+				logger.warn("Not yet implemented");
 			}
-    	}
+		
+			
+			
+		} else if(keyValue.key.matches(ACCESSION_NUMBER_COLUMN)) {
+			row.setLocality(value);		
+		} else if(keyValue.key.matches(BARCODE_COLUMN)) {
+			row.setBarcode(value);		
+		} else if(keyValue.key.matches(UNIT_NOTES_COLUMN)) {
+			row.putUnitNote(keyValue.index, value);		
+		
+			
+		} else if(keyValue.key.matches(FAMILY_COLUMN)) {
+			row.putDeterminationFamily(keyValue.index, value);		
+		} else if(keyValue.key.matches(GENUS_COLUMN)) {
+			row.putDeterminationGenus(keyValue.index, value);		
+		} else if(keyValue.key.matches(SPECIFIC_EPITHET_COLUMN)) {
+			row.putDeterminationSpeciesEpi(keyValue.index, value);			
+		} else if(keyValue.key.matches(INFRASPECIFIC_EPITHET_COLUMN)) {
+			row.putDeterminationInfraSpeciesEpi(keyValue.index, value);			
+		} else if(keyValue.key.matches(RANK_COLUMN)) {
+			row.putDeterminationRank(keyValue.index, value);			
+		} else if(keyValue.key.matches(FULL_NAME_COLUMN)) {
+			row.putDeterminationFullName(keyValue.index, value);			
+		} else if(keyValue.key.matches(DETERMINATION_AUTHOR_COLUMN)) {
+			row.putDeterminationAuthor(keyValue.index, value);			
+		} else if(keyValue.key.matches(DETERMINATION_MODIFIER_COLUMN)) {
+			row.putDeterminationDeterminationModifier(keyValue.index, value);			
+		} else if(keyValue.key.matches(DETERMINATION_NOTES_COLUMN)) {
+			row.putDeterminationDeterminationNotes(keyValue.index, value);			
+		} else if(keyValue.key.matches(DETERMINED_BY_COLUMN)) {
+			row.putDeterminationDeterminedBy(keyValue.index, value);			
+		} else if(keyValue.key.matches(DETERMINED_WHEN_COLUMN)) {
+			row.putDeterminationDeterminedWhen(keyValue.index, value);			
+		
+		} else if(keyValue.key.matches(COLLECTION_CODE_COLUMN)) {
+			row.setCollectionCode(value);		
+		} else if(keyValue.key.matches(COLLECTION_COLUMN)) {
+			row.setCollection(value);		
+		
+		} else if(keyValue.key.matches(TYPE_CATEGORY_COLUMN)) {
+			row.putTypeCategory(keyValue.index, getSpecimenTypeStatus(state, value));	
+		} else if(keyValue.key.matches(TYPIFIED_NAME_COLUMN)) {
+			row.putTypifiedName(keyValue.index, getTaxonName(state, value));		
+		
+		
+		} else if(keyValue.key.matches(SOURCE_COLUMN)) {
+			row.putSourceReference(keyValue.index, getOrMakeReference(state, value));	
+		} else if(keyValue.key.matches(ID_IN_SOURCE_COLUMN)) {
+			row.putIdInSource(keyValue.index, value);		
+		} else if(keyValue.key.matches(EXTENSION_COLUMN)) {
+			if (keyValue.postfix != null){
+				row.addExtension(keyValue.postfix, value);		
+			}else{
+				logger.warn("Extension without postfix not yet implemented");
+			}
+			
+		} else if(keyValue.key.matches(IGNORE_COLUMN)) {
+			logger.debug("Ignored column" + keyValue.originalKey);		
+		}else {
+			success = false;
+			logger.error("Unexpected column header " + keyValue.originalKey);
+		}
+
     	return success;
 	}
-	
-	
+
+
 	@Override
 	protected boolean firstPass(SpecimenCdmExcelImportState state) {
-		SpecimenRow row = state.getSpecimenRow();
+		SpecimenRow row = state.getCurrentRow();
 		
 		//basis of record
 		DerivedUnitType type = DerivedUnitType.valueOf2(row.getBasisOfRecord());
@@ -808,6 +799,17 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	protected boolean needsNomenclaturalCode() {
 		return false;
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#createDataHolderRow()
+	 */
+	@Override
+	protected SpecimenRow createDataHolderRow() {
+		return new SpecimenRow();
+	}
+
+
 	
 	
 	/* (non-Javadoc)

@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
+
 /**
  * @author a.babadshanjan
  * @created 13.01.2009
  * @version 1.0
  */
-public class NormalExplicitRow {
+public class NormalExplicitRow extends ExcelRowBase {
 	
 	private int id;
 	private int parentId;

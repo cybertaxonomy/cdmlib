@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 11.05.2009
  * @version 1.0
  */
-public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExcelImportConfigurator>{
+public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExcelImportConfigurator, SpecimenRow>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportState.class);
 
@@ -52,14 +52,6 @@ public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExc
 	
 	public SpecimenCdmExcelImportState(SpecimenCdmExcelImportConfigurator config) {
 		super(config);
-	}
-
-	public SpecimenRow getSpecimenRow() {
-		return specimenRow;
-	}
-
-	public void setSpecimenRow(SpecimenRow specimenRow) {
-		this.specimenRow = specimenRow;
 	}
 
 	public Reference<?> getReference(String key) {

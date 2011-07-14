@@ -13,11 +13,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -73,69 +71,71 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#analyzeSingleValue(eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.KeyValue, eu.etaxonomy.cdm.io.excel.common.ExcelImportState)
+	 */
 	@Override
-    protected boolean analyzeRecord(HashMap<String, String> record, TaxonExcelImportState state) {
-		
+	protected boolean analyzeSingleValue(KeyValue keyValue, TaxonExcelImportState state) {
 		boolean success = true;
-    	Set<String> keys = record.keySet();
-    	
-    	NormalExplicitRow normalExplicitRow = new NormalExplicitRow();
-    	state.setTaxonLight(normalExplicitRow);
-    	
-    	for (String originalKey: keys) {
-    		KeyValue keyValue = makeKeyValue(record, originalKey);
-    		if (StringUtils.isBlank(keyValue.value)){
-    			continue;
-    		}
-    		
-    		String key = keyValue.key;
-    		String value = keyValue.value;
-    		Integer index = keyValue.index;
-    		if (key.equalsIgnoreCase(ID_COLUMN)) {
-    			int ivalue = floatString2IntValue(value);
-    			normalExplicitRow.setId(ivalue);
-    			
-			} else if(key.equalsIgnoreCase(PARENT_ID_COLUMN)) {
-				int ivalue = floatString2IntValue(value);
-				normalExplicitRow.setParentId(ivalue);
-				
-			} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
-				normalExplicitRow.setRank(value);
-    			
-			} else if(key.equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
-				normalExplicitRow.setScientificName(value);
-    			
-			} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
-				normalExplicitRow.setAuthor(value);
-   			
-			} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN)) {
-				normalExplicitRow.setNameStatus(value);
-    			
-			} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
-				normalExplicitRow.setCommonName(value);
-    			
-			} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
-				normalExplicitRow.setLanguage(value);
+		
+		NormalExplicitRow normalExplicitRow = state.getCurrentRow();
+		String key = keyValue.key;
+		String value = keyValue.value;
+		Integer index = keyValue.index;
+		if (isBaseColumn(keyValue)){
+			handleBaseColumn(keyValue, normalExplicitRow);
+		}else if (key.equalsIgnoreCase(ID_COLUMN)) {
+			int ivalue = floatString2IntValue(value);
+			normalExplicitRow.setId(ivalue);
 			
-			} else if(key.equalsIgnoreCase(TDWG_COLUMN)) {
-				value = value.replace(".0", "");
-				normalExplicitRow.putDistribution(index, value);
+		} else if(key.equalsIgnoreCase(PARENT_ID_COLUMN)) {
+			int ivalue = floatString2IntValue(value);
+			normalExplicitRow.setParentId(ivalue);
 			
-			} else if(key.equalsIgnoreCase(PROTOLOGUE_COLUMN)) {
-				normalExplicitRow.putProtologue(index, value);
-    			
-			} else if(key.equalsIgnoreCase(IMAGE_COLUMN)) {
-				normalExplicitRow.putImage(index, value);
-    			
-			} else {
-				success = false;
-				logger.error("Unexpected column header " + key);
-			}
-    	}
-    	return success;
-    }
-	
-	
+		} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
+			normalExplicitRow.setRank(value);
+			
+		} else if(key.equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
+			normalExplicitRow.setScientificName(value);
+			
+		} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
+			normalExplicitRow.setAuthor(value);
+			
+		} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN)) {
+			normalExplicitRow.setNameStatus(value);
+			
+		} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
+			normalExplicitRow.setCommonName(value);
+			
+		} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
+			normalExplicitRow.setLanguage(value);
+		
+		} else if(key.equalsIgnoreCase(TDWG_COLUMN)) {
+			value = value.replace(".0", "");
+			normalExplicitRow.putDistribution(index, value);
+		
+		} else if(key.equalsIgnoreCase(PROTOLOGUE_COLUMN)) {
+			normalExplicitRow.putProtologue(index, value);
+			
+		} else if(key.equalsIgnoreCase(IMAGE_COLUMN)) {
+			normalExplicitRow.putImage(index, value);
+			
+		} else {
+			success = false;
+			logger.error("Unexpected column header " + key);
+		}
+		return success;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase#createDataHolderRow()
+	 */
+	@Override
+	protected NormalExplicitRow createDataHolderRow() {
+		return new NormalExplicitRow();
+	}
+
+
 	/** 
 	 *  Stores taxa records in DB
 	 */
@@ -143,7 +143,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     protected boolean firstPass(TaxonExcelImportState state) {
 		boolean success = true;
 		Rank rank = null;
-		NormalExplicitRow taxonLight = state.getTaxonLight();
+		NormalExplicitRow taxonLight = state.getCurrentRow();
 		
 		String rankStr = taxonLight.getRank();
 		String taxonNameStr = taxonLight.getScientificName();
@@ -261,11 +261,11 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     protected boolean secondPass(TaxonExcelImportState state) {
 		boolean success = true;
 		try {
-			String taxonNameStr = state.getTaxonLight().getScientificName();
-			String nameStatus = state.getTaxonLight().getNameStatus();
-			String commonNameStr = state.getTaxonLight().getCommonName();
-			Integer parentId = state.getTaxonLight().getParentId();
-			Integer childId = state.getTaxonLight().getId();
+			String taxonNameStr = state.getCurrentRow().getScientificName();
+			String nameStatus = state.getCurrentRow().getNameStatus();
+			String commonNameStr = state.getCurrentRow().getCommonName();
+			Integer parentId = state.getCurrentRow().getParentId();
+			Integer childId = state.getCurrentRow().getId();
 			
 			Taxon parentTaxon = (Taxon)state.getTaxonBase(parentId);
 			if (CdmUtils.isNotEmpty(taxonNameStr)) {
@@ -273,7 +273,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				if (validMarkers.contains(nameStatus)){
 					Taxon taxon = (Taxon)state.getTaxonBase(childId);
 					// Add the parent relationship
-					if (state.getTaxonLight().getParentId() != 0) {
+					if (state.getCurrentRow().getParentId() != 0) {
 						if (parentTaxon != null) {
 							//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 							
@@ -320,8 +320,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	 */
 	private void handleCommonName(TaxonExcelImportState state,
 			String taxonNameStr, String commonNameStr, Integer parentId) {
-		Language language = getTermService().getLanguageByIso(state.getTaxonLight().getLanguage());
-		if (language == null && CdmUtils.isNotEmpty(state.getTaxonLight().getLanguage())  ){
+		Language language = getTermService().getLanguageByIso(state.getCurrentRow().getLanguage());
+		if (language == null && CdmUtils.isNotEmpty(state.getCurrentRow().getLanguage())  ){
 			String error ="Language is null but shouldn't"; 
 			logger.error(error);
 			throw new IllegalArgumentException(error);
