@@ -145,7 +145,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	
 	@Override
 	@Transactional(readOnly=false)
-	@PreAuthorize("hasPermission(#username, 'changePassword') or hasRole('USER.Admin')")
+	@PreAuthorize("hasRole(ALL.ADMIN) or hasPermission(#username, 'changePassword') or hasRole('USER.Admin')")
 	public void changePasswordForUser(String username, String newPassword) {
 		Assert.hasText(username);
 		Assert.hasText(newPassword);
@@ -170,7 +170,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 	@Override
 	@Transactional(readOnly=false)
-	@PreAuthorize("hasPermission(#user, 'CREATE')")
+	@PreAuthorize("hasRole(ALL.ADMIN) or hasPermission(#user, 'CREATE')")
 	public void createUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -185,7 +185,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 	@Override
 	@Transactional(readOnly=false)
-	@PreAuthorize("hasPermission(#username, 'DELETE')")
+	@PreAuthorize("hasRole(ALL.ADMIN) or hasPermission(#username, 'DELETE')")
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
@@ -199,7 +199,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 	@Override
 	@Transactional(readOnly=false)
-	@PreAuthorize("hasPermission(#user, 'UPDATE')")
+	@PreAuthorize("hasRole(ALL.ADMIN) or hasPermission(#user, 'UPDATE')")
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
