@@ -18,7 +18,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
-import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.SourceType;
 
 /**
  * @author a.babadshanjan
@@ -45,6 +45,9 @@ public class NormalExplicitRow extends ExcelRowBase {
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
 	
 	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<UUID, TreeMap<Integer, String>>();
+	
+	private Map<UUID, TreeMap<Integer, SourceDataHolder>> textSources = new HashMap<UUID, TreeMap<Integer, SourceDataHolder>>();
+
 	
 	
 	public NormalExplicitRow() {
@@ -240,6 +243,35 @@ public class NormalExplicitRow extends ExcelRowBase {
 	}
 	
 
+	public void putFeatureSource(UUID featureUuid,	int featureIndex, SourceType refType, String value, int refIndex) {
+		//feature Map
+		TreeMap<Integer, SourceDataHolder> featureMap = textSources.get(featureUuid);
+		if (featureMap == null){
+			featureMap = new TreeMap<Integer, SourceDataHolder>();
+			textSources.put(featureUuid, featureMap);
+		}
+		//sourcedText
+		SourceDataHolder sourceDataHolder = featureMap.get(featureIndex);
+		if (sourceDataHolder == null){
+			sourceDataHolder = new SourceDataHolder();
+			featureMap.put(featureIndex, sourceDataHolder);
+		}
+		//
+		sourceDataHolder.putSource(refIndex, refType, value);
+	}
+	
+
+	public SourceDataHolder getFeatureTextReferences(UUID featureUuid, int index) {
+		TreeMap<Integer, SourceDataHolder> textMap = textSources.get(featureUuid);
+		if (textMap == null){
+			return new SourceDataHolder();
+		}else{
+			SourceDataHolder sourceMap = textMap.get(index);
+			return sourceMap;
+		}
+		
+	}
+
 	private List<String> getOrdered(TreeMap<Integer, String> tree) {
 		List<String> result = new ArrayList<String>();
 		for (String distribution : tree.values()){
@@ -247,6 +279,8 @@ public class NormalExplicitRow extends ExcelRowBase {
 		}
 		return result;
 	}
+
+
 
 	
 }

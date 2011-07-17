@@ -45,7 +45,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
     	state.setCurrentRow(row);
     	
     	for (String originalKey: keys) {
-    		KeyValue keyValue = makeKeyValue(record, originalKey);
+    		KeyValue keyValue = makeKeyValue(record, originalKey, state);
     		if (StringUtils.isBlank(keyValue.value)){
     			continue;
     		}
@@ -77,38 +77,112 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected class KeyValue{
 		public KeyValue() {}
 		
+		//original Key
+		public String originalKey;
+		//value
 		public String value;
+		//atomized key
 		public String key;
 		public String postfix;
-		public Integer index;
-		public String ref;
-		public String refAuthor;
-		public String refIndex;
-		public String originalKey;
+		public int index = 0;
+		public SourceType refType;
+		public int refIndex = 0;
+		public boolean hasError = false;
+		public boolean isKeyData() {
+			return (refType == null);
+		}
+	}
+	
+	public enum SourceType{
+		Author("RefAuthor"),
+		Title("RefTitle"),
+		Year("RefYear");
+		
+		String keyName = null;
+		private SourceType(String keyName){
+			this.keyName = keyName;
+		}
+		
+		static SourceType byKeyName(String str){
+			for (SourceType type : SourceType.values()){
+				if (type.keyName.equalsIgnoreCase(str)){
+					return type;
+				}	
+			}
+			return null;
+		}
+		
+		static boolean isKeyName(String str){
+			return (byKeyName(str) != null);
+		}
 	}
 	
 
 	/**
 	 * @param record
 	 * @param originalKey
+	 * @param state 
 	 * @param keyValue
 	 * @return
 	 */
-	protected KeyValue makeKeyValue(HashMap<String, String> record, String originalKey) {
+	protected KeyValue makeKeyValue(HashMap<String, String> record, String originalKey, STATE state) {
 		KeyValue keyValue = new KeyValue();
 		keyValue.originalKey = originalKey;
 		String indexedKey = CdmUtils.removeDuplicateWhitespace(originalKey.trim()).toString();
 		String[] split = indexedKey.split("_");
-		keyValue.key = split[0];
-		if (split.length > 1){
-			for (int i = 1 ; i < split.length ; i++ ){
-				String indexString = split[i];
-				if (isInteger(indexString)){
-					keyValue.index = Integer.valueOf(indexString);
-				}else{
-					keyValue.postfix = split[i];
+		int current = 0;
+		//key
+		keyValue.key = split[current++];
+		//postfix
+		if (split.length > current && ! isRefType(split[current]) && ! isInteger(split[current]) ){
+			keyValue.postfix = split[current++];	
+		}
+		//index
+		if (split.length > current && isInteger(split[current]) ){
+			keyValue.index = Integer.valueOf(split[current++]);	
+		}else{
+			keyValue.index = 0;
+		}
+		//source
+		if (split.length > current){
+			//refType
+			if (isRefType(split[current])){
+				String refTypeStr = split[current++];
+				keyValue.refType = SourceType.byKeyName(refTypeStr);
+				if (keyValue.refType == null){
+					String message = "Unmatched source key: " + refTypeStr;
+					fireWarningEvent(message, state, 10);
+					logger.warn(message);
 				}
+			}else {
+				String message = "RefType expected at %d position of key. But %s is no valid reftype";
+				message = String.format(message, current, split[current]);
+				fireWarningEvent(message, state, 10);
+				logger.warn(message);
+				keyValue.hasError  = true;
 			}
+			//ref index
+			if (split.length > current){
+				 if (isInteger(split[current])){
+					 keyValue.refIndex = Integer.valueOf(split[current++]);	
+				 }else{
+					String message = "Ref index expected at position %d of key. But %s is no valid reftype";
+					message = String.format(message, current, split[current]);
+					fireWarningEvent(message, state, 10);
+					logger.warn(message);
+					keyValue.hasError = true;
+				 }
+			}else {
+				keyValue.refIndex = 0;
+			}
+			
+		}
+		if (split.length > current){
+			String message = "Key has unexpected part at position %d of key. %s (and following parts) can not be handled";
+			message = String.format(message, current, split[current]);
+			fireWarningEvent(message, state, 10);
+			logger.warn(message);
+			keyValue.hasError = true;
 		}
 		
 		//TODO shouldn't we use originalKey here??
@@ -124,6 +198,11 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	}
 
 	
+	private boolean isRefType(String string) {
+		return SourceType.isKeyName(string);
+	}
+
+
 	private boolean handleBaseColumn(KeyValue keyValue, ExcelRowBase row) {
 		String key = keyValue.key;
 		String value = keyValue.value;

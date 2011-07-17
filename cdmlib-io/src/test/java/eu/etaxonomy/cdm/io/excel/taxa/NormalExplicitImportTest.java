@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -185,7 +187,13 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		String text = textData.getText(Language.DEFAULT());
 		String expected = "Description for the first taxon";
 		assertEquals("Unexpected description text", expected, text);
-		
+		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
+		DescriptionElementSource source = textData.getSources().iterator().next();
+		Reference ref = source.getCitation();
+		assertNotNull("Citation should not be null", ref);
+		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
+		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
+		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
 		
 	}
 }

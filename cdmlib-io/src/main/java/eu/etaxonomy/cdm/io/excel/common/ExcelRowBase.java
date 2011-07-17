@@ -10,12 +10,15 @@
 package eu.etaxonomy.cdm.io.excel.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.SourceType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -54,6 +57,24 @@ public abstract class ExcelRowBase {
 		public PostfixTerm(){}
 		public String term;
 		public String postfix;
+	}
+	
+	
+	public class SourceDataHolder{
+		private TreeMap<Integer, Map<SourceType, String>> sources = new TreeMap<Integer, Map<SourceType, String>>();
+	
+		public void putSource(int index, SourceType type, String value){
+			Map<SourceType, String> map = sources.get(index);
+			if (map == null){
+				map = new HashMap<SourceType, String>();
+				sources.put(index, map);
+			}
+			map.put(type, value);
+		}
+
+		public List<Map<SourceType, String>> getSources() {
+			return getOrdered(sources);
+		}
 	}
 	
 

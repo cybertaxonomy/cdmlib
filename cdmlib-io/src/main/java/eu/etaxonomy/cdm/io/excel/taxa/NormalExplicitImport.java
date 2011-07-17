@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,9 +25,13 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.SourceDataHolder;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -43,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -139,7 +145,11 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}else{
 			Feature feature = CdmBase.deproxy(features.getRecords().get(0), Feature.class);
 			NormalExplicitRow row = state.getCurrentRow();
-			row.putFeature(feature.getUuid(), keyValue.index == null? 0:keyValue.index, keyValue.value);
+			if ( keyValue.isKeyData()){
+				row.putFeature(feature.getUuid(), keyValue.index, keyValue.value);
+			}else{
+				row.putFeatureSource(feature.getUuid(), keyValue.index, keyValue.refType, keyValue.value, keyValue.refIndex);
+			}
 			return true;
 		}
 	}
@@ -249,13 +259,42 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
 			List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
 			
-			for (String featureText : textList){
+			
+			for (int i = 0; i < textList.size(); i++){
+				String featureText = textList.get(i);
 				//TODO
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				TaxonDescription td = this.getTaxonDescription(taxon, false, true);
 				TextData textData = TextData.NewInstance(feature);
 				textData.putText(Language.DEFAULT(), featureText);
 				td.addElement(textData);
+				
+				SourceDataHolder sourceDataHolder = taxonDataHolder.getFeatureTextReferences(featureUuid, i);
+				List<Map<SourceType, String>> sourceList = sourceDataHolder.getSources();
+				for (Map<SourceType, String> sourceMap : sourceList){
+				
+					DescriptionElementSource source = DescriptionElementSource.NewInstance();
+					//ref
+					Reference<?> ref = ReferenceFactory.newGeneric();
+					boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
+					for (SourceType type : sourceMap.keySet()){
+						String value = sourceMap.get(type);
+						if (type.equals(SourceType.Author)){
+							Team team = Team.NewInstance();
+							team.setTitleCache(value, true);
+							ref.setAuthorTeam(team);
+						}else if (type.equals(SourceType.Title)) {
+							ref.setTitle(value);
+						}else if (type.equals(SourceType.Year)) {
+							ref.setDatePublished(TimePeriod.parseString(value));
+						}
+						refExists = true;
+					}
+					if (refExists){
+						source.setCitation(ref);
+					}
+					textData.addSource(source);
+				}				
 			}
 		}
 		
