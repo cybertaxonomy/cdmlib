@@ -539,6 +539,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/TeamOrPersonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package.html -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AbstractStringComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotatableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -text
@@ -750,6 +751,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package-info.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/AlternativeTreeRoot.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Classification.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITaxonNodeComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITreeNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/IllegalAncestryException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Synonym.java -text
@@ -760,6 +762,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package-info.java -text
@@ -969,6 +972,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/ClassificationTest.java 
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/RemoveSynonymsInSameHomotypicGroupTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparatorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/agent/PersonDefaultCacheStrategyTest.java -text
@@ -1693,7 +1697,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeNotSu
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractStringComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotatableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotationService.java -text
@@ -1737,7 +1740,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeSer
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
@@ -1762,7 +1764,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceI
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeByNameComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
