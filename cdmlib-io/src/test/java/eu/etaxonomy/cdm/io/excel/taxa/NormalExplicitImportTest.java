@@ -36,8 +36,10 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -72,6 +74,9 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
 	ITaxonService taxonService;
+	
+	@SpringBeanByType
+	ITermService termService;
 	
 	@SpringBeanByType
 	IClassificationService classificationService;
@@ -164,22 +169,34 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	@Ignore //does run standalone, but not in suite (maven)
 	public void testUUID() throws URISyntaxException{
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
+		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
+		
+		
 		//test data set
-		assertEquals("Number of taxa should be 1", 1, taxonService.count(null));
+		assertEquals("Number of taxon bases should be 2", 2, taxonService.count(null));
 		Taxon taxon = (Taxon)taxonService.find(taxonUuid);
 		assertNotNull("Taxon with given uuid should exist", taxon);
 		assertEquals("Taxon should have no description", 0, taxon.getDescriptions().size());
+		Synonym synonym = (Synonym)taxonService.find(synonymUuid);
+		assertNotNull("Synonym with given uuid should exist", synonym);
+		assertEquals("Synonym should have 1 accepted taxon", 1, synonym.getAcceptedTaxa().size());
+		
+//		UUID uuidt = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
+//		DefinedTermBase term = termService.find(uuidt);
+//		System.out.println(term.getId());
+		
 		//import
 		boolean result = defaultImport.invoke(uuidConfigurator);
 		//test result
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of taxon names should be 1", 1, nameService.count(null));
-		assertEquals("Number of taxa should be 1", 1, taxonService.count(null));
+		assertEquals("Number of taxon names should be 2", 2, nameService.count(null));
+		assertEquals("Number of taxa should be 2", 2, taxonService.count(null));
 		taxon = (Taxon)taxonService.find(taxonUuid);
 		assertEquals("Taxon should have 1 description", 1, taxon.getDescriptions().size());
 		TaxonDescription description = taxon.getDescriptions().iterator().next();
-		assertEquals("Number of description elements should be 1", 1, description.getElements().size());
-		DescriptionElementBase element = description.getElements().iterator().next();
+		assertEquals("Number of description elements should be 2", 2, description.getElements().size());
+		DescriptionElementBase element = getFirstElement(description);
+//		DescriptionElementBase element = description.getElements().iterator().next();
 		assertEquals("Element should be of class TextData", TextData.class, element.getClass());
 		TextData textData = (TextData)element;
 		Feature feature = textData.getFeature();
@@ -194,6 +211,18 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
 		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
 		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
+		//synonym
 		
 	}
+
+	/**
+	 * Returns description element for record id 1
+	 * @param description
+	 * @return
+	 */
+	private DescriptionElementBase getFirstElement(TaxonDescription description) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
