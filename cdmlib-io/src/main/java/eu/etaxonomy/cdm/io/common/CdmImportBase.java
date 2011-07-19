@@ -368,8 +368,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return namedAreaLevel;
 	}
 	
+	
+	protected Feature getFeature(STATE state, UUID uuid){
+		return getFeature(state, uuid, null, null, null);
+	}
+	
 	/**
-	 * Returns a feature for a given uuid by first ...
+	 * Returns a feature for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the feature exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no feature is created.
 	 * @param state
 	 * @param uuid
 	 * @param label
@@ -384,7 +391,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		Feature feature = state.getFeature(uuid);
 		if (feature == null){
 			feature = (Feature)getTermService().find(uuid);
-			if (feature == null){
+			if (feature == null && ! hasNoLabel(label, text, labelAbbrev)){
 				feature = Feature.NewInstance(text, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
@@ -399,6 +406,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 	
+	private boolean hasNoLabel(String label, String text, String labelAbbrev) {
+		return label == null && text == null && labelAbbrev == null;
+	}
+
+
 	/**
 	 * Returns a presence term for a given uuid by first ...
 	 * @param state
