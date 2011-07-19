@@ -258,15 +258,18 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			Integer childId = taxonDataHolder.getId();
 			UUID cdmUuid = taxonDataHolder.getCdmUuid();
 			Taxon acceptedTaxon;
+			TaxonNameBase nameUsedInSource;
 			
 			if (cdmUuid != null){
 				TaxonBase taxonBase = getTaxonService().find(cdmUuid);
 				acceptedTaxon = getAcceptedTaxon(taxonBase);
+				nameUsedInSource = taxonBase.getName();
 			}else{
 				//TODO error handling for class cast
 				Taxon parentTaxon = CdmBase.deproxy(state.getTaxonBase(parentId), Taxon.class);
 				if (CdmUtils.isNotEmpty(taxonNameStr)) {
 					TaxonBase taxonBase = state.getTaxonBase(childId);
+					nameUsedInSource = taxonBase.getName();
 					nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 					if (validMarkers.contains(nameStatus)){
 						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
@@ -317,6 +320,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				}else{//taxonNameStr is empty
 					//vernacular name case
 					acceptedTaxon = parentTaxon;
+					nameUsedInSource = null;
 				}
 			}
  
@@ -328,7 +332,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					handleCommonName(state, taxonNameStr, commonNameStr, acceptedTaxon);
 				}
 				
-				handleFeatures(state, taxonDataHolder, acceptedTaxon);
+				handleFeatures(state, taxonDataHolder, acceptedTaxon, nameUsedInSource);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -342,14 +346,12 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	 * @param taxonDataHolder
 	 * @param acceptedTaxon
 	 */
-	private void handleFeatures(TaxonExcelImportState state, NormalExplicitRow taxonDataHolder, Taxon acceptedTaxon) {
+	private void handleFeatures(TaxonExcelImportState state, NormalExplicitRow taxonDataHolder, Taxon acceptedTaxon, TaxonNameBase nameUsedInSource) {
 		//feature
 		for (UUID featureUuid : taxonDataHolder.getFeatures()){
 			Feature feature = getFeature(state, featureUuid);
-//					Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
 			List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
 			List<String> languageList = taxonDataHolder.getFeatureLanguages(featureUuid);
-			
 			
 			for (int i = 0; i < textList.size(); i++){
 				String featureText = textList.get(i);
@@ -384,6 +386,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					}
 					if (refExists){
 						source.setCitation(ref);
+						source.setNameUsedInSource(nameUsedInSource);
 					}
 					textData.addSource(source);
 				}				

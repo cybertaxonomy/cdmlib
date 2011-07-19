@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -210,7 +211,11 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
 		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
-
+		TaxonNameBase nameUsedInSource = source.getNameUsedInSource();
+		assertNotNull("Name used in source should not be null", nameUsedInSource);
+		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
+		
+		
 		//synonym
 		expectedText = "A synonym description";
 		textData = getTextElement(description, expectedText);
@@ -230,6 +235,9 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorTeam().getTitleCache());
 		assertEquals("Publication title should be 'The ultimate book'", "The ultimate book", ref.getTitle());
 		assertEquals("Publication year should be '2011'", "2011", ref.getYear());
+		nameUsedInSource = source.getNameUsedInSource();
+		assertNotNull("Name used in source should not be null", nameUsedInSource);
+		assertEquals("Name used in source title should be Pinus", "Pinus", nameUsedInSource.getTitleCache());
 		
 	}
 
