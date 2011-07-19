@@ -102,21 +102,34 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		public boolean isKeyData() {
 			return (refType == null);
 		}
+		public boolean isLanguage(){
+			return (refType.isLanguage());
+		}
 	}
 	
 	public enum SourceType{
 		Author("RefAuthor"),
 		Title("RefTitle"),
-		Year("RefYear");
+		Year("RefYear"),
+		Language("Lang") //strictly not a reference, so some refactoring/renaming is needed
+		;
 		
-		String keyName = null;
+		String keyMatch = null;
 		private SourceType(String keyName){
-			this.keyName = keyName;
+			this.keyMatch = keyName;
+		}
+		
+		
+		boolean isLanguage(){
+			return (this.equals(Language));
 		}
 		
 		static SourceType byKeyName(String str){
+			if (StringUtils.isBlank(str)){
+				return null;
+			}
 			for (SourceType type : SourceType.values()){
-				if (type.keyName.equalsIgnoreCase(str)){
+				if (str.matches("(?i)(" + type.keyMatch + ")")){
 					return type;
 				}	
 			}
@@ -126,8 +139,9 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		static boolean isKeyName(String str){
 			return (byKeyName(str) != null);
 		}
+
 	}
-	
+
 
 	/**
 	 * @param record
@@ -241,7 +255,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	}
 	
 
-	protected boolean handleFeatures(STATE state, KeyValue keyValue) {
+	protected boolean analyzeFeatures(STATE state, KeyValue keyValue) {
 		String key = keyValue.key;
 		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
 		if (features.getCount() > 1){
@@ -255,6 +269,8 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			ROW row = state.getCurrentRow();
 			if ( keyValue.isKeyData()){
 				row.putFeature(feature.getUuid(), keyValue.index, keyValue.value);
+			}else if (keyValue.isLanguage()){
+				row.putFeatureLanguage(feature.getUuid(), keyValue.index, keyValue.value);
 			}else{
 				row.putFeatureSource(feature.getUuid(), keyValue.index, keyValue.refType, keyValue.value, keyValue.refIndex);
 			}

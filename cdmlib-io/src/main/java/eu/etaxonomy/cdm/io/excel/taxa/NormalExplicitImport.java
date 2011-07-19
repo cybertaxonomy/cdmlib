@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			normalExplicitRow.putImage(index, value);
 			
 		} else {
-			if (handleFeatures(state, keyValue)){
+			if (analyzeFeatures(state, keyValue)){
 				//ok
 			}else{
 				String message = "Unexpected column header " + key;
@@ -305,12 +306,13 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 							String message = "Unhandled exception (%s) occurred during synonym import/update";
 							message = String.format(message, e.getMessage());
 							fireWarningEvent(message, state, 10); 
+							success = false;
 						}
 					}else{
 						acceptedTaxon = null;
 						String message = "Unhandled name status (%s)";
 						message = String.format(message, nameStatus);
-						fireWarningEvent(message, state, 8); 
+						fireWarningEvent(message, state, 8);
 					}
 				}else{//taxonNameStr is empty
 					//vernacular name case
@@ -326,49 +328,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 					handleCommonName(state, taxonNameStr, commonNameStr, acceptedTaxon);
 				}
 				
-				//feature
-				for (UUID featureUuid : taxonDataHolder.getFeatures()){
-					Feature feature = getFeature(state, featureUuid);
-//					Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
-					List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
-					
-					
-					for (int i = 0; i < textList.size(); i++){
-						String featureText = textList.get(i);
-						//TODO
-						TaxonDescription td = this.getTaxonDescription(acceptedTaxon, false, true);
-						TextData textData = TextData.NewInstance(feature);
-						textData.putText(Language.DEFAULT(), featureText);
-						td.addElement(textData);
-						
-						SourceDataHolder sourceDataHolder = taxonDataHolder.getFeatureTextReferences(featureUuid, i);
-						List<Map<SourceType, String>> sourceList = sourceDataHolder.getSources();
-						for (Map<SourceType, String> sourceMap : sourceList){
-						
-							DescriptionElementSource source = DescriptionElementSource.NewInstance();
-							//ref
-							Reference<?> ref = ReferenceFactory.newGeneric();
-							boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
-							for (SourceType type : sourceMap.keySet()){
-								String value = sourceMap.get(type);
-								if (type.equals(SourceType.Author)){
-									Team team = Team.NewInstance();
-									team.setTitleCache(value, true);
-									ref.setAuthorTeam(team);
-								}else if (type.equals(SourceType.Title)) {
-									ref.setTitle(value);
-								}else if (type.equals(SourceType.Year)) {
-									ref.setDatePublished(TimePeriod.parseString(value));
-								}
-								refExists = true;
-							}
-							if (refExists){
-								source.setCitation(ref);
-							}
-							textData.addSource(source);
-						}				
-					}
-				}
+				handleFeatures(state, taxonDataHolder, acceptedTaxon);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -376,6 +336,77 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		return success;
 	}
 
+
+	/**
+	 * @param state
+	 * @param taxonDataHolder
+	 * @param acceptedTaxon
+	 */
+	private void handleFeatures(TaxonExcelImportState state, NormalExplicitRow taxonDataHolder, Taxon acceptedTaxon) {
+		//feature
+		for (UUID featureUuid : taxonDataHolder.getFeatures()){
+			Feature feature = getFeature(state, featureUuid);
+//					Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
+			List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
+			List<String> languageList = taxonDataHolder.getFeatureLanguages(featureUuid);
+			
+			
+			for (int i = 0; i < textList.size(); i++){
+				String featureText = textList.get(i);
+				String featureLanguage = languageList.get(i);
+				Language language = getFeatureLanguage(featureLanguage, state);
+				//TODO
+				TaxonDescription td = this.getTaxonDescription(acceptedTaxon, false, true);
+				TextData textData = TextData.NewInstance(feature);
+				textData.putText(language, featureText);
+				td.addElement(textData);
+				
+				SourceDataHolder sourceDataHolder = taxonDataHolder.getFeatureTextReferences(featureUuid, i);
+				List<Map<SourceType, String>> sourceList = sourceDataHolder.getSources();
+				for (Map<SourceType, String> sourceMap : sourceList){
+				
+					DescriptionElementSource source = DescriptionElementSource.NewInstance();
+					//ref
+					Reference<?> ref = ReferenceFactory.newGeneric();
+					boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
+					for (SourceType type : sourceMap.keySet()){
+						String value = sourceMap.get(type);
+						if (type.equals(SourceType.Author)){
+							Team team = Team.NewInstance();
+							team.setTitleCache(value, true);
+							ref.setAuthorTeam(team);
+						}else if (type.equals(SourceType.Title)) {
+							ref.setTitle(value);
+						}else if (type.equals(SourceType.Year)) {
+							ref.setDatePublished(TimePeriod.parseString(value));
+						}
+						refExists = true;
+					}
+					if (refExists){
+						source.setCitation(ref);
+					}
+					textData.addSource(source);
+				}				
+			}
+		}
+	}
+
+
+	private Map<String, UUID> languageMapping = new HashMap<String, UUID>();
+
+	private Language getFeatureLanguage(String featureLanguage, TaxonExcelImportState state) {
+		if (StringUtils.isBlank(featureLanguage)){
+			return null;
+		}
+		UUID languageUuid = languageMapping.get(featureLanguage);
+		if (languageUuid == null){
+			Language result = getTermService().getLanguageByIso(featureLanguage);
+			languageUuid = result.getUuid();
+			languageMapping.put(featureLanguage, languageUuid);
+		}
+		Language result = getLanguage(state, languageUuid, null, null, null);
+		return result;
+	}
 
 
 	/**

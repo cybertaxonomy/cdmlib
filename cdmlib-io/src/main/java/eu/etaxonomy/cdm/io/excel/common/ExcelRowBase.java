@@ -53,6 +53,7 @@ public abstract class ExcelRowBase {
 	
 	//features
 	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<UUID, TreeMap<Integer, String>>();
+	private Map<UUID, TreeMap<Integer, String>> featureLanguages = new HashMap<UUID, TreeMap<Integer, String>>();
 	//feature sources
 	private Map<UUID, TreeMap<Integer, SourceDataHolder>> textSources = new HashMap<UUID, TreeMap<Integer, SourceDataHolder>>();
 
@@ -219,7 +220,8 @@ public abstract class ExcelRowBase {
 		return extensions;
 	}
 	
-
+//***************** FEATURES ***************************************************/
+	
 	public void putFeature(UUID featureUuid, int index, String value) {
 		TreeMap<Integer, String> featureMap = featureTexts.get(featureUuid);
 		if (featureMap == null){
@@ -228,6 +230,15 @@ public abstract class ExcelRowBase {
 		}
 		featureMap.put(index, value);
 	}
+	
+	public void putFeatureLanguage(UUID featureUuid, int index, String value) {
+		TreeMap<Integer, String> featureLanguageMap = featureLanguages.get(featureUuid);
+		if (featureLanguageMap == null){
+			featureLanguageMap = new TreeMap<Integer, String>();
+			featureLanguages.put(featureUuid, featureLanguageMap);
+		}
+		featureLanguageMap.put(index, value);
+	}
 
 	public Set<UUID> getFeatures() {
 		return featureTexts.keySet();
@@ -235,6 +246,15 @@ public abstract class ExcelRowBase {
 	
 	public List<String> getFeatureTexts(UUID featureUuid) {
 		TreeMap<Integer, String> map = featureTexts.get(featureUuid);
+		if (map != null){
+			return getOrdered(map);
+		}else{
+			return null;
+		}
+	}
+	
+	public List<String> getFeatureLanguages(UUID featureUuid) {
+		TreeMap<Integer, String> map = featureLanguages.get(featureUuid);
 		if (map != null){
 			return getOrdered(map);
 		}else{

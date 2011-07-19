@@ -39,8 +39,10 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -106,7 +108,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet
-//	@Ignore //does run standalone, but not in suite (maven)
+	@Ignore //does run standalone, but not in suite (maven)
 	public void testDoInvoke() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
@@ -164,7 +166,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
-//	@Ignore //does run standalone, but not in suite (maven)
+	@Ignore //does run standalone, but not in suite (maven)
 	public void testUUID() throws URISyntaxException{
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
@@ -190,23 +192,44 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		TaxonDescription description = taxon.getDescriptions().iterator().next();
 		assertEquals("Number of description elements should be 2", 2, description.getElements().size());
 		
-		DescriptionElementBase element = getFirstElement(description);
-//		DescriptionElementBase element = description.getElements().iterator().next();
-		assertEquals("Element should be of class TextData", TextData.class, element.getClass());
-		TextData textData = (TextData)element;
+		String expectedText = "Description for the first taxon";
+		TextData textData = getTextElement(description, expectedText);
+		assertNotNull("The element should exists", textData);
 		Feature feature = textData.getFeature();
 		assertEquals("Unexpected feature", Feature.DESCRIPTION(), feature);
-		String text = textData.getText(Language.DEFAULT());
-		String expected = "Description for the first taxon";
-		assertEquals("Unexpected description text", expected, text);
+		assertEquals("There should be exactly 1 language", 1,textData.getMultilanguageText().size());
+		Language language = textData.getMultilanguageText().keySet().iterator().next();
+		assertEquals("Language should be German", Language.GERMAN(), language);
+		String text = textData.getText(language);
+		assertEquals("Unexpected description text", expectedText, text);
 		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
 		DescriptionElementSource source = textData.getSources().iterator().next();
 		Reference ref = source.getCitation();
 		assertNotNull("Citation should not be null", ref);
 		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
 		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
+		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
+
 		//synonym
+		expectedText = "A synonym description";
+		textData = getTextElement(description, expectedText);
+		assertNotNull("The element should exists", textData);
+		feature = textData.getFeature();
+		assertEquals("Unexpected feature", Feature.DESCRIPTION(), feature);
+		assertEquals("There should be exactly 1 language", 1,textData.getMultilanguageText().size());
+		language = textData.getMultilanguageText().keySet().iterator().next();
+		assertEquals("Language should be Spanish", Language.SPANISH_CATALAN(), language);
+		text = textData.getText(language);
+		assertEquals("Unexpected description text", expectedText, text);
+		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
+		source = textData.getSources().iterator().next();
+		ref = source.getCitation();
+		assertNotNull("Citation should not be null", ref);
+		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
+		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorTeam().getTitleCache());
+		assertEquals("Publication title should be 'The ultimate book'", "The ultimate book", ref.getTitle());
+		assertEquals("Publication year should be '2011'", "2011", ref.getYear());
 		
 	}
 
@@ -215,8 +238,17 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	 * @param description
 	 * @return
 	 */
-	private DescriptionElementBase getFirstElement(TaxonDescription description) {
-		// TODO Auto-generated method stub
+	private TextData getTextElement(TaxonDescription description, String descriptionText) {
+		for (DescriptionElementBase element : description.getElements()){
+			if (element.isInstanceOf(TextData.class)){
+				TextData textData = CdmBase.deproxy(element, TextData.class);
+				for (LanguageString ls :textData.getMultilanguageText().values()){
+					if (ls.getText().equals(descriptionText)){
+						return textData;
+					}
+				}
+			}
+		}
 		return null;
 	}
 

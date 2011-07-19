@@ -127,7 +127,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	}
 
 	/**
-	 * To define a worksheetname override this method. Otherwise the first worksheet is taken.
+	 * To define a worksheet name override this method. Otherwise the first worksheet is taken.
 	 * @return worksheet name. <code>null</null> if not worksheet is defined.
 	 */
 	protected String getWorksheetName() {
