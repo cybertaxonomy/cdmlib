@@ -63,8 +63,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 @Qualifier("taxonNameDaoHibernateImpl")
-public class TaxonNameDaoHibernateImpl 
-extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
+public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
@@ -646,11 +645,5 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 		return null;
 	}
-	public UuidAndTitleCache<TaxonNameBase> findByNameForEditor(String searchString,
-			MatchMode matchMode){
-		
-		
-		return null;
-	}
-
+	
 }
