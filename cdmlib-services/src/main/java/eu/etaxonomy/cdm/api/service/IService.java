@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -221,6 +222,7 @@ public interface IService<T extends ICdmBase>{
 	 * @param newInstance the new entity to be persisted
 	 * @return A generated UUID for the new persistent entity
 	 */
+	
 	public UUID save(T newInstance);
 	
 	/**

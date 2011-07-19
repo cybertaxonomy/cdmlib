@@ -775,6 +775,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/ThreadLocalAuditE
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermission.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluatorPermitAll.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/UserPermissionEvaluator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
@@ -1818,6 +1819,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGene
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
@@ -1860,6 +1862,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServ
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/SecurityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml -text

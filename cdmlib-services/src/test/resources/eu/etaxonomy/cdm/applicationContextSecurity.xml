@@ -105,10 +105,12 @@
     <bean id="groupService" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl">
       	
     </bean>
-    <bean id="termService" class="eu.etaxonomy.cdm.api.service.TermServiceImpl">
+    <bean id="taxonService" class="eu.etaxonomy.cdm.api.service.TaxonServiceImpl">
       	
     </bean>
-    
+     <bean id="descriptionService" class="eu.etaxonomy.cdm.api.service.DescriptionServiceImpl">
+      	
+    </bean>
     <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
     
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">

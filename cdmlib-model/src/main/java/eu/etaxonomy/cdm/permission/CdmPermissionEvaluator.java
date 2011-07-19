@@ -34,12 +34,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 		UUID targetUuid;
 		
 		public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
-			try {
-				this.className = CdmPermissionClass.valueOf(className);
-			} catch (IllegalArgumentException e) {
-				//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
-				this.className = null;
-			}
+			this.className = CdmPermissionClass.getValueOf(className);
 			this.permission = permission;
 			targetUuid = uuid;
 		}
@@ -88,16 +83,22 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 			cdmPermission = (CdmPermission)permission;
 		}
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
-  
-        AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-        //FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
+        AuthorityPermission evalPermission;
+        try{
+        	evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+        }catch(NullPointerException e){
+        	evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
+        }
+        	//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
 		if (evalPermission.className != null) {
-			if (evalPermission.className.equals(CdmPermissionClass.USER)) {
+			return evalPermission(authorities, evalPermission,
+					(CdmBase) targetDomainObject);
+			/*if (evalPermission.className.equals(CdmPermissionClass.USER)) {
 				return evalPermission(authorities, evalPermission,
 						(CdmBase) targetDomainObject);
 			} else {
 				return true;
-			}
+			}*/
 		}else{
 			//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
 			//see also AuthorityPermission constructor

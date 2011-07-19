@@ -76,9 +76,6 @@ public class UserServiceImplTest {
 	private IUserService userService;
 	
 	@SpringBeanByName
-	private ITermService termService;
-	
-	@SpringBeanByName
 	private IGroupService groupService;
 	
 	@TestDataSource
@@ -132,6 +129,7 @@ public class UserServiceImplTest {
 		
 		userService.updateUser(user);
 		userService.update(user);
+		userService.saveOrUpdate(user);
 	}
 	
 	@Test
@@ -206,6 +204,10 @@ public class UserServiceImplTest {
 		String password = "password";
 		User user = User.NewInstance(username, password);
 		userService.createUser(user);
+		
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
 		
 		userService.changePasswordForUser(username, "newPassword");
 				
