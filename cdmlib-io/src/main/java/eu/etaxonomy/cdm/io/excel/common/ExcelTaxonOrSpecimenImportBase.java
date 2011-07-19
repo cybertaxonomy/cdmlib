@@ -10,13 +10,24 @@
 package eu.etaxonomy.cdm.io.excel.common;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.PostfixTerm;
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenCdmExcelImportState;
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenRow;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * @author a.mueller
@@ -229,6 +240,42 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		}
 	}
 	
+
+	protected boolean handleFeatures(STATE state, KeyValue keyValue) {
+		String key = keyValue.key;
+		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
+		if (features.getCount() > 1){
+			String message = "More than one feature found matching key " + key;
+			fireWarningEvent(message, state, 4);
+			return false;
+		}else if (features.getCount() == 0){
+			return false;
+		}else{
+			Feature feature = CdmBase.deproxy(features.getRecords().get(0), Feature.class);
+			ROW row = state.getCurrentRow();
+			if ( keyValue.isKeyData()){
+				row.putFeature(feature.getUuid(), keyValue.index, keyValue.value);
+			}else{
+				row.putFeatureSource(feature.getUuid(), keyValue.index, keyValue.refType, keyValue.value, keyValue.refIndex);
+			}
+			return true;
+		}
+	}
+	
+
+	protected void handleExtensions(IdentifiableEntity<?> identifiable, SpecimenRow row, SpecimenCdmExcelImportState state) {
+		List<PostfixTerm> extensions = row.getExtensions();
+		
+		for (PostfixTerm exType : extensions){
+			ExtensionType extensionType = state.getPostfixExtensionType(exType.postfix);
+			
+			Extension extension = Extension.NewInstance();
+			extension.setType(extensionType);
+			extension.setValue(exType.term);
+			identifiable.addExtension(extension);
+		}
+		
+	}
 
 
 	protected void fireWarningEvent(String message, STATE state, int severity) {

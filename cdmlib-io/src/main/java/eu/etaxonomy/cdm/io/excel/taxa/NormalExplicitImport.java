@@ -23,12 +23,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.SourceDataHolder;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -61,7 +59,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author a.babadshanjan
  * @created 08.01.2009
- * @version 1.0
  */
 
 @Component
@@ -110,6 +107,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			normalExplicitRow.setLanguage(value);
 		
 		} else if(key.equalsIgnoreCase(TDWG_COLUMN)) {
+			//TODO replace still necessary?
 			value = value.replace(".0", "");
 			normalExplicitRow.putDistribution(index, value);
 		
@@ -130,28 +128,6 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			}
 		}
 		return success;
-	}
-
-
-	private boolean handleFeatures(TaxonExcelImportState state, KeyValue keyValue) {
-		String key = keyValue.key;
-		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
-		if (features.getCount() > 1){
-			String message = "More than one feature found matching key " + key;
-			fireWarningEvent(message, state, 4);
-			return false;
-		}else if (features.getCount() == 0){
-			return false;
-		}else{
-			Feature feature = CdmBase.deproxy(features.getRecords().get(0), Feature.class);
-			NormalExplicitRow row = state.getCurrentRow();
-			if ( keyValue.isKeyData()){
-				row.putFeature(feature.getUuid(), keyValue.index, keyValue.value);
-			}else{
-				row.putFeatureSource(feature.getUuid(), keyValue.index, keyValue.refType, keyValue.value, keyValue.refIndex);
-			}
-			return true;
-		}
 	}
 
 
@@ -262,44 +238,6 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 
 		return success;
     }
-
-	/**
-	 * @param state
-	 * @param rank
-	 * @param taxonNameStr
-	 * @param authorStr
-	 * @param nameStatus
-	 * @return
-	 */
-	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
-			String taxonNameStr, String authorStr, String nameStatus) {
-		// Create the taxon name object depending on the setting of the nomenclatural code 
-		// in the configurator (botanical code, zoological code, etc.) 
-		if (StringUtils.isBlank(taxonNameStr)){
-			return null;
-		}
-		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-		
-		TaxonBase taxonBase = null;
-		
-		String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
-		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
-			titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
-			taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
-		}else{
-			taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
-			if (taxonBase != null){
-				logger.info("Matching taxon/synonym found for " + titleCache);
-			}
-		}
-		if (taxonBase != null){
-			logger.info("Matching taxon/synonym found for " + titleCache);
-		}else {
-			taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus, nc);
-		}
-		return taxonBase;
-	}
-
 
 
 
@@ -464,6 +402,46 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 	}
 
+
+	/**
+	 * @param state
+	 * @param rank
+	 * @param taxonNameStr
+	 * @param authorStr
+	 * @param nameStatus
+	 * @return
+	 */
+	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
+			String taxonNameStr, String authorStr, String nameStatus) {
+		// Create the taxon name object depending on the setting of the nomenclatural code 
+		// in the configurator (botanical code, zoological code, etc.) 
+		if (StringUtils.isBlank(taxonNameStr)){
+			return null;
+		}
+		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
+		
+		TaxonBase taxonBase = null;
+		
+		String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
+			titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
+			taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
+		}else{
+			taxonBase = getTaxonService().findBestMatchingSynonym(titleCache);
+			if (taxonBase != null){
+				logger.info("Matching taxon/synonym found for " + titleCache);
+			}
+		}
+		if (taxonBase != null){
+			logger.info("Matching taxon/synonym found for " + titleCache);
+		}else {
+			taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus, nc);
+		}
+		return taxonBase;
+	}
+
+
+	
 
 	/**
 	 * @param state

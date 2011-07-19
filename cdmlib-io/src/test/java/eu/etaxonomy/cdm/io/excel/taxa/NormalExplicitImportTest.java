@@ -27,7 +27,6 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -53,7 +51,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -89,13 +86,13 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN);
+		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN, null);
 		assertNotNull("Configurator could not be created", configurator);
 		
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN);
+		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN, null);
 		assertNotNull("Configurator could not be created", configurator);
 		
 	}
@@ -108,7 +105,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet
-	@Ignore //does run standalone, but not in suite (maven)
+//	@Ignore //does run standalone, but not in suite (maven)
 	public void testDoInvoke() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
@@ -166,7 +163,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
-	@Ignore //does run standalone, but not in suite (maven)
+//	@Ignore //does run standalone, but not in suite (maven)
 	public void testUUID() throws URISyntaxException{
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
@@ -181,10 +178,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertNotNull("Synonym with given uuid should exist", synonym);
 		assertEquals("Synonym should have 1 accepted taxon", 1, synonym.getAcceptedTaxa().size());
 		
-//		UUID uuidt = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
-//		DefinedTermBase term = termService.find(uuidt);
-//		System.out.println(term.getId());
-		
 		//import
 		boolean result = defaultImport.invoke(uuidConfigurator);
 		//test result
@@ -195,6 +188,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Taxon should have 1 description", 1, taxon.getDescriptions().size());
 		TaxonDescription description = taxon.getDescriptions().iterator().next();
 		assertEquals("Number of description elements should be 2", 2, description.getElements().size());
+		
 		DescriptionElementBase element = getFirstElement(description);
 //		DescriptionElementBase element = description.getElements().iterator().next();
 		assertEquals("Element should be of class TextData", TextData.class, element.getClass());

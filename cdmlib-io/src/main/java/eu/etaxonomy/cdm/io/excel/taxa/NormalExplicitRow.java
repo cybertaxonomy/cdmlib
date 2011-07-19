@@ -44,12 +44,6 @@ public class NormalExplicitRow extends ExcelRowBase {
 	
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
 	
-	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<UUID, TreeMap<Integer, String>>();
-	
-	private Map<UUID, TreeMap<Integer, SourceDataHolder>> textSources = new HashMap<UUID, TreeMap<Integer, SourceDataHolder>>();
-
-	
-	
 	public NormalExplicitRow() {
 		this.id = 0;
 		this.parentId = 0;
@@ -219,58 +213,6 @@ public class NormalExplicitRow extends ExcelRowBase {
 		return getOrdered(images);
 	}
 	
-
-	public void putFeature(UUID featureUuid, int index, String value) {
-		TreeMap<Integer, String> featureMap = featureTexts.get(featureUuid);
-		if (featureMap == null){
-			featureMap = new TreeMap<Integer, String>();
-			featureTexts.put(featureUuid, featureMap);
-		}
-		featureMap.put(index, value);
-	}
-
-	public Set<UUID> getFeatures() {
-		return featureTexts.keySet();
-	}
-	
-	public List<String> getFeatureTexts(UUID featureUuid) {
-		TreeMap<Integer, String> map = featureTexts.get(featureUuid);
-		if (map != null){
-			return getOrdered(map);
-		}else{
-			return null;
-		}
-	}
-	
-
-	public void putFeatureSource(UUID featureUuid,	int featureIndex, SourceType refType, String value, int refIndex) {
-		//feature Map
-		TreeMap<Integer, SourceDataHolder> featureMap = textSources.get(featureUuid);
-		if (featureMap == null){
-			featureMap = new TreeMap<Integer, SourceDataHolder>();
-			textSources.put(featureUuid, featureMap);
-		}
-		//sourcedText
-		SourceDataHolder sourceDataHolder = featureMap.get(featureIndex);
-		if (sourceDataHolder == null){
-			sourceDataHolder = new SourceDataHolder();
-			featureMap.put(featureIndex, sourceDataHolder);
-		}
-		//
-		sourceDataHolder.putSource(refIndex, refType, value);
-	}
-	
-
-	public SourceDataHolder getFeatureTextReferences(UUID featureUuid, int index) {
-		TreeMap<Integer, SourceDataHolder> textMap = textSources.get(featureUuid);
-		if (textMap == null){
-			return new SourceDataHolder();
-		}else{
-			SourceDataHolder sourceMap = textMap.get(index);
-			return sourceMap;
-		}
-		
-	}
 
 	private List<String> getOrdered(TreeMap<Integer, String> tree) {
 		List<String> result = new ArrayList<String>();

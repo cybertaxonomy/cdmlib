@@ -33,8 +33,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -133,9 +131,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		SpecimenRow row = state.getCurrentRow();
 		boolean success = true;
 		String value = keyValue.value;
-		if (keyValue.key.matches(CDM_UUID_COLUMN)) {
-			row.setCdmUuid(UUID.fromString(value)); //VALIDATE UUID
-		} else if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
+		if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
 			row.setBasisOfRecord(value);
 		} else if(keyValue.key.matches(COUNTRY_COLUMN)) {
 			row.setCountry(value);
@@ -288,7 +284,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 //			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
 		}
 		handleDeterminations(state, row, facade);
-		handleExtensions(facade,row, state);
+		handleExtensions(facade.innerDerivedUnit(),row, state);
 		for (String note : row.getUnitNotes()){
 			Annotation annotation = Annotation.NewInstance(note, AnnotationType.EDITORIAL(), Language.DEFAULT());
 			facade.addAnnotation(annotation);
@@ -354,22 +350,6 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		
 		
 	}
-
-
-	private void handleExtensions(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
-		List<PostfixTerm> extensions = row.getExtensions();
-		
-		for (PostfixTerm exType : extensions){
-			ExtensionType extensionType = state.getPostfixExtensionType(exType.postfix);
-			
-			Extension extension = Extension.NewInstance();
-			extension.setType(extensionType);
-			extension.setValue(exType.term);
-			facade.innerDerivedUnit().addExtension(extension);
-		}
-		
-	}
-
 
 	private void handleAreas(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 		List<PostfixTerm> areas = row.getLeveledAreas();
