@@ -308,6 +308,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	 */
 	@Override
     protected boolean secondPass(TaxonExcelImportState state) {
+//		System.out.println(state.getCurrentLine());
 		boolean success = true;
 		try {
 			NormalExplicitRow taxonDataHolder = state.getCurrentRow();
@@ -389,7 +390,8 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				
 				//feature
 				for (UUID featureUuid : taxonDataHolder.getFeatures()){
-					Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
+					Feature feature = getFeature(state, featureUuid);
+//					Feature feature = CdmBase.deproxy(getTermService().find(featureUuid), Feature.class);
 					List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
 					
 					
