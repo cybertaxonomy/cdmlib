@@ -13,8 +13,6 @@ package eu.etaxonomy.cdm.io.markup;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.stream.XMLEventReader;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlImportState;
@@ -40,6 +38,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 	
 	private Language defaultLanguage;
+	
+	private boolean success = true;
 	
 //**************************** CONSTRUCTOR ******************************************/
 	
@@ -86,6 +86,19 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	public void setDefaultLanguage(Language defaultLanguage){
 		this.defaultLanguage = defaultLanguage;
+	}
+
+	
+	
+	public void setSuccessToFalse() {
+		this.success = false;
+	}
+
+	/**
+	 * @return the success
+	 */
+	public boolean isSuccess() {
+		return success;
 	}
 
 

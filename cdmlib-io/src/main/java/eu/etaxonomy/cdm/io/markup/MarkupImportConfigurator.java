@@ -165,8 +165,5 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		this.doTaxa = doTaxa;
 	}
 
-
-
-
 	
 }
