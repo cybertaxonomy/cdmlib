@@ -492,7 +492,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 * @see eu.etaxonomy.cdm.io.specimen.SpecimenIoBase#doInvoke(eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportState)
 	 */
 	@Override
-	protected boolean doInvoke(SpecimenSynthesysExcelImportState state) {
+	protected void doInvoke(SpecimenSynthesysExcelImportState state) {
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
 		SpecimenSythesysExcelImport test = new SpecimenSythesysExcelImport();
 		URI source = state.getConfig().getSource();
@@ -515,7 +515,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			}
 		}
 
-		return false;
+		return;
 	}
 
 

@@ -83,7 +83,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		return result;
 	}
 	
-	public boolean doInvoke(TaxonXImportState state){
+	public void doInvoke(TaxonXImportState state){
 		logger.debug("not yet fully implemented");
 		
 		TaxonXImportConfigurator txConfig = state.getConfig();
@@ -99,7 +99,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		Taxon taxon = getTaxon(txConfig);
 		if (taxon == null){
 			logger.warn("Taxon could not be found");
-			return false;
+			state.setUnsuccessfull();
 		}
 		
 		Reference modsReference = state.getModsReference();
@@ -150,7 +150,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			taxon.addDescription(description);
 			getTaxonService().save(taxon);
 		}
-		return true;
+		return;
 	}
 	
 	private Feature handleFeatureException(String strType, UnknownCdmTypeException e, TaxonXImportConfigurator txConfig){

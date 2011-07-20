@@ -102,7 +102,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 			return true;
 		}else{
 			updateProgress(state, "Invoking " + ioName);
-			return doInvoke(state);
+			doInvoke(state);
+			return state.isSuccess();
 		}
 	}
 	
@@ -111,7 +112,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	 * @param state
 	 * @return
 	 */
-	protected abstract boolean doInvoke(STATE state);
+	protected abstract void doInvoke(STATE state);
 
 	
 	@Autowired

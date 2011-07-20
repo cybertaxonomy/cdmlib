@@ -70,8 +70,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
 	
-
-	
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
 		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
@@ -285,6 +283,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void setCheck(boolean isCheck) {
 		this.isCheck = isCheck;
 	}
+
 
 	
 }

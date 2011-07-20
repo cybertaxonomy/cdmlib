@@ -125,7 +125,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	}
 	
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){
+	public void doInvoke(TcsXmlImportState state){
 		
 		logger.info("start make TaxonConcepts ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
@@ -247,7 +247,10 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		logger.info(i + " taxa handled. Saving ...");
 		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");
-		return success.getValue();
+		if (!success.getValue()){
+			state.setUnsuccessfull();
+		}
+		return;
 	}
 	
 	private void handleVernacularName(ResultWrapper<Boolean> success, String taxonId, Element elName, Map<String, CommonTaxonName> commonNameMap) {

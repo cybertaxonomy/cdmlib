@@ -67,7 +67,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(SDDExportState state){
+	protected void doInvoke(SDDExportState state){
 //		protected boolean doInvoke(IExportConfigurator config,
 //		Map<String, MapWrapper<? extends CdmBase>> stores) {
 	
@@ -116,7 +116,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		} 
 		commitTransaction(txStatus);
 		
-		return true;
+		return;
 
 	}
 

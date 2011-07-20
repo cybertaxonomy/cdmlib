@@ -38,7 +38,8 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 
 
 	protected static final String CDM_UUID_COLUMN = "(?i)(CdmUuid)";
-
+	protected static final String IGNORE_COLUMN = "(?i)(Ignore|Not)";
+	
 	
 	protected static final String RANK_COLUMN = "(?i)(Rank)";
 	protected static final String FULL_NAME_COLUMN = "(?i)(FullName)";
@@ -48,9 +49,8 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected static final String INFRASPECIFIC_EPITHET_COLUMN = "(?i)(InfraSpecificEpi(thet)?)";
 
 	@Override
-	protected boolean analyzeRecord(HashMap<String, String> record, STATE state) {
-		boolean success = true;
-    	Set<String> keys = record.keySet();
+	protected void analyzeRecord(HashMap<String, String> record, STATE state) {
+		Set<String> keys = record.keySet();
     	
     	ROW row = createDataHolderRow();
     	state.setCurrentRow(row);
@@ -61,12 +61,12 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
     			continue;
     		}
     		if (isBaseColumn(keyValue)){
-    			success &= handleBaseColumn(keyValue, row);
+    			handleBaseColumn(keyValue, row);
     		}else{
-    			success &= analyzeSingleValue(keyValue, state);
+    			analyzeSingleValue(keyValue, state);
     		}
     	}
-    	return success;
+    	return;
 	}
 	
 	protected abstract ROW createDataHolderRow();
@@ -77,7 +77,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	 * @param state 
 	 * @return
 	 */
-	protected abstract boolean analyzeSingleValue(KeyValue keyValue, STATE state);
+	protected abstract void analyzeSingleValue(KeyValue keyValue, STATE state);
 
 	/**
 	 *	DataHolder class for all key and value information for a cell.
@@ -111,6 +111,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		Author("RefAuthor"),
 		Title("RefTitle"),
 		Year("RefYear"),
+		RefExtension("RefExt(ension)?"),
 		Language("Lang") //strictly not a reference, so some refactoring/renaming is needed
 		;
 		
@@ -240,6 +241,9 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	private boolean isBaseColumn(KeyValue keyValue) {
 		String key = keyValue.key;
 		if (key.matches(CDM_UUID_COLUMN)){
+			return true;
+		} else if(keyValue.key.matches(IGNORE_COLUMN)) {
+			logger.debug("Ignored column" + keyValue.originalKey);
 			return true;
 		}
 		return false;

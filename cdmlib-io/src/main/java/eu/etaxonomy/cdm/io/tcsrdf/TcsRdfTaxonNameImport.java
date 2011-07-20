@@ -94,7 +94,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	};
 	
 	@Override
-	protected boolean doInvoke(TcsRdfImportState state){
+	protected void doInvoke(TcsRdfImportState state){
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
@@ -107,7 +107,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		logger.info("start makeTaxonNames ...");
 		TcsRdfImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
-		boolean success =true;
 		
 		Namespace rdfNamespace = config.getRdfNamespace();
 		Namespace taxonNameNamespace = config.getTnNamespace();
@@ -246,14 +245,14 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			} catch (UnknownCdmTypeException e) {
 				//FIXME
 				logger.warn("Name with id " + nameAbout + " has unknown rank " + strRank + " and could not be saved.");
-				success = false; 
+				state.setUnsuccessfull();
 			}
 		}
 		logger.info(i + " names handled");
 		getNameService().save(taxonNameMap.objects());
 //		makeNameSpecificData(nameMap);
 		logger.info("end makeTaxonNames ...");
-		return success;
+		return;
 
 	}
 	/* (non-Javadoc)

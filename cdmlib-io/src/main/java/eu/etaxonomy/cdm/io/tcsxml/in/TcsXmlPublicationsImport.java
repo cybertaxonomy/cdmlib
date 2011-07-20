@@ -66,7 +66,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 
 	
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){
+	public void doInvoke(TcsXmlImportState state){
 		
 		logger.info("start make Publications ...");
 		boolean success = true;
@@ -131,7 +131,10 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		referenceService.save(referenceMap.objects());
 
 		logger.info("end make publications ...");
-		return success;
+		if (!success){
+			state.setUnsuccessfull();
+		}
+		return;
 	}
 	
 	/* (non-Javadoc)

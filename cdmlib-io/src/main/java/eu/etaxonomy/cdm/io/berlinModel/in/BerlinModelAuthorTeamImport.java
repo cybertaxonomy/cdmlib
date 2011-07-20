@@ -53,14 +53,12 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	}
 
 	
-	protected boolean doInvoke(BerlinModelImportState state){
+	protected void doInvoke(BerlinModelImportState state){
 		BerlinModelImportConfigurator config = state.getConfig();
 		source = config.getSource();
 
 		logger.info("start make " + pluralString + " ...");
-		boolean success = true ;
-		
-		
+				
 		//queryStrings
 		String strIdQuery = getIdQuery();
 		
@@ -79,12 +77,13 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 			}
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 		
 		
-		logger.info("end make " + pluralString + " ... " + getSuccessString(success));
-		return success;
+		logger.info("end make " + pluralString + " ... " + getSuccessString(true));
+		return;
 	}
 	
 	protected String getIdQuery(){

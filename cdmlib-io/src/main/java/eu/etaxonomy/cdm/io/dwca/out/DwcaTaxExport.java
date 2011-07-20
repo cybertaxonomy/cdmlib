@@ -68,7 +68,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 		
@@ -120,7 +120,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
-		return true;
+		return;
 		
 	}
 

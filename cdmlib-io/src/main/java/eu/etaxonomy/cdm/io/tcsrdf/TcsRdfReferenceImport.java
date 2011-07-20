@@ -190,7 +190,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return value;
 	}
 	
-	protected boolean doInvoke(TcsRdfImportState state){
+	protected void doInvoke(TcsRdfImportState state){
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<Reference> nomRefMap = (MapWrapper<Reference>)state.getStore(ICdmIO.NOMREF_STORE);
 		
@@ -200,7 +200,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		
 		String tcsElementName;
 		Namespace tcsNamespace;
-		boolean success = true;
 		
 		Namespace rdfNamespace = config.getRdfNamespace();
 		Namespace publicationNamespace = config.getPublicationNamespace();
@@ -308,7 +307,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			} catch (UnknownCdmTypeException e) {
 				//FIXME
 				logger.warn("Name with id " + strAbout + " has unknown type " + strPubType + " and could not be saved.");
-				success = false; 
+				state.setUnsuccessfull();
 			}
 		}
 		
@@ -330,7 +329,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		
 		//referenceService.saveReferenceAll(referenceMap.objects());
 		logger.info("end makeReferences ...");
-		return success;
+		return;
 		
 	}
 

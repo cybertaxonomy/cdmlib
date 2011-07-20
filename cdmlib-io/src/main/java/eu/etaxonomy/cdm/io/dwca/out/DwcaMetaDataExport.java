@@ -47,7 +47,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 
 		DwcaMetaDataRecord metaDataRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, null);
@@ -97,7 +97,7 @@ public class DwcaMetaDataExport extends DwcaExportBase {
 			closeWriter(writer, state);
 		}
 		
-		return true;
+		return;
 	}
 
 	private void writeMetaDataRecord(XMLStreamWriter writer,

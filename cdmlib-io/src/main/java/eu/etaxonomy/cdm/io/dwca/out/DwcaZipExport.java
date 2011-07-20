@@ -36,7 +36,7 @@ public class DwcaZipExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		if (state.isZip()){
 			try {
 				state.closeZip();
@@ -96,7 +96,7 @@ public class DwcaZipExport extends DwcaExportBase {
 //		 }
 	 
 		
-		return true;
+		return;
 	}
 
 

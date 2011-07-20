@@ -589,19 +589,56 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
+		Reference ref = null;
+		return getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
+	}
+	
+	/**
+	 * Like {@link #getTaxonDescription(Taxon, boolean, boolean)}
+	 * Only matches a description if the given reference is a source of the description.<BR>
+	 * If a new description is created the given reference will be added as a source.
+	 * 
+	 * @see #getTaxonDescription(Taxon, boolean, boolean)
+	 */
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descriptions= taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
 			if (description.isImageGallery() == isImageGallery){
-				result = description;
-				break;
+				if (hasCorrespondingSource(ref, description)){
+					result = description;
+					break;
+				}
 			}
 		}
 		if (result == null && createNewIfNotExists){
 			result = TaxonDescription.NewInstance(taxon);
 			result.setImageGallery(isImageGallery);
+			if (ref != null){
+				result.addSource(null, null, ref, null);
+			}
 		}
 		return result;
+	}
+
+
+	/**
+	 * Returns true, if this description has a source with a citation equal to the given reference.
+	 * Returns true if the given reference is null.
+	 * @param ref
+	 * @param description
+	 */
+	private boolean hasCorrespondingSource(Reference ref, TaxonDescription description) {
+		if (ref != null){
+			for (IdentifiableSource source : description.getSources()){
+				if (ref.equals(source.getCitation())){
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+		
 	}
 	
 	

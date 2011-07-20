@@ -70,7 +70,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
-	protected boolean doInvoke(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
+	protected void doInvoke(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	
@@ -83,7 +83,8 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
 			String message = "File not found: " + source;
 			warnProgress(state, message, e);
 			logger.error(message);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
     	if (recordList != null) {
     		HashMap<String,String> record = null;
@@ -104,7 +105,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     		e.printStackTrace();
 		}
     	
-    	return true;
+    	return;
 	}
 			
 

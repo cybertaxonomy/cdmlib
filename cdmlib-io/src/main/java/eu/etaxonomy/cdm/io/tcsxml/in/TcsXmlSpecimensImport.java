@@ -64,7 +64,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){
+	public void doInvoke(TcsXmlImportState state){
 		logger.info("start make Specimens ...");
 		
 		MapWrapper<Specimen> specimenMap = (MapWrapper<Specimen>)state.getStore(ICdmIO.SPECIMEN_STORE);
@@ -137,7 +137,10 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 	    getOccurrenceService().save((java.util.Collection)specimenMap.objects());
 
 		logger.info("end make Specimens ...");
-		return success;
+		if (!success){
+			state.setUnsuccessfull();
+		}
+		return;
 
 	}
 	

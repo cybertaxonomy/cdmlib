@@ -46,18 +46,17 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
      * @param stores (not used)
      */
 	@Override
-	protected boolean doInvoke(STATE state){
+	protected void doInvoke(STATE state){
 		
-		boolean success = true;
-		
-    	logger.debug("Importing excel data");
+		logger.debug("Importing excel data");
     	
     	configurator = state.getConfig();
     	
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 		if (nc == null && needsNomenclaturalCode()) {
 			logger.error("Nomenclatural code could not be determined. Skip invoke.");
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 		// read and save all rows of the excel worksheet
 		URI source = state.getConfig().getSource();
@@ -68,15 +67,13 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 			String message = "File not found: " + source;
 			warnProgress(state, message, e);
 			logger.error(message);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
     	
-    	success &= handleRecordList(state, source);
-    	
+    	handleRecordList(state, source);
     	logger.debug("End excel data import"); 
-
-    	
-    	return success;
+    	return;
 	}
 
 	protected boolean needsNomenclaturalCode() {
@@ -89,8 +86,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	 * @param source
 	 * @return
 	 */
-	private boolean handleRecordList(STATE state, URI source) {
-		boolean success = true;
+	private void handleRecordList(STATE state, URI source) {
 		Integer startingLine = 2;
 		if (recordList != null) {
     		HashMap<String,String> record = null;
@@ -101,9 +97,9 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     		state.setCurrentLine(startingLine);
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success &= analyzeRecord(record, state);
+    			analyzeRecord(record, state);
     			try {
-					success &= firstPass(state);
+					firstPass(state);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}finally{
@@ -114,8 +110,8 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     		state.setCurrentLine(startingLine);
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success &= analyzeRecord(record, state);
-    			success &= secondPass(state);
+    			analyzeRecord(record, state);
+    			secondPass(state);
     			state.incCurrentLine();
     	   	}
     		
@@ -123,7 +119,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
     	}else{
     		logger.warn("No records found in " + source);
     	}
-		return success;
+		return;
 	}
 
 	/**
@@ -147,10 +143,10 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	 * @param record
 	 * @return
 	 */
-	protected abstract boolean analyzeRecord(HashMap<String,String> record, STATE state);
+	protected abstract void analyzeRecord(HashMap<String,String> record, STATE state);
 	
-	protected abstract boolean firstPass(STATE state);
-	protected abstract boolean secondPass(STATE state);
+	protected abstract void firstPass(STATE state);
+	protected abstract void secondPass(STATE state);
 	
 	
 	public ExcelImportConfiguratorBase getConfigurator() {

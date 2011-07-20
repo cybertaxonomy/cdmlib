@@ -68,7 +68,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
@@ -169,7 +169,7 @@ public class DwcaResourceRelationExport extends DwcaExportBase {
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
-		return true;
+		return;
 	}
 
 	private void handleRelationship(DwcaResourceRelationRecord record, IdentifiableEntity<?> subject, IdentifiableEntity<?> object,

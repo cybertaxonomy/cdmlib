@@ -116,8 +116,6 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	private static final String DETERMINATION_NOTES_COLUMN = "(?i)(DeterminationNote)";
 	private static final String EXTENSION_COLUMN = "(?i)(Ext(ension)?)";
 	
-	private static final String IGNORE_COLUMN = "(?i)(Ignore|Not)";
-	
 
 	public SpecimenCdmExcelImport() {
 		super();
@@ -127,9 +125,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 
 	@Override
-	protected boolean analyzeSingleValue(KeyValue keyValue, SpecimenCdmExcelImportState state) {
+	protected void analyzeSingleValue(KeyValue keyValue, SpecimenCdmExcelImportState state) {
 		SpecimenRow row = state.getCurrentRow();
-		boolean success = true;
 		String value = keyValue.value;
 		if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
 			row.setBasisOfRecord(value);
@@ -231,19 +228,17 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				logger.warn("Extension without postfix not yet implemented");
 			}
 			
-		} else if(keyValue.key.matches(IGNORE_COLUMN)) {
-			logger.debug("Ignored column" + keyValue.originalKey);		
 		}else {
-			success = false;
+			state.setUnsuccessfull();
 			logger.error("Unexpected column header " + keyValue.originalKey);
 		}
 
-    	return success;
+    	return;
 	}
 
 
 	@Override
-	protected boolean firstPass(SpecimenCdmExcelImportState state) {
+	protected void firstPass(SpecimenCdmExcelImportState state) {
 		SpecimenRow row = state.getCurrentRow();
 		
 		//basis of record
@@ -292,7 +287,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		
 		//save
 		getOccurrenceService().save(facade.innerDerivedUnit());
-		return true;
+		return;
 	}
 
 	private void handleAbsoluteElevation(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
@@ -762,9 +757,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	}
 
 	@Override
-	protected boolean secondPass(SpecimenCdmExcelImportState state) {
+	protected void secondPass(SpecimenCdmExcelImportState state) {
 		//no second path defined yet
-		return true;
+		return;
 	}
 
 

@@ -80,7 +80,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 * @return
 	 * @throws SQLException
 	 */
-	private boolean makeClassifications(BerlinModelImportState state) throws SQLException{
+	private void makeClassifications(BerlinModelImportState state) throws SQLException{
 		logger.info("start make classification ...");
 		Source source = state.getConfig().getSource();
 
@@ -136,7 +136,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		logger.info("end make classification ...");
 
-		return true;
+		return;
 	}
 
 	/**
@@ -316,12 +316,11 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(BerlinModelImportState state){				
+	protected void doInvoke(BerlinModelImportState state){				
 		try {
-			boolean success = true;
-			success &= makeClassifications(state);
-			success &= super.doInvoke(state);
-			return success;
+			makeClassifications(state);
+			super.doInvoke(state);
+			return;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

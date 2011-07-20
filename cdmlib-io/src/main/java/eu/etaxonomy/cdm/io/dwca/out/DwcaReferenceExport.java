@@ -54,7 +54,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
@@ -100,7 +100,7 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
-		return true;
+		return;
 	}
 
 	private void handleReference(DwcaReferenceRecord record, Reference<?> reference, Taxon taxon) {

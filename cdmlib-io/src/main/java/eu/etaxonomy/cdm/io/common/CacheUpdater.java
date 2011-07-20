@@ -29,7 +29,7 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 	private static final Logger logger = Logger.getLogger(CacheUpdater.class);
 
 	@Override
-	protected boolean doInvoke(DefaultImportState<CacheUpdaterConfigurator> state) {
+	protected void doInvoke(DefaultImportState<CacheUpdaterConfigurator> state) {
 		CacheUpdaterConfigurator config = state.getConfig();
 		if (config.getClassList() == null || config.getClassList().isEmpty()){
 			//!! not yet implemented
@@ -37,7 +37,7 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 			createClassListFromBoolean();
 		}
 		handleClassList(config.getClassList());
-		return true;
+		return;
 	}
 
 

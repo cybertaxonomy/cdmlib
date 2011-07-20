@@ -67,7 +67,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 	
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){ 
+	public void doInvoke(TcsXmlImportState state){ 
 	
 		
 		logger.info("start make taxon relations ...");
@@ -109,7 +109,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		getTaxonService().save(taxonStore);
 		
 		logger.info("end make taxon relations ...");
-		return success.getValue();
+		if (!success.getValue()){
+			state.setUnsuccessfull();
+		}
+		return;
 	}
 	
 	private int makeTaxonConcept(TcsXmlImportState state, MapWrapper<TaxonBase> taxonMap, Set<TaxonBase> taxonStore, Element elTaxonConcept, Namespace tcsNamespace, ResultWrapper<Boolean> success){
