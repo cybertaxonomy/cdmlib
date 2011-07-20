@@ -111,7 +111,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         if (targetUuid.equals(node.getUuid()))
             return node;
         else if (node.getParent()!= null){
-            findTargetUuidInTree(targetUuid, node.getParent());
+             return findTargetUuidInTree(targetUuid, node.getParent());
         }
         return null;
     }
@@ -139,8 +139,8 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                     }
                 }
             }
-
-            if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().equals(CdmPermissionClass.TAXONNODE)){
+            System.err.println(targetDomainObject.getClass().getSimpleName().toUpperCase());
+            if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals(CdmPermissionClass.TAXONNODE.toString())){
                 //TODO: walk through the tree and look for the uuid
                 TaxonNode node = (TaxonNode)targetDomainObject;
                 TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
