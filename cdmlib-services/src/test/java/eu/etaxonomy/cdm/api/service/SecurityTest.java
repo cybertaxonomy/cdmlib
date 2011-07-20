@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 import java.util.Iterator;
@@ -18,6 +20,8 @@ import org.junit.runner.RunWith;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.ReflectionSaltSource;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +48,8 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 
 import org.springframework.security.access.AccessDeniedException;
 
@@ -85,7 +91,14 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	 */
 	@Test
 	public final void testSaveTaxon() {
+		/*
+		Md5PasswordEncoder encoder =new Md5PasswordEncoder();
+		ReflectionSaltSource saltSource = new ReflectionSaltSource();
+		saltSource.setUserPropertyToUse("getUsername");
+		User user = User.NewInstance("partEditor", "test4");
+		System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
 		
+		*/
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
@@ -94,6 +107,15 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		UUID uuid = taxonService.save(expectedTaxon);
 		TaxonBase<?> actualTaxon = taxonService.find(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
+		
+		token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
+		authentication = authenticationManager.authenticate(token);
+		context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+		taxonService.save(actualTaxon);
+		
+		
 	}
 	@Test
 	public void testUpdateUser(){
@@ -109,7 +131,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		user.setEmailAddress("test@bgbm.org");
 		
 		userService.updateUser(user);
-		//userService.update(user);
+		userService.update(user);
 		userService.saveOrUpdate(user);
 	}
 	
@@ -124,11 +146,27 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		assertEquals(expectedTaxon, actualTaxon);
 		
 		actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
-		try{
-			taxonService.saveOrUpdate(actualTaxon);
-		}catch(Exception e){
-			Assert.fail();
-		}
+		taxonService.saveOrUpdate(actualTaxon);
+		
+		token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
+		authentication = authenticationManager.authenticate(token);
+		context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		actualTaxon = taxonService.find(uuid);
+		actualTaxon.setName(BotanicalName.NewInstance(Rank.GENUS()));
+		taxonService.saveOrUpdate(actualTaxon);
+			
+	}
+	
+	@Test
+	public void testDeleteTaxon(){
+		token = new UsernamePasswordAuthenticationToken("taxonomist", "test3");
+		authentication = authenticationManager.authenticate(token);
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		Taxon actualTaxon = (Taxon)taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
+		
+		taxonService.delete(actualTaxon);
 	}
 	
 	
@@ -160,7 +198,28 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		iterator = descriptions.iterator();
 		
 		description = iterator.next();
-		
+		assertEquals(1,description.getElements().iterator().next().getMedia().size());
 		//taxonService.saveOrUpdate(taxon);
+	}
+	
+	@Test
+	public void testAllowOnlyAccessToPartOfTree(){
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		
+		Taxon tribe = (Taxon)taxonService.find(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+		Iterator<TaxonNode> it = tribe.getTaxonNodes().iterator();
+		TaxonNode node = it.next();
+		
+		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+		assertFalse(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
+		node = node.getChildNodes().iterator().next();
+		System.err.println(node.getUuid()); 
+		assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
+		node = node.getChildNodes().iterator().next();
+		assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
+		
+		
 	}
 }
