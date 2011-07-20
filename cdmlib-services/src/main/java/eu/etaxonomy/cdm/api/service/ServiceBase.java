@@ -66,7 +66,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#transientObject, 'DELETE')")
+	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#persistentObject, 'DELETE')")
 	public UUID delete(T persistentObject) {
 		return dao.delete(persistentObject);
 	}
@@ -150,7 +150,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#transientObject, 'CREATE')" )
+	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#newInstance, 'CREATE')" )
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}
@@ -178,7 +178,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	protected abstract void setDao(DAO dao);
 	
 	@Transactional(readOnly = false)
-	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
+	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#transientObject, 'UPDATE')")
 	public UUID update(T transientObject) {
 		return dao.update(transientObject);
 	}
