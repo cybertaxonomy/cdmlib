@@ -24,7 +24,7 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 	
 	private IO currentIO;
 
-	private boolean success;
+	private boolean success = true;
 
 	CONFIG config;
 	

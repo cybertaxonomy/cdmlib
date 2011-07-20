@@ -167,7 +167,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		ImportStateBase state = config.getNewState();
 		state.initialize(config);
 
-		
+		state.setSuccess(true);
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
 			try {
