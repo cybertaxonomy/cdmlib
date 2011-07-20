@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.markup;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.CharUtils;
@@ -31,6 +33,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -83,6 +92,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -102,24 +112,35 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	private UnmatchedLeads unmatchedLeads;
 
 	
+	//TODO remove preliminary
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	private Authentication authentication;
+	private PermissionEvaluator permissionEvaluator;
+	
 	public MarkupDocumentImport(){
 		super();
+		System.out.println("TODO remove preliminary authentication");
+//		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("admin", "0000");
+//		authentication = authenticationManager.authenticate(token);
+//		SecurityContext context = SecurityContextHolder.getContext();
+//		context.setAuthentication(authentication);
+//		permissionEvaluator = new CdmPermissionEvaluator();
 	}
 	
 	
 	@Override
 	public boolean doCheck(MarkupImportState state){
 		state.setCheck(true);
-		boolean result = doInvoke(state);
+		doInvoke(state);
 		state.setCheck(false);
-		return result;
+		return state.isSuccess();
 	}
 	
 	@Override
-	public boolean doInvoke(MarkupImportState state){
+	public void doInvoke(MarkupImportState state){
 		fireProgressEvent("Start import markup document", "Before start of document");
 		fireWarningEvent("Test a warning", "At start", 17);
-		boolean success = false;
 		
 		Queue<CdmBase> outputStream = new LinkedList<CdmBase>();
 		
@@ -133,14 +154,16 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			state.setReader(reader);
 			//start document
 			if (! validateStartOfDocument(reader)){
-				return false;
+				state.setUnsuccessfull();
+				return;
 			}
 			
 			//publication
 			String elName = "publication";
 			while (reader.hasNext()) {
-				if (isStartingElement(reader, elName)){
-					success &= handlePublication(reader, elName);
+				XMLEvent nextEvent = reader.nextEvent();
+				if (isStartingElement(nextEvent, elName)){
+					handlePublication(state, reader, nextEvent, elName);
 				}else{
 					fireSchemaConflictEventExpectedStartTag(elName, reader);
 				}
@@ -151,13 +174,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 //			parseSAX(state, handler);
 			
 		} catch (FactoryConfigurationError e1) {
-			// TODO Auto-generated catch block
 			fireWarningEvent("Some error occurred while setting up xml factory. Data can't be imported", "Start", 16);
-			success = false;
+			state.setUnsuccessfull();
 		} catch (XMLStreamException e1) {
-			// TODO Auto-generated catch block
 			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
-			success = false;
+			state.setUnsuccessfull();
 //		} catch (ParserConfigurationException e) {
 //			fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported", "Start", 16);
 //		} catch (SAXException e) {
@@ -168,37 +189,202 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		}
 		 
 	
+		return;
+		
+	}
+
+	
+
+
+	private void handlePublication(MarkupImportState state, XMLEventReader reader, XMLEvent currentEvent, String elName) throws XMLStreamException {
+			
+		//attributes
+		StartElement element = currentEvent.asStartElement().asStartElement();
+		Map<String, javax.xml.stream.events.Attribute> attributes = getAttributes(element);
+//		if (attributes.hasNext()){
+//			handleUnexpectedAttributes(element.getLocation(), attributes);
+//		}
+		
+		while (reader.hasNext()){
+			XMLEvent event = readNoWhitespace(reader);
+			//TODO cardinality of alternative
+			if (event.isEndElement()){
+				if (isEndingElement(event, elName)){
+					return;
+				}else{
+					if(isEndingElement(event, "metaData")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(event, "treatment")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(event, "biographies")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(event, "references")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(event, "textSection")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(event, "addenda")){
+						//NOT YET IMPLEMENTED
+					}else{
+						handleUnexpectedEndElement(event);
+					}
+				}
+			}else if (event.isStartElement()){
+				if(isStartingElement(event, "metaData")){
+					handleNotYetImplementedElement(event);
+				}else if(isStartingElement(event, "treatment")){
+					handleTreatment(state, reader, event);
+				}else if(isStartingElement(event, "biographies")){
+					handleNotYetImplementedElement(event);
+				}else if(isStartingElement(event, "references")){
+					handleNotYetImplementedElement(event);
+				}else if(isStartingElement(event, "textSection")){
+					handleNotYetImplementedElement(event);
+				}else if(isStartingElement(event, "addenda")){
+					handleNotYetImplementedElement(event);
+				}else{
+					handleUnexpectedStartElement(event);
+				}
+			}else{
+				handleUnexpectedElement(event);
+			}
+		}
+		return;
+	}
+
+
+
+
+	/**
+	 * Read next event. Ignore whitespace events.
+	 * @param reader
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private XMLEvent readNoWhitespace(XMLEventReader reader) throws XMLStreamException {
+		XMLEvent event = reader.nextEvent();
+		while (event.isCharacters() && event.asCharacters().isWhiteSpace()){
+			event = reader.nextEvent();
+		}
+		return event;
+	}
+	
+	private boolean handleTreatment(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		boolean success = true;
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if (isStartingElement(next, "taxon")){
+				handleTaxon(state, reader, next.asStartElement());
+			}else if(isMyEndingElement(next, parentEvent)){
+				return success;
+			}else{
+				fireSchemaConflictEventExpectedStartTag("taxon", reader);
+				success = false;
+			}
+		}
 		return success;
+	}
+
+
+	private void handleTaxon(MarkupImportState state, XMLEventReader reader, StartElement parentEvent) throws XMLStreamException {
+		boolean hasTitle = false;
+		boolean hasNomenclature = false;
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()){
+				if (isMyEndingElement(next, parentEvent)){
+					handleMandatoryElement(hasTitle, parentEvent, "taxontitle");
+					handleMandatoryElement(hasNomenclature, parentEvent, "nomenclature");
+					//TODO check title and nomenclature exists
+					return;
+				}else{
+					if(isEndingElement(next, "heading")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(next, "taxontitle")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(next, "biographies")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(next, "references")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(next, "textSection")){
+						//NOT YET IMPLEMENTED
+					}else if(isStartingElement(next, "addenda")){
+						//NOT YET IMPLEMENTED
+					}else{
+						handleUnexpectedEndElement(next);
+					}
+				}
+			}else if (next.isStartElement()){
+				if(isStartingElement(next, "heading")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "taxontitle")){
+					handleTaxonTitle(state, reader, next);
+				}else if(isStartingElement(next, "writer")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "textsection")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "key")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "feature")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "notes")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "references")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "figure")){
+					handleNotYetImplementedElement(next);
+				}else if(isStartingElement(next, "footnote")){
+					handleNotYetImplementedElement(next);
+				}else{
+					handleUnexpectedStartElement(next);
+				}
+			}else{
+				handleUnexpectedElement(next);
+			}
+		}
+		return;
+	}
+
+	private void handleTaxonTitle(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		boolean hasTitle = false;
+		
+		//TODO handle attributes
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()){
+				if (isMyEndingElement(next, parentEvent)){
+					//TODO check title exists
+					return;
+				}else{
+					if(isEndingElement(next, "footnoteString")){
+						//NOT YET IMPLEMENTED
+					}else{
+						handleUnexpectedEndElement(next);
+						state.setSuccessToFalse();
+					}
+				}
+			}else if (next.isStartElement()){
+				if(isStartingElement(next, "footnoteString")){
+					handleNotYetImplementedElement(next);
+				}else{
+					handleUnexpectedStartElement(next);
+					state.setSuccessToFalse();
+				}
+			}else{
+				handleUnexpectedElement(next);
+				state.setSuccessToFalse();
+			}
+		}
+		return;
+		
 		
 	}
 
 
-	private boolean handlePublication(XMLEventReader reader, String elName) throws XMLStreamException {
-		boolean success = true;
-		XMLEvent event = reader.nextEvent();
-		if (isEndingElement(event, elName)){
-			//TODO cardinality of alternative
-			return success;
-		}else if(isStartingElement(event, "metaData")){
-			
-		}else if(isStartingElement(event, "treatment")){
-			
-		}else if(isStartingElement(event, "biographies")){
-			
-		}else if(isStartingElement(event, "references")){
-			
-		}else if(isStartingElement(event, "metaData")){
-			
-		}else if(isStartingElement(event, "metaData")){
-			
-		}else if(isStartingElement(event, "metaData")){
-			
-		}
-		return success;
+	private boolean isMyEndingElement(XMLEvent next, XMLEvent event) throws XMLStreamException {
+		return isEndingElement(next, event.asStartElement().getName().getLocalPart());
 	}
-	
 
-	
+
 	/**
 	 * This comes from the old version, needs to be checked on need
 	 * @param state
