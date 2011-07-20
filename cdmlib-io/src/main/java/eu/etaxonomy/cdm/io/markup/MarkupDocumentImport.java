@@ -201,9 +201,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		//attributes
 		StartElement element = currentEvent.asStartElement().asStartElement();
 		Map<String, javax.xml.stream.events.Attribute> attributes = getAttributes(element);
-//		if (attributes.hasNext()){
-//			handleUnexpectedAttributes(element.getLocation(), attributes);
-//		}
+		handleUnexpectedAttributes(element.getLocation(), attributes);
 		
 		while (reader.hasNext()){
 			XMLEvent event = readNoWhitespace(reader);
