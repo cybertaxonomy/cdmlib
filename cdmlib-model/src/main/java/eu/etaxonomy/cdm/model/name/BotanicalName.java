@@ -27,9 +27,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -314,15 +312,6 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 		return NomenclaturalCode.ICBN;
 	}
 
-	/**
-	 * 
-	 * @param zoologicalName
-	 * @return
-	 */
-	public static BotanicalName valueOf(TaxonNameBase taxonNameBase){
-		logger.error("valueOf not implemented yet.");
-		return null;
-	}
 	
 	/**
 	 * @param name

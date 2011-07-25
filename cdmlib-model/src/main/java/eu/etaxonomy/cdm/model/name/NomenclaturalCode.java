@@ -105,7 +105,9 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 
 	public static NomenclaturalCode fromString(String string){
 		for(NomenclaturalCode code : NomenclaturalCode.values()){
-			if(code.name().equals(string)) return code;
+			if(code.name().equals(string)) {
+				return code;
+			}
 		}
 		return null;
 	}
@@ -165,7 +167,6 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public NomenclaturalCode readCsvLine(Class<NomenclaturalCode> termClass,
 			List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -173,7 +174,6 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter, eu.etaxonomy.cdm.model.common.IDefinedTerm)
 	 */
 	public void writeCsvLine(CSVWriter writer, NomenclaturalCode term) {
-		// TODO Auto-generated method stub
 		logger.warn("write csvLine not yet implemented");
 	}
 
@@ -253,21 +253,6 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 		}
 		return result;
 	}	
-	
-	@Transient
-	public TaxonNameBase valueOf(TaxonNameBase taxonNameBase){
-		
-		switch(this){
-		case ICBN:
-			return BotanicalName.valueOf(taxonNameBase);
-		case ICZN:
-			return ZoologicalName.valueOf(taxonNameBase);
-		default:
-			logger.error("Not implemented yet");
-		}
-				
-		return taxonNameBase;
-	}
 	
 	/**
 	 * Returns the recommended value for the accepted taxon status according to
