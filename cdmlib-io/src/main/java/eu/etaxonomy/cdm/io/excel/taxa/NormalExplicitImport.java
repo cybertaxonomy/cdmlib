@@ -141,7 +141,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
     protected void firstPass(TaxonExcelImportState state) {
 		
 //		if (1==1){
-//			return true;
+//			return;
 //		}
 //		System.out.println("FP:" + state.getCurrentLine());
 		Rank rank = null;
