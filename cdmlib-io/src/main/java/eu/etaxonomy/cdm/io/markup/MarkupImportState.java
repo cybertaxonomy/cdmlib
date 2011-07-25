@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
@@ -39,8 +40,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private Language defaultLanguage;
 	
-	private boolean success = true;
+	private Taxon currentTaxon;
 	
+	private boolean isCitation = false;
+	private boolean isNameType = false;
+		
 //**************************** CONSTRUCTOR ******************************************/
 	
 	public MarkupImportState(MarkupImportConfigurator config) {
@@ -89,17 +93,39 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	}
 
 	
-	
-	public void setSuccessToFalse() {
-		this.success = false;
+	public void setCurrentTaxon(Taxon currentTaxon) {
+		this.currentTaxon = currentTaxon;
 	}
 
-	/**
-	 * @return the success
-	 */
-	public boolean isSuccess() {
-		return success;
+	public Taxon getCurrentTaxon() {
+		return currentTaxon;
 	}
+
+
+	/**
+	 * Is the import currently handling a citation?
+	 * @return
+	 */
+	public boolean isCitation() {
+		return isCitation;
+	}
+	
+	public void setCitation(boolean isCitation) {
+		this.isCitation = isCitation;
+	}
+
+
+	public boolean isNameType() {
+		return isNameType;
+	}
+	
+	public void setNameType(boolean isNameType) {
+		this.isNameType = isNameType;
+	}
+
+
+
+
 
 
 }
