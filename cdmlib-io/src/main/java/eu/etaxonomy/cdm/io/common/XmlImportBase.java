@@ -111,8 +111,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		boolean isEnd = event.isEndElement();
 		if (isEnd){
 			QName name = event.asEndElement().getName();
-			boolean equals = name.getLocalPart().equals(elName);
-			result = equals;
+			result = name.getLocalPart().equals(elName);
 		}
 		return result;
 	}
