@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,6 +74,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
+	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
+	
 	
 	private static final String UuidOnly = "UUIDOnly";
 	private static final String UuidLabel = "UUID or label";
@@ -166,7 +169,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
 	}
-	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<ExtensionType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -181,7 +184,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					voc = getVocabulary(uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered);
 				}
 				voc.addTerm(extensionType);
-				getTermService().save(extensionType);
+				getTermService().saveOrUpdate(extensionType);
 			}
 			state.putExtensionType(extensionType);
 		}
@@ -369,8 +372,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	
+	/**
+	 * Returns a feature if it exists, null otherwise.
+	 * @see #getFeature(ImportStateBase, UUID, String, String, String, TermVocabulary)
+	 * @param state
+	 * @param uuid
+	 * @return
+	 */
 	protected Feature getFeature(STATE state, UUID uuid){
-		return getFeature(state, uuid, null, null, null);
+		return getFeature(state, uuid, null, null, null, null);
 	}
 	
 	/**
@@ -384,7 +394,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected Feature getFeature(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected Feature getFeature(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
 		if (uuid == null){
 			return null;
 		}
@@ -395,9 +405,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				feature = Feature.NewInstance(text, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
-				//set vocabulary ; FIXME use another user-defined vocabulary
-				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
-				TermVocabulary<Feature> voc = getVocabularyService().find(uuidFeatureVoc);
+//				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered);
+				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
 			}
@@ -479,7 +491,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * 
 	 */
 	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev, URI termSourceUri, boolean isOrdered) {
-		TermVocabulary voc = getVocabularyService().find(uuid);
+		List propPath = Arrays.asList(new String[]{"terms"});
+		TermVocabulary voc = getVocabularyService().load(uuid, propPath);
 		if (voc == null){
 			if (isOrdered){
 				voc = OrderedTermVocabulary.NewInstance(text, label, abbrev, termSourceUri);
