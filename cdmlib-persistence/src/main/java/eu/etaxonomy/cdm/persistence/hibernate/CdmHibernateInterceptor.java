@@ -52,7 +52,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
             Object[] previousState,
             String[] propertyNames,
             Type[] types) {
-   
+		System.err.println("onFlushDirty...");
         boolean result = false;
         if ( entity instanceof CdmBase ) {
                 updates++;
@@ -78,7 +78,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
                     Object[] state,
                     String[] propertyNames,
                     Type[] types) {
-           
+        System.err.println("onSave...");
         boolean result = false;
         if ( entity instanceof CdmBase ) {
                 creates++;

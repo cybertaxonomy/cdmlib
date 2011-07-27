@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -310,6 +311,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * descriptionElementService.save
      */
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#descriptionElement, 'CREATE')" )
 	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
 		return descriptionElementDao.save(descriptionElement);
 	}
@@ -319,6 +321,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * descriptionElementService.save
      */
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#descriptionElements, 'CREATE')" )
 	public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
 		return descriptionElementDao.saveAll(descriptionElements);
 	}

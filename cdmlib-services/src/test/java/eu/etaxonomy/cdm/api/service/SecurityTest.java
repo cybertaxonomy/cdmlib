@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -36,20 +37,25 @@ import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
 import org.springframework.security.access.AccessDeniedException;
 
@@ -65,6 +71,9 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	@SpringBeanByName
 	private IDescriptionService descriptionService;
+	
+	@SpringBeanByName
+	private ITaxonNodeService taxonNodeService;
 	
 	@SpringBeanByName
 	private IUserService userService;
@@ -185,12 +194,17 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		TaxonDescription description = iterator.next();
 		description = (TaxonDescription) descriptionService.find(description.getUuid());
 		Iterator<DescriptionElementBase> elements = description.getElements().iterator();
-		DescriptionElementBase element = elements.next();
-		TextData textData = (TextData) element;
+		TextData textData = new TextData();
+		textData.setFeature(Feature.ECOLOGY());
 		Media media = Media.NewInstance();
 		textData.addMedia(media);
 		
-		descriptionService.saveDescriptionElement(element);
+		
+		
+		descriptionService.saveDescriptionElement(textData);
+		description.addElement(textData);
+		
+		descriptionService.saveOrUpdate(description);
 		
 		taxon = (Taxon) taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
 		descriptions = taxon.getDescriptions();
@@ -199,7 +213,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 		description = iterator.next();
 		assertEquals(1,description.getElements().iterator().next().getMedia().size());
-		//taxonService.saveOrUpdate(taxon);
+		
 	}
 	
 	@Test
@@ -209,6 +223,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		context.setAuthentication(authentication);
 		
 		Taxon tribe = (Taxon)taxonService.find(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+		Taxon taxon = (Taxon)taxonService.find(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
 		Iterator<TaxonNode> it = tribe.getTaxonNodes().iterator();
 		TaxonNode node = it.next();
 		
@@ -219,7 +234,42 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
 		node = node.getChildNodes().iterator().next();
 		assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
+		TaxonDescription description = TaxonDescription.NewInstance(taxon);
 		
+		taxonNodeService.saveOrUpdate(node);
+		assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+		
+		
+	}
+	
+	@Test
+	public void testCascadingInSpringSecurity(){
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+		Taxon taxon = (Taxon)taxonService.find(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+		assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+		//during cascading the permissions are not evaluated
+		taxonService.saveOrUpdate(taxon);
+		
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+		context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		taxon = (Taxon)taxonService.find(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+		description = TaxonDescription.NewInstance(taxon);
+		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+		
+	}
+	
+	@Test
+	public void testSaveSynonym(){
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		taxonService.saveOrUpdate(syn);
 		
 	}
 }
