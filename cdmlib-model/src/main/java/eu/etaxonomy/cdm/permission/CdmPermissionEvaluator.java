@@ -96,6 +96,9 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     	if (targetDomainObject instanceof DescriptionElementBase){
     		return DescriptionPermissionEvaluator.hasPermission(authorities, (DescriptionElementBase)targetDomainObject, evalPermission);
     	}
+    	if (targetDomainObject instanceof DescriptionBase){
+    		return DescriptionPermissionEvaluator.hasPermission(authorities, (DescriptionBase)targetDomainObject, evalPermission);
+    	}
         for (GrantedAuthority authority: authorities){
             AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
             //evaluate authorities

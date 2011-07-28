@@ -193,7 +193,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 		TaxonDescription description = iterator.next();
 		description = (TaxonDescription) descriptionService.find(description.getUuid());
-		Iterator<DescriptionElementBase> elements = description.getElements().iterator();
+		
 		TextData textData = new TextData();
 		textData.setFeature(Feature.ECOLOGY());
 		Media media = Media.NewInstance();
@@ -201,7 +201,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 		
 		
-		descriptionService.saveDescriptionElement(textData);
+		//descriptionService.saveDescriptionElement(textData);
 		description.addElement(textData);
 		
 		descriptionService.saveOrUpdate(description);
@@ -212,7 +212,10 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		iterator = descriptions.iterator();
 		
 		description = iterator.next();
-		assertEquals(1,description.getElements().iterator().next().getMedia().size());
+		assertEquals(1, descriptions.size());
+		assertEquals(2,description.getElements().size());
+		
+		
 		
 	}
 	

@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
@@ -40,5 +41,27 @@ public class DescriptionPermissionEvaluator {
 		}
 		
 		return false;
+	}
+	
+	
+	public static boolean hasPermission (Collection<GrantedAuthority> authorities,
+			DescriptionBase targetDomainObject, AuthorityPermission evalPermission){
+		Set<DescriptionElementBase> elements = targetDomainObject.getElements();
+		for (DescriptionElementBase element: elements){
+			for (GrantedAuthority authority :authorities){
+				if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
+					if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && authority.getAuthority().contains(evalPermission.permission.toString())){
+						return true;
+					}else{
+						if (authority.getAuthority().contains(element.getFeature().getLabel()) && authority.getAuthority().contains(evalPermission.permission.toString())){
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+		
 	}
 }
