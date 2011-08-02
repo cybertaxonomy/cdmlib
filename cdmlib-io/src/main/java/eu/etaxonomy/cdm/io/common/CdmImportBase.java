@@ -75,6 +75,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
+	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	
 	
 	private static final String UuidOnly = "UUIDOnly";
@@ -232,7 +233,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return markerType;
 	}
 	
-	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -242,8 +243,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (annotationType == null){
 				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 				annotationType.setUuid(uuid);
-				UUID uuidAnnotationTypeVoc = UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d");
-				TermVocabulary voc = getVocabularyService().find(uuidAnnotationTypeVoc);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedAnnotationTypeVocabulary, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered);
+				}
+				
 				voc.addTerm(annotationType);
 				getTermService().save(annotationType);
 			}
