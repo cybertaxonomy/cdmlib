@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -190,6 +191,25 @@ public class InputTransformerBase implements IInputTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaLevelByKey(java.lang.String)
+	 */
+	@Override
+	public NamedAreaLevel getNamedAreaLevelByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getNamedAreaLevelByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaLevelUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getNamedAreaLevelUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
 	@Override
 	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
