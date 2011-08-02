@@ -1291,7 +1291,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			if (str.matches(SpecimenTypeParser.typeTypePattern)){
 				SpecimenTypeDesignationStatus status;
 				try {
-					status = SpecimenTypeParser.makeSpecimentTypeStatus(str);
+					status = SpecimenTypeParser.parseSpecimenTypeStatus(str);
 				} catch (UnknownCdmTypeException e) {
 					String message = "Specimen type status '%s' not recognized by parser";
 					message = String.format(message, str);

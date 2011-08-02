@@ -34,7 +34,7 @@ public class SpecimenTypeParser {
 	
 	
 	
-	public static SpecimenTypeDesignationStatus makeSpecimentTypeStatus(String type) throws UnknownCdmTypeException {
+	public static SpecimenTypeDesignationStatus parseSpecimenTypeStatus(String type) throws UnknownCdmTypeException {
 		//TODO further types
 		SpecimenTypeDesignationStatus status; 
 		if (type.equalsIgnoreCase("iso")){
