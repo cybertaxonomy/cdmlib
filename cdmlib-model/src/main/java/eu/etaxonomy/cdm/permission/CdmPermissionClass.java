@@ -18,8 +18,6 @@ public enum CdmPermissionClass {
 	USER, TAXONNODE, DESCRIPTIONBASE, DESCRIPTIONELEMENTBASE, TAXONBASE, ALL;
 	
 	
-	//TODO: how to handle the problem of the subclasses of descriptions and it 
-	//should be better to have TaxonBase as PermissionClassName instead of Taxon because an editor of taxa should be able to edit synonyms as well
 	public static CdmPermissionClass getValueOf(Object s){
 		String permissionClassString ;
 		if (s instanceof String){

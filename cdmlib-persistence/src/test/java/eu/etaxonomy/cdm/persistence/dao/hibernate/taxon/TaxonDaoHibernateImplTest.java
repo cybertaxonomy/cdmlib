@@ -976,11 +976,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	//assertEquals("Number of synonyms should be 2",2,synonyms.size());
     	List<Synonym> inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
     	assertNotNull("there should be a new synonym ", inferredSynonyms);
-    	System.err.println(inferredSynonyms.get(0).getTitleCache());
+    	
     	assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ???");
     	inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
     	assertNotNull("there should be a new synonym ", inferredSynonyms);
-    	System.err.println(inferredSynonyms.get(0).getTitleCache());
+    	
     	assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ???");
     	inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
     	assertNotNull("there should be a new synonym ", inferredSynonyms);

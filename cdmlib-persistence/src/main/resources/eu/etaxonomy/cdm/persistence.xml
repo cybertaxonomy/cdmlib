@@ -21,10 +21,6 @@
 		<!-- <property name="entityInterceptor">
     		<bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateInterceptor" />
     	</property>
- 	     
-  		 <property name="entityInterceptor">
-    		<bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmSecurityHibernateInterceptor"/>
-  		</property>
   		-->
 	    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
 	    <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>

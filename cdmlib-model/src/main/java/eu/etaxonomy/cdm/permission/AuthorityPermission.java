@@ -14,6 +14,17 @@ public class AuthorityPermission{
 		targetUuid = uuid;
 	}
 	
+	public CdmPermissionClass getClassName(){
+		return className;
+	}
+	
+	public CdmPermission getPermission(){
+		return permission;
+	}
+	
+	public UUID getTargetUUID(){
+		return targetUuid;
+	}
 	public AuthorityPermission (String authority){
 		String permissionString;
 		int firstPoint = authority.indexOf(".");

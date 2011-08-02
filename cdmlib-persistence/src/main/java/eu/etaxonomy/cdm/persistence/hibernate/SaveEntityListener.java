@@ -15,10 +15,15 @@ import org.hibernate.event.SaveOrUpdateEvent;
 import org.hibernate.event.SaveOrUpdateEventListener;
 import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.permission.AuthorityPermission;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 
 public class SaveEntityListener implements SaveOrUpdateEventListener {
 	private static final long serialVersionUID = -4295612947856041686L;
@@ -27,6 +32,7 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 
 	public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
 		Object entity = event.getObject();
+		
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
 			if(ICdmBase.class.isAssignableFrom(entityClazz)) {
@@ -36,6 +42,11 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 				if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 					User user = (User)authentication.getPrincipal();
 					cdmBase.setCreatedBy(user);
+					CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+					if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
+						throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
+					 }
+				
 				}
 			}
         }		

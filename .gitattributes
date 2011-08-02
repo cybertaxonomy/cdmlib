@@ -1020,6 +1020,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceReloader.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseSchemaMismatchException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/EvaluationFailedException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2Mode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalH2.java -text

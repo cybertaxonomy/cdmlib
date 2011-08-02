@@ -54,6 +54,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 		}else {
 			cdmPermission = (CdmPermission)permission;
 		}
+		
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
         AuthorityPermission evalPermission;
         try{
@@ -63,6 +64,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         	//evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
         	evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, null);
         }
+        
         	//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
 		if (evalPermission.className != null) {
 			return evalPermission(authorities, evalPermission,
@@ -102,12 +104,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         for (GrantedAuthority authority: authorities){
             AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
             //evaluate authorities
-            if (authorityPermission.className.equals(evalPermission.className) && (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
+           if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))&& (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
                 if (authorityPermission.targetUuid != null){
                     //TODO
 
                 }else{
-                    return true;
+                	return true;
                 }
 
             }
@@ -115,7 +117,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             if (authorityPermission.targetUuid != null){
                 if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
                     if (authorityPermission.permission.equals(evalPermission.permission)){
-                        return true;
+                    	return true;
                     }
                 }
             }
@@ -125,7 +127,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                 TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
                 if (targetNode != null){
                     if (evalPermission.permission.equals(authorityPermission.permission) ){
-                        return true;
+                    	return true;
                     }
                 }
             }

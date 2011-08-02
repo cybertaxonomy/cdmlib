@@ -47,12 +47,13 @@ public class DescriptionPermissionEvaluator {
 	public static boolean hasPermission (Collection<GrantedAuthority> authorities,
 			DescriptionBase targetDomainObject, AuthorityPermission evalPermission){
 		Set<DescriptionElementBase> elements = targetDomainObject.getElements();
-		for (DescriptionElementBase element: elements){
-			for (GrantedAuthority authority :authorities){
-				if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
-					if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && authority.getAuthority().contains(evalPermission.permission.toString())){
-						return true;
-					}else{
+		
+		for (GrantedAuthority authority :authorities){
+			if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
+				if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && authority.getAuthority().contains(evalPermission.permission.toString())){
+					return true;
+				}else{
+					for (DescriptionElementBase element: elements){
 						if (authority.getAuthority().contains(element.getFeature().getLabel()) && authority.getAuthority().contains(evalPermission.permission.toString())){
 							return true;
 						}
@@ -60,6 +61,7 @@ public class DescriptionPermissionEvaluator {
 				}
 			}
 		}
+		
 		
 		return false;
 		

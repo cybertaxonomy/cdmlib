@@ -7,28 +7,33 @@ import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import eu.etaxonomy.cdm.database.EvaluationFailedException;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 
 public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 
 	public void onSaveOrUpdate(SaveOrUpdateEvent event)
 			throws HibernateException {
 		Object entity = event.getObject();
-		if(entity != null && VersionableEntity.class.isAssignableFrom(entity.getClass())) {
-			
-			VersionableEntity versionableEntity = (VersionableEntity)entity;
-			if (versionableEntity.getId()== 0){
-				versionableEntity.setUpdated(new DateTime());
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-					User user = (User)authentication.getPrincipal();
-					versionableEntity.setUpdatedBy(user);
-				} 
+		if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
+			CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+			if (VersionableEntity.class.isAssignableFrom(entity.getClass())) {
+				VersionableEntity versionableEntity = (VersionableEntity)entity;
+				if (versionableEntity.getId()== 0){
+					
+					versionableEntity.setUpdated(new DateTime());
+					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+					if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+						User user = (User)authentication.getPrincipal();
+						versionableEntity.setUpdatedBy(user);
+					} 
+				}
 			}
-			
 		}
-
 	}
 
 }
