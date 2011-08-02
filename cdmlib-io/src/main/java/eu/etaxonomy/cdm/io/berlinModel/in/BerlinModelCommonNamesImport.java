@@ -326,7 +326,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//status
 				if (CdmUtils.isNotEmpty(status)){
-					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status");
+					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status", null);
 					Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
 					for (CommonTaxonName commonTaxonName : commonTaxonNames){
 						commonTaxonName.addAnnotation(annotation);
