@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author a.mueller
@@ -29,7 +30,26 @@ public class MarkupTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupTransformer.class);
 	
+	
+	//extension type uuids
+	public static final UUID uuidTaxonTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
+	public static final UUID uuidWriter = UUID.fromString("43f988cb-bc53-4324-a702-c8f920656975");
+	
+	//annotation type uuids
+	public static final UUID uuidFootnote = UUID.fromString("b91fab29-7d26-4277-b549-262da0d901b1");
+	
+	
+	//marker type uuid
+//	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
+	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
+
+	
+	
 	//feature uuids
+	
+	public static final UUID uuidFigure = UUID.fromString("5165cd6a-9b31-4a1f-8b30-04ab740c502c");
+	public static final UUID uuidFigures = UUID.fromString("6dfb4e78-c67e-410c-8989-c1fb1295abf6");
+	
 
 	public static final UUID uuidHabit = UUID.fromString("03487108-173a-4335-92be-05076af29155");
 	public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
@@ -56,7 +76,10 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidPhytochemistry = UUID.fromString("3466fdb9-360f-467e-9bd2-be8d997d1361");
 	public static final UUID uuidFossils = UUID.fromString("ccbf72ff-ab72-4f41-8c60-77100e14b6b0");
 	public static final UUID uuidMorphologyAndAnatomy = UUID.fromString("e18a82c2-8961-409f-8b8e-0502225ea43f");
-
+	public static final UUID uuidEmbryology = UUID.fromString("09b89b41-c993-45a6-b461-799a90e283f8");
+	public static final UUID uuidCytology = UUID.fromString("cc28bedb-8d9f-457c-ac5f-5f019edb214e");
+	
+	
 	public static final UUID uuidLeaflets = UUID.fromString("0efcfbb5-7f7a-454f-985e-50cea6523fef");
 	public static final UUID uuidLeaves = UUID.fromString("378c6d5f-4f8a-4769-b054-50ddaff6f080");
 	public static final UUID uuidBranchlets = UUID.fromString("e63af3b4-aaff-4b4d-a8fe-3b13b79974c8");
@@ -78,8 +101,6 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidFlowering = UUID.fromString("e6f274b9-25ca-4d49-b264-50346350df0d");
 	public static final UUID uuidBracts = UUID.fromString("7e1f2b3e-caa5-4e12-af4c-3fc379cea89f");
 	public static final UUID uuidPedicels = UUID.fromString("fdb43c85-c3dd-4d13-b5e7-51cca60d25b1");
-	public static final UUID uuidFigure = UUID.fromString("5165cd6a-9b31-4a1f-8b30-04ab740c502c");
-	public static final UUID uuidFigures = UUID.fromString("6dfb4e78-c67e-410c-8989-c1fb1295abf6");
 	public static final UUID uuidPistil = UUID.fromString("51df329b-2b2b-4f45-960c-bf4430be5910");
 	public static final UUID uuidOvary = UUID.fromString("0757d8bc-d91c-4482-bde0-d239b4122934");
 	public static final UUID uuidTwigs = UUID.fromString("e1eb9d5e-1397-4a4e-84e7-483e77822c6b");
@@ -143,17 +164,9 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidAnther = UUID.fromString("4c7cf621-11f7-4102-b49a-caa493364707");
 	public static final UUID uuidFlowerBearingStems = UUID.fromString("86ee899f-af71-4b51-aa1a-2666bab79cf0");
 	public static final UUID uuidFloweringBranchlets = UUID.fromString("e0364345-764c-4b39-943a-fad1eac0fe9e");
+	public static final UUID uuidWood = UUID.fromString("e44b3268-ca49-4400-90f7-98e17412fe92");
 	
-	
-	
-	//extension type uuids
-	public static final UUID uuidTaxonTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
-	public static final UUID uuidWriter = UUID.fromString("43f988cb-bc53-4324-a702-c8f920656975");
-	
-	//marker type uuid
-//	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
-	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
-	
+
 	
 
 	/* (non-Javadoc)
@@ -162,10 +175,13 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
+		
+		}else if (key.equalsIgnoreCase("ecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("uses")){return Feature.USES();
 		}else if (key.equalsIgnoreCase("anatomy")){return Feature.ANATOMY();
 		}else if (key.equalsIgnoreCase("description")){return Feature.DESCRIPTION();
 		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
-		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.HABITAT_ECOLOGY();
 		}else{
 			return null;
 		}
@@ -266,6 +282,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("gynoecium")){return uuidGynoecium;
 		
 		}else if (key.equalsIgnoreCase("anther")){return uuidAnther;
+		}else if (key.equalsIgnoreCase("wood")){return uuidWood;
 		}else if (key.equalsIgnoreCase("flower-bearing stems")){return uuidFlowerBearingStems;
 		}else if (key.equalsIgnoreCase("Flowering branchlets")){return uuidFloweringBranchlets;
 		
@@ -293,6 +310,12 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("phytochemo")){return uuidPhytochemistry;
 		}else if (key.equalsIgnoreCase("Fossils")){return uuidFossils;
 		}else if (key.equalsIgnoreCase("Morphology and anatomy")){return uuidMorphologyAndAnatomy;
+		}else if (key.equalsIgnoreCase("embryology")){return uuidEmbryology;
+		}else if (key.equalsIgnoreCase("cytology")){return uuidCytology;
+		
+		
+		
+		
 //		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
 
 		
@@ -325,20 +348,29 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("IMPERFECTLY KNOWN SPECIES")){return uuidIncompleteTaxon;
-		
-//		}else if (key.equalsIgnoreCase("CULTIVATED, EXOTIC SAPINDACEAE")){return uuidIncompleteTaxon;
-		
 		}else{
 			return null;
 		}
 		
-//		<xs:enumeration value="DOUBTFUL OR ERRONEOUS RECORDS"/>
-//		<xs:enumeration value="DOUBTFUL SPECIES, PROBABLY TO BE EXCLUDED"/>
-//		<xs:enumeration value="EXCLUDED OR DOUBTFUL NAMES"/>
-//		<xs:enumeration value="CULTIVATED, EXOTIC SAPINDACEAE"/>
 	}
 	
 	
+	
+	@Override
+	public NamedAreaLevel getNamedAreaLevelByKey(String key )throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("country")){return NamedAreaLevel.COUNTRY();
+//		}else if (key.equalsIgnoreCase("continent")){return NamedAreaLevel.C();
+		}else if (key.equalsIgnoreCase("province")){return NamedAreaLevel.PROVINCE();
+//		}else if (key.equalsIgnoreCase("region")){return NamedAreaLevel.REGION;
+//		}else if (key.equalsIgnoreCase("county")){return NamedAreaLevel.COUNTRY();
+		}else if (key.equalsIgnoreCase("state")){return NamedAreaLevel.STATE();
+
+//		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
+		}else{
+			return null;
+		}
+	}
 	
 	
 	

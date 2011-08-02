@@ -17,6 +17,7 @@ import java.util.Stack;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -62,6 +64,9 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		}else if (cdmBase.isInstanceOf(Classification.class)){
 			Classification classification = CdmBase.deproxy(cdmBase, Classification.class);
 			getClassificationService().saveOrUpdate(classification);
+		}else if (cdmBase.isInstanceOf(DefinedTermBase.class)){
+			DefinedTermBase term = CdmBase.deproxy(cdmBase, DefinedTermBase.class);
+			getTermService().saveOrUpdate(term);
 		}
 		//logger.warn("Saved " +  cdmBase);
 	}
@@ -398,6 +403,8 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 			handleUnexpectedStartElement(event);
 		}else if (event.isEndElement()){
 			handleUnexpectedEndElement(event.asEndElement());
+		}else if (event.getEventType() == XMLStreamConstants.COMMENT){
+			//do nothing
 		}else if (! unhandledElements.empty()){
 			//do nothing
 		}else{
@@ -527,6 +534,10 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		String classValue =getAndRemoveAttributeValue(parentEvent, attributes, CLASS, true, 1);
 		checkNoAttributes(attributes, parentEvent);
 		return classValue;
+	}
+	
+	protected void fireWarningEvent(String message, XMLEvent event, Integer severity) {
+		fireWarningEvent(message, makeLocationStr(event.getLocation()), severity, 1);
 	}
 	
 //********************************************** OLD *************************************	
