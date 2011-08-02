@@ -64,12 +64,12 @@ public class MediaDefaultCacheStrategyTest {
 			media = Media.NewInstance();
 			Assert.assertTrue("Wrong title cache for media", media.getTitleCache().startsWith("- empty"));
 			
-			MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/myFileName.jpg"), 0);
+			MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/myFileName.jpg"), 0, null);
 			media.addRepresentation(representation);
 			Assert.assertEquals("Wrong title cache for media", "myFileName.jpg", media.getTitleCache());
 			media.removeRepresentation(representation);
 			
-			representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/"), 0);
+			representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/"), 0, null);
 			media.addRepresentation(representation);
 			Assert.assertEquals("Wrong title cache for media", "www.abc.de/", media.getTitleCache());
 		} catch (URISyntaxException e) {
@@ -82,7 +82,7 @@ public class MediaDefaultCacheStrategyTest {
 	public void testHandleEmptyUri(){
 		Media media = Media.NewInstance();
 		MediaRepresentation representation;
-		representation = MediaRepresentation.NewInstance(null, null, null, 0);
+		representation = MediaRepresentation.NewInstance(null, null, null, 0, null);
 		media.addRepresentation(representation);
 	}
 	
