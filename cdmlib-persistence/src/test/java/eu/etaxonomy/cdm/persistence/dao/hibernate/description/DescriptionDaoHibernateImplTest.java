@@ -226,7 +226,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("multilanguageText");
 		propertyPaths.add("media");
-		propertyPaths.add("citation");
+		propertyPaths.add("sources.citation");
 		propertyPaths.add("feature");
 		
 		List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
@@ -336,6 +336,8 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		this.descriptionDao.save(description);
 		TaxonDescription clonedDescription = (TaxonDescription)description.clone();
 		this.descriptionDao.save(clonedDescription);
+		taxonDao.save(taxon);
+		
 	}
 	
 }

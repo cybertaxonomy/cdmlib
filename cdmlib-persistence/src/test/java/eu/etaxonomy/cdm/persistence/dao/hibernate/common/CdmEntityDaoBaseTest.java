@@ -150,10 +150,10 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	public void testSaveWithAuthenticationFailedPermissionEvaluation() throws Exception {
-		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
+		User user = userDao.findByUuid(UUID.fromString("04f43bec-ff0e-4263-b4f8-24d763e590eb"));
 		assert user != null : "User cannot be null";
 		setAuthentication(user);
-		List<User> userList = userDao.list(100, 0);
+		
 		
 		try{
 			cdmEntityDaoBase.save(cdmBase);

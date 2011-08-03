@@ -5,7 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,10 +17,11 @@ import org.apache.log4j.Logger;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -27,20 +30,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.UnexpectedRollbackException;
-import org.springframework.transaction.annotation.Transactional;
-import org.unitils.database.util.TransactionMode;
+
+import org.unitils.database.annotations.Transactional;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.database.annotations.TestDataSource;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
 
+
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -50,18 +55,19 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
-import org.springframework.security.access.AccessDeniedException;
+
+
 
 @RunWith(UnitilsJUnit4TestClassRunner.class)
 @SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
-@Transactional
+@Transactional(TransactionMode.DISABLED)
 @DataSet
 public class SecurityTest {
 private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
@@ -88,6 +94,9 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	private AuthenticationManager authenticationManager;
 	
 	private UsernamePasswordAuthenticationToken token;
+	
+	@Autowired
+	protected BeanInitializer defaultBeanInitializer;
 	
 	@Before
 	public void setUp(){
@@ -245,28 +254,43 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 	}
 	
-	@Test
-	public void testCascadingInSpringSecurity(){
+	@Test(expected=EvaluationFailedException.class)
+	public void testCascadingInSpringSecurityAccesDenied(){
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-		Taxon taxon = (Taxon)taxonService.find(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+		
+		Taxon taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
 		assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
 		//during cascading the permissions are not evaluated
+		
 		taxonService.saveOrUpdate(taxon);
 		
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
-		context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		taxon = (Taxon)taxonService.find(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
-		description = TaxonDescription.NewInstance(taxon);
-		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+		
 		
 	}
 	
 	@Test
+	public void testCascadingInSpring(){
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+		//fails because of cascading...(with saveOrUpdateListener!)
+		descriptionService.saveOrUpdate(description);
+		//taxonService.getSession().flush();
+		taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+		Set<TaxonDescription> descriptions = taxon.getDescriptions();
+		assertTrue(descriptions.contains(description));
+	}
+	
+	@Test
+	
 	public void testSaveSynonym(){
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
 		SecurityContext context = SecurityContextHolder.getContext();
@@ -274,5 +298,13 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 		taxonService.saveOrUpdate(syn);
 		
+	}
+	public static void main(String[] args){
+		Md5PasswordEncoder encoder =new Md5PasswordEncoder();
+	
+		ReflectionSaltSource saltSource = new ReflectionSaltSource();
+		saltSource.setUserPropertyToUse("getUsername");
+		User user = User.NewInstance("admin", "xyz");
+		System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
 	}
 }

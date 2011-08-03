@@ -22,12 +22,14 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.permission.CdmPermission;
 import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
@@ -164,7 +166,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	@Transactional(readOnly = false)
 	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#transientInstances, 'UPDATE')")
 	public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
-		return dao.saveOrUpdateAll(transientInstances);
+		try{
+			return dao.saveOrUpdateAll(transientInstances);
+		}catch(EvaluationFailedException e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/* (non-Javadoc)

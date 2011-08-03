@@ -20,7 +20,13 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 			throws HibernateException {
 		Object entity = event.getObject();
 		if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
+			
 			CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+			if (SecurityContextHolder.getContext().getAuthentication()!= null){
+				if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
+					throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
+				}
+			}
 			if (VersionableEntity.class.isAssignableFrom(entity.getClass())) {
 				VersionableEntity versionableEntity = (VersionableEntity)entity;
 				if (versionableEntity.getId()== 0){
