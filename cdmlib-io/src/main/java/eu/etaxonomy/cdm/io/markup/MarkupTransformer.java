@@ -177,6 +177,16 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidWood = UUID.fromString("e44b3268-ca49-4400-90f7-98e17412fe92");
 	
 
+	//PHYTOCHEMISTRY AND CHEMOTAXONOMY
+	public static final UUID uuidLeafPhenolics = UUID.fromString("4ae0580e-601e-4961-8220-b98876cb7fbf");
+	public static final UUID uuidAlkaloids = UUID.fromString("a727f4f4-b2c3-4cac-9edd-138201470396");
+	public static final UUID uuidIridoidGlucosides = UUID.fromString("d858c9d7-e870-4e4e-a52a-f6533599c9d7");
+	public static final UUID uuidAluminium = UUID.fromString("5c6cdbf0-c7a9-4223-8bbb-d33d41e1b9d3");
+	public static final UUID uuidChemotaxonomy = UUID.fromString("53ff9430-0154-48a4-a2bb-99f183757c96");
+	public static final UUID uuidStorageProductsOfSeeds = UUID.fromString("5e569333-a5b6-42f9-bc5d-e010bdfef89c");
+	
+	
+	
 	
 
 	/* (non-Javadoc)
@@ -192,6 +202,9 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("description")){return Feature.DESCRIPTION();
 		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
 		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.HABITAT_ECOLOGY();
+		
+		}else if (key.equalsIgnoreCase("Vegetative Anatomy")){return Feature.ANATOMY();
+		
 		}else{
 			return null;
 		}
@@ -309,6 +322,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Leaf anatomy")){return uuidLeafAnatomy;
 		}else if (key.equalsIgnoreCase("Chromosome numbers")){return uuidChromosomeNumbers;
 		}else if (key.equalsIgnoreCase("Phytochemistry and Chemotaxonomy")){return uuidPhytochemistryAndChemotaxonomy;
+		}else if (key.equalsIgnoreCase("phytochemo")){return uuidPhytochemistryAndChemotaxonomy;
 		}else if (key.equalsIgnoreCase("Pollen morphology")){return uuidPollenMorphology;
 		}else if (key.equalsIgnoreCase("Vegetative morphology and anatomy")){return uuidVegetativeMorphologyAndAnatomy;
 		}else if (key.equalsIgnoreCase("Flower morphology")){return uuidFlowerMorphology;
@@ -317,12 +331,17 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Fruits and embryology")){return uuidFruitsAndEmbryology;
 		}else if (key.equalsIgnoreCase("Dispersal")){return uuidDispersal;
 		}else if (key.equalsIgnoreCase("Phytochemistry")){return uuidPhytochemistry;
-		}else if (key.equalsIgnoreCase("phytochemo")){return uuidPhytochemistry;
 		}else if (key.equalsIgnoreCase("Fossils")){return uuidFossils;
 		}else if (key.equalsIgnoreCase("Morphology and anatomy")){return uuidMorphologyAndAnatomy;
 		}else if (key.equalsIgnoreCase("embryology")){return uuidEmbryology;
 		}else if (key.equalsIgnoreCase("cytology")){return uuidCytology;
 		
+		}else if (key.equalsIgnoreCase("Leaf phenolics")){return uuidLeafPhenolics;
+		}else if (key.equalsIgnoreCase("Alkaloids")){return uuidAlkaloids;
+		}else if (key.equalsIgnoreCase("Iridoid glucosides")){return uuidIridoidGlucosides;
+		}else if (key.equalsIgnoreCase("Aluminium")){return uuidAluminium;
+		}else if (key.equalsIgnoreCase("Chemotaxonomy")){return uuidChemotaxonomy;
+		}else if (key.equalsIgnoreCase("Storage products of seeds")){return uuidStorageProductsOfSeeds;
 		
 		
 		

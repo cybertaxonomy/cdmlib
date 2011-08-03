@@ -523,15 +523,24 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		return event;
 	}
 	
-
 	/**
-	 * Returns the required "class" attribute for a given event and checks that it is the only attribute.
+	 * Returns the REQUIRED "class" attribute for a given event and checks that it is the only attribute.
 	 * @param parentEvent
 	 * @return
 	 */
 	protected String getClassOnlyAttribute(XMLEvent parentEvent) {
+		return getClassOnlyAttribute(parentEvent, true);
+	}
+
+
+	/**
+	 * Returns the "class" attribute for a given event and checks that it is the only attribute.
+	 * @param parentEvent
+	 * @return
+	 */
+	protected String getClassOnlyAttribute(XMLEvent parentEvent, boolean required) {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		String classValue =getAndRemoveAttributeValue(parentEvent, attributes, CLASS, true, 1);
+		String classValue =getAndRemoveAttributeValue(parentEvent, attributes, CLASS, required, 1);
 		checkNoAttributes(attributes, parentEvent);
 		return classValue;
 	}

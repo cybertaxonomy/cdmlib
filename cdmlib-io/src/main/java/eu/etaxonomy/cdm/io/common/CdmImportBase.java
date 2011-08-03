@@ -662,31 +662,36 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Currently a feature placeholder is marked by a marker of type 'feature placeholder'. Maybe in future
 	 * there will be a boolean marker in the TextData class itself.
 	 * @param state 
+	 * @param feature 
 	 * @param taxon
 	 * @param ref
 	 * @param createIfNotExists
 	 * @return
 	 */
-	protected TextData getFeaturePlaceholder(STATE state, DescriptionBase<?> description, boolean createIfNotExists) {
+	protected TextData getFeaturePlaceholder(STATE state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {
 		UUID featurePlaceholderUuid = MarkupTransformer.uuidFeaturePlaceholder;
 		for (DescriptionElementBase element : description.getElements()){
 			if (element.isInstanceOf(TextData.class)){
-				TextData placeholder = CdmBase.deproxy(element, TextData.class);
-				for (Marker marker : placeholder.getMarkers()){
+				TextData textData = CdmBase.deproxy(element, TextData.class);
+				if (textData.getFeature() == null || ! textData.getFeature().equals(feature)){
+					continue;
+				}
+				for (Marker marker : textData.getMarkers()){
 					MarkerType markerType = marker.getMarkerType();
 					if (markerType != null && 
 							markerType.getUuid().equals(featurePlaceholderUuid) && 
 							marker.getValue() == true){
-						return placeholder;
+						return textData;
 					}
 				}
 			}
 		}
 		if (createIfNotExists){
-			TextData newPlaceholder = TextData.NewInstance();
+			TextData newPlaceholder = TextData.NewInstance(feature);
 			MarkerType placeholderMarkerType = getMarkerType(state, featurePlaceholderUuid, "Feature Placeholder", "Feature Placeholder", null);
 			Marker marker = Marker.NewInstance(placeholderMarkerType, true);
 			newPlaceholder.addMarker(marker);
+			description.addElement(newPlaceholder);
 			return newPlaceholder;
 		}else{
 			return null;
