@@ -325,6 +325,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupInputStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/UnmatchedLeads.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/WriterDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/PublicationHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/TreatmentHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDescriptionExporter.java -text

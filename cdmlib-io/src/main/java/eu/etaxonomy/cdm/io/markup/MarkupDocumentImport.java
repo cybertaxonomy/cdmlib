@@ -60,7 +60,9 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -84,6 +86,7 @@ import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -101,6 +104,22 @@ import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
  */
 @Component
 public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<MarkupImportState> {
+	private static final String HABITAT = "habitat";
+
+
+
+	private static final String LIFE_CYCLE_PERIODS = "lifeCyclePeriods";
+
+
+
+	private static final String DISTRIBUTION_LOCALITY = "distributionLocality";
+
+
+
+	private static final String REFERENCE = "reference";
+
+
+
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
 
@@ -480,9 +499,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		boolean hasTitle = false;
 		boolean hasNomenclature = false;
 		String taxonTitle = null;
-		Extension writerExtension = null;
-		
-		
+				
 		while (reader.hasNext()){
 			XMLEvent next = readNoWhitespace(reader);
 			if (next.isEndElement()){
@@ -505,9 +522,6 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					}else if(isEndingElement(next, KEY)){
 						//NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
-					}else if(isEndingElement(next, NOTES)){
-						//NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
 					}else if(isEndingElement(next, REFERENCES)){
 						//NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
@@ -522,19 +536,18 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					taxonTitle = handleTaxonTitle(state, reader, next);
 					hasTitle = true;
 				}else if(isStartingElement(next, WRITER)){
-					List<FootnoteDataHolder> footNotes = new ArrayList<FootnoteDataHolder>();
-					writerExtension = handleWriter(state, reader, next, footNotes);
-					taxon.addExtension(writerExtension);
+					
+					WriterDataHolder writer = handleWriter(state, reader, next);
+					taxon.addExtension(writer.extension);
 					//TODO what if taxonTitle comes later
-					if (StringUtils.isNotBlank(taxonTitle) && writerExtension != null){
-						String writer = writerExtension.getValue();
-						Reference sec = ReferenceFactory.newBookSection();
+					if (StringUtils.isNotBlank(taxonTitle) && writer.extension != null){
+						Reference<?> sec = ReferenceFactory.newBookSection();
 						sec.setTitle(taxonTitle);
-						TeamOrPersonBase author = createAuthor(writer);
+						TeamOrPersonBase<?> author = createAuthor(writer.writer);
 						sec.setAuthorTeam(author);
 						sec.setInReference(state.getConfig().getSourceReference());
 						taxon.setSec(sec);
-						registerFootnotes(state, sec, footNotes);
+						registerFootnotes(state, sec, writer.footnotes);
 					}else{
 						String message = "No taxontitle exists for writer";
 						fireWarningEvent(message, next, 6);
@@ -550,7 +563,21 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				}else if(isStartingElement(next, FEATURE)){
 					handleFeature(state, reader, next);
 				}else if(isStartingElement(next, NOTES)){
-					handleNotYetImplementedElement(next);
+					//TODO is this the correct way to handle notes?
+					String note = handleNotes(state, reader, next);
+					
+					UUID notesUuid;
+					try {
+						notesUuid = state.getTransformer().getFeatureUuid("notes");
+						Feature feature = getFeature(state, notesUuid, "Notes", "Notes", "note", null);
+						TextData textData = TextData.NewInstance(feature);
+						textData.putText(Language.DEFAULT(), note);
+						TaxonDescription description = getTaxonDescription(taxon, false, true);
+						description.addElement(textData);
+					} catch (UndefinedTransformerMethodException e) {
+						String message = "getFeatureUuid method not yet implemented";
+						fireWarningEvent(message, next, 8);
+					}
 				}else if(isStartingElement(next, REFERENCES)){
 					handleNotYetImplementedElement(next);
 				}else if(isStartingElement(next, FIGURE)){
@@ -572,6 +599,49 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		}
 		//TODO handle missing end element
 		throw new IllegalStateException("Taxon has no closing tag");
+	}
+
+
+	private String handleNotes(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		
+		String text = "";
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if(isMyEndingElement(next, parentEvent)){
+				return text;
+			}else if (next.isEndElement()){
+				if (isEndingElement(next, HEADING)){
+					popUnimplemented(next.asEndElement());
+				}else if (isEndingElement(next, SUB_HEADING)){
+					popUnimplemented(next.asEndElement());
+				}else if (isEndingElement(next, WRITER)){
+					popUnimplemented(next.asEndElement());
+				}else if (isEndingElement(next, NUM)){
+					popUnimplemented(next.asEndElement());
+				}else {
+					handleUnexpectedEndElement(next.asEndElement());
+				}
+			}else if (next.isStartElement()){
+				if (isStartingElement(next, HEADING)){
+					handleNotYetImplementedElement(next);
+				}else if (isStartingElement(next, SUB_HEADING)){
+					handleNotYetImplementedElement(next);
+				}else if (isStartingElement(next, WRITER)){
+					handleNotYetImplementedElement(next);
+				}else if (isStartingElement(next, NUM)){
+					handleNotYetImplementedElement(next);
+				}else if (isStartingElement(next, STRING)){
+					//TODO why multiple strings?
+					text += handleString(state, reader, next);
+				}else {
+					handleUnexpectedStartElement(next.asStartElement());
+				}
+			}else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<Notes> has no closing tag");
 	}
 
 
@@ -690,22 +760,40 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		
 	}
 	
-	private Extension handleWriter(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, List<FootnoteDataHolder> footNotes) throws XMLStreamException {
+	private WriterDataHolder handleWriter(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		String text = "";
 		checkNoAttributes(parentEvent);
+		WriterDataHolder dataHolder = new WriterDataHolder();
+		List<FootnoteDataHolder> footnotes = new ArrayList<FootnoteDataHolder>();
 		
 		//TODO handle attributes
 		while (reader.hasNext()){
 			XMLEvent next = readNoWhitespace(reader);
 			if (next.isEndElement()){
 				if (isMyEndingElement(next, parentEvent)){
+					text = CdmUtils.removeBrackets(text);
 					if (checkMandatoryText(text, parentEvent)){
-						UUID uuidWriter = MarkupTransformer.uuidWriter;
-						ExtensionType titleExtensionType = this.getExtensionType(state, uuidWriter, "Writer", "writer", "writer");
+						text = normalize(text);
+						dataHolder.writer = text;
+						dataHolder.footnotes = footnotes;
+						
+						//Extension
+						UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
+						ExtensionType writerExtensionType = this.getExtensionType(state, uuidWriterExtension, "Writer", "writer", "writer");
 						Extension extension = Extension.NewInstance();
-						extension.setType(titleExtensionType);
-						extension.setValue(normalize(text));
-						return extension;
+						extension.setType(writerExtensionType);
+						extension.setValue(text);
+						dataHolder.extension = extension;
+						
+						//Annotation
+						UUID uuidWriterAnnotation = MarkupTransformer.uuidWriterAnnotation;
+						AnnotationType writerAnnotationType = this.getAnnotationType(state, uuidWriterAnnotation, "Writer", "writer", "writer", null);
+						Annotation annotation = Annotation.NewInstance(text, writerAnnotationType, Language.DEFAULT());
+						dataHolder.annotation = annotation;
+						
+						
+						
+						return dataHolder;
 					}else{
 						return null;
 					}
@@ -722,7 +810,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				if(isStartingElement(next, FOOTNOTE_REF)){
 					FootnoteDataHolder footNote = handleFootnoteRef(state, reader, next);
 					if (footNote.isRef()){
-						footNotes.add(footNote);
+						footnotes.add(footNote);
 					}else{
 						logger.warn ("Non ref footnotes not yet impelemnted");
 					}
@@ -1015,8 +1103,6 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					popUnimplemented(next.asEndElement());
 				}else if (isEndingElement(next, COLLECTION)){
 					popUnimplemented(next.asEndElement());
-				}else if (isEndingElement(next, REFERENCES)){
-					popUnimplemented(next.asEndElement());
 				}else if (isEndingElement(next, BR)){
 					isTextMode = true;
 				}else if (isHtml(next)){
@@ -1030,7 +1116,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				}else if (isStartingElement(next, COLLECTION)){
 					handleNotYetImplementedElement(next);
 				}else if (isStartingElement(next, REFERENCES)){
-					handleNotYetImplementedElement(next);
+					text += " " + handleInLineReferences(state, reader, next) + " ";
 				}else if (isStartingElement(next, BR)){
 					text += "<br/>";
 					isTextMode = false;
@@ -1044,7 +1130,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String message = "footnoteString is not in text mode";
 					fireWarningEvent(message, next, 6);
 				}else{
-					text += next.asCharacters().getData();
+					text += next.asCharacters().getData().trim(); //getCData(state, reader, next); does not work as we have inner tags like <references>
 				}
 			}else {
 				handleUnexpectedEndElement(next.asEndElement());
@@ -1054,6 +1140,53 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 
 	}
 	
+
+	private String handleInLineReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		
+		boolean hasReference = false;
+		String text = "";
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)){
+				checkMandatoryElement(hasReference, parentEvent.asStartElement(), REFERENCE);
+				return text;			
+			}else if(isStartingElement(next, REFERENCE)){
+				text += handleInLineReference(state, reader, next);
+				hasReference = true;
+			}else{
+				handleUnexpectedElement(next);
+			}
+		}
+		//TODO handle missing end element
+		throw new IllegalStateException("<References> has no closing tag");
+	}
+
+
+	private String handleInLineReference(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		
+		boolean hasRefPart = false;
+		Map<String, String> refMap = new HashMap<String, String>();
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)){
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
+				Reference<?> reference = createReference(state, refMap, next);
+				String result = "<ref uuid='%s'>%s</ref>";
+				result = String.format(result, reference.getUuid(), reference.getTitleCache());
+				return result;			
+			}else if(isStartingElement(next, REF_PART)){
+				handleRefPart(state, reader, next, refMap);
+				hasRefPart = true;
+			}else{
+				handleUnexpectedElement(next);
+			}
+		}
+		//TODO handle missing end element
+		throw new IllegalStateException("<Reference> has no closing tag");
+	}
+
 
 	private void handleHomotypes(MarkupImportState state, XMLEventReader reader, StartElement parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -1084,7 +1217,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					hasNom = true;
 				}else if(isStartingElement(next, NAME_TYPE)){
 					state.setNameType(true);
-					handleNameType(state, reader, next);
+					handleNameType(state, reader, next, homotypicalGroup);
 				}else if(isStartingElement(next, SPECIMEN_TYPE)){
 					handleSpecimenType(state, reader, next, homotypicalGroup);
 				}else if(isStartingElement(next, NOTES)){
@@ -1102,7 +1235,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	}
 
 
-	private void handleNameType(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+	private void handleNameType(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String typeStatus = getAndRemoveAttributeValue(attributes, TYPE_STATUS);
 		checkNoAttributes(attributes, parentEvent);
@@ -1114,6 +1247,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			String message = "Type status could not be recognized: %s";
 			message = String.format(message, typeStatus);
 			fireWarningEvent(message, parentEvent, 4);
+			status = null;
 		}
 		
 		boolean hasNom = false;
@@ -1122,6 +1256,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			if (next.isEndElement()){
 				if (isMyEndingElement(next, parentEvent)){
 					checkMandatoryElement(hasNom, parentEvent.asStartElement(), NOM);
+					state.setNameType(false);
 					return;
 				}else{
 					if(isEndingElement(next, ACCEPTED_NAME)){
@@ -1133,7 +1268,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				}
 			}else if (next.isStartElement()){
 				if(isStartingElement(next, NOM)){
-					NonViralName name = handleNom(state, reader, next, null);
+					//TODO should we check if the type is always a species, is this a rule?
+					NonViralName<?> speciesName = handleNom(state, reader, next, null);
+					for (TaxonNameBase<?,?> name : homotypicalGroup.getTypifiedNames()){
+						name.addNameTypeDesignation(speciesName, null, null, null, status, false, false, false, false);
+					}
 					hasNom = true;
 				}else if(isStartingElement(next, ACCEPTED_NAME)){
 					handleNotYetImplementedElement(next);
@@ -1397,16 +1536,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		if ("locality".equalsIgnoreCase(classValue)){
 			isLocality = true;
 		}else{
-			try {
-				areaLevel = state.getTransformer().getNamedAreaLevelByKey(classValue);
-			} catch (UndefinedTransformerMethodException e) {
-				//do nothing
-			}
-			if (areaLevel == null){
-				String message = "Named area level '%s' not yet implemented.";
-				message = String.format(message, classValue);
-				fireWarningEvent(message, parentEvent, 6);
-			}
+			areaLevel = makeNamedAreaLevel(state, classValue, parentEvent);
 		}
 		
 		String text = "";
@@ -1783,7 +1913,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		if (isSynonym){
 			Rank defaultRank = Rank.SPECIES();  //can be any
 			name = createNameByCode(state, defaultRank);
-			name.setHomotypicalGroup(homotypicalGroup);
+			if (homotypicalGroup != null){
+				name.setHomotypicalGroup(homotypicalGroup);
+			}
 			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)){
 				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -1865,13 +1997,12 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 
 		state.setCitation(true);
 		boolean hasRefPart = false;
-		Reference reference = ReferenceFactory.newGeneric();
 		Map<String, String> refMap = new HashMap<String, String>();
 		while (reader.hasNext()){
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)){
 				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
-				reference = createReference(state, refMap, next);
+				Reference reference = createReference(state, refMap, next);
 				String microReference = refMap.get(DETAILS);
 				doCitation(state, name, classValue, reference, microReference, parentEvent);
 				state.setCitation(false);
@@ -1944,6 +2075,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				reference = (Reference)article; 
 				
 			}else{
+				//TODO
 				Reference bookOrPartOf = ReferenceFactory.newGeneric();
 				reference = bookOrPartOf;
 			}
@@ -1953,7 +2085,20 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			
 			
 		}else{
-			reference = ReferenceFactory.newGeneric();
+			if (volume != null || "journal".equalsIgnoreCase(type)){
+				IArticle article = ReferenceFactory.newArticle();
+				if (pubName != null){
+					IJournal journal = ReferenceFactory.newJournal();
+					journal.setTitle(pubName);
+					article.setInJournal(journal);
+				}
+				reference = (Reference)article; 
+				
+			}else{
+				Reference bookOrPartOf = ReferenceFactory.newGeneric();
+				reference = bookOrPartOf;
+			}
+			
 			//TODO type
 			TeamOrPersonBase author = createAuthor(authorStr);
 			reference.setAuthorTeam(author);
@@ -1966,7 +2111,12 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			reference.setEditor(editors);
 			
 			if (pubName != null){
-				Reference inReference = ReferenceFactory.newGeneric();
+				Reference inReference;
+				if (reference.getType().equals(ReferenceType.Article)){
+					inReference = ReferenceFactory.newJournal();
+				}else{
+					inReference = ReferenceFactory.newGeneric();
+				}
 				inReference.setTitle(pubName);
 				reference.setInReference(inReference);
 			}
@@ -2041,15 +2191,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				if (isMyEndingElement(next, parentEvent)){
 					return;
 				}else{
-					if(isEndingElement(next, WRITER)){
-						//NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					}else if(isEndingElement(next, DISTRIBUTION_LIST)){
-						//NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					}else if(isEndingElement(next, HABITAT_LIST)){
-						//NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
+					if(isEndingElement(next, DISTRIBUTION_LIST) || isEndingElement(next, HABITAT_LIST)){
+						//only handle list elements
 					}else if(isEndingElement(next, REFERENCES)){
 						//NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
@@ -2070,11 +2213,34 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						}
 					}
 				}else if(isStartingElement(next, WRITER)){
-					handleNotYetImplementedElement(next);
+					WriterDataHolder writer = handleWriter(state, reader, next);
+					if (StringUtils.isNotBlank(writer.writer)){
+						//TODO
+						Reference<?> ref = state.getConfig().getSourceReference();
+						TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+						TextData featurePlaceholder = getFeaturePlaceholder(state, description, true);
+						featurePlaceholder.addAnnotation(writer.annotation);
+						registerFootnotes(state, featurePlaceholder, writer.footnotes);
+					}else{
+						String message = "Writer element is empty";
+						fireWarningEvent(message, next, 4);
+					}
+				}else if(isStartingElement(next, DISTRIBUTION_LOCALITY)){
+					if (! feature.equals(Feature.DISTRIBUTION())){
+						String message = "Distribution locality only allowed for feature of type 'distribution'";
+						fireWarningEvent(message, next, 4);
+					}
+					handleDistributionLocality(state,reader, next);
 				}else if(isStartingElement(next, DISTRIBUTION_LIST)){
-					handleNotYetImplementedElement(next);
+					//only handle list elements
+				}else if(isStartingElement(next, HABITAT)){
+					if (! (feature.equals(Feature.HABITAT())) || feature.equals(Feature.HABITAT_ECOLOGY()) || feature.equals(Feature.ECOLOGY())  ){
+						String message = "Habitat only allowed for feature of type 'habitat','habitat ecology' or 'ecology'";
+						fireWarningEvent(message, next, 4);
+					}
+					handleHabitat(state,reader, next);
 				}else if(isStartingElement(next, HABITAT_LIST)){
-					handleNotYetImplementedElement(next);
+					//only handle list elements
 				}else if(isStartingElement(next, CHAR)){
 					TextData textData = handleChar (state,reader, next);
 					taxonDescription.addElement(textData);
@@ -2130,6 +2296,109 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	}
 	
 
+	private void handleHabitat(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		Taxon taxon = state.getCurrentTaxon();
+		//TODO which ref to take?
+		Reference<?> ref = state.getConfig().getSourceReference();
+		
+		String text = "";
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if(isMyEndingElement(next, parentEvent)){
+				TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+				UUID uuidExtractedHabitat = MarkupTransformer.uuidExtractedHabitat;
+				Feature feature = getFeature(state, uuidExtractedHabitat, "Extracted Habitat", "An structured habitat that was extracted from a habitat text", "extr. habit.", null);
+				TextData habitat = TextData.NewInstance(feature);
+				habitat.putText(Language.DEFAULT(), text);
+				description.addElement(habitat);
+				
+				return;
+			}else if (next.isStartElement()){
+				if (isStartingElement(next, ALTITUDE)){
+					handleNotYetImplementedElement(next);
+				}else if (isStartingElement(next, LIFE_CYCLE_PERIODS)){
+					handleNotYetImplementedElement(next);
+				}else {
+					handleUnexpectedStartElement(next.asStartElement());
+				}
+			} else if (next.isCharacters()){
+				text += next.asCharacters().getData();
+			}else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<Habitat> has no closing tag");
+		
+		
+	}
+
+
+	private void handleDistributionLocality(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		String classValue =getClassOnlyAttribute(parentEvent);
+		
+		Taxon taxon = state.getCurrentTaxon();
+		//TODO which ref to take?
+		Reference ref = state.getConfig().getSourceReference();
+		
+		String text = "";
+		while (reader.hasNext()){
+			XMLEvent next = readNoWhitespace(reader);
+			if(isMyEndingElement(next, parentEvent)){
+				if (StringUtils.isNotBlank(text)){
+					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+					NamedAreaLevel level = makeNamedAreaLevel(state, classValue, next);
+					NamedArea area = createArea(text, level, state);
+					
+					PresenceAbsenceTermBase<?> status = null;
+					Distribution distribution = Distribution.NewInstance(area, status);
+					description.addElement(distribution);
+				}else{
+					String message = "Empty distribution locality";
+					fireWarningEvent(message, next, 4);
+				}
+				return;
+			}else if (next.isStartElement()){
+				if (isStartingElement(next, COORDINATES)){
+					handleNotYetImplementedElement(next);
+				}else {
+					handleUnexpectedStartElement(next.asStartElement());
+				}
+			} else if (next.isCharacters()){
+				text += next.asCharacters().getData();
+			}else {
+				handleUnexpectedEndElement(next.asEndElement());
+			}
+		}
+		throw new IllegalStateException("<String> has no closing tag");
+	}
+
+
+	/**
+	 * @param state
+	 * @param levelString
+	 * @param next
+	 * @return
+	 */
+	private NamedAreaLevel makeNamedAreaLevel(MarkupImportState state,
+			String levelString, XMLEvent next) {
+		NamedAreaLevel level;
+		try {
+			level = state.getTransformer().getNamedAreaLevelByKey(levelString);
+			if (level == null){
+				UUID levelUuid = state.getTransformer().getNamedAreaLevelUuid(levelString);
+				if (levelUuid == null){
+					String message = "Unknown distribution locality class (named area level): %s. Create new level instead.";
+					message = String.format(message, levelString);
+					fireWarningEvent(message, next, 6);
+				}
+				level = getNamedAreaLevel(state, levelUuid, levelString, levelString, levelString, null);
+			}
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return level;
+	}
 
 
 	private String handleHeading(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
@@ -2222,7 +2491,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	}
 
 	protected static final List<String> htmlList = Arrays.asList(
-			"sub", "sup", "ol", "ul", "i", "b", "table", "br");
+			"sub", "sup", "ol", "ul", "li", "i", "b", "table", "br");
 	
 	
 	private boolean isHtml(XMLEvent event) {

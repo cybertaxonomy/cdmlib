@@ -33,24 +33,34 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	//extension type uuids
 	public static final UUID uuidTaxonTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
-	public static final UUID uuidWriter = UUID.fromString("43f988cb-bc53-4324-a702-c8f920656975");
+	public static final UUID uuidWriterExtension = UUID.fromString("43f988cb-bc53-4324-a702-c8f920656975");
 	
 	//annotation type uuids
 	public static final UUID uuidFootnote = UUID.fromString("b91fab29-7d26-4277-b549-262da0d901b1");
+	public static final UUID uuidWriterAnnotation = UUID.fromString("df73df4a-93a1-4d95-a552-1cebe26db51b");
 	
 	
 	//marker type uuid
 //	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
 	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
-
+	public static final UUID uuidFeaturePlaceholder = UUID.fromString("89568794-375e-4a02-b75d-bd65601fb877");
 	
+	
+	//named ared level uuids
+	public static final UUID uuidRegion = UUID.fromString("06d3a74d-cf2e-4842-8c89-87722b9486a4");
+	public static final UUID uuidWorld = UUID.fromString("69520b33-6381-454e-bb8f-0df11c3b3a67");
+	public static final UUID uuidCounty = UUID.fromString("c2882e13-88dc-42ac-b89c-2ee404e22d81");
+	public static final UUID uuidContinent = UUID.fromString("1051c9bb-d0ab-4a71-ab15-afdab82c2bdc");
+	public static final UUID uuidDistrict = UUID.fromString("1b778ba8-ba5f-47a9-ad67-222826f96863");
+	public static final UUID uuidLocality = UUID.fromString("224a4140-da1f-4046-91bb-fb948916d797");
+	public static final UUID uuidLevelOther = UUID.fromString("4b483cc8-b42d-40ba-9cc7-a656faf629e2");
 	
 	//feature uuids
 	
 	public static final UUID uuidFigure = UUID.fromString("5165cd6a-9b31-4a1f-8b30-04ab740c502c");
 	public static final UUID uuidFigures = UUID.fromString("6dfb4e78-c67e-410c-8989-c1fb1295abf6");
 	
-
+	public static final UUID uuidExtractedHabitat = UUID.fromString("d80511d2-a76c-48b8-b3aa-5fbd4a58fe5c");
 	public static final UUID uuidHabit = UUID.fromString("03487108-173a-4335-92be-05076af29155");
 	public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
 	public static final UUID uuidHabitatEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
@@ -371,6 +381,26 @@ public class MarkupTransformer extends InputTransformerBase {
 			return null;
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNamedAreaLevelUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaLevelUuid(String key)
+			throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
+		}else if (key.equalsIgnoreCase("world")){return uuidWorld;
+		}else if (key.equalsIgnoreCase("county")){return uuidCounty;
+		}else if (key.equalsIgnoreCase("continent")){return uuidContinent;
+		}else if (key.equalsIgnoreCase("district")){return uuidDistrict;
+		}else if (key.equalsIgnoreCase("locality")){return uuidLocality;
+		}else if (key.equalsIgnoreCase("other")){return uuidLevelOther;
+		}else{
+			return null;
+		}
+	}
+	
 	
 	
 	
