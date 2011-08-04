@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.cache.description.PolytomousKeyDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 
 /**
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
 @Audited
-public class PolytomousKey extends IdentifiableEntity implements IIdentificationKey {
+public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheStrategy> implements IIdentificationKey {
 	private static final long serialVersionUID = -3368243754557343942L;
 	private static final Logger logger = Logger.getLogger(PolytomousKey.class);
 
@@ -117,8 +118,7 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKeyNode root;
 
-	// ******************************** STATIC METHODS
-	// ********************************/
+// ***************** STATIC METHODS ********************************/
 
 	/**
 	 * Creates a new empty identification multi-access key instance.
@@ -136,8 +136,7 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 		return result;
 	}
 
-	// ************************** CONSTRUCTOR
-	// *******************************************/
+// ************************** CONSTRUCTOR ************************/
 
 	/**
 	 * Class constructor: creates a new empty multi-access key instance.
@@ -146,6 +145,7 @@ public class PolytomousKey extends IdentifiableEntity implements IIdentification
 		super();
 		root = PolytomousKeyNode.NewRootInstance();
 		root.setKey(this);
+		this.cacheStrategy = PolytomousKeyDefaultCacheStrategy.NewInstance();
 	}
 
 	// ************************ GETTER/ SETTER
