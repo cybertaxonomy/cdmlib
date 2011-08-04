@@ -361,7 +361,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		PolytomousKeyNode root = getKey().getRoot();
 		root.setNodeNumber(nodeNumber++);
 		nodeNumber = updateChildNodeNumbers(nodeNumber, root);
-
 	}
 
 	private int updateChildNodeNumbers(int nodeNumber, PolytomousKeyNode parent) {
