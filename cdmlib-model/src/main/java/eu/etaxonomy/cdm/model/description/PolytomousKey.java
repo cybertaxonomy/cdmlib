@@ -71,10 +71,8 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
 @Audited
-public class PolytomousKey extends IdentifiableEntity implements
-		IIdentificationKey {
+public class PolytomousKey extends IdentifiableEntity implements IIdentificationKey {
 	private static final long serialVersionUID = -3368243754557343942L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKey.class);
 
 	@XmlElementWrapper(name = "CoveredTaxa")
@@ -83,6 +81,7 @@ public class PolytomousKey extends IdentifiableEntity implements
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@NotNull
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 
 	@XmlElementWrapper(name = "TaxonomicScope")
@@ -92,6 +91,7 @@ public class PolytomousKey extends IdentifiableEntity implements
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "PolytomousKey_Taxon", joinColumns = @JoinColumn(name = "polytomousKey_id"), inverseJoinColumns = @JoinColumn(name = "taxon_id"))
 	@NotNull
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 
 	@XmlElementWrapper(name = "GeographicalScope")
