@@ -16,11 +16,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
-import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
@@ -124,13 +121,20 @@ public class UnmatchedLeads {
 //************************* METHODS ********************************/
 	
 	
+	/**
+	 * Adds a polytomous key node to the 
+	 * @param key
+	 * @param node
+	 */
 	public void addKey(UnmatchedLeadsKey key, PolytomousKeyNode node){
 		Set<PolytomousKeyNode> nodes = map.get(key);
 		if (nodes == null){
 			nodes = new HashSet<PolytomousKeyNode>();
 			map.put(key, nodes);
 		}else{
-			logger.info("A Feature node for this key does already exist: " + key.toString());
+			String message = "A feature node for this key does already exist: %s";
+			message = String.format(message, key.toString());
+			logger.info(message);
 		}
 		nodes.add(node);
 	}
@@ -157,7 +161,8 @@ public class UnmatchedLeads {
 	}
 	
 	/**
-	 * SaveOrUpdates all polytomousKeyNodes in the unmatchedLeadsKey map
+	 * SaveOrUpdates all polytomousKeyNodes in the unmatchedLeadsKey map.
+	 * Used to move nodes from one transaction to another.
 	 * @param service
 	 */
 	public void saveToSession(IPolytomousKeyNodeService service){

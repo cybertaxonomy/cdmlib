@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -64,6 +65,9 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		}else if (cdmBase.isInstanceOf(Classification.class)){
 			Classification classification = CdmBase.deproxy(cdmBase, Classification.class);
 			getClassificationService().saveOrUpdate(classification);
+		}else if (cdmBase.isInstanceOf(PolytomousKey.class)){
+			PolytomousKey key = CdmBase.deproxy(cdmBase, PolytomousKey.class);
+			getPolytomousKeyService().saveOrUpdate(key);
 		}else if (cdmBase.isInstanceOf(DefinedTermBase.class)){
 			DefinedTermBase term = CdmBase.deproxy(cdmBase, DefinedTermBase.class);
 			getTermService().saveOrUpdate(term);
@@ -539,8 +543,17 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 	 * @return
 	 */
 	protected String getClassOnlyAttribute(XMLEvent parentEvent, boolean required) {
+		return getOnlyAttribute(parentEvent, CLASS, required);
+	}
+	
+	/**
+	 * Returns the value for the only attribute for a given event and checks that it is the only attribute.
+	 * @param parentEvent
+	 * @return
+	 */
+	protected String getOnlyAttribute(XMLEvent parentEvent, String attrName, boolean required) {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		String classValue =getAndRemoveAttributeValue(parentEvent, attributes, CLASS, required, 1);
+		String classValue =getAndRemoveAttributeValue(parentEvent, attributes, attrName, required, 1);
 		checkNoAttributes(attributes, parentEvent);
 		return classValue;
 	}

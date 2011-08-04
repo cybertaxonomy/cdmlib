@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -42,6 +43,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 	
+	private PolytomousKey currentKey;
+
+
 	private Language defaultLanguage;
 	
 	private Taxon currentTaxon;
@@ -189,6 +193,20 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	public void putFigureDemands(String figureId, Set<AnnotatableEntity> demands){
 		figureRefRegister.put(figureId, demands);
+	}
+
+	/**
+	 * @param key
+	 */
+	public void setCurrentKey(PolytomousKey key) {
+		this.currentKey = key;
+	}
+	
+	/**
+	 * @return the currentKey
+	 */
+	public PolytomousKey getCurrentKey() {
+		return currentKey;
 	}
 
 }
