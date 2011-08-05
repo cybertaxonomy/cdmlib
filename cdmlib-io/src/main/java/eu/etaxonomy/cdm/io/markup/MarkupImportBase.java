@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,12 +56,33 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 	private Stack<QName> handledElements = new Stack<QName>();
 
 
+	protected <T extends CdmBase> void  save(Collection<T> collection, MarkupImportState state) {
+		if (state.isCheck() || collection.isEmpty()){
+			return;
+		}
+		T example = collection.iterator().next();
+		if (example.isInstanceOf(TaxonBase.class)){
+			Collection<TaxonBase> typedCollection = (Collection<TaxonBase>)collection;
+			getTaxonService().saveOrUpdate(typedCollection);
+		}else if (example.isInstanceOf(Classification.class)){
+			Collection<Classification> typedCollection = (Collection<Classification>)collection;
+			getClassificationService().saveOrUpdate(typedCollection);
+		}else if (example.isInstanceOf(PolytomousKey.class)){
+			Collection<PolytomousKey> typedCollection = (Collection<PolytomousKey>)collection;
+			getPolytomousKeyService().saveOrUpdate(typedCollection);
+		}else if (example.isInstanceOf(DefinedTermBase.class)){
+			Collection<DefinedTermBase> typedCollection = (Collection<DefinedTermBase>)collection;
+			getTermService().saveOrUpdate(typedCollection);
+		}
+		
+	}
+	
 	protected void save(CdmBase cdmBase, MarkupImportState state) {
 		if (state.isCheck()){
 			return;
 		}
 		if (cdmBase.isInstanceOf(TaxonBase.class)){
-			TaxonBase taxonBase = CdmBase.deproxy(cdmBase, TaxonBase.class);
+			TaxonBase<?> taxonBase = CdmBase.deproxy(cdmBase, TaxonBase.class);
 			getTaxonService().saveOrUpdate(taxonBase);
 		}else if (cdmBase.isInstanceOf(Classification.class)){
 			Classification classification = CdmBase.deproxy(cdmBase, Classification.class);
@@ -69,7 +91,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 			PolytomousKey key = CdmBase.deproxy(cdmBase, PolytomousKey.class);
 			getPolytomousKeyService().saveOrUpdate(key);
 		}else if (cdmBase.isInstanceOf(DefinedTermBase.class)){
-			DefinedTermBase term = CdmBase.deproxy(cdmBase, DefinedTermBase.class);
+			DefinedTermBase<?> term = CdmBase.deproxy(cdmBase, DefinedTermBase.class);
 			getTermService().saveOrUpdate(term);
 		}
 		//logger.warn("Saved " +  cdmBase);

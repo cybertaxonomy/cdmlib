@@ -30,6 +30,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		return new MarkupImportConfigurator(uri, destination);
 	}
 	
+	private boolean replaceStandardKeyTitles = true;
+	
 	private boolean doTaxa = true;
 
 	
@@ -163,6 +165,14 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	}
 	public void setDoTaxa(boolean doTaxa) {
 		this.doTaxa = doTaxa;
+	}
+
+	public void setReplaceStandardKeyTitles(boolean replaceStandardKeyTitles) {
+		this.replaceStandardKeyTitles = replaceStandardKeyTitles;
+	}
+
+	public boolean isReplaceStandardKeyTitles() {
+		return replaceStandardKeyTitles;
 	}
 
 	

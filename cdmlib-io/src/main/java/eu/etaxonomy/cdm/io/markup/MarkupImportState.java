@@ -44,11 +44,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 	
 	private PolytomousKey currentKey;
-
-
+	
 	private Language defaultLanguage;
 	
 	private Taxon currentTaxon;
+	private String currentTaxonNum;
 	
 	private boolean isCitation = false;
 	private boolean isNameType = false;
@@ -120,6 +120,15 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public Taxon getCurrentTaxon() {
 		return currentTaxon;
 	}
+	
+	public void setCurrentTaxonNum(String currentTaxonNum) {
+		this.currentTaxonNum = currentTaxonNum;
+	}
+
+	public String getCurrentTaxonNum() {
+		return currentTaxonNum;
+	}
+
 
 
 	/**
