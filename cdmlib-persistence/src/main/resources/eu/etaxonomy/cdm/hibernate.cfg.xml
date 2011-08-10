@@ -131,7 +131,7 @@
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentationPart"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MovieFile"/>
-      <mapping class="eu.etaxonomy.cdm.model.media.ReferencedMedia"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.ReferencedMediaBase"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Rights"/>
       <mapping class="eu.etaxonomy.cdm.model.media.RightsTerm"/>
       <!-- Molecular Package -->

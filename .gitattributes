@@ -671,7 +671,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentation.java
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentationPart.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaUtils.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MovieFile.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ReferencedMedia.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ReferencedMediaBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Rights.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/RightsTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/package-info.java -text

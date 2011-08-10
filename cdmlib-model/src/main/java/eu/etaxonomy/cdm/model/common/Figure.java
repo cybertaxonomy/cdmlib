@@ -18,7 +18,7 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.ReferencedMedia;
+import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Figure")
 @Entity
 @Audited
-public class Figure extends ReferencedMedia {
+public class Figure extends ReferencedMediaBase {
 	private static final long serialVersionUID = -1712467725277327725L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Figure.class);
