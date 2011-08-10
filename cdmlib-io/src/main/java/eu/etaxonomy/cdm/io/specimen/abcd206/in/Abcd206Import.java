@@ -129,7 +129,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 //			Reference sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
-			Reference sec = config.getTaxonReference();
+			Reference<?> sec = config.getTaxonReference();
 
 			//create facade
 			DerivedUnitFacade derivedUnitFacade = getFacade(dataHolder);
@@ -181,7 +181,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 //			//add Multimedia URLs
 			if(dataHolder.multimediaObjects.size() > 0){
 				for (String multimediaObject : dataHolder.multimediaObjects){
-					Media media = getImageMedia(multimediaObject, true);
+					Media media = getImageMedia(multimediaObject, READ_MEDIA_DATA, false);
 					derivedUnitFacade.addDerivedUnitMedia(media);
 				}
 			}
@@ -1033,7 +1033,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, Reference sec, Abcd206DataHolder dataHolder){
+	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, Reference<?> sec, Abcd206DataHolder dataHolder){
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -1107,7 +1107,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 			for (String strReference : dataHolder.referenceList){
 				
-				Reference reference = ReferenceFactory.newGeneric();
+				Reference<?> reference = ReferenceFactory.newGeneric();
 				reference.setTitleCache(strReference, true);
 				determinationEvent.addReference(reference);
 			}
@@ -1133,7 +1133,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(facade.innerDerivedUnit());
 				individualsAssociation.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
-				for(Reference citation : determinationEvent.getReferences()){
+				for(Reference<?> citation : determinationEvent.getReferences()){
 					individualsAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
 				}
 				taxonDescription.addElement(individualsAssociation);
@@ -1157,7 +1157,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		if (dataHolder.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
 			if (taxonName.hasProblem()){
-				problem=true;;
+				problem=true;
 			}
 		}
 		if (dataHolder.nomenclatureCode.toString().equals("Bacterial")){

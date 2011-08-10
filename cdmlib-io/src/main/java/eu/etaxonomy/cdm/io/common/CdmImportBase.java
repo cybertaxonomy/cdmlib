@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -74,6 +75,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
+	protected static final boolean READ_MEDIA_DATA = true;
 
 	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
 	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
@@ -765,25 +767,29 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 
 	/**
-	 * @param derivedUnitFacade
-	 * @param multimediaObject
+	 * Creates 
+	 * @param uriString
+	 * @param readDataFromUrl
+	 * @see #READ_MEDIA_DATA
+	 * @return
 	 * @throws MalformedURLException
 	 */
-	protected Media getImageMedia(String multimediaObject, boolean readDataFromUrl) throws MalformedURLException {
-		if( multimediaObject == null){
+	protected Media getImageMedia(String uriString, boolean readMediaData, boolean isFigure) throws MalformedURLException {
+		if( uriString == null){
 			return null;
 		} else {
 			ImageInfo imageInfo = null;
 			URI uri;
 			try {
-				uri = new URI(multimediaObject);
+				uri = new URI(uriString);
 				try {
-					if (readDataFromUrl){
+					if (readMediaData){
 						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {
 					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
 					logger.warn(message);
+					fireWarningEvent(message, "unknown location", 2, 0);
 				}
 				ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
 				MediaRepresentation representation = MediaRepresentation.NewInstance();
@@ -791,12 +797,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					representation.setMimeType(imageInfo.getMimeType());
 				}
 				representation.addRepresentationPart(imageFile);
-				Media media = Media.NewInstance();
+				Media media = isFigure ? Figure.NewInstance() : Media.NewInstance();
 				media.addRepresentation(representation);
 				return media;
 			} catch (URISyntaxException e1) {
-				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  multimediaObject;
+				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  uriString;
 				logger.warn(message);
+				fireWarningEvent(message, "unknown location", 4, 0);
 				return null;
 			}
 		}

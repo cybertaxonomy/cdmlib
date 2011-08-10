@@ -1171,15 +1171,13 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		throw new IllegalStateException("<writer> has no end tag");
 	}
 
-	private void registerFootnotes(MarkupImportState state,
-			AnnotatableEntity entity, List<FootnoteDataHolder> footnotes) {
+	private void registerFootnotes(MarkupImportState state, AnnotatableEntity entity, List<FootnoteDataHolder> footnotes) {
 		for (FootnoteDataHolder footNote : footnotes) {
 			registerFootnoteDemand(state, entity, footNote);
 		}
 	}
 
-	private void registerGivenFootnote(MarkupImportState state,
-			FootnoteDataHolder footnote) {
+	private void registerGivenFootnote(MarkupImportState state, FootnoteDataHolder footnote) {
 		state.registerFootnote(footnote);
 		Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.id);
 		if (demands != null) {
@@ -1189,8 +1187,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		}
 	}
 
-	private void registerGivenFigure(MarkupImportState state, String id,
-			Media figure) {
+	private void registerGivenFigure(MarkupImportState state, String id, Media figure) {
 		state.registerFigure(id, figure);
 		Set<AnnotatableEntity> demands = state.getFigureDemands(id);
 		if (demands != null) {
@@ -1200,14 +1197,12 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		}
 	}
 
-	private void registerFootnoteDemand(MarkupImportState state,
-			AnnotatableEntity entity, FootnoteDataHolder footnote) {
+	private void registerFootnoteDemand(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
 		FootnoteDataHolder existingFootnote = state.getFootnote(footnote.ref);
 		if (existingFootnote != null) {
 			attachFootnote(state, entity, existingFootnote);
 		} else {
-			Set<AnnotatableEntity> demands = state
-					.getFootnoteDemands(footnote.ref);
+			Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.ref);
 			if (demands == null) {
 				demands = new HashSet<AnnotatableEntity>();
 				state.putFootnoteDemands(footnote.ref, demands);
@@ -1216,8 +1211,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		}
 	}
 
-	private void registerFigureDemand(MarkupImportState state,
-			AnnotatableEntity entity, String figureRef) {
+	private void registerFigureDemand(MarkupImportState state, AnnotatableEntity entity, String figureRef) {
 		Media existingFigure = state.getFigure(figureRef);
 		if (existingFigure != null) {
 			attachFigure(state, entity, existingFigure);
@@ -1231,11 +1225,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		}
 	}
 
-	private void attachFootnote(MarkupImportState state,
-			AnnotatableEntity entity, FootnoteDataHolder footnote) {
-		AnnotationType annotationType = this.getAnnotationType(state,
-				MarkupTransformer.uuidFootnote, "Footnote",
-				"An e-flora footnote", "fn", null);
+	private void attachFootnote(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
+		AnnotationType annotationType = this.getAnnotationType(state, MarkupTransformer.uuidFootnote, "Footnote", "An e-flora footnote", "fn", null);
 		Annotation annotation = Annotation.NewInstance(footnote.string,
 				annotationType, Language.DEFAULT());
 		// TODO transient objects
@@ -1263,8 +1254,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		save(entity, state);
 	}
 
-	private void handleFigure(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent) throws XMLStreamException {
+	private void handleFigure(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		// FigureDataHolder result = new FigureDataHolder();
 
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
@@ -1280,8 +1270,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				makeFigure(state, id, type, urlString, legendString,
-						titleString, numString, next);
+				makeFigure(state, id, type, urlString, legendString, titleString, numString, next);
 				return;
 			} else if (isStartingElement(next, FIGURE_LEGEND)) {
 				// TODO same as figurestring ?
@@ -1312,26 +1301,25 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	 * @param numString
 	 * @param next
 	 */
-	private void makeFigure(MarkupImportState state, String id, String type,
-			String urlString, String legendString, String titleString,
-			String numString, XMLEvent next) {
+	private void makeFigure(MarkupImportState state, String id, String type, String urlString, 
+						String legendString, String titleString, String numString, XMLEvent next) {
 		Media media = null;
+		boolean isFigure = false;
 		try {
-			URL url = new URL(urlString);
+			//TODO maybe everything is a figure as it is all taken from a book
 			if ("lineart".equals(type)) {
-				media = Figure.NewInstance(url.toURI(), null, null,
-						null);
+				isFigure = true;
+//				media = Figure.NewInstance(url.toURI(), null, null,	null);
 			} else if (type == null || "photo".equals(type)
 					|| "signature".equals(type)
 					|| "others".equals(type)) {
-				media = Media.NewInstance(url.toURI(), null, null, null);
 			} else {
 				String message = "Unknown figure type '%s'";
 				message = String.format(message, type);
-				// TODO location
-				fireWarningEvent(message, "-", 2);
-				media = Media.NewInstance(url.toURI(), null, null, null);
+				fireWarningEvent(message, next, 2);
 			}
+			media = getImageMedia(urlString, READ_MEDIA_DATA, isFigure);
+			
 			// title
 			if (StringUtils.isNotBlank(titleString)) {
 				media.putTitle(Language.DEFAULT(), titleString);
@@ -1343,7 +1331,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			if (StringUtils.isNotBlank(numString)) {
 				// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
 				// vol.13)
-				Reference citation = state.getConfig().getSourceReference();
+				Reference<?> citation = state.getConfig().getSourceReference();
 				media.addSource(numString, "num", citation, null);
 				// TODO name used in source if available
 			}
@@ -1362,10 +1350,10 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			String message = "Media uri has incorrect syntax: %s";
 			message = String.format(message, urlString);
 			fireWarningEvent(message, next, 4);
-		} catch (URISyntaxException e) {
-			String message = "Media uri has incorrect syntax: %s";
-			message = String.format(message, urlString);
-			fireWarningEvent(message, next, 4);
+//		} catch (URISyntaxException e) {
+//			String message = "Media uri has incorrect syntax: %s";
+//			message = String.format(message, urlString);
+//			fireWarningEvent(message, next, 4);
 		}
 
 		registerGivenFigure(state, id, media);
@@ -1525,9 +1513,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		return result;	
 	}
 
-	private String handleInLineReferences(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		boolean hasReference = false;
@@ -1535,8 +1521,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				checkMandatoryElement(hasReference,
-						parentEvent.asStartElement(), REFERENCE);
+				checkMandatoryElement(hasReference, parentEvent.asStartElement(), REFERENCE);
 				return text;
 			} else if (isStartingElement(next, REFERENCE)) {
 				text += handleInLineReference(state, reader, next);
