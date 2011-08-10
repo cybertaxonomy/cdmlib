@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public abstract class MediaInfo {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(MediaInfo.class);
 	private String formatName;
 	private String mimeType;
