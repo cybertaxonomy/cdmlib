@@ -54,6 +54,7 @@ public class UnmatchedLeads {
 		//taxonKey
 		String numAndTaxon;
 
+		
 		public boolean isInnerLead(){
 			return (key != null);
 		}
@@ -158,6 +159,11 @@ public class UnmatchedLeads {
 			return result;
 		}
 		return false;
+	}
+	
+
+	public int size(){
+		return map.size();
 	}
 	
 	/**

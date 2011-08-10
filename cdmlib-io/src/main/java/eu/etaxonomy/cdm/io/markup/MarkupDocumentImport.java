@@ -38,6 +38,7 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
@@ -85,6 +86,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IJournal;
@@ -106,42 +108,16 @@ import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
  * 
  */
 @Component
-public class MarkupDocumentImport extends MarkupImportBase implements
-		ICdmIO<MarkupImportState> {
-	private static final String TO_COUPLET = "toCouplet";
+public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<MarkupImportState> {
+	private static final String FREQUENCY = "frequency";
 
-	private static final String TO_TAXON = "toTaxon";
+	private static final String TAXONTYPE = "taxontype";
 
-	private static final String TO_KEY = "toKey";
+	private static final String DEDICATION = "dedication";
 
-	private static final String TEXT = "text";
+	private static final String QUOTE = "quote";
 
-	private static final String QUESTION = "question";
-
-	private static final String COUPLET = "couplet";
-
-	private static final String KEYNOTES = "keynotes";
-
-	private static final String KEY_TITLE = "keyTitle";
-
-	private static final String IS_SPOTCHARACTERS = "isSpotcharacters";
-
-	private static final String REF_NUM = "refNum";
-
-	private static final String SERIALS_ABBREVIATIONS = "serialsAbbreviations";
-
-	private static final String BIBLIOGRAPHY = "bibliography";
-
-	private static final String HABITAT = "habitat";
-
-	private static final String LIFE_CYCLE_PERIODS = "lifeCyclePeriods";
-
-	private static final String DISTRIBUTION_LOCALITY = "distributionLocality";
-
-	private static final String REFERENCE = "reference";
-
-	private static final Logger logger = Logger
-			.getLogger(MarkupDocumentImport.class);
+	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
 	private static final boolean CREATE_NEW = true;
 	private static final boolean IS_IMAGE_GALLERY = true;
@@ -157,20 +133,22 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	private static final String ALTITUDE = "altitude";
 	private static final String ANNOTATION = "annotation";
 	private static final String AUTHOR = "author";
+	private static final String BIBLIOGRAPHY = "bibliography";
 	private static final String BIOGRAPHIES = "biographies";
 	private static final String BOLD = "bold";
 	private static final String BR = "br";
 	private static final String CHAR = "char";
 	private static final String CITATION = "citation";
-	private static final String COLLECTION = "collection";
 	private static final String COLLECTION_TYPE_STATUS = "collectionTypeStatus";
 	private static final String COLLECTOR = "collector";
 	private static final String COORDINATES = "coordinates";
+	private static final String COUPLET = "couplet";
 	private static final String DATES = "dates";
 	private static final String DEFAULT_MEDIA_URL = "defaultMediaUrl";
 	private static final String DESTROYED = "destroyed";
 	private static final String DETAILS = "details";
 	private static final String DISTRIBUTION_LIST = "distributionList";
+	private static final String DISTRIBUTION_LOCALITY = "distributionLocality";
 	private static final String EDITION = "edition";
 	private static final String EDITORS = "editors";
 	private static final String FEATURE = "feature";
@@ -185,7 +163,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	private static final String FIELD_NUM = "fieldNum";
 	private static final String FULL_NAME = "fullName";
 	private static final String FULL_TYPE = "fullType";
+	private static final String GATHERING = "gathering";
 	private static final String HEADING = "heading";
+	private static final String HABITAT = "habitat";
 	private static final String HABITAT_LIST = "habitatList";
 	private static final String HOMONYM = "homonym";
 	private static final String HOMOTYPES = "homotypes";
@@ -193,9 +173,13 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	private static final String INFRANK = "infrank";
 	private static final String INFRAUT = "infraut";
 	private static final String INFRPARAUT = "infrparaut";
+	private static final String IS_SPOTCHARACTERS = "isSpotcharacters";
 	private static final String ISSUE = "issue";
 	private static final String ITALICS = "italics";
 	private static final String KEY = "key";
+	private static final String KEY_TITLE = "keyTitle";
+	private static final String KEYNOTES = "keynotes";
+	private static final String LIFE_CYCLE_PERIODS = "lifeCyclePeriods";
 	private static final String LOCALITY = "locality";
 	private static final String LOST = "lost";
 	private static final String META_DATA = "metaData";
@@ -214,16 +198,24 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	private static final String PUBNAME = "pubname";
 	private static final String PUBTITLE = "pubtitle";
 	private static final String PUBTYPE = "pubtype";
+	private static final String QUESTION = "question";
 	private static final String RANK = "rank";
 	private static final String REF = "ref";
+	private static final String REF_NUM = "refNum";
 	private static final String REF_PART = "refPart";
+	private static final String REFERENCE = "reference";
 	private static final String REFERENCES = "references";
 	private static final String TAXON = "taxon";
 	private static final String TAXONTITLE = "taxontitle";
+	private static final String TEXT = "text";
 	private static final String TEXT_SECTION = "textSection";
+	private static final String TO_COUPLET = "toCouplet";
+	private static final String TO_KEY = "toKey";
+	private static final String TO_TAXON = "toTaxon";
 	private static final String TYPE = "type";
 	private static final String TYPE_STATUS = "typeStatus";
 	private static final String TREATMENT = "treatment";
+	private static final String SERIALS_ABBREVIATIONS = "serialsAbbreviations";
 	private static final String SPECIMEN_TYPE = "specimenType";
 	private static final String STATUS = "status";
 	private static final String STRING = "string";
@@ -269,13 +261,12 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	}
 
 	@Override
-	public void doInvoke(MarkupImportState state) {
-		fireProgressEvent("Start import markup document",
-				"Before start of document");
-		fireWarningEvent("Test a warning", "At start", 17);
-
+	public void doInvoke(MarkupImportState state) { 
+		fireProgressEvent("Start import markup document", "Before start of document");
+		
 		Queue<CdmBase> outputStream = new LinkedList<CdmBase>();
 
+		TransactionStatus tx = startTransaction();
 		// FIXME reset state
 		doAllTheOldOtherStuff(state);
 
@@ -293,6 +284,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 			// publication
 			String elName = PUBLICATION;
 			boolean hasPublication = false;
+			
 			while (reader.hasNext()) {
 				XMLEvent nextEvent = reader.nextEvent();
 				if (isStartingElement(nextEvent, elName)) {
@@ -308,20 +300,17 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 					fireSchemaConflictEventExpectedStartTag(elName, reader);
 				}
 			}
+			commitTransaction(tx);
 
 			// //SAX
 			// ImportHandlerBase handler= new PublicationHandler(this);
 			// parseSAX(state, handler);
 
 		} catch (FactoryConfigurationError e1) {
-			fireWarningEvent(
-					"Some error occurred while setting up xml factory. Data can't be imported",
-					"Start", 16);
+			fireWarningEvent("Some error occurred while setting up xml factory. Data can't be imported", "Start", 16);
 			state.setUnsuccessfull();
 		} catch (XMLStreamException e1) {
-			fireWarningEvent(
-					"An XMLStreamException occurred while parsing. Data can't be imported",
-					"Start", 16);
+			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
 			state.setUnsuccessfull();
 			// } catch (ParserConfigurationException e) {
 			// fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported",
@@ -441,6 +430,13 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 					keySet.add(key);
 				}
 				save(keySet, state);
+				//unmatched key leads
+				UnmatchedLeads unmatched = state.getUnmatchedLeads();
+				if (unmatched.size() > 0){
+					String message = "The following key leads are unmatched: %s";
+					message = String.format(message, state.getUnmatchedLeads().toString());
+					fireWarningEvent(message, next, 6);
+				}
 //				save(keyNodesToSave, state);
 
 				return;
@@ -458,7 +454,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	private void doTaxonRelation(MarkupImportState state, Taxon taxon,
 			Taxon lastTaxon, Location dataLocation) {
 
-		Classification tree = makeTree(state);
+		Classification tree = makeTree(state, dataLocation);
 		if (lastTaxon == null) {
 			tree.addChildTaxon(taxon, null, null, null);
 			return;
@@ -494,14 +490,16 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 
 	/**
 	 * @param state
+	 * @param dataLocation 
 	 * @return
 	 */
-	private Classification makeTree(MarkupImportState state) {
+	private Classification makeTree(MarkupImportState state, Location dataLocation) {
 		Classification result = state.getTree(null);
 		if (result == null) {
 			UUID uuid = state.getConfig().getClassificationUuid();
 			if (uuid == null) {
-				logger.warn("No classification uuid is defined");
+				String message = "No classification uuid is defined";
+				fireWarningEvent(message, makeLocationStr(dataLocation), 6);
 				result = createNewClassification(state);
 			} else {
 				result = getClassificationService().find(uuid);
@@ -523,8 +521,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		return result;
 	}
 
-	private Taxon handleTaxon(MarkupImportState state, XMLEventReader reader,
-			StartElement parentEvent) throws XMLStreamException {
+	private Taxon handleTaxon(MarkupImportState state, XMLEventReader reader, StartElement parentEvent) throws XMLStreamException {
 		// TODO progress monitoring
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		Taxon taxon = createTaxonAndName(state, attributes);
@@ -542,7 +539,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 					checkMandatoryElement(hasNomenclature, parentEvent,	NOMENCLATURE);
 					handleUnexpectedAttributes(parentEvent.getLocation(),attributes);
 					
-					makeKeyNodes(state, parentEvent);
+					makeKeyNodes(state, parentEvent, taxonTitle);
 					state.setCurrentTaxon(null);
 					state.setCurrentTaxonNum(null);
 					save(taxon, state);
@@ -620,23 +617,28 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		throw new IllegalStateException("<Taxon> has no closing tag");
 	}
 
-	private void makeKeyNodes(MarkupImportState state, XMLEvent event) {
+	private void makeKeyNodes(MarkupImportState state, XMLEvent event, String taxonTitle) {
 		Taxon taxon = state.getCurrentTaxon();
 		String num = state.getCurrentTaxonNum();
 		
 		String nameString = CdmBase.deproxy(taxon.getName(), NonViralName.class).getNameCache();
+//		String nameString = taxonTitle;
 		
 		//try to find matching lead nodes 
 		UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, nameString);
 		Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
-		//same without using the num
-		if (num != null){
+		
+		if (num != null){//same without using the num
 			UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", nameString);
-			//TODO inform about differences
-			handleMatchingNodes(state, taxon, noNumLeadsKey);
+			Set<PolytomousKeyNode> noNumMatchingNodes = handleMatchingNodes(state, taxon, noNumLeadsKey);
+			if(noNumMatchingNodes.size() > 0){
+				String message ="Taxon matches additional key node when not considering <num> attribute in taxontitle. This may be correct but may also indicate an error.";
+				fireWarningEvent(message, event, 1);
+			}
 		}
+		//report missing match, if num exists
 		if (matchingNodes.isEmpty() && num != null){
-			String message = "Taxon has num in taxontitle but no matching nodes exist: %s, Key: %s";
+			String message = "Taxon has <num> attribute in taxontitle but no matching key nodes exist: %s, Key: %s";
 			message = String.format(message, num, leadsKey.toString());
 			fireWarningEvent(message, event, 1);
 		}
@@ -659,7 +661,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		String isSpotcharacters = getAndRemoveAttributeValue(attributes, IS_SPOTCHARACTERS);
 		if (isNotBlank(isSpotcharacters) ) {
 			//TODO isSpotcharacters
-			String message = "isSpotcharacters not yet implemented for <key>";
+			String message = "Attribute isSpotcharacters not yet implemented for <key>";
 			fireWarningEvent(message, parentEvent, 4);
 		}
 		
@@ -676,29 +678,23 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				return;
 			} else if (isEndingElement(next, KEYNOTES)){
 				popUnimplemented(next.asEndElement());
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, KEY_TITLE)) {
+			} else if (isStartingElement(next, KEY_TITLE)) {
 					handleKeyTitle(state, reader, next);
-				} else if (isStartingElement(next, KEYNOTES)) {
-					//TODO
-					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, COUPLET)) {
-					PolytomousKeyNode node = null;
-					if (isFirstCouplet){
-						node = key.getRoot();
-						isFirstCouplet = false;
-					}
-					handleCouplet(state, reader, next, node);
-				} else {
-					handleUnexpectedStartElement(next.asStartElement());
+			} else if (isStartingElement(next, KEYNOTES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, COUPLET)) {
+				PolytomousKeyNode node = null;
+				if (isFirstCouplet){
+					node = key.getRoot();
+					isFirstCouplet = false;
 				}
+				handleCouplet(state, reader, next, node);
 			} else {
 				handleUnexpectedElement(next);
 			}
 		}
 		throw new IllegalStateException("<key> has no closing tag");
-		
-
 	}
 
 	/**
@@ -729,13 +725,14 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 			if (isMyEndingElement(next, parentEvent)) {
 				completeCouplet(state, parentEvent, parentNode, num, childList);
 				return;
-			} else if (isEndingElement(next, KEYNOTES)){
-				popUnimplemented(next.asEndElement());
 			} else if (isStartingElement(next, QUESTION)) {
 				handleQuestion(state, reader, next, childList);
 			} else if (isStartingElement(next, KEYNOTES)) {
 				//TODO
 				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, KEYNOTES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -787,13 +784,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				return;
-			} else if (isEndingElement(next, TO_KEY)){
-				//TODO
-				popUnimplemented(next.asEndElement());
-			} else if (isEndingElement(next, KEYNOTES)){
-				//TODO
-				popUnimplemented(next.asEndElement());
-			
 			} else if (isStartingElement(next, TEXT)) {
 				String text = getCData(state, reader, next);
 				KeyStatement statement = KeyStatement.NewInstance(text);
@@ -805,12 +795,19 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				handleToCouplet(state, reader, next, myNode);
 			} else if (isStartingElement(next, TO_TAXON)) {
 				handleToTaxon(state, reader, next, myNode);
+			
 			} else if (isStartingElement(next, TO_KEY)) {
 				//TODO
 				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, TO_KEY)){
+				//TODO
+				popUnimplemented(next.asEndElement());
 			} else if (isStartingElement(next, KEYNOTES)) {
 				//TODO
 				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, KEYNOTES)){
+				//TODO
+				popUnimplemented(next.asEndElement());
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -821,8 +818,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	private void handleToCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent next, PolytomousKeyNode node) throws XMLStreamException {
 		String num = getOnlyAttribute(next, NUM, true);
 		String cData = getCData(state, reader, next, false);
-		if (isNotBlank(cData)){
-			String message = "CData ('%s') not handled";
+		if (isNotBlank(cData) && ! cData.equals(num)){
+			String message = "CData ('%s') not handled in <toCouplet>";
 			message = String.format(message, cData);
 			fireWarningEvent(message, next, 4);
 		}
@@ -846,7 +843,11 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		if (strGoto == null){
 			return "";
 		}
-		String strGenusName = CdmBase.deproxy(taxon.getName(), NonViralName.class).getGenusOrUninomial();
+		
+		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		String strGenusName = name.getGenusOrUninomial();
+		
+		
 		strGoto = strGoto.replaceAll("\\([^\\(\\)]*\\)", "");  //replace all brackets
 		strGoto = strGoto.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
 		
@@ -857,13 +858,28 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 			if (isGenusAbbrev(single, strGenusName)){
 				split[i] = strGenusName;
 			}
-//			if (isInfraSpecificMarker(single)){
-//				String strSpeciesName = CdmBase.deproxy(taxon.getName(), NonViralName.class).getSpecificEpithet();
-//				split[i] = strGenusName + " " + strSpeciesName + " ";
-//			}
+			if (isInfraSpecificMarker(single)){
+				String strSpeciesEpi = name.getSpecificEpithet();
+				if (isBlank(result)){
+					result += strGenusName + " " + strSpeciesEpi;
+				}
+			}
 			result = (result + " " + split[i]).trim();
 		}
 		return result;
+	}
+	
+
+	private boolean isInfraSpecificMarker(String single) {
+		try {
+			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
+				return true;
+			}else{
+				return false;
+			}
+		} catch (UnknownCdmTypeException e) {
+			return false;
+		}
 	}
 	
 	private boolean isGenusAbbrev(String single, String strGenusName) {
@@ -957,7 +973,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @throws XMLStreamException
 	 */
 	private String makeNotesString(MarkupImportState state,	XMLEventReader reader, String text, XMLEvent next) throws XMLStreamException {
-		Map<String, String> stringMap = handleString(state, reader,	next);
+		Map<String, String> stringMap = handleString(state, reader,	next, null);
 		if (stringMap.size() == 0){
 			String message = "No text available in <notes>";
 			fireWarningEvent(message, next, 4);
@@ -1110,58 +1126,39 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		// TODO handle attributes
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			if (next.isEndElement()) {
-				if (isMyEndingElement(next, parentEvent)) {
-					text = CdmUtils.removeBrackets(text);
-					if (checkMandatoryText(text, parentEvent)) {
-						text = normalize(text);
-						dataHolder.writer = text;
-						dataHolder.footnotes = footnotes;
+			if (isMyEndingElement(next, parentEvent)) {
+				text = CdmUtils.removeBrackets(text);
+				if (checkMandatoryText(text, parentEvent)) {
+					text = normalize(text);
+					dataHolder.writer = text;
+					dataHolder.footnotes = footnotes;
 
-						// Extension
-						UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
-						ExtensionType writerExtensionType = this
-								.getExtensionType(state, uuidWriterExtension,
-										"Writer", "writer", "writer");
-						Extension extension = Extension.NewInstance();
-						extension.setType(writerExtensionType);
-						extension.setValue(text);
-						dataHolder.extension = extension;
+					// Extension
+					UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
+					ExtensionType writerExtensionType = this
+							.getExtensionType(state, uuidWriterExtension,
+									"Writer", "writer", "writer");
+					Extension extension = Extension.NewInstance();
+					extension.setType(writerExtensionType);
+					extension.setValue(text);
+					dataHolder.extension = extension;
 
-						// Annotation
-						UUID uuidWriterAnnotation = MarkupTransformer.uuidWriterAnnotation;
-						AnnotationType writerAnnotationType = this
-								.getAnnotationType(state, uuidWriterAnnotation,
-										"Writer", "writer", "writer", null);
-						Annotation annotation = Annotation.NewInstance(text,
-								writerAnnotationType, Language.DEFAULT());
-						dataHolder.annotation = annotation;
+					// Annotation
+					UUID uuidWriterAnnotation = MarkupTransformer.uuidWriterAnnotation;
+					AnnotationType writerAnnotationType = this.getAnnotationType(state, uuidWriterAnnotation, "Writer", "writer", "writer", null);
+					Annotation annotation = Annotation.NewInstance(text, writerAnnotationType, Language.DEFAULT());
+					dataHolder.annotation = annotation;
 
-						return dataHolder;
-					} else {
-						return null;
-					}
+					return dataHolder;
 				} else {
-					if (isEndingElement(next, FOOTNOTE)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else {
-						handleUnexpectedEndElement(next.asEndElement());
-						state.setUnsuccessfull();
-					}
+					return null;
 				}
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, FOOTNOTE_REF)) {
-					FootnoteDataHolder footNote = handleFootnoteRef(state,
-							reader, next);
-					if (footNote.isRef()) {
-						footnotes.add(footNote);
-					} else {
-						logger.warn("Non ref footnotes not yet impelemnted");
-					}
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				FootnoteDataHolder footNote = handleFootnoteRef(state, reader, next);
+				if (footNote.isRef()) {
+					footnotes.add(footNote);
 				} else {
-					handleUnexpectedStartElement(next);
-					state.setUnsuccessfull();
+					logger.warn("Non ref footnotes not yet impelemnted");
 				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
@@ -1171,7 +1168,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				state.setUnsuccessfull();
 			}
 		}
-		return null;
+		throw new IllegalStateException("<writer> has no end tag");
 	}
 
 	private void registerFootnotes(MarkupImportState state,
@@ -1402,9 +1399,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		throw new IllegalStateException("<figureRef> has no end tag");
 	}
 
-	private FootnoteDataHolder handleFootnote(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private FootnoteDataHolder handleFootnote(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		FootnoteDataHolder result = new FootnoteDataHolder();
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		result.id = getAndRemoveAttributeValue(attributes, ID);
@@ -1472,9 +1467,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		return;
 	}
 
-	private String handleFootnoteString(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private String handleFootnoteString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		boolean isTextMode = true;
 		String text = "";
 		while (reader.hasNext()) {
@@ -1483,8 +1476,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				return text;
 			} else if (next.isEndElement()) {
 				if (isEndingElement(next, FULL_NAME)) {
-					popUnimplemented(next.asEndElement());
-				} else if (isEndingElement(next, COLLECTION)) {
 					popUnimplemented(next.asEndElement());
 				} else if (isEndingElement(next, BR)) {
 					isTextMode = true;
@@ -1496,8 +1487,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, FULL_NAME)) {
 					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, COLLECTION)) {
-					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, GATHERING)) {
+					text += handleInLineGathering(state, reader, next);
 				} else if (isStartingElement(next, REFERENCES)) {
 					text += " " + handleInLineReferences(state, reader, next)+ " ";
 				} else if (isStartingElement(next, BR)) {
@@ -1513,15 +1504,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 					String message = "footnoteString is not in text mode";
 					fireWarningEvent(message, next, 6);
 				} else {
-					text += next.asCharacters().getData().trim(); // getCData(state,
-																	// reader,
-																	// next);
-																	// does not
-																	// work as
-																	// we have
-																	// inner
-																	// tags like
-																	// <references>
+					text += next.asCharacters().getData().trim(); 
+					// getCData(state, reader, next); does not work as we have inner tags like <references>
 				}
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
@@ -1529,6 +1513,16 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		}
 		throw new IllegalStateException("<footnoteString> has no closing tag");
 
+	}
+
+	private String handleInLineGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit.FieldObservation);
+		handleGathering(state, reader, parentEvent, null, facade);
+		FieldObservation fieldObservation = facade.innerFieldObservation();
+		String result = "<cdm:specimen uuid='%s'>%s</specimen>";
+		result = String.format(result, fieldObservation.getUuid(), fieldObservation.getTitleCache());
+		save(fieldObservation, state);
+		return result;	
 	}
 
 	private String handleInLineReferences(MarkupImportState state,
@@ -1551,23 +1545,18 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				handleUnexpectedElement(next);
 			}
 		}
-		// TODO handle missing end element
 		throw new IllegalStateException("<References> has no closing tag");
 	}
 
-	private String handleInLineReference(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		Reference<?> reference = handleReference(state, reader, parentEvent);
-		String result = "<ref uuid='%s'>%s</ref>";
-		result = String.format(result, reference.getUuid(),
-				reference.getTitleCache());
+		String result = "<cdm:ref uuid='%s'>%s</ref>";
+		result = String.format(result, reference.getUuid(), reference.getTitleCache());
+		save(reference, state);
 		return result;
 	}
 
-	private Reference<?> handleReference(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private Reference<?> handleReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		boolean hasRefPart = false;
@@ -1780,9 +1769,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 					// homotypicalGroup);
 				} else if (isStartingElement(next, TYPE_STATUS)) {
 					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, COLLECTION)) {
-					handleCollection(state, reader, next, homotypicalGroup,
-							facade);
+				} else if (isStartingElement(next, GATHERING)) {
+					handleGathering(state, reader, next, homotypicalGroup, facade);
 				} else if (isStartingElement(next, ORIGINAL_DETERMINATION)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
@@ -1866,8 +1854,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	}
 
 	
-	private void handleCollection(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, HomotypicalGroup homotypicalGroup, DerivedUnitFacade facade)
-			throws XMLStreamException {
+	private void handleGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, HomotypicalGroup homotypicalGroup, DerivedUnitFacade facade) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		boolean hasCollector = false;
 		boolean hasFieldNum = false;
@@ -1948,9 +1935,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 
 	}
 
-	private void handleLocality(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, DerivedUnitFacade facade)
-			throws XMLStreamException {
+	private void handleLocality(MarkupImportState state, XMLEventReader reader,XMLEvent parentEvent, DerivedUnitFacade facade)throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 		boolean isLocality = false;
 		NamedAreaLevel areaLevel = null;
@@ -2072,8 +2057,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private NonViralName<?> handleNom(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent,
+	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
 			HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		boolean isSynonym = false;
 		boolean isNameType = state.isNameType();
@@ -2172,12 +2156,10 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		makeRankDecision(state, nameMap, name, event, infrank);
 
 		// test consistency of rank and authors
-		testRankAuthorConsistency(name, event, authorStr, paraut, infrParAut,
-				infrAut);
+		testRankAuthorConsistency(name, event, authorStr, paraut, infrParAut,infrAut);
 
 		// authors
-		makeNomenclaturalAuthors(name, event, authorStr, paraut, infrParAut,
-				infrAut);
+		makeNomenclaturalAuthors(name, event, authorStr, paraut, infrParAut,infrAut);
 
 		// status
 		// TODO handle pro parte, pro syn. etc.
@@ -2279,23 +2261,29 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @param infrAut
 	 */
 	private void makeNomenclaturalAuthors(NonViralName name, XMLEvent event,
-			String authorStr, String paraut, String infrParAut, String infrAut) {
-		if (name.getRank().isInfraSpecific()) {
+				String authorStr, String paraut, String infrParAut, String infrAut) {
+		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
 				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrAut, event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(infrParAut)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut,
-						event);
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut, event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
 				name.setExBasionymAuthorTeam(authorAndEx[1]);
 			}
 		} else {
+			if (name.getRank() == null){
+				String message = "No rank defined. Check correct usage of authors!";
+				fireWarningEvent(message, event, 4);
+				if (isNotBlank(infrParAut) || isNotBlank(infrAut)){
+					authorStr = infrAut;
+					paraut = infrParAut;
+				}
+			}
 			if (StringUtils.isNotBlank(authorStr)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr,
-						event);
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr, event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
@@ -2326,6 +2314,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	}
 
 	/**
+	 * Tests if the names rank is consistent with the given author strings.
 	 * @param name
 	 * @param event
 	 * @param authorStr
@@ -2334,19 +2323,20 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @param infrAut
 	 */
 	private void testRankAuthorConsistency(NonViralName name, XMLEvent event,
-			String authorStr, String paraut, String infrParAut, String infrAut) {
+					String authorStr, String paraut, String infrParAut, String infrAut) {
+		if (name.getRank() == null){
+			return;
+		}
 		if (name.getRank().isInfraSpecific()) {
 			if (StringUtils.isBlank(infrParAut)
 					&& StringUtils.isNotBlank(infrAut)
-					&& (StringUtils.isNotBlank(paraut) || StringUtils
-							.isNotBlank(authorStr))) {
+					&& (StringUtils.isNotBlank(paraut) || StringUtils.isNotBlank(authorStr))) {
 				String message = "Rank is infraspecicific but has only specific or higher author(s)";
 				fireWarningEvent(message, event, 4);
 			}
 		} else {
 			// is not infraspecific
-			if (StringUtils.isNotBlank(infrParAut)
-					|| StringUtils.isNotBlank(infrAut)) {
+			if (StringUtils.isNotBlank(infrParAut) 	|| StringUtils.isNotBlank(infrAut)) {
 				String message = "Rank is not infraspecicific but name has infra author(s)";
 				fireWarningEvent(message, event, 4);
 			}
@@ -2480,9 +2470,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 
 	}
 
-	private void handleRefPart(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, Map<String, String> refMap)
-			throws XMLStreamException {
+	private void handleRefPart(MarkupImportState state, XMLEventReader reader,XMLEvent parentEvent, Map<String, String> refMap) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		String text = "";
@@ -2511,8 +2499,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 
 	}
 
-	private Reference createReference(MarkupImportState state,
-			Map<String, String> refMap, XMLEvent parentEvent) {
+	private Reference createReference(MarkupImportState state, Map<String, String> refMap, XMLEvent parentEvent) {
 		// TODO
 		Reference reference;
 
@@ -2586,9 +2573,14 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		reference.setDatePublished(TimePeriod.parseString(year));
 
 		// TODO
-		// ALTERNATEPUBTITLE
-		// ISSUE
-		// NOTES
+		String[] unhandledList = new String[]{ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS};
+		for (String unhandled : unhandledList){
+			String value = getAndRemoveMapKey(refMap, unhandled);
+			if (isNotBlank(value)){
+				this.handleNotYetImplementedAttributeValue(parentEvent, CLASS, unhandled);
+			}
+		}
+		
 		for (String key : refMap.keySet()) {
 			if (!DETAILS.equalsIgnoreCase(key)) {
 				this.fireUnexpectedAttributeValue(parentEvent, CLASS, key);
@@ -2638,85 +2630,77 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		}
 	}
 
-	private void handleFeature(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent) throws XMLStreamException {
+	private void handleFeature(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 		Feature feature = makeFeature(classValue, state, parentEvent);
 		Taxon taxon = state.getCurrentTaxon();
-		TaxonDescription taxonDescription = getTaxonDescription(taxon, state
-				.getConfig().getSourceReference(), NO_IMAGE_GALLERY, CREATE_NEW);
+		TaxonDescription taxonDescription = getTaxonDescription(taxon, state.getConfig().getSourceReference(), NO_IMAGE_GALLERY, CREATE_NEW);
 		// TextData figureHolderTextData = null; //for use with one TextData for
 		// all figure only
 
 		boolean isDescription = feature.equals(Feature.DESCRIPTION());
 		DescriptionElementBase lastDescriptionElement = null;
+		
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			if (next.isEndElement()) {
-				if (isMyEndingElement(next, parentEvent)) {
-					return;
-				} else {
-					if (isEndingElement(next, DISTRIBUTION_LIST)
-							|| isEndingElement(next, HABITAT_LIST)) {
-						// only handle list elements
-					} else {
-						handleUnexpectedEndElement(next.asEndElement());
-					}
+			if (isMyEndingElement(next, parentEvent)) {
+				return;
+			} else if (isEndingElement(next, DISTRIBUTION_LIST) || isEndingElement(next, HABITAT_LIST)) { 
+				// only handle list elements
+			} else if (isStartingElement(next, HEADING)) {
+				makeFeatureHeading(state, reader, classValue, feature, next);
+			} else if (isStartingElement(next, WRITER)) {
+				makeFeatureWriter(state, reader, feature, taxon, next);
+//			} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
+//				if (!feature.equals(Feature.DISTRIBUTION())) {
+//					String message = "Distribution locality only allowed for feature of type 'distribution'";
+//					fireWarningEvent(message, next, 4);
+//				}
+//				handleDistributionLocality(state, reader, next);
+			} else if (isStartingElement(next, DISTRIBUTION_LIST) || isStartingElement(next, HABITAT_LIST)) {
+				// only handle single list elements
+			} else if (isStartingElement(next, HABITAT)) {
+				if (!(feature.equals(Feature.HABITAT())
+						|| feature.equals(Feature.HABITAT_ECOLOGY()) 
+						|| feature.equals(Feature.ECOLOGY()))) {
+					String message = "Habitat only allowed for feature of type 'habitat','habitat ecology' or 'ecology'";
+					fireWarningEvent(message, next, 4);
 				}
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, HEADING)) {
-					makeFeatureHeading(state, reader, classValue, feature, next);
-				} else if (isStartingElement(next, WRITER)) {
-					makeFeatureWriter(state, reader, feature, taxon, next);
-				} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
-					if (!feature.equals(Feature.DISTRIBUTION())) {
-						String message = "Distribution locality only allowed for feature of type 'distribution'";
-						fireWarningEvent(message, next, 4);
-					}
-					handleDistributionLocality(state, reader, next);
-				} else if (isStartingElement(next, DISTRIBUTION_LIST)
-						|| isStartingElement(next, HABITAT_LIST)) {
-					// only handle single list elements
-				} else if (isStartingElement(next, HABITAT)) {
-					if (!(feature.equals(Feature.HABITAT())
-							|| feature.equals(Feature.HABITAT_ECOLOGY()) || feature
-							.equals(Feature.ECOLOGY()))) {
-						String message = "Habitat only allowed for feature of type 'habitat','habitat ecology' or 'ecology'";
-						fireWarningEvent(message, next, 4);
-					}
-					handleHabitat(state, reader, next);
-				} else if (isStartingElement(next, CHAR)) {
-					TextData textData = handleChar(state, reader, next);
-					taxonDescription.addElement(textData);
-				} else if (isStartingElement(next, STRING)) {
-					lastDescriptionElement = makeFeatureString(state, reader,feature, taxonDescription, lastDescriptionElement,next);
-				} else if (isStartingElement(next, FIGURE_REF)) {
-					lastDescriptionElement = makeFeatureFigureRef(state, reader, taxonDescription, isDescription, lastDescriptionElement, next);
-				} else if (isStartingElement(next, REFERENCES)) {
-					// TODO details/microcitation ??
+				handleHabitat(state, reader, next);
+			} else if (isStartingElement(next, CHAR)) {
+				TextData textData = handleChar(state, reader, next);
+				taxonDescription.addElement(textData);
+			} else if (isStartingElement(next, STRING)) {
+				lastDescriptionElement = makeFeatureString(state, reader,feature, taxonDescription, lastDescriptionElement,next);
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				lastDescriptionElement = makeFeatureFigureRef(state, reader, taxonDescription, isDescription, lastDescriptionElement, next);
+			} else if (isStartingElement(next, REFERENCES)) {
+				// TODO details/microcitation ??
 
-					List<Reference<?>> refs = handleReferences(state, reader, next);
-					if (!refs.isEmpty()) {
-						// TODO
-						Reference<?> descriptionRef = state.getConfig().getSourceReference();
-						TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
-						TextData featurePlaceholder = getFeaturePlaceholder(state, description, feature, true);
-						for (Reference<?> citation : refs) {
-							featurePlaceholder.addSource(null, null, citation, null);
-						}
-					} else {
-						String message = "No reference found in references";
-						fireWarningEvent(message, next, 6);
+				List<Reference<?>> refs = handleReferences(state, reader, next);
+				if (!refs.isEmpty()) {
+					// TODO
+					Reference<?> descriptionRef = state.getConfig().getSourceReference();
+					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
+					TextData featurePlaceholder = getFeaturePlaceholder(state, description, feature, true);
+					for (Reference<?> citation : refs) {
+						featurePlaceholder.addSource(null, null, citation, null);
 					}
 				} else {
-					handleUnexpectedStartElement(next);
+					String message = "No reference found in references";
+					fireWarningEvent(message, next, 6);
 				}
+			} else if (isStartingElement(next, NUM)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, NUM)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
 			} else {
 				handleUnexpectedElement(next);
 			}
 		}
-		// TODO handle missing end element
-		throw new IllegalStateException("Feature has no closing tag");
+		throw new IllegalStateException("<Feature> has no closing tag");
 	}
 
 	/**
@@ -2729,15 +2713,10 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private DescriptionElementBase makeFeatureFigureRef(
-			MarkupImportState state, XMLEventReader reader,
-			TaxonDescription taxonDescription, boolean isDescription,
-			DescriptionElementBase lastDescriptionElement, XMLEvent next)
-			throws XMLStreamException {
+	private DescriptionElementBase makeFeatureFigureRef(MarkupImportState state, XMLEventReader reader,TaxonDescription taxonDescription, 
+					boolean isDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next)throws XMLStreamException {
 		FigureDataHolder figureHolder = handleFigureRef(state, reader, next);
-		Feature figureFeature = getFeature(state,
-				MarkupTransformer.uuidFigures, "Figures", "Figures", "Fig.",
-				null);
+		Feature figureFeature = getFeature(state,MarkupTransformer.uuidFigures, "Figures", "Figures", "Fig.",null);
 		if (isDescription) {
 			TextData figureHolderTextData = null;
 			// if (figureHolderTextData == null){
@@ -2750,10 +2729,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				figureHolderTextData.addAnnotation(annotation);
 			}
 			if (StringUtils.isNotBlank(figureHolder.figurePart)) {
-				String annotationText = "<figurePart>"
-						+ figureHolder.figurePart.trim() + "</figurePart>";
-				Annotation annotation = Annotation.NewInstance(annotationText,
-						AnnotationType.EDITORIAL(), Language.DEFAULT());
+				String annotationText = "<figurePart>"+ figureHolder.figurePart.trim() + "</figurePart>";
+				Annotation annotation = Annotation.NewInstance(annotationText,AnnotationType.EDITORIAL(), Language.DEFAULT());
 				figureHolderTextData.addAnnotation(annotation);
 			}
 			// if (StringUtils.isNotBlank(figureText)){
@@ -2781,14 +2758,14 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @param feature
 	 * @param taxonDescription
 	 * @param lastDescriptionElement
+	 * @param distributionList 
 	 * @param next
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature,
-			TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next)
-			throws XMLStreamException {
-		Map<String, String> subheadingMap = handleString(state, reader, next);
+	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature, 
+				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next) throws XMLStreamException {
+		Map<String, String> subheadingMap = handleString(state, reader, next, feature);
 		for (String subheading : subheadingMap.keySet()) {
 			Feature subheadingFeature = feature;
 			if (StringUtils.isNotBlank(subheading) && subheadingMap.size() > 1) {
@@ -2812,9 +2789,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @param next
 	 * @throws XMLStreamException
 	 */
-	private void makeFeatureWriter(MarkupImportState state,
-			XMLEventReader reader, Feature feature, Taxon taxon, XMLEvent next)
-			throws XMLStreamException {
+	private void makeFeatureWriter(MarkupImportState state,XMLEventReader reader, Feature feature, Taxon taxon, XMLEvent next) throws XMLStreamException {
 		WriterDataHolder writer = handleWriter(state, reader, next);
 		if (isNotBlank(writer.writer)) {
 			// TODO
@@ -2839,9 +2814,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @param next
 	 * @throws XMLStreamException
 	 */
-	private void makeFeatureHeading(MarkupImportState state,
-			XMLEventReader reader, String classValue, Feature feature,
-			XMLEvent next) throws XMLStreamException {
+	private void makeFeatureHeading(MarkupImportState state, XMLEventReader reader, String classValue, Feature feature, XMLEvent next) throws XMLStreamException {
 		String heading = handleHeading(state, reader, next);
 		if (StringUtils.isNotBlank(heading)) {
 			if (!heading.equalsIgnoreCase(classValue)) {
@@ -2866,8 +2839,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		}
 	}
 
-	private List<Reference<?>> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private List<Reference<?>> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		// attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String bibliography = getAndRemoveAttributeValue(attributes,
@@ -2937,8 +2909,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		throw new IllegalStateException("<References> has no closing tag");
 	}
 
-	private void handleHabitat(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent) throws XMLStreamException {
+	private void handleHabitat(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
@@ -2979,9 +2950,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		throw new IllegalStateException("<Habitat> has no closing tag");
 	}
 
-	private String getTaggedCData(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private String getTaggedCData(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		String text = getXmlTag(parentEvent);
@@ -3004,49 +2973,56 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 
 	}
 
-	private void handleDistributionLocality(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
-		String classValue = getClassOnlyAttribute(parentEvent);
+	private void handleDistributionLocality(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, CLASS);
+		String statusValue =getAndRemoveAttributeValue(attributes, STATUS);
+		String frequencyValue =getAndRemoveAttributeValue(attributes, FREQUENCY);
+		
 
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
-		Reference ref = state.getConfig().getSourceReference();
+		Reference<?> ref = state.getConfig().getSourceReference();
 
 		String text = "";
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				if (StringUtils.isNotBlank(text)) {
-					TaxonDescription description = getTaxonDescription(taxon,
-							ref, false, true);
-					NamedAreaLevel level = makeNamedAreaLevel(state,
-							classValue, next);
+					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
 					NamedArea area = createArea(text, level, state);
 
 					PresenceAbsenceTermBase<?> status = null;
-					Distribution distribution = Distribution.NewInstance(area,
-							status);
+					try {
+						status = state.getTransformer().getPresenceTermByKey(statusValue);
+					} catch (UndefinedTransformerMethodException e) {
+						throw new RuntimeException(e);
+					}
+					Distribution distribution = Distribution.NewInstance(area,status);
 					description.addElement(distribution);
+					if (isNotBlank(frequencyValue)){
+						String message = "The frequency attribute is currently not yet available in CDM";
+						fireWarningEvent(message, parentEvent, 6);
+					}
 				} else {
 					String message = "Empty distribution locality";
 					fireWarningEvent(message, next, 4);
 				}
 				return;
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, COORDINATES)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next.asStartElement());
-				}
+			} else if (isStartingElement(next, COORDINATES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, COORDINATES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
 			}
 		}
-		throw new IllegalStateException(
-				"<DistributionLocality> has no closing tag");
+		throw new IllegalStateException("<DistributionLocality> has no closing tag");
 	}
 
 	/**
@@ -3061,8 +3037,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		try {
 			level = state.getTransformer().getNamedAreaLevelByKey(levelString);
 			if (level == null) {
-				UUID levelUuid = state.getTransformer().getNamedAreaLevelUuid(
-						levelString);
+				UUID levelUuid = state.getTransformer().getNamedAreaLevelUuid(levelString);
 				if (levelUuid == null) {
 					String message = "Unknown distribution locality class (named area level): %s. Create new level instead.";
 					message = String.format(message, levelString);
@@ -3077,9 +3052,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 		return level;
 	}
 
-	private String handleHeading(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private String handleHeading(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		String text = "";
@@ -3103,9 +3076,16 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 
 	}
 
-	private Map<String, String> handleString(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	/**
+	 * Handle string
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @param feature only needed for distributionLocalities
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private Map<String, String> handleString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature)throws XMLStreamException {
 		// attributes
 		String classValue = getClassOnlyAttribute(parentEvent, false);
 		if (StringUtils.isNotBlank(classValue)) {
@@ -3135,6 +3115,13 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				text = putCurrentSubheading(subHeadingMap,currentSubheading, text);
 				// TODO footnotes
 				currentSubheading = getCData(state, reader, next).trim();
+			} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
+				if (feature != null && !feature.equals(Feature.DISTRIBUTION())) {
+					String message = "Distribution locality only allowed for feature of type 'distribution'";
+					fireWarningEvent(message, next, 4);
+				}
+				handleDistributionLocality(state, reader, next);
+			
 			} else if (next.isCharacters()) {
 				if (!isTextMode) {
 					String message = "String is not in text mode";
@@ -3142,16 +3129,94 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				} else {
 					text += next.asCharacters().getData();
 				}
-			} else if (isStartingElement(next, COLLECTION)) {
+			} else if (isStartingElement(next, HEADING)) {
 				//TODO
 				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, COLLECTION)) {
+			} else if (isEndingElement(next, HEADING)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, QUOTE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, QUOTE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, DEDICATION)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, DEDICATION)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, TAXONTYPE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, TAXONTYPE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FULL_NAME)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FULL_NAME)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			}else if (isStartingElement(next, REFERENCES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, REFERENCES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, GATHERING)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, GATHERING)) {
 				//TODO
 				popUnimplemented(next.asEndElement());
 			} else if (isStartingElement(next, ANNOTATION)) {
 				//TODO
 				handleNotYetImplementedElement(next);
 			} else if (isEndingElement(next, ANNOTATION)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, HABITAT)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, HABITAT)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FIGURE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FIGURE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FIGURE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FOOTNOTE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FOOTNOTE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, WRITER)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, WRITER)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, DATES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, DATES)) {
 				//TODO
 				popUnimplemented(next.asEndElement());
 			} else {
@@ -3240,6 +3305,12 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 				TextData textData = TextData.NewInstance(feature);
 				textData.putText(Language.DEFAULT(), text);
 				return textData;
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FIGURE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, ANNOTATION)) {
 					handleNotYetImplementedElement(next);
@@ -3266,29 +3337,27 @@ public class MarkupDocumentImport extends MarkupImportBase implements
 	 * @return
 	 * @throws UndefinedTransformerMethodException
 	 */
-	private Feature makeFeature(String classValue, MarkupImportState state,
-			XMLEvent parentEvent) {
+	private Feature makeFeature(String classValue, MarkupImportState state, XMLEvent parentEvent) {
 		UUID uuid;
 		try {
-			Feature feature = state.getTransformer()
-					.getFeatureByKey(classValue);
+			Feature feature = state.getTransformer().getFeatureByKey(classValue);
 			if (feature != null) {
 				return feature;
 			}
 			uuid = state.getTransformer().getFeatureUuid(classValue);
 			if (uuid == null) {
 				// TODO
-				logger.warn("Uuid is null for " + classValue);
+				String message = "Uuid is not defined for %s";
+				message = String.format(message, classValue);
+				fireWarningEvent(message, parentEvent, 8);
 			}
 			String featureText = StringUtils.capitalize(classValue);
 
 			// TODO eFlora vocabulary
 			TermVocabulary<Feature> voc = null;
-			feature = getFeature(state, uuid, featureText, featureText,
-					classValue, voc);
+			feature = getFeature(state, uuid, featureText, featureText, classValue, voc);
 			if (feature == null) {
-				throw new NullPointerException(classValue
-						+ " not recognized as a feature");
+				throw new NullPointerException(classValue + " not recognized as a feature");
 			}
 			return feature;
 		} catch (Exception e) {
