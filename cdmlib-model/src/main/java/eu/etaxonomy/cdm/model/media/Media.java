@@ -184,10 +184,9 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
     }
 
     private void setMediaCacheStrategy() {
-        if (getClass() == Media.class){
-            this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
-        }
-
+//      if (getClass() == Media.class){
+    	this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
+//      }
     }
 
 
