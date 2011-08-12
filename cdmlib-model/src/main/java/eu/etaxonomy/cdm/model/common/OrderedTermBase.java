@@ -100,7 +100,10 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	protected int performCompareTo(T orderedTerm, boolean skipVocabularyCheck) {
 		
 		if(!skipVocabularyCheck){
-			if (this.vocabulary == null || ! this.vocabulary.getUuid().equals(orderedTerm.vocabulary.getUuid())){
+			if (this.vocabulary == null || orderedTerm.vocabulary == null){
+				throw new IllegalStateException("An ordered term of class " + this.getClass() + " does not belong to a vocabulary and therefore can not be compared");
+			}
+			if (! this.vocabulary.getUuid().equals(orderedTerm.vocabulary.getUuid())){
 				throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
 			}
 		}
