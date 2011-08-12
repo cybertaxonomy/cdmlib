@@ -45,6 +45,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/ServiceWrapperBase.java -te
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/dc/DublinCoreSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/EditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceUtilities.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/GeoServiceArea.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/IEditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IIpniService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IIpniServiceConfigurator.java -text
@@ -61,6 +62,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/main/resources/eu/etaxonomy/cdm/ext/geo/mapServices_v10.xsd -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/GeoServiceAreaTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
