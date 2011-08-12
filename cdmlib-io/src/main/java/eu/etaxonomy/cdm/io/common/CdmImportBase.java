@@ -311,6 +311,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+		Class<NamedArea> clazz = NamedArea.class;
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -320,16 +321,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
 			//TODO matching still experimental
-			namedArea = (NamedArea)getTermService().find(uuid);
-			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_LABEL)){
-				logger.warn("UUID_LABEL not yet implemented");
-			}
-			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_ABBREVLABEL)){
-				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, NamedArea.class, null, null);
+			namedArea = CdmBase.deproxy(getTermService().find(uuid),NamedArea.class);
+			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
+				//TODO test
+				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitle(clazz, label, null, null, null, null, null, null);
 				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
 			}
-			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL)){
-				logger.warn("UUID_LABEL not yet implemented");
+			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_ABBREVLABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL))){
+				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, clazz, null, null);
+				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
 			}
 			
 			if (namedArea == null){
