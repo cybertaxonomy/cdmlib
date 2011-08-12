@@ -26,11 +26,9 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 
 /**
@@ -44,7 +42,6 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;
-	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	public TaxonXModsImport(){
 		super();
 	}
@@ -69,7 +66,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		if (elTaxonHeader != null){
 			Element elMods = elTaxonHeader.getChild("mods", nsMods);
 			if (elMods != null){
-				Reference<?> ref = refFactory.newGeneric();
+				Reference<?> ref = ReferenceFactory.newGeneric();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
 				if (elTitleInfo != null){
