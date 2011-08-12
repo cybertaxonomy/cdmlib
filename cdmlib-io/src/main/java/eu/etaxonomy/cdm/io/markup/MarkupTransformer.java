@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.mueller
@@ -30,6 +32,24 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 public class MarkupTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupTransformer.class);
+	
+	//preliminary
+	public static final UUID uuidKalimantan = UUID.fromString("05c6bce3-2e55-48cb-a414-707e936066d1");
+	public static final UUID uuidBorneo = UUID.fromString("e615e7e6-5b64-4903-b794-816baab689b3");
+//	public static final UUID uuidCelebes = UUID.fromString("");
+	public static final UUID uuidMoluccas = UUID.fromString("0ac8fc74-a081-45e5-b96d-aad367b5f48b");
+	public static final UUID uuidPeninsularMalaysia = UUID.fromString("9f95af33-ae9e-4031-92f7-9f79d22eecf2");
+	public static final UUID uuidJava = UUID.fromString("36b93871-0bee-4380-b47e-56a843ce6aa3");
+	public static final UUID uuidBismarckArchipelago = UUID.fromString("d9a11144-447c-4e72-b75f-9daeb254e7c4");
+//	public static final UUID uuidNewIreland = UUID.fromString("");
+	public static final UUID uuidSumatra = UUID.fromString("4395d5e0-64e2-4309-a2ec-b1240919c34d");
+//	public static final UUID uuidBangka = UUID.fromString("");
+	public static final UUID uuidSabah = UUID.fromString("8d34b675-7de1-4623-a16a-1e0ca989df0c");
+	public static final UUID uuidBali = UUID.fromString("3cc15dc7-bc55-4a9b-85af-e1eb733ad845");
+	
+	public static final UUID uuidPhilippines  = UUID.fromString("9dee4b0d-d864-4b6f-bd41-39a1ea7c56c3");
+	
+	
 	
 	
 	//extension type uuids
@@ -55,6 +75,10 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidDistrict = UUID.fromString("1b778ba8-ba5f-47a9-ad67-222826f96863");
 	public static final UUID uuidLocality = UUID.fromString("224a4140-da1f-4046-91bb-fb948916d797");
 	public static final UUID uuidLevelOther = UUID.fromString("4b483cc8-b42d-40ba-9cc7-a656faf629e2");
+	
+	public static final UUID uuidContinentalRegion = UUID.fromString("06d3a74d-cf2e-4842-8c89-87722b9486a4");
+	
+	
 	
 	//feature uuids
 	
@@ -406,13 +430,13 @@ public class MarkupTransformer extends InputTransformerBase {
 	public NamedAreaLevel getNamedAreaLevelByKey(String key )throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
 		}else if (key.equalsIgnoreCase("country")){return NamedAreaLevel.COUNTRY();
-//		}else if (key.equalsIgnoreCase("continent")){return NamedAreaLevel.C();
 		}else if (key.equalsIgnoreCase("province")){return NamedAreaLevel.PROVINCE();
-//		}else if (key.equalsIgnoreCase("region")){return NamedAreaLevel.REGION;
-//		}else if (key.equalsIgnoreCase("county")){return NamedAreaLevel.COUNTRY();
+		}else if (key.equalsIgnoreCase("town")){return NamedAreaLevel.TOWN();
 		}else if (key.equalsIgnoreCase("state")){return NamedAreaLevel.STATE();
-
-//		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("tdwg1")){return NamedAreaLevel.TDWG_LEVEL1();
+		}else if (key.equalsIgnoreCase("tdwg2")){return NamedAreaLevel.TDWG_LEVEL2();
+		}else if (key.equalsIgnoreCase("tdwg3")){return NamedAreaLevel.TDWG_LEVEL3();
+		}else if (key.equalsIgnoreCase("tdwg4")){return NamedAreaLevel.TDWG_LEVEL4();
 		}else{
 			return null;
 		}
@@ -425,12 +449,87 @@ public class MarkupTransformer extends InputTransformerBase {
 	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
 		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
+		}else if (key.equalsIgnoreCase("continental region")){return uuidContinentalRegion;
 		}else if (key.equalsIgnoreCase("world")){return uuidWorld;
 		}else if (key.equalsIgnoreCase("county")){return uuidCounty;
 		}else if (key.equalsIgnoreCase("continent")){return uuidContinent;
 		}else if (key.equalsIgnoreCase("district")){return uuidDistrict;
 		}else if (key.equalsIgnoreCase("locality")){return uuidLocality;
 		}else if (key.equalsIgnoreCase("other")){return uuidLevelOther;
+		}else{
+			return null;
+		}
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNamedAreaByKey(java.lang.String)
+	 */
+	@Override
+	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Kalimantan")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-KA");
+		}else if (key.equalsIgnoreCase("Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR");
+		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
+			}else if (key.equalsIgnoreCase("Malay Peninsula")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
+		}else if (key.equalsIgnoreCase("Java")){return TdwgArea.getAreaByTdwgAbbreviation("JAW-OO");
+		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return TdwgArea.getAreaByTdwgAbbreviation("BIS-OO");
+		}else if (key.equalsIgnoreCase("Sumatra")){return TdwgArea.getAreaByTdwgAbbreviation("SUM-OO");
+		}else if (key.equalsIgnoreCase("Sabah")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-SB");
+			}else if (key.equalsIgnoreCase("North Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-SB");
+		
+		}else if (key.equalsIgnoreCase("Bali")){return TdwgArea.getAreaByTdwgAbbreviation("LSI-BA");
+		}else if (key.equalsIgnoreCase("Moluccas")){return TdwgArea.getAreaByTdwgAbbreviation("MOL-OO");
+		
+		}else if (key.equalsIgnoreCase("Indochina")){return TdwgArea.getAreaByTdwgAbbreviation("41");
+		}else if (key.equalsIgnoreCase("Lesser Sunda Islands")){return TdwgArea.getAreaByTdwgAbbreviation("LSI");
+		}else if (key.equalsIgnoreCase("Sulawesi")){return TdwgArea.getAreaByTdwgAbbreviation("SUL-OO");
+			}else if (key.equalsIgnoreCase("Celebes")){return TdwgArea.getAreaByTdwgAbbreviation("SUL-OO");
+		
+		}else if (key.equalsIgnoreCase("south-east United States")){return TdwgArea.getAreaByTdwgAbbreviation("78");
+		}else if (key.equalsIgnoreCase("West Indies")){return TdwgArea.getAreaByTdwgAbbreviation("81");
+		
+		}else{
+			return null;
+		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNamedAreaUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Kalimantan")){return uuidKalimantan;
+		}else if (key.equalsIgnoreCase("Borneo")){return uuidBorneo;
+		}else if (key.equalsIgnoreCase("Moluccas")){return uuidMoluccas;
+		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return uuidPeninsularMalaysia;
+		}else if (key.equalsIgnoreCase("Java")){return uuidJava;
+		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return uuidBismarckArchipelago;
+//		}else if (key.equalsIgnoreCase("New Ireland")){return uuidNewIreland;
+//		}else if (key.equalsIgnoreCase("Celebes")){return uuidSulawesi;
+		}else if (key.equalsIgnoreCase("Sumatra")){return uuidSumatra;
+		
+//		}else if (key.equalsIgnoreCase("Bangka")){return uuidBangka;
+		}else if (key.equalsIgnoreCase("Sabah")){return uuidSabah;
+		}else if (key.equalsIgnoreCase("Bali")){return uuidBali;
+	
+		//
+		//Celebes (Sulawesi)
+		//Moluccas (Ceram, Halmahera, Ambon)
+		//Peninsular Malaysia (Kedah, Perak, Kelantan, Trengganu, Pahang, Selangor, Negri Sembilan, Malacca, Johore)
+		//Borneo (Sabah, Sarawak, Kalimantan)
+		//Sumatra (Aceh, Sumatera Barat, Sumatera Utara)
+		//Lesser Sunda Islands (Bali, Lombok, Flores, Timor)
+
+		
+		//countries
+		}else if (key.equalsIgnoreCase("Philippines")){return uuidPhilippines;
+		
+
+		
 		}else{
 			return null;
 		}

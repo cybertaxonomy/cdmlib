@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -63,6 +64,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 	
+	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
 	
 		
 //**************************** CONSTRUCTOR ******************************************/
@@ -217,5 +219,26 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public PolytomousKey getCurrentKey() {
 		return currentKey;
 	}
+
+	/**
+	 * @param key
+	 * @return
+	 * @see java.util.Map#get(java.lang.Object)
+	 */
+	public UUID getAreaUuid(Object key) {
+		return areaMap.get(key);
+	}
+
+	/**
+	 * @param key
+	 * @param value
+	 * @return
+	 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
+	 */
+	public UUID putAreaUuid(String key, UUID value) {
+		return areaMap.put(key, value);
+	}
+	
+	
 
 }

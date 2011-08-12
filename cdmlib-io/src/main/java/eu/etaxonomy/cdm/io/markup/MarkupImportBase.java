@@ -528,6 +528,11 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 	}
 	
 
+	/**
+	 * Trims the text and removes turns all whitespaces into single empty space.
+	 * @param text
+	 * @return
+	 */
 	protected String normalize(String text) {
 		text = StringUtils.trimToEmpty(text);
 		text = text.replaceAll("\\s+", " ");

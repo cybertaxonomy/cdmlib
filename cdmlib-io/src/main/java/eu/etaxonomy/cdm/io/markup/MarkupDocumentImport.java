@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.markup;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +21,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.Location;
@@ -44,6 +45,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
@@ -57,7 +59,6 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -68,10 +69,12 @@ import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -1115,9 +1118,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 
 	}
 
-	private WriterDataHolder handleWriter(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent)
-			throws XMLStreamException {
+	private WriterDataHolder handleWriter(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		String text = "";
 		checkNoAttributes(parentEvent);
 		WriterDataHolder dataHolder = new WriterDataHolder();
@@ -1320,32 +1321,34 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			}
 			media = getImageMedia(urlString, READ_MEDIA_DATA, isFigure);
 			
-			// title
-			if (StringUtils.isNotBlank(titleString)) {
-				media.putTitle(Language.DEFAULT(), titleString);
-			}
-			// legend
-			if (StringUtils.isNotBlank(legendString)) {
-				media.addDescription(legendString, Language.DEFAULT());
-			}
-			if (StringUtils.isNotBlank(numString)) {
-				// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
-				// vol.13)
-				Reference<?> citation = state.getConfig().getSourceReference();
-				media.addSource(numString, "num", citation, null);
-				// TODO name used in source if available
-			}
-			// TODO which citation
-			if (StringUtils.isNotBlank(id)) {
-				media.addSource(id, null, state.getConfig()
-						.getSourceReference(), null);
-			} else {
-				String message = "Figure id should never be empty or null";
-				fireWarningEvent(message, next, 6);
-			}
-			// text
-			// do nothing
+			if (media != null){
+				// title
+				if (StringUtils.isNotBlank(titleString)) {
+					media.putTitle(Language.DEFAULT(), titleString);
+				}
+				// legend
+				if (StringUtils.isNotBlank(legendString)) {
+					media.addDescription(legendString, Language.DEFAULT());
+				}
+				if (StringUtils.isNotBlank(numString)) {
+					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
+					// vol.13)
+					Reference<?> citation = state.getConfig().getSourceReference();
+					media.addSource(numString, "num", citation, null);
+					// TODO name used in source if available
+				}
+				// TODO which citation
+				if (StringUtils.isNotBlank(id)) {
+					media.addSource(id, null, state.getConfig().getSourceReference(), null);
+				} else {
+					String message = "Figure id should never be empty or null";
+					fireWarningEvent(message, next, 6);
+				}
+				
+				// text
+				// do nothing
 
+			}
 		} catch (MalformedURLException e) {
 			String message = "Media uri has incorrect syntax: %s";
 			message = String.format(message, urlString);
@@ -1849,10 +1852,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			XMLEvent next = readNoWhitespace(reader);
 			if (next.isEndElement()) {
 				if (isMyEndingElement(next, parentEvent)) {
-					checkMandatoryElement(hasCollector,
-							parentEvent.asStartElement(), COLLECTOR);
-					checkMandatoryElement(hasFieldNum,
-							parentEvent.asStartElement(), FIELD_NUM);
+					checkMandatoryElement(hasCollector,parentEvent.asStartElement(), COLLECTOR);
+					checkMandatoryElement(hasFieldNum,parentEvent.asStartElement(), FIELD_NUM);
 					return;
 				} else {
 					if (isEndingElement(next, ALTERNATIVE_COLLECTOR)) {
@@ -1935,12 +1936,14 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (next.isEndElement()) {
-				if (StringUtils.isNotBlank(text)) {
-					if (isMyEndingElement(next, parentEvent)) {
+				if (isMyEndingElement(next, parentEvent)) {
+					if (StringUtils.isNotBlank(text)) {
+						text = normalize(text);
 						if (isLocality) {
 							facade.setLocality(text);
 						} else {
-							NamedArea area = createArea(text, areaLevel, state);
+							text = CdmUtils.removeTrailingDot(text);
+							NamedArea area = makeArea(state, text, areaLevel);
 							facade.addCollectingArea(area);
 						}
 					}
@@ -1978,20 +1981,15 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				handleUnexpectedElement(next);
 			}
 		}
-		// TODO handle missing end element
-		throw new IllegalStateException("Specimen type has no closing tag"); // TODO
-																				// Auto-generated
-																				// method
-																				// stub
-
+		throw new IllegalStateException("<SpecimenType> has no closing tag"); 
 	}
 
-	private NamedArea createArea(String text, NamedAreaLevel areaLevel, MarkupImportState state) {
-		NamedArea area = NamedArea.NewInstance(text, text, null);
-		area.setLevel(areaLevel);
-		save(area, state);
-		return area;
-	}
+//	private NamedArea createArea(String text, NamedAreaLevel areaLevel, MarkupImportState state) {
+//		NamedArea area = NamedArea.NewInstance(text, text, null);
+//		area.setLevel(areaLevel);
+//		save(area, state);
+//		return area;
+//	}
 
 	private AgentBase<?> createCollector(String collectorStr) {
 		return createAuthor(collectorStr);
@@ -2955,10 +2953,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			}
 		}
 		throw new IllegalStateException("Some tag has no closing tag");
-
 	}
 
-	private void handleDistributionLocality(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+	private String handleDistributionLocality(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, CLASS);
 		String statusValue =getAndRemoveAttributeValue(attributes, STATUS);
@@ -2974,27 +2971,69 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				if (StringUtils.isNotBlank(text)) {
+					String label = CdmUtils.removeTrailingDot(normalize(text));
 					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
-					NamedArea area = createArea(text, level, state);
-
+					
+					//status
 					PresenceAbsenceTermBase<?> status = null;
-					try {
-						status = state.getTransformer().getPresenceTermByKey(statusValue);
-					} catch (UndefinedTransformerMethodException e) {
-						throw new RuntimeException(e);
+					if (isNotBlank(statusValue)){
+						try {
+							status = state.getTransformer().getPresenceTermByKey(statusValue);
+							if (status == null){
+								//TODO
+								String message = "The status '%s' could not be transformed to an CDM status";
+								fireWarningEvent(message, next, 4);
+							}
+						} catch (UndefinedTransformerMethodException e) {
+							throw new RuntimeException(e);
+						}
+					}else{
+						status = PresenceTerm.PRESENT();
 					}
-					Distribution distribution = Distribution.NewInstance(area,status);
-					description.addElement(distribution);
+					//frequency
 					if (isNotBlank(frequencyValue)){
 						String message = "The frequency attribute is currently not yet available in CDM";
 						fireWarningEvent(message, parentEvent, 6);
+					}
+					
+					NamedArea higherArea = null;
+					List<NamedArea> areas = new ArrayList<NamedArea>(); 
+					
+					String patSingleArea = "([^,\\(]{3,})";
+					String patSeparator = "(,|\\sand\\s)";
+					String hierarchiePattern = String.format("%s\\((%s(%s%s)*)\\)",patSingleArea, patSingleArea, patSeparator, patSingleArea);
+					Pattern patHierarchie = Pattern.compile(hierarchiePattern, Pattern.CASE_INSENSITIVE);
+					Matcher matcher = patHierarchie.matcher(label); 
+					if (matcher.matches()){
+						String higherAreaStr = matcher.group(1).trim();
+						higherArea =  makeArea(state, higherAreaStr, level);
+						String[] innerAreas = matcher.group(2).split(patSeparator);
+						for (String innerArea : innerAreas){
+							if (isNotBlank(innerArea)){
+								NamedArea singleArea = makeArea(state, innerArea.trim(), level);
+								areas.add(singleArea);
+								NamedArea partOf = singleArea.getPartOf();
+//								if (partOf == null){
+//									singleArea.setPartOf(higherArea);
+//								}
+							}
+						}
+					}else{
+						NamedArea singleArea = makeArea(state, label, level);
+						areas.add(singleArea);
+					}
+					
+					for (NamedArea area : areas){
+						//create distribution
+						Distribution distribution = Distribution.NewInstance(area,status);
+						description.addElement(distribution);
 					}
 				} else {
 					String message = "Empty distribution locality";
 					fireWarningEvent(message, next, 4);
 				}
-				return;
+				return text;
 			} else if (isStartingElement(next, COORDINATES)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -3009,6 +3048,65 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		}
 		throw new IllegalStateException("<DistributionLocality> has no closing tag");
 	}
+
+	/**
+	 * @param state
+	 * @param areaName
+	 * @param level
+	 * @return 
+	 */
+	private NamedArea makeArea(MarkupImportState state, String areaName, NamedAreaLevel level) {
+		
+		
+		//TODO FM vocabulary
+		TermVocabulary<NamedArea> voc = null; 
+		NamedAreaType areaType = null;
+		
+		NamedArea area = null;
+		try {
+			area = state.getTransformer().getNamedAreaByKey(areaName);
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (area == null){
+			boolean isNewInState = false;
+			UUID uuid = state.getAreaUuid(areaName);
+			if (uuid == null){
+				isNewInState = true;
+				//TODO just for testing -> make generic and move to better place
+				if ("Bangka".equals(areaName)){
+					String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+					String layerFieldName ="nam";
+					//TODO replace #
+					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					try {
+						String a = geoServiceArea.toXml();
+						System.out.println(a);
+					} catch (XMLStreamException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+//					area = createNewArea(areaName,geoServiceLayer, layerFieldName, areaValue);
+					
+				}
+				
+				try {
+					uuid = state.getTransformer().getNamedAreaUuid(areaName);
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+				}
+			}	
+			TermMatchMode matchMode = TermMatchMode.UUID_LABEL;
+			area = getNamedArea(state, uuid, areaName, areaName, areaName, areaType, level, voc, matchMode);
+			if (isNewInState){
+				state.putAreaUuid(areaName, area.getUuid());
+			}
+		}
+		return area;
+	}
+	
 
 	/**
 	 * @param state
@@ -3105,8 +3203,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					String message = "Distribution locality only allowed for feature of type 'distribution'";
 					fireWarningEvent(message, next, 4);
 				}
-				handleDistributionLocality(state, reader, next);
-			
+				text += handleDistributionLocality(state, reader, next);
 			} else if (next.isCharacters()) {
 				if (!isTextMode) {
 					String message = "String is not in text mode";
