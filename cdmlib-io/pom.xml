@@ -47,6 +47,10 @@
   		<artifactId>cdmlib-services</artifactId>
   	</dependency>
   	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-ext</artifactId>
+  	</dependency>
+  	<dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils</artifactId>
     </dependency>
