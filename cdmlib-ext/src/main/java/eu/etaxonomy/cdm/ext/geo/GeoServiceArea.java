@@ -29,8 +29,13 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.xml.sax.InputSource;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * Holds all values to map an NamedArea to a geo service area
@@ -224,6 +229,33 @@ public class GeoServiceArea {
 			}
 		}
 		
+	}
+
+	/**
+	 * Transforms the area to an geoservice area
+	 * @param area the NamedArea
+	 * @param appConfig for future use
+	 * @return
+	 */
+	public static GeoServiceArea valueOf(NamedArea area, ICdmApplicationConfiguration appConfig) {
+		for (Annotation annotation : area.getAnnotations()){
+			if (AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
+				GeoServiceArea areas = valueOf(annotation.getText());
+				return areas;
+			}
+		}
+		
+		return null;
+	}
+
+	public static void set(NamedArea areaBangka, GeoServiceArea geoServiceArea) throws XMLStreamException {
+		AnnotationType type = AnnotationType.TECHNICAL();
+		Annotation annotation = Annotation.NewInstance(geoServiceArea.toXml(), type, Language.DEFAULT());
+		areaBangka.addAnnotation(annotation);
+	}
+
+	public int size() {
+		return this.subAreas.size();
 	}
 
 }

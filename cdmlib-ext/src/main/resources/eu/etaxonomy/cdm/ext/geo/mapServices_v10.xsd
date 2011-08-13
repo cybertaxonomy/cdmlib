@@ -7,7 +7,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="area">
+				<xs:element name="area" maxOccurs="unbounded">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="layer"/>
