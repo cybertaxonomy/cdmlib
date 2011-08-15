@@ -52,8 +52,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 		}
 
 		if (createNew == true || cdmApp == null) {
-			cdmApp = CdmApplicationController.NewInstance(cdmSource,
-					schemaValidation, omitTermLoading);
+			cdmApp = CdmApplicationController.NewInstance(cdmSource,schemaValidation, omitTermLoading);
 			if (cdmApp != null) {
 				return true;
 			} else {
