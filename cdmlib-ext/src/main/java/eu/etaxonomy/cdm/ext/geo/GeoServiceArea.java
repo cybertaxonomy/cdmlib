@@ -248,6 +248,12 @@ public class GeoServiceArea {
 		return null;
 	}
 
+	/**
+	 * Saves the mapping data to where ever necessary
+	 * @param areaBangka
+	 * @param geoServiceArea
+	 * @throws XMLStreamException
+	 */
 	public static void set(NamedArea areaBangka, GeoServiceArea geoServiceArea) throws XMLStreamException {
 		AnnotationType type = AnnotationType.TECHNICAL();
 		Annotation annotation = Annotation.NewInstance(geoServiceArea.toXml(), type, Language.DEFAULT());
