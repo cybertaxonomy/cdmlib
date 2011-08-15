@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.ext.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
@@ -112,19 +114,17 @@ import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
  */
 @Component
 public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<MarkupImportState> {
-	private static final String FREQUENCY = "frequency";
-
-	private static final String TAXONTYPE = "taxontype";
-
-	private static final String DEDICATION = "dedication";
-
-	private static final String QUOTE = "quote";
-
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
 	private static final boolean CREATE_NEW = true;
 	private static final boolean IS_IMAGE_GALLERY = true;
 	private static final boolean NO_IMAGE_GALLERY = false;
+
+	
+
+
+
+
 
 	private static final String ACCEPTED = "accepted";
 	private static final String ACCEPTED_NAME = "acceptedName";
@@ -147,6 +147,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String COORDINATES = "coordinates";
 	private static final String COUPLET = "couplet";
 	private static final String DATES = "dates";
+	private static final String DEDICATION = "dedication";
 	private static final String DEFAULT_MEDIA_URL = "defaultMediaUrl";
 	private static final String DESTROYED = "destroyed";
 	private static final String DETAILS = "details";
@@ -164,6 +165,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String FOOTNOTE_REF = "footnoteRef";
 	private static final String FOOTNOTE_STRING = "footnoteString";
 	private static final String FIELD_NUM = "fieldNum";
+	private static final String FREQUENCY = "frequency";
 	private static final String FULL_NAME = "fullName";
 	private static final String FULL_TYPE = "fullType";
 	private static final String GATHERING = "gathering";
@@ -202,6 +204,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String PUBTITLE = "pubtitle";
 	private static final String PUBTYPE = "pubtype";
 	private static final String QUESTION = "question";
+	private static final String QUOTE = "quote";
 	private static final String RANK = "rank";
 	private static final String REF = "ref";
 	private static final String REF_NUM = "refNum";
@@ -210,6 +213,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String REFERENCES = "references";
 	private static final String TAXON = "taxon";
 	private static final String TAXONTITLE = "taxontitle";
+	private static final String TAXONTYPE = "taxontype";
 	private static final String TEXT = "text";
 	private static final String TEXT_SECTION = "textSection";
 	private static final String TO_COUPLET = "toCouplet";
@@ -238,6 +242,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	// second time
 	private UnmatchedLeads unmatchedLeads;
 
+	@Autowired
+	IEditGeoService editGeoService;
+	
 	// TODO remove preliminary
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -3094,13 +3101,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
 					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
-					try {
-						GeoServiceArea.set(area, geoServiceArea);
-					} catch (XMLStreamException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					save(area, state);
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
 				}
 			}
 		}
