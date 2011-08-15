@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
-import eu.etaxonomy.cdm.ext.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
@@ -119,11 +118,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final boolean CREATE_NEW = true;
 	private static final boolean IS_IMAGE_GALLERY = true;
 	private static final boolean NO_IMAGE_GALLERY = false;
-
-	
-
-
-
 
 
 	private static final String ACCEPTED = "accepted";
@@ -243,7 +237,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private UnmatchedLeads unmatchedLeads;
 
 	@Autowired
-	IEditGeoService editGeoService;
+	private IEditGeoService editGeoService;
 	
 	// TODO remove preliminary
 	@Autowired
