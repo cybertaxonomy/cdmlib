@@ -11,6 +11,9 @@
 	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
 	<context:component-scan base-package="eu/etaxonomy/cdm/io"/>
 
+	<!-- includes external services beans e.g. my/cdm/ext/geo/IGeoServiceAreaMapping  -->
+	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+
 	<!-- eu/etaxonomy/cdm/api/service/UserService -->
      
 </beans>
