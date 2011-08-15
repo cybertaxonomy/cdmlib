@@ -40,7 +40,11 @@
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
     </dependency>
-  	
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+  	</dependency>
+  	  	
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
 	    <artifactId>httpclient</artifactId>
