@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.ext.geo;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,10 +23,10 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
-import org.xml.sax.InputSource;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -44,13 +43,17 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  *
  */
 public class GeoServiceArea {
-	
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(GeoServiceArea.class);
+
 	private static final String VALUE = "value";
 	private static final String FIELD = "field";
 	private static final String LAYER = "layer";
 	private static final String AREA = "area";
 	private static final String MAP_SERVICE_NAMESPACE = "http://www.etaxonomy.eu/cdm";
 	private static final String MAP_SERVICE = "mapService";
+
+	
 	TreeSet<SubArea> subAreas = new TreeSet<SubArea>(); 
 	
 	private class SubArea implements Comparable<SubArea>{
@@ -112,6 +115,10 @@ public class GeoServiceArea {
 		subAreas.add(newArea);
 	}
 	
+	/**
+	 * Returns the areas as a layer, field, area nested map.
+	 * @return
+	 */
 	public Map<String, Map<String, List<String>>> getAreas(){
 		Map<String, Map<String, List<String>>> result = new HashMap<String, Map<String,List<String>>>();
 				
@@ -137,7 +144,22 @@ public class GeoServiceArea {
 		return result;
 	}
 	
+	
+	public static boolean isAreaMapping(String xml){
+		//TODO check by parsing or only testing root + namespace
+		GeoServiceArea mapping = valueOf(xml);
+		if (mapping != null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	public static GeoServiceArea valueOf (String xml){
+		if (xml == null){
+			return null;
+		}
+		
 //		StringReader reader = new StringReader (xml);
 //		(new InputSource(reader));
 //		InputStream is = new java.io.StringBufferInputStream(xml);
@@ -164,8 +186,7 @@ public class GeoServiceArea {
 				}
 				return result;	
 			}
-				
-			
+	
 			
 		} catch (JDOMException e) {
 			throw new RuntimeException(e);
@@ -174,6 +195,11 @@ public class GeoServiceArea {
 		}
 	}
 	
+	/**
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	//TODO use JAXB or other marshalling techniques
 	public String toXml() throws XMLStreamException{
 		XMLStreamWriter writer = null;
 			XMLOutputFactory factory = XMLOutputFactory.newInstance();
@@ -231,34 +257,6 @@ public class GeoServiceArea {
 		
 	}
 
-	/**
-	 * Transforms the area to an geoservice area
-	 * @param area the NamedArea
-	 * @param appConfig for future use
-	 * @return
-	 */
-	public static GeoServiceArea valueOf(NamedArea area, ICdmApplicationConfiguration appConfig) {
-		for (Annotation annotation : area.getAnnotations()){
-			if (AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
-				GeoServiceArea areas = valueOf(annotation.getText());
-				return areas;
-			}
-		}
-		
-		return null;
-	}
-
-	/**
-	 * Saves the mapping data to where ever necessary
-	 * @param areaBangka
-	 * @param geoServiceArea
-	 * @throws XMLStreamException
-	 */
-	public static void set(NamedArea areaBangka, GeoServiceArea geoServiceArea) throws XMLStreamException {
-		AnnotationType type = AnnotationType.TECHNICAL();
-		Annotation annotation = Annotation.NewInstance(geoServiceArea.toXml(), type, Language.DEFAULT());
-		areaBangka.addAnnotation(annotation);
-	}
 
 	public int size() {
 		return this.subAreas.size();
