@@ -3073,24 +3073,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			UUID uuid = state.getAreaUuid(areaName);
 			if (uuid == null){
 				isNewInState = true;
-				//TODO just for testing -> make generic and move to better place
-				if ("Bangka".equals(areaName)){
-					String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
-					String layerFieldName ="nam";
-					//TODO replace #
-					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
-					GeoServiceArea geoServiceArea = new GeoServiceArea();
-					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
-					try {
-						String a = geoServiceArea.toXml();
-						System.out.println(a);
-					} catch (XMLStreamException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-//					area = createNewArea(areaName,geoServiceLayer, layerFieldName, areaValue);
-					
-				}
+				
 				
 				try {
 					uuid = state.getTransformer().getNamedAreaUuid(areaName);
@@ -3102,6 +3085,23 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			area = getNamedArea(state, uuid, areaName, areaName, areaName, areaType, level, voc, matchMode);
 			if (isNewInState){
 				state.putAreaUuid(areaName, area.getUuid());
+				
+				//TODO just for testing -> make generic and move to better place
+				if ("Bangka".equals(areaName)){
+					String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+					String layerFieldName ="nam";
+					//TODO replace #
+					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					try {
+						GeoServiceArea.set(area, geoServiceArea);
+					} catch (XMLStreamException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					save(area, state);
+				}
 			}
 		}
 		return area;
