@@ -28,16 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.StreamUtils;
@@ -54,14 +52,14 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 08.10.2008
  * @version 1.0
  */
-public class EditGeoServiceTest extends CdmUnitTestBase {
+public class EditGeoServiceTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
@@ -70,6 +68,10 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 	
 	//@SpringBeanByType
 	private IDefinedTermDao termDao;
+
+	@SpringBeanByType
+	private GeoServiceAreaAnnotatedMapping mapping;
+
 	
 	/**
 	 * @throws java.lang.Exception
@@ -126,7 +128,7 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		String bbox="-20,0,120,70";
 		List<Language> languages = new ArrayList<Language>();
 				
-		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
+		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
@@ -165,8 +167,8 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		presenceAbsenceColorMap = null;
 		String bbox="-20,0,120,70";
 		List<Language> languages = new ArrayList<Language>();
-				
-		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
+			
+		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		assertTrue(result.matches(".*l=earth.*"));
@@ -277,26 +279,19 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 		geoServiceArea.add(geoServiceLayer, layerFieldName, "BALI");
 		
-		try {
-			GeoServiceArea.set(areaBangka,geoServiceArea);
-		} catch (XMLStreamException e) {
-			Assert.fail(e.getMessage());
-		}
+		mapping.set(areaBangka, geoServiceArea);
 		Set<Distribution> distributions = new HashSet<Distribution>();
 		distributions.add(Distribution.NewInstance(areaBangka, PresenceTerm.PRESENT()));
 
 		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 		presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
-		presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.BLACK);
-		presenceAbsenceColorMap.put(PresenceTerm.CULTIVATED(), Color.YELLOW);
-		presenceAbsenceColorMap.put(AbsenceTerm.ABSENT(), Color.DARK_GRAY);
 
 		String backLayer ="";
 		presenceAbsenceColorMap = null;
 		String bbox="90,-8,130,8";
 		List<Language> languages = new ArrayList<Language>();
-				
-		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
+		
+		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		
