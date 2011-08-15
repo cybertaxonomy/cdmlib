@@ -21,9 +21,16 @@
   </scm>
 
   <dependencies>
-  	 <dependency>
+ 	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-persistence</artifactId>
+  		<type>test-jar</type>
+  		<scope>test</scope> 
+  		<version>${project.version}</version>
   	</dependency>
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
