@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
@@ -22,9 +23,11 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(CdmDefaultIOBase.class);
+	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
 
+	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
+
+	
 	protected ICdmApplicationConfiguration cdmApp = null;
 
 	/**
@@ -52,7 +55,8 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 		}
 
 		if (createNew == true || cdmApp == null) {
-			cdmApp = CdmApplicationController.NewInstance(cdmSource,schemaValidation, omitTermLoading);
+			ClassPathResource applicationContextResource = new ClassPathResource(DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
+			cdmApp = CdmApplicationController.NewInstance(applicationContextResource, cdmSource,schemaValidation, omitTermLoading);
 			if (cdmApp != null) {
 				return true;
 			} else {
