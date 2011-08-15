@@ -71,7 +71,7 @@ cdmlib-ext/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
-cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd -text
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/dataset.dtd -text
 cdmlib-ext/src/test/resources/log4j.properties -text
 cdmlib-ext/src/test/resources/unitils.properties -text
 cdmlib-io/LICENSE.TXT -text
