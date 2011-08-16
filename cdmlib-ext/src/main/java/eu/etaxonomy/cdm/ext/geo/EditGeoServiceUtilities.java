@@ -474,7 +474,7 @@ public class EditGeoServiceUtilities {
 			GeoServiceArea areas =mapping.valueOf(area);
 			if ((areas != null) && areas.size()>0){
 				//FIXME multiple layers
-				List<String> values= areas.getAreas().values().iterator().next().values().iterator().next();
+				List<String> values= areas.getAreasMap().values().iterator().next().values().iterator().next();
 				for (String value : values){
 					result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
 				}
@@ -559,10 +559,10 @@ public class EditGeoServiceUtilities {
 		}
 		
 		GeoServiceArea areas = mapping.valueOf(area);
-		if (areas != null && areas.getAreas().size() > 0){
+		if (areas != null && areas.getAreasMap().size() > 0){
 			//FIXME multiple layers
-			String layer = areas.getAreas().keySet().iterator().next();
-			Map<String, List<String>> fields = areas.getAreas().get(layer);
+			String layer = areas.getAreasMap().keySet().iterator().next();
+			Map<String, List<String>> fields = areas.getAreasMap().get(layer);
 			String field = fields.keySet().iterator().next();
 			return layer + ":" + field;
 		}

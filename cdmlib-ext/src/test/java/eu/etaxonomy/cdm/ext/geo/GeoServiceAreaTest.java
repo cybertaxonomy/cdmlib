@@ -53,7 +53,7 @@ public class GeoServiceAreaTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#getAreas()}.
+	 * Test method for {@link eu.etaxonomy.cdm.ext.geo.GeoServiceArea#getAreasMap()}.
 	 */
 	@Test
 	public void testGetAreas() {

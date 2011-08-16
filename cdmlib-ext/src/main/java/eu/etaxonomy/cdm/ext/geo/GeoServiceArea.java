@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,13 +29,8 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * Holds all values to map an NamedArea to a geo service area
@@ -54,12 +50,31 @@ public class GeoServiceArea {
 	private static final String MAP_SERVICE = "mapService";
 
 	
-	TreeSet<SubArea> subAreas = new TreeSet<SubArea>(); 
+	public enum GeoServiceType{
+		EDIT("Edit Geo Service"),
+		WMS("WMS Service");
+		
+		private String label;
+		
+		private GeoServiceType(String label){
+			this.label = label;
+		}
+		
+		public String getLabel(){
+			return label;
+		}
+	}
 	
-	private class SubArea implements Comparable<SubArea>{
+	private TreeSet<SubArea> subAreas = new TreeSet<SubArea>(); 
+	private URL serviceUri;
+	private GeoServiceType type;
+
+	
+	public class SubArea implements Comparable<SubArea>{
 		private String layer;
 		private String field;
 		private String value;
+		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -83,7 +98,8 @@ public class GeoServiceArea {
 			SubArea subArea = (SubArea)otherArea;
 			if (CdmUtils.nullSafeEqual(layer, subArea.layer) 
 					&& CdmUtils.nullSafeEqual(field, subArea.field) 
-					&& CdmUtils.nullSafeEqual(value, subArea.value)){
+					&& CdmUtils.nullSafeEqual(value, subArea.value)
+			){
 				return true;
 			}else{
 				return false;
@@ -119,7 +135,7 @@ public class GeoServiceArea {
 	 * Returns the areas as a layer, field, area nested map.
 	 * @return
 	 */
-	public Map<String, Map<String, List<String>>> getAreas(){
+	public Map<String, Map<String, List<String>>> getAreasMap(){
 		Map<String, Map<String, List<String>>> result = new HashMap<String, Map<String,List<String>>>();
 				
 		for (SubArea area : subAreas){
@@ -140,6 +156,14 @@ public class GeoServiceArea {
 				field.add(area.value);
 			}
 
+		}
+		return result;
+	}
+	
+	public List<SubArea> getAreasList(){
+		List<SubArea> result = new ArrayList<SubArea>();
+		for (SubArea area : subAreas){
+			result.add(area);
 		}
 		return result;
 	}
@@ -229,7 +253,7 @@ public class GeoServiceArea {
 	}
 
 	private void writeAreas(XMLStreamWriter writer) throws XMLStreamException {
-		Map<String, Map<String, List<String>>> areaMap = getAreas();
+		Map<String, Map<String, List<String>>> areaMap = getAreasMap();
 		//TODO multiple
 		for (String layerKey : areaMap.keySet()){
 			Map<String, List<String>> layer = areaMap.get(layerKey);
