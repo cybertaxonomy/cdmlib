@@ -282,8 +282,8 @@
         <!-- species -->
         <xsl:when test="name/rank/uuid='b301f787-f319-4ccc-a10f-b4ed3b99a86d'"/>
         <xsl:otherwise>
-          <!-- for debugging --> Unformatted title for rank uuid: <xsl:value-of
-            select="name/rank/uuid"/>: <xsl:value-of select="name/titleCache"/>
+          <!-- for debugging --> <!-- Unformatted title for rank uuid: <xsl:value-of
+            select="name/rank/uuid"/>: <xsl:value-of select="name/titleCache"/>-->
         </xsl:otherwise>
       </xsl:choose>
     </fo:block>
