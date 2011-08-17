@@ -820,17 +820,28 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         // collect all media of the given taxon
         boolean limitToGalleries = false;
         List<Media> taxonMedia = new ArrayList<Media>();
+        List<Media> taxonGalleryMedia = new ArrayList<Media>();
         for(TaxonDescription desc : p.getRecords()){
-            if(!limitToGalleries || desc.isImageGallery()){
+
+            if(desc.isImageGallery()){
+                for(DescriptionElementBase element : desc.getElements()){
+                    for(Media media : element.getMedia()){
+                        taxonGalleryMedia.add(media);
+                    }
+                }
+            } else if(!limitToGalleries){
                 for(DescriptionElementBase element : desc.getElements()){
                     for(Media media : element.getMedia()){
                         taxonMedia.add(media);
                     }
                 }
             }
+
         }
 
-        List<Media> returnMedia = MediaUtils.findPreferredMedia(taxonMedia, type,
+        taxonGalleryMedia.addAll(taxonMedia);
+
+        List<Media> returnMedia = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
                 mimeTypes, null, widthOrDuration, height, size);
 
         return returnMedia;
