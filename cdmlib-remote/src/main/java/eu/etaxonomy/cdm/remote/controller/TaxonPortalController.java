@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,6 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
@@ -360,13 +363,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             )
              throws IOException {
 
-        logger.info("doFind : " + request.getRequestURI() + request.getQueryString() );
+        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
-        BaseListController.normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
 
         ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
-        config.setPageNumber(pageNumber);
-        config.setPageSize(pageSize);
+        config.setPageNumber(pagerParams.getPageNumber());
+        config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
         config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
         config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );

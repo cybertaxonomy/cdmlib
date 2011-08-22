@@ -1525,6 +1525,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/AbstractOa
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/ReferenceOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/TaxonOaiPmhController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/util/CdmAntPathMatcher.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/util/PagerParameters.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/DozerBeanMapperFactoryBean.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/DateTimeConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/DefaultRelatedPageConverter.java -text

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
  * @author a.kohlbecker
@@ -39,39 +40,41 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Controller
 @RequestMapping(value = {"/polytomousKey"})
 public class PolytomousKeyListController extends BaseListController<PolytomousKey, IPolytomousKeyService> {
-	
-	public static final Logger logger = Logger.getLogger(PolytomousKeyListController.class);
 
-	private ITaxonService taxonService;
+    public static final Logger logger = Logger.getLogger(PolytomousKeyListController.class);
 
-	@Autowired
-	public void setService(IPolytomousKeyService service) {
-		this.service = service;
-	}
-	
-	@Autowired
-	public void setService(ITaxonService taxonService) {
-		this.taxonService = taxonService;
-	}
-	
-	@RequestMapping(
-			params = {"findByTaxonomicScope"},
-			method = RequestMethod.GET)
-	public Pager<PolytomousKey> doFindByTaxonomicScope(
-			@RequestParam(value = "findByTaxonomicScope") UUID taxonUuid,
-			@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-			@RequestParam(value = "pageSize", required = false) Integer pageSize,
-			HttpServletRequest request, 
-			HttpServletResponse response)throws IOException {
-		
-		logger.info("doFindByTaxonomicScope: " + request.getRequestURI() + request.getQueryString());
-		
-		normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
-		
-		TaxonBase taxon = taxonService.find(taxonUuid);
-		Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pageSize, pageNumber, null);
-		return pager;
-	}
-	
+    private ITaxonService taxonService;
+
+    @Autowired
+    public void setService(IPolytomousKeyService service) {
+        this.service = service;
+    }
+
+    @Autowired
+    public void setService(ITaxonService taxonService) {
+        this.taxonService = taxonService;
+    }
+
+    @RequestMapping(
+            params = {"findByTaxonomicScope"},
+            method = RequestMethod.GET)
+    public Pager<PolytomousKey> doFindByTaxonomicScope(
+            @RequestParam(value = "findByTaxonomicScope") UUID taxonUuid,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+
+        logger.info("doFindByTaxonomicScope: " + request.getRequestURI() + request.getQueryString());
+
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+        pagerParameters.normalizeAndValidate(response);
+
+
+        TaxonBase taxon = taxonService.find(taxonUuid);
+        Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageNumber(), null);
+        return pager;
+    }
+
 }
-	
+
