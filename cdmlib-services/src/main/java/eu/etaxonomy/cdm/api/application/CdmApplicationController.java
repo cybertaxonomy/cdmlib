@@ -210,7 +210,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	}
 
 	private void createAdminUser(){
-		User firstUser = User.NewInstance("admin", "0000");
+		User firstUser = User.NewInstance("admin", "00000");
 		getUserService().save(firstUser);
 		logger.info("Admin user created.");
 	}
