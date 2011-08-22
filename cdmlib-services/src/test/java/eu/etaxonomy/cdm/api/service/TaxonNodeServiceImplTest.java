@@ -98,7 +98,7 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		
 		taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-		
+		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
 		Assert.assertEquals(2, t2.getDescriptions().size());
 		
