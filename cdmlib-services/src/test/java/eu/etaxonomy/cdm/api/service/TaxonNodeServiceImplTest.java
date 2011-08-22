@@ -82,7 +82,7 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
 		reference = referenceService.load(referenceUuid);
-		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+//		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
 		referenceDetail = "test"; 
 
