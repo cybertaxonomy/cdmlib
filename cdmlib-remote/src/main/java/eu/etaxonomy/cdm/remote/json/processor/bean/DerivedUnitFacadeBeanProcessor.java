@@ -90,7 +90,7 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 				/* Skip - Only supported by specimen and fossils */
 			}			
 			addJsonElement(json, jsonConfig, "storedUnder", bean.getStoredUnder());
-			addJsonElement(json, jsonConfig, "collectorsNumber", bean.getCollectorsNumber());
+//			addJsonElement(json, jsonConfig, "collectorsNumber", bean.getCollectorsNumber());
 			try {
 				addJsonElement(json, jsonConfig, "exsiccatum", bean.getExsiccatum());
 			} catch (MethodNotSupportedByDerivedUnitTypeException e) {

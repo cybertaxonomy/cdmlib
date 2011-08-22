@@ -61,7 +61,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
 	Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
 	String gatheringEventDescription = "A nice gathering description";
-	TimePeriod gatheringPeriod = TimePeriod.parseString("05.05.2005");
+	TimePeriod gatheringPeriod = TimePeriod.parseString("03.05.2005");
 	String ecology = "sand dunes";
 	String plantDescription = "flowers blue";
 	
@@ -148,7 +148,6 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setStoredUnder(taxonName);
-		specimen.setCollectorsNumber(collectorsNumber);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 		specimen.setExsiccatum(exsiccatum);
@@ -178,7 +177,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1\"N, 12\u00B018'E (WGS84), sand dunes, 05.05.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");

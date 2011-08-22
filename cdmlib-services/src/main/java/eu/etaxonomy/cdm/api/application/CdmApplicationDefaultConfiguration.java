@@ -14,14 +14,21 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -40,7 +47,6 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -57,10 +63,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  */
 @Component
-public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration {
-	@SuppressWarnings("unused")
+public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
 
+	protected ApplicationContext applicationContext;
+
+	
 	@Autowired
 	//@Qualifier("nameService")
 	private INameService nameService;
@@ -133,10 +141,30 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	private IWorkingSetService workingSetService;
 	
+//********************** CONSTRUCTOR *********************************************************/	
+	
 	/**
-	 * 
+	 * Constructor
 	 */
-	public CdmApplicationDefaultConfiguration() {
+	protected CdmApplicationDefaultConfiguration() {
+	}
+	
+// ****************************** APPLICATION CONTEXT *************************************************/
+	
+	
+	/* (non-Javadoc)
+	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+	 */
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+	
+// ****************************** GETTER *************************************************/
+	
+	
+	public final Object getBean(String name){
+		return this.applicationContext.getBean(name);
 	}
 
 	/* (non-Javadoc)
@@ -336,4 +364,50 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return groupService;
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#startTransaction()
+	 */
+	@Override
+	public TransactionStatus startTransaction() {
+		return startTransaction(false);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#startTransaction()
+	 */
+	@Override
+	public TransactionStatus startTransaction(Boolean readOnly) {
+		
+		PlatformTransactionManager txManager = getTransactionManager();
+		
+		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
+		defaultTxDef.setReadOnly(readOnly);
+		TransactionDefinition txDef = defaultTxDef;
+
+		// Log some transaction-related debug information.
+		if (logger.isDebugEnabled()) {
+			logger.debug("Transaction name = " + txDef.getName());
+			logger.debug("Transaction facets:");
+			logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
+			logger.debug("Isolation level = " + txDef.getIsolationLevel());
+			logger.debug("Timeout = " + txDef.getTimeout());
+			logger.debug("Read Only = " + txDef.isReadOnly());
+			// org.springframework.orm.hibernate3.HibernateTransactionManager
+			// provides more transaction/session-related debug information.
+		}
+		
+		TransactionStatus txStatus = txManager.getTransaction(txDef);
+		return txStatus;
+	}
+	
+
+	public void commitTransaction(TransactionStatus txStatus){
+		PlatformTransactionManager txManager = getTransactionManager();
+		txManager.commit(txStatus);
+		return;
+	}
+	
+
 }

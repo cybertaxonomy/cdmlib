@@ -70,7 +70,8 @@ public abstract class AbstractXmlEntityFactory implements IXMLEntityFactory {
 		
 		String rootElementName = rootElement.getName().toLowerCase(Locale.ENGLISH);
 		if(! COLLECTION_ELEMENTS.contains(rootElementName)){
-			throw new IllegalArgumentException("Given element is not of a processable collection type.");
+			logger.error("Given element is not of a processable collection type. RootElementName: " + rootElementName);
+			return result;
 		}
 		
 		

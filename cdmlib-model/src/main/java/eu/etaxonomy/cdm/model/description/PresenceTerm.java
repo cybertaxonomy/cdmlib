@@ -53,12 +53,10 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	
 	private static final UUID uuidN=UUID.fromString("ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7");
 	private static final UUID uuidNQ=UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
-	private static final UUID uuidNE=UUID.fromString("8ad9e9df-49cd-4b6a-880b-51ec4de4ce32");
 	private static final UUID uuidND=UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
 	private static final UUID uuidC=UUID.fromString("9eb99fe6-59e2-4445-8e6a-478365bd0fa9");
 	private static final UUID uuidI=UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
 	private static final UUID uuidIQ=UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
-	private static final UUID uuidIE=UUID.fromString("2522c527-e488-45d4-87df-a5a5ef0fdbbd");
 	private static final UUID uuidID=UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
 	private static final UUID uuidIP=UUID.fromString("da159544-b0dd-4599-a9c9-640826af8c17");
 	private static final UUID uuidIA=UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
@@ -158,10 +156,7 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		return getTermByUuid(uuidID);
 	}
 
-	public static final PresenceTerm INTRODUCED_FORMERLY_INTRODUCED(){
-		return getTermByUuid(uuidIE);
-	}
-		public static final PresenceTerm INTRODUCED_NATURALIZED(){
+	public static final PresenceTerm INTRODUCED_NATURALIZED(){
 		return getTermByUuid(uuidIN);
 	}
 
@@ -179,10 +174,6 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 
 	public static final PresenceTerm NATIVE_DOUBTFULLY_NATIVE(){
 		return getTermByUuid(uuidND);
-	}
-
-	public static final PresenceTerm NATIVE_FORMERLY_NATIVE(){
-		return getTermByUuid(uuidNE);
 	}
 	
 	public static final PresenceTerm NATIVE_PRESENCE_QUESTIONABLE(){
@@ -206,13 +197,11 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceTerm.INTRODUCED_ADVENTITIOUS();
 		} else if (abbrev.equalsIgnoreCase("ic")) { return PresenceTerm.INTRODUCED_CULTIVATED();
 		} else if (abbrev.equalsIgnoreCase("id")) { return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
-		} else if (abbrev.equalsIgnoreCase("ie")) { return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
 		} else if (abbrev.equalsIgnoreCase("in")) { return PresenceTerm.INTRODUCED_NATURALIZED();
 		} else if (abbrev.equalsIgnoreCase("ip")) { return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
 		} else if (abbrev.equalsIgnoreCase("iq")) { return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
 		} else if (abbrev.equalsIgnoreCase("n"))  { return PresenceTerm.NATIVE();
 		} else if (abbrev.equalsIgnoreCase("nd")) { return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
-		} else if (abbrev.equalsIgnoreCase("ne")) { return PresenceTerm.NATIVE_FORMERLY_NATIVE();
 		} else if (abbrev.equalsIgnoreCase("nq")) { return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 		} else if (abbrev.equalsIgnoreCase("p"))  { return PresenceTerm.PRESENT();
 		} else if (abbrev.equalsIgnoreCase("na"))  { return PresenceTerm.NATURALISED();

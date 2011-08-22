@@ -79,7 +79,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 	}
 	
 	
-	protected boolean doInvoke(BerlinModelExportState state){
+	protected void doInvoke(BerlinModelExportState state){
 		try{
 			BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
 			
@@ -106,11 +106,15 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 			commitTransaction(txStatus);
 			
 			logger.info("end make "+pluralString+"  ..." + getSuccessString(success));
-			return success;
+			if (!success){
+				state.setUnsuccessfull();
+			}
+			return;
 		}catch(SQLException e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 	}
 	

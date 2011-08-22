@@ -7,8 +7,10 @@
 package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -20,10 +22,13 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @created 17.11.2008
  */
 public class CdmDefaultIOBase<T extends IIoConfigurator> {
-	private static final Logger logger = Logger
-			.getLogger(CdmDefaultIOBase.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
 
-	protected CdmApplicationController cdmApp = null;
+	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
+
+	
+	protected ICdmApplicationConfiguration cdmApp = null;
 
 	/**
 	 * Creates a new {@link CdmApplicationController} if it does not exist yet
@@ -50,8 +55,8 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 		}
 
 		if (createNew == true || cdmApp == null) {
-			cdmApp = CdmApplicationController.NewInstance(cdmSource,
-					schemaValidation, omitTermLoading);
+			ClassPathResource applicationContextResource = new ClassPathResource(DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
+			cdmApp = CdmApplicationController.NewInstance(applicationContextResource, cdmSource,schemaValidation, omitTermLoading);
 			if (cdmApp != null) {
 				return true;
 			} else {
@@ -69,7 +74,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	 * 
 	 * @return the cdmApp
 	 */
-	public CdmApplicationController getCdmAppController() {
+	public ICdmApplicationConfiguration getCdmAppController() {
 		return this.cdmApp;
 	}
 
@@ -77,7 +82,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	 * @param cdmApp
 	 *            the cdmApp to set
 	 */
-	public void setCdmAppController(CdmApplicationController cdmApp) {
+	public void setCdmAppController(ICdmApplicationConfiguration cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 

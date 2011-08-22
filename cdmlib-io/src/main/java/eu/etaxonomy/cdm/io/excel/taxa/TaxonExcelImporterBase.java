@@ -11,14 +11,14 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase;
 
 /**
  * @author a.babadshanjan
  * @created 09.01.2009
  * @version 1.0
  */
-public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExcelImportState> {
+public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportBase<TaxonExcelImportState, NormalExplicitRow> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
 
@@ -53,38 +53,6 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase<TaxonExce
 	protected static final String IMAGE_COLUMN = "Image";
 	protected static final String TDWG_COLUMN = "TDWG";
 	protected static final String COUNTRY_COLUMN = "Country";
-	
-	
-	
-	// TODO: This enum is for future use (perhaps).
-	protected enum Columns { 
-		Id("Id"), 
-		ParentId("ParentId"), 
-		Rank("Rank"),
-		ScientificName("ScientificName"),
-		Author("Author"),
-		NameStatus("NameStatus"),
-		VernacularName("VernacularName"),
-		Language("Language");
-		
-		private String head;
-		private String value;
-	
-		private Columns(String head) {
-			this.head = head;
-		}
-		
-		public String head() {
-			return this.head;
-		}
-	
-		public String value() {
-			return this.value;
-		}
-	}
-	
-
-	
 
 }
 

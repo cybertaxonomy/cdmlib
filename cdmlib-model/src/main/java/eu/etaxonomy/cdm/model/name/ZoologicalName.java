@@ -344,11 +344,6 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 		this.originalPublicationYear = originalPublicationYear;
 	}
 	
-	public static ZoologicalName valueOf(TaxonNameBase taxonNameBase){
-		logger.error("Not implemented yet.");
-		return null;
-	}
-	
 	
 //*********************** CLONE ********************************************************/
 	

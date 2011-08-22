@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -57,22 +58,21 @@ public class ExcelUtils {
     		rows = sheet.getPhysicalNumberOfRows();
 			if(logger.isDebugEnabled()) { logger.debug("Number of rows: " + rows); }
 
-    		int cols = 0; // No of columns
+    		int cols = 0; // Number of columns
     		int tmp = 0;
 
     		// This trick ensures that we get the data properly even if it doesn't start from first few rows
     		for(int i = 0; i < 10 || i < rows; i++) {
     			row = sheet.getRow(i);
-    			
-    			
-    			if(row != null) {
+     			if(row != null) {
     				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
     				if(tmp > cols){
     					cols = tmp;
     				}
     			}
     		}
-    		HashMap<String, String> headers = null;
+    		
+    		//first row
     		ArrayList<String> columns = new ArrayList<String>();
     		row = sheet.getRow(0);
     		for (int c = 0; c < cols; c++){
@@ -84,25 +84,23 @@ public class ExcelUtils {
 					if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
 				}
     		}
+    		
+    		//value rows
     		for(int r = 1; r < rows; r++) {
     			row = sheet.getRow(r);
-    			headers = new HashMap<String, String>();
-    			boolean notEmpty = false;
-    			for (int j = 0; j<row.getRowNum(); j++){
-    				if (row.getCell(j) != null){
-    					notEmpty = true;
-    					break;
-    				}
-    			}
-    			if(row != null && notEmpty) {
+    			HashMap<String, String> headers = new HashMap<String, String>();
+    			boolean notEmpty = checkIsEmptyRow(row);
+    			if(notEmpty) {
     				for(int c = 0; c < cols; c++) {
-    					cell = row.getCell((short)c);
+    					cell = row.getCell(c);
     					if(cell != null) {
     						if (c >= columns.size()){
-    							logger.warn("Cell has no header. There are only " + columns.size() + " headers but more not-null cells in approx. row " + row.getRowNum() + ". Cell is neglected.");
+    							String message = "Cell has no header. There are only %d headers but more not-null cells in approx. row %d. Cell is neglected.";
+    							message = String.format(message, columns.size(),row.getRowNum());
+    							logger.warn(message);
     						}else{
-    							if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
-    							headers.put(columns.get(c), cell.toString());	
+    							if(logger.isDebugEnabled()) { logger.debug(String.format("Cell #%d: %s", c, cell.toString())); }
+    							headers.put(columns.get(c), getCellValue(cell));	
     						}
     					} else {
     						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
@@ -119,5 +117,70 @@ public class ExcelUtils {
     	}
     	return recordList;
     }
+
+
+	private static String getCellValue(HSSFCell cell) {
+		try {
+			if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING ){
+				return cell.getStringCellValue();
+			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK){
+				return "";
+			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
+				return getNumericCellValue(cell);
+			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN){
+				Boolean cellValue = cell.getBooleanCellValue();
+				String value = String.valueOf(cellValue);
+				return value;
+			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR){
+				return "-error-";
+			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA){
+				String strValue = cell.getStringCellValue();
+				if ("".equals(strValue)){
+					strValue = getNumericCellValue(cell);
+				}
+				return strValue;
+			}else{
+				return cell.toString();
+			}
+		} catch (Exception e) {
+			String message = "Error occurred while reading HSSFCell. Use toString() instead";
+			logger.warn(message);
+			return cell.toString();
+		}
+	}
+
+
+	/**
+	 * @param cell
+	 * @return
+	 */
+	private static String getNumericCellValue(HSSFCell cell) {
+		Double number = cell.getNumericCellValue();
+		if (number.intValue() == number){
+			return String.valueOf(number.intValue());
+		}else{
+			return String.valueOf(number);
+		}
+	}
+
+
+	/**
+	 * Returns false, if row is null or has no values
+	 * @param row
+	 * @param notEmpty
+	 * @return
+	 */
+	private static boolean checkIsEmptyRow(HSSFRow row) {
+		if (row == null){
+			return true;
+		}
+		boolean notEmpty = false;
+		for (int j = 0; j<row.getLastCellNum(); j++){
+			if (row.getCell(j) != null){
+				notEmpty = true;
+			}
+		}
+		return notEmpty;
+	}
 	
 }

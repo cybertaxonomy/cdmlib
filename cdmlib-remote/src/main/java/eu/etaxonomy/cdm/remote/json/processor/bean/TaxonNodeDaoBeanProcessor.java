@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -32,21 +32,22 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 	 */
 	@Override
 	public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
-		
+
 		TaxonNode node = (TaxonNode)bean;
 		JSONObject json = new JSONObject();
 		json.element("class", "TaxonNodeDao");
+		json.element("uuid", node.getUuid(), jsonConfig);
 		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
 		List<TaggedText> taggedTitle = TaggedTextGenerator.getTaggedName(node.getTaxon().getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
 		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
 		//Sec can be null (web services can return null for sec)
-		//comparation made for avoding view exceptions
+		//comparation made for avoiding view exceptions
 		if (node.getTaxon().getSec() == null){
 			json.element("secUuid", "null");
 		}else{
 			json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
-		}	
+		}
 		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
 		json.element("unplaced", node.getTaxon().isUnplaced());
 		json.element("excluded", node.getTaxon().isExcluded());
@@ -56,7 +57,7 @@ public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 		}
 		json.element("rankLabel", ranklabel, jsonConfig);
 		//json.element("treeUuid", node.getClassification().getUuid(), jsonConfig);
-		
+
 		return json;
 	}
 

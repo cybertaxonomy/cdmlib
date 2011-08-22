@@ -81,9 +81,9 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState state){
+	protected void doInvoke(BerlinModelExportState state){
 		if (state.getConfig().isUseClassification() == false){
-			return true;
+			return;
 		}
 		
 		try{
@@ -111,11 +111,15 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 			}
 			commitTransaction(txStatus);
 			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
-			return success;
+			if (!success){
+				state.setUnsuccessfull();
+			}
+			return;
 		}catch(SQLException e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 	}
 

@@ -50,7 +50,7 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
 	
 	
-	protected abstract boolean doInvoke(TcsRdfImportState state);
+	protected abstract void doInvoke(TcsRdfImportState state);
 
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)

@@ -129,7 +129,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param name
 	 *            the name
 	 * @param type
-	 * 			  limit the result set to a spcific subtype of TypeDesignationBase, may be null
+	 * 			  limit the result set to a specific subtype of TypeDesignationBase, may be null
 	 * @param status
 	 *            the type designation status (or null to return all types)
 	 * @param pageSize
@@ -293,8 +293,4 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start);
 	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
-
-	public UuidAndTitleCache<TaxonNameBase> findByNameForEditor(String searchString,
-			MatchMode matchMode);
-
 }

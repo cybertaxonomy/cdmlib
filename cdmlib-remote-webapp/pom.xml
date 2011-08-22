@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.0.4-SNAPSHOT</version>
+    <version>3.0.7-SNAPSHOT</version>
 	<relativePath>pom.xml</relativePath>
   </parent>
   
@@ -185,20 +185,6 @@
       <scope>test</scope>
     </dependency>
     
-	<!--  SPRING SECURITY  -->
-  	<dependency>
-    	<groupId>org.springframework.security</groupId>
-    	<artifactId>spring-security-config</artifactId>
-    </dependency>
-  	<dependency>
-    	<groupId>org.springframework.security</groupId>
-    	<artifactId>spring-security-core</artifactId>
-    </dependency>
-  	<dependency>
-    	<groupId>org.springframework.security</groupId>
-    	<artifactId>spring-security-web</artifactId>
-    </dependency>
-
   </dependencies>
   
   <properties>

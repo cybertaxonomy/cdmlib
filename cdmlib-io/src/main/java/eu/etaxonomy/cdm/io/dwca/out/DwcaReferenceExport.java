@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2007 EDIT
+d* Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
 * http://www.e-taxonomy.eu
 * 
@@ -9,16 +9,11 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,6 +34,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaReferenceExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaReferenceExport.class);
 
+	private static final String fileName = "reference.txt";
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Reference";
+
 	/**
 	 * Constructor
 	 */
@@ -56,30 +54,22 @@ public class DwcaReferenceExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
-    	String fileName = config.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		TransactionStatus txStatus = startTransaction(true);
 
+		PrintWriter writer = null;
 		try {
-			
-			final String coreTaxFileName = "reference.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
+			writer = createPrintWriter(fileName, state);
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
 
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				//sec
-				DwcaReferenceRecord record = new DwcaReferenceRecord();
+				DwcaReferenceRecord record = new DwcaReferenceRecord(metaRecord, config);
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Reference sec = taxon.getSec();
+				Reference<?> sec = taxon.getSec();
 				if (sec != null && ! recordExists(sec)){
 					handleReference(record, sec, taxon);
 					record.write(writer);
@@ -87,12 +77,12 @@ public class DwcaReferenceExport extends DwcaExportBase {
 				}
 				
 				//nomRef
-				record = new DwcaReferenceRecord();
+				record = new DwcaReferenceRecord(metaRecord, config);
 				INomenclaturalReference nomRef = taxon.getName().getNomenclaturalReference();
 				if (nomRef != null && ! existingRecordIds.contains(nomRef.getId())){
-					handleReference(record, (Reference)nomRef, taxon);
+					handleReference(record, (Reference<?>)nomRef, taxon);
 					record.write(writer);
-					addExistingRecord((Reference)nomRef);
+					addExistingRecord((Reference<?>)nomRef);
 				}
 				
 				writer.flush();
@@ -106,13 +96,16 @@ public class DwcaReferenceExport extends DwcaExportBase {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally{
+			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
-		return true;
+		return;
 	}
 
-	private void handleReference(DwcaReferenceRecord record, Reference reference, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+	private void handleReference(DwcaReferenceRecord record, Reference<?> reference, Taxon taxon) {
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		
 		record.setISBN_ISSN(StringUtils.isNotBlank(reference.getIsbn())? reference.getIsbn(): reference.getIssn());
 		record.setUri(reference.getUri());

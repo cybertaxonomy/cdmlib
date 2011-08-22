@@ -18,8 +18,10 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
@@ -27,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created 17.12.2008
  * @version 1.0
  */
-public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase>> extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
+public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends ExcelImportConfiguratorBase, ? extends ExcelRowBase>> extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
 	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
@@ -44,71 +46,84 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
      * @param stores (not used)
      */
 	@Override
-	protected boolean doInvoke(STATE state){
+	protected void doInvoke(STATE state){
 		
-		boolean success = false;
-		
-    	logger.debug("Importing excel data");
+		logger.debug("Importing excel data");
     	
     	configurator = state.getConfig();
     	
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-		if (nc == null) {
-			logger.error("Nomenclatural code could not be determined.");
-			return false;
+		if (nc == null && needsNomenclaturalCode()) {
+			logger.error("Nomenclatural code could not be determined. Skip invoke.");
+			state.setUnsuccessfull();
+			return;
 		}
 		// read and save all rows of the excel worksheet
 		URI source = state.getConfig().getSource();
 		String sheetName = getWorksheetName();
 		try {
-			recordList = ExcelUtils.parseXLS(source);
+			recordList = ExcelUtils.parseXLS(source, sheetName);
 		} catch (FileNotFoundException e) {
 			String message = "File not found: " + source;
 			warnProgress(state, message, e);
 			logger.error(message);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
     	
-    	if (recordList != null) {
+    	handleRecordList(state, source);
+    	logger.debug("End excel data import"); 
+    	return;
+	}
+
+	protected boolean needsNomenclaturalCode() {
+		return true;
+	}
+
+	/**
+	 * @param state
+	 * @param success
+	 * @param source
+	 * @return
+	 */
+	private void handleRecordList(STATE state, URI source) {
+		Integer startingLine = 2;
+		if (recordList != null) {
     		HashMap<String,String> record = null;
     		
     		TransactionStatus txStatus = startTransaction();
 
     		//first pass
+    		state.setCurrentLine(startingLine);
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success &= analyzeRecord(record, state);
+    			analyzeRecord(record, state);
     			try {
-					success &= firstPass(state);
+					firstPass(state);
 				} catch (Exception e) {
 					e.printStackTrace();
+				}finally{
+					state.incCurrentLine();
 				}
     		}
     		//second pass
+    		state.setCurrentLine(startingLine);
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success &= analyzeRecord(record, state);
-    			success &= secondPass(state);
-        	}
+    			analyzeRecord(record, state);
+    			secondPass(state);
+    			state.incCurrentLine();
+    	   	}
     		
     		commitTransaction(txStatus);
     	}else{
     		logger.warn("No records found in " + source);
     	}
-    	
-		try {
-	    	logger.debug("End excel data import"); 
-				
-		} catch (Exception e) {
-    		logger.error("Error closing the application context");
-    		e.printStackTrace();
-		}
-    	
-    	return success;
+		return;
 	}
 
 	/**
-	 * To define a worksheetname override this method. Otherwise the first worksheet is taken.
+	 * To define a worksheet name override this method. Otherwise the first worksheet is taken.
 	 * @return worksheet name. <code>null</null> if not worksheet is defined.
 	 */
 	protected String getWorksheetName() {
@@ -128,10 +143,10 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	 * @param record
 	 * @return
 	 */
-	protected abstract boolean analyzeRecord(HashMap<String,String> record, STATE state);
+	protected abstract void analyzeRecord(HashMap<String,String> record, STATE state);
 	
-	protected abstract boolean firstPass(STATE state);
-	protected abstract boolean secondPass(STATE state);
+	protected abstract void firstPass(STATE state);
+	protected abstract void secondPass(STATE state);
 	
 	
 	public ExcelImportConfiguratorBase getConfigurator() {
@@ -159,6 +174,18 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	protected String floatString2IntStringValue(String value) {
 		int i = floatString2IntValue(value);
 		return String.valueOf(i);
+	}
+	
+
+	/**
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	protected TimePeriod getTimePeriod(String start, String end) {
+		String strPeriod = CdmUtils.concat(" - ", start, end);
+		TimePeriod result = TimePeriod.parseString(strPeriod);
+		return result;
 	}
 
 

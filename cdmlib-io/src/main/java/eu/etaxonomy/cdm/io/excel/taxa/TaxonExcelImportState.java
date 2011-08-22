@@ -14,14 +14,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -29,14 +27,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfiguratorBase>{
+public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfiguratorBase, NormalExplicitRow>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonExcelImportState.class);
 	
     /** Already processed authors */
 	private Set<String> authors = new HashSet<String>();
-    /** Taxon "light" containing all string info from columns */
-	private NormalExplicitRow normalExplicitRow = null;
 
 	private Map<Integer, TaxonBase> taxonMap= new HashMap<Integer, TaxonBase>();
 	private Map<String, TeamOrPersonBase> authorMap= new HashMap<String, TeamOrPersonBase>();
@@ -44,20 +40,6 @@ public class TaxonExcelImportState extends ExcelImportState<ExcelImportConfigura
 	
 	public TaxonExcelImportState(ExcelImportConfiguratorBase config) {
 		super(config);
-	}
-	
-	/**
-	 * @return the normalExplicitRow
-	 */
-	public NormalExplicitRow getTaxonLight() {
-		return normalExplicitRow;
-	}
-
-	/**
-	 * @param normalExplicitRow the normalExplicitRow to set
-	 */
-	public void setTaxonLight(NormalExplicitRow normalExplicitRow) {
-		this.normalExplicitRow = normalExplicitRow;
 	}
 
 	/**

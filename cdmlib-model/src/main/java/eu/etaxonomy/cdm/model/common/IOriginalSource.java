@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import eu.etaxonomy.cdm.model.reference.Reference;
+
 /**
  * An original source can be used in different ways.<BR>
  * 1.) As a referencing system. The original source holds all information about the reference, 
@@ -86,5 +88,17 @@ public interface IOriginalSource<T extends ISourceable> {
 	 */
 	public void setCitationMicroReference(String microCitation);
 	
+
+	/**
+	 * Returns the citation. 
+	 * @return
+	 */
+	public Reference getCitation();
+	
+	/**
+	 * @see #getCitation()
+	 * @param citation
+	 */
+	public void setCitation(Reference citation);
 	
 }

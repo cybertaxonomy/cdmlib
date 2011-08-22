@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
@@ -47,10 +48,10 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -72,9 +73,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Autowired
 	private ITaxonNameDao nameDao;
 	
-	@Autowired 
-	private IDescriptionDao descriptionDao;
-
 	@Autowired
 	private IOrderedTermVocabularyDao orderedVocabularyDao;
 	
@@ -113,17 +111,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getAllTaxa(limit, start);
 	}
 
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(Reference sec, ..., ...)
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)
-	 */
-	public List<Taxon> getRootTaxa(Reference sec){
-		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
-	}
-
 	/**
 	 * FIXME Candidate for harmonization
 	 * merge with getRootTaxa(Reference sec, ..., ...)
@@ -136,23 +123,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
 	}
-	
-	/**
- 	 * FIXME Candidate for harmonization
-	 * merge with getRootTaxa(Reference sec, ..., ...)
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
-	 */
-	public List<Taxon> getRootTaxa(Reference sec, boolean onlyWithChildren,
-			boolean withMisapplications) {
-		return dao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
-	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
 	 */
-	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,
-			boolean withMisapplications, List<String> propertyPaths) {
+	public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,boolean withMisapplications, List<String> propertyPaths) {
 		return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
 	}
 
@@ -216,7 +192,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			throw new IllegalArgumentException(message);
 		}
 		
-		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
+		Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());
 		
 		SynonymRelationshipType relType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 		List<Synonym> heteroSynonyms = synonymHomotypicGroup.getSynonymsInGroup(acceptedTaxon.getSec());
@@ -228,11 +204,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		
-//		synonym.getName().removeTaxonBase(synonym);
+		//synonym.getName().removeTaxonBase(synonym);
 		//TODO correct delete handling still needs to be implemented / checked
 		if (deleteSynonym){
 			try {
+				this.dao.flush();
 				this.delete(synonym);
+				
 			} catch (Exception e) {
 				logger.info("Can't delete old synonym from database");
 			}
@@ -489,7 +467,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		
-		result = dao.getTaxaByNameForEditor(clazz, configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+		result = dao.getTaxaByNameForEditor(clazz, configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 		return result;
 	}
 	/* (non-Javadoc)
@@ -525,13 +503,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if(configurator.getPageSize() != null){ // no point counting if we need all anyway
 				numberTaxaResults = 
 					dao.countTaxaByName(clazz, 
-						configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
+						configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
 						configurator.getNamedAreas());
 			}
 			
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
-					configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(),
+					configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
 					configurator.getPageNumber(), propertyPath);
 			}
@@ -550,7 +528,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             int numberNameResults = 0;
            
 			List<? extends TaxonNameBase<?,?>> names = 
-				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
+				nameDao.findByName(configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
 			if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
 			if (names.size() > 0) {
@@ -571,10 +549,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			taxa = null;
 			numberTaxaResults = 0;
 			if(configurator.getPageSize() != null){// no point counting if we need all anyway
-				numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+				numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
 			}
 			if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+				taxa = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			}
 			if(taxa != null){
 				results.addAll(taxa);
@@ -604,7 +582,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				for(Media media : descElem.getMedia()){
 									
 					//find the best matching representation
-					medRep.add(MediaUtils.findBestMatchingRepresentation(media, size, height, widthOrDuration, mimeTypes));
+					medRep.add(MediaUtils.findBestMatchingRepresentation(media, null, size, height, widthOrDuration, mimeTypes));
 					
 				}
 			}
@@ -705,40 +683,86 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 */
 	@Override
 	public Taxon findBestMatchingTaxon(String taxonName) {
+		MatchingTaxonConfigurator config = MatchingTaxonConfigurator.NewInstance();
+		config.setTaxonNameTitle(taxonName);
+		return findBestMatchingTaxon(config);
+	}
+	
+	
+	
+	@Override
+	public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config) {
 		
-		Taxon matchedTaxon = null;
+		Taxon bestCandidate = null;
 		try{
 			// 1. search for acceptet taxa
-			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
-			for(IdentifiableEntity taxonBaseCandidate : taxonList){
+			List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
+			boolean bestCandidateMatchesSecUuid = false;
+			boolean bestCandidateIsInClassification = false;
+			int countEqualCandidates = 0;
+			for(TaxonBase taxonBaseCandidate : taxonList){
 				if(taxonBaseCandidate instanceof Taxon){
-					matchedTaxon = (Taxon)taxonBaseCandidate;
-					if(taxonList.size() > 1){
-						logger.info(taxonList.size() + " TaxonBases found, using first accepted Taxon: " + matchedTaxon.getTitleCache());
-						return matchedTaxon;
-					} else {
-						logger.info("using accepted Taxon: " + matchedTaxon.getTitleCache());
-						return matchedTaxon;
+					Taxon newCanditate = CdmBase.deproxy(taxonBaseCandidate, Taxon.class);
+					boolean newCandidateMatchesSecUuid = isMatchesSecUuid(newCanditate, config);
+					if (! newCandidateMatchesSecUuid && config.isOnlyMatchingSecUuid() ){
+						continue;
+					}else if(newCandidateMatchesSecUuid && ! bestCandidateMatchesSecUuid){
+						bestCandidate = newCanditate;
+						countEqualCandidates = 1;
+						bestCandidateMatchesSecUuid = true;
+						continue;
 					}
-					//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found 
+					
+					boolean newCandidateInClassification = isInClassification(newCanditate, config);
+					if (! newCandidateInClassification && config.isOnlyMatchingClassificationUuid()){
+						continue;
+					}else if (newCandidateInClassification && ! bestCandidateIsInClassification){
+						bestCandidate = newCanditate;
+						countEqualCandidates = 1;
+						bestCandidateIsInClassification = true;
+						continue;
+					}
+					if (bestCandidate == null){
+						bestCandidate = newCanditate;
+						countEqualCandidates = 1;
+						continue;
+					}
+					
+				}else{  //not Taxon.class
+					continue;
+				}
+				countEqualCandidates++;
+
+			}
+			if (bestCandidate != null){
+				if(countEqualCandidates > 1){
+					logger.info(countEqualCandidates + " equally matching TaxonBases found, using first accepted Taxon: " + bestCandidate.getTitleCache());
+					return bestCandidate;
+				} else {
+					logger.info("using accepted Taxon: " + bestCandidate.getTitleCache());
+					return bestCandidate;
 				}
 			}
 			
+			
 			// 2. search for synonyms
-			List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
-			for(TaxonBase taxonBase : synonymList){
-				if(taxonBase instanceof Synonym){
-					Set<Taxon> acceptetdCandidates = ((Synonym)taxonBase).getAcceptedTaxa();
-					if(!acceptetdCandidates.isEmpty()){
-						matchedTaxon = acceptetdCandidates.iterator().next();
-						if(acceptetdCandidates.size() == 1){
-							logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + matchedTaxon.getTitleCache());
-							return matchedTaxon;
-						} else {
-							logger.info("using accepted Taxon " +  matchedTaxon.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
-							return matchedTaxon;
+			if (config.isIncludeSynonyms()){
+				List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
+				for(TaxonBase taxonBase : synonymList){
+					if(taxonBase instanceof Synonym){
+						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+						Set<Taxon> acceptetdCandidates = synonym.getAcceptedTaxa();
+						if(!acceptetdCandidates.isEmpty()){
+							bestCandidate = acceptetdCandidates.iterator().next();
+							if(acceptetdCandidates.size() == 1){
+								logger.info(acceptetdCandidates.size() + " Accepted taxa found for synonym " + taxonBase.getTitleCache() + ", using first one: " + bestCandidate.getTitleCache());
+								return bestCandidate;
+							} else {
+								logger.info("using accepted Taxon " +  bestCandidate.getTitleCache() + "for synonym " + taxonBase.getTitleCache());
+								return bestCandidate;
+							}
+							//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found
 						}
-						//TODO extend method: search using treeUUID, using SecUUID, first find accepted then include synonyms until a matching taxon is found
 					}
 				}
 			}
@@ -747,7 +771,30 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			logger.error(e);
 		}
 		
-		return matchedTaxon;
+		return bestCandidate;
+	}
+
+	private boolean isInClassification(Taxon taxon, MatchingTaxonConfigurator config) {
+		UUID configClassificationUuid = config.getClassificationUuid();
+		if (configClassificationUuid == null){
+			return false;
+		}
+		for (TaxonNode node : taxon.getTaxonNodes()){
+			UUID classUuid = node.getClassification().getUuid();
+			if (configClassificationUuid.equals(classUuid)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isMatchesSecUuid(Taxon taxon, MatchingTaxonConfigurator config) {
+		UUID configSecUuid = config.getSecUuid();
+		if (configSecUuid == null){
+			return false;
+		}
+		UUID taxonSecUuid = (taxon.getSec() == null)? null : taxon.getSec().getUuid();
+		return configSecUuid.equals(taxonSecUuid);
 	}
 
 	/* (non-Javadoc)

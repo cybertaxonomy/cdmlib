@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.remote.view;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +23,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import common.Logger;
+
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -29,6 +33,7 @@ import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.AuditEventRecordImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.DeletedRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.Granularity;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
@@ -43,6 +48,8 @@ import eu.etaxonomy.cdm.remote.view.oaipmh.ListSetsView;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class OaiPmhViewTest extends UnitilsJUnit4 {
+	
+	public static final Logger logger = Logger.getLogger(OaiPmhViewTest.class);
 	
 	@SpringBeanByType
 	private Marshaller marshaller;
@@ -61,6 +68,8 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     private MockHttpServletResponse response;
     
     private eu.etaxonomy.cdm.remote.view.oaipmh.rdf.GetRecordView rdfGetRecordView;
+
+	private URI serverURI;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -96,13 +105,20 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 		listRecordsView.setMapper(mapper);
 		
 		request = new MockHttpServletRequest();
-		request.setServerName("http://memory.loc.gov");
+		
+		serverURI = new URI("http://memory.loc.gov");
+		
+		request.setServerName(serverURI.toString());
 		request.setServerPort(80);
 		response = new MockHttpServletResponse();
 	}
 	
 	@Test
 	public void testIdentifyView() throws Exception {	
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
 		
 		model.put("repositoryName", "Library of Congress Open Archive Initiative Repository 1");
 		model.put("baseURL","http://memory.loc.gov/cgi-bin/oai");
@@ -125,6 +141,11 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testGetRecordView() throws Exception {
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
+		
 		Taxon taxon = Taxon.NewInstance(null, null);
 		taxon.setTitleCache("TitleCache", true);
 		taxon.setCreated(new DateTime());
@@ -141,6 +162,11 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testRdfGetRecordView() throws Exception {
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
+		
 		Taxon taxon = Taxon.NewInstance(null, null);
 		taxon.setTitleCache("TitleCache", true);
 		taxon.setCreated(new DateTime());
@@ -157,6 +183,11 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testListMetadataFormatsView() throws Exception {
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
+		
 		request.setRequestURI("/cgi-bin/pdataprov?verb=ListMetadataFormats&identifier=oai:perseus.tufts.edu:Perseus:text:1999.02.0119");
 		listMetadataFormatsView.render(model, request, response);
 		//System.out.println(new String(response.getContentAsByteArray()));
@@ -164,6 +195,11 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testListSetsView() throws Exception {
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
+		
 		request.setRequestURI("/OAI-script?verb=ListSets");
 		Set<SetSpec> sets = new HashSet<SetSpec>();
     	sets.add(SetSpec.TAXON);
@@ -175,6 +211,11 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testListIdentifiersView() throws Exception {
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
+		
 		model.put("metadataPrefix", MetadataPrefix.OAI_DC);
 		
 		DateTime from = new DateTime(1990,2,1,12,0,0, 0);
@@ -206,6 +247,11 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testListRecordsView() throws Exception {
+		
+		if(!serviceIsAvailable()){
+			return;
+		}
+		
 		model.put("metadataPrefix", MetadataPrefix.OAI_DC);
 		
 		DateTime from = new DateTime(1990,2,1,12,0,0, 0);
@@ -233,5 +279,16 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         model.put("resumptionToken",resumptionToken);
 		listRecordsView.render(model, request, response);
 		//System.out.println(new String(response.getContentAsByteArray()));
+	}
+
+	private boolean serviceIsAvailable() {
+		if(!UriUtils.isServiceAvailable(serverURI)) {
+			logger.info("Service " + serverURI.toString() + " unavailable");
+			return false;
+		} else {
+			return true;
+		}
+			
+	
 	}
 }

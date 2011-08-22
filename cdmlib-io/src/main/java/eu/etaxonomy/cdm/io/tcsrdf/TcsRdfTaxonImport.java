@@ -93,7 +93,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 	
 	
 	@Override
-	protected boolean doInvoke(TcsRdfImportState state){
+	protected void doInvoke(TcsRdfImportState state){
 		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
@@ -109,7 +109,6 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		
 		TcsRdfImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
-		boolean success =true;
 		
 		Namespace rdfNamespace = config.getRdfNamespace();
 		
@@ -203,7 +202,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		logger.info("saving " + taxonMap.size()+ " taxa ...");
 		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");
-		return success;
+		return;
 	}
 	
 	

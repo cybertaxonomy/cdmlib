@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>3.0.4-SNAPSHOT</version>
+	<version>3.0.7-SNAPSHOT</version>
 	<name>CDM Library</name>
 	<description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -26,7 +26,7 @@
 	</properties>
 	<scm>
 		<connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
-		<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
+		<developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</developerConnection>
 		<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib</url>
 	</scm>
 	<mailingLists>
@@ -81,7 +81,7 @@
 				<role>Architect</role>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -98,7 +98,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -115,7 +115,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -132,7 +132,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
@@ -151,13 +151,13 @@
 				<role>Java Developer</role>
 				<role>Release Manager</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
 			<id>f.revilla</id>
 			<name>
-				Francisco Revilla	
+				Francisco Revilla
 			</name>
 			<email>f.revilla [at] bgbm.org</email>
 			<organization>
@@ -168,7 +168,7 @@
 			<roles>
 				<role>Java Developer</role>
 			</roles>
-			<url/>
+			<url />
 		</developer>
 	</developers>
 	<!--contributors>
@@ -215,7 +215,7 @@
 			</snapshots>
 			<id>jboss-repository</id>
 			<name>JBoss Repository</name>
-			<url>http://repository.jboss.com/maven2</url>
+			<url>http://repository.jboss.com</url>
 		</repository>
 		<!-- codehaus mule repository needed for yourkit  -->
 		<repository>
@@ -370,31 +370,31 @@
 					<htmlStylesheet>resources/css/html.css</htmlStylesheet>
 					<xincludeSupported>true</xincludeSupported>
 					<!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
-					<!-- if anyone can get the xsl-fo customization to work properly, then by all 
-               means use it
-            <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-          -->
+					<!-- if anyone can get the xsl-fo customization to work properly, then by all
+						means use it
+						<foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+					-->
 					<entities>
 						<entity>
 							<name>version</name>
-							<value>${pom.version}</value>
+							<value>${project.version}</value>
 						</entity>
 					</entities>
-					<!--We want the final documentation and the required resources to end up in 
+					<!--We want the final documentation and the required resources to end up in
               the right place-->
 					<postProcess>
 						<copy todir="target/site/reference">
 							<fileset dir="target/docbkx">
-								<include name="**/*.html"/>
-								<include name="**/*.pdf"/>
+								<include name="**/*.html" />
+								<include name="**/*.pdf" />
 							</fileset>
 						</copy>
 						<copy todir="target/site/reference/html">
 							<fileset dir="src/docbkx">
-								<include name="**/*.css"/>
-								<include name="**/*.png"/>
-								<include name="**/*.gif"/>
-								<include name="**/*.jpg"/>
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
 							</fileset>
 						</copy>
 					</postProcess>
@@ -407,10 +407,10 @@
 				<configuration>
 					<fromDir>${project.build.directory}/docbkx/</fromDir>
 					<includes>**/*</includes>
-					<excludes/>
+					<excludes />
 					<url>scpexe://160.45.63.151</url>
 					<serverId>wp5.e-taxonomy.eu</serverId>
-					<toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${pom.version}</toDir>
+					<toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
 				</configuration>
 				<executions>
 					<execution>
@@ -422,6 +422,18 @@
 					</execution>
 				</executions>
 			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <preparationGoals>clean verify install</preparationGoals>
+		  <goals>deploy</goals><!-- skipping site-deploy by explicitly configuring the goal here -->
+          <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
+        </configuration>
+      </plugin>
 		</plugins>
 		<!--  -->
 		<extensions>
@@ -498,7 +510,7 @@
 					</executions>
 				-->
 			</plugin>
-			<!--			
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
@@ -540,13 +552,14 @@
 			</plugin>
 			-->
 			<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
-			<!-- 
+			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changelog-maven-plugin</artifactId>
 			</plugin>
 			-->
 		</plugins>
+
 	</reporting>
 	<!--	 DISTRIBUTION MANAGEMENT -->
 	<distributionManagement>
@@ -1087,12 +1100,11 @@
 				<artifactId>org.springframework.context.support</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-			<!-- ******* SPRING SECURITY ******* -->
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
-				<version>3.0.0.RELEASE</version>
-				<exclusions>
+				<version>3.0.5.RELEASE</version>
+				<!--<exclusions>
 					<exclusion>
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-context</artifactId>
@@ -1113,18 +1125,13 @@
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-support</artifactId>
 					</exclusion>
-				</exclusions>
+				</exclusions>-->
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-				<version>3.0.0.RELEASE</version>
+				<artifactId>spring-security-context</artifactId>
+				<version>3.0.5.RELEASE</version>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>3.0.0.RELEASE</version>
-			</dependency>			
 			<!-- ******* SERVLET/JSP/JSF ******* -->
 			<dependency>
 				<groupId>javax.servlet</groupId>

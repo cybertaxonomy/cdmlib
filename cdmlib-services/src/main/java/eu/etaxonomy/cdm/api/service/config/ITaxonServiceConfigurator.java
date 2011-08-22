@@ -15,13 +15,14 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.babadshanjan
  * @created 20.01.2009
  * @version 1.0
  */
-public interface ITaxonServiceConfigurator extends IIdentifiableEntityServiceConfigurator{
+public interface ITaxonServiceConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
 
 	public boolean isDoTaxa();
 	
@@ -38,10 +39,6 @@ public interface ITaxonServiceConfigurator extends IIdentifiableEntityServiceCon
 	public boolean isDoTaxaByCommonNames();
 	
 	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames);
-
-	public String getSearchString();
-	
-	public void setSearchString(String searchString);
 
 	public Classification getClassification();
 	

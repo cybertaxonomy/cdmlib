@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 // ************************* FACTORY METHODS ***********************************************/
 	
-	public static OrderedTermVocabulary NewInstance(String term, String label, String labelAbbrev, String termSourceUri){
+	public static OrderedTermVocabulary NewInstance(String term, String label, String labelAbbrev, URI termSourceUri){
 		return new OrderedTermVocabulary(term, label, labelAbbrev, termSourceUri);
 	}
 	
@@ -59,7 +60,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	 * @param label
 	 * @param termSourceUri
 	 */
-	protected OrderedTermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+	protected OrderedTermVocabulary(String term, String label, String labelAbbrev, URI termSourceUri) {
 		super(term, label, labelAbbrev, termSourceUri);
 	}
 

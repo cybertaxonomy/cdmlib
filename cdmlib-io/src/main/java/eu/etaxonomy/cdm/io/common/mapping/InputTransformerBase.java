@@ -14,13 +14,17 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author a.mueller
@@ -113,6 +117,44 @@ public class InputTransformerBase implements IInputTransformer {
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getSpecimenTypeDesignationStatusByKey(java.lang.String)
+	 */
+	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.matches("(?i)(T|Type)")){return SpecimenTypeDesignationStatus.TYPE();
+		}else if (key.matches("(?i)(HT|Holotype)")){return SpecimenTypeDesignationStatus.HOLOTYPE();
+		}else if (key.matches("(?i)(LT|Lectotype)")){return SpecimenTypeDesignationStatus.LECTOTYPE();
+		}else if (key.matches("(?i)(NT|Neotype)")){return SpecimenTypeDesignationStatus.NEOTYPE();
+		}else if (key.matches("(?i)(ST|Syntype)")){return SpecimenTypeDesignationStatus.SYNTYPE();
+		}else if (key.matches("(?i)(ET|Epitype)")){return SpecimenTypeDesignationStatus.EPITYPE();
+		}else if (key.matches("(?i)(IT|Isotype)")){return SpecimenTypeDesignationStatus.ISOTYPE();
+		}else if (key.matches("(?i)(ILT|Isolectotype)")){return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
+		}else if (key.matches("(?i)(INT|Isoneotype)")){return SpecimenTypeDesignationStatus.ISONEOTYPE();
+		}else if (key.matches("(?i)(IET|Isoepitype)")){return SpecimenTypeDesignationStatus.ISOEPITYPE();
+		}else if (key.matches("(?i)(PT|Paratype)")){return SpecimenTypeDesignationStatus.PARATYPE();
+		}else if (key.matches("(?i)(PLT|Paralectotype)")){return SpecimenTypeDesignationStatus.PARALECTOTYPE();
+		}else if (key.matches("(?i)(PNT|Paraneotype)")){return SpecimenTypeDesignationStatus.PARANEOTYPE();
+		}else if (key.matches("(?i)(unsp.|Unspecified)")){return SpecimenTypeDesignationStatus.UNSPECIFIC();
+		}else if (key.matches("(?i)(2LT|Second Step Lectotype)")){return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+		}else if (key.matches("(?i)(2NT|Second Step Neotype)")){return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
+		}else if (key.matches("(?i)(OM|Original Material)")){return SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL();
+		}else if (key.matches("(?i)(IcT|Iconotype)")){return SpecimenTypeDesignationStatus.ICONOTYPE();
+		}else if (key.matches("(?i)(PT|Phototype)")){return SpecimenTypeDesignationStatus.PHOTOTYPE();
+		}else if (key.matches("(?i)(IST|Isosyntype)")){return SpecimenTypeDesignationStatus.ISOSYNTYPE();
+		}else{
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getSpecimenTypeDesignationStatusUuid(java.lang.String)
+	 */
+	public UUID getSpecimenTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getSpecimenTypeDesignationStatusUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermByKey(java.lang.String)
@@ -148,7 +190,44 @@ public class InputTransformerBase implements IInputTransformer {
 		String warning = "getNamedAreaUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaLevelByKey(java.lang.String)
+	 */
+	@Override
+	public NamedAreaLevel getNamedAreaLevelByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getNamedAreaLevelByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaLevelUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getNamedAreaLevelUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
+	@Override
+	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.matches("(?i)(wgs84)")){return ReferenceSystem.WGS84();
+		}else if (key.matches("(?i)(googleearth)")){return ReferenceSystem.GOOGLE_EARTH();
+		}else if (key.matches("(?i)(gazetteer)")){return ReferenceSystem.GAZETTEER();
+		}else{
+			String warning = "getReferenceSystemByKey is not implemented in implementing transformer class";
+			throw new UndefinedTransformerMethodException(warning);
+		}
+	}
+	
+	@Override
+	public UUID getReferenceSystemUuid(String key) throws UndefinedTransformerMethodException {
+
+		String warning = "getReferenceSystemUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
 	
 	
 }

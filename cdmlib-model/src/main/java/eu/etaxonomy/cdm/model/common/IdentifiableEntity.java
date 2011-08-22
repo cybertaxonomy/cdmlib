@@ -155,7 +155,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     protected void initListener(){
     	PropertyChangeListener listener = new PropertyChangeListener() {
         	public void propertyChange(PropertyChangeEvent e) {
-        		if (!e.getPropertyName().equals("titleCache") && ! isProtectedTitleCache()){
+        		if (!e.getPropertyName().equals("titleCache") && !e.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
         			titleCache = null;
         		}
         	}

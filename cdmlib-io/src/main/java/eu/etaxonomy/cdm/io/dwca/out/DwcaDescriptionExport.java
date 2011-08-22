@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -41,6 +38,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class DwcaDescriptionExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaDescriptionExport.class);
+	
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Description";
+	private static final String fileName = "description.txt";
 
 	/**
 	 * Constructor
@@ -59,21 +59,15 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String fileName = config.getDestinationNameString();
 		TransactionStatus txStatus = startTransaction(true);
 
+		PrintWriter writer = null;
 		try {
-			
-			final String coreTaxFileName = "description.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
+			writer = createPrintWriter(fileName, state);
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
 
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
@@ -87,9 +81,9 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 									! feature.equals(Feature.IMAGE()) && 
 									! config.getFeatureExclusions().contains(feature.getUuid()) &&
 									! recordExists(el)){
-								DwcaDescriptionRecord record = new DwcaDescriptionRecord();
+								DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
 								TextData textData = CdmBase.deproxy(el,TextData.class);
-								handleDescription(record, textData, taxon);
+								handleDescription(record, textData, taxon, config);
 								record.write(writer);
 								addExistingRecord(textData);
 							}
@@ -108,14 +102,17 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
-		return true;
+		return;
 	}
 
 
-	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+	private void handleDescription(DwcaDescriptionRecord record, TextData textData, Taxon taxon, DwcaTaxExportConfigurator config) {
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		
 		//TODO make this part of the Configuration
 		//TODO question: multiple entries for each language??
@@ -138,8 +135,8 @@ public class DwcaDescriptionExport extends DwcaExportBase {
 			record.setLanguage(languageText.getLanguage());
 		}
 		
-		//FIXME multiple sources
-		record.setSource(null);
+		//sources
+		record.setSource(getSources(textData, config));
 		
 		//TODO missing , relationship to credits?
 		record.setCreator(null);

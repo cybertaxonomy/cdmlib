@@ -87,9 +87,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	
 	
 	@Override
-	public boolean doInvoke(Abcd206ImportState state){
+	public void doInvoke(Abcd206ImportState state){
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
-		boolean result = true;
 		//AbcdIO test = new AbcdIO();
 		URI sourceName = state.getConfig().getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
@@ -102,7 +101,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 			for (int i=0 ; i<unitsList.getLength() ; i++){
 				this.setUnitPropertiesXML((Element)unitsList.item(i), dataHolder);
-				result &= this.handleSingleUnit(state, dataHolder);
+				this.handleSingleUnit(state, dataHolder);
 				
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
 				compareABCDtoCDM(sourceName, dataHolder.knownABCDelements, dataHolder);
@@ -113,16 +112,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			}
 		}
 
-		return result;
+		return;
 
 	}
 	
 	/*
 	 * Store the unit with its Gathering informations in the CDM
 	 */
-	private boolean handleSingleUnit(Abcd206ImportState state, Abcd206DataHolder dataHolder){
-		boolean result = true;
-
+	private void handleSingleUnit(Abcd206ImportState state, Abcd206DataHolder dataHolder){
+		
 		Abcd206ImportConfigurator config = state.getConfig();
 		
 		TransactionStatus tx = startTransaction();
@@ -131,7 +129,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 //			Reference sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
-			Reference sec = config.getTaxonReference();
+			Reference<?> sec = config.getTaxonReference();
 
 			//create facade
 			DerivedUnitFacade derivedUnitFacade = getFacade(dataHolder);
@@ -183,7 +181,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 //			//add Multimedia URLs
 			if(dataHolder.multimediaObjects.size() > 0){
 				for (String multimediaObject : dataHolder.multimediaObjects){
-					Media media = getImageMedia(multimediaObject, true);
+					Media media = getImageMedia(multimediaObject, READ_MEDIA_DATA, false);
 					derivedUnitFacade.addDerivedUnitMedia(media);
 				}
 			}
@@ -204,11 +202,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		} catch (Exception e) {
 			logger.warn("Error when reading record!!");
 			e.printStackTrace();
-			result = false;
+			state.setUnsuccessfull();
 		}
 		commitTransaction(tx);
 
-		return result;
+		return;
 	}
 
 	private void setCollectionData(Abcd206ImportConfigurator config,
@@ -216,7 +214,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		//set catalogue number (unitID)
 		derivedUnitFacade.setCatalogNumber(dataHolder.unitID);
 		derivedUnitFacade.setAccessionNumber(dataHolder.accessionNumber);
-		derivedUnitFacade.setCollectorsNumber(dataHolder.collectorsNumber);
+//		derivedUnitFacade.setCollectorsNumber(dataHolder.collectorsNumber);
 
 
 		/**
@@ -799,16 +797,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			dataHolder.fieldNumber = "";
 		}
 
-		try {
-			group = root.getElementsByTagName("CollectorsNumber");
-			path=group.item(0).getNodeName();
-			getHierarchie(group.item(0));
-			dataHolder.knownABCDelements.add(path);
-			path="";
-			dataHolder.collectorsNumber = group.item(0).getTextContent();
-		} catch (NullPointerException e) {
-			dataHolder.collectorsNumber = "";
-		}
+//		try {
+//			group = root.getElementsByTagName("CollectorsNumber");
+//			path=group.item(0).getNodeName();
+//			getHierarchie(group.item(0));
+//			dataHolder.knownABCDelements.add(path);
+//			path="";
+//			dataHolder.collectorsNumber = group.item(0).getTextContent();
+//		} catch (NullPointerException e) {
+//			dataHolder.collectorsNumber = "";
+//		}
 
 		try {
 			group = root.getElementsByTagName("AccessionNumber");
@@ -1035,7 +1033,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, Reference sec, Abcd206DataHolder dataHolder){
+	private void handleIdentifications(Abcd206ImportConfigurator config, DerivedUnitFacade facade, Reference<?> sec, Abcd206DataHolder dataHolder){
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -1109,7 +1107,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 			for (String strReference : dataHolder.referenceList){
 				
-				Reference reference = ReferenceFactory.newGeneric();
+				Reference<?> reference = ReferenceFactory.newGeneric();
 				reference.setTitleCache(strReference, true);
 				determinationEvent.addReference(reference);
 			}
@@ -1135,11 +1133,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(facade.innerDerivedUnit());
 				individualsAssociation.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
-				for(Reference citation : determinationEvent.getReferences()){
+				for(Reference<?> citation : determinationEvent.getReferences()){
 					individualsAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
 				}
 				taxonDescription.addElement(individualsAssociation);
-				getDescriptionService().saveOrUpdate(taxonDescription);
+				getDescriptionService().save(taxonDescription);
 			}
 		}
 
@@ -1159,7 +1157,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		if (dataHolder.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
 			if (taxonName.hasProblem()){
-				problem=true;;
+				problem=true;
 			}
 		}
 		if (dataHolder.nomenclatureCode.toString().equals("Bacterial")){

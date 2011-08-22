@@ -63,8 +63,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
-
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8622351017235131355L;
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
@@ -77,7 +76,8 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
     // Need these references (bidirectional) to fill table TypeDesignationBase_TaxonNameBase
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY /*, mappedBy="typeDesignations"*/)
+//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
 	@XmlElement(name = "HomotypicalGroup")

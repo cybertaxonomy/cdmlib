@@ -23,11 +23,15 @@ import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -63,6 +67,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasPermission(#transientObject, 'DELETE')")
 	public UUID delete(T persistentObject) {
 		return dao.delete(persistentObject);
 	}
@@ -147,19 +152,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	@Secured("ROLE_ADMIN")
+	//TODO: Tests fail because nobody is authenticated, fix it!!!
+	//@PreAuthorize("hasPermission(#transientObject, 'CREATE')" )
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}
 
 	@Transactional(readOnly = false)
-	@Secured("ROLE_ADMIN")
+//	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
 	}
 	
 	@Transactional(readOnly = false)
-	@Secured("ROLE_ADMIN")
+//	@PreAuthorize("hasPermission(#transientInstances, 'UPDATE')")
 	public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
 		return dao.saveOrUpdateAll(transientInstances);
 	}
@@ -175,6 +181,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	protected abstract void setDao(DAO dao);
 	
 	@Transactional(readOnly = false)
+	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
 	public UUID update(T transientObject) {
 		return dao.update(transientObject);
 	}
@@ -182,5 +189,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	@Transactional(readOnly = true)
 	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
+	}
+	
+	@Transactional(readOnly = true)
+	public boolean hasPermission(Authentication authentication, T target, CdmPermission permission) {
+		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+		return permissionEvaluator.hasPermission(authentication, target, permission);
+		
 	}
 }

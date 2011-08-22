@@ -55,15 +55,14 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#doInvoke(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
-	protected boolean doInvoke(BerlinModelImportState state){
-		boolean result = true;
-		
+	protected void doInvoke(BerlinModelImportState state){
+		boolean success = true ;
+
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 
 		logger.info("start make "+pluralString+" ...");
-		boolean success = true ;
-
+		
 		ResultSet rs = source.getResultSet(getRecordQuery(config)) ;
 		
 		int i = 0;
@@ -94,14 +93,18 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 			} //while rs.hasNext()
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 
 			
 		logger.info("save " + i + " "+pluralString + " ...");
 
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
-		return result;
+		if (!success){
+			state.setUnsuccessfull();
+		}
+		return;
 		
 	}
 	

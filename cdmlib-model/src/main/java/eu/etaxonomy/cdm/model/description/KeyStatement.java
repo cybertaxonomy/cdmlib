@@ -4,7 +4,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,7 +24,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -50,7 +48,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Audited
 public class KeyStatement extends VersionableEntity implements IMultiLanguageTextHolder{
 	private static final long serialVersionUID = 3771323100914695139L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(KeyStatement.class);
  
 	
@@ -71,9 +68,9 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	}
 
 	
-	public static KeyStatement NewInstance(String defaultLabel){
+	public static KeyStatement NewInstance(String defaultLanguageLabel){
 		KeyStatement result = new KeyStatement();
-		result.putLabel(Language.DEFAULT(), defaultLabel);
+		result.putLabel(Language.DEFAULT(), defaultLanguageLabel);
 		return result;
 	}
 	

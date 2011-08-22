@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -302,7 +303,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 								taxonMedia.add(media);
 								
 								//find the best matching representation
-								mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,size, height, widthOrDuration, mimeTypes));
+								mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
 								
 							}
 						}

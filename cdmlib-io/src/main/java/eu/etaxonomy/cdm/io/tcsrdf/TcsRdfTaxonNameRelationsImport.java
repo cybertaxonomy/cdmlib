@@ -51,7 +51,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 	}
 	
 	@Override
-	public boolean doInvoke(TcsRdfImportState state){
+	public void doInvoke(TcsRdfImportState state){
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
@@ -71,7 +71,6 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 //		<tn:hasBasionym rdf:resource="palm_tn_14530"/>
 		
 		Element root = config.getSourceRoot();
-		boolean success =true;
 		
 		Namespace rdfNamespace = config.getRdfNamespace();
 		Namespace taxonNameNamespace = config.getTnNamespace();
@@ -132,7 +131,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 		logger.info(nameRelCount + " nameRelations handled");
 		nameService.save(nameStore);
 		logger.info("end makeNameRelationships ...");
-		return success;
+		return;
 	}
 	
 	/* (non-Javadoc)

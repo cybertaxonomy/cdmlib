@@ -11,6 +11,8 @@
 package eu.etaxonomy.cdm.print.out;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import org.jdom.Document;
 
@@ -45,4 +47,24 @@ public interface IPublishOutputModule {
 	 */
 	public void output(Document document, File targetFolder, IProgressMonitor progressMonitor);
 	
+	/**
+	 * Returns all available stylesheets for this output module. Search path will include the users ~/.cdmLibrary directory
+	 * to allow for custom stylesheets
+	 * 
+	 * @return a set of xsl files
+	 * @throws IOException TODO
+	 */
+	public List<File> getStylesheets() throws IOException;
+	
+	/** 
+	 * @return the xslt file associated with this output module
+	 */
+	public File getXslt();
+	
+	/** 
+	 * Associate an xsl  file to be used by this output module
+	 * 
+	 * @param xslt a file
+	 */
+	public void setXslt(File xslt);
 }

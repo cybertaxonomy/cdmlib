@@ -450,32 +450,11 @@ public class CdmApplicationController implements ICdmApplicationLocalConfigurati
 	}
 	
 	public TransactionStatus startTransaction() {
-		
 		return startTransaction(false);
 	}
 	
 	public TransactionStatus startTransaction(Boolean readOnly) {
-		
-		PlatformTransactionManager txManager = configuration.getTransactionManager();
-		
-		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
-		defaultTxDef.setReadOnly(readOnly);
-		TransactionDefinition txDef = defaultTxDef;
-
-		// Log some transaction-related debug information.
-		if (logger.isDebugEnabled()) {
-			logger.debug("Transaction name = " + txDef.getName());
-			logger.debug("Transaction facets:");
-			logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
-			logger.debug("Isolation level = " + txDef.getIsolationLevel());
-			logger.debug("Timeout = " + txDef.getTimeout());
-			logger.debug("Read Only = " + txDef.isReadOnly());
-			// org.springframework.orm.hibernate3.HibernateTransactionManager
-			// provides more transaction/session-related debug information.
-		}
-		
-		TransactionStatus txStatus = txManager.getTransaction(txDef);
-		return txStatus;
+		return configuration.startTransaction(readOnly);
 	}
 
 	public void commitTransaction(TransactionStatus txStatus){

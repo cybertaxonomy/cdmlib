@@ -18,6 +18,7 @@
 			<item name="UML" href="http://wp5.e-taxonomy.eu/cdm-uml"/>
 			<item name="API" href="apidocs/index.html"/>
 			<item name="REST API" href="rest-api.html"/>
+			<item name="OAI-PMH" href="oai-pmh.html"/>
 			<item name="Troubleshooting" href="troubleshooting.html"/>
 			<item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev"/>
 		</menu>

@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.MediaInfo;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
@@ -67,7 +67,6 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	protected String unitID;
 	protected String recordBasis;
 	protected String accessionNumber;
-	protected String collectorsNumber;
 	protected String fieldNumber;
 	protected Double longitude;
 	protected Double latitude;
@@ -133,9 +132,6 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 
 		try {this.fieldNumber = unit.get("field number").replaceAll("None", null);
 		} catch (Exception e) {this.fieldNumber = "";}
-
-		try {this.collectorsNumber = unit.get("collector number").replaceAll("None", null);
-		} catch (Exception e) {this.collectorsNumber = "";}
 
 		try {
 			String url =unit.get("url");		
@@ -376,8 +372,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			//set catalogue number (unitID)
 			derivedThing.setCatalogNumber(this.unitID);
 			derivedThing.setAccessionNumber(this.accessionNumber);
-			derivedThing.setCollectorsNumber(this.collectorsNumber);
-
+			
 
 			/**
 			 * INSTITUTION & COLLECTION
@@ -415,17 +410,14 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			if(this.multimediaObjects.size()>0){
 				MediaRepresentation representation;
 				Media media;
-				MediaMetaData mmd ;
-				ImageMetaData imd ;
+				MediaInfo mmd ;
+				ImageInfo imd ;
 				URL url ;
 				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
 					if(this.multimediaObjects.get(i) != null){
-						//mmd = new MediaMetaData();
-						imd = ImageMetaData.newInstance();
 						url = new URL(this.multimediaObjects.get(i));
-						//imd = MediaMetaData.readImageMetaData(url, imd);
-						imd.readMetaData(url.toURI(), 0);
+						imd = ImageInfo.NewInstance(url.toURI(), 0);
 						if (imd != null){
 							System.out.println("image not null");
 							representation = MediaRepresentation.NewInstance();
@@ -500,7 +492,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 * @see eu.etaxonomy.cdm.io.specimen.SpecimenIoBase#doInvoke(eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportState)
 	 */
 	@Override
-	protected boolean doInvoke(SpecimenSynthesysExcelImportState state) {
+	protected void doInvoke(SpecimenSynthesysExcelImportState state) {
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
 		SpecimenSythesysExcelImport test = new SpecimenSythesysExcelImport();
 		URI source = state.getConfig().getSource();
@@ -523,7 +515,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			}
 		}
 
-		return false;
+		return;
 	}
 
 

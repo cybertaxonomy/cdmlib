@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class TdwgArea extends NamedArea {
+public class TdwgArea extends NamedArea implements Cloneable{
 	private static final long serialVersionUID = 4662215686356109015L;
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);
 	

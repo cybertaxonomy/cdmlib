@@ -69,7 +69,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(PilotOutputExportState state){
+	protected void doInvoke(PilotOutputExportState state){
 //		protected boolean doInvoke(IExportConfigurator config,
 //		Map<String, MapWrapper<? extends CdmBase>> stores) {
 	
@@ -117,7 +117,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		} 
 		commitTransaction(txStatus);
 		
-		return true;
+		return;
 
 	}
 

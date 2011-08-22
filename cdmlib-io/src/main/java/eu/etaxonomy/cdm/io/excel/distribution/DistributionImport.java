@@ -20,17 +20,15 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.impl.IdentifiableServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -48,7 +46,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @version 1.0
  */
 @Component
-public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportConfiguratorBase>> implements ICdmIO<ExcelImportState<ExcelImportConfiguratorBase>> {
+public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> implements ICdmIO<ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase>> {
+	private static final Logger logger = Logger.getLogger(DistributionImport.class);
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";
@@ -66,13 +65,12 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
 //    private static final String PAGE_NUMBER_COLUMN = "Page";
 //    private static final String INFO_COLUMN = "Info";
     
-	private static final Logger logger = Logger.getLogger(DistributionImport.class);
 	
 	// Stores already processed descriptions
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
-	protected boolean doInvoke(ExcelImportState<ExcelImportConfiguratorBase> state) {
+	protected void doInvoke(ExcelImportState<ExcelImportConfiguratorBase, ExcelRowBase> state) {
 		
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	
@@ -85,7 +83,8 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
 			String message = "File not found: " + source;
 			warnProgress(state, message, e);
 			logger.error(message);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
     	if (recordList != null) {
     		HashMap<String,String> record = null;
@@ -106,7 +105,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     		e.printStackTrace();
 		}
     	
-    	return true;
+    	return;
 	}
 			
 
@@ -171,8 +170,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
-    	IdentifiableServiceConfiguratorImpl config = 
-    		IdentifiableServiceConfiguratorImpl.NewInstance();
+    	IdentifiableServiceConfiguratorImpl<TaxonNameBase> config = IdentifiableServiceConfiguratorFactory.getConfigurator(TaxonNameBase.class);
     	config.setTitleSearchString(taxonName);
     	config.setMatchMode(MatchMode.BEGINNING);
     	

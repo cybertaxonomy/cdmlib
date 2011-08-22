@@ -210,7 +210,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		return (List<T>) criteria.list();
 	}
 	
-public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz) {
+	public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz) {
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz)");		
 		Criteria criteria = null;
 		if(clazz == null) {
@@ -226,6 +226,48 @@ public int countDefinedTermByRepresentationText(String text, Class<? extends Def
 			
 		 return (Integer)criteria.uniqueResult();
 	}
+	
+	@Override
+	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer  pageNumber)");		
+		
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type);
+		} else {
+			criteria = getSession().createCriteria(clazz);
+		}
+		
+		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
+		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<T>) criteria.list();
+	}
+	
+	@Override
+	public int countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz) {
+	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationAbbrev(String abbrev, Class<? extends DefinedTermBase> clazz)");		
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type);
+		} else {
+			criteria = getSession().createCriteria(clazz);
+		}
+		
+		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
+
+		
+		 criteria.setProjection(Projections.rowCount());
+			
+		 return (Integer)criteria.uniqueResult();
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)

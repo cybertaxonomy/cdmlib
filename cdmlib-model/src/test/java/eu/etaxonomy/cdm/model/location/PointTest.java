@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -126,11 +127,12 @@ public class PointTest {
 	
 	@Test
 	public void testGetLongitudeSexagesimal(){
-		Assert.assertEquals("23\u00B07'25\"E", point1.getLongitudeSexagesimal().toString(true));
+		Assert.assertEquals("23\u00B07'24.801\"E", point1.getLongitudeSexagesimal().toString(true, false));
+		
 		
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
-		Assert.assertTrue(point2.getLongitudeSexagesimal().minutes == 22);
-		Assert.assertTrue(point2.getLongitudeSexagesimal().seconds == 0);
+		Assert.assertEquals((Integer)22, (Integer)point2.getLongitudeSexagesimal().minutes);
+		Assert.assertEquals((Integer)0, (Integer)point2.getLongitudeSexagesimal().seconds);
 		
 		Double latitudeDouble = -45.57389326; 
 		point1.setLatitudeSexagesimal(Sexagesimal.valueOf(latitudeDouble, true));
@@ -141,6 +143,7 @@ public class PointTest {
 		Sexagesimal sexagesimal2 = Sexagesimal.NewInstance(2, 2, 2, Direction.WEST);
 		Assert.assertNotSame("", sexagesimal1, sexagesimal2);
 	
+			
 	}
 
 	@Test
@@ -173,8 +176,12 @@ public class PointTest {
 		} catch (ParseException e) {
 			Assert.assertTrue("Longitude can not be S", true);
 		}
+		
+		
+		 
 
 
+		
 		
 		
 //		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
@@ -200,6 +207,63 @@ public class PointTest {
 //		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
 //		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
 
+	}
+	
+
+	@Test
+	public void testDoubleParsing(){
+		try {
+			Assert.assertEquals("", longitude1, point1.getLongitude());
+			Assert.assertTrue("", latitude1.equals(point1.getLatitude()));
+			point1.setLatitudeByParsing("33.474");
+			Assert.assertEquals("", longitude1, point1.getLongitude());
+			Assert.assertFalse("", latitude1.equals(point1.getLatitude()));
+			Assert.assertEquals("", Double.valueOf("33.474"), point1.getLatitude());
+			point1.setLatitudeByParsing("-39,474");
+			Assert.assertEquals("", Double.valueOf("-39.474"), point1.getLatitude());
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
+		
+		try {
+			point1.setLongitudeByParsing("-120.4");
+			Assert.assertEquals("", "-120.4", point1.getLongitude().toString());
+			point1.setLongitudeByParsing("53,4");
+			Assert.assertEquals("", "53.4", point1.getLongitude().toString());
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
+		try {
+			point1.setLatitudeByParsing("112.456");
+			Assert.fail("Latitude can not be > 90");
+		} catch (ParseException e) {
+			Assert.assertTrue("Latitude can not be > 90", true);
+		}
+		
+		try {
+			point1.setLongitudeByParsing("191");
+			Assert.fail("Longitude can be > 180°");
+		} catch (ParseException e) {
+			Assert.assertTrue("Longitude can not > 180°", true);
+		}
+		try {
+			point1.setLatitudeByParsing("2\u00B039'38,5956\"S");
+		} catch (ParseException e) {
+			Assert.fail("String '2°39'38,5956\"S'should be parsable");
+		}
+}
+	
+	/**
+	 * I don't exactly know what should happen here.
+	 * Please see http://dev.e-taxonomy.eu/trac/ticket/2267#comment:3 on why this test was created 
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testParsingHexagesimalAndDecimalMixed() throws ParseException{
+		String example = "35\u00B034'55.67\"S";
+		point1.setLatitudeByParsing(example);
+		Assert.assertEquals(example, point1.getLatitudeSexagesimal().toString());
 	}
 	
 	@Test

@@ -63,6 +63,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import eu.etaxonomy.cdm.validation.annotation.InReference;
+import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 
 /**
  * The upmost (abstract) class for references (information sources). 
@@ -109,7 +111,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-//@InReference(groups = Level2.class)
+@InReference(groups = Level2.class)
+@ReferenceCheck(groups = Level2.class)
 //public abstract class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
 public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
@@ -221,10 +224,9 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    //@InReference(groups=Level2.class)
+   // @InReference(groups=Level2.class)
    	protected Reference inReference;
     
 //    @XmlElement(name = "FullReference")
@@ -260,12 +262,10 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Length(max = 65536)
 	private String referenceAbstract;  //abstract is a reserved term in Java
 	
+	
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@NullOrNotEmpty
-	@Length(max = 255)
-	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
 	@Type(type="uriUserType")
 	private URI uri;
 	

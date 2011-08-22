@@ -18,8 +18,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import common.Assert;
-
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -29,7 +27,6 @@ import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
-import eu.etaxonomy.cdm.model.media.ReferencedMedia;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -110,7 +107,7 @@ public class ImagesUtility {
 		}		
 		// No representation with images found - create
 		MediaRepresentation representation = MediaRepresentation.NewInstance();
-		Media media = ReferencedMedia.NewInstance();
+		Media media = Media.NewInstance();
 		element.addMedia(media);
 		media.addRepresentation(representation);
 		return representation;

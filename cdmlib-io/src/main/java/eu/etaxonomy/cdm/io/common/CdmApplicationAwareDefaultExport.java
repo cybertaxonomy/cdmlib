@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -52,11 +53,11 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 
 	
 	//Constants
-	final boolean OBLIGATORY = true; 
-	final boolean FACULTATIVE = false; 
+	final static boolean OBLIGATORY = true; 
+	final static boolean FACULTATIVE = false; 
 	final int modCount = 1000;
 
-	IService service = null;
+	private IService service = null;
 	
 	//different type of stores that are used by the known imports
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
@@ -91,7 +92,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 	@SuppressWarnings("unchecked")
 	protected <S extends IExportConfigurator> boolean doCheck(S  config){
 		boolean result = true;
-		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 		
 		//check
 		if (config == null){
@@ -101,6 +101,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 			logger.warn("CdmExportConfiguration is not valid");
 			return false;
 		}
+		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 		
 		ExportStateBase state = config.getNewState();
 		state.initialize(config);
@@ -109,9 +110,11 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		for (Class<ICdmExport> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmExport cdmIo = (ICdmExport)applicationContext.getBean(ioBeanName, ICdmIO.class);
+				ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
+					registerObservers(config, cdmIo);
 					result &= cdmIo.check(state);
+					unRegisterObservers(config, cdmIo);
 				}else{
 					logger.error("cdmIO for class " + (ioClass == null ? "(null)" : ioClass.getSimpleName()) + " was null");
 					result = false;
@@ -127,6 +130,19 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for export from Cdm");
 		return result;
 
+	}
+	
+	
+	private void registerObservers(IExportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.addObserver(observer);
+		}
+	}
+	
+	private void unRegisterObservers(IExportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.deleteObserver(observer);
+		}
 	}
 	
 	
@@ -172,25 +188,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 			}
 		}
 		
-		//do invoke for each class
-//		for (String ioBean: config.getIoBeans()){
-//			try {
-//				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBean, ICdmIO.class);
-//				if (cdmIo != null){
-//					result &= cdmIo.invoke(config, stores);
-//				}else{
-//					logger.error("cdmIO was null");
-//					result = false;
-//				}
-//			} catch (Exception e) {
-//					logger.error(e);
-//					e.printStackTrace();
-//					result = false;
-//			}
-//			
-//		}
-		
-		
 		System.out.println("End export from source '" + config.getSourceNameString() 
 				+ "' to destination '" + config.getDestinationNameString() + "' " +
 				(result? "(successful)":"(with errors)")) ;
@@ -206,5 +203,5 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		}
 		return ioBean;
 	}
-	
+
 }

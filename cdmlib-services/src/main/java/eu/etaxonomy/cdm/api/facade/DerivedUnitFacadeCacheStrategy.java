@@ -58,49 +58,51 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	 */
 	@Override
 	public String getTitleCache(DerivedUnitBase derivedUnit) {
-		String ALTITUDE_PREFIX = "alt. ";
-		String ALTITUDE_POSTFIX = " m";
-		
+		DerivedUnitFacadeFieldObservationCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldObservationCacheStrategy();
+
 		String result = "";
 		
 		DerivedUnitFacade facade;
 		try {
-			facade = DerivedUnitFacade.NewInstance(derivedUnit);
-			//country
-			String strCountry = null;
-			NamedArea country = facade.getCountry();
-			Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
-			//TODO currently the label is the 3 digit representation of the country and text is the full text.
-			//this is against the common way of handling text, label and labelabbrev in defined terms
-			strCountry = repCountry == null ? null: repCountry.getText();
-			result = CdmUtils.concat(", ", result, strCountry);
-			
-			//locality
-			result = CdmUtils.concat(", ", result, facade.getLocalityText());
-			
-			//elevation
-			if (facade.getAbsoluteElevation() != null){
-				result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
-				result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
-			}
-			
-			//exact locality
-			if (facade.getExactLocation() != null){
-				String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
-				result = CdmUtils.concat(", ", result, exactLocation);
-			}
-			
-			//ecology
-			result = CdmUtils.concat(", ", result, facade.getEcology());
-			
-			//gathering period
-			//TODO period.toString ??
-			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
-			result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
-			
-			//collector (team) and field number
-			String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
-			result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
+			DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
+			config.setFirePropertyChangeEvents(false);
+			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
+			result += fieldStrategy.getFieldData(facade);
+//			//country
+//			String strCountry = null;
+//			NamedArea country = facade.getCountry();
+//			Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
+//			//TODO currently the label is the 3 digit representation of the country and text is the full text.
+//			//this is against the common way of handling text, label and labelabbrev in defined terms
+//			strCountry = repCountry == null ? null: repCountry.getText();
+//			result = CdmUtils.concat(", ", result, strCountry);
+//			
+//			//locality
+//			result = CdmUtils.concat(", ", result, facade.getLocalityText());
+//			
+//			//elevation
+//			if (facade.getAbsoluteElevation() != null){
+//				result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
+//				result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
+//			}
+//			
+//			//exact locality
+//			if (facade.getExactLocation() != null){
+//				String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
+//				result = CdmUtils.concat(", ", result, exactLocation);
+//			}
+//			
+//			//ecology
+//			result = CdmUtils.concat(", ", result, facade.getEcology());
+//			
+//			//gathering period
+//			//TODO period.toString ??
+//			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
+//			result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
+//			
+//			//collector (team) and field number
+//			String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
+//			result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
 			
 			//Exsiccatum
 			String exsiccatum = null;
@@ -118,11 +120,8 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 				result = (result + " (" +  collectionData + ")").trim();
 			}
 			
-			//plant description
-			result = CdmUtils.concat("; ", result, facade.getPlantDescription());
-			if (CdmUtils.isNotEmpty(result)){
-				result += ".";
-			}
+			result = fieldStrategy.addPlantDescription(result, facade);
+
 			
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
@@ -131,90 +130,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		
 		return result;
 	}
-
-
-
-	private String getCollectorAndFieldNumber(DerivedUnitFacade facade) {
-		String result = "";
-		AgentBase collector = facade.getCollector();
-		String fieldNumber = facade.getFieldNumber();
-		Person primaryCollector = facade.getPrimaryCollector();
-		if (collector == null){
-			return fieldNumber;
-		}else{
-			result = "";
-			Team collectorTeam;
-			if (collector.isInstanceOf(Person.class)){
-				collectorTeam = Team.NewInstance();
-				if (primaryCollector == null){
-					primaryCollector = CdmBase.deproxy(collector, Person.class);
-				}
-				collectorTeam.addTeamMember(primaryCollector);
-			} else if (collector.isInstanceOf(Team.class)){
-				collectorTeam = CdmBase.deproxy(collector, Team.class);
-			}else{
-				return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
-			}
-			int counter = 0;
-			int teamSize = collectorTeam.getTeamMembers().size();
-			boolean fieldNumberAdded = false;
-			for (Person member : collectorTeam.getTeamMembers()){
-				counter++;
-				String concatString = (counter >= teamSize)? " & " : ", "; 
-				result = CdmUtils.concat(concatString, result, getMemberString(member) );
-				if (member.equals(primaryCollector)){
-					result = addFieldNumber(result, fieldNumber);
-					fieldNumberAdded = true;
-				}
-			}
-			if (! fieldNumberAdded){
-				result = addFieldNumber(result, fieldNumber);
-			}
-			return result;
-		}
-		
-	}
-
-
-
-	private String addFieldNumber(String result, String fieldNumber) {
-		result = CdmUtils.concat(" ", result, fieldNumber);
-		return result;
-	}
-
-
-
-	/**
-	 * Strategy to format a collector team member name
-	 * @param member
-	 * @return
-	 */
-	private String getMemberString(Person member) {
-		if (StringUtils.isNotBlank(member.getLastname())){
-			String result = member.getLastname();
-			if  (StringUtils.isNotBlank(member.getFirstname())){
-				result = member.getFirstname().substring(0,1) + ". " + result;
-			}
-			return result;
-		}else{
-			return member.getTitleCache();
-		}
-	}
-
-
-
-	private boolean testPrimaryCollectorInCollectorTeam(AgentBase collector, Person primaryCollector) {
-		if (collector.isInstanceOf(Person.class)){
-			return collector.equals(primaryCollector);
-		}else if (collector.isInstanceOf(Team.class)){
-			Team collectorTeam = CdmBase.deproxy(collector, Team.class);
-			return collectorTeam.getTeamMembers().contains(primaryCollector);
-		}else{
-			logger.warn("Collector is not of type person or team");
-			return false;
-		}
-	}
-
 
 
 	/**

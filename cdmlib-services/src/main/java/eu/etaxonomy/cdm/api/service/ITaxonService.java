@@ -13,15 +13,14 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
@@ -62,15 +60,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * FIXME could substitute with list(Taxon.class, limit,start)
 	 */
 	public List<Taxon> getAllTaxa(int limit, int start);	
-	
-	/**
-	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
-	 * @param sec The concept reference that the taxon belongs to
-	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using classification
-	 */
-	public List<Taxon> getRootTaxa(Reference sec);
-	
 
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent.
@@ -81,17 +70,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @deprecated obsolete when using classification
 	 */
 	public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren);
-
-	/**
-	 * Computes all Taxon instances that do not have a taxonomic parent.
-	 * @param sec The concept reference that the taxon belongs to
-	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-	 * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
-	 * the misapplied name are not returned.<Br>Default: true.
-	 * @return The List<Taxon> of root taxa.
-	 * @deprecated obsolete when using classification
-	 */
-	public List<Taxon> getRootTaxa(Reference sec, boolean onlyWithChildren, boolean withMisapplications);
 
 	/**
 	 * Computes all Taxon instances which name is of a certain Rank.
@@ -453,6 +431,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public Taxon findBestMatchingTaxon(String taxonName);
+	
+	public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config);
 	
 	public Synonym findBestMatchingSynonym(String taxonName);
 	

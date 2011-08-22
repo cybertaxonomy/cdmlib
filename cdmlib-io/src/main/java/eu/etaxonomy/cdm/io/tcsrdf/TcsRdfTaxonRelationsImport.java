@@ -61,7 +61,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	}
 	
 	@Override
-	public boolean doInvoke(TcsRdfImportState state){ 
+	public void doInvoke(TcsRdfImportState state){ 
 	
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
@@ -122,7 +122,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		getTaxonService().save(taxonStore);
 		
 		logger.info("end makeRelTaxa ...");
-		return success;
+		return;
 
 	}
 	

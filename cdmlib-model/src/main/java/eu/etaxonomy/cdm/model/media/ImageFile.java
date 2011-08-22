@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 
 /**
@@ -60,8 +60,15 @@ public class ImageFile extends MediaRepresentationPart {
 		return new ImageFile(uri, size, height, width);
 	}
 	
-	public static ImageFile NewInstance(URI uri, Integer size, ImageMetaData imageMetaData){
-		return new ImageFile(uri, size, imageMetaData.getHeight(), imageMetaData.getWidth());
+	public static ImageFile NewInstance(URI uri, Integer size, ImageInfo imageInfo){
+		ImageFile imageFile = NewInstance(uri, size);
+		
+		if(imageInfo != null){
+			imageFile.setHeight(imageInfo.getHeight());
+			imageFile.setWidth(imageInfo.getWidth());
+		}
+		
+		return imageFile;
 	}
 	
 	/**

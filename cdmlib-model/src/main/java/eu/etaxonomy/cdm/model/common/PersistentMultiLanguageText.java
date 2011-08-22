@@ -24,6 +24,7 @@ public class PersistentMultiLanguageText extends PersistentMap implements IMulti
 		super();
 	}
 
+	@Deprecated
 	public LanguageString add(LanguageString languageString) {
 		if (languageString == null){
 			return null;
@@ -32,6 +33,14 @@ public class PersistentMultiLanguageText extends PersistentMap implements IMulti
 		}
 	}
 
+	public LanguageString put(LanguageString languageString) {
+		if (languageString == null){
+			return null;
+		}else{
+			return (LanguageString)super.put(languageString.getLanguage(), languageString);
+		}
+	}
+	
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
 		LanguageString languageString = null;
 		for (Language language : languages) {

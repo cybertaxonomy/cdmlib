@@ -8,18 +8,33 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -34,9 +49,24 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 	private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
-
+	
+	protected static final boolean IS_CORE = true;
+	
+	
 	protected Set<Integer> existingRecordIds = new HashSet<Integer>();
 	protected Set<UUID> existingRecordUuids = new HashSet<UUID>();
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#countSteps()
+	 */
+	@Override
+	public int countSteps() {
+		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
+		return allNodes.size();
+	}
+
 	
 	
 	/**
@@ -73,7 +103,7 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	 */
 	protected void handleArea(IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
 		if (area != null){
-			record.setLocationId(area.getId());
+			record.setLocationId(area);
 			record.setLocality(area.getLabel());
 			if (area.isInstanceOf(WaterbodyOrCountry.class)){
 				WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);
@@ -123,4 +153,114 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	protected void addExistingRecordUuid(CdmBase cdmBase) {
 		existingRecordUuids.add(cdmBase.getUuid());
 	}
+	
+
+	protected String getSources(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
+		String result = "";
+		for (IOriginalSource source: sourceable.getSources()){
+			if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
+				if (source.getCitation() != null){
+					String ref = source.getCitation().getTitleCache();
+					result = CdmUtils.concat(config.getSetSeparator(), result, ref);
+				}
+			}
+		}
+		return result;
+	}
+	
+
+	/**
+	 * @param config
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	protected FileOutputStream createFileOutputStream(DwcaTaxExportConfigurator config, String thisFileName) throws IOException, FileNotFoundException {
+		String filePath = config.getDestinationNameString();
+		String fileName = filePath + File.separatorChar + thisFileName;
+		File f = new File(fileName);
+		if (!f.exists()){
+			f.createNewFile();
+		}
+		FileOutputStream fos = new FileOutputStream(f);
+		return fos;
+	}
+	
+
+	/**
+	 * @param config
+	 * @param factory
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws XMLStreamException
+	 */
+	protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportState state, String fileName)
+			throws IOException, FileNotFoundException, XMLStreamException {
+		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
+		OutputStream os;
+		boolean useZip = state.isZip();
+		if (useZip){
+			os = state.getZipStream(fileName);
+		}else{
+			os = createFileOutputStream(state.getConfig(), fileName);
+		}
+		XMLStreamWriter  writer = factory.createXMLStreamWriter(os);
+		return writer;
+	}
+	
+
+	/**
+	 * @param coreTaxFileName
+	 * @param config
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
+	protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportState state) 
+					throws IOException, FileNotFoundException, UnsupportedEncodingException {
+		
+		OutputStream os;
+		boolean useZip = state.isZip();
+		if (useZip){
+			os = state.getZipStream(fileName);
+		}else{
+			os = createFileOutputStream(state.getConfig(), fileName);
+		}
+		PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF8"), true);
+		
+		return writer;
+	}
+	
+
+	/**
+	 * Closes the writer
+	 * @param writer
+	 * @param state
+	 */
+	protected void closeWriter(PrintWriter writer, DwcaTaxExportState state) {
+		if (writer != null && state.isZip() == false){
+			writer.close();
+		}
+	}
+	
+
+	
+	/**
+	 * Closes the writer.
+	 * Note: XMLStreamWriter does not close the underlying stream.
+	 * @param writer
+	 * @param state
+	 */
+	protected void closeWriter(XMLStreamWriter writer, DwcaTaxExportState state) {
+		if (writer != null && state.isZip() == false){
+			try {
+				writer.close();
+			} catch (XMLStreamException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 }

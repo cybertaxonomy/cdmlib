@@ -118,29 +118,27 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	
 
 	@Override
-	protected boolean doInvoke(BerlinModelImportState state) {
-		boolean result = true;
+	protected void doInvoke(BerlinModelImportState state) {
 		try {
-			result &= makeRegions(state);
+			makeRegions(state);
 		} catch (Exception e) {
 			logger.error("Error when creating common name regions:" + e.getMessage());
-			result = false;
+			state.setUnsuccessfull();
 		}
-		result &= super.doInvoke(state);
-		return result;
+		super.doInvoke(state);
+		return;
 	}
 	
 	/**
 	 * @param state 
 	 * 
 	 */
-	private boolean makeRegions(BerlinModelImportState state) {
-		boolean result = true;
+	private void makeRegions(BerlinModelImportState state) {
 		try {
 			SortedSet<Integer> regionFks = new TreeSet<Integer>();
 			Source source = state.getConfig().getSource();
 			
-			result = getRegionFks(result, regionFks, source);
+			getRegionFks(state, regionFks, source);
 			//concat filter string
 			String sqlWhere = getSqlWhere(regionFks);
 			
@@ -149,13 +147,15 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			//fill regionMap
 			fillRegionMap(source, sqlWhere, emTdwgMap);
 			
-			return result;
+			return;
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
-			return false;
+			state.setUnsuccessfull();
+			return;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 	}
 
@@ -326,7 +326,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//status
 				if (CdmUtils.isNotEmpty(status)){
-					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status");
+					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status", null);
 					Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
 					for (CommonTaxonName commonTaxonName : commonTaxonNames){
 						commonTaxonName.addAnnotation(annotation);
@@ -462,13 +462,13 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
-	 * @param result
+	 * @param state
 	 * @param regionFks
 	 * @param source
 	 * @return
 	 * @throws SQLException
 	 */
-	private boolean getRegionFks(boolean result, SortedSet<Integer> regionFks,
+	private void getRegionFks(BerlinModelImportState state, SortedSet<Integer> regionFks,
 			Source source) throws SQLException {
 		String sql = " SELECT DISTINCT RegionFks FROM emCommonName";
 		ResultSet rs = source.getResultSet(sql);
@@ -478,14 +478,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			for (String regionFk: regionFkArray){
 				regionFk = regionFk.trim();
 				if (! StringUtils.isNumeric(regionFk) || "".equals(regionFk)  ){
-					result = false;
+					state.setUnsuccessfull();
 					logger.warn("RegionFk is not numeric: " + regionFk);
 				}else{
 					regionFks.add(Integer.valueOf(regionFk));
 				}
 			}
 		}
-		return result;
+		return;
 	}
 
 

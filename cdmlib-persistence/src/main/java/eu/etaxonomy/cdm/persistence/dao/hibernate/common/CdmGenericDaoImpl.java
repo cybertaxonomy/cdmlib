@@ -50,6 +50,7 @@ import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.EntityType;
+import org.hibernate.type.EnumType;
 import org.hibernate.type.FloatType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.PartialUserType;
+import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -105,7 +107,6 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		String propertyName;
 		Class<? extends CdmBase> otherClass;
 		Class<? extends CdmBase> itemClass;
-		Field field;
 		public boolean isCollection(){return itemClass != null;};
 		public String toString(){return otherClass.getSimpleName() + "." + propertyName ;};
 	}
@@ -351,7 +352,9 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				LongType.class,
 				FloatType.class,
 				SerializableType.class,
-				DoubleType.class
+				DoubleType.class,
+				URIUserType.class,
+				EnumType.class
 				};
 		Set<String> classNames = new HashSet<String>();
 		for (Class clazz: classes){

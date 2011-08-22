@@ -30,7 +30,9 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -47,6 +49,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -66,6 +69,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 	
 	@Autowired
 	private ITaxonNameDao taxonNameDao;
+	
+	@Autowired
+	private IHomotypicalGroupDao homotypicalGroupDao;
 
 	public OccurrenceDaoHibernateImpl() {
 		super(SpecimenOrObservationBase.class);
@@ -334,10 +340,19 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 			setOfAll.add(individualsAssociation.getAssociatedSpecimenOrObservation());
 		}
 		
-		// SpecimenTypeDesignations may be associated with any HomotypicalGroup related to the specific Taxon.
-		List<SpecimenTypeDesignation> bySpecimenTypeDesignation = taxonNameDao.getTypeDesignations(associatedTaxon.getName(), SpecimenTypeDesignation.class, null, null, 0, null);
+		// SpecimenTypeDesignations may be associated with the TaxonName.
+		List<SpecimenTypeDesignation> bySpecimenTypeDesignation = taxonNameDao.getTypeDesignations(associatedTaxon.getName(), 
+				SpecimenTypeDesignation.class, null, null, 0, null);
 		for (SpecimenTypeDesignation specimenTypeDesignation : bySpecimenTypeDesignation) {
 			setOfAll.add(specimenTypeDesignation.getTypeSpecimen());
+		}
+		
+		// SpecimenTypeDesignations may be associated with any HomotypicalGroup related to the specific Taxon.
+		for(HomotypicalGroup homotypicalGroup :  associatedTaxon.getHomotypicSynonymyGroups()) {
+			List<SpecimenTypeDesignation> byHomotypicalGroup = homotypicalGroupDao.getTypeDesignations(homotypicalGroup, SpecimenTypeDesignation.class, null, null, 0, null);
+			for (SpecimenTypeDesignation specimenTypeDesignation : byHomotypicalGroup) {
+				setOfAll.add(specimenTypeDesignation.getTypeSpecimen());
+			}
 		}
 		
 		if(setOfAll.size() == 0){

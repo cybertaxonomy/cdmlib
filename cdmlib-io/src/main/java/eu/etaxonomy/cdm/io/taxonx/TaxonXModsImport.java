@@ -26,11 +26,9 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 
 /**
@@ -44,7 +42,6 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;
-	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	public TaxonXModsImport(){
 		super();
 	}
@@ -57,8 +54,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		return result;
 	}
 
-	public boolean doInvoke(TaxonXImportState state){		
-		boolean success = true;
+	public void doInvoke(TaxonXImportState state){		
 		logger.info("start make mods reference ...");
 		TaxonXImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
@@ -70,20 +66,20 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		if (elTaxonHeader != null){
 			Element elMods = elTaxonHeader.getChild("mods", nsMods);
 			if (elMods != null){
-				Reference<?> ref = refFactory.newGeneric();
+				Reference<?> ref = ReferenceFactory.newGeneric();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
 				if (elTitleInfo != null){
-					success &= makeTitleInfo(elTitleInfo, ref);
+					makeTitleInfo(elTitleInfo, ref);
 				}else{
 					logger.warn("TitleInfo element is missing in " + state.getConfig().getSource());
 				}
 				//mods name
 				Element elModsName = elMods.getChild("name", nsMods);
-				success &= makeModsName(elModsName, ref);
+				makeModsName(elModsName, ref);
 				//origin info
 				Element elOriginInfo = elMods.getChild("originInfo", nsMods);
-				success &= makeOriginInfo(elOriginInfo, ref);
+				makeOriginInfo(elOriginInfo, ref);
 				
 				//publish
 				if (state.getConfig().isPublishReferences()){
@@ -98,7 +94,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		}
 
 		logger.info("end make mods reference ...");
-		return true;
+		return;
 	}
 	
 
@@ -122,7 +118,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	 * @param elModsName
 	 * @param ref
 	 */
-	private boolean makeOriginInfo(Element elOriginInfo, Reference<?> ref) {
+	private void makeOriginInfo(Element elOriginInfo, Reference<?> ref) {
 		Namespace nsMods = elOriginInfo.getNamespace();
 		List<Content> contentList = elOriginInfo.getContent();
 		
@@ -157,7 +153,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		for (Content o: contentList){
 			logger.warn(o + " (in mods:originInfo) not yet implemented for mods import");
 		}
-		return true;
+		return;
 	}
 
 
@@ -169,7 +165,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	//THIS implementation is against the mods semantics but supports the current
 	//format for palmae taxonX files
 	//The later has to be changed and this part has to be adapted
-	private boolean makeModsName(Element elModsName, Reference<?> ref) {
+	private void makeModsName(Element elModsName, Reference<?> ref) {
 		int UNPARSED = 0;
 		int PARSED = 1;
 		Namespace nsMods = elModsName.getNamespace();
@@ -219,14 +215,14 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		for (Content o: contentList){
 			logger.warn(o + " (in mods:name) not yet implemented for mods import");
 		}
-		return true;
+		return;
 	}
 
 	/**
 	 * @param elTitleInfo
 	 * @param ref
 	 */
-	private boolean makeTitleInfo(Element elTitleInfo, Reference<?> ref) {
+	private void makeTitleInfo(Element elTitleInfo, Reference<?> ref) {
 		Namespace nsMods = elTitleInfo.getNamespace();
 		List<Content> contentList = elTitleInfo.getContent();
 		
@@ -241,7 +237,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		for (Content o: contentList){
 			logger.warn(o + " (in titleInfo) not yet implemented for mods import");
 		}
-		return true;
+		return;
 	}
 	
 	/* (non-Javadoc)

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.UUID;
+
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -27,6 +29,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -124,8 +127,14 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 			return false;
 		}
 		ICdmBase cdmObj = (ICdmBase)obj;
-		boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
-		boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());
+		boolean uuidEqual;
+		UUID objUuid = cdmObj.getUuid();
+		if (objUuid == null){
+			throw new NullPointerException("CdmBase is missing UUID");
+		}
+		uuidEqual = objUuid.equals(this.getUuid());
+		//TODO is this still needed?
+		boolean createdEqual = CdmUtils.nullSafeEqual(cdmObj.getCreated(), this.getCreated());
 		if (! uuidEqual || !createdEqual){
 				return false;
 		}

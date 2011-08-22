@@ -9,6 +9,7 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -41,6 +43,8 @@ import org.springframework.util.Assert;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.permission.CdmPermission;
+import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
@@ -114,7 +118,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return newAuthentication;
 	}
 	
+	@Override
 	@Transactional(readOnly=false)
+	
 	public void changePassword(String oldPassword, String newPassword) {
 		Assert.hasText(oldPassword);
 		Assert.hasText(newPassword);
@@ -137,7 +143,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 	
+	@Override
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#username, 'changePassword') or hasRole('USER.Admin')")
 	public void changePasswordForUser(String username, String newPassword) {
 		Assert.hasText(username);
 		Assert.hasText(newPassword);
@@ -160,7 +168,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Override
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#user, 'CREATE')")
 	public void createUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -173,7 +183,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		dao.save((User)user);
 	}
 
+	@Override
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#username, 'DELETE')")
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
@@ -185,7 +197,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(username);
 	}
 
+	@Override
 	@Transactional(readOnly=false)
+	@PreAuthorize("hasPermission(#user, 'UPDATE')")
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -193,6 +207,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		userCache.removeUserFromCache(user.getUsername());
 	}
 
+	@Override
 	public boolean userExists(String username) {
 		Assert.hasText(username);
 		
@@ -320,6 +335,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public void renameGroup(String oldName, String newName) {
 		Assert.hasText(oldName);
@@ -347,16 +363,19 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return user.getUuid(); 
 	}
 
+	@Override
 	@Transactional(readOnly=false)
 	public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
 		return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
 	}
 	
+	@Deprecated // use GroupService instead
 	@Transactional(readOnly=false)
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
@@ -367,5 +386,8 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		 }
 		 return results;
 	}
+
+	
+
 	
 } 

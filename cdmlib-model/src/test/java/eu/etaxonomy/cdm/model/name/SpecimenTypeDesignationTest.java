@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,6 +65,22 @@ public class SpecimenTypeDesignationTest {
 		term1.setTypeStatus(SpecimenTypeDesignationStatus.EPITYPE());
 		assertEquals(term1.getTypeStatus(), SpecimenTypeDesignationStatus.EPITYPE());
 		assertTrue(term1.getTypeStatus().isInstanceOf(SpecimenTypeDesignationStatus.class));
+	}
+	
+	@Test
+	public void testBidirectionalRelationship(){
+		term2 = new SpecimenTypeDesignation(Specimen.NewInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
+				null, null, null, false);
+		Specimen specimen = (Specimen) term2.getTypeSpecimen();
+		Set<SpecimenTypeDesignation> set = specimen.getSpecimenTypeDesignations();
+		boolean contains = false;
+		for (SpecimenTypeDesignation spec: set){
+			if (spec.equals(term2)){
+				contains = true;
+				break;
+			}
+		}
+		assertTrue(contains);
 	}
 
 }

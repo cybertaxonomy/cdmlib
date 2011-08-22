@@ -297,7 +297,7 @@ public class Point implements Cloneable, Serializable {
 		public Integer degree;
 		public Integer minutes;
 		public Integer seconds;
-//		public Double tertiers;
+		public Double tertiers;
 		
 		public Direction direction;
 
@@ -311,10 +311,10 @@ public class Point implements Cloneable, Serializable {
 		
 		
 		public static Sexagesimal valueOf(Double decimal, boolean isLatitude){
-			return valueOf(decimal, isLatitude, false, false);
+			return valueOf(decimal, isLatitude, false, false, true);
 		}
 		
-		public static Sexagesimal valueOf(Double decimal, boolean isLatitude, boolean nullSecondsToNull, boolean nullMinutesToNull){
+		public static Sexagesimal valueOf(Double decimal, boolean isLatitude, boolean nullSecondsToNull, boolean nullMinutesToNull, boolean allowTertiers){
 			if(decimal == null){
 				return null;
 			}
@@ -339,15 +339,20 @@ public class Point implements Cloneable, Serializable {
 		 
 		        // Decimal in \u00B0'" umrechnen
 		        double d = Math.abs(decimalDegree);
-		        d += HALF_SECOND; // add a second for rounding
+		        if (! allowTertiers){
+		        	d += HALF_SECOND; // add half a second for rounding
+		        }else{
+		        	d += HALF_SECOND / 10000;  //to avoid rounding errors
+		        }
 		        sexagesimal.degree = (int) Math.floor(d);
 		        sexagesimal.minutes = (int) Math.floor((d - sexagesimal.degree) * 60.0);
 		        sexagesimal.seconds = (int) Math.floor((d - sexagesimal.degree - sexagesimal.minutes / 60.0) * 3600.0);
-		 
+		        sexagesimal.tertiers = (d - sexagesimal.degree - sexagesimal.minutes / 60.0 - sexagesimal.seconds / 3600.0) * 3600.0;
+		        
 		        if (sexagesimal.seconds == 0 && nullSecondsToNull){
 		        	sexagesimal.seconds = null;
 		        }
-		        if (sexagesimal.seconds == null && nullMinutesToNull){
+		        if (sexagesimal.seconds == null && sexagesimal.minutes == 0 && nullMinutesToNull){
 		        	sexagesimal.minutes = null;
 		        }
 		        
@@ -370,9 +375,13 @@ public class Point implements Cloneable, Serializable {
 
 		@Override
 		public String toString(){
-			return toString(false);
+			return toString(false, false);
 		}
 		public String toString(boolean includeEmptySeconds){
+			return toString(includeEmptySeconds, false);
+		}
+		
+		public String toString(boolean includeEmptySeconds, boolean removeTertiers){
 			String result;
 			result = String.valueOf(CdmUtils.Nz(degree)) + "\u00B0";
 			if (seconds != null || minutes != null){
@@ -380,11 +389,26 @@ public class Point implements Cloneable, Serializable {
 			}
 			if (seconds != null ){
 				if (seconds != 0 || includeEmptySeconds){
-					result += String.valueOf(CdmUtils.Nz(seconds)) + "\"";
+					result += String.valueOf(CdmUtils.Nz(seconds)) + getTertiersString(tertiers, removeTertiers) + "\"";
 				}
 			}
 			result += direction; 
 			return result;
+		}
+		private String getTertiersString(Double tertiers, boolean removeTertiers) {
+			if (tertiers == null || removeTertiers){
+				return "";
+			}else{
+				String result = String.valueOf(tertiers);
+				if (result.length() > 5){
+					result = result.substring(0, 5);
+				}
+				while (result.endsWith("0")){
+					result = result.substring(0, result.length() -1);
+				}
+				return result.substring(1);
+			}
+			
 		}
 		
 	}
@@ -423,23 +447,79 @@ public class Point implements Cloneable, Serializable {
 	
 	
 	public static Double parseLatitude(String string) throws ParseException{
-		CoordinateConverter converter = new CoordinateConverter();
-		ConversionResults result = converter.tryConvert(string);
-		if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
-			throw new ParseException("Latitude could not be parsed", 0);
-		}else{
-			return result.convertedCoord;
+		try{
+			if (string == null){
+				return null;
+			}
+			string = setCurrentDoubleSeparator(string);
+			if (isDouble(string)){
+				Double result = Double.valueOf(string);
+				if (Math.abs(result) > 90.0){
+					throw new ParseException("Latitude could not be parsed", 0);
+				}
+				return result;
+			}else{
+				CoordinateConverter converter = new CoordinateConverter();
+				ConversionResults result = converter.tryConvert(string);
+				if (! result.conversionSuccessful || (result.isLongitude != null  && result.isLongitude)  ){
+					throw new ParseException("Latitude could not be parsed", 0);
+				}else{
+					return result.convertedCoord;
+				}
+			}
+		} catch (Exception e) {
+			String message = "Latitude %s could not be parsed";
+			message = String.format(message, string);
+			throw new ParseException(message, 0);
 		}
 	}
 	
 	public static Double parseLongitude(String string) throws ParseException{
-		CoordinateConverter converter = new CoordinateConverter();
-		ConversionResults result = converter.tryConvert(string);
-		if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
-			throw new ParseException("Longitude could not be parsed", 0);
-		}else{
-			return result.convertedCoord;
+		try {
+			if (string == null){
+				return null;
+			}
+			string = setCurrentDoubleSeparator(string);
+			if (isDouble(string)){
+				Double result = Double.valueOf(string);
+				if (Math.abs(result) > 180.0){
+					throw new ParseException("Longitude could not be parsed", 0);
+				}
+				return result;
+			}else{
+				CoordinateConverter converter = new CoordinateConverter();
+				ConversionResults result = converter.tryConvert(string);
+				if (! result.conversionSuccessful || (result.isLongitude != null  && ! result.isLongitude)){
+					throw new ParseException("Longitude could not be parsed", 0);
+				}else{
+					return result.convertedCoord;
+				}
+			}
+		} catch (Exception e) {
+			String message = "Longitude %s could not be parsed";
+			message = String.format(message, string);
+			throw new ParseException(message, 0);
 		}
+	}
+
+	private static String setCurrentDoubleSeparator(String string) {
+        String regExReplaceComma = "(\\,|\\.)";
+        string = string.replaceAll(regExReplaceComma,".");
+        return string;
+ 
+	}
+
+	private static boolean isDouble(String string) {
+		try {
+			Double.valueOf(string);
+			return true;
+
+		} catch (NumberFormatException e) {
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+
 	}
 
 // ******************** GETTER / SETTER ********************************	

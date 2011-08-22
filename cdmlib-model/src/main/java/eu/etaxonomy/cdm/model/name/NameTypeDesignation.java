@@ -58,7 +58,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> implements ITypeDesignation, Cloneable {
-	
 	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	
 	@XmlElement(name = "IsRejectedType")
@@ -66,9 +65,6 @@ public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignation
 	
 	@XmlElement(name = "IsConservedType")
 	private boolean conservedType;
-	
-//	@XmlElement(name = "IsLectoType")
-//	private boolean lectoType;
 	
 	@XmlElement(name = "TypeName")
 	@XmlIDREF

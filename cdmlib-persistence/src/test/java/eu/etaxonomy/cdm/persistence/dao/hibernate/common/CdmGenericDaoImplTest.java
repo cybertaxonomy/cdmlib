@@ -104,7 +104,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MovieFile;
-import eu.etaxonomy.cdm.model.media.ReferencedMedia;
+import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -404,7 +404,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				MediaRepresentation.class, 
 				MediaRepresentationPart.class, 
 				MovieFile.class, 
-				ReferencedMedia.class, 
+				ReferencedMediaBase.class, 
 				Rights.class, 
 				RightsTerm.class, 
 				DnaSample.class, 

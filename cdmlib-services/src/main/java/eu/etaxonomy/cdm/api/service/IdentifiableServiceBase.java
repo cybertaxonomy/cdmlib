@@ -83,12 +83,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	@Transactional(readOnly = true)
-	protected List<T> findByTitle(IIdentifiableEntityServiceConfigurator config){
-		return ((IIdentifiableDao)dao).findByTitle(config.getTitleSearchString(),
-				config.getMatchMode(), 0, -1, null);
-		// TODO: Implement parameters pageSize, pageNumber, and criteria
-	}
 	
 	@Transactional(readOnly = false)
 	public T replace(T x, T y) {
@@ -151,6 +145,11 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 }
 			
 		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	@Transactional(readOnly = true)
+	public Pager<T> findByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+		return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	}
 	
 	@Transactional(readOnly = true)
@@ -230,8 +229,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 						}
 					}
 					entity.setCacheStrategy(entityCacheStrategy);
-					//TODO this won't work for those classes that always generate the title cache new
+					entity.setProtectedTitleCache(true);
 					String titleCache = entity.getTitleCache();
+					entity.setProtectedTitleCache(false);
 					setOtherCachesNull(entity); //TODO find better solution
 					String newTitleCache = entityCacheStrategy.getTitleCache(entity);
 					if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache)){
@@ -383,6 +383,19 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		}
 		return result;
 	}	
+	
+	 public Integer countByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria){
+		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+		 
+		 return numberOfResults;
+	 }
+	 
+	@Transactional(readOnly = true)
+	public Integer countByTitle(IIdentifiableEntityServiceConfigurator<T> config){
+		return countByTitle(config.getClazz(), config.getTitleSearchStringSqlized(),
+				config.getMatchMode(), config.getCriteria());
+		
+	}
 
 }
 

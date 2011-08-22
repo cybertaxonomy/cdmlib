@@ -10,16 +10,33 @@
 
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.List;
+
+import org.hibernate.criterion.Criterion;
+
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
  * @created 03.03.2009
  * @version 1.0
  */
-public interface IIdentifiableEntityServiceConfigurator {
+public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableEntity> {
 
+	public Class<? extends T> getClazz();
+	
+	public void setClazz(Class<? extends T> clazz);
+	
 	public String getTitleSearchString();
+	
+	/**
+	 * Replaces all occurrences of '*' in titleSearchString with '%'
+	 * 
+	 * @return 
+	 */
+	public String getTitleSearchStringSqlized();
 	
 	public void setTitleSearchString(String titleSearchString);
 	
@@ -34,4 +51,17 @@ public interface IIdentifiableEntityServiceConfigurator {
 	public Integer getPageNumber();
 	
 	public void setPageNumber(Integer pageNumber);
+	
+	public List<Criterion> getCriteria();
+	
+	public void setCriteria(List<Criterion> criteria);
+	
+	public List<OrderHint> getOrderHints();
+	
+	public void setOrderHints(List<OrderHint> orderHints);
+
+	public List<String> getPropertyPaths();
+	
+	public void setPropertyPaths(List<String> propertyPaths);
+
 }

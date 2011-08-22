@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
-import eu.etaxonomy.cdm.model.media.ReferencedMedia;
+import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
-public class PhylogeneticTree extends ReferencedMedia {
+public class PhylogeneticTree extends ReferencedMediaBase implements Cloneable{
 	private static final long serialVersionUID = -7020182117362324067L;
 	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
 	
@@ -67,5 +67,36 @@ public class PhylogeneticTree extends ReferencedMedia {
 	
 	public void removeUsedSequences(Sequence usedSequence) {
 		this.usedSequences.remove(usedSequence);
+		
+	}
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> phylogenetic tree. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> phylogenetic tree
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link Media Media}.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.media.Media#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	
+	public Object clone(){
+		PhylogeneticTree result;
+		try{
+			result= (PhylogeneticTree) super.clone();
+			result.usedSequences = new HashSet<Sequence>();
+			for (Sequence seq: this.usedSequences){
+				result.addUsedSequences((Sequence)seq.clone());
+			}
+			
+			return result;
+		}catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

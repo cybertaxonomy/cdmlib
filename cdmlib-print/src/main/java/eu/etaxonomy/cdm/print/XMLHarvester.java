@@ -62,6 +62,7 @@ public class XMLHarvester {
 		
 		progressMonitor.subTask("Generating simplified Feature Tree.");
 		simplifiedFeatureTree = featureTreeRecursive(realRoot);
+		progressMonitor.worked(1);
 		
 		logger.info("Simplified FeeatureTree created");
 	}
@@ -164,8 +165,8 @@ public class XMLHarvester {
 					parent2.setAttribute("sort", cleanedText);
 				}
 			}
-		} catch (JDOMException e) {
-			logger.error("Error tryong to clean dat published field");
+		} catch (Exception e) {
+			logger.error("Error trying to clean dat published field", e);
 		}
 	}
 
@@ -210,6 +211,8 @@ public class XMLHarvester {
 		if(configurator.isDoPublishEntireBranches()){
 			populateChildren(taxonNodeElement);
 		}
+		
+		progressMonitor.worked(1);
 		
 	}	
 	

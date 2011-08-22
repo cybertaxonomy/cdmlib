@@ -95,11 +95,17 @@ public class CoordinateConverter {
             //+/-/Nn/Ss/Ww/EeDD\u00B0MM\u02B9SS.SSS
             "(^" +
             "(\\s)*(\\+|-|W|w|E|e|N|n|S|s)?(\\s)*" +
-            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$))" +
+            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*$)" +
+            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*$)" +
+            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$)" +
+            "|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*$))" +
             ")" +
             //DD°MM\u02B9SS.SSSNn/Ss/Ww/Ee
-            "|(^" +
-            "(\\s)*((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*)|(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*))" +
+            "|(^(\\s)*" +
+            "((\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)?(\\s)*)|" +
+            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)?(\\s)*)|" +
+            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)?(\\s)*(\u02BA|\"|''|S|s)?(\\s)*)|" +
+            "(\\d{1,3}(\\s)*(\u00B0|\u00BA|D|d)(\\s)*\\d{1,2}(\\s)*(\u02B9|'|M|m)(\\s)*\\d{1,2}(\\.|\\,)\\d+(\\s)*(\u02BA|\"|''|S|s)?(\\s)*))" +
             "(W|w|E|e|N|n|S|s)?(\\s)*$" +
             ")";
         patterns.add(pattern);
@@ -517,7 +523,7 @@ public class CoordinateConverter {
             //remove second symbol (s is removed by the get sign method)
             //double apostrophe is not removed here as single apostrphe may mark minutes!
             //it's taken care of later after extracting the decimal part
-            str = str.replaceAll("(u\02BA|\")", "");
+            str = str.replaceAll("(\u02BA|\")", "");
             
             //do some further replacing
             //Replace degree symbol

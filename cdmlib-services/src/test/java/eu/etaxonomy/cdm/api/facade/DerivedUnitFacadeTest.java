@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -29,12 +31,14 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -66,8 +70,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * 
  */
 public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger
-			.getLogger(DerivedUnitFacadeTest.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
 	@SpringBeanByType
 	private IOccurrenceService service;
@@ -166,7 +169,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setStoredUnder(taxonName);
-		specimen.setCollectorsNumber(collectorsNumber);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 
@@ -510,11 +512,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	public void testGetSetAbsoluteElevation() {
-		Assert.assertEquals("Absolute elevation must be same",
-				absoluteElevation, specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
 		specimenFacade.setAbsoluteElevation(400);
-		Assert.assertEquals("Absolute elevation must be 400",
-				Integer.valueOf(400), specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("Absolute elevation must be 400",Integer.valueOf(400), specimenFacade.getAbsoluteElevation());
 	}
 
 	/**
@@ -524,43 +524,42 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	public void testGetSetAbsoluteElevationError() {
-		Assert.assertEquals("Absolute elevation error must be same",
-				absoluteElevationError,
-				specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("Absolute elevation error must be same",absoluteElevationError, specimenFacade.getAbsoluteElevationError());
 		specimenFacade.setAbsoluteElevationError(4);
-		Assert.assertEquals("Absolute elevation error must be 4",
-				Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("Absolute elevation error must be 4",Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
+		
 	}
 
 	@Test()
 	public void testGetSetAbsoluteElevationRange() {
 		Integer expected = absoluteElevation - 2;
-		Assert.assertEquals("", expected,
-				specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", expected, specimenFacade.getAbsoluteElevationMinimum());
 		expected = absoluteElevation + 2;
-		Assert.assertEquals("", expected,
-				specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", expected,specimenFacade.getAbsoluteElevationMaximum());
+		
 		specimenFacade.setAbsoluteElevationRange(30, 36);
-		Assert.assertEquals("", Integer.valueOf(36),
-				specimenFacade.getAbsoluteElevationMaximum());
-		Assert.assertEquals("", Integer.valueOf(30),
-				specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(33),specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("", Integer.valueOf(3),specimenFacade.getAbsoluteElevationError());
+		
+		
 		try {
 			specimenFacade.setAbsoluteElevationRange(30, 35);
 			Assert.fail("Odd distance needs to throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue("Exception needs to be thrown", true);
 		}
+		
 		specimenFacade.setAbsoluteElevationRange(41, null);
-		Assert.assertEquals("", Integer.valueOf(41),
-				specimenFacade.getAbsoluteElevationMaximum());
-		Assert.assertEquals("", Integer.valueOf(41),
-				specimenFacade.getAbsoluteElevationMinimum());
-		Assert.assertEquals("", Integer.valueOf(41),
-				specimenFacade.getAbsoluteElevation());
+		Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMaximum());
+		Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMinimum());
+		Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
 		Assert.assertNotNull("", specimenFacade.getAbsoluteElevationError());
-		Assert.assertEquals("", Integer.valueOf(0),
-				specimenFacade.getAbsoluteElevationError());
+		Assert.assertEquals("", Integer.valueOf(0),specimenFacade.getAbsoluteElevationError());
+		
 		specimenFacade.setAbsoluteElevationRange(null, null);
 		Assert.assertNull("", specimenFacade.getAbsoluteElevation());
 		Assert.assertNull("", specimenFacade.getAbsoluteElevationError());
@@ -1183,6 +1182,58 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 				specimenFacade.getDerivedUnitDefinitions().size());
 
 	}
+	
+
+	/**
+	 * Test method for
+	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
+	 * .
+	 */
+	@Test
+	public void testPreferredOtherDeterminations() {
+		Assert.assertEquals("There should be no determination yet", 0,
+				specimenFacade.getDeterminations().size());
+		DeterminationEvent determinationEvent1 = DeterminationEvent.NewInstance();
+		specimenFacade.setPreferredDetermination(determinationEvent1);
+		
+		Assert.assertEquals("There should be exactly one determination", 1,
+				specimenFacade.getDeterminations().size());
+		Assert.assertEquals("The only determination should be determination 1",
+				determinationEvent1, specimenFacade.getDeterminations()
+						.iterator().next());
+		Assert.assertEquals("determination 1 should be the preferred determination",
+				determinationEvent1, specimenFacade.getPreferredDetermination());
+		Assert.assertEquals("There should be no 'non preferred' determination", 0,
+				specimenFacade.getOtherDeterminations().size());
+
+		
+
+		DeterminationEvent determinationEvent2 = DeterminationEvent.NewInstance();
+		specimenFacade.addDetermination(determinationEvent2);
+		Assert.assertEquals("There should be exactly 2 determinations", 2,
+				specimenFacade.getDeterminations().size());
+		Assert.assertEquals("determination 1 should be the preferred determination",
+				determinationEvent1, specimenFacade.getPreferredDetermination());
+		Assert.assertEquals("There should be one 'non preferred' determination", 1,
+				specimenFacade.getOtherDeterminations().size());
+		Assert.assertEquals("The only 'non preferred' determination should be determination 2",
+				determinationEvent2, specimenFacade.getOtherDeterminations().iterator().next());
+		
+	
+		DeterminationEvent determinationEvent3 = DeterminationEvent.NewInstance();
+		specimenFacade.setPreferredDetermination(determinationEvent3);
+		Assert.assertEquals("There should be exactly 3 determinations", 3,
+				specimenFacade.getDeterminations().size());
+		Assert.assertEquals("determination 3 should be the preferred determination",
+				determinationEvent3, specimenFacade.getPreferredDetermination());
+		Assert.assertEquals("There should be 2 'non preferred' determination", 2,
+				specimenFacade.getOtherDeterminations().size());
+		Assert.assertTrue("determination 1 should be contained in the set of 'non preferred' determinations",
+				specimenFacade.getOtherDeterminations().contains(determinationEvent1));
+		Assert.assertTrue("determination 2 should be contained in the set of 'non preferred' determinations",
+				specimenFacade.getOtherDeterminations().contains(determinationEvent2));
+
+	}
 
 	/**
 	 * Test method for
@@ -1317,19 +1368,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 				specimenFacade.getStoredUnder());
 	}
 
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectorsNumber()}
-	 * .
-	 */
-	@Test
-	public void testGetSetCollectorsNumber() {
-		Assert.assertEquals("Collectors number must be same", collectorsNumber,
-				specimenFacade.getCollectorsNumber());
-		specimenFacade.setCollectorsNumber("C12345693");
-		Assert.assertEquals("New collectors number must be 'C12345693'",
-				"C12345693", specimenFacade.getCollectorsNumber());
-	}
+//	/**
+//	 * Test method for
+//	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectorsNumber()}
+//	 * .
+//	 */
+//	@Test
+//	public void testGetSetCollectorsNumber() {
+//		Assert.assertEquals("Collectors number must be same", collectorsNumber,
+//				specimenFacade.getCollectorsNumber());
+//		specimenFacade.setCollectorsNumber("C12345693");
+//		Assert.assertEquals("New collectors number must be 'C12345693'",
+//				"C12345693", specimenFacade.getCollectorsNumber());
+//	}
 
 	/**
 	 * Test method for
@@ -1459,7 +1510,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		TaxonNameBase storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
 		PreservationMethod method = PreservationMethod.NewInstance();
 		Specimen duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
-				catalogNumber, accessionNumber, collectorsNumber, storedUnder,
+				catalogNumber, accessionNumber, storedUnder,
 				method);
 		Assert.assertEquals("There should be 2 duplicates now", 2,
 				specimenFacade.getDuplicates().size());
@@ -1544,4 +1595,34 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		// this should not throw exceptions
 		specimenFacade.setAbsoluteElevationRange(minimum, maximum);
 	}
+	
+	@SpringBeanByType
+	private IUserService userService;
+	
+	/**
+	 * 
+	 * See https://dev.e-taxonomy.eu/trac/ticket/2426
+	 * This test doesn't handle the above issue yet as it doesn't fire events as 
+	 * expected (at least it does not reproduce the behaviour in the Taxonomic Editor).
+	 * In the meanwhile the property change framework for the facade has been changed
+	 * so the original problem may have disappeared.
+	 * 
+	 */
+	@Test
+	public void testNoRecursiveChangeEvents(){
+		String username = "username";
+		String password = "password";
+		User user = User.NewInstance(username, password);
+		userService.save(user);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, password);
+		SecurityContextHolder.getContext().setAuthentication(token);
+		
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		facade.setLocality("testLocality");
+		facade.getTitleCache();
+//		facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);
+		this.service.save(facade.innerDerivedUnit());
+		
+	}
+	
 }

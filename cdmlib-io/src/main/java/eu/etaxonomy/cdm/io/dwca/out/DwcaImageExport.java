@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -42,6 +39,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class DwcaImageExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaImageExport.class);
 
+	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Image";
+	private static final String fileName = "images.txt";
+	
 	/**
 	 * Constructor
 	 */
@@ -59,31 +59,21 @@ public class DwcaImageExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
-		String dbname = config.getSource() != null ? config.getSource().getName() : "unknown";
-    	String fileName = config.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		TransactionStatus txStatus = startTransaction(true);
 
+		PrintWriter writer = null;
 		try {
-			
-			final String coreTaxFileName = "images.txt";
-			fileName = fileName + File.separatorChar + coreTaxFileName;
-			File f = new File(fileName);
-			if (!f.exists()){
-				f.createNewFile();
-			}
-			FileOutputStream fos = new FileOutputStream(f);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
+			writer = createPrintWriter(fileName, state);
+			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
+			state.addMetaRecord(metaRecord);
 
-			
-			
 			List<TaxonNode> allNodes =  getAllNodes(null);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				Set<? extends DescriptionBase> descriptions = taxon.getDescriptions();
-				for (DescriptionBase description : descriptions){
+				Set<? extends DescriptionBase<?>> descriptions = taxon.getDescriptions();
+				for (DescriptionBase<?> description : descriptions){
 					for (Object o : description.getElements()){
 						DescriptionElementBase el = CdmBase.deproxy(o, DescriptionElementBase.class);
 						if (el.getMedia().size() > 0){
@@ -91,7 +81,7 @@ public class DwcaImageExport extends DwcaExportBase {
 								for (MediaRepresentation repr : media.getRepresentations()){
 									for (MediaRepresentationPart part : repr.getParts()){
 										if (! this.recordExists(part)){
-											DwcaImageRecord record = new DwcaImageRecord();
+											DwcaImageRecord record = new DwcaImageRecord(metaRecord, config);
 											handleMedia(record, media, repr, part, taxon);
 											record.write(writer);
 											this.addExistingRecord(part);
@@ -114,16 +104,20 @@ public class DwcaImageExport extends DwcaExportBase {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			closeWriter(writer, state);
 		}
+		
 		commitTransaction(txStatus);
-		return true;
+		return;
 	}
 	
 
 
 
 	private void handleMedia(DwcaImageRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
-		record.setCoreid(taxon.getId());
+		record.setId(taxon.getId());
+		record.setUuid(taxon.getUuid());
 		if (part.getUri() == null){
 			String message = "No uri available for media ("+media.getId()+"). URI is required field. Taxon: " + this.getTaxonLogString(taxon);
 			logger.warn(message);

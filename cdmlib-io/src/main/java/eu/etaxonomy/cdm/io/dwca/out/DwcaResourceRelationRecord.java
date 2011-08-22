@@ -10,9 +10,9 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -27,43 +27,62 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaResourceRelationRecord.class);
 	
-	private Integer coreid;
-	private String resourceRelationshipId;
-	private String relatedResourceId;
+	private DwcaId resourceRelationshipId;
+	private UUID relatedResourceId;
 	private String relationshipOfResource;
 	private String relationshipAccordingTo;
 	private String relationshipEstablishedDate;
 	private Set<Annotation> relationshipRemarks;
 	private String scientificName;
 	
-	@Override
-	public List<String> getHeaderList() {
-		String[] result = new String[]{"coreid", "resourceRelationshipId",
-				"relatedResourceId","relationshipOfResource", 
-				"relationshipAccordingTo", "relationshipEstablishedDate", 
-				"relationshipRemarks","scientificName"
-		};
-		return Arrays.asList(result);
+	
+	public DwcaResourceRelationRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		super(metaDataRecord, config);
+		resourceRelationshipId = new DwcaId(config);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
+	 */
+	protected void registerKnownFields(){
+		try {
+			addKnownField("resourceRelationshipID", "http://rs.tdwg.org/dwc/terms/resourceRelationshipID");
+			addKnownField("relatedResourceID", "http://rs.tdwg.org/dwc/terms/relatedResourceID");
+			addKnownField("relationshipOfResource", "http://rs.tdwg.org/dwc/terms/relationshipOfResource");
+			addKnownField("relationshipAccordingTo", "http://rs.tdwg.org/dwc/terms/relationshipAccordingTo");
+			addKnownField("relationshipEstablishedDate", "http://rs.tdwg.org/dwc/terms/relationshipEstablishedDate");
+			addKnownField("relationshipRemarks", "http://rs.tdwg.org/dwc/terms/relationshipRemarks");
+			addKnownField("scientificName", "http://rs.tdwg.org/dwc/terms/scientificName");
+
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+//	@Override
+//	public List<String> getHeaderList() {
+//		String[] result = new String[]{"coreid", 
+//				"resourceRelationshipId",
+//				"relatedResourceId",
+//				"relationshipOfResource", 
+//				"relationshipAccordingTo", 
+//				"relationshipEstablishedDate", 
+//				"relationshipRemarks",
+//				"scientificName"
+//		};
+//		return Arrays.asList(result);
+//	}
+	
 	public void write(PrintWriter writer) {
-		print(coreid, writer, IS_FIRST);
-		print(resourceRelationshipId, writer, IS_NOT_FIRST);
-		print(relatedResourceId, writer, IS_NOT_FIRST);
-		print(relationshipOfResource, writer, IS_NOT_FIRST);
-		print(relationshipAccordingTo, writer, IS_NOT_FIRST);
-		print(relationshipEstablishedDate, writer, IS_NOT_FIRST);
-		printNotes(relationshipRemarks, writer, IS_NOT_FIRST);
-		print(scientificName, writer, IS_NOT_FIRST);
+		printId(getUuid(), writer, IS_FIRST, "coreid");
+		print(getResourceRelationshipId(), writer, IS_NOT_FIRST, TermUris.DWC_RESOURCE_RELATIONSHIP_ID);
+		print(relatedResourceId, writer, IS_NOT_FIRST, TermUris.DWC_RELATED_RESOURCE_ID);
+		print(relationshipOfResource, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_OF_RESOURCE);
+		print(relationshipAccordingTo, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_ACCORDING_TO);
+		print(relationshipEstablishedDate, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_ESTABLISHED_DATE);
+		printNotes(relationshipRemarks, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_REMARKS);
+		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
 		writer.println();
-	}
-
-	public Integer getCoreid() {
-		return coreid;
-	}
-
-	public void setCoreid(Integer coreid) {
-		this.coreid = coreid;
 	}
 
 	public String getScientificName() {
@@ -75,18 +94,21 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	}
 
 	public String getResourceRelationshipId() {
-		return resourceRelationshipId;
+		return resourceRelationshipId.getId();
 	}
 
-	public void setResourceRelationshipId(String resourceRelationshipId) {
-		this.resourceRelationshipId = resourceRelationshipId;
+	public void setResourceRelationshipId(Integer resourceRelationshipId) {
+		this.resourceRelationshipId.setId(resourceRelationshipId);
+	}
+	public void setResourceRelationshipId(UUID resourceRelationshipId) {
+		this.resourceRelationshipId.setId(resourceRelationshipId);
 	}
 
-	public String getRelatedResourceId() {
+	public UUID getRelatedResourceId() {
 		return relatedResourceId;
 	}
 
-	public void setRelatedResourceId(String relatedResourceId) {
+	public void setRelatedResourceId(UUID relatedResourceId) {
 		this.relatedResourceId = relatedResourceId;
 	}
 

@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -76,7 +77,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class NamedArea extends OrderedTermBase<NamedArea> {
+public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 	private static final long serialVersionUID = 6248434369557403036L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
@@ -334,7 +335,18 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 	
 	
-	public NamedAreaNode getHiearchieList(List<NamedArea> areaList){
+	/**
+	 * This method returns a sorted tree structure which sorts areas by it's level and within the same level
+	 * alphabetically (TODO to be tested).
+	 * The structure returned is a tree with alternating nodes that represent an area and an areaLevel.
+	 * This way also area the have children belonging to different levels can be handled.<BR>
+	 * The root node is always an empty area node which holds the list of top level areaLevels.
+	 * AreaLevels with no level defined are handled as if they have a separate level (level="null").
+	 * 
+	 * @param areaList
+	 * @return
+	 */
+	public static NamedAreaNode getHiearchieList(List<NamedArea> areaList){
 		NamedAreaNode result = new NamedAreaNode();
 		for (NamedArea area : areaList){
 			List<NamedArea> areaHierarchie  = area.getAllLevelList();
@@ -344,7 +356,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	}
 	
 	
-	public class LevelNode {
+	public static class LevelNode {
 		NamedAreaLevel level;
 		List<NamedAreaNode> areaList = new ArrayList<NamedAreaNode>();
 
@@ -366,18 +378,43 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		}
 
 		public String toString() {
-			return level.getTitleCache();
+			return toString(false, 0);
+		}
+		public String toString(boolean recursive, int identation) {
+			String result = level == null? "" :level.getTitleCache();
+			if (recursive == false){
+				return result;
+			}else{
+				int areaSize = this.areaList.size();
+				if (areaSize > 0){
+					result = "\n" + StringUtils.leftPad("", identation) + result  + "[";
+				}
+				boolean isFirst = true;
+				for (NamedAreaNode level: this.areaList){
+					if (isFirst){
+						isFirst = false;
+					}else{
+						result += ",";
+					}
+					result += level.toString(recursive, identation+1);
+				}
+				if (areaSize > 0){
+					result += "]";
+					
+				}
+				return result;
+			}
 		}
 
 	}
 
-	public class NamedAreaNode {
+	public static class NamedAreaNode {
 		NamedArea area;
 		List<LevelNode> levelList = new ArrayList<LevelNode>();
 		
 		public LevelNode getLevelNode(NamedAreaLevel level) {
 			for (LevelNode node : levelList) {
-				if (node.level.equals(level)) {
+				if (node.level != null &&  node.level.equals(level)) {
 					return node;
 				}
 			}
@@ -409,24 +446,52 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		}
 
 		public String toString() {
-			if (area == null) {
-				return "";
+			return toString(false, 0);
+		}
+		
+		public String toString(boolean recursive, int identation) {
+			String result = "";
+			if (area != null) {
+				result = area.getTitleCache();
 			}
-			return area.getTitleCache();
+			if (recursive){
+				int levelSize = this.levelList.size();
+				if (levelSize > 0){
+					result = "\n" + StringUtils.leftPad("", identation) + result  + "[";
+				}
+				boolean isFirst = true;
+				for (LevelNode level: this.levelList){
+					if (isFirst){
+						isFirst = false;
+					}else{
+						result += ";";
+					}
+					result += level.toString(recursive, identation+1);
+				}
+				if (levelSize > 0){
+					result += "]";
+					
+				}
+				return result;
+			}else{
+				int levelSize = this.levelList.size();
+				return result + "[" + levelSize + " sublevel(s)]";
+			}
 		}
 	}
 
-	private void mergeIntoResult(NamedAreaNode root,
-			List<NamedArea> areaHierarchie) {
+	private static void mergeIntoResult(NamedAreaNode root, List<NamedArea> areaHierarchie) {
 		if (areaHierarchie.isEmpty()) {
 			return;
 		}
 		NamedArea highestArea = areaHierarchie.get(0);
 		NamedAreaLevel level = highestArea.getLevel();
 		NamedAreaNode namedAreaNode;
-		if (!root.contains(level)) {
+		if (! root.contains(level)) {
 			LevelNode node = root.add(level);
 			namedAreaNode = node.add(highestArea);
+			//NEW
+//			root.area = highestArea;
 		} else {
 			LevelNode levelNode = root.getLevelNode(level);
 			namedAreaNode = levelNode.getNamedAreaNode(highestArea);
@@ -434,8 +499,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 				namedAreaNode = levelNode.add(highestArea);
 			}
 		}
-		List<NamedArea> newList = areaHierarchie.subList(1, areaHierarchie
-				.size());
+		List<NamedArea> newList = areaHierarchie.subList(1, areaHierarchie.size());
 		mergeIntoResult(namedAreaNode, newList);
 
 	}
@@ -474,33 +538,60 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 
 	/**
-	 * Returns the label of the named area together with the area level label and the abbreviated label
+	 * Returns the label of the named area together with the area level label and the abbreviated label.
+	 * This is kind of a formatter method which may be moved to a better place in future. 
 	 * @param namedArea the area
 	 * @param language the preferred language
-	 * @return
+	 * @return null if namedArea == null, the labelWithLevel otherwise
 	 */
 	public static String labelWithLevel(NamedArea namedArea, Language language) {
+		if (namedArea == null){
+			return null;
+		}
 		NamedArea area = (NamedArea) HibernateProxyHelper.deproxy(namedArea);
 		
 		StringBuilder title = new StringBuilder();
 		Representation representation = area.getPreferredRepresentation(language);
 		if (representation != null){
-			title.append(representation.getDescription());
-			title.append(" - ");
-			title.append(area.getClass().getSimpleName());
-			if(area.getLevel() != null){
+			String areaString = getPreferredAreaLabel(namedArea, representation);
+			
+			title.append(areaString);
+			if (area.getLevel() == null){
+				title.append(" - ");
+				title.append(area.getClass().getSimpleName());
+			}else{
 				title.append(" - ");
 				Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
-				if (levelRepresentation != null){
-					title.append(levelRepresentation.getLabel());
-				}
-			}
-			if(! CdmUtils.isEmpty(representation.getAbbreviatedLabel())){
-				title.append(" - ");
-				title.append(representation.getAbbreviatedLabel());
+				String levelString = getPreferredAreaLabel(area.getLevel(), levelRepresentation);
+				title.append(levelString);
 			}
 		}
 		return title.toString();
+	}
+
+	/**
+	 * @param definedTerm
+	 * @param representation
+	 * @return
+	 */
+	private static String getPreferredAreaLabel(DefinedTermBase<?> definedTerm, Representation representation) {
+		String areaString = null;
+		if (representation != null){
+			areaString = representation.getLabel();
+			if (StringUtils.isBlank(areaString)){
+				areaString = representation.getAbbreviatedLabel();
+			}
+			if (StringUtils.isBlank(areaString)){
+				areaString = representation.getText();
+			}
+		}
+		if (StringUtils.isBlank(areaString)){
+			areaString = definedTerm.getTitleCache();
+		}
+		if (StringUtils.isBlank(areaString)){
+			areaString = "no title";
+		}
+		return areaString;
 	}
 	
 	//*********************************** CLONE *****************************************/

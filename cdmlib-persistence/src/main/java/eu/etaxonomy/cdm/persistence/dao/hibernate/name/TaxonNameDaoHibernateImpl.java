@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -28,9 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -48,7 +45,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -63,8 +59,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Repository
 @Qualifier("taxonNameDaoHibernateImpl")
-public class TaxonNameDaoHibernateImpl 
-extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
+public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
@@ -646,11 +641,5 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 		return null;
 	}
-	public UuidAndTitleCache<TaxonNameBase> findByNameForEditor(String searchString,
-			MatchMode matchMode){
-		
-		
-		return null;
-	}
-
+	
 }

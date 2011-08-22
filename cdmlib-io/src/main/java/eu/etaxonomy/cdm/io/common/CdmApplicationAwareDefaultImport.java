@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -42,8 +43,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	/* (non-Javadoc)
 	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
 	 */
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
@@ -90,13 +90,14 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	@SuppressWarnings("unchecked")
 	protected <S extends IImportConfigurator> boolean doCheck(S  config){
 		boolean result = true;
-		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
 		
 		//check
 		if (config == null){
 			logger.warn("CdmImportConfiguration is null");
 			return false;
-		}else if (! config.isValid()){
+		}
+		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
+		if (! config.isValid()){
 			logger.warn("CdmImportConfiguration is not valid");
 			return false;
 		}
@@ -110,7 +111,10 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 				String ioBeanName = getComponentBeanName(ioClass);
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
+					registerObservers(config, cdmIo);
+					state.setCurrentIO(cdmIo);
 					result &= cdmIo.check(state);
+					unRegisterObservers(config, cdmIo);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;
@@ -126,6 +130,18 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");
 		return result;
 
+	}
+	
+	private void registerObservers(IImportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.addObserver(observer);
+		}
+	}
+	
+	private void unRegisterObservers(IImportConfigurator config, ICdmIO io){
+		for (IIoObserver observer : config.getObservers()){
+			io.deleteObserver(observer);
+		}
 	}
 	
 	
@@ -150,16 +166,17 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		ImportStateBase state = config.getNewState();
 		state.initialize(config);
 
-		
+		state.setSuccess(true);
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
-//					result &= cdmIo.invoke(config, stores);
+					registerObservers(config, cdmIo);
 					state.setCurrentIO(cdmIo);
 					result &= cdmIo.invoke(state);
+					unRegisterObservers(config, cdmIo);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;
@@ -214,5 +231,5 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		}
 		return ioBean;
 	}
-	
+
 }

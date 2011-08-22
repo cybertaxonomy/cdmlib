@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common.init;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.validator.util.NewInstance;
 import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -90,9 +90,9 @@ public class TermLoader implements ITermLoader {
 			String labelAbbrev = null;
 			
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
-				voc = OrderedTermVocabulary.NewInstance(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
+				voc = OrderedTermVocabulary.NewInstance(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
 			}else{
-				voc = TermVocabulary.NewInstance(termClass.getCanonicalName(), vocType.name(), labelAbbrev, termClass.getCanonicalName());
+				voc = TermVocabulary.NewInstance(termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
 			}
 			
 			String [] nextLine = reader.readNext();

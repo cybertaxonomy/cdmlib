@@ -9,15 +9,18 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -32,6 +35,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -53,7 +57,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "derivedFrom",
     "accessionNumber",
     "collectorsNumber",
-    "barcode"
+    "barcode",
+    "specimenTypeDesignations"
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
@@ -108,6 +113,12 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
+	
+	@XmlElementWrapper(name = "SpecimenTypeDesignations")
+	@XmlElement(name = "SpecimenTypeDesignation")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "typeSpecimen")
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
 	/**
 	 * Constructor
@@ -156,7 +167,10 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	
 	@Transient
 	public Set<SpecimenOrObservationBase> getOriginals(){
-		return this.getDerivedFrom().getOriginals();
+		if(getDerivedFrom() != null){
+			return getDerivedFrom().getOriginals();			
+		}
+		return null;
 	}
 
 	public Collection getCollection(){
@@ -196,16 +210,55 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		this.accessionNumber = accessionNumber;
 	}
 	
+	/**
+	 * Will be removed in future versions as semantics is not clear.
+	 * For accessing the collecting number use 
+	 * {@link FieldObservation#getFieldNumber()} instead.
+	 * @return
+	 */
+	@Deprecated
 	public String getCollectorsNumber() {
 		return collectorsNumber;
 	}
 	
+	/**
+	 * Will be removed in future versions as semantics is not clear.
+	 * For editing the collecting number use 
+	 * {@link FieldObservation#getFieldNumber()} instead.
+	 * @return
+	 */
+	@Deprecated
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.collectorsNumber = collectorsNumber;
 	}
 	
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;
+	}
+	
+	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
+		if (specimenTypeDesignation.getTypeSpecimen() == this){
+			return ;
+		}else if (specimenTypeDesignation.getTypeSpecimen() != null){
+			specimenTypeDesignation.getTypeSpecimen().removeSpecimenTypeDesignation(specimenTypeDesignation);
+			
+		}
+		specimenTypeDesignations.add(specimenTypeDesignation);
+		specimenTypeDesignation.setTypeSpecimen(this);
+	}
+	
+	public void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
+		if (specimenTypeDesignation == null){
+			return;
+		}
+		if (specimenTypeDesignations.contains(specimenTypeDesignation)){
+			specimenTypeDesignations.remove(specimenTypeDesignation);
+			specimenTypeDesignation.setTypeSpecimen(null);
+		}
+	}
+		
+	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
+		return specimenTypeDesignations;
 	}
 	
 //*********** CLONE **********************************/	

@@ -8,7 +8,7 @@
 
 REST API
 
-	The CDM REST API is a {{{http://en.wikipedia.org/wiki/Representational_State_Transfer} RESTful}} interface to resources stored in the {{{./index.html#The_Common_Data_Model_-_CDM}CDM}}. The RESTful architecture allows accessing the various resources like Taxa, Names, References, Media, etc by stable URIs. Due to security constraints and to assure the integration of data, currently only read operations (= HTTP GET) are permitted, {{{https://dev.e-taxonomy.eu/trac/wiki/CdmServerReadWriteRest} write operations}} will be available in the near future.
+	The CDM REST API is a {{{http://en.wikipedia.org/wiki/Representational_State_Transfer} RESTful}} interface to resources stored in the {{{./index.html#The_Common_Data_Model_-_CDM}CDM}}. The RESTful architecture allows accessing the various resources like Taxa, Names, References, Media, etc by stable URIs. Due to security constraints and to assure the integration of data, currently only read operations (= HTTP GET) are permitted, {{{http://dev.e-taxonomy.eu/trac/wiki/CdmServerReadWriteRest} write operations}} will be available in the near future.
 
 	The architecture directly exposes domain model entities, i.e. it provides direct serializations of the objects as they are stored in the CDM whereever possible. For the external representations, like LSIDs and TDWG data exchange schema like TCS however using DTOs is unavoidable. The {{{API_Service}API Service}} provides an easy to use way to transfer CDM data to web based clients. The {{{Portal_Service} Portal Service}} is a specialization as needed by {{{http://wp5.e-taxonomy.eu/portal}CDM Dataportal}} that adds some fields like localized representations to the pure CDM entities.
 
@@ -70,7 +70,7 @@ REST API
 
 	<Developer Hints>:
 
-	The initialization od CDM entities is performed by implementations of the  {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.html} BeanInitializer}} interface. In order to find out more on this topic please refer to {{{https://dev.e-taxonomy.eu/trac/wiki/CdmEntityInitalization} CDM Entity Initialization}}.
+	The initialization od CDM entities is performed by implementations of the  {{{http://wp5.e-taxonomy.eu/cdmlib/apidocs/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.html} BeanInitializer}} interface. In order to find out more on this topic please refer to {{{http://dev.e-taxonomy.eu/trac/wiki/CdmEntityInitalization} CDM Entity Initialization}}.
 
 
 

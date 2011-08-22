@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.0.4-SNAPSHOT</version>
+    <version>3.0.7-SNAPSHOT</version>
 	<relativePath>pom.xml</relativePath>
   </parent>
   
@@ -16,7 +16,7 @@
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
+    <developerConnection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-io/</url>
   </scm>
   <build>
@@ -45,6 +45,10 @@
    	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-ext</artifactId>
   	</dependency>
   	<dependency>
         <groupId>org.unitils</groupId>

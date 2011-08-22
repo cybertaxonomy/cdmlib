@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
 	private static final long serialVersionUID = 6582191171369439163L;
-	@SuppressWarnings(value="unused")
 	private static final Logger logger = Logger.getLogger(User.class);
 	
 	protected User(){
@@ -121,6 +120,7 @@ public class User extends CdmBase implements UserDetails {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	@NotAudited
 	protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	
@@ -167,7 +167,7 @@ public class User extends CdmBase implements UserDetails {
 	
 	@Transient
 	public Collection<GrantedAuthority> getAuthorities() {
-		if(authorities == null) {
+		if(authorities == null || authorities.size() == 0) {
 			initAuthorities();
 		}
 		return authorities;

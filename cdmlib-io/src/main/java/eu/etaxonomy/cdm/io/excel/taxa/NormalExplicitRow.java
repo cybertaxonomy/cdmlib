@@ -10,15 +10,22 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.SourceType;
 
 /**
  * @author a.babadshanjan
  * @created 13.01.2009
  * @version 1.0
  */
-public class NormalExplicitRow {
+public class NormalExplicitRow extends ExcelRowBase {
 	
 	private int id;
 	private int parentId;
@@ -36,8 +43,6 @@ public class NormalExplicitRow {
 	private TreeMap<Integer, String> protologues = new TreeMap<Integer, String>();
 	
 	private TreeMap<Integer, String> images = new TreeMap<Integer, String>();
-	
-	
 	
 	public NormalExplicitRow() {
 		this.id = 0;
@@ -207,13 +212,17 @@ public class NormalExplicitRow {
 	public List<String> getImages() {
 		return getOrdered(images);
 	}
+	
 
-	private List<String> getOrdered(TreeMap<Integer, String> distributions) {
+	private List<String> getOrdered(TreeMap<Integer, String> tree) {
 		List<String> result = new ArrayList<String>();
-		for (String distribution : distributions.values()){
+		for (String distribution : tree.values()){
 			result.add(distribution);
 		}
 		return result;
 	}
+
+
+
 	
 }

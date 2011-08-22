@@ -106,10 +106,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
-public class PolytomousKeyNode extends VersionableEntity implements
-		IMultiLanguageTextHolder {
-	private static final Logger logger = Logger
-			.getLogger(PolytomousKeyNode.class);
+public class PolytomousKeyNode extends VersionableEntity implements IMultiLanguageTextHolder {
+	private static final Logger logger = Logger.getLogger(PolytomousKeyNode.class);
 
 	// This is the main key a node belongs to. Although other keys may also
 	// reference
@@ -118,6 +116,7 @@ public class PolytomousKeyNode extends VersionableEntity implements
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKey key;
 
 	@XmlElementWrapper(name = "Children")
@@ -363,7 +362,6 @@ public class PolytomousKeyNode extends VersionableEntity implements
 		PolytomousKeyNode root = getKey().getRoot();
 		root.setNodeNumber(nodeNumber++);
 		nodeNumber = updateChildNodeNumbers(nodeNumber, root);
-
 	}
 
 	private int updateChildNodeNumbers(int nodeNumber, PolytomousKeyNode parent) {

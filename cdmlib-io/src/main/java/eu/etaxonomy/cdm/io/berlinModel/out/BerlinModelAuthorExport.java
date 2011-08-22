@@ -77,12 +77,12 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase#doInvoke(eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState)
 	 */
 	@Override
-	protected boolean doInvoke(BerlinModelExportState state) {
+	protected void doInvoke(BerlinModelExportState state) {
 		try{
+			boolean success = true;
 			BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
 			
 			logger.info("start make "+pluralString+" ...");
-			boolean success = true ;
 			doDelete(bmeConfig);
 			
 			TransactionStatus txStatus = startTransaction(true);
@@ -103,11 +103,15 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 			
 			commitTransaction(txStatus);
 			logger.info("end make "+pluralString+"  ..." + getSuccessString(success));
-			return success;
+			if (!success){
+				state.setUnsuccessfull();
+			}
+			return;
 		}catch(SQLException e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 	}
 	

@@ -64,11 +64,10 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 //	protected boolean doInvoke(IImportConfigurator config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		@Override
-		protected boolean doInvoke(JaxbImportState state) {
+		protected void doInvoke(JaxbImportState state) {
 			
 		state.getConfig();
-		boolean success = true;
-        URI uri = null;
+		URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)state.getConfig();
     	
     	String urlFileName = jaxbImpConfig.getSource().toString();
@@ -78,7 +77,8 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			logger.debug("uri: " + uri.toString());
     	} catch (URISyntaxException ex) {
 			logger.error("File not found");
-			return false;
+			state.setUnsuccessfull();
+			return;
     	}
 
 		logger.info("Deserializing " + urlFileName + " to DB " ); //+ dbname
@@ -101,16 +101,17 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		// save data in DB
 		logger.error("Saving data to DB... "); //+ dbname
 		
-		success = saveData(jaxbImpConfig, dataSet);
+		saveData(state, dataSet);
 		
-		return success;
+		return;
 	}
 
 	
 	/**  Saves data in DB */
-	private boolean saveData (JaxbImportConfigurator jaxbImpConfig, DataSet dataSet) {
-
-		boolean ret = true;
+	private void saveData (JaxbImportState state, DataSet dataSet) {
+		JaxbImportConfigurator jaxbImpConfig = state.getConfig();
+		
+		boolean success = true;
 		Collection<TaxonBase> taxonBases;
 		List<? extends AgentBase> agents;
 		List<DefinedTermBase> terms;
@@ -146,14 +147,14 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
 			//txStatus = startTransaction();
-			ret &= saveTerms(terms);
+			success &= saveTerms(terms);
 			
 			//commitTransaction(txStatus);
 		}
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
 			//txStatus = startTransaction();
-			ret &= saveTermVocabularies(termVocabularies);
+			success &= saveTermVocabularies(termVocabularies);
 			
 		}
 		
@@ -182,7 +183,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving users");
-			ret = false;
+			success = false;
 		}
 		
 		//txStatus = startTransaction();
@@ -195,7 +196,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving agents");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -212,7 +213,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("Error saving references");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -227,7 +228,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving taxon names");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -243,7 +244,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving homotypical groups");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -265,7 +266,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		} catch (Exception ex) {
 			logger.error("Error saving taxa");
 			ex.printStackTrace();
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -281,7 +282,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving type designations");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -302,7 +303,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving occurrences");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -317,7 +318,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving feature data");
-			ret = false;
+			success = false;
 		}
 		//commitTransaction(txStatus);
 
@@ -332,7 +333,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving media");
-			ret = false;
+			success = false;
 		}
 		
 		if (jaxbImpConfig.isDoClassificationData() == true) {
@@ -349,8 +350,11 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		
 		commitTransaction(txStatus);
 		logger.info("All data saved");
-
-		return ret;
+		if (!success){
+			state.setUnsuccessfull();
+		}
+		
+		return;
 
 	}
 	

@@ -20,7 +20,7 @@ import javax.validation.Payload;
 
 import eu.etaxonomy.cdm.validation.constraint.NullOrNotEmptyValidator;
 
-@Target( { METHOD, FIELD, ANNOTATION_TYPE })
+@Target( { TYPE,METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = NullOrNotEmptyValidator.class)
 @Documented

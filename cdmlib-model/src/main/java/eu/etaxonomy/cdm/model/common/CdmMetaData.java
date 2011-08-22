@@ -43,7 +43,7 @@ public class CdmMetaData extends CdmBase{
 	 * schema version is not changing.
 	 * The third should be incremented if the schema changes in a way that SCHEMA_VALIDATION.UPDATE
 	 * will probably not work or will not be enough to transform old data into new data.
-	 * The fourth number shoud be incremented when minor schema changes take place that can
+	 * The fourth number should be incremented when minor schema changes take place that can
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
@@ -79,7 +79,7 @@ public class CdmMetaData extends CdmBase{
 	 * 
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "3.0.1.3.201103210000";
+	private static final String termsVersion = "3.0.1.4.201105100000";
 	
 	
 	public enum MetaDataPropertyName{

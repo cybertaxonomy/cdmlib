@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -25,6 +26,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 
 /**
  * @author a.mueller
@@ -236,6 +238,25 @@ public class TextDataTest {
 		assertEquals(0, textData1.countLanguages());
 		
 	}	
+	
+	@Test
+	public void testClone(){
+		TextData clone = (TextData) textData1.clone();
+		LanguageString langStringClone = clone.getLanguageText(Language.DEFAULT());
+		LanguageString langString = textData1.getLanguageText(Language.DEFAULT());
+		assertEquals(langStringClone.getText(), langString.getText());
+		//assertEquals();
+	}
+	
+	@Test
+	public void testCloneMultiLanguageText() {
+		MultilanguageText test = MultilanguageText.NewInstance();
+		LanguageString testString = LanguageString.NewInstance("test", Language.ENGLISH());
+		test.put(testString);
+		MultilanguageText clone = test.clone();
+		assertNotSame(clone.get(Language.ENGLISH()), test.get(Language.ENGLISH()));
+		assertEquals(clone.get(Language.ENGLISH()).getText(), test.get(Language.ENGLISH()).getText());
+	}
 
 
 }

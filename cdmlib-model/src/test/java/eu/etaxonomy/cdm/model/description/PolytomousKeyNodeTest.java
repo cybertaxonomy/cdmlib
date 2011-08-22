@@ -1,5 +1,11 @@
 package eu.etaxonomy.cdm.model.description;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -86,6 +92,18 @@ public class PolytomousKeyNodeTest {
 		Assert.assertEquals("Child4 should have node number <null>", null,
 				child4.getNodeNumber());
 
+	}
+	
+	@Test
+	public void testClone(){
+		PolytomousKeyNode rootNode = key1.getRoot();
+		PolytomousKeyNode clone = (PolytomousKeyNode)rootNode.clone();
+		assertNotNull(clone);
+		assertEquals(clone.getFeature(), rootNode.getFeature());
+		assertEquals(clone.getKey(), rootNode.getKey());
+		assertTrue(clone.getChildren().size() == 0);
+		assertTrue(rootNode.getChildren().size()>0);
+			
 	}
 
 	@Test

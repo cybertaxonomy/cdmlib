@@ -57,10 +57,13 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<SpecimenTypeDesignationStatus> {
-	static Logger logger = Logger.getLogger(SpecimenTypeDesignationStatus.class);
+	private static final long serialVersionUID = -7918261741824966182L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignationStatus.class);
 
 	protected static Map<UUID, SpecimenTypeDesignationStatus> termMap = null;		
 
+	private static final UUID uuidType = UUID.fromString("7194020b-a326-4b47-9bfe-9f31a30aba7f");
 	private static final UUID uuidHolotype = UUID.fromString("a407dbc7-e60c-46ff-be11-eddf4c5a970d");
 	private static final UUID uuidLectotype = UUID.fromString("05002d46-083e-4b27-8731-2e7c28a8825c");
 	private static final UUID uuidNeotype = UUID.fromString("26e13359-8f77-4e40-a85a-56c01782fce0");
@@ -154,6 +157,14 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		}
 	}
 
+	/**
+	 * Returns the "unknown" designation status. One may choose this status to indicate that the type 
+	 * designation is not    
+	 * 
+	 */
+	public static final SpecimenTypeDesignationStatus TYPE(){
+		return findTermByUuid(uuidType);
+	}
 	
 	/**
 	 * Returns the "holotype" designation status. A holotype of a

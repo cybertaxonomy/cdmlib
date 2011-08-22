@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.media;
 
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,12 +120,27 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	 * for the {@link URI uri} and the given size.
 	 * Returns <code>null</code> if uri is empty
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size){
+	public static<T extends MediaRepresentationPart> MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size, Class<T> clazz) {
 		if (uri == null || CdmUtils.isEmpty(uri.toString())){
 			return null;
 		}
-		MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, size);
+		MediaRepresentationPart part;
+		if (clazz != null){
+			try {
+				Constructor<T> constr = clazz.getDeclaredConstructor();
+				constr.setAccessible(true);
+				part = constr.newInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} 
+			part.setUri(uri);
+			part.setSize(size);
+		}else{
+			part = MediaRepresentationPart.NewInstance(uri, size);
+		}
 		MediaRepresentation result  = new MediaRepresentation();
 		result.setMimeType(mimeType);
 		result.setSuffix(suffix);

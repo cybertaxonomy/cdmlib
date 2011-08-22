@@ -32,11 +32,11 @@ import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import org.springframework.security.access.prepost.PreFilter;
+
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 })
 @Entity
 @Audited
+//@PreFilter("hasPermission(filterObject, 'edit')")
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {

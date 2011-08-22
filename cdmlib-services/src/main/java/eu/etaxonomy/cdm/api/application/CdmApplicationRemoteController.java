@@ -20,7 +20,10 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
@@ -308,6 +311,36 @@ public class CdmApplicationRemoteController implements ICdmApplicationRemoteConf
 
 	@Override
 	public ProviderManager getAuthenticationManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TransactionStatus startTransaction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TransactionStatus startTransaction(Boolean readOnly) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void commitTransaction(TransactionStatus tx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PlatformTransactionManager getTransactionManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ConversationHolder NewConversation() {
 		// TODO Auto-generated method stub
 		return null;
 	}

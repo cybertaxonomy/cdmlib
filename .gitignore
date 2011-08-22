@@ -11,6 +11,8 @@ cdmlib-ext/.project
 cdmlib-ext/.settings
 cdmlib-ext/bin
 cdmlib-ext/hibernate.log
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/dataset.xsd
 cdmlib-ext/target
 cdmlib-io/.classpath
 cdmlib-io/.project
@@ -19,6 +21,7 @@ cdmlib-io/.umlproject
 cdmlib-io/bin
 cdmlib-io/cdmlib-io.uml
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
 cdmlib-io/src/test/resources/log4j.properties
@@ -82,5 +85,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/dataset.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 cdmlib-services/target
+/latestChanges.patch
 /target
 /testANTLR

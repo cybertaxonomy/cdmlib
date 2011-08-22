@@ -282,6 +282,8 @@ public class TdwgAreaTest {
 		return aux;
 	}
 	
+	
+		
 
 	
 

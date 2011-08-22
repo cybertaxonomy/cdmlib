@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -67,6 +68,24 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		assertEquals("findByTitle should return an entity with uuid " + uuid,uuid, results.get(0).getUuid());
 	}
 	
+	@Test
+	public void testCountByTitle() {
+		int result = identifiableDao.countByTitle("%");
+		assertNotNull("findByTitle should return an integer",result);
+		assertEquals("findByTitle should return 2", 2, result);
+		
+		result = identifiableDao.countByTitle("%", MatchMode.LIKE, null);
+		assertNotNull("findByTitle should return an integer",result);
+		assertEquals("findByTitle should return 2", 2, result);
+		
+		result = identifiableDao.countByTitle("Lorem");
+		assertNotNull("findByTitle should return an integer",result);
+		assertEquals("findByTitle should return 1", 1, result);
+		
+		result = identifiableDao.countByTitle("Lorem", MatchMode.LIKE, null);
+		assertNotNull("findByTitle should return an integer",result);
+		assertEquals("findByTitle should return 1", 1, result);
+	}
 	@Test
 	public void testGetRights() {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);

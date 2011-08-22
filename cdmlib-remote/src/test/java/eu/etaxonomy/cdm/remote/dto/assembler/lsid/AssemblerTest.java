@@ -21,6 +21,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -39,6 +40,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -72,6 +74,8 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
+	
+	public static final Logger logger = Logger.getLogger(AssemblerTest.class);
 	
 	@SpringBeanByType
 	private Mapper mapper;
@@ -185,6 +189,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
 			Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
 			taxon.addSynonym(synonym,new SynonymRelationshipType());
 		}
+		
+		if(!UriUtils.isInternetAvailable(null)){
+			// dozer requires access to dozer.sourceforge.net
+			logger.info("Internet is not available: Skipping test");
+			return;
+		}
+		
 		TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
 		
 		assertNotNull("map() should return an object", taxonConcept);
@@ -206,6 +217,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testLazyInitializationExceptionWithProxy() throws Exception {
+		
+		if(!UriUtils.isInternetAvailable(null)){
+			// dozer requires access to dozer.sourceforge.net
+			logger.info("Internet is not available: Skipping test");
+			return;
+		}
+		
 		IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference)sec);
 		assert !Hibernate.isInitialized(proxy);
 		Field secField = TaxonBase.class.getDeclaredField("sec");
@@ -219,6 +237,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@Test 
 	public void testLazyInitializationExceptionWithPersistentCollection() throws Exception {
+		
+		if(!UriUtils.isInternetAvailable(null)){
+			// dozer requires access to dozer.sourceforge.net
+			logger.info("Internet is not available: Skipping test");
+			return;
+		}
+		
 		Set<TaxonRelationship> proxy = (Set<TaxonRelationship>)getUninitializedPersistentCollection(HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
 		assert !Hibernate.isInitialized(proxy);
 		Field relationsToThisTaxonField = Taxon.class.getDeclaredField("relationsToThisTaxon");
@@ -231,12 +256,26 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testSpeciesProfileModelMapping() {
+		
+		if(!UriUtils.isInternetAvailable(null)){
+			// dozer requires access to dozer.sourceforge.net
+			logger.info("Internet is not available: Skipping test");
+			return;
+		}
+		
 		SpeciesProfileModel speciesProfileModel = (SpeciesProfileModel)mapper.map(taxonDescription, SpeciesProfileModel.class);
 		assertEquals(speciesProfileModel.getHasInformation().size(),2);
 	}
 	
 	@Test
 	public void testSimpleDarwinCoreMapping() {
+		
+		if(!UriUtils.isInternetAvailable(null)){
+			// dozer requires access to dozer.sourceforge.net
+			logger.info("Internet is not available: Skipping test");
+			return;
+		}
+		
 		SimpleDarwinRecord simpleDarwinRecord = mapper.map(taxon, SimpleDarwinRecord.class);
 		mapper.map((NonViralName)taxon.getName(), simpleDarwinRecord);
 		
@@ -249,6 +288,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testOAIDublinCoreMapping() {
+		
+		if(!UriUtils.isInternetAvailable(null)){
+			// dozer requires access to dozer.sourceforge.net
+			logger.info("Internet is not available: Skipping test");
+			return;
+		}
+		
 		OaiDc oaiDcRecordBook = mapper.map(book, OaiDc.class);
 		
 		assertEquals(book.getTitle(), book.getTitle());

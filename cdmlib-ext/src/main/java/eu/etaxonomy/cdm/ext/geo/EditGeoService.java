@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
@@ -51,6 +52,10 @@ public class EditGeoService implements IEditGeoService{
 	@Autowired
 	private IDescriptionDao dao;
 	
+
+    @Autowired
+    private IGeoServiceAreaMapping areaMapping;
+ 	
 	private IDefinedTermDao termDao;
 		
 	@Autowired
@@ -87,7 +92,7 @@ public class EditGeoService implements IEditGeoService{
 		if(backLayer == null){
 			backLayer = DEFAULT_BACK_LAYER;
 		}
-		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
 
 		return uriParams;
 	}
@@ -127,8 +132,8 @@ public class EditGeoService implements IEditGeoService{
 		if(backLayer == null){
 			backLayer = DEFAULT_BACK_LAYER;
 		}
-		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distCollection,
-			presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distCollection,areaMapping,
+			presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
 
 		return uriParams;
 	}
@@ -174,21 +179,32 @@ public class EditGeoService implements IEditGeoService{
 			List<Point> derivedUnitPoints) {
 
 		Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
-		for (SpecimenOrObservationBase original : originals) {
-			if (original instanceof FieldObservation) {
-				Point point =  ((FieldObservation) original).getGatheringEvent().getExactLocation();
-				if(point != null){
-					//FIXME: remove next statement after DerivedUnitFacade or ABCD import is fixed
-					if(point.getLatitude() == 0.0 && point.getLongitude() == 0.0){
-						continue;
+		if(originals != null){
+			for (SpecimenOrObservationBase original : originals) {
+				if (original instanceof FieldObservation) {
+					Point point =  ((FieldObservation) original).getGatheringEvent().getExactLocation();
+					if(point != null){
+						//FIXME: remove next statement after DerivedUnitFacade or ABCD import is fixed
+						if(point.getLatitude() == 0.0 && point.getLongitude() == 0.0){
+							continue;
+						}
+						derivedUnitPoints.add(point);
 					}
-					derivedUnitPoints.add(point);
+				} else {
+					registerDerivedUnitLocations((DerivedUnitBase) original, derivedUnitPoints);
 				}
-			} else {
-				registerDerivedUnitLocations((DerivedUnitBase) original, derivedUnitPoints);
 			}
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#setMapping(eu.etaxonomy.cdm.model.location.NamedArea, eu.etaxonomy.cdm.ext.geo.GeoServiceArea)
+	 */
+	@Override
+	public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
+		areaMapping.set(area, geoServiceArea);
+		
 	}
 
 }

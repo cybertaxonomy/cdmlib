@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -44,9 +46,12 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
+	//States
+	private boolean isCheck;
+	
 	private Map<Object,Classification> treeMap = new HashMap<Object,Classification>();
 
-	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
+	private Map<Reference<?>,UUID> treeUuidMap = new HashMap<Reference<?>,UUID>();
 
 	private Map<String,UUID> classificationKeyUuidMap = new HashMap<String,UUID>();
 	
@@ -58,11 +63,12 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<UUID, AnnotationType>();
 	
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
+	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	
-
+	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
 	
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
@@ -207,6 +213,15 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putNamedArea(NamedArea namedArea){
 		namedAreaMap.put(namedArea.getUuid(), namedArea);
 	}
+	
+	public NamedAreaLevel getNamedAreaLevel(UUID uuid){
+		return namedAreaLevelMap.get(uuid);
+	}
+
+	
+	public void putNamedAreaLevel(NamedAreaLevel namedAreaLevel){
+		namedAreaLevelMap.put(namedAreaLevel.getUuid(), namedAreaLevel);
+	}
 
 	
 	public Feature getFeature(UUID uuid){
@@ -233,6 +248,16 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		languageMap.put(language.getUuid(), language);
 	}
 	
+	
+	public ReferenceSystem getReferenceSystem(UUID uuid){
+		return referenceSystemMap.get(uuid);
+	}
+	
+	public void putReferenceSystem(ReferenceSystem referenceSystem){
+		referenceSystemMap.put(referenceSystem.getUuid(), referenceSystem);
+	}
+	
+	
 	//TODO make this abstract or find another way to force that the
 	//transformer exists
 	public IInputTransformer getTransformer(){
@@ -242,7 +267,23 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void setTransformer(IInputTransformer transformer){
 		this.inputTransformer = transformer;
 	}
+
+	/**
+	 * Returns true, if this import is in validation state. Flase otherwise
+	 * @return
+	 */
+	public boolean isCheck() {
+		return isCheck;
+	}
 	
+	/**
+	 * @see #isCheck
+	 * @param isCheck
+	 */
+	public void setCheck(boolean isCheck) {
+		this.isCheck = isCheck;
+	}
+
 
 	
 }

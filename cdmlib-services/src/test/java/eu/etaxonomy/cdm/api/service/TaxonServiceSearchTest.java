@@ -21,7 +21,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -59,7 +59,7 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 	public final void testFindTaxaAndNames() {
 
 		ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
-		configurator.setSearchString("Abies*");
+		configurator.setTitleSearchString("Abies*");
 		configurator.setMatchMode(MatchMode.BEGINNING);
 		configurator.setDoTaxa(true);
 		configurator.setDoSynonyms(true);

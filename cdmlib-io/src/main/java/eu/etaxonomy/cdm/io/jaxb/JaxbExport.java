@@ -67,7 +67,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 //	protected boolean doInvoke(IExportConfigurator config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores) {
 	@Override
-	protected boolean doInvoke(JaxbExportState state) {
+	protected void doInvoke(JaxbExportState state) {
 		
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)state.getConfig();
 //		String dbname = jaxbExpConfig.getSource().getName();
@@ -115,7 +115,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		} 
 		commitTransaction(txStatus);
 		
-		return true;
+		return;
 
 	}
 

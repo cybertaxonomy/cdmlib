@@ -64,9 +64,6 @@
             class="eu.etaxonomy.cdm.remote.dto.assembler.converter.HibernateProxyNullSafeDeepConverter"
           />
         </entry>
-		<entry key="preferLsidToUriConverter">
-		  <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.PreferLsidToUriConverter"/>
-		</entry>
         <entry key="identifierConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.IdentifierConverter"/>
         </entry>

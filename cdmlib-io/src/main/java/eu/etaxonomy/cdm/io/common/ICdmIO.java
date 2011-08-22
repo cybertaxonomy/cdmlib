@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import eu.etaxonomy.cdm.io.common.events.IIoEvent;
+import eu.etaxonomy.cdm.io.common.events.IIoObserver;
+
 
 /**
  * @author a.mueller
@@ -43,5 +46,36 @@ public interface ICdmIO<STATE extends IoStateBase> {
 	public void updateProgress(STATE state, String message, int worked);
 	
 	public void warnProgress(STATE state, String message, Throwable e);
+
+//******************** Observers *********************************************************	
+
+	/**
+	 * Adds an observer to the set of observers for this object, provided that it is not the same as some observer already in the set.
+	 * @param observer
+	 */
+	public void addObserver(IIoObserver observer);
+
+	/**
+	 * Returns the number of observers of this Observable object.
+	 * @return number of observers
+	 */
+	public int countObservers();
+    /**
+     * Deletes an observer from the set of observers of this object.
+     * @param observer
+     */
+	public void deleteObserver(IIoObserver observer);
+
+	/**
+	 *  Clears the observer list so that this object no longer has any observers.
+	 */
+	public void deleteObservers();
+	
+	/**
+	 * If this object fires an event then notify all of its observers.
+	 */
+	public void fire(IIoEvent event);
+	
+//******************** End Observers *********************************************************	
 	
 }

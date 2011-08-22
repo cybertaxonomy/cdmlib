@@ -11,8 +11,12 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -22,6 +26,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -31,9 +36,11 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
@@ -44,71 +51,178 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 public abstract class DwcaRecordBase {
 	private static final Logger logger = Logger.getLogger(DwcaRecordBase.class);
 
-	protected static final CharSequence COLLECTION_SEPARATOR = null;
-
-	protected static String FIELD_ENCLOSER = "\"";
-
-	final protected boolean IS_FIRST = false;
-	final protected boolean IS_NOT_FIRST = true;
+	//TODO Collection_SEPARATOR
+	protected static final CharSequence COLLECTION_SEPARATOR = "@";
+//	protected static final String FIELD_ENCLOSER = "\"";
+	protected static final boolean IS_FIRST = false;
+	protected static final boolean IS_NOT_FIRST = true;
+//	protected static final String SEP = ",";
 	
-	protected String SEP = ",";
+	protected Map<String, URI> knownFields = new HashMap<String, URI>();
+	protected Set<TermUris> knownTermFields = new HashSet<TermUris>();
 	
 	public abstract void write(PrintWriter writer);
+	protected abstract void registerKnownFields();
 	
-	public abstract List<String> getHeaderList();
+	protected int count;
+	private DwcaMetaDataRecord metaDataRecord;
+	protected DwcaTaxExportConfigurator config;
+
+	private Integer id;
+	private UUID uuid;
+
 	
-	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator) {
+	protected DwcaRecordBase(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
+		this.metaDataRecord = metaDataRecord;
+		this.count = metaDataRecord.inc();
+		this.config = config;
+	}
+	
+	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		printNotes(notes, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		//FIXME handles annotations correctly
 		String value = null;
-		print(value, writer, addSeparator);
+		print(value, writer, addSeparator, fieldKey);
 	}
-	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator) {
-		print(agent == null ? null : getAgent(agent), writer, addSeparator);
+	
+//	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+//		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
+//	}
+	protected void print(DwcaId dwcaId, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(dwcaId == null ? null : dwcaId.getId(), writer, addSeparator, fieldKey);
+	}
+	protected void print(UUID uuid, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(uuid == null ? null : uuid.toString(), writer, addSeparator, fieldKey);
+	}
+	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(agent, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(agent == null ? null : getAgent(agent), writer, addSeparator, fieldKey);
 	}
 
 	
-	protected void print(Language language, PrintWriter writer, boolean addSeparator) {
-		print(language == null ? null : getLanguage(language), writer, addSeparator);
+	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(language, writer, addSeparator, fieldKey.getUriString());
 	}
-
-	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator) {
-		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator);
+	protected void print(Language language, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(language == null ? null : getLanguage(language), writer, addSeparator, fieldKey);
 	}
-	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator) {
+	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(lsid, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator, fieldKey);
+	}
+	
+	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(rights, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		String rightsString = getRights(rights);
-		print(rightsString, writer, addSeparator);
+		print(rightsString, writer, addSeparator, fieldKey);
 	}
-	protected void print(URI uri, PrintWriter writer, boolean addSeparator) {
-		print(uri == null ? null : String.valueOf(uri), writer, addSeparator);
+	protected void print(URI uri, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(uri, writer, addSeparator, fieldKey.getUriString());
+	}
+	protected void print(URI uri, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(uri == null ? null : String.valueOf(uri), writer, addSeparator, fieldKey);
 	}
 	
-	protected void print(Point point, PrintWriter writer, boolean addSeparator) {
+	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUris latitudeKey, TermUris longitudeKey) {
+		print(point, writer, addSeparator, latitudeKey.getUriString(), longitudeKey.getUriString());
+	}
+	
+	protected void print(Point point, PrintWriter writer, boolean addSeparator, String latitudeKey, String longitudeKey) {
 		if (point == null){
 			String toPrint = null;
-			print(toPrint, writer, addSeparator);
-			print(toPrint, writer, addSeparator);
+			print(toPrint, writer, addSeparator, latitudeKey);
+			print(toPrint, writer, addSeparator, longitudeKey);
 		}else{
 			String latitude = point.getLatitude().toString();
 			String longitude = point.getLongitude().toString();
-			print(latitude, writer, addSeparator);
-			print(longitude, writer, addSeparator);
+			print(latitude, writer, addSeparator, latitudeKey);
+			print(longitude, writer, addSeparator, longitudeKey);
 		}
 	}
-	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator) {
-		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator);
+	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(boolValue, writer, addSeparator, fieldKey.getUriString());
+	}	
+	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator, fieldKey);
 	}
-	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator) {
-		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator);
+
+	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(intValue, writer, addSeparator, fieldKey.getUriString());
 	}
-	protected void print(String value, PrintWriter writer, boolean addSeparator) {
-		String strToPrint = addSeparator ? SEP : "";
-		if (StringUtils.isNotBlank(value)){
-			strToPrint += FIELD_ENCLOSER + value + FIELD_ENCLOSER;
-		}
-		writer.print(strToPrint);
+	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
 	
+	protected void printId(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
+	}
+	protected void printId(UUID uuid, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(uuid == null ? null : String.valueOf(uuid), writer, addSeparator, fieldKey);
+	}
 
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+		print(value, writer, addSeparator, fieldKey, null);
+	}
+
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey, String defaultValue) {
+		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
+	}
+	
+	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
+		print(value, writer, addSeparator, fieldKey, null);
+	}
+	
+	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
+		if (count == 1 && addSeparator == IS_NOT_FIRST){
+			registerFieldKey(URI.create(fieldKey), defaultValue);
+		}
+		if (StringUtils.isBlank(defaultValue)){
+			String strToPrint = addSeparator ? config.getFieldsTerminatedBy() : "";
+			if (StringUtils.isNotBlank(value)){
+				//Replace quotes by double quotes
+				value = value.replace("\"", "\"\"");
+				
+				value = value.replace(config.getLinesTerminatedBy(), "\\r");
+				
+				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
+				value = value.replace("\r\n", "\\r");
+				value = value.replace("\r", "\\r");
+				value = value.replace("\n", "\\r");
+				
+				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
+			}
+			writer.print(strToPrint);
+		}
+	}
+	
+	private void registerFieldKey(URI key, String defaultValue) {
+		this.metaDataRecord.addFieldEntry(key, defaultValue);
+	}
 
 	
 	protected String getRights(Rights rights) {
@@ -139,11 +253,15 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected String getNomStatus(NomenclaturalStatusType nomStatus) {
-		if (nomStatus == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifNomStatus(nomStatus);
+		if (result == null){
+			if (nomStatus == null){
+				return "";
+			}else{
+				return nomStatus.getLabel();
+			}
 		}else{
-			//TODO
-			return nomStatus.getLabel();
+			return result;
 		}
 	}
 
@@ -157,42 +275,73 @@ public abstract class DwcaRecordBase {
 	}
 
 	protected String getRank(Rank rank) {
-		if (rank == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifRank(rank);
+		if (result == null){
+			if (rank == null){
+				return "";
+			}else{
+				return rank.getLabel();
+			}
 		}else{
-			//TODO
-			return rank.getTitleCache();
+			return result;
 		}
 	}
 	
 	protected String getSex(Sex sex) {
-		if (sex == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifSex(sex);
+		if (result == null){
+			if (sex == null){
+				return "";
+			}else{
+				return sex.getLabel();
+			}
 		}else{
-			//TODO
-			return sex.getTitleCache();
+			return result;
 		}
 	}
 	
 	protected String getLifeStage(Stage stage) {
-		if (stage == null){
-			return "";
+		String result = DwcaTaxExportTransformer.transformToGbifLifeStage(stage);
+		if (result == null){
+			if (stage == null){
+				return "";
+			}else{
+				return stage.getLabel();
+			}
 		}else{
-			//TODO
-			return stage.getTitleCache();
+			return result;
 		}
 	}
 
-	protected String getOccurrenceStatus(PresenceAbsenceTermBase status) {
-		if (status == null){
-			return "";
+	protected String getOccurrenceStatus(PresenceAbsenceTermBase<?> status) {
+		String result = DwcaTaxExportTransformer.transformToGbifOccStatus(status);
+		if (result == null){
+			if (status == null){
+				return "";
+			}else{
+				return status.getLabel();
+			}
 		}else{
-			//TODO
-			return status.getTitleCache();
+			return result;
 		}
 	}
 	
-	protected String getAgent(AgentBase agent) {
+	protected String getEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
+		String result = DwcaTaxExportTransformer.transformToGbifEstablishmentMeans(status);
+		if (result == null){
+			if (status == null){
+				return "";
+			}else{
+				return status.getLabel();
+			}
+		}else{
+			return result;
+		}
+	}
+
+	
+	
+	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
 			return "";
 		}else{
@@ -251,12 +400,31 @@ public abstract class DwcaRecordBase {
 	}
 	
 
-	protected String getDesignationType(TypeDesignationStatusBase status) {
+	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){
 			return "";
-		}else{
-			//TODO
-			return status.getLabel();
 		}
+		String result;
+		if (status.isInstanceOf(SpecimenTypeDesignationStatus.class)){
+			SpecimenTypeDesignationStatus specStatus = CdmBase.deproxy(status, SpecimenTypeDesignationStatus.class);
+			result = DwcaTaxExportTransformer.transformSpecimenTypeStatusToGbif(specStatus);
+		}else{
+			NameTypeDesignationStatus nameStatus = CdmBase.deproxy(status, NameTypeDesignationStatus.class);
+			result = DwcaTaxExportTransformer.transformNameTypeStatusToGbif(nameStatus);
+		}
+		if (result == null){
+			return status.getLabel();
+		}else{
+			return result;
+		}
+	}
+	
+	
+	protected void addKnownField(String string, String uri) throws URISyntaxException {
+		this.knownFields.put(string, new URI(uri));
+	}
+	
+	protected void addKnownField(TermUris term) throws URISyntaxException {
+		this.knownTermFields.add(term);
 	}
 }

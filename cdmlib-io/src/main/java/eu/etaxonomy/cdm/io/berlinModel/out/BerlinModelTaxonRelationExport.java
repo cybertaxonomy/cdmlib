@@ -80,7 +80,7 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState state){
+	protected void doInvoke(BerlinModelExportState state){
 		try{
 			logger.info("start make " + pluralString + " ...");
 			boolean success = true ;
@@ -102,11 +102,15 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 			}
 			commitTransaction(txStatus);
 			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
-			return success;
+			if (!success){
+				state.setUnsuccessfull();
+			}
+			return;
 		}catch(SQLException e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 	}
 

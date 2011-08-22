@@ -112,10 +112,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public List findNamesByTitle(String title, CdmBase sessionObject){
 		return super.findCdmObjectsByTitle(title, sessionObject);
 	}
- 	
-	public List<TaxonNameBase> findByTitle(IIdentifiableEntityServiceConfigurator config) {
-		return super.findByTitle(config);
-	}
 	
 	@Transactional(readOnly = false)
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
