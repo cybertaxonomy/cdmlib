@@ -46,8 +46,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao> implements ITaxonNodeService{
-	private static final Logger logger = Logger
-			.getLogger(TaxonNodeServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
 	@Autowired
 	private BeanInitializer defaultBeanInitializer;
@@ -146,8 +145,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		}
 		
 		//Move descriptions to new taxon
-		for(TaxonDescription description : oldTaxon.getDescriptions()){
-			description.setTitleCache("Description copied from former accepted taxon: " + oldTaxon.getTitleCache() + "(Old title: " + description.getTitleCache()  + ")");
+		List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( oldTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions()) 
+		for(TaxonDescription description : descriptions){
+			String message = "Description copied from former accepted taxon: %s (Old title: %s)"; 
+			message = String.format(message, oldTaxon.getTitleCache(), description.getTitleCache());
+			description.setTitleCache(message, true);
 			newAcceptedTaxon.addDescription(description);
 		}
 				

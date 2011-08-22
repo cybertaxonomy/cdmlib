@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @created Dec 16, 2010
  * @version 1.0
  */
+
 public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 
 	@SpringBeanByType
@@ -53,7 +55,7 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 	private Taxon t2;
 	private Synonym s1;
 	private SynonymRelationshipType synonymRelationshipType;
-	private Reference reference;
+	private Reference<?> reference;
 	private String referenceDetail;
 	private Classification classification;
 	private TaxonNode node2;
@@ -64,32 +66,36 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 	 */
 	@Before
 	public void setUp() throws Exception {
-		
-		classification = classificationService.load(classificationUuid);
-		
-		node1 = taxonNodeService.load(node1Uuid);
-		
-		node2 = taxonNodeService.load(node2Uuid);
-		
-		reference = referenceService.load(referenceUuid);
-		
-		// referencing
-		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		referenceDetail = "test"; 
 	}
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-	@Ignore
+	@DataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {
+		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
+		node2 = taxonNodeService.load(node2Uuid);
+		reference = referenceService.load(referenceUuid);
+		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		referenceDetail = "test"; 
+
+		//
+		//TODO
+		
+
 		// descriptions
+		t1 = node1.getTaxon();
+		t2 = node2.getTaxon();
+		Assert.assertEquals(2, t1.getDescriptions().size());
+		Assert.assertTrue(t2.getSynonyms().isEmpty());
+		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		
 		taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
 		
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		Assert.assertTrue(t2.getDescriptions().size() == 2);
+		Assert.assertEquals(2, t2.getDescriptions().size());
 		
 	}
 
