@@ -14,12 +14,11 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
+import org.jdom.Element;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.print.PublishConfigurator;
-import eu.etaxonomy.cdm.print.Publisher;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
 import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
@@ -47,12 +46,9 @@ public class PublisherTest {
 		
 		configurator.setWebserviceUrl("http://localhost:8080/");
 		
-		// all nodes e9c61678-8624-48ad-8876-d3aa11a82db5
-//		configurator.setSelectedTaxonNodeEntityUuids(Arrays.asList(new UUID[]{UUID.fromString("e9c61678-8624-48ad-8876-d3aa11a82db5")}));
-		// lots of nodes
-//		configurator.setSelectedTaxonNodeEntityUuids(Arrays.asList(new UUID[]{UUID.fromString("0f108191-4fd0-45fc-bbdb-bd468a82b7a4")}));
-		// only a couple of nodes
-//		configurator.setSelectedTaxonElements(Arrays.asList(new UUID[]{UUID.fromString("b1fffc62-952a-45eb-9c47-bb4534caf16e")}));
+//		Element selectedTaxonNodeElement = new Element("TaxonNode");
+//		
+//		configurator.addSelectedTaxonNodeElements(selectedTaxonNodeElement);
 		
 		configurator.setExportFolder(new File("/Users/nho/tmp/"));
 		

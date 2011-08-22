@@ -136,7 +136,7 @@ public class XMLHarvester {
 		
 		result.addContent(root);
 		
-		cleanDateFields(result);
+//		cleanDateFields(result);
 		
 		return result;
 	}

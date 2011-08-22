@@ -5,7 +5,7 @@
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
     <version>3.0.7-SNAPSHOT</version>
-	<relativePath>pom.xml</relativePath>
+	<relativePath>../pom.xml</relativePath>
   </parent>
   
   <groupId>eu.etaxonomy</groupId>
