@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -43,6 +44,9 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 	
 	@SpringBeanByType
 	private IReferenceService referenceService;
+	
+	@SpringBeanByType
+	private ITermService termService;
 	
 	private static final UUID t1Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
 	private static final UUID t2Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
@@ -79,6 +83,7 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 		node2 = taxonNodeService.load(node2Uuid);
 		reference = referenceService.load(referenceUuid);
 		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
 		referenceDetail = "test"; 
 
 		//
