@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @version 1.0
  */
 public class TermServiceImplTest extends CdmIntegrationTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermServiceImplTest.class);
 
 	@SpringBeanByType
@@ -51,7 +52,8 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUri(java.lang.String)}.
 	 */
-//	@Ignore //second part of test throws unexpected exception 
+//	@Ignore //second part of test throws unexpected exception & also first part fails since language(406) 
+	//is also not found here
 	@Test
 	@DataSet
 	public void testGetTermByUri() {
