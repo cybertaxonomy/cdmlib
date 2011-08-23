@@ -226,7 +226,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public boolean testDefinedTermsAreMissing(){
 		UUID englishUuid = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		DefinedTermBase<?> english = this.getTermService().getByUri(englishUuid.toString());
+		DefinedTermBase<?> english = this.getTermService().load(englishUuid);
 		if ( english == null || ! english.getUuid().equals(englishUuid)){
 			return true;
 		}else{
