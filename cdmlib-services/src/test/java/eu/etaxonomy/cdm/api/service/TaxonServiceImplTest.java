@@ -96,10 +96,6 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}
 	 * .
 	 */
-	@Test
-	public final void loadTreeBranchTo() {
-		logger.warn("Not yet implemented"); // TODO
-	}
 
 	/**
 	 * Test method for
@@ -108,7 +104,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testSearchTaxaByName() {
-		logger.warn("Not yet implemented"); // TODO
+		logger.warn("testSearchTaxaByName not yet implemented"); // TODO
 	}
 
 	
