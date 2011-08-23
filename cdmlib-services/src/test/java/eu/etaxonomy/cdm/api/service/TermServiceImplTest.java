@@ -13,16 +13,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -44,27 +47,28 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	private IVocabularyService vocabularyService;
 
 /* ************************* TESTS *************************************************/
-	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao)}.
-	 */
-	@Test
-	public void testSetDao() {
-		logger.info("not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUri(java.lang.String)}.
 	 */
-	@Ignore //method not yet implemented
+//	@Ignore //second part of test throws unexpected exception 
 	@Test
+	@DataSet
 	public void testGetTermByUri() {
-		String uri = ""; 
+		String uriStr = "http://any.uri.com"; 
+		URI uri = URI.create(uriStr);
 		DefinedTermBase<?> term = service.getByUri(uri);
 		assertNotNull(term);
-		//assertEquals(Rank.DOMAIN(), term);
+		//for testing only
+//		TermVocabulary<?> voc = term.getVocabulary();
+//		service.saveOrUpdate(term);
+//		List<MarkerType> list = service.listByTermClass(MarkerType.class, null, null, null, null);
+		
 		//NULL
-		String uriNotExist = "";
+		//FIXME throws object not found exception. Wants to load term.voc(11).representation(496).language(124) which does not exist
+		//I do not understand where the vocabulary data comes from (checked persistence TermsDataSet-with_auditing_info.xml) but somehow this does not apply
+		String uriNotExistStr = "http://www.notExisting.com";
+		URI uriNotExist = URI.create(uriNotExistStr);
 		DefinedTermBase<?> termNotExist = service.getByUri(uriNotExist);
 		assertNull(termNotExist);
 	}
@@ -109,7 +113,6 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 
 	
 	@Test
-//	@Ignore //FIXME ignoring just for today 9.6.2010 a.kohlbecker !!!!!!!!!!!!!!!!!!!!!
 	public void testGetAreaByTdwgAbbreviation(){
 		String tdwgAbbreviation = "GER-OO";
 		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);

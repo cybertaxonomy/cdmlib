@@ -1883,6 +1883,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientific
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TermServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/UserServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServices.xml -text

@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -75,10 +76,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	}	
 	
 	/**
-	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUri(java.lang.String)
+	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUri(java.net.URI)
 	 */
-	public DefinedTermBase getByUri(String uri) {
-		//FIXME transformation from URI to UUID
+	public DefinedTermBase getByUri(URI uri) {
 		return dao.findByUri(uri);
 	}
 	
