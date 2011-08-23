@@ -60,12 +60,12 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public void testGetTermByUri() {
 		String uri = ""; 
-		DefinedTermBase term = service.getByUri(uri);
+		DefinedTermBase<?> term = service.getByUri(uri);
 		assertNotNull(term);
 		//assertEquals(Rank.DOMAIN(), term);
 		//NULL
 		String uriNotExist = "";
-		DefinedTermBase termNotExist = service.getByUri(uriNotExist);
+		DefinedTermBase<?> termNotExist = service.getByUri(uriNotExist);
 		assertNull(termNotExist);
 	}
 
@@ -77,13 +77,13 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		// Rank.Domain
 		String strUUID = "ffca6ec8-8b88-417b-a6a0-f7c992aac19b"; 
 		UUID uuid = UUID.fromString(strUUID);
-		DefinedTermBase term = service.find(uuid);
+		DefinedTermBase<?> term = service.find(uuid);
 		assertNotNull(term);
 		assertEquals(Rank.DOMAIN(), term);
 		//NULL
 		String strUUIDNotExist = "00000000-8b88-417b-a6a0-f7c992aac19c";
 		UUID uuidNotExist = UUID.fromString(strUUIDNotExist);
-		DefinedTermBase termNotExist = service.find(uuidNotExist);
+		DefinedTermBase<?> termNotExist = service.find(uuidNotExist);
 		assertNull(termNotExist);
 	}
 
@@ -91,7 +91,7 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#listTerms(java.util.UUID)}.
 	 */
-	@Ignore
+//	@Ignore
 	@Test
 	public void testGetVocabularyUUID() {
 		//Rank
@@ -99,7 +99,7 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		UUID rankUuid = UUID.fromString(rankVocabularyUuid);
 		TermVocabulary<Rank> voc = vocabularyService.find(rankUuid);
 		assertNotNull(voc);
-		assertEquals(61, voc.getTerms().size());
+		assertEquals(66, voc.getTerms().size());
 		//Null
 		String nullVocabularyUuid = "00000000-26e3-4e83-b47b-ca74eed40b1b"; 
 		UUID nullUuid = UUID.fromString(nullVocabularyUuid);
@@ -107,17 +107,9 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		assertNull(nullVoc);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#listVocabularies(java.lang.Class)}.
-	 */
-	@Ignore //method not yet implemented
-	@Test
-	public void testSetVocabularies() {
-		logger.warn("Not yet implemented");
-	}
 	
 	@Test
-	@Ignore //FIXME ignoring just for today 9.6.2010 a.kohlbecker !!!!!!!!!!!!!!!!!!!!!
+//	@Ignore //FIXME ignoring just for today 9.6.2010 a.kohlbecker !!!!!!!!!!!!!!!!!!!!!
 	public void testGetAreaByTdwgAbbreviation(){
 		String tdwgAbbreviation = "GER-OO";
 		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);
