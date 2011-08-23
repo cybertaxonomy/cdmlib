@@ -1700,7 +1700,6 @@
     );
 
     create table FeatureTree (
-        DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
         uuid varchar(36),
