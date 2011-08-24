@@ -212,11 +212,7 @@ public class CdmApplicationRemoteController implements ICdmApplicationRemoteConf
 	public final IAgentService getAgentService(){
 		return configuration.getAgentService();
 	}
-	
-//	public final IDatabaseService getDatabaseService(){
-//		return null;
-//	}
-	
+		
 	public final ITermService getTermService(){
 		return configuration.getTermService();
 	}
@@ -285,64 +281,43 @@ public class CdmApplicationRemoteController implements ICdmApplicationRemoteConf
 		return configuration.getWorkingSetService();
 	}
 	
-//	public final ConversationHolder NewConversation(){
-//		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
-//		return configuration.NewConversation();
-//	}
-//	
-//	public final ProviderManager getAuthenticationManager(){
-//		return configuration.getAuthenticationManager();
-//	}
-//	
-//	@Override
-//	public final PlatformTransactionManager getTransactionManager() {
-//		return configuration.getTransactionManager();
-//	}
-	
 	public final Object getBean(String name){
 		return this.applicationContext.getBean(name);
 	}
 
 	@Override
 	public IDatabaseService getDatabaseService() {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration.getDatabaseService();
 	}
 
 	@Override
 	public ProviderManager getAuthenticationManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration.getAuthenticationManager();
 	}
 
 	@Override
 	public TransactionStatus startTransaction() {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration.startTransaction();
 	}
 
 	@Override
 	public TransactionStatus startTransaction(Boolean readOnly) {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration.startTransaction(readOnly);
 	}
 
 	@Override
 	public void commitTransaction(TransactionStatus tx) {
-		// TODO Auto-generated method stub
-		
+		configuration.commitTransaction(tx);
 	}
 
 	@Override
 	public PlatformTransactionManager getTransactionManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration.getTransactionManager();
 	}
 
 	@Override
 	public ConversationHolder NewConversation() {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration.NewConversation();
 	}
 
 }

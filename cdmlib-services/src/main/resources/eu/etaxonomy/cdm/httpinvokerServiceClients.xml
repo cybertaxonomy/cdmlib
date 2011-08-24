@@ -344,6 +344,19 @@
 		</property>
 	</bean>
 
+	<bean id="providerManager"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://${serverName}/${contextPath}/authenticationManager.service</value>
+		</property>
+		<property name="serviceInterface">
+			<value>org.springframework.security.authentication.AuthenticationManager</value>
+		</property>
+		<property name="httpInvokerRequestExecutor">
+			<bean class="org.springframework.security.remoting.httpinvoker.AuthenticationSimpleHttpInvokerRequestExecutor" />
+		</property>
+	</bean>
+
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="/eu/etaxonomy/cdm/config.properties" />

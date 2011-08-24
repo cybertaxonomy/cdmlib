@@ -18,6 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
+import eu.etaxonomy.cdm.api.conversation.ConversationHolderMock;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
@@ -117,6 +118,8 @@ public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplication
 
 	@Autowired
 	private IWorkingSetService workingSetService;
+	@Autowired
+	private ProviderManager authenticationManager;
 	
 	/**
 	 * 
@@ -296,8 +299,7 @@ public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplication
 
 	@Override
 	public ProviderManager getAuthenticationManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return authenticationManager;
 	}
 
 	@Override
@@ -332,8 +334,7 @@ public class CdmApplicationRemoteDefaultConfiguration implements ICdmApplication
 
 	@Override
 	public ConversationHolder NewConversation() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ConversationHolderMock();
 	}
 	
 }

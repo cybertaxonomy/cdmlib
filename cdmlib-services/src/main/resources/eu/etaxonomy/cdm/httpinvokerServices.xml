@@ -106,7 +106,7 @@
 	<bean id="httpGroupService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service">
-			<ref bean="groupService" />
+			<ref bean="groupServiceImpl" />
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IGroupService</value>
@@ -273,5 +273,14 @@
 		</property>
 	</bean>
 
+ 	<bean id="httpAuthenticationManager"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="authenticationManager" />
+		</property>
+		<property name="serviceInterface">
+			<value>org.springframework.security.authentication.AuthenticationManager</value>
+		</property>
+	</bean>
  
 </beans>
