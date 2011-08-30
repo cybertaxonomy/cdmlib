@@ -1823,6 +1823,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityWithTransaction.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text

@@ -38,6 +38,11 @@ public class DescriptionPermissionEvaluator {
 			if (authorityString.contains(feature.getLabel()) && evalPermission.permission.equals(authorityPermission.permission)){
 				return true;
 			}
+			if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
+				if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && authority.getAuthority().contains(evalPermission.permission.toString())){
+					return true;
+				}
+			}
 		}
 		
 		return false;
@@ -53,6 +58,7 @@ public class DescriptionPermissionEvaluator {
 				if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && authority.getAuthority().contains(evalPermission.permission.toString())){
 					return true;
 				}else{
+					//TODO: das stimmt noch nicht so ganz!!!
 					for (DescriptionElementBase element: elements){
 						if (authority.getAuthority().contains(element.getFeature().getLabel()) && authority.getAuthority().contains(evalPermission.permission.toString())){
 							return true;

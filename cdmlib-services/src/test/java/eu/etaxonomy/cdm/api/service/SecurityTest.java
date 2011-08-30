@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -95,9 +97,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	private UsernamePasswordAuthenticationToken token;
 	
-	@Autowired
-	protected BeanInitializer defaultBeanInitializer;
-	
+		
 	@Before
 	public void setUp(){
 		token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
@@ -123,7 +123,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 		Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 		UUID uuid = taxonService.save(expectedTaxon);
-		TaxonBase<?> actualTaxon = taxonService.find(uuid);
+		TaxonBase<?> actualTaxon = taxonService.load(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 		
 		token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
@@ -131,7 +131,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 		expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
-		taxonService.save(actualTaxon);
+		taxonService.saveOrUpdate(actualTaxon);
 		
 		
 	}
@@ -160,7 +160,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		context.setAuthentication(authentication);
 		Taxon expectedTaxon = Taxon.NewInstance(null, null);
 		UUID uuid = taxonService.save(expectedTaxon);
-		TaxonBase<?> actualTaxon = taxonService.find(uuid);
+		TaxonBase<?> actualTaxon = taxonService.load(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 		
 		actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
@@ -170,89 +170,13 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		authentication = authenticationManager.authenticate(token);
 		context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
-		actualTaxon = taxonService.find(uuid);
+		actualTaxon = taxonService.load(uuid);
 		actualTaxon.setName(BotanicalName.NewInstance(Rank.GENUS()));
 		taxonService.saveOrUpdate(actualTaxon);
 			
 	}
 	
-	@Test
-	public void testDeleteTaxon(){
-		token = new UsernamePasswordAuthenticationToken("taxonomist", "test3");
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		Taxon actualTaxon = (Taxon)taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
-		
-		taxonService.delete(actualTaxon);
-	}
 	
-	
-	@Test
-	public void testSaveOrUpdateDescription(){
-		
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		Taxon taxon = (Taxon) taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
-		
-		Set<TaxonDescription> descriptions = taxon.getDescriptions();
-		
-		Iterator<TaxonDescription> iterator = descriptions.iterator();
-		
-		TaxonDescription description = iterator.next();
-		description = (TaxonDescription) descriptionService.find(description.getUuid());
-		
-		TextData textData = new TextData();
-		textData.setFeature(Feature.ECOLOGY());
-		Media media = Media.NewInstance();
-		textData.addMedia(media);
-		
-		
-		
-		//descriptionService.saveDescriptionElement(textData);
-		description.addElement(textData);
-		
-		descriptionService.saveOrUpdate(description);
-		
-		taxon = (Taxon) taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
-		descriptions = taxon.getDescriptions();
-		
-		iterator = descriptions.iterator();
-		
-		description = iterator.next();
-		assertEquals(1, descriptions.size());
-		assertEquals(2,description.getElements().size());
-		
-		
-		
-	}
-	
-	@Test
-	public void testAllowOnlyAccessToPartOfTree(){
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		Taxon tribe = (Taxon)taxonService.find(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
-		Taxon taxon = (Taxon)taxonService.find(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-		Iterator<TaxonNode> it = tribe.getTaxonNodes().iterator();
-		TaxonNode node = it.next();
-		
-		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-		assertFalse(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
-		node = node.getChildNodes().iterator().next();
-		System.err.println(node.getUuid()); 
-		assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
-		node = node.getChildNodes().iterator().next();
-		assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
-		TaxonDescription description = TaxonDescription.NewInstance(taxon);
-		
-		taxonNodeService.saveOrUpdate(node);
-		assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
-		
-		
-	}
 	
 	@Test(expected=EvaluationFailedException.class)
 	public void testCascadingInSpringSecurityAccesDenied(){
@@ -263,10 +187,19 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 		Taxon taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+		description.setTitleCache("test");
 		assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
-		//during cascading the permissions are not evaluated
-		
+		System.err.println(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
+		Collection<GrantedAuthority> authorities = authentication.getAuthorities();
+		for (GrantedAuthority authority: authorities){
+			System.err.println(authority.getAuthority());
+		}
+		//during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it, 
+		//when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
 		taxonService.saveOrUpdate(taxon);
+		//descriptionService.saveOrUpdate(description);
+		descriptionService.getSession().flush();
+		descriptionService.saveOrUpdate(description);
 		
 		
 		
@@ -299,6 +232,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		taxonService.saveOrUpdate(syn);
 		
 	}
+	
 	public static void main(String[] args){
 		Md5PasswordEncoder encoder =new Md5PasswordEncoder();
 	

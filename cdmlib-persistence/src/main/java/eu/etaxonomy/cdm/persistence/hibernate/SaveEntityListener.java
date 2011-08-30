@@ -32,19 +32,27 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 
 	public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
 		Object entity = event.getObject();
-		
+		//System.err.println("SaveEntityListener" + event.getEntityName()+ event.getEntity().getClass());
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
 			if(ICdmBase.class.isAssignableFrom(entityClazz)) {
 				ICdmBase cdmBase = (ICdmBase)entity;
 				cdmBase.setCreated(new DateTime());
+			
 				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 				if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 					User user = (User)authentication.getPrincipal();
 					cdmBase.setCreatedBy(user);
 					CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+					System.err.println(cdmBase.getClass().toString());
+					for (GrantedAuthority authority:((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities()){
+						System.err.println(authority.getAuthority());
+					}
 					if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
-						System.err.println(entity);
+						System.err.println(entity );
+						for (GrantedAuthority authority:((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities()){
+							System.err.println(authority.getAuthority());
+						}
 						throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
 					 }
 				
