@@ -367,7 +367,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see			taxon.Synonym
 	 */
 	public List<Synonym> getSynonymsInGroup(Reference sec){
-		List<Synonym> result = new ArrayList();
+		List<Synonym> result = new ArrayList<Synonym>();
 		for (TaxonNameBase<?, ?>name : this.getTypifiedNames()){
 			for (Synonym synonym : name.getSynonyms()){
 				if ( (synonym.getSec() == null && sec == null) ||
