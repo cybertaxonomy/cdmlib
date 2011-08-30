@@ -831,7 +831,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefau
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/generate/PolytomousKeyGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/CacheMatcher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/FieldMatcher.java -text
@@ -1003,6 +1002,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/BookSection
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/generate/PolytomousKeyGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NameTypeParserTest.java -text
