@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -237,6 +238,24 @@ public class NonViralNameDefaultCacheStrategyTest {
 		Assert.assertEquals("Should be 'Abies alba subsp. \u00D7beta'", "Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
 		subSpeciesName.setMonomHybrid(true);
 		Assert.assertEquals("Should be '\u00D7Abies alba subsp. \u00D7beta'", "\u00D7Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
+	}
+	
+	@Test
+	public void testHybridFormula(){
+		this.speciesName.setCombinationAuthorTeam(author);
+		Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
+		Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
+		
+		NonViralName hybridName = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName secondParent = NonViralName.NewInstance(Rank.SPECIES());
+		
+		secondParent.setTitleCache("Second parent Mill.", true);
+		hybridName.addHybridParent(speciesName, HybridRelationshipType.FIRST_PARENT(), null);
+		hybridName.addHybridParent(secondParent, HybridRelationshipType.SECOND_PARENT(), null);
+		hybridName.setHybridFormula(true);
+		
+		Assert.assertEquals("", "Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache());
+		
 	}
 	
 	@Test
