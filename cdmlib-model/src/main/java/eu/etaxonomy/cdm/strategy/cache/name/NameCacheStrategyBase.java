@@ -52,7 +52,7 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
-	public abstract List<Object> getTaggedName(T taxonNameBase);
+	public abstract List<Object> getTaggedNameDeprecated(T taxonNameBase);
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)

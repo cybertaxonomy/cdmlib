@@ -34,7 +34,7 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 * @param taxonNameBase
 	 * @return
 	 */
-	public List<Object> getTaggedName(T taxonNameBase);
+	public List<Object> getTaggedNameDeprecated(T taxonNameBase);
 	
 	/**
 	 * Returns a list of name typified tokens that together make up the name (including authorship etc.).

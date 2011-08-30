@@ -58,7 +58,7 @@ public class TaggedTextGenerator {
 			//   - infraGenericEpithet	"Cicerbita"	
 	        //   - infraSpecificEpithet	null	
 	
-			List<Object> taggedName = taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase);
+			List<Object> taggedName = taxonNameBase.getCacheStrategy().getTaggedNameDeprecated(taxonNameBase);
 			for (Object token : taggedName){
 				TaggedText tag = new TaggedText();
 				if (String.class.isInstance(token)){

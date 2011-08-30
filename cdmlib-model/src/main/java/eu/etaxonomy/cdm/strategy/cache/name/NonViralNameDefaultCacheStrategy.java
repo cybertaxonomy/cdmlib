@@ -695,7 +695,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	@Override
-	public List<Object> getTaggedName(T nonViralName) {
+	@Deprecated
+	public List<Object> getTaggedNameDeprecated(T nonViralName) {
 		List<Object> tags = new ArrayList<Object>();
 		
 		if (nonViralName.isProtectedNameCache() ||
