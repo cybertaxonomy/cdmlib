@@ -9,19 +9,14 @@
 
 package eu.etaxonomy.cdm.strategy;
 
-/* interface for all Cdm strategy classes
- * 
- */
-
 /**
+ * Interface for all CDM strategy classes
  * @author Andreas Mueller
  * @version 1.0
  * @created 12-Sep-2007
  */
 
-
-//TODO wie bekomme ich T typisiert als Klasse eines Interfaces
-public interface IStrategy<T> {
+public interface IStrategy {
 	
 	//public void setStrategyObject(T versionableEntity);
 	

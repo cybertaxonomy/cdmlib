@@ -46,7 +46,28 @@ public enum TagEnum {
 	 */
 	microreference,
 	/**
-	 * publication year of a reference
+	 * Publication year of a reference
 	 */
 	year,
+	/**
+	 *  A full taxon name including all name information and nomenclatural 
+	 *  reference information
+	 */
+	fullName,
+	/**
+	 *  The nomenclatural status of a name 
+	 */
+	nomStatus,
+	/**
+	 *  A separator to separate two tags () . 
+	 *  A separator should include all needed whitespaces. So adding of whitespace 
+	 *  is not needed if a separator is given.
+	 */
+	separator,
+	/**
+	 *  The hybrid sign. 
+	 */
+	hybridSign,
+	
+	
 }

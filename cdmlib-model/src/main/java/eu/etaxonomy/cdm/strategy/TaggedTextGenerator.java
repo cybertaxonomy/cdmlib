@@ -54,7 +54,7 @@ public class TaggedTextGenerator {
 			}
 			
 			// --- end of rude hack
-			//FIXME infrageneric epithets are not jet handled!
+			//FIXME infrageneric epithets are not yet handled!
 			//   - infraGenericEpithet	"Cicerbita"	
 	        //   - infraSpecificEpithet	null	
 	
