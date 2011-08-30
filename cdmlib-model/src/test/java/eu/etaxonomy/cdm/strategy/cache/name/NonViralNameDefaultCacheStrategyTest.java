@@ -51,6 +51,8 @@ public class NonViralNameDefaultCacheStrategyTest {
 	private static final String exAuthorString = "Exaut.";
 	private static final String basAuthorString = "Basio, A.";
 	private static final String exBasAuthorString = "ExBas. N.";
+	
+	private static final String referenceTitle = "My Reference";
 
 	private BotanicalName familyName;
 	private BotanicalName genusName;
@@ -94,6 +96,9 @@ public class NonViralNameDefaultCacheStrategyTest {
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
 		
+		citationRef = ReferenceFactory.newGeneric();
+		citationRef.setTitleCache(referenceTitle, true);
+		
 	}
 
 //**************************** TESTS **************************************************
@@ -103,7 +108,8 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		logger.warn("Not yet implemented");
+		Assert.assertEquals(speciesNameString, speciesName.getTitleCache());
+		//TODO not yet completed
 	}
 
 	/**
@@ -111,7 +117,9 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testGetFullTitleCache() {
-		logger.warn("Not yet implemented");
+		subSpeciesName.setNomenclaturalReference(citationRef);
+		Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+		//TODO not yet completed
 	}
 
 
