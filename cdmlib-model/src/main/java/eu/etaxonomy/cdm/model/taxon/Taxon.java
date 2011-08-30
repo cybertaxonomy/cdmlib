@@ -1439,7 +1439,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/**
 	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} {@link Synonym synonyms} of
-	 * <i>this</i> taxon belongs to. {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of homotypic synonyms
+	 * <i>this</i> taxon belong to. {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of homotypic synonyms
 	 * belong to the same homotypical group as the taxon name of <i>this</i>
 	 * taxon. Taxon names of heterotypic synonyms belong to at least one other
 	 * homotypical group. <BR>
