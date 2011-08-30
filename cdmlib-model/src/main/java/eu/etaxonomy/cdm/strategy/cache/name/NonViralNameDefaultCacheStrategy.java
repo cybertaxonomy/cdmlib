@@ -412,7 +412,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
 	public String getNameCache(T nonViralName) {
-		List<TaggedText> tags = getNameTags(nonViralName);
+		List<TaggedText> tags = getTaggedName(nonViralName);
 		if (tags == null){
 			return null;
 		}else{
@@ -638,7 +638,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			tags.addAll(handleTaggedAutonym(nonViralName));
 		}else{ //not Autonym
 //			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
-			List<TaggedText> nameTags = getNameTags(nonViralName);
+			List<TaggedText> nameTags = getTaggedName(nonViralName);
 			tags.addAll(nameTags);
 			if (nameIncludesAuthorship(nonViralName)){
 				String authorCache = getAuthorshipCache(nonViralName);
@@ -653,10 +653,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	
 	
 	/**
+	 * Returns the name part (without author and reference) of this name in tagged mode.
 	 * @param nonViralName
 	 * @return
 	 */
-	private List<TaggedText> getNameTags(T nonViralName) {
+	private List<TaggedText> getTaggedName(T nonViralName) {
 		if (nonViralName == null){
 			return null;
 		}
