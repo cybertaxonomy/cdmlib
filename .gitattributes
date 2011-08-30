@@ -1834,6 +1834,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationService
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
