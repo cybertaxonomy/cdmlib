@@ -627,9 +627,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
 			for (HybridRelationship rel: rels){
 				if (! isFirst){
-					tags.add(new TaggedText(TagEnum.separator, hybridSeparator));
+					tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
 				}
-				tags.add(new TaggedText(TagEnum.name, hybridSeparator));
 				isFirst = false;
 				tags.addAll(getTaggedTitle((T)rel.getParentName()));
 			}
