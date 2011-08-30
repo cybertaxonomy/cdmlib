@@ -41,7 +41,7 @@ public class TestingZoologicalNameCacheStrategy implements
 
 
 	@Override
-	public List<Object> getTaggedName(ZoologicalName taxonNameBase) {
+	public List<Object> getTaggedNameDeprecated(ZoologicalName taxonNameBase) {
 		// TODO Auto-generated method stub
 		return null;
 	}

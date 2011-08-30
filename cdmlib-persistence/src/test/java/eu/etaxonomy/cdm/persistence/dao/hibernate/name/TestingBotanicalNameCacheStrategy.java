@@ -41,7 +41,7 @@ public class TestingBotanicalNameCacheStrategy implements
 
 	
 
-	public List<Object> getTaggedName(BotanicalName taxonNameBase) {
+	public List<Object> getTaggedNameDeprecated(BotanicalName taxonNameBase) {
 		// TODO Auto-generated method stub
 		return null;
 	}
