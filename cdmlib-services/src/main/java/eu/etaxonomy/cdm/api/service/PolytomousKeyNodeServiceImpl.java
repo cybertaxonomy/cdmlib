@@ -24,12 +24,15 @@ import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
-public class PolytomousKeyNodeService  extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao> implements IPolytomousKeyNodeService {
+public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao> implements IPolytomousKeyNodeService {
 
 
 	@Autowired
 	protected void setDao(IPolytomousKeyNodeDao dao) {
 		this.dao = dao;
 	}
+	
+	
+	
 
 }
