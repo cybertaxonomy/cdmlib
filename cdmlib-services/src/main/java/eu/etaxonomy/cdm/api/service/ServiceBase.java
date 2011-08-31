@@ -158,7 +158,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#transientObject, 'UPDATE')")
+	//@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#transientObject, 'UPDATE')")
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
 	}

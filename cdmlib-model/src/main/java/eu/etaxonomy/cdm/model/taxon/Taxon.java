@@ -87,8 +87,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
 	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
-	//@Cascade({CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	//@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@NotNull
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 

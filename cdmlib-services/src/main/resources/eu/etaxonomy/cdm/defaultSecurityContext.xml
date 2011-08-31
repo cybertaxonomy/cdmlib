@@ -34,10 +34,49 @@
 		<security:expression-handler ref="expressionHandler"/>
 	</security:global-method-security>
 
+	
 	<bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator"/>
 	</bean>
-	
+	 
+	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+    <constructor-arg ref="roleHierarchy" />
+    
+	</bean>
+	<bean id="roleHierarchy"
+        class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+    	<property name="hierarchy">
+            <value>
+                ALL.ADMIN > ALL.UPDATE
+                ALL.ADMIN > ALL.CREATE
+                
+                TAXONBASE.ADMIN > TAXON.CREATE
+                TAXONBASE.ADMIN > TAXON.UPDATE
+                TAXONBASE.ADMIN > TAXON.DELETE
+                TAXONBASE.ADMIN > TAXON.READ
+                TAXONBASE.ADMIN > DESCRIPTIONBASE.ADMIN
+                
+                DESCRIPTIONBASE.ADMIN > DESCRIPTIONBASE.CREATE
+                DESCRIPTIONBASE.ADMIN > DESCRIPTIONBASE.UPDATE
+                DESCRIPTIONBASE.ADMIN > DESCRIPTIONBASE.DELETE
+                DESCRIPTIONBASE.ADMIN > DESCRIPTIONBASE.READ
+                DESCRIPTIONBASE.ADMIN > DESCRIPTIONELEMENTBASE.ADMIN
+                
+                DESCRIPTIONELEMENTBASE.ADMIN > DESCRIPTIONELEMENTBASE.CREATE
+                DESCRIPTIONELEMENTBASE.ADMIN > DESCRIPTIONELEMENTBASE.UPDATE
+                DESCRIPTIONELEMENTBASE.ADMIN > DESCRIPTIONELEMENTBASE.DELETE
+                DESCRIPTIONELEMENTBASE.ADMIN > DESCRIPTIONELEMENTBASE.READ
+                
+                USER.ADMIN > USER.CREATE
+                USER.ADMIN > USER.UPDATE
+                USER.ADMIN > USER.READ
+                USER.ADMIN > USER.DELETE
+               
+            </value>
+        </property>
+
+	</bean>
+	 
 	
  	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
     

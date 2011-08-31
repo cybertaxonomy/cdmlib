@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -94,6 +95,8 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	@SpringBeanByName
 	private AuthenticationManager authenticationManager;
+	
+	
 	
 	private UsernamePasswordAuthenticationToken token;
 	
@@ -178,7 +181,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	
 	
-	@Test(expected=EvaluationFailedException.class)
+	@Test
 	public void testCascadingInSpringSecurityAccesDenied(){
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
 		SecurityContext context = SecurityContextHolder.getContext();
@@ -197,8 +200,15 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		//during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it, 
 		//when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
 		taxonService.saveOrUpdate(taxon);
-		//descriptionService.saveOrUpdate(description);
-		descriptionService.getSession().flush();
+		
+		
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+		context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		
+		//taxonService.saveOrUpdate(taxon);
+		
+				
 		descriptionService.saveOrUpdate(description);
 		
 		
@@ -214,9 +224,9 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
 		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
 		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
-		//fails because of cascading...(with saveOrUpdateListener!)
+		
 		descriptionService.saveOrUpdate(description);
-		//taxonService.getSession().flush();
+		
 		taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		assertTrue(descriptions.contains(description));
@@ -228,6 +238,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
+		
 		Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 		taxonService.saveOrUpdate(syn);
 		

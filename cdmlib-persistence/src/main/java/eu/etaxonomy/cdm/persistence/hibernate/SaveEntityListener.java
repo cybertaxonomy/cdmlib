@@ -44,16 +44,11 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 					User user = (User)authentication.getPrincipal();
 					cdmBase.setCreatedBy(user);
 					CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-					System.err.println(cdmBase.getClass().toString());
-					for (GrantedAuthority authority:((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities()){
-						System.err.println(authority.getAuthority());
-					}
+					
+					
 					if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
-						System.err.println(entity );
-						for (GrantedAuthority authority:((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities()){
-							System.err.println(authority.getAuthority());
-						}
-						throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
+						
+						throw new EvaluationFailedException("Permission evaluation failed for creating " + event.getEntity());
 					 }
 				
 				}
