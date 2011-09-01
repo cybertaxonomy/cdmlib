@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.strategy.TaggedText;
 
 /**
  * @author a.mueller
@@ -35,7 +37,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 public class ZoologicalNameCacheStrategyTest {
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 	
-	private ZooNameDefaultCacheStrategy strategy;
+	private ZooNameDefaultCacheStrategy<ZoologicalName> strategy;
 	private ZoologicalName familyName;
 	private ZoologicalName genusName;
 	private ZoologicalName subGenusName;
@@ -193,8 +195,8 @@ public class ZoologicalNameCacheStrategyTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
-	public final void testGetInfraGenusNameCache() {
-		String methodName = "getInfraGenusNameCache";
+	public final void testGetInfraGenusTaggedNameCache() {
+		String methodName = "getInfraGenusTaggedNameCache";
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
 		
 		this.getValue(method, strategy, subGenusName);
@@ -242,7 +244,7 @@ public class ZoologicalNameCacheStrategyTest {
 	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
 		Method method;
 		try {
-			method = clazz.getDeclaredMethod("getInfraGenusNameCache", paramClazzes);
+			method = clazz.getDeclaredMethod(methodName, paramClazzes);
 		} catch (SecurityException e) {
 			logger.error("SecurityException " + e.getMessage());
 			return null;
@@ -255,7 +257,8 @@ public class ZoologicalNameCacheStrategyTest {
 	
 	protected String getValue(Method method, Object object,Object parameter){
 		try {
-			return (String)method.invoke(object, parameter);
+			List<TaggedText> list = (List<TaggedText>)method.invoke(object, parameter);
+			return NonViralNameDefaultCacheStrategy.createString(list);
 		} catch (IllegalArgumentException e) {
 			logger.error("IllegalArgumentException " + e.getMessage());
 			return null;

@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.TaggedText;
 
 /**
  * @author a.mueller
@@ -224,10 +226,10 @@ public class BotanicNameCacheStrategyTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
-	public final void testGetInfraGenusNameCache() {
-		String methodName = "getInfraGenusNameCache";
+	public final void testGetInfraGenusTaggedNameCache() {
+		String methodName = "getInfraGenusTaggedNameCache";
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
-		this.getValue(method, strategy, subGenusName);
+		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
 	}
 
@@ -264,7 +266,7 @@ public class BotanicNameCacheStrategyTest {
 	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
 		Method method;
 		try {
-			method = clazz.getDeclaredMethod("getInfraGenusNameCache", paramClazzes);
+			method = clazz.getDeclaredMethod(methodName, paramClazzes);
 		} catch (SecurityException e) {
 			logger.error("SecurityException " + e.getMessage());
 			return null;
@@ -275,9 +277,10 @@ public class BotanicNameCacheStrategyTest {
 		return method;
 	}
 	
-	protected String getValue(Method method, Object object,Object parameter){
+	protected String getStringValue(Method method, Object object,Object parameter){
 		try {
-			return (String)method.invoke(object, parameter);
+			List<TaggedText> list = (List<TaggedText>)method.invoke(object, parameter);
+			return NonViralNameDefaultCacheStrategy.createString(list);
 		} catch (IllegalArgumentException e) {
 			logger.error("IllegalArgumentException " + e.getMessage());
 			return null;
