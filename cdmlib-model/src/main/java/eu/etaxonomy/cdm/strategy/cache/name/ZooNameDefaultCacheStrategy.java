@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.strategy.cache.name;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.strategy.TaggedText;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
 	@SuppressWarnings("unused")
@@ -47,8 +49,21 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		super();
 	}
 
-	
 
+
+	/**
+	 * @return Strings that separates the author part and the year part
+	 * @return
+	 */
+	public String getAuthorYearSeperator() {
+		return AuthorYearSeperator;
+	}
+
+
+	public void setAuthorYearSeperator(String authorYearSeperator) {
+		AuthorYearSeperator = authorYearSeperator;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNonCacheAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)
 	 */
@@ -71,35 +86,23 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 		if (basionymAuthor != null || exBasionymAuthor != null || originalPublicationYear != null ){
 			String authorAndEx = getAuthorAndExAuthor(basionymAuthor, exBasionymAuthor);
 			String originalPublicationYearString = originalPublicationYear == null ? null : String.valueOf(originalPublicationYear);
-			String authorAndExAndYear = CdmUtils.concat(", ", authorAndEx, originalPublicationYearString );
+			String authorAndExAndYear = CdmUtils.concat(AuthorYearSeperator, authorAndEx, originalPublicationYearString );
 			basionymPart = BasionymStart + authorAndExAndYear +BasionymEnd;
 		}
 		if (combinationAuthor != null || exCombinationAuthor != null){
 			String authorAndEx = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
 			String publicationYearString = publicationYear == null ? null : String.valueOf(publicationYear);
-			authorPart = CdmUtils.concat(", ", authorAndEx, publicationYearString);
+			authorPart = CdmUtils.concat(AuthorYearSeperator, authorAndEx, publicationYearString);
 		}
 		result = CdmUtils.concat(BasionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
 		return result;
 	}
 	
 
-	/**
-	 * @return Strings that separates the author part and the year part
-	 * @return
-	 */
-	public String getAuthorYearSeperator() {
-		return AuthorYearSeperator;
-	}
-
-
-	public void setAuthorYearSeperator(String authorYearSeperator) {
-		AuthorYearSeperator = authorYearSeperator;
-	}
-	
-	protected String getInfraSpeciesNameCache(NonViralName nonViralName){
+	@Override
+	protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName nonViralName){
 		boolean includeMarker = ! (nonViralName.isAutonym());
-		return getInfraSpeciesNameCache(nonViralName, includeMarker);
+		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
 	}
 
 }

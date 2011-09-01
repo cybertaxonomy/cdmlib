@@ -314,7 +314,9 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 
 	
 	/**
-	 * @param name
+	 * Checks if this name is an autonym.<BR>
+	 * An autonym is a taxon name that has equal specific and infra specific epithets.<BR>
+	 * {@link http://ibot.sav.sk/icbn/frameset/0010Ch2Sec1a006.htm#6.8. Vienna Code §6.8}
 	 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
 	 */
 	@Override
