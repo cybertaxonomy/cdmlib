@@ -38,21 +38,24 @@ public class PermissionsUpdater extends SchemaUpdaterStepBase implements
 		
 		//insert granted authorities
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (1,'889f9961-8d0f-41a9-95ec-59905b3941bf', 'USER.Edit')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (1,'889f9961-8d0f-41a9-95ec-59905b3941bf', 'USER.EDIT')";
 		datasource.executeUpdate(sql);
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (2,'841a1711-20f1-4209-82df-7944ad2050da', 'USER.Create')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (2,'841a1711-20f1-4209-82df-7944ad2050da', 'USER.CREATE')";
 		datasource.executeUpdate(sql);
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (3,'bb9e2547-1e28-45fd-8c35-d1ceffbfcb36', 'USER.Delete')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (3,'bb9e2547-1e28-45fd-8c35-d1ceffbfcb36', 'USER.DELETE')";
 		datasource.executeUpdate(sql);
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (4,'8a61c102-4643-4e81-a3b6-c40d60d2ba99', 'USER.Admin')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (4,'8a61c102-4643-4e81-a3b6-c40d60d2ba99', 'USER.ADMIN')";
+		datasource.executeUpdate(sql);
+		
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (5,'216a56bf-cd1a-43ff-9cb1-039c823c38af', 'ALL.ADMIN')";
 		datasource.executeUpdate(sql);
 		
 		//insert useraccount_grantedauthority for user admin
 		
-		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE 'admin'), 4)";
+		/*sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE 'admin'), 4)";
 		datasource.executeUpdate(sql);
 		
 		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE 'admin'), 3)";
@@ -63,6 +66,10 @@ public class PermissionsUpdater extends SchemaUpdaterStepBase implements
 		
 		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE 'admin'), 1)";
 		datasource.executeUpdate(sql);
+		*/
+		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE 'admin'), 5)";
+		datasource.executeUpdate(sql);
+		
 		return null;
 	}
 
