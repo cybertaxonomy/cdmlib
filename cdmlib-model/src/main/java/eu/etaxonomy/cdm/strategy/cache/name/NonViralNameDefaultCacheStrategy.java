@@ -215,7 +215,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 * @param tags
 	 * @return
 	 */
-	protected String createString(List<TaggedText> tags) {
+	protected static String createString(List<TaggedText> tags) {
 		StringBuffer result = new StringBuffer();
 		
 		boolean isSeparator;
