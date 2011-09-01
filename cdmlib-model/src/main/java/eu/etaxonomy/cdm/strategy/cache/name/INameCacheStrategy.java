@@ -31,6 +31,9 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 * Date or Reference
 	 * Example: ["Abies","alba",Rank.SUBSPECIES,"alpina",AuthorTeam("Greuther (L.)")]
 	 * 
+	 * @deprecated use {@link #getTaggedTitle(TaxonNameBase)} or 
+	 * {@link #getTaggedFullTitle(TaxonNameBase)} or {@link #getNameCache(TaxonNameBase)} instead.
+	 * Will be removed in version 3.1
 	 * @param taxonNameBase
 	 * @return
 	 */
@@ -58,6 +61,13 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 */
 	public List<TaggedText> getTaggedFullTitle(T taxonName);
 	
+	/**
+	 * Same as {@link #getTaggedTitle(TaxonNameBase)} but not including authorship. 
+	 * @param taxonName
+	 * @return
+	 */
+	public List<TaggedText> getTaggedName(T taxonName);
+	
 	
 	/**
 	 * Returns the full title cache as a string.
@@ -65,4 +75,11 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 * @return
 	 */
 	public String getFullTitleCache(T taxonNameBase);
+	
+	/**
+	 * Returns the name cache as a string.
+	 * @param taxonNameBase
+	 * @return
+	 */
+	public String getNameCache(T taxonNameBase);
 }

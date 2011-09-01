@@ -24,7 +24,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * @author a.kohlbecker
  * @date 29.03.2011
  *
+ * @deprecated use List<TaggedText> methods in according cache strategies instead. Will be removed with version 3.1.
  */
+@Deprecated
 public class TaggedTextGenerator {
 
 	/**
@@ -32,7 +34,9 @@ public class TaggedTextGenerator {
 		 * 
 		 * @param taxonNameBase
 		 * @return
+		 * @deprecated use List<TaggedText> methods in according cache strategies instead. Will be removed with next major version.
 		 */
+		@Deprecated
 		public static List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase<?,?>, INameCacheStrategy<TaxonNameBase<?,?>>> taxonNameBase){
 			
 			List<TaggedText> tags = new ArrayList<TaggedText>();
