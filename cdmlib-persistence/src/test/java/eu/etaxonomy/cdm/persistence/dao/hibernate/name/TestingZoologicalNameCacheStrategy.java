@@ -58,5 +58,11 @@ public class TestingZoologicalNameCacheStrategy implements
 		return null;
 	}
 
+	@Override
+	public List<TaggedText> getTaggedName(ZoologicalName taxonName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

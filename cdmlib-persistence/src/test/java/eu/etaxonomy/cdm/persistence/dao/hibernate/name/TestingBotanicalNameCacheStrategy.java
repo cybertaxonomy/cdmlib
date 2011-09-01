@@ -58,4 +58,10 @@ public class TestingBotanicalNameCacheStrategy implements
 		return null;
 	}
 
+	@Override
+	public List<TaggedText> getTaggedName(BotanicalName taxonName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
