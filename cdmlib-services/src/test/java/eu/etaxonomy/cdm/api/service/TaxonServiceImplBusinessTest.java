@@ -145,10 +145,13 @@ public class TaxonServiceImplBusinessTest {
 		
 		HomotypicalGroup homoGroup = newTaxon.getHomotypicGroup();
 		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup);
+		
 		List<Synonym> synonymsInNewTaxonsGroup = newTaxon.getSynonymsInGroup(homoGroup);
-		Assert.assertEquals("New accepted taxons homotypic group should have 2 synonym: s2 and the old synonym (which has not been deleted)", 2, synonymsInNewTaxonsGroup.size());
+		String message = "New accepted taxon should have 1 synonym in its homotypic group: s2. The old synonym may still exist (or not) but not as a synonym of the new taxon";
+		Assert.assertEquals(message, 1, synonymsInNewTaxonsGroup.size());
 		Assert.assertTrue("The old synonym's homotypic 'partner' must be a synonym of the new accepted taxon, too.", synonymsInNewTaxonsGroup.contains(s2));
-		Assert.assertTrue("The old synonym must be in the new accepted taxons homotypic group as it has not been deleted ", synonymsInNewTaxonsGroup.contains(s2));
+		Assert.assertTrue("The old synonym must be in the new accepted taxons homotypic group as it has not been deleted ", newTaxon.getName().getHomotypicalGroup().equals(s2.getName().getHomotypicalGroup()));
+		
 		boolean iWasHere = false;
 		for (Synonym syn : synonymsInNewTaxonsGroup){
 			if (syn.equals(s2) ){
@@ -160,7 +163,7 @@ public class TaxonServiceImplBusinessTest {
 		Assert.assertTrue("Relationship to s2 must have been concidered in 'for'-loop", iWasHere);
 		
 		try {
-			Taxon newTaxon2 = service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false, true, null, null);
+			service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false, true, null, null);
 			Assert.fail("The method should throw an exception when invoked on taxa in the same homotypical group");
 		} catch (IllegalArgumentException e) {
 			//OK
