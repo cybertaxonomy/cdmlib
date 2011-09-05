@@ -2425,8 +2425,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	// }
 	// }
 
-	private void handleCitation(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, NonViralName name) throws XMLStreamException {
+	private void handleCitation(MarkupImportState state, XMLEventReader reader,	XMLEvent parentEvent, NonViralName name) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		state.setCitation(true);
@@ -2437,7 +2436,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			if (isMyEndingElement(next, parentEvent)) {
 				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
 						REF_PART);
-				Reference reference = createReference(state, refMap, next);
+				Reference<?> reference = createReference(state, refMap, next);
 				String microReference = refMap.get(DETAILS);
 				doCitation(state, name, classValue, reference, microReference,
 						parentEvent);
@@ -2483,9 +2482,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 
 	}
 
-	private Reference createReference(MarkupImportState state, Map<String, String> refMap, XMLEvent parentEvent) {
+	private Reference<?> createReference(MarkupImportState state, Map<String, String> refMap, XMLEvent parentEvent) {
 		// TODO
-		Reference reference;
+		Reference<?> reference;
 
 		String type = getAndRemoveMapKey(refMap, PUBTYPE);
 		String authorStr = getAndRemoveMapKey(refMap, AUTHOR);
@@ -2505,34 +2504,18 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					journal.setTitle(pubName);
 					article.setInJournal(journal);
 				}
-				reference = (Reference) article;
+				reference = (Reference<?>) article;
 
 			} else {
 				// TODO
-				Reference bookOrPartOf = ReferenceFactory.newGeneric();
-				reference = bookOrPartOf;
+				if (pubName != null){
+					reference  = ReferenceFactory.newBookSection();
+				}else{
+					reference = ReferenceFactory.newBook();
+				}
 			}
 			// TODO use existing author from name or before
-			TeamOrPersonBase author = createAuthor(authorStr);
-			reference.setAuthorTeam(author);
-
-		} else {
-			if (volume != null || "journal".equalsIgnoreCase(type)) {
-				IArticle article = ReferenceFactory.newArticle();
-				if (pubName != null) {
-					IJournal journal = ReferenceFactory.newJournal();
-					journal.setTitle(pubName);
-					article.setInJournal(journal);
-				}
-				reference = (Reference) article;
-
-			} else {
-				Reference bookOrPartOf = ReferenceFactory.newGeneric();
-				reference = bookOrPartOf;
-			}
-
-			// TODO type
-			TeamOrPersonBase author = createAuthor(authorStr);
+			TeamOrPersonBase<?> author = createAuthor(authorStr);
 			reference.setAuthorTeam(author);
 
 			reference.setTitle(titleStr);
@@ -2543,7 +2526,45 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			reference.setEditor(editors);
 
 			if (pubName != null) {
-				Reference inReference;
+				Reference<?> inReference;
+				if (reference.getType().equals(ReferenceType.Article)) {
+					inReference = ReferenceFactory.newJournal();
+				} else {
+					inReference = ReferenceFactory.newGeneric();
+				}
+				inReference.setTitle(pubName);
+				reference.setInReference(inReference);
+			}
+
+			
+		} else {  //no citation
+			if (volume != null || "journal".equalsIgnoreCase(type)) {
+				IArticle article = ReferenceFactory.newArticle();
+				if (pubName != null) {
+					IJournal journal = ReferenceFactory.newJournal();
+					journal.setTitle(pubName);
+					article.setInJournal(journal);
+				}
+				reference = (Reference<?>) article;
+
+			} else {
+				Reference<?> bookOrPartOf = ReferenceFactory.newGeneric();
+				reference = bookOrPartOf;
+			}
+
+			// TODO type
+			TeamOrPersonBase<?> author = createAuthor(authorStr);
+			reference.setAuthorTeam(author);
+
+			reference.setTitle(titleStr);
+			if (StringUtils.isNotBlank(titleCache)) {
+				reference.setTitleCache(titleCache, true);
+			}
+			reference.setEdition(edition);
+			reference.setEditor(editors);
+
+			if (pubName != null) {
+				Reference<?> inReference;
 				if (reference.getType().equals(ReferenceType.Article)) {
 					inReference = ReferenceFactory.newJournal();
 				} else {
@@ -3088,16 +3109,56 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				state.putAreaUuid(areaName, area.getUuid());
 				
 				//TODO just for testing -> make generic and move to better place
+				String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+				String layerFieldName ="nam";
+				
 				if ("Bangka".equals(areaName)){
-					String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
-					String layerFieldName ="nam";
-					//TODO replace #
 					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
 					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					this.editGeoService.setMapping(area, geoServiceArea);
 //					save(area, state);
 				}
+				if ("Luzon".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("HERMANA MAYOR ISLAND#CENTRAL LUZON",
+							"HERMANA MENOR ISLAND#CENTRAL LUZON",
+							"CENTRAL LUZON");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Mindanao".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("NORTHERN MINDANAO",
+							"SOUTHERN MINDANAO",
+							"WESTERN MINDANAO");
+					//TODO to be continued
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Palawan".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("PALAWAN#SOUTHERN TAGALOG");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				
+
 			}
 		}
 		return area;
