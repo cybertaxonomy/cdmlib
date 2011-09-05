@@ -29,7 +29,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -513,6 +515,40 @@ public class TaxonTest extends EntityTestBase {
 	public void testGetHeterotypicSynonymyGroups() {
 		logger.warn("Not yet implemented");
 	}
+	
+	
+	@Test
+	public void testAddRemoveSynonymInSameGroup(){
+		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+		Taxon taxon = Taxon.NewInstance(taxonName, null);
+		TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> synonymName2 = BotanicalName.NewInstance(null);
+		
+		// add a synonym to the taxon
+		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1).getSynonym();
+		// get the homotypic group of that synonym
+		HomotypicalGroup homotypicGroupOfSynonym = synonym1.getHomotypicGroup();
+		// add another synonym into the homotypic group we just created
+		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, homotypicGroupOfSynonym, null, null).getSynonym();
+		// everything is fine
+		Assert.assertTrue("We should have two synonyms in the group", homotypicGroupOfSynonym.getSynonymsInGroup(null).size() == 2);
+		
+		// removing the synonym from the taxon
+		taxon.removeSynonym(synonym2);
+		
+		// get the homotypical group via the methods in Taxon
+		HomotypicalGroup homotypicGroupViaTaxon = taxon.getHeterotypicSynonymyGroups().iterator().next();
+		
+		// the group is for sure the same as the synonyms one
+		Assert.assertSame("Accessing the homotypic group via the taxon methods should result in the same object", homotypicGroupOfSynonym, homotypicGroupViaTaxon);
+		
+		// although it might be correct that the synonym is not deleted from the taxonomic group 
+		// we would not expect it to be here, since we just deleted it from the taxon and are accessing synonyms
+		// via methods in Taxon
+		Assert.assertTrue("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted", 
+				homotypicGroupViaTaxon.getSynonymsInGroup(null).size() == 1); 
+	}
+	
 	
 	@Test
 	public void testClone(){

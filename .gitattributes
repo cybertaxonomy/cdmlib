@@ -983,7 +983,6 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/ZoologicalNameTest.java -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/occurrence/SpecimenTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/reference/PublicationBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/ClassificationTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/RemoveSynonymsInSameHomotypicGroupTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparatorTest.java -text
