@@ -35,6 +35,8 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 
 
@@ -360,12 +362,16 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * according to the respective reference, then they will not be included in
 	 * the result set.
 	 * 
+	 * @deprecated synonyms should not depend on the sec. Therefore this method will be removed in 
+	 * version 3.1 or higher. Use {@link Taxon#getSynonymsInGroup(HomotypicalGroup)} instead. But be
+	 * aware that the semantics is slightly different.
 	 * @param  sec	the reference whose treatment is to be considered
 	 * @return		the ordered list of synonyms
 	 * @see			TaxonNameBase#getSynonyms()
 	 * @see			TaxonNameBase#getTaxa()
 	 * @see			taxon.Synonym
 	 */
+	@Deprecated
 	public List<Synonym> getSynonymsInGroup(Reference sec){
 		List<Synonym> result = new ArrayList<Synonym>();
 		for (TaxonNameBase<?, ?>name : this.getTypifiedNames()){
@@ -379,8 +385,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		Collections.sort(result, new TaxonComparator());
 		return result;
 	}
-
-
+	
     /**
      * Creates a basionym relationship to all other names in this names homotypical
      * group. 

@@ -145,7 +145,7 @@ public class TaxonServiceImplBusinessTest {
 		
 		HomotypicalGroup homoGroup = newTaxon.getHomotypicGroup();
 		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup);
-		List<Synonym> synonymsInNewTaxonsGroup = homoGroup.getSynonymsInGroup(newTaxon.getSec());
+		List<Synonym> synonymsInNewTaxonsGroup = newTaxon.getSynonymsInGroup(homoGroup);
 		Assert.assertEquals("New accepted taxons homotypic group should have 2 synonym: s2 and the old synonym (which has not been deleted)", 2, synonymsInNewTaxonsGroup.size());
 		Assert.assertTrue("The old synonym's homotypic 'partner' must be a synonym of the new accepted taxon, too.", synonymsInNewTaxonsGroup.contains(s2));
 		Assert.assertTrue("The old synonym must be in the new accepted taxons homotypic group as it has not been deleted ", synonymsInNewTaxonsGroup.contains(s2));

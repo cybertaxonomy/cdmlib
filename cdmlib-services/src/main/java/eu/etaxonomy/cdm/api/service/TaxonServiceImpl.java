@@ -201,7 +201,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());
 		
 		SynonymRelationshipType relTypeForGroup = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		List<Synonym> heteroSynonyms = synonymHomotypicGroup.getSynonymsInGroup(acceptedTaxon.getSec());
+		List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
 		
 		for (Synonym heteroSynonym : heteroSynonyms){
 			if (synonym.equals(heteroSynonym)){
@@ -455,7 +455,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		List<HomotypicalGroup> homotypicalGroups = t.getHeterotypicSynonymyGroups();
 		List<List<Synonym>> heterotypicSynonymyGroups = new ArrayList<List<Synonym>>(homotypicalGroups.size());
 		for(HomotypicalGroup homotypicalGroup : homotypicalGroups){
-			heterotypicSynonymyGroups.add(homotypicalGroup.getSynonymsInGroup(t.getSec()));
+			heterotypicSynonymyGroups.add(t.getSynonymsInGroup(homotypicalGroup));
 		}
 		return heterotypicSynonymyGroups;
 	}

@@ -189,30 +189,6 @@ public class TaxonTest extends EntityTestBase {
 		assertFalse("The description has not properly been removed from the taxon", rootT.getDescriptions().contains(desc));
 		assertEquals("The taxon has not properly been removed from the description", null, desc.getTaxon());
 	}
-	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#NewInstance(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference)}.
-	 */
-	@Test
-	public void testNewInstance() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon()}.
-	 */
-	@Test
-	public void testTaxon() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference)}.
-	 */
-	@Test
-	public void testTaxonTaxonNameBaseReferenceBase() {
-		logger.warn("Not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getDescriptions()}.
@@ -531,7 +507,7 @@ public class TaxonTest extends EntityTestBase {
 		// add another synonym into the homotypic group we just created
 		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, homotypicGroupOfSynonym, null, null).getSynonym();
 		// everything is fine
-		Assert.assertTrue("We should have two synonyms in the group", homotypicGroupOfSynonym.getSynonymsInGroup(null).size() == 2);
+		Assert.assertEquals("We should have two synonyms in the group", 2, taxon.getSynonymsInGroup(homotypicGroupOfSynonym).size());
 		
 		// removing the synonym from the taxon
 		taxon.removeSynonym(synonym2);
@@ -545,8 +521,8 @@ public class TaxonTest extends EntityTestBase {
 		// although it might be correct that the synonym is not deleted from the taxonomic group 
 		// we would not expect it to be here, since we just deleted it from the taxon and are accessing synonyms
 		// via methods in Taxon
-		Assert.assertTrue("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted", 
-				homotypicGroupViaTaxon.getSynonymsInGroup(null).size() == 1); 
+		Assert.assertEquals("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted", 
+				1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size()); 
 	}
 	
 	
