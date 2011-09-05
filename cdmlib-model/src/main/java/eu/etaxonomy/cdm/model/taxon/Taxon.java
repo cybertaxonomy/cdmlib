@@ -1501,13 +1501,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	}
 
 	/**
-	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} heterotypic
-	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
-	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least
-	 * one homotypical group which cannot be the homotypical group to which the
+	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} 
+	 * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms 
+	 * belong to a homotypical group which cannot be the homotypical group to which the
 	 * taxon name of <i>this</i> taxon belongs. This method returns the same
 	 * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
-	 * but the homotypical group to which the taxon name of <i>this</i> taxon
+	 * but without the homotypical group to which the taxon name of <i>this</i> taxon
 	 * belongs.<BR>
 	 * The list returned is ordered according to the date of publication of the
 	 * first published name within each homotypical group.
