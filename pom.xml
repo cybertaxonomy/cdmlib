@@ -194,7 +194,7 @@
 		<!-- the cdm internal repository -->
 		<repository>
 			<id>EditRepository</id>
-			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
+			<url>http://wp5.e-taxonomy.eu/mavenrepo/</url>
 		</repository>
 		<!-- apache incubating repository -->
 		<repository>
@@ -572,7 +572,7 @@
 			<uniqueVersion>false</uniqueVersion>
 			<id>wp5.e-taxonomy.eu</id>
 			<name>Edit Maven Repository</name>
-			<url>scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
+			<url>scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
 			<layout>default</layout>
 		</repository>
 	</distributionManagement>
