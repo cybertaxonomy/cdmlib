@@ -1915,24 +1915,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		return 0;
-		
 	}
 
 
-	public long deleteSynonymRelationships(Synonym syn) {
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
+	 */
+	public long deleteSynonymRelationships(Synonym synonym, Taxon taxon) {
 		
-		/*
-		 * DELETE RT
-FROM         RelTaxon AS RT INNER JOIN
-                      Taxon AS FaEuSyn ON RT.TaxonFk1 = FaEuSyn.TaxonId INNER JOIN
-                      Taxon AS ERMSAcc ON FaEuSyn.RankFk = ERMSAcc.RankFk AND FaEuSyn.FullName = ERMSAcc.FullName AND ISNULL(FaEuSyn.TaxonStatusFk, 0)
-                      <> ERMSAcc.TaxonStatusFk
-WHERE     (FaEuSyn.OriginalDB = N'FaEu') AND (ERMSAcc.OriginalDB = N'ERMS') AND (ERMSAcc.TaxonStatusFk = 1) AND (ERMSAcc.KingdomFk = 2) AND
-                      (RT.RelTaxonQualifierFk > 100)
-		 */
+		String hql = "delete SynonymRelationship sr where sr.relatedFrom = :syn ";
+		if (taxon != null){
+			hql += " and sr.relatedTo = :taxon";
+		}
 		Session session = this.getSession();
-		Query q = session.createQuery("delete SynonymRelationship sr where sr.relatedFrom = :syn");
-		q.setParameter("syn", syn);
+		Query q = session.createQuery(hql);
+		
+		q.setParameter("syn", synonym);
+		if (taxon != null){
+			q.setParameter("taxon", taxon);
+		}
 		return q.executeUpdate();
 	}
 
