@@ -42,7 +42,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	@XmlAttribute(name = "isDoubtful")
 	private boolean doubtful;
 	
-	//this set is used only for persistence (CdmDeleteListener) to delete savely relationships and update there former related objects
+	//this set is used only for persistence (CdmDeleteListener) to delete savely relationships and update their former related objects
 	@XmlTransient
 	@Transient
 	protected Set<IRelated> deletedObjects = new HashSet<IRelated>();
