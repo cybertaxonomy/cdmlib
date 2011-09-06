@@ -28,8 +28,8 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 @Ignore
-public class NameServiceImplTest2 extends CdmIntegrationTest {
-	private static final Logger logger = Logger.getLogger(NameServiceImplTest2.class);
+public class NameServiceImplTest extends CdmIntegrationTest {
+	private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
 
 	@SpringBeanByType
 	private INameService nameService;
