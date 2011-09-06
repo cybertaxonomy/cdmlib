@@ -288,7 +288,9 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	 * @param acceptedTaxon
 	 */
 	public void replaceAcceptedTaxon(Taxon newAcceptedTaxon, SynonymRelationshipType relType, boolean copyCitationInfo, Reference citation, String microCitation) {
-		Set<SynonymRelationship> rels = this.getSynonymRelations();
+		Set<SynonymRelationship> rels = new HashSet<SynonymRelationship>();
+		rels.addAll(this.getSynonymRelations());
+		
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
 			//remove old
