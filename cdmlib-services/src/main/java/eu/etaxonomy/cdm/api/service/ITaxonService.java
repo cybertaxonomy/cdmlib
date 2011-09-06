@@ -132,7 +132,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * Changes a synonym into an accepted taxon and removes 
 	 * the synonym relationship to the given accepted taxon.
 	 * Other synonyms homotypic to the synonym to change are
-	 * are moved to the same new accepted taxon as homotypic
+	 * moved to the same new accepted taxon as homotypic
 	 * synonyms. The new accepted taxon has the same name and
 	 * the same sec reference as the old synonym.<BR>
 	 * If the given accepted taxon and the synonym are homotypic
@@ -309,8 +309,36 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
+	/**
+	 * Returns the list of all synonyms that share the same homotypical group with the given taxon.
+	 * Only those homotypic synonyms are returned that do have a synonym relationship with the accepted taxon.
+	 * @param taxon
+	 * @param propertyPaths
+	 * @return
+	 */
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
 	
+	/**
+	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} 
+	 * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms 
+	 * belong to a homotypical group which cannot be the homotypical group to which the
+	 * taxon name of <i>this</i> taxon belongs. This method returns the same
+	 * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
+	 * but without the homotypical group to which the taxon name of <i>this</i> taxon
+	 * belongs.<BR>
+	 * The list returned is ordered according to the date of publication of the
+	 * first published name within each homotypical group.
+	 * 
+	 * @see			#getHeterotypicSynonymyGroups()
+	 * @see			#getSynonyms()
+	 * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
+
+	 * @param taxon
+	 * @param propertyPaths
+	 * @return
+	 */
 	public List<List<Synonym>> getHeterotypicSynonymyGroups(Taxon taxon, List<String> propertyPaths);
 	
 	/**
