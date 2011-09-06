@@ -269,7 +269,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 
 	/**
 	 * Replaces ALL accepted taxa of this synonym by the new accepted taxon.
-	 * The citation information (citation /microcitation) is kept of the synonym relationship
+	 * The citation information (citation /microcitation) of the synonym relationship
 	 * is kept.
 	 * @param newAcceptedTaxon
 	 * 			the new accepted taxon
@@ -292,9 +292,11 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
 			oldAcceptedTaxon.getSynonymRelations().remove(rel);
-			rel.setAcceptedTaxon(newAcceptedTaxon);
-			newAcceptedTaxon.getSynonymRelations().add(rel);
-			rel.setType(relType);
+			rel.getSynonym().getSynonymRelations().remove(rel);
+			SynonymRelationship newRel = (SynonymRelationship)rel.clone();
+			newRel.setAcceptedTaxon(newAcceptedTaxon);
+			newAcceptedTaxon.getSynonymRelations().add(newRel);
+			newRel.setType(relType);
 		}
 	}
 //*********************** CLONE ********************************************************/

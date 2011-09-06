@@ -166,9 +166,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Transactional(readOnly = false)
 	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
 		
-		TaxonNameBase synonymName = synonym.getName();
+		TaxonNameBase<?,?> synonymName = synonym.getName();
 		synonymName.removeTaxonBase(synonym);
-		TaxonNameBase taxonName = acceptedTaxon.getName();
+		TaxonNameBase<?,?> taxonName = acceptedTaxon.getName();
 		taxonName.removeTaxonBase(acceptedTaxon);
 		
 		synonym.setName(taxonName);

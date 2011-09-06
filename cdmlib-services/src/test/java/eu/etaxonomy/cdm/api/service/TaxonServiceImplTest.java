@@ -132,20 +132,25 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	public final void testMakeSynonymTaxon(){
+	public final void testChangeSynonymToAcceptedTaxon(){
 		Rank rank = Rank.SPECIES();
 		//HomotypicalGroup group = HomotypicalGroup.NewInstance();
 		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
 		Taxon tax2 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+		Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+		synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
 		//tax2.addHeterotypicSynonymName(synonym.getName());
 		tax2.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		BotanicalName name = (BotanicalName)synonym.getName();
-		UUID uuidTaxon = service.save(tax1);
-		UUID uuidSyn = service.save(synonym);
-		UUID uuidGenus = service.save(tax2);
+		tax2.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		
-		Taxon tax = service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
+		service.save(tax1);
+		UUID uuidSyn = service.save(synonym);
+		service.save(synonym2);
+		service.save(tax2);
+		
+		service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
+		//test flush (resave deleted object)
 		TaxonBase<?> syn = service.find(uuidSyn);
 		assertNull(syn);
 		
