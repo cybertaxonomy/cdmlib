@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
-import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -41,7 +40,6 @@ import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.TaggedText;
-import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
@@ -328,5 +326,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
      */
     public HomotypicalGroup findHomotypicalGroup(UUID uuid);
     
+    /**
+     * @param uuid
+     * @return
+     */
     public List<TaggedText> getTaggedName(UUID uuid);
 }
