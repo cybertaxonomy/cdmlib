@@ -289,7 +289,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	 */
 	public void replaceAcceptedTaxon(Taxon newAcceptedTaxon, SynonymRelationshipType relType, boolean copyCitationInfo, Reference citation, String microCitation) {
 		Set<SynonymRelationship> rels = new HashSet<SynonymRelationship>();
-		rels.addAll(this.getSynonymRelations());
+		rels.addAll(this.getSynonymRelations());  //avoid concurrent modification exception
 		
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
