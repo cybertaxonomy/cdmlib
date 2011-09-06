@@ -27,38 +27,39 @@ import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 public class TaxonNodeDaoBeanProcessor implements JsonBeanProcessor {
 
 
-	/* (non-Javadoc)
-	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
-	 */
-	@Override
-	public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
+    /* (non-Javadoc)
+     * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
+     */
+    @Override
+    public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 
-		TaxonNode node = (TaxonNode)bean;
-		JSONObject json = new JSONObject();
-		json.element("class", "TaxonNodeDao");
-		json.element("uuid", node.getUuid(), jsonConfig);
-		json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
-		List<TaggedText> taggedTitle = TaggedTextGenerator.getTaggedName(node.getTaxon().getName());
-		json.element("taggedTitle", taggedTitle, jsonConfig);
-		json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
-		//Sec can be null (web services can return null for sec)
-		//comparation made for avoiding view exceptions
-		if (node.getTaxon().getSec() == null){
-			json.element("secUuid", "null");
-		}else{
-			json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
-		}
-		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
-		json.element("unplaced", node.getTaxon().isUnplaced());
-		json.element("excluded", node.getTaxon().isExcluded());
-		String ranklabel = null;
-		if(node.getTaxon().getName().getRank() != null){
-			ranklabel = node.getTaxon().getName().getRank().getLabel();
-		}
-		json.element("rankLabel", ranklabel, jsonConfig);
-		//json.element("treeUuid", node.getClassification().getUuid(), jsonConfig);
+        TaxonNode node = (TaxonNode)bean;
+        JSONObject json = new JSONObject();
+        json.element("class", "TaxonNodeDao");
+        json.element("uuid", node.getUuid(), jsonConfig);
+        json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
+//		List<TaggedText> taggedTitle = TaggedTextGenerator.getTaggedName(node.getTaxon().getName());
+        List<TaggedText> taggedTitle = node.getTaxon().getName().getTaggedName();
+        json.element("taggedTitle", taggedTitle, jsonConfig);
+        json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
+        //Sec can be null (web services can return null for sec)
+        //comparation made for avoiding view exceptions
+        if (node.getTaxon().getSec() == null){
+            json.element("secUuid", "null");
+        }else{
+            json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
+        }
+        json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
+        json.element("unplaced", node.getTaxon().isUnplaced());
+        json.element("excluded", node.getTaxon().isExcluded());
+        String ranklabel = null;
+        if(node.getTaxon().getName().getRank() != null){
+            ranklabel = node.getTaxon().getName().getRank().getLabel();
+        }
+        json.element("rankLabel", ranklabel, jsonConfig);
+        //json.element("treeUuid", node.getClassification().getUuid(), jsonConfig);
 
-		return json;
-	}
+        return json;
+    }
 
 }

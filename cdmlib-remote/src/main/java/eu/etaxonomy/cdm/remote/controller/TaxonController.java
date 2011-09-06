@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 20.07.2009
  *
@@ -52,114 +52,114 @@ import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 @RequestMapping(value = {"/taxon/{uuid}"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
-	public static final Logger logger = Logger.getLogger(TaxonController.class);
-	
-	@Autowired
-	private IOccurrenceService occurrenceService;
-	@Autowired
-	private INameService nameService;
-	
-	protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-			"taxonNodes"
-	});
-	
-	public TaxonController(){
-		super();
-		setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
-	}
-	
+    public static final Logger logger = Logger.getLogger(TaxonController.class);
 
-	@Autowired
-	public void setService(ITaxonService service) {
-		this.service = service;
-	}
-	
+    @Autowired
+    private IOccurrenceService occurrenceService;
+    @Autowired
+    private INameService nameService;
 
-	/**
-	 * Get the set of accepted {@link Taxon} entities for a given
-	 * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
-	 * <p>
-	 * URI: <b>&#x002F;{datasource-name}&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>
-	 * 
-	 * @param request
-	 * @param response
-	 * @return a set on a list of {@link Taxon} entities which are initialized
-	 *         using the following initialization strategy:
-	 *         {@link #DEFAULT_INIT_STRATEGY}
-	 * @throws IOException
-	 */
-	@RequestMapping(value = "accepted", method = RequestMethod.GET)
-	public Set<TaxonBase> doGetAccepted(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response) throws IOException {
-		logger.info("getAccepted() " + request.getServletPath());
-		TaxonBase tb = service.load(uuid);
-		HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
-		if(tb instanceof Taxon){
-			//the taxon already is accepted
-			//FIXME take the current view into account once views are implemented!!!
-			resultset.add((Taxon)tb);
-		} else {
-			Synonym syn = (Synonym)tb;
-			resultset.addAll(syn.getAcceptedTaxa());
-			//TODO init Synonyms
-		}
-		return resultset;
-	}
-	
-	@RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
-	public Set<TaxonNode>  doGetTaxonNodes(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response) throws IOException {
-		TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
-		if(tb instanceof Taxon){
-			return ((Taxon)tb).getTaxonNodes();
-		} else {
-			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-			return null;
-		}
-	}
-	
-	@RequestMapping(value = "specimensOrObersvations", method = RequestMethod.GET)
-	public ModelAndView doListSpecimensOrObersvations(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response) throws IOException {
-		logger.info("doListSpecimensOrObersvations() - " + request.getServletPath());
-		
-		ModelAndView mv = new ModelAndView();
+    protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
+            "taxonNodes"
+    });
 
-		TaxonBase tb = service.load(uuid);
-		
-		List<OrderHint> orderHints = new ArrayList<OrderHint>();
-		orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
-		
-		if(tb instanceof Taxon){
-			List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAnyAssociation(
-					null, (Taxon)tb, null, 0, orderHints, null);
-			mv.addObject(specimensOrObersvations);
-		} else {
-			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-			return null;
-		}
-		
-		return mv;
-	}
-	
-	@RequestMapping(value = "taggedName", method = RequestMethod.GET)
-	public ModelAndView doGetTaggedName(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response) throws IOException {
-		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
-		
-		ModelAndView mv = new ModelAndView();
-		
-		TaxonBase tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
-		mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
-		return mv;
-	}
-		
+    public TaxonController(){
+        super();
+        setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
+    }
+
+
+    @Autowired
+    public void setService(ITaxonService service) {
+        this.service = service;
+    }
+
+
+    /**
+     * Get the set of accepted {@link Taxon} entities for a given
+     * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>
+     *
+     * @param request
+     * @param response
+     * @return a set on a list of {@link Taxon} entities which are initialized
+     *         using the following initialization strategy:
+     *         {@link #DEFAULT_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(value = "accepted", method = RequestMethod.GET)
+    public Set<TaxonBase> doGetAccepted(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("getAccepted() " + request.getServletPath());
+        TaxonBase tb = service.load(uuid);
+        HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
+        if(tb instanceof Taxon){
+            //the taxon already is accepted
+            //FIXME take the current view into account once views are implemented!!!
+            resultset.add((Taxon)tb);
+        } else {
+            Synonym syn = (Synonym)tb;
+            resultset.addAll(syn.getAcceptedTaxa());
+            //TODO init Synonyms
+        }
+        return resultset;
+    }
+
+    @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
+    public Set<TaxonNode>  doGetTaxonNodes(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        if(tb instanceof Taxon){
+            return ((Taxon)tb).getTaxonNodes();
+        } else {
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "specimensOrObersvations", method = RequestMethod.GET)
+    public ModelAndView doListSpecimensOrObersvations(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doListSpecimensOrObersvations() - " + request.getServletPath());
+
+        ModelAndView mv = new ModelAndView();
+
+        TaxonBase tb = service.load(uuid);
+
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+
+        if(tb instanceof Taxon){
+            List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAnyAssociation(
+                    null, (Taxon)tb, null, 0, orderHints, null);
+            mv.addObject(specimensOrObersvations);
+        } else {
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            return null;
+        }
+
+        return mv;
+    }
+
+    @RequestMapping(value = "taggedName", method = RequestMethod.GET)
+    public ModelAndView doGetTaggedName(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+
+        ModelAndView mv = new ModelAndView();
+
+        TaxonBase tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
+        mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
+        return mv;
+    }
+
 }
