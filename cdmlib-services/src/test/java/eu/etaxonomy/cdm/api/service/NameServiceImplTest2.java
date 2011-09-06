@@ -13,6 +13,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -25,11 +27,12 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author a.mueller
  *
  */
+@Ignore
 public class NameServiceImplTest2 extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(NameServiceImplTest2.class);
 
 	@SpringBeanByType
-	private INameService service;
+	private INameService nameService;
 	
 /* ******************** TESTS ********************************************/
 	
@@ -38,7 +41,7 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 */
 	@Test
 	public void testSetDao() {
-		logger.warn("Not yet implemented");
+//		Assert.assertNotNull(((NameServiceImpl)nameService).dao);
 	}
 
 	/**
@@ -46,15 +49,7 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 */
 	@Test
 	public void testSetVocabularyDao() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#NameServiceImpl()}.
-	 */
-	@Test
-	public void testNameServiceImpl() {
-		logger.warn("Not yet implemented");
+//		Assert.assertNotNull(( (NameServiceImpl)nameService).vocabularyDao);
 	}
 
 	/**
@@ -110,7 +105,8 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 */
 	@Test
 	public void testGetRankVocabulary() {
-		OrderedTermVocabulary<Rank> rankVocabulary = service.getRankVocabulary();
+		//TODO move test to vocabulary service
+		OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
 		assertNotNull(rankVocabulary);
 		assertEquals(62, rankVocabulary.size());
 		Rank highestRank = rankVocabulary.getHighestTerm();
@@ -125,8 +121,9 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 */
 	@Test
 	public void testGetTypeDesignationVocabulary() {
+		//TODO move test to vocabulary service
 		OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary = 
-			service.getSpecimenTypeDesignationVocabulary();
+			nameService.getSpecimenTypeDesignationVocabulary();
 		assertNotNull(typeDesignationVocabulary);
 		assertEquals(62, typeDesignationVocabulary.size());
 		SpecimenTypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
