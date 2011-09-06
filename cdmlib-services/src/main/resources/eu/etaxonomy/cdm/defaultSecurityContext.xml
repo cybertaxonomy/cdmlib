@@ -30,6 +30,8 @@
         <property name="userPropertyToUse" value="getUsername"/>
     </bean>
     
+    <!-- Disabling in trunk. Method security is currently beeing developed in http://dev.e-taxonomy.eu/svn/branches/cdmlib/security/ -->
+    <!-- 
     <security:global-method-security pre-post-annotations="enabled">
 		<security:expression-handler ref="expressionHandler"/>
 	</security:global-method-security>
@@ -40,5 +42,5 @@
 	
 	
  	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
-    
+     -->
 </beans>
