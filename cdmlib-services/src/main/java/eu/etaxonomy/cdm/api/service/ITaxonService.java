@@ -320,13 +320,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
 	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} 
-	 * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.
+	 * that contain {@link Synonym synonyms} that are heterotypic to the given taxon.
 	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms 
 	 * belong to a homotypical group which cannot be the homotypical group to which the
-	 * taxon name of <i>this</i> taxon belongs. This method returns the same
-	 * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
-	 * but without the homotypical group to which the taxon name of <i>this</i> taxon
-	 * belongs.<BR>
+	 * taxon name of the given taxon belongs. This method does not return the homotypic group the given
+	 * taxon belongs to.<BR>
+	 * This method does neglect the type of synonym relationship that is defined between the given taxon
+	 * and the synonym. So the synonym relationship may be homotypic however a synonym is returned
+	 * in one of the result lists as long as the synonym does not belong to the same homotypic group as
+	 * the given taxon.<BR>
 	 * The list returned is ordered according to the date of publication of the
 	 * first published name within each homotypical group.
 	 * 
