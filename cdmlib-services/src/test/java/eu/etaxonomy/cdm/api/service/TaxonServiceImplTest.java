@@ -149,10 +149,11 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		service.save(synonym2);
 		service.save(tax2);
 		
-		service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
+		Taxon taxon = service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
 		//test flush (resave deleted object)
 		TaxonBase<?> syn = service.find(uuidSyn);
 		assertNull(syn);
+		Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, taxon.getSynonymRelations().size());
 		
 		
 	

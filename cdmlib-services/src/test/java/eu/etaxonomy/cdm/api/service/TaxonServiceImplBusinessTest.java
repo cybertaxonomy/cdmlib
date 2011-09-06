@@ -119,30 +119,29 @@ public class TaxonServiceImplBusinessTest {
 	@Test
 	public final void testChangeSynonymWithMultipleSynonymsInHomotypicalGroupToAcceptedTaxon() {
 		t1.addSynonym(s1, heteroTypicSynonymRelationshipType);
-		TaxonNameBase otherHeteroSynonymName = NonViralName.NewInstance(null);
+		TaxonNameBase<?,?> otherHeteroSynonymName = NonViralName.NewInstance(null);
 		t1.addHeterotypicSynonymName(otherHeteroSynonymName);
-		TaxonNameBase homotypicSynonymName = NonViralName.NewInstance(null);
+		TaxonNameBase<?,?> homotypicSynonymName = NonViralName.NewInstance(null);
 		Synonym homotypicSynonym = Synonym.NewInstance(homotypicSynonymName, t1.getSec());
 		t1.addHomotypicSynonym(homotypicSynonym, null, null);
 		
 		HomotypicalGroup group = s1.getHomotypicGroup();
-		Reference citation1 = ReferenceFactory.newBook();
+		Reference<?> citation1 = ReferenceFactory.newBook();
 		String microReference1 = "p. 55";
 		SynonymRelationship s2rel = t1.addHeterotypicSynonymName(s2n, group, citation1, microReference1);
 		Synonym s2 = s2rel.getSynonym();
 		HomotypicalGroup homoGroup2 = s1.getHomotypicGroup();
 		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup2);
 			
+		//run
 		Taxon newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false, true, null, null);
 	
 		Assert.assertEquals("Former accepted taxon should now have 2 synonyms left", 2, t1.getSynonyms().size());
 		Assert.assertEquals("Former accepted taxon should now have 1 heterotypic synonym group left", 1, t1.getHeterotypicSynonymyGroups().size());
-		
 		Assert.assertNotNull(newTaxon);
 		Assert.assertEquals(s1n, newTaxon.getName());
 		Assert.assertEquals("New accepted taxon should have 1 synonym", 1, newTaxon.getSynonyms().size());
 		Assert.assertEquals("The new synonym must be the homotypic synonym of the old synonym", s2, newTaxon.getSynonyms().iterator().next());
-		
 		HomotypicalGroup homoGroup = newTaxon.getHomotypicGroup();
 		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup);
 		
