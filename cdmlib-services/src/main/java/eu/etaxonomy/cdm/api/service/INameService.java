@@ -91,35 +91,35 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	/**
 	 * Returns all Ranks
 	 * @return
-	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
 	 */
 	public OrderedTermVocabulary<Rank> getRankVocabulary();
 	
 	/**
 	 * Returns all NomenclaturalStatusTypes
 	 * @return
-	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
 	 */
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
 	
 	/**
 	 * Returns TypeDesignationStatus vocabulary
 	 * @return
-	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
 	 */
 	public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary();
 		
 	/**
 	 * Returns TypeDesignationStatus ordered vocabulary
 	 * @return
-	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
 	 */
 	public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary();
 
 	/**
 	 * Returns all NameRelationshipTypes
 	 * @return
-	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
 	 */
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 	
