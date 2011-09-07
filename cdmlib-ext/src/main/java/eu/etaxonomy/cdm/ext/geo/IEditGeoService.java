@@ -13,9 +13,12 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -116,5 +119,14 @@ public interface IEditGeoService {
 			Integer height, 
 			String bbox, 
 			String backLayer);
+
+	/**
+	 * Adds an area mapping (CDM area -> geo service area). It is recommended to set the mapping 
+	 * in a persistent way, so it is available after restarting the application. 
+	 * @param area
+	 * @param geoServiceArea
+	 * @throws XMLStreamException
+	 */
+	public void setMapping(NamedArea area, GeoServiceArea geoServiceArea);
 	
 }

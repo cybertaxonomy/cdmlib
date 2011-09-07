@@ -25,7 +25,6 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -47,18 +46,24 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 /**
+ * Class implementing the business logic for creating the map service string for
+ * a given set of distributions. See {@link EditGeoService} as API for the given functionality.
+ * 
+ * @see EditGeoService 
+ * 
  * @author a.mueller
  * @created 17.11.2008
  * @version 1.0
  */
-@Component
 public class EditGeoServiceUtilities {
 	private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
 	private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
 
 	private static IDefinedTermDao termDao;
-
+   
+    
+    
 	/**
 	 * @param termDao
 	 */
@@ -194,6 +199,7 @@ public class EditGeoServiceUtilities {
 	@Transient
 	public static String getDistributionServiceRequestParameterString(
 			Set<Distribution> distributions,
+            IGeoServiceAreaMapping mapping,
 			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
 			int width,
 			int height,
@@ -220,12 +226,16 @@ public class EditGeoServiceUtilities {
 		String borderDashingPattern = "";
 
 
+		//handle empty set
 		if(distributions == null || distributions.size() == 0){
 			return "";
 		}
+		
 		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
-		groupStylesAndLayers(distributions, layerMap, statusList);
+		
+		groupStylesAndLayers(distributions, layerMap, statusList, mapping);
+
 
 		presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
@@ -305,12 +315,13 @@ public class EditGeoServiceUtilities {
 				areasPerStyle = new ArrayList<String>();
 				for (Distribution distribution: distributionSet){
 					// areasPerStyle
-					areasPerStyle.add(getAreaAbbrev(distribution));
+					areasPerStyle.add(encode(getAreaAbbrev(distribution, mapping)));
 				}
 				stylesPerLayer.add(styleChar + ID_FROM_VALUES_SEPARATOR + StringUtils.join(areasPerStyle.iterator(), SUBENTRY_DELIMITER));
 			}
 			perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(stylesPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
 		}
+
 
 		if(generateMultipleAreaDataParameters){
 			// not generically possible since parameters can not contain duplicate keys with value "ad"
@@ -324,13 +335,21 @@ public class EditGeoServiceUtilities {
 		return queryString;
 	}
 
+	/**
+	 * Fills the layerMap and the statusList
+	 * @param distributions
+	 * @param layerMap
+	 * @param statusList
+	 */
 	private static void groupStylesAndLayers(Set<Distribution> distributions,
-			Map<String, Map<Integer, Set<Distribution>>> layerMap,
-			List<PresenceAbsenceTermBase<?>> statusList) {
+			Map<String, Map<Integer,Set<Distribution>>> layerMap,
+			List<PresenceAbsenceTermBase<?>> statusList,
+			IGeoServiceAreaMapping mapping) {
+
 
 		//iterate through distributions and group styles and layers
 		//and collect necessary information
-		for (Distribution distribution:distributions){
+		for (Distribution distribution : distributions){
 			//collect status
 			PresenceAbsenceTermBase<?> status = distribution.getStatus();
 			if(status == null){
@@ -342,8 +361,8 @@ public class EditGeoServiceUtilities {
 			//group areas by layers and styles
 			NamedArea area = distribution.getArea();
 
-			addArea(layerMap, statusList, distribution, area);
 
+            addArea(layerMap, statusList, distribution, area, mapping);
 		}
 	}
 
@@ -353,18 +372,22 @@ public class EditGeoServiceUtilities {
 	 * @param distribution
 	 * @param area
 	 */
-	private static void addArea(Map<String, Map<Integer, Set<Distribution>>> layerMap, List<PresenceAbsenceTermBase<?>> statusList,
-			Distribution distribution, NamedArea area) {
+	private static void addArea(Map<String, Map<Integer, 
+			Set<Distribution>>> layerMap, 
+			List<PresenceAbsenceTermBase<?>> statusList,
+			Distribution distribution, 
+			NamedArea area,
+			IGeoServiceAreaMapping mapping) {
 
 		if (area != null){
-			String geoLayerString = getWMSLayerName(area);
+            String geoLayerString = getWMSLayerName(area, mapping);
 
 			if(geoLayerString == null){
 
 				// if no layer is mapped this area descend into sub areas in order to project
 				// the distribution to those
 				for(NamedArea subArea : area.getIncludes()){
-					addArea(layerMap, statusList, distribution, subArea);
+                    addArea(layerMap, statusList, distribution, subArea, mapping);
 				}
 
 			} else {
@@ -436,15 +459,32 @@ public class EditGeoServiceUtilities {
 		return queryString.toString();
 	}
 
-	private static String getAreaAbbrev(Distribution distribution){
+	private static String getAreaAbbrev(Distribution distribution, IGeoServiceAreaMapping mapping){
 		NamedArea area = distribution.getArea();
+		TermVocabulary<NamedArea> voc = area.getVocabulary();
+		String result = null;
+		if (voc !=  null && voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary) || voc.getUuid().equals(uuidCyprusDivisionsVocabulary) ){
 		Representation representation = area.getRepresentation(Language.DEFAULT());
-		String areaAbbrev = representation.getAbbreviatedLabel();
+			result = representation.getAbbreviatedLabel();
 		if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
-			areaAbbrev = areaAbbrev.replace("-", "");
+				result = result.replace("-", "");
 		}
-		return CdmUtils.Nz(areaAbbrev, "-");
+			
+		}else{
+			GeoServiceArea areas =mapping.valueOf(area);
+			if ((areas != null) && areas.size()>0){
+				//FIXME multiple layers
+				List<String> values= areas.getAreasMap().values().iterator().next().values().iterator().next();
+				for (String value : values){
+					result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
 	}
+			}
+			
+		}
+		return CdmUtils.Nz(result, "-");
+		
+	}
+
 
 
 	//Preliminary as long as user defined areas are not fully implemented
@@ -492,7 +532,7 @@ public class EditGeoServiceUtilities {
 		return null;
 	}
 
-	private static String getWMSLayerName(NamedArea area){
+	private static String getWMSLayerName(NamedArea area, IGeoServiceAreaMapping mapping){
 		TermVocabulary<NamedArea> voc = area.getVocabulary();
 		//TDWG areas
 		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
@@ -517,6 +557,16 @@ public class EditGeoServiceUtilities {
 		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
 			return "cyprusdivs:bdcode";
 		}
+		
+		GeoServiceArea areas = mapping.valueOf(area);
+		if (areas != null && areas.getAreasMap().size() > 0){
+			//FIXME multiple layers
+			String layer = areas.getAreasMap().keySet().iterator().next();
+			Map<String, List<String>> fields = areas.getAreasMap().get(layer);
+			String field = fields.keySet().iterator().next();
+			return layer + ":" + field;
+		}
+		
 		return null;
 	}
 

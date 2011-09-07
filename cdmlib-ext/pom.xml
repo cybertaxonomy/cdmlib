@@ -7,7 +7,7 @@
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
     <version>3.0.7-SNAPSHOT</version>
-	<relativePath>pom.xml</relativePath>
+	<relativePath>../pom.xml</relativePath>
 	</parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -25,6 +25,26 @@
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
   	</dependency>
+    <dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-persistence</artifactId>
+  		<type>test-jar</type>
+  		<scope>test</scope> 
+  		<version>${project.version}</version>
+  	</dependency>
+  	  	<dependency>
+        <groupId>org.unitils</groupId>
+        <artifactId>unitils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dbunit</groupId>
+      <artifactId>dbunit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+  	</dependency>
+  	  	
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
 	    <artifactId>httpclient</artifactId>

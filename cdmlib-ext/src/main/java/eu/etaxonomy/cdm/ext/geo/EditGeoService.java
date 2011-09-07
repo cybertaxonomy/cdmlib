@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
@@ -51,6 +52,10 @@ public class EditGeoService implements IEditGeoService{
 	@Autowired
 	private IDescriptionDao dao;
 	
+
+    @Autowired
+    private IGeoServiceAreaMapping areaMapping;
+ 	
 	private IDefinedTermDao termDao;
 		
 	@Autowired
@@ -87,7 +92,7 @@ public class EditGeoService implements IEditGeoService{
 		if(backLayer == null){
 			backLayer = DEFAULT_BACK_LAYER;
 		}
-		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
+		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
 
 		return uriParams;
 	}
@@ -127,7 +132,7 @@ public class EditGeoService implements IEditGeoService{
 		if(backLayer == null){
 			backLayer = DEFAULT_BACK_LAYER;
 		}
-		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distCollection,
+		String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distCollection,areaMapping,
 			presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
 
 		return uriParams;
@@ -191,6 +196,15 @@ public class EditGeoService implements IEditGeoService{
 			}
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#setMapping(eu.etaxonomy.cdm.model.location.NamedArea, eu.etaxonomy.cdm.ext.geo.GeoServiceArea)
+	 */
+	@Override
+	public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
+		areaMapping.set(area, geoServiceArea);
+		
 	}
 
 }

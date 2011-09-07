@@ -35,6 +35,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.StreamUtils;
@@ -51,14 +52,14 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 08.10.2008
  * @version 1.0
  */
-public class EditGeoServiceTest extends CdmUnitTestBase {
+public class EditGeoServiceTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
@@ -67,6 +68,10 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 	
 	//@SpringBeanByType
 	private IDefinedTermDao termDao;
+
+	@SpringBeanByType
+	private GeoServiceAreaAnnotatedMapping mapping;
+
 	
 	/**
 	 * @throws java.lang.Exception
@@ -123,7 +128,7 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		String bbox="-20,0,120,70";
 		List<Language> languages = new ArrayList<Language>();
 				
-		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
+		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
@@ -163,10 +168,9 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		String bbox="-20,0,120,70";
 		List<Language> languages = new ArrayList<Language>();
 				
-		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
+		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
-		System.out.println(result);
 		assertTrue(result.matches(".*l=earth.*"));
 		assertTrue(result.matches(".*ms=600,300.*"));
 		assertTrue(result.matches(".*ad=cyprusdivs%3Abdcode:.*"));
@@ -179,8 +183,7 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		subTestWithEditMapService(result);
 	}
 
-	private void subTestWithEditMapService(String result)
-			throws MalformedURLException, IOException {
+	private void subTestWithEditMapService(String result)throws MalformedURLException, IOException {
 		if(UriUtils.isServiceAvailable(editMapServiceUri)){
 			URL requestUrl = new URL(editMapServiceUri.toString() + "?img=false&" + result); 
 			HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
@@ -262,4 +265,47 @@ public class EditGeoServiceTest extends CdmUnitTestBase {
 		namedArea.setUuid(uuid);
 		return namedArea;
 	}
+	
+	@Test
+	public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException, URISyntaxException {
+		NamedArea areaBangka = NamedArea.NewInstance("Bangka", "Bangka", null);
+		TermVocabulary<NamedArea> voc = TermVocabulary.NewInstance("test Voc", "test voc", null, null);
+		voc.addTerm(areaBangka);
+		
+		GeoServiceArea geoServiceArea = new GeoServiceArea();
+		String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+		String layerFieldName ="nam";
+		String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
+		geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+		geoServiceArea.add(geoServiceLayer, layerFieldName, "BALI");
+		
+		mapping.set(areaBangka, geoServiceArea);
+		Set<Distribution> distributions = new HashSet<Distribution>();
+		distributions.add(Distribution.NewInstance(areaBangka, PresenceTerm.PRESENT()));
+
+		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+		presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
+
+		String backLayer ="";
+		presenceAbsenceColorMap = null;
+		String bbox="90,-8,130,8";
+		List<Language> languages = new ArrayList<Language>();
+		
+		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
+		//TODO Set semantics is not determined
+		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
+		
+		System.out.println(result);
+		
+		assertTrue(result.matches(".*l=earth.*"));
+		assertTrue(result.matches(".*ms=600,300.*"));
+		assertTrue(result.matches(".*ad=vmap0_as_bnd_political_boundary_a%3Anam:.*"));
+		assertTrue(result.matches(".*(PULAU\\+BANGKA%23SUMATERA\\+SELATAN).*") );
+		assertTrue(result.matches(".*(BALI).*") );
+		
+		// request map image from webservice
+		subTestWithEditMapService(result);
+	}	
+	
+	
 }
