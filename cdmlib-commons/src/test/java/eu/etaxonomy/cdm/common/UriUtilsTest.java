@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class UriUtilsTest {
 	private static final Logger logger = Logger.getLogger(UriUtilsTest.class);
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -31,7 +31,7 @@ public class UriUtilsTest {
 	}
 
 //********************* TESTS **********************************************/
-	
+
 	@Test
 	public void testCreateUri() {
 		try {
@@ -45,7 +45,7 @@ public class UriUtilsTest {
 			qparams.add(pair1);
 			uri = UriUtils.createUri(baseUrl, subPath, qparams, fragment);
 			Assert.assertEquals("http://www.abc.de/fgh?param1=value1#frag", uri.toString());
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -57,10 +57,14 @@ public class UriUtilsTest {
 
 	@Test
 	public void testGetResourceLength() throws ClientProtocolException, IOException, HttpException{
+        if(UriUtils.isInternetAvailable(null)){
 		URI uri = URI.create("http://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
 		Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
+        } else {
+            logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
 	}
-	
+    }
+
 	@Test
 	public void testIsInternetAvailable() {
 		URI firstUri = URI.create("http://www.gmx.de/");
@@ -69,7 +73,7 @@ public class UriUtilsTest {
 			logger.warn("Internet is not available!");
 		}
 	}
-	
+
 	@Test
 	public void testIsRootServerAvailable() {
 		boolean isAvailable = UriUtils.isRootServerAvailable("www.gmx.de");

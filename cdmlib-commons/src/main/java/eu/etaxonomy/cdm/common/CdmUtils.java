@@ -434,4 +434,20 @@ public class CdmUtils {
 		}
 		return string;
 	}
+
+	/**
+	 * Returns surrounding brackets "(",")". Trim the string if necessary.
+	 * @param text
+	 * @return
+	 */
+	public static String removeBrackets(String text) {
+		if (text == null){
+			return null;
+		}
+		text = text.trim();
+		if (text.matches("^\\(.*\\)$")){
+			text = text.substring(1, text.length() -1);
+		}
+		return text;
+	}
 }

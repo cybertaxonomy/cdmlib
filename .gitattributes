@@ -30,7 +30,6 @@ cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UuidGenerator.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/media/ImageInfoTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
-cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-commons/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-commons/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.tif -text
 cdmlib-commons/src/test/resources/images/Thumbs.db -text

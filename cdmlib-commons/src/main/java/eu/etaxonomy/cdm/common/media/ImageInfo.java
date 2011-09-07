@@ -42,6 +42,8 @@ public  class ImageInfo extends MediaInfo {
 
 	private Map<String, String> metaData;
 	
+//********************** Factory Methods ******************************/
+	
 	public static ImageInfo NewInstance(URI imageUri, Integer timeOut) throws IOException, HttpException {
 		ImageInfo instance = new ImageInfo(imageUri);
 		instance.readSuffix();
@@ -56,9 +58,13 @@ public  class ImageInfo extends MediaInfo {
 		return instance;
 	}
 	
+//*********************** CONSTRUCTOR **************************************/
+	
 	private ImageInfo(URI imageUri){
 		this.imageUri = imageUri;
 	}
+	
+//*************************** GETTER /SETTER *******************************/
 	
 	public URI getUri() {
 		return imageUri;
@@ -79,11 +85,8 @@ public  class ImageInfo extends MediaInfo {
 	public Map<String, String> getMetaData(){
 		return metaData;
 	}
-
-	@Override
-	public String toString(){
-        return getFormatName() + " [" + getMimeType()+ "] w:" + width + " h:" + height + " depth:" + bitPerPixel;
-	}
+	
+//**************************** METHODS *****************************/
 	
 	private void readSuffix(){
 		String path = imageUri.getPath();
@@ -97,6 +100,12 @@ public  class ImageInfo extends MediaInfo {
 		setLength(length);
 	}
 	
+	/**
+	 * Reads the image infos (width, height, bitPerPixel, metadata, format, mime type)
+	 * @param timeOut
+	 * @throws IOException
+	 * @throws HttpException
+	 */
 	private void readImageInfo(Integer timeOut) throws IOException, HttpException{
 		
 		InputStream inputStream;
@@ -146,5 +155,13 @@ public  class ImageInfo extends MediaInfo {
 		}
 		return metaData;
 	}
+
+// ******************* TO STRING **********************************/
+	
+	@Override
+	public String toString(){
+        return getFormatName() + " [" + getMimeType()+ "] w:" + width + " h:" + height + " depth:" + bitPerPixel;
+	}
+
 	
 }
