@@ -19,7 +19,6 @@ import net.sf.json.JsonConfig;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * @author a.kohlbecker
@@ -55,7 +54,6 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
         if(logger.isDebugEnabled()){
             logger.debug("processing second step" + bean);
         }
-//		json.element("taggedName", TaggedTextGenerator.getTaggedName(bean), jsonConfig);
         json.element("taggedName", bean.getTaggedName(), jsonConfig);
         return json;
     }
