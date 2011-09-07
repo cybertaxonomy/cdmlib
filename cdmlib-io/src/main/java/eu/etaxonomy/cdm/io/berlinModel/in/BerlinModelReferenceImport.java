@@ -96,13 +96,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		super();
 	}
 	
-	protected boolean initializeMappers(BerlinModelImportState state){
+	protected void initializeMappers(BerlinModelImportState state){
 		for (CdmAttributeMapperBase mapper: classMappers){
 			if (mapper instanceof DbImportExtensionMapper){
 				((DbImportExtensionMapper)mapper).initialize(state, Reference.class);
 			}
 		}
-		return true;
+		return;
 	}
 	
 	protected static CdmAttributeMapperBase[] classMappers = new CdmAttributeMapperBase[]{
@@ -161,11 +161,11 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 
 	@Override
-	protected boolean doInvoke(BerlinModelImportState state){
-		boolean success = true;
+	protected void doInvoke(BerlinModelImportState state){
 		logger.info("start make " + getPluralString() + " ...");
 
-		success &= initializeMappers(state);
+		boolean success = true;
+		initializeMappers(state);
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 
@@ -188,7 +188,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		try {
 			if (testMaxRecursionResultSet.next() == true){
 				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
-				return false;
+				state.setUnsuccessfull();
+				return;
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -239,10 +240,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
-		return success;
+		if (! success){
+			state.setUnsuccessfull();
+	}
+		return;
 	}
 
 	

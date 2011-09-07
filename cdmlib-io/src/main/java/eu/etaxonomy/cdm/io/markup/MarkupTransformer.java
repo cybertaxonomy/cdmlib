@@ -19,6 +19,10 @@ import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.mueller
@@ -29,14 +33,70 @@ public class MarkupTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupTransformer.class);
 	
+	//preliminary
+	public static final UUID uuidKalimantan = UUID.fromString("05c6bce3-2e55-48cb-a414-707e936066d1");
+	public static final UUID uuidBorneo = UUID.fromString("e615e7e6-5b64-4903-b794-816baab689b3");
+//	public static final UUID uuidCelebes = UUID.fromString("");
+	public static final UUID uuidMoluccas = UUID.fromString("0ac8fc74-a081-45e5-b96d-aad367b5f48b");
+	public static final UUID uuidPeninsularMalaysia = UUID.fromString("9f95af33-ae9e-4031-92f7-9f79d22eecf2");
+	public static final UUID uuidJava = UUID.fromString("36b93871-0bee-4380-b47e-56a843ce6aa3");
+	public static final UUID uuidBismarckArchipelago = UUID.fromString("d9a11144-447c-4e72-b75f-9daeb254e7c4");
+//	public static final UUID uuidNewIreland = UUID.fromString("");
+	public static final UUID uuidSumatra = UUID.fromString("4395d5e0-64e2-4309-a2ec-b1240919c34d");
+//	public static final UUID uuidBangka = UUID.fromString("");
+	public static final UUID uuidSabah = UUID.fromString("8d34b675-7de1-4623-a16a-1e0ca989df0c");
+	public static final UUID uuidBali = UUID.fromString("3cc15dc7-bc55-4a9b-85af-e1eb733ad845");
+	
+	public static final UUID uuidPhilippines  = UUID.fromString("9dee4b0d-d864-4b6f-bd41-39a1ea7c56c3");
+	
+	
+	
+	
+	//extension type uuids
+	public static final UUID uuidTaxonTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
+	public static final UUID uuidWriterExtension = UUID.fromString("43f988cb-bc53-4324-a702-c8f920656975");
+	
+	//annotation type uuids
+	public static final UUID uuidFootnote = UUID.fromString("b91fab29-7d26-4277-b549-262da0d901b1");
+	public static final UUID uuidWriterAnnotation = UUID.fromString("df73df4a-93a1-4d95-a552-1cebe26db51b");
+	
+	
+	//marker type uuid
+//	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
+	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
+	public static final UUID uuidFeaturePlaceholder = UUID.fromString("89568794-375e-4a02-b75d-bd65601fb877");
+	
+	
+	//named ared level uuids
+	public static final UUID uuidRegion = UUID.fromString("06d3a74d-cf2e-4842-8c89-87722b9486a4");
+	public static final UUID uuidWorld = UUID.fromString("69520b33-6381-454e-bb8f-0df11c3b3a67");
+	public static final UUID uuidCounty = UUID.fromString("c2882e13-88dc-42ac-b89c-2ee404e22d81");
+	public static final UUID uuidContinent = UUID.fromString("1051c9bb-d0ab-4a71-ab15-afdab82c2bdc");
+	public static final UUID uuidDistrict = UUID.fromString("1b778ba8-ba5f-47a9-ad67-222826f96863");
+	public static final UUID uuidLocality = UUID.fromString("224a4140-da1f-4046-91bb-fb948916d797");
+	public static final UUID uuidLevelOther = UUID.fromString("4b483cc8-b42d-40ba-9cc7-a656faf629e2");
+	
+	public static final UUID uuidContinentalRegion = UUID.fromString("06d3a74d-cf2e-4842-8c89-87722b9486a4");
+	
 	
 	
 	//feature uuids
-
+	
+	public static final UUID uuidFigure = UUID.fromString("5165cd6a-9b31-4a1f-8b30-04ab740c502c");
+	public static final UUID uuidFigures = UUID.fromString("6dfb4e78-c67e-410c-8989-c1fb1295abf6");
+	
+	
+	
+	
+	public static final UUID uuidExtractedHabitat = UUID.fromString("d80511d2-a76c-48b8-b3aa-5fbd4a58fe5c");
+//	public static final UUID uuidHabit = UUID.fromString("03487108-173a-4335-92be-05076af29155");
 	public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
 	public static final UUID uuidHabitatEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
 	
 	public static final UUID uuidChromosomes = UUID.fromString("c4a60319-4978-4692-9545-58d60cf8379e");
+	public static final UUID uuidPhylogeny = UUID.fromString("8bcffbeb-a849-4222-83f9-bfcbbc3baef9");
+	public static final UUID uuidHistory = UUID.fromString("6f9f0316-1c27-4e17-b96a-51332521f74e");
+	public static final UUID uuidCultivation = UUID.fromString("f10f34fb-53b9-43c2-bfd6-05ea475e8e0f");
 	
 	public static final UUID uuidNote = UUID.fromString("b9af1489-6b68-497f-8d4b-260a9f886827");
 	public static final UUID uuidNotes = UUID.fromString("e31bb420-f39e-493d-b452-dd5e63dda443");
@@ -57,12 +117,17 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidPhytochemistry = UUID.fromString("3466fdb9-360f-467e-9bd2-be8d997d1361");
 	public static final UUID uuidFossils = UUID.fromString("ccbf72ff-ab72-4f41-8c60-77100e14b6b0");
 	public static final UUID uuidMorphologyAndAnatomy = UUID.fromString("e18a82c2-8961-409f-8b8e-0502225ea43f");
-
+	public static final UUID uuidEmbryology = UUID.fromString("09b89b41-c993-45a6-b461-799a90e283f8");
+	public static final UUID uuidCytology = UUID.fromString("cc28bedb-8d9f-457c-ac5f-5f019edb214e");
+	
+	
 	public static final UUID uuidLeaflets = UUID.fromString("0efcfbb5-7f7a-454f-985e-50cea6523fef");
 	public static final UUID uuidLeaves = UUID.fromString("378c6d5f-4f8a-4769-b054-50ddaff6f080");
 	public static final UUID uuidBranchlets = UUID.fromString("e63af3b4-aaff-4b4d-a8fe-3b13b79974c8");
 	public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
 	public static final UUID uuidInflorescences = UUID.fromString("c476f5fb-dc06-4408-af36-f48e625f5767");
+	public static final UUID uuidMaleInflorescences = UUID.fromString("374fa3fe-70c2-4ec9-a611-97c62288aeba");
+	public static final UUID uuidFemaleInflorescences = UUID.fromString("179af784-850c-4187-ba1f-cdc9f68970ef");
 	public static final UUID uuidFlowers = UUID.fromString("7fd80f15-9abf-44e7-b55a-be264b9dd7ac");
 	public static final UUID uuidSepals = UUID.fromString("d6867f7c-68c9-4b7c-9094-862bdfe1e064");
 	public static final UUID uuidOuterSepals = UUID.fromString("e95b65f8-656f-4770-b716-2824cb4b54b6");
@@ -77,8 +142,6 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidFlowering = UUID.fromString("e6f274b9-25ca-4d49-b264-50346350df0d");
 	public static final UUID uuidBracts = UUID.fromString("7e1f2b3e-caa5-4e12-af4c-3fc379cea89f");
 	public static final UUID uuidPedicels = UUID.fromString("fdb43c85-c3dd-4d13-b5e7-51cca60d25b1");
-	public static final UUID uuidFigure = UUID.fromString("5165cd6a-9b31-4a1f-8b30-04ab740c502c");
-	public static final UUID uuidFigures = UUID.fromString("6dfb4e78-c67e-410c-8989-c1fb1295abf6");
 	public static final UUID uuidPistil = UUID.fromString("51df329b-2b2b-4f45-960c-bf4430be5910");
 	public static final UUID uuidOvary = UUID.fromString("0757d8bc-d91c-4482-bde0-d239b4122934");
 	public static final UUID uuidTwigs = UUID.fromString("e1eb9d5e-1397-4a4e-84e7-483e77822c6b");
@@ -123,6 +186,8 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidPerianth = UUID.fromString("bd1480bb-ce44-495f-a462-98db4ac80530");
 	public static final UUID uuidScales = UUID.fromString("bd1480bb-ce44-495f-a462-98db4ac80530");
 	public static final UUID uuidPerigoneTube = UUID.fromString("d1799423-31ce-4525-b0ba-8d7cc9240abf");
+	public static final UUID uuidPerigoneLobes = UUID.fromString("e309e1e3-8f60-4478-9b89-ca5069bc1622");
+	public static final UUID uuidPerigone = UUID.fromString("f026fc87-5fc6-4559-a7e5-e8832c20033d");
 	public static final UUID uuidCorolla = UUID.fromString("9ff17ff9-cb59-4ad7-bfa1-1d67935e567f");
 	public static final UUID uuidAnnulus = UUID.fromString("d9b93acb-9b49-45ef-8661-09e00081931f");
 	public static final UUID uuidFemaleFlowers = UUID.fromString("2e06cea2-5993-417c-8d0d-81cb571aa17a");
@@ -142,15 +207,18 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidAnther = UUID.fromString("4c7cf621-11f7-4102-b49a-caa493364707");
 	public static final UUID uuidFlowerBearingStems = UUID.fromString("86ee899f-af71-4b51-aa1a-2666bab79cf0");
 	public static final UUID uuidFloweringBranchlets = UUID.fromString("e0364345-764c-4b39-943a-fad1eac0fe9e");
+	public static final UUID uuidWood = UUID.fromString("e44b3268-ca49-4400-90f7-98e17412fe92");
+	
+
+	//PHYTOCHEMISTRY AND CHEMOTAXONOMY
+	public static final UUID uuidLeafPhenolics = UUID.fromString("4ae0580e-601e-4961-8220-b98876cb7fbf");
+	public static final UUID uuidAlkaloids = UUID.fromString("a727f4f4-b2c3-4cac-9edd-138201470396");
+	public static final UUID uuidIridoidGlucosides = UUID.fromString("d858c9d7-e870-4e4e-a52a-f6533599c9d7");
+	public static final UUID uuidAluminium = UUID.fromString("5c6cdbf0-c7a9-4223-8bbb-d33d41e1b9d3");
+	public static final UUID uuidChemotaxonomy = UUID.fromString("53ff9430-0154-48a4-a2bb-99f183757c96");
+	public static final UUID uuidStorageProductsOfSeeds = UUID.fromString("5e569333-a5b6-42f9-bc5d-e010bdfef89c");
 	
 	
-	
-	//extension type uuids
-	public static final UUID uuidTitle = UUID.fromString("5d9ca987-81f1-4d6c-b06a-eaa8311ca249");
-	
-	//marker type uuid
-	public static final UUID uuidExcludedTaxon = UUID.fromString("e729a22d-8c94-4859-9f91-3e3ae212c91d");
-	public static final UUID uuidIncompleteTaxon = UUID.fromString("cb34d525-de64-4569-b277-3429ec49a09f");
 	
 	
 
@@ -160,8 +228,16 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
+		
+		}else if (key.equalsIgnoreCase("ecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("uses")){return Feature.USES();
+		}else if (key.equalsIgnoreCase("anatomy")){return Feature.ANATOMY();
+		}else if (key.equalsIgnoreCase("description")){return Feature.DESCRIPTION();
 		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
-		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.HABITAT_ECOLOGY();
+		
+		}else if (key.equalsIgnoreCase("Vegetative Anatomy")){return Feature.ANATOMY();
+		
 		}else{
 			return null;
 		}
@@ -174,14 +250,18 @@ public class MarkupTransformer extends InputTransformerBase {
 	public UUID getFeatureUuid(String key) 	throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
 
+		
+		}else if (key.equalsIgnoreCase("cultivation")){return uuidCultivation;
+		}else if (key.equalsIgnoreCase("history")){return uuidHistory;
+		}else if (key.equalsIgnoreCase("phylogeny")){return uuidPhylogeny;
 		}else if (key.equalsIgnoreCase("Chromosomes")){return uuidChromosomes;
-
 		}else if (key.equalsIgnoreCase("Habitat")){return uuidHabitat;
 		}else if (key.equalsIgnoreCase("Habitat & Ecology")){return uuidHabitatEcology;
 		}else if (key.equalsIgnoreCase("Leaflets")){return uuidLeaflets;
 		}else if (key.equalsIgnoreCase("Leaves")){return uuidLeaves;
 		}else if (key.equalsIgnoreCase("Branchlets")){return uuidBranchlets;
 		}else if (key.equalsIgnoreCase("lifeform")){return uuidLifeform;
+		}else if (key.equalsIgnoreCase("habit")){return uuidLifeform;
 		}else if (key.equalsIgnoreCase("Inflorescences")){return uuidInflorescences;
 		}else if (key.equalsIgnoreCase("Flowers")){return uuidFlowers;
 		}else if (key.equalsIgnoreCase("Sepals")){return uuidSepals;
@@ -215,6 +295,9 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Fruit")){return uuidFruit;
 		}else if (key.equalsIgnoreCase("Branch")){return uuidBranch;
 		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
+		}else if (key.equalsIgnoreCase("Male inflorescences")){return uuidMaleInflorescences;
+		}else if (key.equalsIgnoreCase("Female inflorescences")){return uuidFemaleInflorescences;
+		
 		}else if (key.equalsIgnoreCase("Calyx")){return uuidCalyx;
 		}else if (key.equalsIgnoreCase("Seedling")){return uuidSeedling;
 		}else if (key.equalsIgnoreCase("Staminodes")){return uuidStaminodes;
@@ -240,6 +323,9 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("perianth")){return uuidPerianth;
 		}else if (key.equalsIgnoreCase("scales")){return uuidScales;
 		}else if (key.equalsIgnoreCase("perigone tube")){return uuidPerigoneTube;
+		}else if (key.equalsIgnoreCase("perigone")){return uuidPerigone;
+		}else if (key.equalsIgnoreCase("perigone lobes")){return uuidPerigoneLobes;
+		
 		}else if (key.equalsIgnoreCase("corolla")){return uuidCorolla;
 		}else if (key.equalsIgnoreCase("annulus")){return uuidAnnulus;
 		}else if (key.equalsIgnoreCase("female flowers")){return uuidFemaleFlowers;
@@ -259,6 +345,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("gynoecium")){return uuidGynoecium;
 		
 		}else if (key.equalsIgnoreCase("anther")){return uuidAnther;
+		}else if (key.equalsIgnoreCase("wood")){return uuidWood;
 		}else if (key.equalsIgnoreCase("flower-bearing stems")){return uuidFlowerBearingStems;
 		}else if (key.equalsIgnoreCase("Flowering branchlets")){return uuidFloweringBranchlets;
 		
@@ -275,16 +362,30 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Leaf anatomy")){return uuidLeafAnatomy;
 		}else if (key.equalsIgnoreCase("Chromosome numbers")){return uuidChromosomeNumbers;
 		}else if (key.equalsIgnoreCase("Phytochemistry and Chemotaxonomy")){return uuidPhytochemistryAndChemotaxonomy;
+		}else if (key.equalsIgnoreCase("phytochemo")){return uuidPhytochemistryAndChemotaxonomy;
 		}else if (key.equalsIgnoreCase("Pollen morphology")){return uuidPollenMorphology;
 		}else if (key.equalsIgnoreCase("Vegetative morphology and anatomy")){return uuidVegetativeMorphologyAndAnatomy;
 		}else if (key.equalsIgnoreCase("Flower morphology")){return uuidFlowerMorphology;
 		}else if (key.equalsIgnoreCase("Pollination")){return uuidPollination;
 		}else if (key.equalsIgnoreCase("Life cycle")){return uuidLifeCycle;
+		}else if (key.equalsIgnoreCase("lifehistory")){return uuidLifeCycle;
 		}else if (key.equalsIgnoreCase("Fruits and embryology")){return uuidFruitsAndEmbryology;
 		}else if (key.equalsIgnoreCase("Dispersal")){return uuidDispersal;
 		}else if (key.equalsIgnoreCase("Phytochemistry")){return uuidPhytochemistry;
 		}else if (key.equalsIgnoreCase("Fossils")){return uuidFossils;
 		}else if (key.equalsIgnoreCase("Morphology and anatomy")){return uuidMorphologyAndAnatomy;
+		}else if (key.equalsIgnoreCase("embryology")){return uuidEmbryology;
+		}else if (key.equalsIgnoreCase("cytology")){return uuidCytology;
+		
+		}else if (key.equalsIgnoreCase("Leaf phenolics")){return uuidLeafPhenolics;
+		}else if (key.equalsIgnoreCase("Alkaloids")){return uuidAlkaloids;
+		}else if (key.equalsIgnoreCase("Iridoid glucosides")){return uuidIridoidGlucosides;
+		}else if (key.equalsIgnoreCase("Aluminium")){return uuidAluminium;
+		}else if (key.equalsIgnoreCase("Chemotaxonomy")){return uuidChemotaxonomy;
+		}else if (key.equalsIgnoreCase("Storage products of seeds")){return uuidStorageProductsOfSeeds;
+		
+		
+		
 //		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
 
 		
@@ -313,26 +414,151 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
-		}else if (key.equalsIgnoreCase("excluded")){return uuidExcludedTaxon;
-		}else if (key.equalsIgnoreCase("EXCLUDED SPECIES, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
-		}else if (key.equalsIgnoreCase("EXCLUDED GENUS, OF UNCERTAIN AFHNITIES PTELEOCARPA")){return uuidExcludedTaxon;
 		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("IMPERFECTLY KNOWN SPECIES")){return uuidIncompleteTaxon;
-		
-//		}else if (key.equalsIgnoreCase("CULTIVATED, EXOTIC SAPINDACEAE")){return uuidIncompleteTaxon;
-		
 		}else{
 			return null;
 		}
 		
-//		<xs:enumeration value="DOUBTFUL OR ERRONEOUS RECORDS"/>
-//		<xs:enumeration value="DOUBTFUL SPECIES, PROBABLY TO BE EXCLUDED"/>
-//		<xs:enumeration value="EXCLUDED OR DOUBTFUL NAMES"/>
-//		<xs:enumeration value="CULTIVATED, EXOTIC SAPINDACEAE"/>
 	}
+		
 	
+	
+	@Override
+	public NamedAreaLevel getNamedAreaLevelByKey(String key )throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("country")){return NamedAreaLevel.COUNTRY();
+		}else if (key.equalsIgnoreCase("province")){return NamedAreaLevel.PROVINCE();
+		}else if (key.equalsIgnoreCase("town")){return NamedAreaLevel.TOWN();
+		}else if (key.equalsIgnoreCase("state")){return NamedAreaLevel.STATE();
+		}else if (key.equalsIgnoreCase("tdwg1")){return NamedAreaLevel.TDWG_LEVEL1();
+		}else if (key.equalsIgnoreCase("tdwg2")){return NamedAreaLevel.TDWG_LEVEL2();
+		}else if (key.equalsIgnoreCase("tdwg3")){return NamedAreaLevel.TDWG_LEVEL3();
+		}else if (key.equalsIgnoreCase("tdwg4")){return NamedAreaLevel.TDWG_LEVEL4();
+		}else{
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNamedAreaLevelUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
+		}else if (key.equalsIgnoreCase("continental region")){return uuidContinentalRegion;
+		}else if (key.equalsIgnoreCase("world")){return uuidWorld;
+		}else if (key.equalsIgnoreCase("county")){return uuidCounty;
+		}else if (key.equalsIgnoreCase("continent")){return uuidContinent;
+		}else if (key.equalsIgnoreCase("district")){return uuidDistrict;
+		}else if (key.equalsIgnoreCase("locality")){return uuidLocality;
+		}else if (key.equalsIgnoreCase("other")){return uuidLevelOther;
+		}else{
+			return null;
+		}
+	}
+		
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNamedAreaByKey(java.lang.String)
+	 */
+	@Override
+	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Kalimantan")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-KA");
+		}else if (key.equalsIgnoreCase("Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR");
+		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
+			}else if (key.equalsIgnoreCase("Malay Peninsula")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
+		}else if (key.equalsIgnoreCase("Java")){return TdwgArea.getAreaByTdwgAbbreviation("JAW-OO");
+		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return TdwgArea.getAreaByTdwgAbbreviation("BIS-OO");
+		}else if (key.equalsIgnoreCase("Sumatra")){return TdwgArea.getAreaByTdwgAbbreviation("SUM-OO");
+		}else if (key.equalsIgnoreCase("Sabah")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-SB");
+			}else if (key.equalsIgnoreCase("North Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-SB");
+		
+		}else if (key.equalsIgnoreCase("Bali")){return TdwgArea.getAreaByTdwgAbbreviation("LSI-BA");
+		}else if (key.equalsIgnoreCase("Moluccas")){return TdwgArea.getAreaByTdwgAbbreviation("MOL-OO");
+		
+		}else if (key.equalsIgnoreCase("Indochina")){return TdwgArea.getAreaByTdwgAbbreviation("41");
+		}else if (key.equalsIgnoreCase("Lesser Sunda Islands")){return TdwgArea.getAreaByTdwgAbbreviation("LSI");
+		}else if (key.equalsIgnoreCase("Sulawesi")){return TdwgArea.getAreaByTdwgAbbreviation("SUL-OO");
+			}else if (key.equalsIgnoreCase("Celebes")){return TdwgArea.getAreaByTdwgAbbreviation("SUL-OO");
+		
+		}else if (key.equalsIgnoreCase("south-east United States")){return TdwgArea.getAreaByTdwgAbbreviation("78");
+		}else if (key.equalsIgnoreCase("West Indies")){return TdwgArea.getAreaByTdwgAbbreviation("81");
+		
+		}else{
+			return null;
+	}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNamedAreaUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Kalimantan")){return uuidKalimantan;
+		}else if (key.equalsIgnoreCase("Borneo")){return uuidBorneo;
+		}else if (key.equalsIgnoreCase("Moluccas")){return uuidMoluccas;
+		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return uuidPeninsularMalaysia;
+		}else if (key.equalsIgnoreCase("Java")){return uuidJava;
+		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return uuidBismarckArchipelago;
+//		}else if (key.equalsIgnoreCase("New Ireland")){return uuidNewIreland;
+//		}else if (key.equalsIgnoreCase("Celebes")){return uuidSulawesi;
+		}else if (key.equalsIgnoreCase("Sumatra")){return uuidSumatra;
+	
+//		}else if (key.equalsIgnoreCase("Bangka")){return uuidBangka;
+		}else if (key.equalsIgnoreCase("Sabah")){return uuidSabah;
+		}else if (key.equalsIgnoreCase("Bali")){return uuidBali;
+	
+		//
+		//Celebes (Sulawesi)
+		//Moluccas (Ceram, Halmahera, Ambon)
+		//Peninsular Malaysia (Kedah, Perak, Kelantan, Trengganu, Pahang, Selangor, Negri Sembilan, Malacca, Johore)
+		//Borneo (Sabah, Sarawak, Kalimantan)
+		//Sumatra (Aceh, Sumatera Barat, Sumatera Utara)
+		//Lesser Sunda Islands (Bali, Lombok, Flores, Timor)
+
+	
+		//countries
+		}else if (key.equalsIgnoreCase("Philippines")){return uuidPhilippines;
+	
+
+	
+		}else{
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getPresenceTermByKey(java.lang.String)
+	 */
+	@Override
+	public PresenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("endemic")){return PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
+		}else if (key.equalsIgnoreCase("cultivated")){return PresenceTerm.CULTIVATED();
+		}else{
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getPresenceTermUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+//		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
+		}else{
+			return null;
+		}
+	}
 	
 	
 	

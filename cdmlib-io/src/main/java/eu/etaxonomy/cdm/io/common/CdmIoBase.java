@@ -11,11 +11,10 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import com.mysql.jdbc.AssertionFailedException;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
@@ -45,6 +42,15 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	protected String ioName = null;
 
+	
+	/**
+	 * 
+	 */
+	public CdmIoBase() {
+		super();
+		this.ioName = this.getClass().getSimpleName();
+	}
+	
 //******************** Observers *********************************************************	
 	
 	/* (non-Javadoc)
@@ -102,7 +108,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 			return true;
 		}else{
 			updateProgress(state, "Invoking " + ioName);
-			return doInvoke(state);
+			doInvoke(state);
+			return state.isSuccess();
 		}
 	}
 	
@@ -111,7 +118,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	 * @param state
 	 * @return
 	 */
-	protected abstract boolean doInvoke(STATE state);
+	protected abstract void doInvoke(STATE state);
 
 	
 	@Autowired
@@ -161,14 +168,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		txManager.commit(txStatus);
 		return;
 	}
-	
-	/**
-	 * 
-	 */
-	public CdmIoBase() {
-		super();
-		this.ioName = this.getClass().getSimpleName();
-	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
@@ -277,7 +277,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		event.setThrowingClass(this.getClass());
 		event.setMessage(message);
 		event.setLocation(location);
-		int linenumber = new Exception().getStackTrace()[0].getLineNumber();
+//		int linenumber = new Exception().getStackTrace()[0].getLineNumber();
 		fire(event);
 	}
 	
@@ -302,6 +302,15 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		
 		fire(event);
 	}
+	
+	protected boolean isBlank(String str){
+		return StringUtils.isBlank(str);
+	}
+
+	protected boolean isNotBlank(String str){
+		return StringUtils.isNotBlank(str);
+	}
+
 	
 //	/**
 //	   * Returns the first stack trace element of the first class not equal to "StackTraceUtils" or "LogUtils" and aClass. <br />

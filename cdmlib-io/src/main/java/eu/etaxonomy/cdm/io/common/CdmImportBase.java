@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,22 +28,28 @@ import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -68,11 +75,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 	protected static final boolean CREATE = true;
 	protected static final boolean IMAGE_GALLERY = true;
+	protected static final boolean READ_MEDIA_DATA = true;
 
 	public static final UUID uuidUserDefinedNamedAreaLevelVocabulary = UUID.fromString("255144da-8d95-457e-a327-9752a8f85e5a");
 	public static final UUID uuidUserDefinedNamedAreaVocabulary = UUID.fromString("b2238399-a3af-4f6d-b7eb-ff5d0899bf1b");
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
+	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
+	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
+	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
+	
 	
 	private static final String UuidOnly = "UUIDOnly";
 	private static final String UuidLabel = "UUID or label";
@@ -166,7 +178,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
 	}
-	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<ExtensionType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -178,10 +190,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				extensionType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered);
+					voc = getVocabulary(uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered, extensionType);
 				}
 				voc.addTerm(extensionType);
-				getTermService().save(extensionType);
+				getTermService().saveOrUpdate(extensionType);
 			}
 			state.putExtensionType(extensionType);
 		}
@@ -210,6 +222,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		return getMarkerType(state, uuid, label, text, labelAbbrev, null);
+	}
+
+	
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -219,8 +236,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (markerType == null){
 				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 				markerType.setUuid(uuid);
-				UUID uuidMarkerTypeVoc = UUID.fromString("19dffff7-e142-429c-a420-5d28e4ebe305");
-				TermVocabulary voc = getVocabularyService().find(uuidMarkerTypeVoc);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedMarkerTypeVocabulary, "User defined vocabulary for marker types", "User Defined Marker Types", null, null, isOrdered, markerType);
+				}
 				voc.addTerm(markerType);
 				getTermService().save(markerType);
 			}
@@ -229,7 +248,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return markerType;
 	}
 	
-	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -239,8 +258,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (annotationType == null){
 				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 				annotationType.setUuid(uuid);
-				UUID uuidAnnotationTypeVoc = UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d");
-				TermVocabulary voc = getVocabularyService().find(uuidAnnotationTypeVoc);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedAnnotationTypeVocabulary, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered, annotationType);
+				}
+				
 				voc.addTerm(annotationType);
 				getTermService().save(annotationType);
 			}
@@ -261,7 +283,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				refSystem = ReferenceSystem.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for named areas", "User Defined Reference System", null, null, isOrdered);
+					voc = getVocabulary(uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for named areas", "User Defined Reference System", null, null, isOrdered, refSystem);
 				}
 				voc.addTerm(refSystem);
 				refSystem.setUuid(uuid);
@@ -289,6 +311,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+		Class<NamedArea> clazz = NamedArea.class;
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -298,23 +321,22 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
 			//TODO matching still experimental
-			namedArea = (NamedArea)getTermService().find(uuid);
-			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_LABEL)){
-				logger.warn("UUID_LABEL not yet implemented");
-			}
-			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_ABBREVLABEL)){
-				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, NamedArea.class, null, null);
+			namedArea = CdmBase.deproxy(getTermService().find(uuid),NamedArea.class);
+			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
+				//TODO test
+				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitle(clazz, label, null, null, null, null, null, null);
 				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
 			}
-			if (namedArea == null && matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL)){
-				logger.warn("UUID_LABEL not yet implemented");
+			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_ABBREVLABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL))){
+				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, clazz, null, null);
+				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
 			}
 			
 			if (namedArea == null){
 				namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null, null, isOrdered);
+					voc = getVocabulary(uuidUserDefinedNamedAreaVocabulary, "User defined vocabulary for named areas", "User Defined Named Areas", null, null, isOrdered, namedArea);
 				}
 				voc.addTerm(namedArea);
 				namedArea.setType(areaType);
@@ -357,7 +379,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedAreaLevel = NamedAreaLevel.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
-					voc = getVocabulary(uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered);
+					voc = getVocabulary(uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered, namedAreaLevel);
 				}
 				voc.addTerm(namedAreaLevel);
 				namedAreaLevel.setUuid(uuid);
@@ -368,8 +390,22 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return namedAreaLevel;
 	}
 	
+	
 	/**
-	 * Returns a feature for a given uuid by first ...
+	 * Returns a feature if it exists, null otherwise.
+	 * @see #getFeature(ImportStateBase, UUID, String, String, String, TermVocabulary)
+	 * @param state
+	 * @param uuid
+	 * @return
+	 */
+	protected Feature getFeature(STATE state, UUID uuid){
+		return getFeature(state, uuid, null, null, null, null);
+	}
+	
+	/**
+	 * Returns a feature for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the feature exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no feature is created.
 	 * @param state
 	 * @param uuid
 	 * @param label
@@ -377,20 +413,22 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected Feature getFeature(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+	protected Feature getFeature(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
 		if (uuid == null){
 			return null;
 		}
 		Feature feature = state.getFeature(uuid);
 		if (feature == null){
 			feature = (Feature)getTermService().find(uuid);
-			if (feature == null){
+			if (feature == null && ! hasNoLabel(label, text, labelAbbrev)){
 				feature = Feature.NewInstance(text, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
-				//set vocabulary ; FIXME use another user-defined vocabulary
-				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
-				TermVocabulary<Feature> voc = getVocabularyService().find(uuidFeatureVoc);
+//				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedFeatureVocabulary, "User defined vocabulary for features", "User Defined Features", null, null, isOrdered, feature);
+				}
 				voc.addTerm(feature);
 				getTermService().save(feature);
 			}
@@ -399,6 +437,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 	
+	private boolean hasNoLabel(String label, String text, String labelAbbrev) {
+		return label == null && text == null && labelAbbrev == null;
+	}
+
+
 	/**
 	 * Returns a presence term for a given uuid by first ...
 	 * @param state
@@ -466,8 +509,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 * 
 	 */
-	protected TermVocabulary getVocabulary(UUID uuid, String text, String label, String abbrev, URI termSourceUri, boolean isOrdered) {
-		TermVocabulary voc = getVocabularyService().find(uuid);
+	protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(UUID uuid, String text, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+		List<String> propPath = Arrays.asList(new String[]{"terms"});
+		TermVocabulary<T> voc = getVocabularyService().load(uuid, propPath);
 		if (voc == null){
 			if (isOrdered){
 				voc = OrderedTermVocabulary.NewInstance(text, label, abbrev, termSourceUri);
@@ -577,19 +621,104 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
+		Reference ref = null;
+		return getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
+	}
+	
+	/**
+	 * Like {@link #getTaxonDescription(Taxon, boolean, boolean)}
+	 * Only matches a description if the given reference is a source of the description.<BR>
+	 * If a new description is created the given reference will be added as a source.
+	 * 
+	 * @see #getTaxonDescription(Taxon, boolean, boolean)
+	 */
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonDescription result = null;
 		Set<TaxonDescription> descriptions= taxon.getDescriptions();
 		for (TaxonDescription description : descriptions){
 			if (description.isImageGallery() == isImageGallery){
+				if (hasCorrespondingSource(ref, description)){
 				result = description;
 				break;
 			}
 		}
+		}
 		if (result == null && createNewIfNotExists){
 			result = TaxonDescription.NewInstance(taxon);
 			result.setImageGallery(isImageGallery);
+			if (ref != null){
+				result.addSource(null, null, ref, null);
+		}
 		}
 		return result;
+	}
+	
+
+	/**
+	 * Returns the textdata that holds general information about a feature for a taxon description.
+	 * This is mainly necessary for descriptions that have more than one description element for
+	 * a given feature such as 'distribution', 'description' or 'common name'. It may also hold
+	 * for hierarchical features where no description element exists for a higher hierarchie level.
+	 * Example: the description feature has subfeatures. But some information like authorship, figures,
+	 * sources need to be added to the description itself.
+	 * Currently a feature placeholder is marked by a marker of type 'feature placeholder'. Maybe in future
+	 * there will be a boolean marker in the TextData class itself.
+	 * @param state 
+	 * @param feature 
+	 * @param taxon
+	 * @param ref
+	 * @param createIfNotExists
+	 * @return
+	 */
+	protected TextData getFeaturePlaceholder(STATE state, DescriptionBase<?> description, Feature feature, boolean createIfNotExists) {
+		UUID featurePlaceholderUuid = MarkupTransformer.uuidFeaturePlaceholder;
+		for (DescriptionElementBase element : description.getElements()){
+			if (element.isInstanceOf(TextData.class)){
+				TextData textData = CdmBase.deproxy(element, TextData.class);
+				if (textData.getFeature() == null || ! textData.getFeature().equals(feature)){
+					continue;
+				}
+				for (Marker marker : textData.getMarkers()){
+					MarkerType markerType = marker.getMarkerType();
+					if (markerType != null && 
+							markerType.getUuid().equals(featurePlaceholderUuid) && 
+							marker.getValue() == true){
+						return textData;
+					}
+				}
+			}
+		}
+		if (createIfNotExists){
+			TextData newPlaceholder = TextData.NewInstance(feature);
+			MarkerType placeholderMarkerType = getMarkerType(state, featurePlaceholderUuid, "Feature Placeholder", "Feature Placeholder", null);
+			Marker marker = Marker.NewInstance(placeholderMarkerType, true);
+			newPlaceholder.addMarker(marker);
+			description.addElement(newPlaceholder);
+			return newPlaceholder;
+		}else{
+			return null;
+		}
+	}
+
+
+
+	/**
+	 * Returns true, if this description has a source with a citation equal to the given reference.
+	 * Returns true if the given reference is null.
+	 * @param ref
+	 * @param description
+	 */
+	private boolean hasCorrespondingSource(Reference ref, TaxonDescription description) {
+		if (ref != null){
+			for (IdentifiableSource source : description.getSources()){
+				if (ref.equals(source.getCitation())){
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	
 	}
 	
 	
@@ -638,38 +767,44 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	
 
 	/**
-	 * @param derivedUnitFacade
-	 * @param multimediaObject
+	 * Creates 
+	 * @param uriString
+	 * @param readDataFromUrl
+	 * @see #READ_MEDIA_DATA
+	 * @return
 	 * @throws MalformedURLException
 	 */
-	protected Media getImageMedia(String multimediaObject, boolean readDataFromUrl) throws MalformedURLException {
-		if( multimediaObject == null){
+	protected Media getImageMedia(String uriString, boolean readMediaData, boolean isFigure) throws MalformedURLException {
+		if( uriString == null){
 			return null;
 		} else {
 			ImageInfo imageInfo = null;
 			URI uri;
 			try {
-				uri = new URI(multimediaObject);
+				uri = new URI(uriString);
 				try {
-					if (readDataFromUrl){
+					if (readMediaData){
 						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {
 					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
 					logger.warn(message);
+					fireWarningEvent(message, "unknown location", 2, 0);
 				}
 				ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
 				MediaRepresentation representation = MediaRepresentation.NewInstance();
 				if(imageInfo != null){
 					representation.setMimeType(imageInfo.getMimeType());
+					representation.setSuffix(imageInfo.getSuffix());
 				}
 				representation.addRepresentationPart(imageFile);
-				Media media = Media.NewInstance();
+				Media media = isFigure ? Figure.NewInstance() : Media.NewInstance();
 				media.addRepresentation(representation);
 				return media;
 			} catch (URISyntaxException e1) {
-				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  multimediaObject;
+				String message = "An URISyntaxException occurred when trying to create uri from multimedia objcet string: " +  uriString;
 				logger.warn(message);
+				fireWarningEvent(message, "unknown location", 4, 0);
 				return null;
 			}
 		}

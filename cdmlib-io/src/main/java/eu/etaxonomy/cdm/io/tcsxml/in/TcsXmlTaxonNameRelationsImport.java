@@ -52,7 +52,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	}
 	
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){
+	public void doInvoke(TcsXmlImportState state){
 		
 		
 		logger.info("start make taxon name relations ...");
@@ -221,7 +221,10 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		logger.info(nameRelCount + " nameRelations handled");
 		getNameService().save(nameStore);
 		logger.info("end make taxon name relationships ...");
-		return success.getValue();
+		if (!success.getValue()){
+			state.setUnsuccessfull();
+	}
+		return;
 	}
 	
 	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonNameBase<?,?>> taxonNameMap, Set<TaxonNameBase> nameStore, String id, boolean inverse){

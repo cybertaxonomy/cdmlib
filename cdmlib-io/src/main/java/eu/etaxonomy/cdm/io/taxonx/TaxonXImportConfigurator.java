@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -48,7 +47,6 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	private boolean isPublishReferences = true;
 
 
-	private boolean findTaxonByName = false;
 	private String originalSourceTaxonNamespace = "TaxonConcept";
 	private String originalSourceId;
 	
@@ -114,8 +112,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	public Reference getSourceReference() {
 		//TODO
 		logger.warn("getSource Reference not yet implemented");
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		Reference result = refFactory.newDatabase();
+		Reference<?> result = ReferenceFactory.newDatabase();
 		result.setTitleCache("XXX", true);
 		return result;
 	}

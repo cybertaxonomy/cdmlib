@@ -296,6 +296,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermUris.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelRowBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelTaxonOrSpecimenImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImport.java -text
@@ -320,13 +322,17 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/WarningTolerantValidationEventHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/package-info.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FigureDataHolder.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FootnoteDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupInputStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/UnmatchedLeads.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/WriterDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/PublicationHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/handler/TreatmentHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDescriptionExporter.java -text
@@ -409,7 +415,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportConfigurator.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportState.java -text
 cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
-cdmlib-io/src/main/resources/defaultIoApplicationContext.xml -text
+cdmlib-io/src/main/resources/eu/etaxonomy/cdm/defaultIoApplicationContext.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.properties -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/main/resources/mapping/lifeStageToGbif.tsv -text
@@ -471,6 +477,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input-original.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AgentsTest.xml -text

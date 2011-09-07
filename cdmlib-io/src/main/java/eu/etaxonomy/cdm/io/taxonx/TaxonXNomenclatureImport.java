@@ -71,7 +71,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		return result;
 	}
 
-	public boolean doInvoke(TaxonXImportState state){		
+	public void doInvoke(TaxonXImportState state){		
 		logger.info("start make Nomenclature ...");
 		TransactionStatus tx = startTransaction();
 		TaxonXImportConfigurator config = state.getConfig();
@@ -109,7 +109,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			getTaxonService().save(taxon);
 		}
 		commitTransaction(tx);
-		return true;
+		return;
 	}
 	
 	private Synonym getSynonym(TaxonXImportConfigurator config, Taxon taxon, String synName){

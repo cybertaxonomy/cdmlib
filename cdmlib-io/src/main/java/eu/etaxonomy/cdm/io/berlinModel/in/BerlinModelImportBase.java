@@ -53,7 +53,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		super();
 	}
 	
-	protected boolean doInvoke(BerlinModelImportState state){
+	protected void doInvoke(BerlinModelImportState state){
 			//	String strTeamStore = ICdmIO.TEAM_STORE;
 			BerlinModelImportConfigurator config = state.getConfig();
 			Source source = config.getSource();
@@ -77,11 +77,14 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 				}
 			} catch (SQLException e) {
 				logger.error("SQLException:" +  e);
-				return false;
+				state.setUnsuccessfull();
 			}
 	
 			logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
-			return success;
+			if (success == false){
+				state.setUnsuccessfull();
+	}
+			return;
 	}
 
 	

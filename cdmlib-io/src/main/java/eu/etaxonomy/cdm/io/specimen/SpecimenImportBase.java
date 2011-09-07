@@ -26,6 +26,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenImportBase.class);
 
-	protected abstract boolean doInvoke(STATE state);
+	protected abstract void doInvoke(STATE state);
 
 }

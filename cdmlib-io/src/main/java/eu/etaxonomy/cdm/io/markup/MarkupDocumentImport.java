@@ -1,15 +1,18 @@
 /**
-* Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -22,58 +25,74 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
-import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.ResultWrapper;
-import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
-import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -81,1354 +100,555 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NameTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-
+import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser;
+import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
 
 /**
  * @author a.mueller
- *
+ * 
  */
 @Component
 public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<MarkupImportState> {
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
-	private static int modCount = 30000;
+	private static final boolean CREATE_NEW = true;
+	private static final boolean IS_IMAGE_GALLERY = true;
+	private static final boolean NO_IMAGE_GALLERY = false;
+
+
+	private static final String ACCEPTED = "accepted";
+	private static final String ACCEPTED_NAME = "acceptedName";
+	private static final String ADDENDA = "addenda";
+	private static final String ALTERNATEPUBTITLE = "alternatepubtitle";
+	private static final String ALTERNATIVE_COLLECTION_TYPE_STATUS = "alternativeCollectionTypeStatus";
+	private static final String ALTERNATIVE_COLLECTOR = "alternativeCollector";
+	private static final String ALTERNATIVE_FIELD_NUM = "alternativeFieldNum";
+	private static final String ALTITUDE = "altitude";
+	private static final String ANNOTATION = "annotation";
+	private static final String AUTHOR = "author";
+	private static final String BIBLIOGRAPHY = "bibliography";
+	private static final String BIOGRAPHIES = "biographies";
+	private static final String BOLD = "bold";
+	private static final String BR = "br";
+	private static final String CHAR = "char";
+	private static final String CITATION = "citation";
+	private static final String COLLECTION_TYPE_STATUS = "collectionTypeStatus";
+	private static final String COLLECTOR = "collector";
+	private static final String COORDINATES = "coordinates";
+	private static final String COUPLET = "couplet";
+	private static final String DATES = "dates";
+	private static final String DEDICATION = "dedication";
+	private static final String DEFAULT_MEDIA_URL = "defaultMediaUrl";
+	private static final String DESTROYED = "destroyed";
+	private static final String DETAILS = "details";
+	private static final String DISTRIBUTION_LIST = "distributionList";
+	private static final String DISTRIBUTION_LOCALITY = "distributionLocality";
+	private static final String EDITION = "edition";
+	private static final String EDITORS = "editors";
+	private static final String FEATURE = "feature";
+	private static final String FIGURE = "figure";
+	private static final String FIGURE_LEGEND = "figureLegend";
+	private static final String FIGURE_PART = "figurePart";
+	private static final String FIGURE_REF = "figureRef";
+	private static final String FIGURE_TITLE = "figureTitle";
+	private static final String FOOTNOTE = "footnote";
+	private static final String FOOTNOTE_REF = "footnoteRef";
+	private static final String FOOTNOTE_STRING = "footnoteString";
+	private static final String FIELD_NUM = "fieldNum";
+	private static final String FREQUENCY = "frequency";
+	private static final String FULL_NAME = "fullName";
+	private static final String FULL_TYPE = "fullType";
+	private static final String GATHERING = "gathering";
+	private static final String HEADING = "heading";
+	private static final String HABITAT = "habitat";
+	private static final String HABITAT_LIST = "habitatList";
+	private static final String HOMONYM = "homonym";
+	private static final String HOMOTYPES = "homotypes";
+	private static final String ID = "id";
+	private static final String INFRANK = "infrank";
+	private static final String INFRAUT = "infraut";
+	private static final String INFRPARAUT = "infrparaut";
+	private static final String IS_SPOTCHARACTERS = "isSpotcharacters";
+	private static final String ISSUE = "issue";
+	private static final String ITALICS = "italics";
+	private static final String KEY = "key";
+	private static final String KEY_TITLE = "keyTitle";
+	private static final String KEYNOTES = "keynotes";
+	private static final String LIFE_CYCLE_PERIODS = "lifeCyclePeriods";
+	private static final String LOCALITY = "locality";
+	private static final String LOST = "lost";
+	private static final String META_DATA = "metaData";
+	private static final String NAME = "name";
+	private static final String NAME_TYPE = "nameType";
+	private static final String NOM = "nom";
+	private static final String NOMENCLATURE = "nomenclature";
+	private static final String NOT_FOUND = "notFound";
+	private static final String NOT_SEEN = "notSeen";
+	private static final String NOTES = "notes";
+	private static final String NUM = "num";
+	private static final String ORIGINAL_DETERMINATION = "originalDetermination";
+	private static final String PARAUT = "paraut";
+	private static final String PUBFULLNAME = "pubfullname";
+	private static final String PUBLICATION = "publication";
+	private static final String PUBNAME = "pubname";
+	private static final String PUBTITLE = "pubtitle";
+	private static final String PUBTYPE = "pubtype";
+	private static final String QUESTION = "question";
+	private static final String QUOTE = "quote";
+	private static final String RANK = "rank";
+	private static final String REF = "ref";
+	private static final String REF_NUM = "refNum";
+	private static final String REF_PART = "refPart";
+	private static final String REFERENCE = "reference";
+	private static final String REFERENCES = "references";
+	private static final String TAXON = "taxon";
+	private static final String TAXONTITLE = "taxontitle";
+	private static final String TAXONTYPE = "taxontype";
+	private static final String TEXT = "text";
+	private static final String TEXT_SECTION = "textSection";
+	private static final String TO_COUPLET = "toCouplet";
+	private static final String TO_KEY = "toKey";
+	private static final String TO_TAXON = "toTaxon";
+	private static final String TYPE = "type";
+	private static final String TYPE_STATUS = "typeStatus";
+	private static final String TREATMENT = "treatment";
+	private static final String SERIALS_ABBREVIATIONS = "serialsAbbreviations";
+	private static final String SPECIMEN_TYPE = "specimenType";
+	private static final String STATUS = "status";
+	private static final String STRING = "string";
+	private static final String SUB_HEADING = "subHeading";
+	private static final String SUB_COLLECTION = "subCollection";
+	private static final String SYNONYM = "synonym";
+	private static final String UNKNOWN = "unknown";
+	private static final String URL = "url";
+	private static final String USAGE = "usage";
+	private static final String VOLUME = "volume";
+	private static final String WRITER = "writer";
+	private static final String YEAR = "year";
+
 	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
-	
-	//TODO make part of state, but state is renewed when invoking the import a second time 
+
+	// TODO make part of state, but state is renewed when invoking the import a
+	// second time
 	private UnmatchedLeads unmatchedLeads;
 
+	@Autowired
+	private IEditGeoService editGeoService;
 	
-	public MarkupDocumentImport(){
+	// TODO remove preliminary
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	private Authentication authentication;
+	private PermissionEvaluator permissionEvaluator;
+
+	public MarkupDocumentImport() {
 		super();
+		System.out.println("TODO remove preliminary authentication");
+		// UsernamePasswordAuthenticationToken token = new
+		// UsernamePasswordAuthenticationToken("admin", "0000");
+		// authentication = authenticationManager.authenticate(token);
+		// SecurityContext context = SecurityContextHolder.getContext();
+		// context.setAuthentication(authentication);
+		// permissionEvaluator = new CdmPermissionEvaluator();
 	}
-	
-	
+
 	@Override
-	public boolean doCheck(MarkupImportState state){
+	public boolean doCheck(MarkupImportState state) {
 		state.setCheck(true);
-		boolean result = doInvoke(state);
+		doInvoke(state);
 		state.setCheck(false);
-		return result;
+		return state.isSuccess();
 	}
-	
+
 	@Override
-	public boolean doInvoke(MarkupImportState state){
+	public void doInvoke(MarkupImportState state) { 
 		fireProgressEvent("Start import markup document", "Before start of document");
-		fireWarningEvent("Test a warning", "At start", 17);
-		boolean success = false;
 		
 		Queue<CdmBase> outputStream = new LinkedList<CdmBase>();
-		
-		//FIXME reset state
+
+		TransactionStatus tx = startTransaction();
+		// FIXME reset state
 		doAllTheOldOtherStuff(state);
 
-		//START
+		// START
 		try {
-			//StAX
-			XMLEventReader reader = getStaxReader(state); 
+			// StAX
+			XMLEventReader reader = getStaxReader(state);
 			state.setReader(reader);
-			//start document
-			if (! validateStartOfDocument(reader)){
-				return false;
+			// start document
+			if (!validateStartOfDocument(reader)) {
+				state.setUnsuccessfull();
+				return;
 			}
+
+			// publication
+			String elName = PUBLICATION;
+			boolean hasPublication = false;
 			
-			//publication
-			String elName = "publication";
 			while (reader.hasNext()) {
-				if (isStartingElement(reader, elName)){
-					success &= handlePublication(reader, elName);
-				}else{
+				XMLEvent nextEvent = reader.nextEvent();
+				if (isStartingElement(nextEvent, elName)) {
+					handlePublication(state, reader, nextEvent, elName);
+					hasPublication = true;
+				} else if (nextEvent.isEndDocument()) {
+					if (!hasPublication) {
+						String message = "No publication root element found";
+						fireWarningEvent(message, nextEvent, 8);
+					}
+					// done
+				} else {
 					fireSchemaConflictEventExpectedStartTag(elName, reader);
 				}
 			}
-			
-//			//SAX
-//			ImportHandlerBase handler= new PublicationHandler(this);
-//			parseSAX(state, handler);
-			
+			commitTransaction(tx);
+
+			// //SAX
+			// ImportHandlerBase handler= new PublicationHandler(this);
+			// parseSAX(state, handler);
+
 		} catch (FactoryConfigurationError e1) {
-			// TODO Auto-generated catch block
 			fireWarningEvent("Some error occurred while setting up xml factory. Data can't be imported", "Start", 16);
-			success = false;
+			state.setUnsuccessfull();
 		} catch (XMLStreamException e1) {
-			// TODO Auto-generated catch block
 			fireWarningEvent("An XMLStreamException occurred while parsing. Data can't be imported", "Start", 16);
-			success = false;
-//		} catch (ParserConfigurationException e) {
-//			fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported", "Start", 16);
-//		} catch (SAXException e) {
-//			fireWarningEvent("A SAXException occurred while parsing. Data can't be imported", "Start", 16);
-//		} catch (IOException e) {
-//			fireWarningEvent("An IO exception occurred while parsing. Data can't be imported", "Start", 16);
+			state.setUnsuccessfull();
+			// } catch (ParserConfigurationException e) {
+			// fireWarningEvent("A ParserConfigurationException occurred while parsing. Data can't be imported",
+			// "Start", 16);
+			// } catch (SAXException e) {
+			// fireWarningEvent("A SAXException occurred while parsing. Data can't be imported",
+			// "Start", 16);
+			// } catch (IOException e) {
+			// fireWarningEvent("An IO exception occurred while parsing. Data can't be imported",
+			// "Start", 16);
 
 		}
 		 
-	
-		return success;
-		
+		return;
+
 	}
 
+	private void handlePublication(MarkupImportState state,
+			XMLEventReader reader, XMLEvent currentEvent, String elName)
+			throws XMLStreamException {
 
-	private boolean handlePublication(XMLEventReader reader, String elName) throws XMLStreamException {
-		boolean success = true;
-		XMLEvent event = reader.nextEvent();
-		if (isEndingElement(event, elName)){
-			//TODO cardinality of alternative
-			return success;
-		}else if(isStartingElement(event, "metaData")){
-			
-		}else if(isStartingElement(event, "treatment")){
-			
-		}else if(isStartingElement(event, "biographies")){
-			
-		}else if(isStartingElement(event, "references")){
-			
-		}else if(isStartingElement(event, "metaData")){
-			
-		}else if(isStartingElement(event, "metaData")){
-			
-		}else if(isStartingElement(event, "metaData")){
-			
+		// attributes
+		StartElement element = currentEvent.asStartElement();
+		Map<String, Attribute> attributes = getAttributes(element);
+		handleUnexpectedAttributes(element.getLocation(), attributes,
+				"noNamespaceSchemaLocation");
+
+		while (reader.hasNext()) {
+			XMLEvent event = readNoWhitespace(reader);
+			// TODO cardinality of alternative
+			if (event.isEndElement()) {
+				if (isEndingElement(event, elName)) {
+					return;
+				} else {
+					if (isEndingElement(event, BIOGRAPHIES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(event.asEndElement());
+					} else if (isEndingElement(event, REFERENCES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(event.asEndElement());
+					} else if (isEndingElement(event, TEXT_SECTION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(event.asEndElement());
+					} else if (isEndingElement(event, ADDENDA)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(event.asEndElement());
+					} else {
+						handleUnexpectedElement(event);
 		}
-		return success;
 	}
-	
-
-	
-	/**
-	 * This comes from the old version, needs to be checked on need
-	 * @param state
-	 */
-	private void doAllTheOldOtherStuff(MarkupImportState state) {
-		state.putTree(null, null);
-		if (unmatchedLeads == null){
-			unmatchedLeads = UnmatchedLeads.NewInstance();
+			} else if (event.isStartElement()) {
+				if (isStartingElement(event, META_DATA)) {
+					handleMetaData(state, reader, event);
+				} else if (isStartingElement(event, TREATMENT)) {
+					handleTreatment(state, reader, event);
+				} else if (isStartingElement(event, BIOGRAPHIES)) {
+					handleNotYetImplementedElement(event);
+				} else if (isStartingElement(event, REFERENCES)) {
+					handleNotYetImplementedElement(event);
+				} else if (isStartingElement(event, TEXT_SECTION)) {
+					handleNotYetImplementedElement(event);
+				} else if (isStartingElement(event, ADDENDA)) {
+					handleNotYetImplementedElement(event);
+				} else {
+					handleUnexpectedStartElement(event);
 		}
-		state.setUnmatchedLeads(unmatchedLeads);
-		
-//		TransactionStatus tx = startTransaction();
-		unmatchedLeads.saveToSession(getPolytomousKeyNodeService());
-		
-		
-		//TODO generally do not store the reference object in the config
-		Reference sourceReference = state.getConfig().getSourceReference();
-		getReferenceService().saveOrUpdate(sourceReference);
+			} else {
+				handleUnexpectedElement(event);
+	}
+		}
+		throw new IllegalStateException("Publication has no ending element");
 	}
 
+	private void handleMetaData(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
 
-	private boolean doInvoke_old(MarkupImportState state){
-		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
-		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
-
-	//	Element elbody= getBodyElement(state.getConfig());
-		Element elbody = null;
-		List<Element> elTaxonList = elbody.getChildren();
-		
-		int i = 0;
-		
-		Set<String> unhandledTitleClassess = new HashSet<String>();
-		Set<String> unhandledNomeclatureChildren = new HashSet<String>();
-		Set<String> unhandledDescriptionChildren = new HashSet<String>();
-		
-		Taxon lastTaxon = getLastTaxon(state);
-		
-		//for each taxon
-		for (Element elTaxon : elTaxonList){
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return;
+			} else if (isStartingElement(next, DEFAULT_MEDIA_URL)) {
+				String baseUrl = getCData(state, reader, next);
 			try {
-				if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
-				if (! elTaxon.getName().equalsIgnoreCase("taxon")){
-					logger.warn("body has element other than 'taxon'");
+					new URL(baseUrl);
+					state.setBaseMediaUrl(baseUrl);
+				} catch (MalformedURLException e) {
+					String message = "defaultMediaUrl '%s' is not a valid URL";
+					message = String.format(message, baseUrl);
+					fireWarningEvent(message, next, 8);
 				}
-				
-				BotanicalName botanicalName = BotanicalName.NewInstance(Rank.SPECIES());
-				Taxon taxon = Taxon.NewInstance(botanicalName, state.getConfig().getSourceReference());
-				
-				handleTaxonAttributes(elTaxon, taxon, state);
-	
-				
-				List<Element> children = elTaxon.getChildren();
-				handleTaxonElement(state, unhandledTitleClassess, unhandledNomeclatureChildren,	unhandledDescriptionChildren, taxon, children);
-				handleTaxonRelation(state, taxon, lastTaxon);
-				lastTaxon = taxon;
-				taxaToSave.add(taxon);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("MetaData has no ending element");
+
+	}
+
+	private void handleTreatment(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		Taxon lastTaxon = null;
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isStartingElement(next, TAXON)) {
+				Taxon thisTaxon = handleTaxon(state, reader, next.asStartElement());
+				doTaxonRelation(state, thisTaxon, lastTaxon, parentEvent.getLocation());
+				lastTaxon = thisTaxon;
+				// TODO for imports spanning multiple documents ?? Still needed?
 				state.getConfig().setLastTaxonUuid(lastTaxon.getUuid());
-				
-			} catch (Exception e) {
-				logger.warn("Exception occurred in Sapindacea taxon import: " + e);
-				e.printStackTrace();
-			}
-			
-		}
-		
-		System.out.println(state.getUnmatchedLeads().toString());
-		logger.warn("There are taxa with attributes 'excluded' and 'dubious'");
-		
-		logger.info("Children for nomenclature are: " + unhandledNomeclatureChildren);
-		logger.info("Children for description are: " + unhandledDescriptionChildren);
-		logger.info("Children for homotypes are: " + unhandledHomotypeChildren);
-		logger.info("Children for nom are: " + unhandledNomChildren);
-		
-		
-		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-		logger.info(i + " taxa handled. Saving ...");
-		getTaxonService().saveOrUpdate(taxaToSave);
-		getFeatureTreeService().saveOrUpdateFeatureNodesAll(state.getFeatureNodesToSave());
-		state.getFeatureNodesToSave().clear();
-//		commitTransaction(tx);
-		
-		logger.info("end makeTaxa ...");
-		logger.info("start makeKey ...");
-	//	invokeDoKey(state);
-		logger.info("end makeKey ...");
-		
-		return success.getValue();
-	}
-
-	
-
-
-	private void handleTaxonAttributes(Element elTaxon, Taxon taxon, MarkupImportState state) {
-		List<Attribute> attrList = elTaxon.getAttributes();
-		for (Attribute attr : attrList){
-			String attrName = attr.getName();
-			String attrValue = attr.getValue();
-			if ("class".equals(attrName)){
-				if (attrValue.equalsIgnoreCase("dubious") || attrValue.equalsIgnoreCase("DUBIOUS GENUS") || attrValue.equalsIgnoreCase("DOUBTFUL SPECIES")  ){
-					taxon.setDoubtful(true);
-				}else{
-					MarkerType markerType = getMarkerType(state, attrValue);
-					if (markerType == null){
-						logger.warn("Class attribute value for taxon not yet supported: " + attrValue);
-					}else{
-						taxon.addMarker(Marker.NewInstance(markerType, true));
+			} else if (isMyEndingElement(next, parentEvent)) {
+				Set<PolytomousKeyNode> keyNodesToSave = state.getPolytomousKeyNodesToSave();
+				//better save the key then the nodes
+				Set<PolytomousKey> keySet = new HashSet<PolytomousKey>();
+				for (PolytomousKeyNode node : keyNodesToSave){
+					PolytomousKey key = node.getKey();
+					keySet.add(key);
 					}
+				save(keySet, state);
+				//unmatched key leads
+				UnmatchedLeads unmatched = state.getUnmatchedLeads();
+				if (unmatched.size() > 0){
+					String message = "The following key leads are unmatched: %s";
+					message = String.format(message, state.getUnmatchedLeads().toString());
+					fireWarningEvent(message, next, 6);
 				}
-			}else if ("num".equals(attrName)){
-				logger.warn("num not yet supported");
-			}else{
-				logger.warn("Attribute " + attrName + " not yet supported for element taxon");
+//				save(keyNodesToSave, state);
+
+				return;
+			} else {
+				handleUnexpectedElement(next);
 			}
-		}
-
-	}
-
-
-	private Taxon getLastTaxon(MarkupImportState state) {
-		if (state.getConfig().getLastTaxonUuid() == null){
-			return null;
-		}else{
-			return (Taxon)getTaxonService().find(state.getConfig().getLastTaxonUuid());
-		}
-	}
-
-
-//	private void invokeDoKey(SapindaceaeImportState state) {
-//		TransactionStatus tx = startTransaction();
-//		
-//		Set<FeatureNode> nodesToSave = new HashSet<FeatureNode>();
-//		ITaxonService taxonService = getTaxonService();
-//		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
-//
-//		Element elbody= getBodyElement(state.getConfig());
-//		List<Element> elTaxonList = elbody.getChildren();
-//		
-//		int i = 0;
-//		
-//		//for each taxon
-//		for (Element elTaxon : elTaxonList){
-//			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
-//			if (! elTaxon.getName().equalsIgnoreCase("taxon")){
-//				continue;
-//			}
-//			
-//			List<Element> children = elTaxon.getChildren("key");
-//			for (Element element : children){
-//				handleKeys(state, element, null);
-//			}
-//			nodesToSave.add(taxon);
-//
-//		}
-//		
-//	}
-
-
-	// body/taxon/*
-	private void handleTaxonElement(MarkupImportState state, Set<String> unhandledTitleClassess, Set<String> unhandledNomeclatureChildren, Set<String> unhandledDescriptionChildren, Taxon taxon, List<Element> children) {
-		AnnotatableEntity lastEntity = null;
-		for (Element element : children){
-			String elName = element.getName();
-			
-			if (elName.equalsIgnoreCase("title")){
-				handleTitle(state, element, taxon, unhandledTitleClassess);
-				lastEntity = null;
-			}else if(elName.equalsIgnoreCase("nomenclature")){
-				handleNomenclature(state, element, taxon, unhandledNomeclatureChildren);
-				lastEntity = null;
-			}else if(elName.equalsIgnoreCase("description")){
-				handleDescription(state, element, taxon, unhandledDescriptionChildren);
-				lastEntity = null;
-			}else if(elName.equalsIgnoreCase("habitatecology")){
-				lastEntity = handleEcology(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("distribution")){
-				lastEntity = handleDistribution(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("uses")){
-				lastEntity = handleUses(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("notes")){
-				lastEntity = handleTaxonNotes(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("chromosomes")){
-				lastEntity = handleChromosomes(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("vernacularnames")){
-				handleVernaculars(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("key")){
-				lastEntity = handleKeys(state, element, taxon);
-			}else if(elName.equalsIgnoreCase("references")){
-				handleReferences(state, element, taxon, lastEntity);
-				lastEntity = null;
-			}else if(elName.equalsIgnoreCase("taxon")){
-				logger.warn("A taxon should not be part of a taxon");
-			}else if(elName.equalsIgnoreCase("homotypes")){
-				logger.warn("Homotypes should be included in the nomenclature flag but is child of taxon [XPath: body/taxon/homotypes]");
-			}else{
-				logger.warn("Unexpected child for taxon: " + elName);
-			}
-		}
-	}
-	
-	
-	private void handleVernaculars(MarkupImportState state, Element elVernacular, Taxon taxon) {
-		verifyNoAttribute(elVernacular);
-		verifyNoChildren(elVernacular, false);
-		String value = elVernacular.getTextNormalize();
-		Feature feature = Feature.COMMON_NAME();
-		value = replaceStart(value, "Noms vernaculaires");
-		String[] dialects = value.split(";");
-		for (String singleDialect : dialects){
-			handleSingleDialect(taxon, singleDialect, feature, state);
 		}
 		return;
 	}
 
+	/**
+	 * @param taxon
+	 * @param lastTaxon
+	 */
+	private void doTaxonRelation(MarkupImportState state, Taxon taxon,
+			Taxon lastTaxon, Location dataLocation) {
 
-	private void handleSingleDialect(Taxon taxon, String singleDialect, Feature feature, MarkupImportState state) {
-		singleDialect = singleDialect.trim();
-		TaxonDescription description = getDescription(taxon);
-		String reDialect = "\\(dial\\.\\s.*\\)";
-//		String reDialect = "\\(.*\\)";
-		Pattern patDialect = Pattern.compile(reDialect);
-		Matcher matcher = patDialect.matcher(singleDialect);
-		if (matcher.find()){
-			String dialect = singleDialect.substring(matcher.start(), matcher.end());
-			dialect = dialect.replace("(dial. ", "").replace(")", "");
-			
-			Language language = null;
-			try {
-				language = this.getLanguage(state, state.getTransformer().getLanguageUuid(dialect), dialect, dialect, dialect);
-			} catch (UndefinedTransformerMethodException e) {
-				logger.error(e.getMessage());
-			}
-			
-			String commonNames = singleDialect.substring(0, matcher.start());
-			String[] splitNames = commonNames.split(",");
-			for (String commonNameString : splitNames){
-				commonNameString = commonNameString.trim();
-				CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
-				description.addElement(commonName);
-			}
-		}else{
-			logger.warn("No dialect match: " +  singleDialect);
-		}
-	}
-
-
-	private void handleReferences(MarkupImportState state, Element elReferences, Taxon taxon, AnnotatableEntity lastEntity) {
-		verifyNoAttribute(elReferences);
-		verifyNoChildren(elReferences, true);
-		String refString = elReferences.getTextNormalize(); 
-		if (lastEntity == null){
-			logger.warn("No last entity defined: " + refString);
+		Classification tree = makeTree(state, dataLocation);
+		if (lastTaxon == null) {
+			tree.addChildTaxon(taxon, null, null, null);
 			return;
 		}
-		
-		Annotation annotation = Annotation.NewInstance(refString, AnnotationType.EDITORIAL(), Language.DEFAULT());
-		lastEntity.addAnnotation(annotation);
+		Rank thisRank = taxon.getName().getRank();
+		Rank lastRank = lastTaxon.getName().getRank();
+		if (lastTaxon.getTaxonNodes().size() > 0) {
+			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
+			if (thisRank.isLower(lastRank)) {
+				lastNode.addChildTaxon(taxon, null, null, null);
+				fillMissingEpithetsForTaxa(lastTaxon, taxon);
+			} else if (thisRank.equals(lastRank)) {
+				TaxonNode parent = lastNode.getParent();
+				if (parent != null) {
+					parent.addChildTaxon(taxon, null, null, null);
+					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
+				} else {
+					tree.addChildTaxon(taxon, null, null, null);
 	}
+			} else if (thisRank.isHigher(lastRank)) {
+				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),
+						dataLocation);
+				// TaxonNode parentNode = handleTaxonRelation(state, taxon,
+				// lastNode.getParent().getTaxon());
+				// parentNode.addChildTaxon(taxon, null, null, null);
+			}
+		} else {
 
-
-	private PolytomousKey handleKeys(MarkupImportState state, Element elKey, Taxon taxon) {
-		UnmatchedLeads openKeys = state.getUnmatchedLeads();
-		
-		//title
-		String title = makeKeyTitle(elKey);
-		
-		//key
-		PolytomousKey key = PolytomousKey.NewTitledInstance(title);
-		
-		//TODO add covered taxa etc.
-		verifyNoAttribute(elKey);
-		
-		//notes
-		makeKeyNotes(elKey, key);
-		
-		//keycouplets
-		List<Element> keychoices = new ArrayList<Element>();
-		keychoices.addAll(elKey.getChildren("keycouplet"));
-		keychoices.addAll(elKey.getChildren("keychoice"));
-		
-		
-		for (Element elKeychoice : keychoices){
-			handleKeyChoices(state, openKeys, key, elKeychoice, taxon);
-			elKey.removeContent(elKeychoice);
+			String message = "Last taxon has no node";
+			fireWarningEvent(message, makeLocationStr(dataLocation), 6);
 		}
-		
-		//
-		verifyNoChildren(elKey);
-		logger.info("Unmatched leads after key handling:" + openKeys.toString());
-		
-
-		if (state.getConfig().isDoPrintKeys()){
-			key.print(System.err);
-		}
-		getPolytomousKeyService().save(key);
-		return key;
 	}
-
 
 	/**
 	 * @param state
-	 * @param elKey
-	 * @param openKeys
-	 * @param key
-	 * @param elKeychoice
-	 * @param taxon 
-	 */
-	private void handleKeyChoices(MarkupImportState state, UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, Taxon taxon) {
-		
-		//char Attribute
-		//TODO it's still unclear if char is a feature and needs to be a new attribute 
-		//or if it is handled as question. Therefore both cases are handled but feature
-		//is finally not yet set
-		KeyStatement question = handleKeychoiceChar(state, elKeychoice);
-		Feature feature = handleKeychoiceCharAsFeature(state, elKeychoice);
-		
-		//lead
-		List<PolytomousKeyNode> childNodes = handleKeychoiceLeads(state, key, elKeychoice, taxon, question, feature);
-		
-		//num -> match with unmatched leads
-		handleKeychoiceNum(openKeys, key, elKeychoice, childNodes);
-
-		//others
-		verifyNoAttribute(elKeychoice);
-	}
-
-
-	/**
-	 * @param openKeys
-	 * @param key
-	 * @param elKeychoice
-	 * @param childNodes
-	 */
-	private void handleKeychoiceNum(UnmatchedLeads openKeys, PolytomousKey key, Element elKeychoice, List<PolytomousKeyNode> childNodes) {
-		Attribute numAttr = elKeychoice.getAttribute("num");
-		String num = CdmUtils.removeTrailingDot(numAttr == null? "":numAttr.getValue());
-		UnmatchedLeadsKey okk = UnmatchedLeadsKey.NewInstance(key, num);
-		Set<PolytomousKeyNode> matchingNodes = openKeys.getNodes(okk);
-		for (PolytomousKeyNode matchingNode : matchingNodes){
-			for (PolytomousKeyNode childNode : childNodes){
-				matchingNode.addChild(childNode);
-			}
-			openKeys.removeNode(okk, matchingNode);
-		}
-		if (matchingNodes.isEmpty()){
-			for (PolytomousKeyNode childNode : childNodes){
-				key.getRoot().addChild(childNode);
-			}
-		}
-		
-		elKeychoice.removeAttribute("num");
-	}
-
-
-	/**
-	 * @param state
-	 * @param key
-	 * @param elKeychoice
-	 * @param taxon
-	 * @param feature
+	 * @param dataLocation 
 	 * @return
 	 */
-	private List<PolytomousKeyNode> handleKeychoiceLeads(	MarkupImportState state, PolytomousKey key,	Element elKeychoice, Taxon taxon, KeyStatement question, Feature feature) {
-		List<PolytomousKeyNode> childNodes = new ArrayList<PolytomousKeyNode>();
-		List<Element> leads = elKeychoice.getChildren("lead");
-		for(Element elLead : leads){
-			PolytomousKeyNode childNode = handleLead(state, key, elLead, taxon, question, feature);
-			childNodes.add(childNode);
-		}
-		return childNodes;
-	}
-
-
-	/**
-	 * @param state
-	 * @param elKeychoice
-	 * @return
-	 */
-	private KeyStatement handleKeychoiceChar(MarkupImportState state, Element elKeychoice) {
-		KeyStatement statement = null;
-		Attribute charAttr = elKeychoice.getAttribute("char");
-		if (charAttr != null){
-			String charStr = charAttr.getValue();
-			if (StringUtils.isNotBlank(charStr)){
-				statement = KeyStatement.NewInstance(charStr);
+	private Classification makeTree(MarkupImportState state, Location dataLocation) {
+		Classification result = state.getTree(null);
+		if (result == null) {
+			UUID uuid = state.getConfig().getClassificationUuid();
+			if (uuid == null) {
+				String message = "No classification uuid is defined";
+				fireWarningEvent(message, makeLocationStr(dataLocation), 6);
+				result = createNewClassification(state);
+			} else {
+				result = getClassificationService().find(uuid);
+				if (result == null) {
+					result = createNewClassification(state);
+					result.setUuid(uuid);
 			}
-			elKeychoice.removeAttribute("char");
 		}
-		return statement;
+			state.putTree(null, result);
 	}
-	
-	/**
-	 * @param state
-	 * @param elKeychoice
-	 * @return
-	 */
-	private Feature handleKeychoiceCharAsFeature(MarkupImportState state, Element elKeychoice) {
-		Feature feature = null;
-		Attribute charAttr = elKeychoice.getAttribute("char");
-		if (charAttr != null){
-			String charStr = charAttr.getValue();
-			feature = getFeature(charStr, state);
-			elKeychoice.removeAttribute("char");
+		save(result, state);
+		return result;
 		}
-		return feature;
-	}
 
-
-	private PolytomousKeyNode handleLead(MarkupImportState state, PolytomousKey key, Element elLead, Taxon taxon, KeyStatement question, Feature feature) {
-		PolytomousKeyNode node = PolytomousKeyNode.NewInstance();
-		//TODO the char attribute in the keychoice is more a feature than a question
-		//needs to be discussed on model side
-		node.setQuestion(question);
-//		node.setFeature(feature);
-		
-		//text
-		String text = handleLeadText(elLead, node);
-		
-		//num
-		handleLeadNum(elLead, text);
-		
-		//goto
-		handleLeadGoto(state, key, elLead, taxon, node);
-		
-		//others
-		verifyNoAttribute(elLead);
-		
-		return node;
-	}
-
-
-	/**
-	 * @param elLead
-	 * @param node
-	 * @return
-	 */
-	private String handleLeadText(Element elLead, PolytomousKeyNode node) {
-		String text = elLead.getAttributeValue("text").trim();
-		if (StringUtils.isBlank(text)){
-			logger.warn("Empty text in lead");
-		}
-		elLead.removeAttribute("text");
-		KeyStatement statement = KeyStatement.NewInstance(text);
-		node.setStatement(statement);
-		return text;
-	}
-
-
-	/**
-	 * @param state
-	 * @param key
-	 * @param elLead
-	 * @param taxon
-	 * @param node
-	 */
-	private void handleLeadGoto(MarkupImportState state, PolytomousKey key, Element elLead, Taxon taxon, PolytomousKeyNode node) {
-		Attribute gotoAttr = elLead.getAttribute("goto");
-		if (gotoAttr != null){
-			String strGoto = gotoAttr.getValue().trim();
-			//create key
-			UnmatchedLeadsKey gotoKey = null;
-			if (isInternalNode(strGoto)){
-				gotoKey = UnmatchedLeadsKey.NewInstance(key, strGoto);
-			}else{
-				String taxonKey = makeTaxonKey(strGoto, taxon);
-				gotoKey = UnmatchedLeadsKey.NewInstance(taxonKey);
-			}
-			//
-			UnmatchedLeads openKeys = state.getUnmatchedLeads();
-			if (gotoKey.isInnerLead()){
-				Set<PolytomousKeyNode> existingNodes = openKeys.getNodes(gotoKey);
-				for (PolytomousKeyNode existingNode : existingNodes){
-					node.addChild(existingNode);
-				}
-			}
-			openKeys.addKey(gotoKey, node);
-			//remove attribute (need for consistency check)
-			elLead.removeAttribute("goto");
-		}else{
-			logger.warn("lead has no goto attribute");
-		}
-	}
-
-
-	/**
-	 * @param elLead
-	 * @param text
-	 */
-	private void handleLeadNum(Element elLead, String text) {
-		Attribute numAttr = elLead.getAttribute("num");
-		if (numAttr != null){
-			//TODO num
-			String num = numAttr.getValue();
-			elLead.removeAttribute("num");
-		}else{
-			logger.info("Keychoice has no num attribute: " + text);
-		}
-	}
-
-
-	private String makeTaxonKey(String strGoto, Taxon taxon) {
-		String result = "";
-		if (strGoto == null){
-			return "";
-		}
-		String strGenusName = CdmBase.deproxy(taxon.getName(), NonViralName.class).getGenusOrUninomial();
-		strGoto = strGoto.replaceAll("\\([^\\(\\)]*\\)", "");  //replace all brackets
-		strGoto = strGoto.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
-		
-		strGoto = strGoto.trim();  
-		String[] split = strGoto.split("\\s");
-		for (int i = 0; i<split.length; i++){
-			String single = split[i];
-			if (isGenusAbbrev(single, strGenusName)){
-				split[i] = strGenusName;
-			}
-//			if (isInfraSpecificMarker(single)){
-//				String strSpeciesName = CdmBase.deproxy(taxon.getName(), NonViralName.class).getSpecificEpithet();
-//				split[i] = strGenusName + " " + strSpeciesName + " ";
-//			}
-			result = (result + " " + split[i]).trim();
-		}
+	private Classification createNewClassification(MarkupImportState state) {
+		Classification result;
+		result = Classification.NewInstance(state.getConfig().getClassificationTitle());
+		state.putTree(null, result);
 		return result;
 	}
 
+	private Taxon handleTaxon(MarkupImportState state, XMLEventReader reader, StartElement parentEvent) throws XMLStreamException {
+		// TODO progress monitoring
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		Taxon taxon = createTaxonAndName(state, attributes);
+		state.setCurrentTaxon(taxon);
 
-	private boolean isInfraSpecificMarker(String single) {
-		try {
-			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
-				return true;
-			}
-		} catch (UnknownCdmTypeException e) {
-			return false;
-		}
-		return false;
-	}
+		boolean hasTitle = false;
+		boolean hasNomenclature = false;
+		String taxonTitle = null;
 
-
-	private boolean isGenusAbbrev(String single, String strGenusName) {
-		if (! single.matches("[A-Z]\\.?")) {
-			return false;
-		}else if (single.length() == 0 || strGenusName == null || strGenusName.length() == 0){
-			return false; 
-		}else{
-			return single.charAt(0) == strGenusName.charAt(0);
-		}
-	}
-
-
-	private boolean isInternalNode(String strGoto) {
-		return CdmUtils.isNumeric(strGoto);
-	}
-
-
-	private void makeKeyNotes(Element keyElement, PolytomousKey key) {
-		Element elNotes = keyElement.getChild("notes");
-		if (elNotes != null){
-			keyElement.removeContent(elNotes);
-			String notes = elNotes.getTextNormalize();
-			if (StringUtils.isNotBlank(notes)){
-				key.addAnnotation(Annotation.NewInstance(notes, AnnotationType.EDITORIAL(), Language.DEFAULT()));
-			}
-		}
-	}
-
-
-	private String makeKeyTitle(Element keyElement) {
-		String title = "- no title - ";
-		Attribute titleAttr = keyElement.getAttribute("title");
-		keyElement.removeAttribute(titleAttr);
-		if (titleAttr == null){
-			Element elTitle = keyElement.getChild("keytitle");
-			keyElement.removeContent(elTitle);
-			if (elTitle != null){
-				title = elTitle.getTextNormalize();
-			}
-		}else{
-			title = titleAttr.getValue();
-		}
-		return title;
-	}
-
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 */
-	private TextData handleChromosomes(MarkupImportState state, Element element, Taxon taxon) {
-		Feature chromosomeFeature = getFeature("chromosomes", state);
-		verifyNoAttribute(element);
-		verifyNoChildren(element);
-		String value = element.getTextNormalize();
-		value = replaceStart(value, "Chromosomes");
-		String chromosomesPart = getChromosomesPart(value);
-		String references = value.replace(chromosomesPart, "").trim();
-		chromosomesPart = chromosomesPart.replace(":", "").trim();
-		return addDescriptionElement(state, taxon, chromosomesPart, chromosomeFeature, references);	
-	}
-
-
-	/**
-	 * @param ref 
-	 * @param string 
-	 * @return
-	 */
-	private void makeOriginalSourceReferences(ISourceable sourcable, String splitter, String refAll) {
-		String[] splits = refAll.split(splitter);
-		for (String strRef: splits){
-			Reference ref = ReferenceFactory.newGeneric();
-			ref.setTitleCache(strRef, true);
-			String refDetail = parseReferenceYearAndDetail(ref);
-			sourcable.addSource(null, null, ref, refDetail);
-		}
-		
-		
-//TODO use regex instead
-/*		String detailResult = null;
-		String titleToParse = ref.getTitleCache();
-		String reReference = "^\\.{1,}";
-//		String reYear = "\\([1-2]{1}[0-9]{3}\\)";
-		String reYear = "\\([1-2]{1}[0-9]{3}\\)";
-		String reYearPeriod = reYear + "(-" + reYear + ")+";
-		String reDetail = "\\.{1,10}$";
-*/		
-	}
-
-
-	/**
-	 * @param value
-	 * @return
-	 */
-	private String getChromosomesPart(String str) {
-		Pattern pattern = Pattern.compile("2n\\s*=\\s*\\d{1,2}:");
-		Matcher matcher = pattern.matcher(str);
-		if (matcher.find()){
-			return matcher.group(0);
-		}else{
-			logger.warn("Chromosomes could not be parsed: " + str);
-		}
-		return str;
-	}
-
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 */
-	private TextData handleTaxonNotes(MarkupImportState state, Element element, Taxon taxon) {
-		TextData result = null;
-		verifyNoChildren(element, true);
-		//verifyNoAttribute(element);
-		List<Attribute> attributes = element.getAttributes();
-		for (Attribute attribute : attributes){
-			if (! attribute.getName().equalsIgnoreCase("class")){
-				logger.warn("Char has unhandled attribute " +  attribute.getName());
-			}else{
-				String classValue = attribute.getValue();
-				result = handleDescriptiveElement(state, element, taxon, classValue);
-			}
-		}
-		//if no class attribute exists, handle as note
-		if (attributes.isEmpty()){
-			result = handleDescriptiveElement(state, element, taxon, "Note");
-		}
-
-		//Annotation annotation = Annotation.NewInstance(value, AnnotationType.EDITORIAL(), Language.ENGLISH());
-		//taxon.addAnnotation(annotation);
-		return result; //annotation;
-	}
-
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 * @param result
-	 * @param attribute
-	 * @return
-	 */
-	private TextData handleDescriptiveElement(MarkupImportState state, Element element, Taxon taxon, String classValue) {
-		TextData result = null;
-		Feature feature = getFeature(classValue, state);
-		if (feature == null){
-			logger.warn("Unhandled feature: " + classValue);
-		}else{
-			String value = element.getValue();
-			value = replaceStart(value, "Notes");
-			value = replaceStart(value, "Note");
-			result = addDescriptionElement(state, taxon, value, feature, null);
-		}
-		return result;
-	}
-
-
-	private void removeBr(Element element) {
-		element.removeChildren("Br");
-		element.removeChildren("br");
-		element.removeChildren("BR");
-	}
-
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 */
-	private TextData handleUses(MarkupImportState state, Element element, Taxon taxon) {
-		verifyNoAttribute(element);
-		verifyNoChildren(element, true);
-		String value = element.getTextNormalize();
-		value = replaceStart(value, "Uses");
-		Feature feature = Feature.USES();
-		return addDescriptionElement(state, taxon, value, feature, null);
-		
-	}
-
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 * @param unhandledDescriptionChildren
-	 */
-	private DescriptionElementBase handleDistribution(MarkupImportState state, Element element, Taxon taxon) {
-		verifyNoAttribute(element);
-		verifyNoChildren(element, true);
-		String value = element.getTextNormalize();
-		value = replaceStart(value, "Distribution");
-		Feature feature = Feature.DISTRIBUTION();
-		//distribution parsing almost impossible as there is lots of freetext in the distribution tag
-		return addDescriptionElement(state, taxon, value, feature, null);
-	}
-
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 * @param unhandledDescriptionChildren
-	 */
-	private TextData handleEcology(MarkupImportState state, Element elEcology, Taxon taxon) {
-		verifyNoAttribute(elEcology);
-		verifyNoChildren(elEcology, true);
-		String value = elEcology.getTextNormalize();
-		Feature feature = Feature.ECOLOGY();
-		if (value.startsWith("Habitat & Ecology")){
-			feature = getFeature("Habitat & Ecology", state);
-			value = replaceStart(value, "Habitat & Ecology");
-		}else if (value.startsWith("Habitat")){
-			value = replaceStart(value, "Habitat");
-			feature = getFeature("Habitat", state);
-		}
-		return addDescriptionElement(state, taxon, value, feature, null);
-	}
-
-
-
-	/**
-	 * @param value
-	 * @param replacementString
-	 */
-	private String replaceStart(String value, String replacementString) {
-		if (value.startsWith(replacementString) ){
-			value = value.substring(replacementString.length()).trim();
-		}
-		while (value.startsWith("-") || value.startsWith("–") ){
-			value = value.substring("-".length()).trim();
-		}
-		return value;
-	}
-
-
-	/**
-	 * @param value
-	 * @param replacementString
-	 */
-	protected String removeTrailing(String value, String replacementString) {
-		if (value == null){
-			return null;
-		}
-		if (value.endsWith(replacementString) ){
-			value = value.substring(0, value.length() - replacementString.length()).trim();
-		}
-		return value;
-	}
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 * @param unhandledNomeclatureChildren 
-	 */
-	private void handleNomenclature(MarkupImportState state, Element elNomenclature, Taxon taxon, Set<String> unhandledChildren) {
-		verifyNoAttribute(elNomenclature);
-		
-		List<Element> elements = elNomenclature.getChildren();
-		for (Element element : elements){
-			if (element.getName().equals("homotypes")){
-				handleHomotypes(state, element, taxon);
-			}else if (element.getName().equals("notes")){
-				handleNomenclatureNotes(state, element, taxon);
-			}else{
-				unhandledChildren.add(element.getName());
-			}
-		}
-		
-	}
-
-
-
-	private void handleNomenclatureNotes(MarkupImportState state, Element elNotes, Taxon taxon) {
-		verifyNoAttribute(elNotes);
-		verifyNoChildren(elNotes);
-		String notesText = elNotes.getTextNormalize();
-		Annotation annotation = Annotation.NewInstance(notesText, AnnotationType.EDITORIAL(), Language.DEFAULT());
-		taxon.addAnnotation(annotation);
-	}
-
-
-
-	private static Set<String> unhandledHomotypeChildren = new HashSet<String>();
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 */
-	private void handleHomotypes(MarkupImportState state, Element elHomotypes, Taxon taxon) {
-		verifyNoAttribute(elHomotypes);
-		
-		List<Element> elements = elHomotypes.getChildren();
-		HomotypicalGroup homotypicalGroup = null;
-		for (Element element : elements){
-			if (element.getName().equals("nom")){
-				homotypicalGroup = handleNom(state, element, taxon, homotypicalGroup);
-			}else{
-				unhandledHomotypeChildren.add(element.getName());
-			}
-		}
-		
-	}
-
-	private static Set<String> unhandledNomChildren = new HashSet<String>();
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param taxon
-	 */
-	private HomotypicalGroup handleNom(MarkupImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
-		List<Attribute> attributes = elNom.getAttributes();
-		
-		boolean taxonBaseClassType = false;
-		for (Attribute attribute : attributes){
-			if (! attribute.getName().equalsIgnoreCase("class")){
-				logger.warn("Nom has unhandled attribute " +  attribute.getName());
-			}else{
-				String classValue = attribute.getValue();
-				if (classValue.equalsIgnoreCase("acceptedname")){
-					homotypicalGroup = handleNomTaxon(state, elNom, taxon,homotypicalGroup, false);
-					taxonBaseClassType = true;
-				}else if (classValue.equalsIgnoreCase("synonym")){
-					homotypicalGroup = handleNomTaxon(state, elNom, taxon, homotypicalGroup, true);
-					taxonBaseClassType = true;
-				}else if (classValue.equalsIgnoreCase("typeref")){
-					handleTypeRef(state, elNom, taxon, homotypicalGroup);
-				}else{
-					logger.warn("Unhandled class value for nom: " + classValue);
-				}
-				
-			}
-		}
-		
-		List<Element> elements = elNom.getChildren();
-		for (Element element : elements){
-			if (element.getName().equals("name") || element.getName().equals("homonym") ){
-				if (taxonBaseClassType == false){
-					logger.warn("Name or homonym tag not allowed in non taxon nom tag");
-				}
-			}else{
-				unhandledNomChildren.add(element.getName());
-			}
-		}
-		
-		return homotypicalGroup;
-		
-	}
-
-	/**
-	 * @param state
-	 * @param elNom
-	 * @param taxon
-	 * @param homotypicalGroup 
-	 */
-	protected void handleTypeRef(MarkupImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup) {
-		verifyNoChildren(elNom);
-		String typeRef = elNom.getTextNormalize();
-		typeRef = removeStartingTypeRefMinus(typeRef);
-		
-		String[] split = typeRef.split(":");
-		if (split.length < 2){
-			logger.warn("typeRef has no ':' : " + typeRef);
-		}else if (split.length > 2){
-			logger.warn("typeRef has more than 1 ':' : " + typeRef);
-		}else{
-			StringBuffer typeType = new StringBuffer(split[0]);
-			String typeText = split[1].trim();
-			TypeDesignationBase typeDesignation = getTypeDesignationAndReference(typeType);
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					checkMandatoryElement(hasTitle, parentEvent, TAXONTITLE);
+					checkMandatoryElement(hasNomenclature, parentEvent,	NOMENCLATURE);
+					handleUnexpectedAttributes(parentEvent.getLocation(),attributes);
 			
-			//Name Type Desitnations
-			if (typeDesignation instanceof NameTypeDesignation){
-				makeNameTypeDesignations(typeType, typeText, typeDesignation);
-			}
-			//SpecimenTypeDesignations
-			else if (typeDesignation instanceof SpecimenTypeDesignation){
-				makeSpecimenTypeDesignation(typeType, typeText, typeDesignation);
-			}else{
-				logger.error("Unhandled type designation class" + typeDesignation.getClass().getName());
-			}
-			for (TaxonNameBase name : homotypicalGroup.getTypifiedNames()){
-				name.addTypeDesignation(typeDesignation, true);
-			}
-		}
-	}
-
-
-	/**
-	 * @param typeRef
-	 * @return
-	 */
-	protected String removeStartingTypeRefMinus(String typeRef) {
-		typeRef = replaceStart(typeRef, "-");
-		typeRef = replaceStart(typeRef, "—");
-		typeRef = replaceStart(typeRef, "\u002d");
-		typeRef = replaceStart(typeRef, "\u2013");
-		typeRef = replaceStart(typeRef, "--");
-		return typeRef;
-	}
-
-	/**
-	 * @param typeType
-	 * @param typeText
-	 * @param typeDesignation
-	 */
-	private void makeNameTypeDesignations(StringBuffer typeType, String typeText, TypeDesignationBase typeDesignation) {
-		if (typeType.toString().trim().equalsIgnoreCase("Type")){
-			//do nothing
-		}else if (typeType.toString().trim().equalsIgnoreCase("Lectotype")){
-			typeDesignation.setTypeStatus(SpecimenTypeDesignationStatus.LECTOTYPE());
-		}else if (typeType.toString().trim().equalsIgnoreCase("Syntype")){
-			typeDesignation.setTypeStatus(SpecimenTypeDesignationStatus.SYNTYPE());
-		}else{
-			logger.warn("Unhandled type string: " + typeType + "(" + CharUtils.unicodeEscaped(typeType.charAt(0)) + ")");
-		}
-		//clean
-		typeText = cleanNameType(typeText);
-		//create name
-		BotanicalName nameType = (BotanicalName)parser.parseFullName(typeText, NomenclaturalCode.ICBN, Rank.SPECIES());
-		((NameTypeDesignation) typeDesignation).setTypeName(nameType);
-		//TODO wie können NameTypes den Namen zugeordnet werden? -  wird aber vom Portal via NameCache matching gemacht
-	}
-
-
-	private String cleanNameType(String typeText) {
-		String result;
-		String[] split = typeText.split("\\[.*\\].?");
-		result = split[0];
-		return result;
-	}
-
-
-	/**
-	 * @param typeType
-	 * @param typeText
-	 * @param typeDesignation
-	 */
-	protected void makeSpecimenTypeDesignation(StringBuffer typeType, String typeText, TypeDesignationBase typeDesignation) {
-		if (typeType.toString().trim().equalsIgnoreCase("Type")){
-			//do nothing
-		}else if (typeType.toString().trim().equalsIgnoreCase("Neotype") || typeType.toString().trim().equalsIgnoreCase("Neotypes")){
-			typeDesignation.setTypeStatus(SpecimenTypeDesignationStatus.NEOTYPE());
-		}else if (typeType.toString().trim().equalsIgnoreCase("Syntype") || typeType.toString().trim().equalsIgnoreCase("Syntypes")){
-			typeDesignation.setTypeStatus(SpecimenTypeDesignationStatus.SYNTYPE());
-		}else if (typeType.toString().trim().equalsIgnoreCase("Lectotype")){
-			typeDesignation.setTypeStatus(SpecimenTypeDesignationStatus.LECTOTYPE());
-		}else if (typeType.toString().trim().equalsIgnoreCase("Paratype")){
-			typeDesignation.setTypeStatus(SpecimenTypeDesignationStatus.PARATYPE());
-		}else{
-			logger.warn("Unhandled type string: " + typeType);
-		}
-		Specimen specimen = Specimen.NewInstance();
-		if (typeText.length() > 255){
-			specimen.setTitleCache(typeText.substring(0, 252) + "...", true);
-		}else{
-			specimen.setTitleCache(typeText, true);
-		}
-		specimen.addDefinition(typeText, Language.ENGLISH());
-		((SpecimenTypeDesignation) typeDesignation).setTypeSpecimen(specimen);
-	}
-
-	private TypeDesignationBase getTypeDesignationAndReference(StringBuffer typeType) {
-		TypeDesignationBase result;
-		Reference ref = parseTypeDesignationReference(typeType);
-		if (typeType.indexOf(" species")>-1 || typeType.indexOf("genus")>-1){
-			if (typeType.indexOf(" species")>-1 ){
-				result = NameTypeDesignation.NewInstance();
-				int start = typeType.indexOf(" species");
-				typeType.replace(start, start + " species".length(), "");
-			}else {
-				result = NameTypeDesignation.NewInstance();
-				int start = typeType.indexOf(" genus");
-				typeType.replace(start, start + " genus".length(), "");
-			}
-		}else{
-			result = SpecimenTypeDesignation.NewInstance();
-		}
-		result.setCitation(ref);
-		return result;
-	}
-
-
-	private Reference parseTypeDesignationReference(StringBuffer typeType) {
-		Reference result = null;
-		String reBracketReference = "\\(.*\\)";
-		Pattern patBracketReference = Pattern.compile(reBracketReference);
-		Matcher matcher = patBracketReference.matcher(typeType);
-		if (matcher.find()){
-			String refString = matcher.group();
-			int start = typeType.indexOf(refString);
-			typeType.replace(start, start + refString.length(), "");
-			refString = refString.replace("(", "").replace(")", "").trim();
-			Reference ref = ReferenceFactory.newGeneric();
-			ref.setTitleCache(refString, true);
-			result = ref;
-		}
-		return result;
-	}
-
-
-	/**
-	 * @param state
-	 * @param elNom
-	 * @param taxon
-	 */
-	//body/taxon/
-	private HomotypicalGroup handleNomTaxon(MarkupImportState state, Element elNom, Taxon taxon, HomotypicalGroup homotypicalGroup, boolean isSynonym) {
-		NonViralName name = makeName(taxon, homotypicalGroup, isSynonym);
-		String num = null;
-		
-		boolean hasGenusInfo = false;
-		TeamOrPersonBase lastTeam = null;
-		
-		//genus
-		List<Element> elGenus = XmlHelp.getAttributedChildListWithValue(elNom, "name", "class", "genus");
-		if (elGenus.size() > 0){
-			hasGenusInfo = true;
-		}else{
-			logger.debug ("No Synonym Genus");
-		}
-		//infra rank -> needed to handle authors correctly
-		List<Element> elInfraRank = XmlHelp.getAttributedChildListWithValue(elNom, "name", "class", "infrank");
-		Rank infraRank = null;
-		infraRank = handleInfRank(name, elInfraRank, infraRank);
-		
-		//get left over elements
-		List<Element> elements = elNom.getChildren();
-		elements.removeAll(elInfraRank);
-		
-		for (Element element : elements){
-			if (element.getName().equals("name")){
-				String classValue = element.getAttributeValue("class");
-				String value = element.getValue().trim();
-				if (classValue.equalsIgnoreCase("genus") || classValue.equalsIgnoreCase("family") ){
-					name.setGenusOrUninomial(value);
-				}else if (classValue.equalsIgnoreCase("family") ){
-					name.setGenusOrUninomial(value);
-					name.setRank(Rank.FAMILY());
-				}else if (classValue.equalsIgnoreCase("subgenus")){
-					//name.setInfraGenericEpithet(value);
-					name.setNameCache(value.replace(":", "").trim());
-					name.setRank(Rank.SUBGENUS());
-				}else if (classValue.equalsIgnoreCase("epithet") ){
-					if (hasGenusInfo == true){
-						name.setSpecificEpithet(value);
-					}else{
-						handleInfraspecificEpithet(element, classValue, name);
+					makeKeyNodes(state, parentEvent, taxonTitle);
+					state.setCurrentTaxon(null);
+					state.setCurrentTaxonNum(null);
+					save(taxon, state);
+					return taxon;
+				} else {
+					if (isEndingElement(next, HEADING)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, TEXT_SECTION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, REFERENCES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
 					}
-				}else if (classValue.equalsIgnoreCase("author")){
-					handleNameAuthors(element, name);
-				}else if (classValue.equalsIgnoreCase("paraut")){
-					handleBasionymAuthor(state, element, name, false);
-				}else if (classValue.equalsIgnoreCase("infrauthor") || classValue.equalsIgnoreCase("infraut")){
-					handleInfrAuthor(state, element, name, true);
-				}else if (classValue.equalsIgnoreCase("infrapar") || classValue.equalsIgnoreCase("infrpar") || classValue.equalsIgnoreCase("parauthor") ){
-					handleBasionymAuthor(state, element, name, true);
-				}else if (classValue.equalsIgnoreCase("infrepi")){
-					handleInfrEpi(name, infraRank, value);
-				}else if (classValue.equalsIgnoreCase("pub")){
-					lastTeam = handleNomenclaturalReference(name, value);
-				}else if (classValue.equalsIgnoreCase("usage")){
-					lastTeam = handleNameUsage(taxon, name, value, lastTeam);
-				}else if (classValue.equalsIgnoreCase("note")){
-					handleNameNote(name, value);
-				}else if (classValue.equalsIgnoreCase("num")){
-					if (num != null){
-						logger.warn("Duplicate num: " + value);
-					}else{
-						num = value;
-					}
-					if (isSynonym == true){
-						logger.warn("Synonym should not have a num");
-					}
-				}else if (classValue.equalsIgnoreCase("typification")){
-					logger.warn("Typification should not be a nom class");
-				}else{
-					logger.warn("Unhandled name class: " +  classValue);
 				}
-			}else if(element.getName().equals("homonym")){
-				handleHomonym(state, element, name);
-			}else{
-				// child element is not "name"
-				unhandledNomChildren.add(element.getName());
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, HEADING)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, TAXONTITLE)) {
+					taxonTitle = handleTaxonTitle(state, reader, next);
+					hasTitle = true;
+				} else if (isStartingElement(next, WRITER)) {
+					makeKeyWriter(state, reader, taxon, taxonTitle, next);
+				} else if (isStartingElement(next, TEXT_SECTION)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, KEY)) {
+					handleKey(state, reader, next);
+				} else if (isStartingElement(next, NOMENCLATURE)) {
+					handleNomenclature(state, reader, next);
+					hasNomenclature = true;
+				} else if (isStartingElement(next, FEATURE)) {
+					handleFeature(state, reader, next);
+				} else if (isStartingElement(next, NOTES)) {
+					// TODO is this the correct way to handle notes?
+					String note = handleNotes(state, reader, next);
+
+					UUID notesUuid;
+			try {
+						notesUuid = state.getTransformer().getFeatureUuid(
+								"notes");
+						Feature feature = getFeature(state, notesUuid, "Notes",
+								"Notes", "note", null);
+						TextData textData = TextData.NewInstance(feature);
+						textData.putText(Language.DEFAULT(), note);
+						TaxonDescription description = getTaxonDescription(
+								taxon, false, true);
+						description.addElement(textData);
+			} catch (UndefinedTransformerMethodException e) {
+						String message = "getFeatureUuid method not yet implemented";
+						fireWarningEvent(message, next, 8);
 			}
+				} else if (isStartingElement(next, REFERENCES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, FIGURE)) {
+					handleFigure(state, reader, next);
+				} else if (isStartingElement(next, FOOTNOTE)) {
+					FootnoteDataHolder footnote = handleFootnote(state, reader,
+							next);
+					if (footnote.isRef()) {
+						String message = "Ref footnote not implemented here";
+						fireWarningEvent(message, next, 4);
+					} else {
+						registerGivenFootnote(state, footnote);
+			}
+				} else {
+					handleUnexpectedStartElement(next);
 		}
-		
-		//handle key
-		if (! isSynonym){
-			String taxonString = name.getNameCache();
-			//try to find matching lead nodes 
-			UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, taxonString);
-			Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
-			//same without using the num
-			if (num != null){
-				UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", taxonString);
-				handleMatchingNodes(state, taxon, noNumLeadsKey);
-			}
-			if (matchingNodes.isEmpty() && num != null){
-				logger.warn("Taxon has num but no matching nodes exist: " + num+ ", Key: " + leadsKey.toString());
-			}
+			} else {
+				handleUnexpectedElement(next);
+	}
 		}
-		
-		//test nom element has no text
-		if (StringUtils.isNotBlank(elNom.getTextNormalize().replace("—", "").replace("\u002d","").replace("\u2013", ""))){
-			String strElNom = elNom.getTextNormalize();
-			if ("?".equals(strElNom)){
-				handleQuestionMark(name, taxon);
-			}
-//			Character c = strElNom.charAt(0);
-			//System.out.println(CharUtils.unicodeEscaped(c));
-			logger.warn("Nom tag has text: " + strElNom);
-		}
-		
-		return name.getHomotypicalGroup();
+		throw new IllegalStateException("<Taxon> has no closing tag");
 	}
 
-
-	private void handleQuestionMark(NonViralName name, Taxon taxon) {
-		int count = name.getTaxonBases().size();
-		if (count != 1){
-			logger.warn("Name has " + count + " taxa. This is not handled for question mark");
-		}else{
-			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
-			taxonBase.setDoubtful(true);
-		}
-	}
-
-
-	//merge with handleNomTaxon	
-	private void handleHomonym(MarkupImportState state, Element elHomonym, NonViralName upperName) {
-		verifyNoAttribute(elHomonym);
+	private void makeKeyNodes(MarkupImportState state, XMLEvent event, String taxonTitle) {
+		Taxon taxon = state.getCurrentTaxon();
+		String num = state.getCurrentTaxonNum();
 		
-		//hommonym name
-		BotanicalName homonymName = BotanicalName.NewInstance(upperName.getRank());
-		homonymName.setGenusOrUninomial(upperName.getGenusOrUninomial());
-		homonymName.setInfraGenericEpithet(upperName.getInfraGenericEpithet());
-		homonymName.setSpecificEpithet(upperName.getSpecificEpithet());
-		homonymName.setInfraSpecificEpithet(upperName.getInfraSpecificEpithet());
-
-		for (Element elName : (List<Element>)elHomonym.getChildren("name")){
-			String classValue = elName.getAttributeValue("class");
-			String value = elName.getValue().trim();
-			if (classValue.equalsIgnoreCase("genus") ){
-				homonymName.setGenusOrUninomial(value);
-			}else if (classValue.equalsIgnoreCase("epithet") ){
-				homonymName.setSpecificEpithet(value);
-			}else if (classValue.equalsIgnoreCase("author")){
-				handleNameAuthors(elName, homonymName);
-			}else if (classValue.equalsIgnoreCase("paraut")){
-				handleBasionymAuthor(state, elName, homonymName, true);
-			}else if (classValue.equalsIgnoreCase("pub")){
-				handleNomenclaturalReference(homonymName, value);
-			}else if (classValue.equalsIgnoreCase("note")){
-				handleNameNote(homonymName, value);
-			}else{
-				logger.warn("Unhandled class value: " + classValue);
-			}
-		}
-		//TODO verify other information
+		String nameString = CdmBase.deproxy(taxon.getName(), NonViralName.class).getNameCache();
+//		String nameString = taxonTitle;
 		
-
-		//rel
-		boolean homonymIsLater = false;
-		NameRelationshipType relType = NameRelationshipType.LATER_HOMONYM();
-		if (upperName.getNomenclaturalReference() != null && homonymName.getNomenclaturalReference() != null){
-			TimePeriod homonymYear = homonymName.getNomenclaturalReference().getDatePublished();
-			TimePeriod nameYear = upperName.getNomenclaturalReference().getDatePublished();
-			homonymIsLater = homonymYear.getStart().compareTo(nameYear.getStart())  > 0;
-		}else{
-			if (upperName.getNomenclaturalReference() == null){
-				logger.warn("Homonym parent does not have a nomenclatural reference or year: " + upperName.getTitleCache());
-			}
-			if (homonymName.getNomenclaturalReference() == null){
-				logger.warn("Homonym does not have a nomenclatural reference or year: " + homonymName.getTitleCache());
+		//try to find matching lead nodes 
+		UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, nameString);
+		Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
+		
+		if (num != null){//same without using the num
+			UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", nameString);
+			Set<PolytomousKeyNode> noNumMatchingNodes = handleMatchingNodes(state, taxon, noNumLeadsKey);
+			if(noNumMatchingNodes.size() > 0){
+				String message ="Taxon matches additional key node when not considering <num> attribute in taxontitle. This may be correct but may also indicate an error.";
+				fireWarningEvent(message, event, 1);
 			}
 		}
-		if (homonymIsLater){
-			homonymName.addRelationshipToName(upperName, relType, null);
-		}else{
-			upperName.addRelationshipToName(homonymName, relType, null);
+		//report missing match, if num exists
+		if (matchingNodes.isEmpty() && num != null){
+			String message = "Taxon has <num> attribute in taxontitle but no matching key nodes exist: %s, Key: %s";
+			message = String.format(message, num, leadsKey.toString());
+			fireWarningEvent(message, event, 1);
 		}
 		
 	}
-
-
-	/**
-	 * @param state
-	 * @param taxon
-	 * @param leadsKey
-	 * @return
-	 */
+		
 	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
 		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
 		for (PolytomousKeyNode matchingNode : matchingNodes){
@@ -1439,942 +659,2883 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		return matchingNodes;
 	}
 
-
-	private void handleNameNote(NonViralName name, String value) {
-		logger.warn("Name note: " + value + ". Available in portal?");
-		Annotation annotation = Annotation.NewInstance(value, AnnotationType.EDITORIAL(), Language.DEFAULT());
-		name.addAnnotation(annotation);
+	private void handleKey(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		// attributes
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String isSpotcharacters = getAndRemoveAttributeValue(attributes, IS_SPOTCHARACTERS);
+		if (isNotBlank(isSpotcharacters) ) {
+			//TODO isSpotcharacters
+			String message = "Attribute isSpotcharacters not yet implemented for <key>";
+			fireWarningEvent(message, parentEvent, 4);
+		}
+		
+		PolytomousKey key = PolytomousKey.NewInstance();
+		key.addTaxonomicScope(state.getCurrentTaxon());
+		state.setCurrentKey(key);
+		
+		boolean isFirstCouplet = true;
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				save(key, state);
+				state.setCurrentKey(null);
+				return;
+			} else if (isEndingElement(next, KEYNOTES)){
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, KEY_TITLE)) {
+					handleKeyTitle(state, reader, next);
+			} else if (isStartingElement(next, KEYNOTES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, COUPLET)) {
+				PolytomousKeyNode node = null;
+				if (isFirstCouplet){
+					node = key.getRoot();
+					isFirstCouplet = false;
+		}
+				handleCouplet(state, reader, next, node);
+			} else {
+				handleUnexpectedElement(next);
 	}
-
+		}
+		throw new IllegalStateException("<key> has no closing tag");
+	}
 
 	/**
-	 * @param taxon
-	 * @param name
-	 * @param value
+	 * @param state
+	 * @param reader
+	 * @param key
+	 * @param next
+	 * @throws XMLStreamException
 	 */
-	protected TeamOrPersonBase handleNameUsage(Taxon taxon, NonViralName name, String referenceTitle, TeamOrPersonBase lastTeam) {
-		Reference ref = ReferenceFactory.newGeneric();
-		referenceTitle = removeStartingSymbols(referenceTitle, ref);
+	private void handleKeyTitle(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
+		PolytomousKey key = state.getCurrentKey();
+		String keyTitle = getCData(state, reader, next);
+		String standardTitles = "(?i)(Key\\sto\\sthe\\s(genera|species|varieties|forms))";
 		
-		ref.setTitleCache(referenceTitle, true);
-		String microReference = parseReferenceYearAndDetail(ref);
-		TeamOrPersonBase team = getReferenceAuthor(ref);
-		parseReferenceType(ref);
-		if (team == null){
-			team = lastTeam;
-		}
-		ref.setAuthorTeam(team);
-		
-		TaxonDescription description = getDescription(taxon);
-		TextData textData = TextData.NewInstance(Feature.CITATION());
-		textData.addSource(null, null, ref, microReference, name, null);
-		description.addElement(textData);
-		return team;
+		if (isNotBlank(keyTitle) ){
+			if (!state.getConfig().isReplaceStandardKeyTitles() || ! keyTitle.matches(standardTitles)){
+				key.setTitleCache(keyTitle, true);
 	}
+			}
+		}
 
+	private void handleCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode parentNode) throws XMLStreamException {
+		String num = getOnlyAttribute(parentEvent, NUM, true);
+		List<PolytomousKeyNode> childList = new ArrayList<PolytomousKeyNode>(); 
+		
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				completeCouplet(state, parentEvent, parentNode, num, childList);
+				return;
+			} else if (isStartingElement(next, QUESTION)) {
+				handleQuestion(state, reader, next, childList);
+			} else if (isStartingElement(next, KEYNOTES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, KEYNOTES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else {
+				handleUnexpectedElement(next);
+	}
+		}
+		throw new IllegalStateException("<couplet> has no closing tag");
+	}
 
 	/**
-	 * @param referenceTitle
-	 * @param ref
-	 * @return
+	 * @param state
+	 * @param parentEvent
+	 * @param parentNode
+	 * @param num
+	 * @param childList
 	 */
-	private String removeStartingSymbols(String referenceTitle,	Reference ref) {
-		if (referenceTitle.startsWith(";") || referenceTitle.startsWith(",") || referenceTitle.startsWith(":")){
-			referenceTitle = referenceTitle.substring(1).trim();
-			ref.setTitleCache(referenceTitle);
+	private void completeCouplet(MarkupImportState state, XMLEvent parentEvent,
+			PolytomousKeyNode parentNode, String num,
+			List<PolytomousKeyNode> childList) {
+		if (parentNode != null){
+			for (PolytomousKeyNode childNode : childList){
+				parentNode.addChild(childNode);
+			}
+		}else if (isNotBlank(num)){
+			UnmatchedLeadsKey unmatchedKey = UnmatchedLeadsKey.NewInstance(state.getCurrentKey(), num);
+			Set<PolytomousKeyNode> nodes = state.getUnmatchedLeads().getNodes(unmatchedKey);
+			for(PolytomousKeyNode nodeToMatch: nodes){
+				for (PolytomousKeyNode childNode : childList){
+					nodeToMatch.addChild(childNode);
 		}
-		return referenceTitle;
+				state.getUnmatchedLeads().removeNode(unmatchedKey, nodeToMatch);
 	}
-
-
-	private void parseReferenceType(Reference ref) {
-		String title = ref.getTitle();
-		if (title == null){
-			return;
-		}
-		title = title.trim();
-		//no in reference
-		if (! title.startsWith("in ")){
-			ref.setType(ReferenceType.Book);
-			return;
-		}
-		
-		title = title.substring(3);
-		//in reference
-		//no ,
-		if (title.indexOf(",") == -1){
-			ref.setType(ReferenceType.Article);
-			IJournal journal = ReferenceFactory.newJournal();
-			journal.setTitle(title);
-			ref.setTitle(null);
-			ref.setInJournal(journal);
-			//return;
 		}else{
-			//,-references
-			ref.setType(ReferenceType.BookSection);
-			String[] split = (title).split(",\\s*[A-Z]");
-			if (split.length <= 1){
-				logger.warn("Can not fully decide what reference type. Guess it is a book section: " + title );
-			}
-			IBook book = ReferenceFactory.newBook();
-			Team bookTeam = Team.NewTitledInstance(split[0].trim(), split[0].trim());
-			try {
-				title = title.substring(split[0].length() + 1).trim();
-			} catch (Exception e) {
-				logger.error("ERROR occurred when trying to split title: " +  title + "; split[0]: + " + split[0]);
-			}
-			book.setTitle(title);
-			book.setAuthorTeam(bookTeam);
-			book.setDatePublished(ref.getDatePublished());
-			ref.setTitle(null);
-			ref.setInBook(book);
-		}		
+			String message = "Parent num could not be matched. Please check if num (%s) is correct";
+			message = String.format(message, num);
+			fireWarningEvent(message, parentEvent, 6);
+		}
 	}
 
-
-	protected Team getReferenceAuthor (Reference ref) {
-		boolean isCache = false;
-		String referenceTitle = ref.getTitle();
-		if (referenceTitle == null){
-			isCache = true;
-			referenceTitle = ref.getTitleCache();
+	private void handleQuestion(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, List<PolytomousKeyNode> nodesList) throws XMLStreamException {
+		// attributes
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		//needed only for data lineage
+		String questionNum = getAndRemoveRequiredAttributeValue(parentEvent, attributes, NUM);
+		
+		PolytomousKeyNode myNode = PolytomousKeyNode.NewInstance();
+		myNode.setKey(state.getCurrentKey());  //to avoid NPE while computing num in PolytomousKeyNode in case this node is not matched correctly with a parent
+		nodesList.add(myNode);
+		
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return;
+			} else if (isStartingElement(next, TEXT)) {
+				String text = getCData(state, reader, next);
+				KeyStatement statement = KeyStatement.NewInstance(text);
+				myNode.setStatement(statement);
+			} else if (isStartingElement(next, COUPLET)) {
+				//TODO test
+				handleCouplet(state, reader, next, myNode);
+			} else if (isStartingElement(next, TO_COUPLET)) {
+				handleToCouplet(state, reader, next, myNode);
+			} else if (isStartingElement(next, TO_TAXON)) {
+				handleToTaxon(state, reader, next, myNode);
+		
+			} else if (isStartingElement(next, TO_KEY)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, TO_KEY)){
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, KEYNOTES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, KEYNOTES)){
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else {
+				handleUnexpectedElement(next);
+	}
 		}
-		//in references
-		String[] split = (" " + referenceTitle).split(" in ");
-		if (split.length > 1){
-			if (StringUtils.isNotBlank(split[0])){
-				//' in ' is within the reference string, take the preceding string as the team
-				Team team = Team.NewTitledInstance(split[0].trim(), split[0].trim());
-				if (! isCache){
-					ref.setTitle("in " + split[1]);
+		throw new IllegalStateException("<question> has no closing tag");
+	}
+
+	private void handleToCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent next, PolytomousKeyNode node) throws XMLStreamException {
+		String num = getOnlyAttribute(next, NUM, true);
+		String cData = getCData(state, reader, next, false);
+		if (isNotBlank(cData) && ! cData.equals(num)){
+			String message = "CData ('%s') not handled in <toCouplet>";
+			message = String.format(message, cData);
+			fireWarningEvent(message, next, 4);
+			}
+		UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(state.getCurrentKey(), num);
+		state.getUnmatchedLeads().addKey(unmatched, node);
 				}
-				return team;
-			}else{
-				//string starts with in therefore no author is given
-				return null;
-			}
+
+	private void handleToTaxon(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode node) throws XMLStreamException {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String num = getAndRemoveAttributeValue(attributes, NUM);
+		String taxonStr = getCData(state, reader, parentEvent, false);
+		//TODO ?
+		taxonStr = makeTaxonKey(taxonStr, state.getCurrentTaxon());
+		UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(num, taxonStr);
+		state.getUnmatchedLeads().addKey(unmatched, node);
+		return;
 		}
-		//no ,-reference
-		split = referenceTitle.split(",");
-		if (split.length < 2){
-			//no author is given
-			return null;
+	
+	private String makeTaxonKey(String strGoto, Taxon taxon) {
+		String result = "";
+		if (strGoto == null){
+			return "";
 		}
 		
-		//,-references
-		split = (referenceTitle).split(",\\s*[A-Z]");
-		if (split.length > 1){
-			Team team = Team.NewTitledInstance(split[0].trim(), split[0].trim());
-			if (! isCache){
-				ref.setTitle(referenceTitle.substring(split[0].length()+1).trim());
+		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+		String strGenusName = name.getGenusOrUninomial();
+		
+		
+		strGoto = strGoto.replaceAll("\\([^\\(\\)]*\\)", "");  //replace all brackets
+		strGoto = strGoto.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
+		
+		strGoto = strGoto.trim();  
+		String[] split = strGoto.split("\\s");
+		for (int i = 0; i<split.length; i++){
+			String single = split[i];
+			if (isGenusAbbrev(single, strGenusName)){
+				split[i] = strGenusName;
 			}
-			return team;
+			if (isInfraSpecificMarker(single)){
+				String strSpeciesEpi = name.getSpecificEpithet();
+				if (isBlank(result)){
+					result += strGenusName + " " + strSpeciesEpi;
+				}
+			}
+			result = (result + " " + split[i]).trim();
+		}
+		return result;
+	}
+	
+
+	private boolean isInfraSpecificMarker(String single) {
+		try {
+			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
+				return true;
+			}else{
+				return false;
+			}
+		} catch (UnknownCdmTypeException e) {
+			return false;
+		}
+	}
+	
+	private boolean isGenusAbbrev(String single, String strGenusName) {
+		if (! single.matches("[A-Z]\\.?")) {
+			return false;
+		}else if (single.length() == 0 || strGenusName == null || strGenusName.length() == 0){
+			return false; 
 		}else{
-			logger.warn("Can't decide if a usage has an author: " + referenceTitle );
-			return null;
+			return single.charAt(0) == strGenusName.charAt(0);
 		}
 	}
 
+	/**
+	 * @param state
+	 * @param reader
+	 * @param taxon
+	 * @param taxonTitle
+	 * @param next
+	 * @throws XMLStreamException
+	 */
+	private void makeKeyWriter(MarkupImportState state, XMLEventReader reader, Taxon taxon, String taxonTitle, XMLEvent next) throws XMLStreamException {
+		WriterDataHolder writer = handleWriter(state, reader, next);
+		taxon.addExtension(writer.extension);
+		// TODO what if taxonTitle comes later
+		if (StringUtils.isNotBlank(taxonTitle)
+				&& writer.extension != null) {
+			Reference<?> sec = ReferenceFactory.newBookSection();
+			sec.setTitle(taxonTitle);
+			TeamOrPersonBase<?> author = createAuthor(writer.writer);
+			sec.setAuthorTeam(author);
+			sec.setInReference(state.getConfig()
+					.getSourceReference());
+			taxon.setSec(sec);
+			registerFootnotes(state, sec, writer.footnotes);
+		} else {
+			String message = "No taxontitle exists for writer";
+			fireWarningEvent(message, next, 6);
+	}
+	}
+
+	private String handleNotes(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return text;
+			} else if (next.isEndElement()) {
+				if (isEndingElement(next, HEADING)) {
+					popUnimplemented(next.asEndElement());
+				} else if (isEndingElement(next, WRITER)) {
+					popUnimplemented(next.asEndElement());
+				} else if (isEndingElement(next, NUM)) {
+					popUnimplemented(next.asEndElement());
+				} else {
+					handleUnexpectedEndElement(next.asEndElement());
+			}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, HEADING)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, SUB_HEADING)) {
+					String subheading = getCData(state, reader, next).trim();
+					if (! isNoteHeading(subheading)) {
+						fireNotYetImplementedElement(next.getLocation(), next.asStartElement().getName(), 0);
+		}
+				} else if (isStartingElement(next, WRITER)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, NUM)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, STRING)) {
+					// TODO why multiple strings in schema?
+					text = makeNotesString(state, reader, text, next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+	}
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<Notes> has no closing tag");
+	}
 
 	/**
-	 * Replaced by <homonym> tag but still in use for exceptions
-	 * @param detail
-	 * @param name
+	 * @param state
+	 * @param reader
+	 * @param text
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private String makeNotesString(MarkupImportState state,	XMLEventReader reader, String text, XMLEvent next) throws XMLStreamException {
+		Map<String, String> stringMap = handleString(state, reader,	next, null);
+		if (stringMap.size() == 0){
+			String message = "No text available in <notes>";
+			fireWarningEvent(message, next, 4);
+		}else if (stringMap.size() > 1){
+			String message = "Subheadings not yet supported in <notes>";
+			fireWarningEvent(message, next, 4);
+		}else{
+			String firstSubheading = stringMap.keySet().iterator().next();
+			if ( firstSubheading != null && ! isNoteHeading (firstSubheading) )  {
+				String message = "Subheadings not yet supported in <notes>";
+				fireWarningEvent(message, next, 4);
+		}
+	}
+		for (String subheading : stringMap.keySet()){
+			text += subheading;
+			text += stringMap.get(subheading);
+		}
+		return text;
+	}
+
+	private boolean isNoteHeading(String heading) {
+		String excludePattern = "(i?)(Notes?):?";
+		return heading.matches(excludePattern);
+	}
+
+	/**
+	 * @param state
+	 * @param attributes
+	 */
+	private Taxon createTaxonAndName(MarkupImportState state,
+			Map<String, Attribute> attributes) {
+		NonViralName<?> name;
+		Rank rank = Rank.SPECIES(); // default
+		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS,
+				"cultivated");
+		if (isCultivar) {
+			name = CultivarPlantName.NewInstance(rank);
+		} else {
+			name = createNameByCode(state, rank);
+		}
+		Taxon taxon = Taxon.NewInstance(name, state.getConfig()
+				.getSourceReference());
+		if (checkAndRemoveAttributeValue(attributes, CLASS, "dubious")) {
+			taxon.setDoubtful(true);
+		} else if (checkAndRemoveAttributeValue(attributes, CLASS, "excluded")) {
+			taxon.setExcluded(true);
+	}
+		// TODO insufficient, new, expected
+		handleNotYetImplementedAttribute(attributes, CLASS);
+		// From old version
+		// MarkerType markerType = getMarkerType(state, attrValue);
+		// if (markerType == null){
+		// logger.warn("Class attribute value for taxon not yet supported: " +
+		// attrValue);
+		// }else{
+		// taxon.addMarker(Marker.NewInstance(markerType, true));
+		// }
+
+		// save(name, state);
+		// save(taxon, state);
+		return taxon;
+	}
+
+	/**
+	 * @param state
+	 * @param rank
 	 * @return
 	 */
-	protected String parseHomonym(String detail, NonViralName name) {
-		String result;
-		if (detail == null){
-			return detail;
+	private NonViralName<?> createNameByCode(MarkupImportState state, Rank rank) {
+		NonViralName<?> name;
+		NomenclaturalCode nc = makeNomenclaturalCode(state);
+		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
+		return name;
+			}
+
+	/**
+	 * @param state
+	 * @return
+	 */
+	private NomenclaturalCode makeNomenclaturalCode(MarkupImportState state) {
+		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+		if (nc == null) {
+			nc = NomenclaturalCode.ICBN; // default;
+		}
+		return nc;
+	}
+
+	private String handleTaxonTitle(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		//attributes
+		String text = "";
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String rankAttr = getAndRemoveAttributeValue(attributes, RANK);
+		Rank rank = makeRank(state, rankAttr, false);
+		String num = getAndRemoveAttributeValue(attributes, NUM);
+		state.setCurrentTaxonNum(num);
+		checkNoAttributes(attributes, parentEvent);
+
+		// TODO handle attributes
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					Taxon taxon = state.getCurrentTaxon();
+					String titleText = null;
+					if (checkMandatoryText(text, parentEvent)) {
+						titleText = normalize(text);
+						UUID uuidTitle = MarkupTransformer.uuidTaxonTitle;
+						ExtensionType titleExtension = this.getExtensionType(state, uuidTitle, "Taxon Title ","taxon title", "title");
+						taxon.addExtension(titleText, titleExtension);
+	}
+					taxon.getName().setRank(rank);
+					// TODO check title exists
+					return titleText;
+				} else {
+					if (isEndingElement(next, FOOTNOTE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+						state.setUnsuccessfull();
+					}
+				}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, FOOTNOTE)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
+					state.setUnsuccessfull();
+				}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+
+			} else {
+				handleUnexpectedElement(next);
+				state.setUnsuccessfull();
+			}
+		}
+		return null;
+
+	}
+
+	private WriterDataHolder handleWriter(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		String text = "";
+		checkNoAttributes(parentEvent);
+		WriterDataHolder dataHolder = new WriterDataHolder();
+		List<FootnoteDataHolder> footnotes = new ArrayList<FootnoteDataHolder>();
+
+		// TODO handle attributes
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				text = CdmUtils.removeBrackets(text);
+				if (checkMandatoryText(text, parentEvent)) {
+					text = normalize(text);
+					dataHolder.writer = text;
+					dataHolder.footnotes = footnotes;
+
+					// Extension
+					UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
+					ExtensionType writerExtensionType = this
+							.getExtensionType(state, uuidWriterExtension,
+									"Writer", "writer", "writer");
+					Extension extension = Extension.NewInstance();
+					extension.setType(writerExtensionType);
+					extension.setValue(text);
+					dataHolder.extension = extension;
+
+					// Annotation
+					UUID uuidWriterAnnotation = MarkupTransformer.uuidWriterAnnotation;
+					AnnotationType writerAnnotationType = this.getAnnotationType(state, uuidWriterAnnotation, "Writer", "writer", "writer", null);
+					Annotation annotation = Annotation.NewInstance(text, writerAnnotationType, Language.DEFAULT());
+					dataHolder.annotation = annotation;
+
+					return dataHolder;
+				} else {
+					return null;
+		}
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				FootnoteDataHolder footNote = handleFootnoteRef(state, reader, next);
+				if (footNote.isRef()) {
+					footnotes.add(footNote);
+				} else {
+					logger.warn("Non ref footnotes not yet impelemnted");
+	}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+
+			} else {
+				handleUnexpectedElement(next);
+				state.setUnsuccessfull();
+			}
+		}
+		throw new IllegalStateException("<writer> has no end tag");
+	}
+
+	private void registerFootnotes(MarkupImportState state, AnnotatableEntity entity, List<FootnoteDataHolder> footnotes) {
+		for (FootnoteDataHolder footNote : footnotes) {
+			registerFootnoteDemand(state, entity, footNote);
+		}
+	}
+
+	private void registerGivenFootnote(MarkupImportState state, FootnoteDataHolder footnote) {
+		state.registerFootnote(footnote);
+		Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.id);
+		if (demands != null) {
+			for (AnnotatableEntity entity : demands) {
+				attachFootnote(state, entity, footnote);
+		}
+		}
+	}
+
+	private void registerGivenFigure(MarkupImportState state, String id, Media figure) {
+		state.registerFigure(id, figure);
+		Set<AnnotatableEntity> demands = state.getFigureDemands(id);
+		if (demands != null) {
+			for (AnnotatableEntity entity : demands) {
+				attachFigure(state, entity, figure);
+			}
+		}
+	}
+
+	private void registerFootnoteDemand(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
+		FootnoteDataHolder existingFootnote = state.getFootnote(footnote.ref);
+		if (existingFootnote != null) {
+			attachFootnote(state, entity, existingFootnote);
+		} else {
+			Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.ref);
+			if (demands == null) {
+				demands = new HashSet<AnnotatableEntity>();
+				state.putFootnoteDemands(footnote.ref, demands);
+		}
+			demands.add(entity);
+		}
+	}
+
+	private void registerFigureDemand(MarkupImportState state, AnnotatableEntity entity, String figureRef) {
+		Media existingFigure = state.getFigure(figureRef);
+		if (existingFigure != null) {
+			attachFigure(state, entity, existingFigure);
+		} else {
+			Set<AnnotatableEntity> demands = state.getFigureDemands(figureRef);
+			if (demands == null) {
+				demands = new HashSet<AnnotatableEntity>();
+				state.putFigureDemands(figureRef, demands);
+			}
+			demands.add(entity);
+		}
+	}
+
+	private void attachFootnote(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
+		AnnotationType annotationType = this.getAnnotationType(state, MarkupTransformer.uuidFootnote, "Footnote", "An e-flora footnote", "fn", null);
+		Annotation annotation = Annotation.NewInstance(footnote.string,
+				annotationType, Language.DEFAULT());
+		// TODO transient objects
+		entity.addAnnotation(annotation);
+		save(entity, state);
+	}
+
+	private void attachFigure(MarkupImportState state,
+			AnnotatableEntity entity, Media figure) {
+		// IdentifiableEntity<?> toSave;
+		if (entity.isInstanceOf(TextData.class)) {
+			TextData deb = CdmBase.deproxy(entity, TextData.class);
+			deb.addMedia(figure);
+			// toSave = ((TaxonDescription)deb.getInDescription()).getTaxon();
+		} else if (entity.isInstanceOf(IdentifiableMediaEntity.class)) {
+			IdentifiableMediaEntity<?> ime = CdmBase.deproxy(entity,
+					IdentifiableMediaEntity.class);
+			ime.addMedia(figure);
+			// toSave = ime;
+		} else {
+			String message = "Unsupported entity to attach media: %s";
+			message = String.format(message, entity.getClass().getName());
+			// toSave = null;
+	}
+		save(entity, state);
+	}
+
+	private void handleFigure(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		// FigureDataHolder result = new FigureDataHolder();
+
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String id = getAndRemoveAttributeValue(attributes, ID);
+		String type = getAndRemoveAttributeValue(attributes, TYPE);
+		checkNoAttributes(attributes, parentEvent);
+
+		String urlString = null;
+		String legendString = null;
+		String titleString = null;
+		String numString = null;
+		String text = null;
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				makeFigure(state, id, type, urlString, legendString, titleString, numString, next);
+				return;
+			} else if (isStartingElement(next, FIGURE_LEGEND)) {
+				// TODO same as figurestring ?
+				legendString = handleFootnoteString(state, reader, next);
+			} else if (isStartingElement(next, FIGURE_TITLE)) {
+				titleString = getCData(state, reader, next);
+			} else if (isStartingElement(next, URL)) {
+				String localUrl = getCData(state, reader, next);
+				urlString = CdmUtils.Nz(state.getBaseMediaUrl()) + localUrl;
+			} else if (isStartingElement(next, NUM)) {
+				numString = getCData(state, reader, next);
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				fireUnexpectedEvent(next, 0);
+			}
+		}
+		throw new IllegalStateException("<figure> has no end tag");
+	}
+
+	/**
+	 * @param state
+	 * @param id
+	 * @param type
+	 * @param urlString
+	 * @param legendString
+	 * @param titleString
+	 * @param numString
+	 * @param next
+	 */
+	private void makeFigure(MarkupImportState state, String id, String type, String urlString, 
+						String legendString, String titleString, String numString, XMLEvent next) {
+		Media media = null;
+		boolean isFigure = false;
+		try {
+			//TODO maybe everything is a figure as it is all taken from a book
+			if ("lineart".equals(type)) {
+				isFigure = true;
+//				media = Figure.NewInstance(url.toURI(), null, null,	null);
+			} else if (type == null || "photo".equals(type)
+					|| "signature".equals(type)
+					|| "others".equals(type)) {
+			} else {
+				String message = "Unknown figure type '%s'";
+				message = String.format(message, type);
+				fireWarningEvent(message, next, 2);
+				}
+			media = getImageMedia(urlString, READ_MEDIA_DATA, isFigure);
+				
+			if (media != null){
+				// title
+				if (StringUtils.isNotBlank(titleString)) {
+					media.putTitle(Language.DEFAULT(), titleString);
+			}
+				// legend
+				if (StringUtils.isNotBlank(legendString)) {
+					media.addDescription(legendString, Language.DEFAULT());
+		}
+				if (StringUtils.isNotBlank(numString)) {
+					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
+					// vol.13)
+					Reference<?> citation = state.getConfig().getSourceReference();
+					media.addSource(numString, "num", citation, null);
+					// TODO name used in source if available
+				}
+				// TODO which citation
+				if (StringUtils.isNotBlank(id)) {
+					media.addSource(id, null, state.getConfig().getSourceReference(), null);
+				} else {
+					String message = "Figure id should never be empty or null";
+					fireWarningEvent(message, next, 6);
+			}
+		
+				// text
+				// do nothing
+
+	}
+		} catch (MalformedURLException e) {
+			String message = "Media uri has incorrect syntax: %s";
+			message = String.format(message, urlString);
+			fireWarningEvent(message, next, 4);
+//		} catch (URISyntaxException e) {
+//			String message = "Media uri has incorrect syntax: %s";
+//			message = String.format(message, urlString);
+//			fireWarningEvent(message, next, 4);
 		}
 
-		
-		//non RE
-		String reNon = "(\\s|,)non\\s";
-		Pattern patReference = Pattern.compile(reNon);
-		Matcher matcher = patReference.matcher(detail);
-		if (matcher.find()){
-			int start = matcher.start();
-			int end = matcher.end();
-			
-			if (detail != null){
-				logger.warn("Unhandled non part: " + detail.substring(start));
-				return detail;
+		registerGivenFigure(state, id, media);
 			}
-			
-			result = detail.substring(0, start);
 
-			//homonym string
-			String homonymString = detail.substring(end);
-			
-			//hommonym name
-			BotanicalName homonymName = BotanicalName.NewInstance(name.getRank());
-			homonymName.setGenusOrUninomial(name.getGenusOrUninomial());
-			homonymName.setInfraGenericEpithet(name.getInfraGenericEpithet());
-			homonymName.setSpecificEpithet(name.getSpecificEpithet());
-			homonymName.setInfraSpecificEpithet(name.getInfraSpecificEpithet());
-			Reference homonymNomRef = ReferenceFactory.newGeneric();
-			homonymNomRef.setTitleCache(homonymString);
-			String homonymNomRefDetail = parseReferenceYearAndDetail(homonymNomRef);
-			homonymName.setNomenclaturalMicroReference(homonymNomRefDetail);
-			String authorTitle = homonymNomRef.getTitleCache();
-			Team team = Team.NewTitledInstance(authorTitle, authorTitle);
-			homonymNomRef.setAuthorTeam(team);
-			homonymNomRef.setTitle("");
-			homonymNomRef.setProtectedTitleCache(false);
-			
-			//rel
-			boolean homonymIsLater = false;
-			NameRelationshipType relType = NameRelationshipType.LATER_HOMONYM();
-			TimePeriod homonymYear = homonymNomRef.getDatePublished();
-			if (name.getNomenclaturalReference() != null){
-				TimePeriod nameYear = name.getNomenclaturalReference().getDatePublished();
-				homonymIsLater = homonymYear.getStart().compareTo(nameYear.getStart())  > 0;
-			}else{
-				logger.warn("Classification name has no nomenclatural reference");
+	private FigureDataHolder handleFigureRef(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent)
+			throws XMLStreamException {
+		FigureDataHolder result = new FigureDataHolder();
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		result.ref = getAndRemoveAttributeValue(attributes, REF);
+		checkNoAttributes(attributes, parentEvent);
+
+		// text is not handled, needed only for debugging purposes
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return result;
+			} else if (isStartingElement(next, NUM)) {
+				String num = getCData(state, reader, next);
+				result.num = num; // num is not handled during import
+			} else if (isStartingElement(next, FIGURE_PART)) {
+				result.figurePart = getCData(state, reader, next);
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				fireUnexpectedEvent(next, 0);
 			}
-			if (homonymIsLater){
-				homonymName.addRelationshipToName(name, relType, null);
-			}else{
-				name.addRelationshipToName(homonymName, relType, null);
 			}
-			
-		}else{
-			return detail;
+		throw new IllegalStateException("<figureRef> has no end tag");
+		}
+
+	private FootnoteDataHolder handleFootnote(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		FootnoteDataHolder result = new FootnoteDataHolder();
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		result.id = getAndRemoveAttributeValue(attributes, ID);
+		// result.ref = getAndRemoveAttributeValue(attributes, REF);
+		checkNoAttributes(attributes, parentEvent);
+
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isStartingElement(next, FOOTNOTE_STRING)) {
+				String string = handleFootnoteString(state, reader, next);
+				result.string = string;
+			} else if (isMyEndingElement(next, parentEvent)) {
+				return result;
+			} else {
+				fireUnexpectedEvent(next, 0);
+	}
 		}
 		return result;
 	}
 
+	private FootnoteDataHolder handleFootnoteRef(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent)
+			throws XMLStreamException {
+		FootnoteDataHolder result = new FootnoteDataHolder();
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		result.ref = getAndRemoveAttributeValue(attributes, REF);
+		checkNoAttributes(attributes, parentEvent);
 
-	/**
-	 * @Xpath body/taxon/nomenclature/homotypes/nom/name[@class="pub"]
-	 * @param name
-	 * @param value
-	 */
-	protected TeamOrPersonBase handleNomenclaturalReference(NonViralName name, String value) {
-		Reference nomRef = ReferenceFactory.newGeneric();
-		nomRef.setTitleCache(value, true);
-		parseNomStatus(nomRef, name);
-		String microReference = parseReferenceYearAndDetail(nomRef);
-		name.setNomenclaturalReference(nomRef);
-		microReference = parseHomonym(microReference, name);
-		name.setNomenclaturalMicroReference(microReference);
-		TeamOrPersonBase  team = (TeamOrPersonBase)name.getCombinationAuthorTeam();
-		if (team == null){
-			logger.warn("Name has nom. ref. but no author team. Name: " + name.getTitleCache() + ", Nom.Ref.: " + value);
-		}else{
-			nomRef.setAuthorTeam(team);
+		// text is not handled, needed only for debugging purposes
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			// if (isStartingElement(next, FOOTNOTE_STRING)){
+			// String string = handleFootnoteString(state, reader, next);
+			// result.string = string;
+			// }else
+			if (isMyEndingElement(next, parentEvent)) {
+		return result;
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+
+			} else {
+				fireUnexpectedEvent(next, 0);
+	}
 		}
-		return team;
+		return result;
 	}
 
-	private void handleInfrAuthor(MarkupImportState state, Element elAuthor, NonViralName name, boolean overwrite) {
-		String strAuthor = elAuthor.getValue().trim();
-		if (strAuthor.endsWith(",")){
-			strAuthor = strAuthor.substring(0, strAuthor.length() -1);
+	private void handleNomenclature(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent)
+			throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isStartingElement(next, HOMOTYPES)) {
+				handleHomotypes(state, reader, next.asStartElement());
+			} else if (isMyEndingElement(next, parentEvent)) {
+				return;
+			} else {
+				fireSchemaConflictEventExpectedStartTag(HOMOTYPES, reader);
+				state.setUnsuccessfull();
 		}
-		TeamOrPersonBase[] team = getTeam(strAuthor);
-		if (name.getCombinationAuthorTeam() != null && overwrite == false){
-			logger.warn("Try to write combination author for a name that already has a combination author. Neglected.");
-		}else{
-			name.setCombinationAuthorTeam(team[0]);
-			name.setExCombinationAuthorTeam(team[1]);
 		}
-		
-		
+		return;
 	}
 
+	private String handleFootnoteString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		boolean isTextMode = true;
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return text;
+			} else if (next.isEndElement()) {
+				if (isEndingElement(next, FULL_NAME)) {
+					popUnimplemented(next.asEndElement());
+				} else if (isEndingElement(next, BR)) {
+					isTextMode = true;
+				} else if (isHtml(next)) {
+					text += getXmlTag(next);
+				} else {
+					handleUnexpectedEndElement(next.asEndElement());
+			}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, FULL_NAME)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, GATHERING)) {
+					text += handleInLineGathering(state, reader, next);
+				} else if (isStartingElement(next, REFERENCES)) {
+					text += " " + handleInLineReferences(state, reader, next)+ " ";
+				} else if (isStartingElement(next, BR)) {
+					text += "<br/>";
+					isTextMode = false;
+				} else if (isHtml(next)) {
+					text += getXmlTag(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+		}
+			} else if (next.isCharacters()) {
+				if (!isTextMode) {
+					String message = "footnoteString is not in text mode";
+					fireWarningEvent(message, next, 6);
+				} else {
+					text += next.asCharacters().getData().trim(); 
+					// getCData(state, reader, next); does not work as we have inner tags like <references>
+	}
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+			}
+		}
+		throw new IllegalStateException("<footnoteString> has no closing tag");
 
-	/**
-	 * Sets the names rank according to the infrank value
-	 * @param name
-	 * @param elements
-	 * @param elInfraRank
-	 * @param infraRank
-	 * @return
-	 */
-	private Rank handleInfRank(NonViralName name, List<Element> elInfraRank, Rank infraRank) {
-		if (elInfraRank.size() == 1){
-			String strRank = elInfraRank.get(0).getTextNormalize();
-			try {
-				infraRank = Rank.getRankByNameOrAbbreviation(strRank);
-			} catch (UnknownCdmTypeException e) {
-				try{
-					infraRank = Rank.getRankByNameOrAbbreviation(strRank + ".");
-				} catch (UnknownCdmTypeException e2) {
-					logger.warn("Unknown infrank " + strRank + ". Set infraRank to (null).");
+	}
+
+	private String handleInLineGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit.FieldObservation);
+		handleGathering(state, reader, parentEvent, null, facade);
+		FieldObservation fieldObservation = facade.innerFieldObservation();
+		String result = "<cdm:specimen uuid='%s'>%s</specimen>";
+		result = String.format(result, fieldObservation.getUuid(), fieldObservation.getTitleCache());
+		save(fieldObservation, state);
+		return result;	
+		}
+
+	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		boolean hasReference = false;
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				checkMandatoryElement(hasReference, parentEvent.asStartElement(), REFERENCE);
+				return text;
+			} else if (isStartingElement(next, REFERENCE)) {
+				text += handleInLineReference(state, reader, next);
+				hasReference = true;
+			} else {
+				handleUnexpectedElement(next);
+		}
+					}
+		throw new IllegalStateException("<References> has no closing tag");
+					}
+
+	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+		Reference<?> reference = handleReference(state, reader, parentEvent);
+		String result = "<cdm:ref uuid='%s'>%s</ref>";
+		result = String.format(result, reference.getUuid(), reference.getTitleCache());
+		save(reference, state);
+		return result;
+					}
+
+	private Reference<?> handleReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		boolean hasRefPart = false;
+		Map<String, String> refMap = new HashMap<String, String>();
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
+						REF_PART);
+				Reference<?> reference = createReference(state, refMap, next);
+				return reference;
+			} else if (isStartingElement(next, REF_PART)) {
+				handleRefPart(state, reader, next, refMap);
+				hasRefPart = true;
+			} else {
+				handleUnexpectedElement(next);
 				}
 			}
-		}else if (elInfraRank.size() > 1){
-			logger.warn ("There is more than 1 infrank");
+		// TODO handle missing end element
+		throw new IllegalStateException("<Reference> has no closing tag");
 		}
-		if (infraRank != null){
-			name.setRank(infraRank);
+
+	private void handleHomotypes(MarkupImportState state,
+			XMLEventReader reader, StartElement parentEvent)
+			throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		HomotypicalGroup homotypicalGroup = null;
+
+		boolean hasNom = false;
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					checkMandatoryElement(hasNom, parentEvent, NOM);
+					return;
+				} else {
+					if (isEndingElement(next, NAME_TYPE)) {
+						state.setNameType(false);
+					} else if (isEndingElement(next, NOTES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+			}
+			}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, NOM)) {
+					NonViralName<?> name = handleNom(state, reader, next,
+							homotypicalGroup);
+					homotypicalGroup = name.getHomotypicalGroup();
+					hasNom = true;
+				} else if (isStartingElement(next, NAME_TYPE)) {
+					state.setNameType(true);
+					handleNameType(state, reader, next, homotypicalGroup);
+				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
+					handleSpecimenType(state, reader, next, homotypicalGroup);
+				} else if (isStartingElement(next, NOTES)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
 		}
-		return infraRank;
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		// TODO handle missing end element
+		throw new IllegalStateException("Homotypes has no closing tag");
+
 	}
 
+	private void handleNameType(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent, HomotypicalGroup homotypicalGroup)
+			throws XMLStreamException {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String typeStatus = getAndRemoveAttributeValue(attributes, TYPE_STATUS);
+		checkNoAttributes(attributes, parentEvent);
 
-	private void handleInfrEpi(NonViralName name, Rank infraRank, String value) {
-		if (infraRank != null && infraRank.isInfraSpecific()){
-			name.setInfraSpecificEpithet(value);
-			if (CdmUtils.isCapital(value)){
-				logger.warn("Infraspecific epithet starts with a capital letter: " + value);
+		NameTypeDesignationStatus status;
+		try {
+			status = NameTypeParser.parseNameTypeStatus(typeStatus);
+		} catch (UnknownCdmTypeException e) {
+			String message = "Type status could not be recognized: %s";
+			message = String.format(message, typeStatus);
+			fireWarningEvent(message, parentEvent, 4);
+			status = null;
+		}
+
+		boolean hasNom = false;
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					checkMandatoryElement(hasNom, parentEvent.asStartElement(),
+							NOM);
+					state.setNameType(false);
+					return;
+				} else {
+					if (isEndingElement(next, ACCEPTED_NAME)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+	}
+				}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, NOM)) {
+					// TODO should we check if the type is always a species, is
+					// this a rule?
+					NonViralName<?> speciesName = handleNom(state, reader,
+							next, null);
+					for (TaxonNameBase<?, ?> name : homotypicalGroup
+							.getTypifiedNames()) {
+						name.addNameTypeDesignation(speciesName, null, null,
+								null, status, false, false, false, false);
+					}
+					hasNom = true;
+				} else if (isStartingElement(next, ACCEPTED_NAME)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
+				}
+			} else {
+				handleUnexpectedElement(next);
 			}
-		}else if (infraRank != null && infraRank.isInfraGeneric()){
-			name.setInfraGenericEpithet(value);
-			if (! CdmUtils.isCapital(value)){
-				logger.warn("Infrageneric epithet does not start with a capital letter: " + value);
+		}
+		// TODO handle missing end element
+		throw new IllegalStateException("Homotypes has no closing tag");
+
+	}
+
+	private void handleSpecimenType(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent,
+			HomotypicalGroup homotypicalGroup) throws XMLStreamException {
+		// attributes
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String typeStatus = getAndRemoveAttributeValue(attributes, TYPE_STATUS);
+		String notSeen = getAndRemoveAttributeValue(attributes, NOT_SEEN);
+		String unknown = getAndRemoveAttributeValue(attributes, UNKNOWN);
+		String notFound = getAndRemoveAttributeValue(attributes, NOT_FOUND);
+		String destroyed = getAndRemoveAttributeValue(attributes, DESTROYED);
+		String lost = getAndRemoveAttributeValue(attributes, LOST);
+		checkNoAttributes(attributes, parentEvent);
+		if (StringUtils.isNotEmpty(typeStatus)) {
+			// TODO
+			// currently not needed
+		} else if (StringUtils.isNotEmpty(notSeen)) {
+			handleNotYetImplementedAttribute(attributes, NOT_SEEN);
+		} else if (StringUtils.isNotEmpty(unknown)) {
+			handleNotYetImplementedAttribute(attributes, UNKNOWN);
+		} else if (StringUtils.isNotEmpty(notFound)) {
+			handleNotYetImplementedAttribute(attributes, NOT_FOUND);
+		} else if (StringUtils.isNotEmpty(destroyed)) {
+			handleNotYetImplementedAttribute(attributes, DESTROYED);
+		} else if (StringUtils.isNotEmpty(lost)) {
+			handleNotYetImplementedAttribute(attributes, LOST);
+		}
+
+		NonViralName<?> firstName = null;
+		Set<TaxonNameBase> names = homotypicalGroup.getTypifiedNames();
+		if (names.isEmpty()) {
+			String message = "There is no name in a homotypical group. Can't create the specimen type";
+			fireWarningEvent(message, parentEvent, 8);
+		} else {
+			firstName = CdmBase.deproxy(names.iterator().next(),
+					NonViralName.class);
 			}
-		}else{
-			logger.warn("Infrepi could not be handled: " + value);
+
+		DerivedUnitFacade facade = DerivedUnitFacade
+				.NewInstance(DerivedUnitType.Specimen);
+		String text = "";
+		// elements
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					makeSpecimenType(state, facade, text, firstName,
+							parentEvent);
+					return;
+				} else {
+					if (isEndingElement(next, FULL_TYPE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, TYPE_STATUS)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, ORIGINAL_DETERMINATION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, SPECIMEN_TYPE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, CITATION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, NOTES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, ANNOTATION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+			}
+			}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, FULL_TYPE)) {
+					handleNotYetImplementedElement(next);
+					// homotypicalGroup = handleNom(state, reader, next, taxon,
+					// homotypicalGroup);
+				} else if (isStartingElement(next, TYPE_STATUS)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, GATHERING)) {
+					handleGathering(state, reader, next, homotypicalGroup, facade);
+				} else if (isStartingElement(next, ORIGINAL_DETERMINATION)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, NOTES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, ANNOTATION)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
+		}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(next);
+		}
+	}
+		// TODO handle missing end element
+		throw new IllegalStateException("Specimen type has no closing tag"); 
+	}
+
+	private void makeSpecimenType(MarkupImportState state,
+			DerivedUnitFacade facade, String text, NonViralName name,
+			XMLEvent parentEvent) {
+		text = text.trim();
+		// remove brackets
+		if (text.matches("^\\(.*\\)\\.?$")) {
+			text = text.replaceAll("\\.", "");
+			text = text.substring(1, text.length() - 1);
+		}
+		String[] split = text.split("[;,]");
+		for (String str : split) {
+			str = str.trim();
+			boolean addToAllNamesInGroup = true;
+			TypeInfo typeInfo = makeSpecimenTypeTypeInfo(str, parentEvent);
+			SpecimenTypeDesignationStatus typeStatus = typeInfo.status;
+			Collection collection = createCollection(typeInfo.collectionString);
+
+			// TODO improve cache strategy handling
+			DerivedUnitBase typeSpecimen = facade.addDuplicate(collection,
+					null, null, null, null);
+			typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
+			name.addSpecimenTypeDesignation((Specimen) typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
 		}
 	}
 
+	private Collection createCollection(String code) {
+		// TODO deduplicate
+		// TODO code <-> name
+		Collection result = Collection.NewInstance();
+		result.setCode(code);
+		return result;
+	}
 
+	private TypeInfo makeSpecimenTypeTypeInfo(String originalString,
+			XMLEvent event) {
+		TypeInfo result = new TypeInfo();
+		String[] split = originalString.split("\\s+");
+		for (String str : split) {
+			if (str.matches(SpecimenTypeParser.typeTypePattern)) {
+				SpecimenTypeDesignationStatus status;
+				try {
+					status = SpecimenTypeParser.parseSpecimenTypeStatus(str);
+				} catch (UnknownCdmTypeException e) {
+					String message = "Specimen type status '%s' not recognized by parser";
+					message = String.format(message, str);
+					fireWarningEvent(message, event, 4);
+					status = null;
+	}
+				result.status = status;
+			} else if (str.matches(SpecimenTypeParser.collectionPattern)) {
+				result.collectionString = str;
+			} else {
+				String message = "Type part '%s' could not be recognized";
+				message = String.format(message, str);
+				fireWarningEvent(message, event, 2);
+			}
+		}
+
+		return result;
+	}
+
+		
+	private void handleGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, HomotypicalGroup homotypicalGroup, DerivedUnitFacade facade) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		boolean hasCollector = false;
+		boolean hasFieldNum = false;
+
+		// elements
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					checkMandatoryElement(hasCollector,parentEvent.asStartElement(), COLLECTOR);
+					checkMandatoryElement(hasFieldNum,parentEvent.asStartElement(), FIELD_NUM);
+					return;
+				} else {
+					if (isEndingElement(next, ALTERNATIVE_COLLECTOR)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, ALTERNATIVE_FIELD_NUM)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, COLLECTION_TYPE_STATUS)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next,
+							ALTERNATIVE_COLLECTION_TYPE_STATUS)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, SUB_COLLECTION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, DATES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, NOTES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+		}
+	}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, COLLECTOR)) {
+					hasCollector = true;
+					String collectorStr = getCData(state, reader, next);
+					AgentBase<?> collector = createCollector(collectorStr);
+					facade.setCollector(collector);
+				} else if (isStartingElement(next, ALTERNATIVE_COLLECTOR)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, FIELD_NUM)) {
+					hasFieldNum = true;
+					String fieldNumStr = getCData(state, reader, next);
+					facade.setFieldNumber(fieldNumStr);
+				} else if (isStartingElement(next, ALTERNATIVE_FIELD_NUM)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, COLLECTION_TYPE_STATUS)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next,
+						ALTERNATIVE_COLLECTION_TYPE_STATUS)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, SUB_COLLECTION)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, LOCALITY)) {
+					handleLocality(state, reader, next, facade);
+				} else if (isStartingElement(next, DATES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, NOTES)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
+		}
+			} else {
+				handleUnexpectedElement(next);
+	}
+		}
+		// TODO handle missing end element
+		throw new IllegalStateException("Collection has no closing tag");
+
+	}
+
+	private void handleLocality(MarkupImportState state, XMLEventReader reader,XMLEvent parentEvent, DerivedUnitFacade facade)throws XMLStreamException {
+		String classValue = getClassOnlyAttribute(parentEvent);
+		boolean isLocality = false;
+		NamedAreaLevel areaLevel = null;
+		if ("locality".equalsIgnoreCase(classValue)) {
+			isLocality = true;
+		} else {
+			areaLevel = makeNamedAreaLevel(state, classValue, parentEvent);
+		}
+
+		String text = "";
+		// elements
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					if (StringUtils.isNotBlank(text)) {
+						text = normalize(text);
+						if (isLocality) {
+							facade.setLocality(text);
+						} else {
+							text = CdmUtils.removeTrailingDot(text);
+							NamedArea area = makeArea(state, text, areaLevel);
+							facade.addCollectingArea(area);
+						}
+					}
+					// TODO
+			return;
+				} else {
+					if (isEndingElement(next, ALTITUDE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, COORDINATES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, ANNOTATION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+		}
+			}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, ALTITUDE)) {
+					handleNotYetImplementedElement(next);
+					// homotypicalGroup = handleNom(state, reader, next, taxon,
+					// homotypicalGroup);
+				} else if (isStartingElement(next, COORDINATES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, ANNOTATION)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
+			}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(next);
+	}
+		}
+		throw new IllegalStateException("<SpecimenType> has no closing tag"); 
+	}
+
+//	private NamedArea createArea(String text, NamedAreaLevel areaLevel, MarkupImportState state) {
+//		NamedArea area = NamedArea.NewInstance(text, text, null);
+//		area.setLevel(areaLevel);
+//		save(area, state);
+//		return area;
+//	}
+
+	private AgentBase<?> createCollector(String collectorStr) {
+		return createAuthor(collectorStr);
+		}
+
+	private String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
+		return getCData(state, reader, next, true);
+				}
+		
+	/**
+	 * Reads character data. Any element other than character data or the ending
+	 * tag will fire an unexpected element event.
+	 * 
+	 * @param state
+	 * @param reader
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next,boolean checkAttributes) throws XMLStreamException {
+		if (checkAttributes){
+			checkNoAttributes(next);
+			}
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent myNext = readNoWhitespace(reader);
+			if (isMyEndingElement(myNext, next)) {
+				return text;
+			} else if (myNext.isCharacters()) {
+				text += myNext.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(myNext);
+		}
+	}
+		throw new IllegalStateException("Event has no closing tag");
+
+	}
 
 	/**
-	 * Returns the (empty) with the correct homotypical group depending on the taxon status
-	 * @param taxon
+	 * Creates the name defined by a nom tag. Adds it to the given homotypical
+	 * group (if not null).
+	 * 
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @param homotypicalGroup
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
+			HomotypicalGroup homotypicalGroup) throws XMLStreamException {
+		boolean isSynonym = false;
+		boolean isNameType = state.isNameType();
+		// attributes
+		String classValue = getClassOnlyAttribute(parentEvent);
+		NonViralName<?> name;
+		if (!isNameType && ACCEPTED.equalsIgnoreCase(classValue)) {
+			isSynonym = false;
+			name = createName(state, homotypicalGroup, isSynonym);
+		} else if (!isNameType && SYNONYM.equalsIgnoreCase(classValue)) {
+			isSynonym = true;
+			name = createName(state, homotypicalGroup, isSynonym);
+		} else if (isNameType && NAME_TYPE.equalsIgnoreCase(classValue)) {
+			// TODO do we need to define the rank here?
+			name = createNameByCode(state, null);
+		} else {
+			fireUnexpectedAttributeValue(parentEvent, CLASS, classValue);
+			name = createNameByCode(state, null);
+		}
+
+		Map<String, String> nameMap = new HashMap<String, String>();
+
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					// fill the name with all data gathered
+					fillName(state, nameMap, name, next);
+					return name;
+				} else {
+					if (isEndingElement(next, FULL_NAME)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, NUM)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, HOMONYM)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, NOTES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, ANNOTATION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+			}
+				}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, FULL_NAME)) {
+					handleNotYetImplementedElement(next);
+					// homotypicalGroup = handleNom(state, reader, next, taxon,
+					// homotypicalGroup);
+				} else if (isStartingElement(next, NUM)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, NAME)) {
+					handleName(state, reader, next, nameMap);
+				} else if (isStartingElement(next, CITATION)) {
+					handleCitation(state, reader, next, name);
+				} else if (isStartingElement(next, HOMONYM)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, NOTES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, ANNOTATION)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next);
+				}
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		// TODO handle missing end element
+		throw new IllegalStateException("Nom has no closing tag");
+
+			}
+
+	private void fillName(MarkupImportState state, Map<String, String> nameMap,
+			NonViralName name, XMLEvent event) {
+
+		// Ranks: family, subfamily, tribus, genus, subgenus, section,
+		// subsection, species, subspecies, variety, subvariety, forma
+		// infrank, paraut, author, infrparaut, infraut, status, notes
+
+		String infrank = getAndRemoveMapKey(nameMap, INFRANK);
+		String authorStr = getAndRemoveMapKey(nameMap, AUTHOR);
+		String paraut = getAndRemoveMapKey(nameMap, PARAUT);
+
+		String infrParAut = getAndRemoveMapKey(nameMap, INFRPARAUT);
+		String infrAut = getAndRemoveMapKey(nameMap, INFRAUT);
+
+		String statusStr = getAndRemoveMapKey(nameMap, STATUS);
+		String notes = getAndRemoveMapKey(nameMap, NOTES);
+
+		makeRankDecision(state, nameMap, name, event, infrank);
+
+		// test consistency of rank and authors
+		testRankAuthorConsistency(name, event, authorStr, paraut, infrParAut,infrAut);
+
+		// authors
+		makeNomenclaturalAuthors(name, event, authorStr, paraut, infrParAut,infrAut);
+
+		// status
+		// TODO handle pro parte, pro syn. etc.
+		if (StringUtils.isNotBlank(statusStr)) {
+			String proPartePattern = "(pro parte|p.p.)";
+			if (statusStr.matches(proPartePattern)) {
+				state.setProParte(true);
+			}
+			try {
+				// TODO handle trim earlier
+				statusStr = statusStr.trim();
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
+						.getNomenclaturalStatusTypeByAbbreviation(statusStr);
+				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
+			} catch (UnknownCdmTypeException e) {
+				String message = "Status '%s' could not be recognized";
+				message = String.format(message, statusStr);
+				fireWarningEvent(message, event, 4);
+		}
+	}
+
+		// notes
+		if (StringUtils.isNotBlank(notes)) {
+			handleNotYetImplementedAttributeValue(event, CLASS, NOTES);
+		}
+
+		return;
+	}
+
+	/**
+	 * @param state
+	 * @param nameMap
+	 * @param name
+	 * @param event
+	 * @param infrankStr
+	 */
+	private void makeRankDecision(MarkupImportState state,
+			Map<String, String> nameMap, NonViralName<?> name, XMLEvent event,
+			String infrankStr) {
+		// TODO ranks
+		for (String key : nameMap.keySet()) {
+			Rank rank = makeRank(state, key, false);
+			if (rank == null) {
+				handleNotYetImplementedAttributeValue(event, CLASS, key);
+			} else {
+				if (name.getRank() == null || rank.isLower(name.getRank())) {
+					name.setRank(rank);
+		}
+				String value = nameMap.get(key);
+				if (rank.isSupraGeneric() || rank.isGenus()) {
+					name.setGenusOrUninomial(value);
+				} else if (rank.isInfraGeneric()) {
+					name.setInfraGenericEpithet(value);
+				} else if (rank.isSpecies()) {
+					name.setSpecificEpithet(value);
+				} else if (rank.isInfraSpecific()) {
+					name.setInfraSpecificEpithet(value);
+				} else {
+					String message = "Invalid rank '%s'. Can't decide which epithet to fill with '%s'";
+					message = String.format(message, rank.getTitleCache(),value);
+					fireWarningEvent(message, event, 4);
+	}
+			}
+
+		}
+		// handle given infrank marker
+		if (StringUtils.isNotBlank(infrankStr)) {
+			Rank infRank = makeRank(state, infrankStr, true);
+
+			if (infRank == null) {
+				String message = "Infrank '%s' rank not recognized";
+				message = String.format(message, infrankStr);
+				fireWarningEvent(message, event, 4);
+			} else {
+				if (name.getRank() == null) {
+					name.setRank(infRank);
+				} else if (infRank.isLower(name.getRank())) {
+					String message = "InfRank '%s' is lower than existing rank ";
+					message = String.format(message, infrankStr);
+					fireWarningEvent(message, event, 2);
+					name.setRank(infRank);
+				} else if (infRank.equals(name.getRank())) {
+					// nothing
+				} else {
+					String message = "InfRank '%s' is higher than existing rank ";
+					message = String.format(message, infrankStr);
+					fireWarningEvent(message, event, 2);
+		}
+	}
+		}
+	}
+
+	/**
+	 * @param name
+	 * @param event
+	 * @param authorStr
+	 * @param paraut
+	 * @param infrParAut
+	 * @param infrAut
+	 */
+	private void makeNomenclaturalAuthors(NonViralName name, XMLEvent event,
+				String authorStr, String paraut, String infrParAut, String infrAut) {
+		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
+			if (StringUtils.isNotBlank(infrAut)) {
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrAut, event);
+				name.setCombinationAuthorTeam(authorAndEx[0]);
+				name.setExCombinationAuthorTeam(authorAndEx[1]);
+				}
+			if (StringUtils.isNotBlank(infrParAut)) {
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut, event);
+				name.setBasionymAuthorTeam(authorAndEx[0]);
+				name.setExBasionymAuthorTeam(authorAndEx[1]);
+			}
+		} else {
+			if (name.getRank() == null){
+				String message = "No rank defined. Check correct usage of authors!";
+				fireWarningEvent(message, event, 4);
+				if (isNotBlank(infrParAut) || isNotBlank(infrAut)){
+					authorStr = infrAut;
+					paraut = infrParAut;
+		}
+		}
+			if (StringUtils.isNotBlank(authorStr)) {
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr, event);
+				name.setCombinationAuthorTeam(authorAndEx[0]);
+				name.setExCombinationAuthorTeam(authorAndEx[1]);
+	}
+			if (StringUtils.isNotBlank(paraut)) {
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(paraut, event);
+				name.setBasionymAuthorTeam(authorAndEx[0]);
+				name.setExBasionymAuthorTeam(authorAndEx[1]);
+			}
+		}
+	}
+
+	private TeamOrPersonBase[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {
+		authorAndEx = authorAndEx.trim();
+		TeamOrPersonBase[] result = new TeamOrPersonBase[2];
+
+		String[] split = authorAndEx.split("\\sex\\s");
+		if (split.length > 2) {
+			String message = "There is more then 1 ' ex ' in author string. Can't separate author and ex-author";
+			fireWarningEvent(message, xmlEvent, 4);
+			result[0] = createAuthor(authorAndEx);
+		} else if (split.length == 2) {
+			result[0] = createAuthor(split[1]);
+			result[1] = createAuthor(split[0]);
+		} else {
+			result[0] = createAuthor(split[0]);
+			}
+		return result;
+			}
+
+	/**
+	 * Tests if the names rank is consistent with the given author strings.
+	 * @param name
+	 * @param event
+	 * @param authorStr
+	 * @param paraut
+	 * @param infrParAut
+	 * @param infrAut
+	 */
+	private void testRankAuthorConsistency(NonViralName name, XMLEvent event,
+					String authorStr, String paraut, String infrParAut, String infrAut) {
+		if (name.getRank() == null){
+			return;
+		}
+		if (name.getRank().isInfraSpecific()) {
+			if (StringUtils.isBlank(infrParAut)
+					&& StringUtils.isNotBlank(infrAut)
+					&& (StringUtils.isNotBlank(paraut) || StringUtils.isNotBlank(authorStr))) {
+				String message = "Rank is infraspecicific but has only specific or higher author(s)";
+				fireWarningEvent(message, event, 4);
+	}
+		} else {
+			// is not infraspecific
+			if (StringUtils.isNotBlank(infrParAut) 	|| StringUtils.isNotBlank(infrAut)) {
+				String message = "Rank is not infraspecicific but name has infra author(s)";
+				fireWarningEvent(message, event, 4);
+			}
+		}
+	}
+
+	/**
+	 * Returns the (empty) name with the correct homotypical group depending on
+	 * the taxon status. Throws NPE if no currentTaxon is set in state.
+	 * 
+	 * @param state
 	 * @param homotypicalGroup
 	 * @param isSynonym
 	 * @return
 	 */
-	private NonViralName makeName(Taxon taxon,HomotypicalGroup homotypicalGroup, boolean isSynonym) {
-		NonViralName name;
-		if (isSynonym){
-			name = BotanicalName.NewInstance(Rank.SPECIES(), homotypicalGroup);
-			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
-			if (taxon.getHomotypicGroup().equals(homotypicalGroup)){
+	private NonViralName<?> createName(MarkupImportState state,
+			HomotypicalGroup homotypicalGroup, boolean isSynonym) {
+		NonViralName<?> name;
+		Taxon taxon = state.getCurrentTaxon();
+		if (isSynonym) {
+			Rank defaultRank = Rank.SPECIES(); // can be any
+			name = createNameByCode(state, defaultRank);
+			if (homotypicalGroup != null) {
+				name.setHomotypicalGroup(homotypicalGroup);
+			}
+			SynonymRelationshipType synonymType = SynonymRelationshipType
+					.HETEROTYPIC_SYNONYM_OF();
+			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 			}
 			taxon.addSynonymName(name, synonymType);
-		}else{
-			name = (NonViralName)taxon.getName();
+		} else {
+			name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 		}
 		return name;
 	}
 
+	private void handleName(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent, Map<String, String> nameMap)
+			throws XMLStreamException {
+		String classValue = getClassOnlyAttribute(parentEvent);
 
-	/**
-	 * @param element
-	 * @param taxon
-	 */
-	private void handleInfraspecificEpithet(Element element, String attrValue, NonViralName name) {
-		String value = element.getTextNormalize();
-		if (value.indexOf("subsp.") != -1){
-			//TODO genus and species epi
-			String infrEpi = value.substring(value.indexOf("subsp.") + 6).trim();
-			name.setInfraSpecificEpithet(infrEpi);
-			name.setRank(Rank.SUBSPECIES());
-		}else if (value.indexOf("var.") != -1){
-			//TODO genus and species epi
-			String infrEpi = value.substring(value.indexOf("var.") + 4).trim();
-			name.setInfraSpecificEpithet(infrEpi);
-			name.setRank(Rank.VARIETY());
-		}else{
-			logger.warn("Unhandled infraspecific type: " + value);
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				nameMap.put(classValue, text);
+				return;
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, ANNOTATION)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
 		}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+	}
+		}
+		throw new IllegalStateException("name has no closing tag");
+
 	}
 
-
-	/**
-	 * @param state
-	 * @param element
-	 * @param name
-	 */
-	private void handleBasionymAuthor(MarkupImportState state, Element elBasionymAuthor, NonViralName name, boolean overwrite) {
-		String strAuthor = elBasionymAuthor.getValue().trim();
-		Pattern reBasionymAuthor = Pattern.compile("^\\(.*\\)$");
-		if (reBasionymAuthor.matcher(strAuthor).matches()){
-			strAuthor = strAuthor.substring(1, strAuthor.length()-1);
-		}else{
-			logger.warn("Brackets are missing for original combination author " + strAuthor);
-		}
-		TeamOrPersonBase[] basionymTeam = getTeam(strAuthor);
-		if (name.getBasionymAuthorTeam() != null && overwrite == false){
-			logger.warn("Try to write basionym author for a name that already has a basionym author. Neglected.");
-		}else{
-			name.setBasionymAuthorTeam(basionymTeam[0]);
-			name.setExBasionymAuthorTeam(basionymTeam[1]);
-
-		}
-	}
-
-	private Map<String, UUID> teamMap = new HashMap<String, UUID>();
-	/**
-	 * @param elAuthors
-	 * @param name
-	 * @param elNom 
-	 */
-	private void handleNameAuthors(Element elAuthor, NonViralName name) {
-		if (name.getCombinationAuthorTeam() != null){
-			logger.warn("Name already has a combination author. Name: " +  name.getTitleCache() + ", Author: " + elAuthor.getTextNormalize());
-		}
-		String strAuthor = elAuthor.getValue().trim();
-		if (strAuthor.endsWith(",")){
-			strAuthor = strAuthor.substring(0, strAuthor.length() -1);
-		}
-		if (strAuthor.indexOf("(") > -1 || strAuthor.indexOf(")") > -1){
-			logger.warn("Author has brackets. Basionym authors should be handled in separate tags: " + strAuthor);
-		}
-		TeamOrPersonBase[] team = getTeam(strAuthor);
-		name.setCombinationAuthorTeam(team[0]);
-		name.setExCombinationAuthorTeam(team[1]);
-	}
-
-
-	/**
-	 * @param strAuthor
-	 * @return
-	 */
-	private TeamOrPersonBase[] getTeam(String strAuthor) {
-		TeamOrPersonBase[] result = new TeamOrPersonBase[2];
-		String[] split = strAuthor.split(" ex ");
-		String strBaseAuthor = null;
-		String strExAuthor = null;
-		
-		if (split.length == 2){
-			strBaseAuthor = split[1]; 
-			strExAuthor = split[0];	
-		}else if (split.length == 1){
-			strBaseAuthor = split[0];
-		}else{
-			logger.warn("Could not parse (ex) author: " + strAuthor);
-		}
-		result[0] = getUuidTeam(strBaseAuthor);
-		if (result[0] == null){
-			result[0] = parseSingleTeam(strBaseAuthor);
-			teamMap.put(strBaseAuthor, result[0].getUuid());
-		}
-		if (strExAuthor != null){
-			result[1] = getUuidTeam(strExAuthor);
-			if (result[1] == null){
-				result[1] = Team.NewInstance();
-				result[1].setTitleCache(strExAuthor, true);
-				teamMap.put(strExAuthor, result[1].getUuid());
-			}
-		
-		}	
-		return result;
-	}
-
-
-	protected TeamOrPersonBase parseSingleTeam(String strBaseAuthor) {
-		TeamOrPersonBase result;
-		String[] split = strBaseAuthor.split("&");
-		if (split.length > 1){
-			result = Team.NewInstance();
-			for (String personString : split){
-				Person person = makePerson(personString);
-				((Team)result).addTeamMember(person);
-			}
-		}else{
-			result = makePerson(strBaseAuthor.trim());
-		}
-		return result;
-	}
-
-
-	/**
-	 * @param personString
-	 * @return
-	 */
-	private Person makePerson(String personString) {
-		personString = personString.trim();
-		Person person = Person.NewTitledInstance(personString);
-		person.setNomenclaturalTitle(personString);
-		return person;
-	}
-
-
-	/**
-	 * @param result
-	 * @param strBaseAuthor
-	 */
-	private TeamOrPersonBase getUuidTeam(String strBaseAuthor) {
-		UUID uuidTeam = teamMap.get(strBaseAuthor);
-		return CdmBase.deproxy(getAgentService().find(uuidTeam), TeamOrPersonBase.class);
-	}
-
-
-	private void handleDescription(MarkupImportState state, Element elDescription, Taxon taxon, Set<String> unhandledChildren) {
-		verifyNoAttribute(elDescription);
-		
-		List<Element> elements = elDescription.getChildren();
-		for (Element element : elements){
-			if (element.getName().equalsIgnoreCase("char")){
-				handleChar(state, element, taxon);
-			}else{
-				logger.warn("Unhandled description child: " + element.getName());
-			}
-		}
-		
-	}
-	
-	
 	/**
 	 * @param state
-	 * @param element
-	 * @param taxon
+	 * @param classValue
+	 * @param byAbbrev
+	 * @return
 	 */
-	private void handleChar(MarkupImportState state, Element element, Taxon taxon) {
-		List<Attribute> attributes = element.getAttributes();
-		for (Attribute attribute : attributes){
-			if (! attribute.getName().equalsIgnoreCase("class")){
-				logger.warn("Char has unhandled attribute " +  attribute.getName());
-			}else{
-				String classValue = attribute.getValue();
-				Feature feature = getFeature(classValue, state);
-				if (feature == null){
-					logger.warn("Unhandled feature: " + classValue);
+	private Rank makeRank(MarkupImportState state, String value,
+			boolean byAbbrev) {
+		Rank rank = null;
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		try {
+			boolean useUnknown = true;
+			NomenclaturalCode nc = makeNomenclaturalCode(state);
+			if (byAbbrev) {
+				rank = Rank.getRankByAbbreviation(value, nc, useUnknown);
+			} else {
+				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
+			}
+			if (rank.equals(Rank.UNKNOWN_RANK())) {
+				rank = null;
+			}
+		} catch (UnknownCdmTypeException e) {
+			// doNothing
+		}
+		return rank;
+	}
+
+	// public void handleNameNotRank(MarkupImportState state, XMLEventReader
+	// reader, XMLEvent parentEvent, String classValue, NonViralName name)
+	// throws XMLStreamException {
+	// if (ACCEPTED.equalsIgnoreCase(classValue)){
+	// }else if (SYNONYM.equalsIgnoreCase(classValue)){
+	// }else{
+	// //TODO Not yet implemented
+	// handleNotYetImplementedAttributeValue(parentEvent, CLASS, classValue);
+	// }
+	// }
+
+	private void handleCitation(MarkupImportState state, XMLEventReader reader,	XMLEvent parentEvent, NonViralName name) throws XMLStreamException {
+		String classValue = getClassOnlyAttribute(parentEvent);
+
+		state.setCitation(true);
+		boolean hasRefPart = false;
+		Map<String, String> refMap = new HashMap<String, String>();
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
+						REF_PART);
+				Reference<?> reference = createReference(state, refMap, next);
+				String microReference = refMap.get(DETAILS);
+				doCitation(state, name, classValue, reference, microReference,
+						parentEvent);
+				state.setCitation(false);
+				return;
+			} else if (isStartingElement(next, REF_PART)) {
+				handleRefPart(state, reader, next, refMap);
+				hasRefPart = true;
+			} else {
+				handleUnexpectedElement(next);
+		}
+	}
+		throw new IllegalStateException("Citation has no closing tag");
+
+		}
+
+	private void handleRefPart(MarkupImportState state, XMLEventReader reader,XMLEvent parentEvent, Map<String, String> refMap) throws XMLStreamException {
+		String classValue = getClassOnlyAttribute(parentEvent);
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				refMap.put(classValue, text);
+				return;
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, ANNOTATION)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, ITALICS)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, BOLD)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+		}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+		}
+	}
+		throw new IllegalStateException("RefPart has no closing tag");
+
+	}
+
+	private Reference<?> createReference(MarkupImportState state, Map<String, String> refMap, XMLEvent parentEvent) {
+		// TODO
+		Reference<?> reference;
+
+		String type = getAndRemoveMapKey(refMap, PUBTYPE);
+		String authorStr = getAndRemoveMapKey(refMap, AUTHOR);
+		String titleStr = getAndRemoveMapKey(refMap, PUBTITLE);
+		String titleCache = getAndRemoveMapKey(refMap, PUBFULLNAME);
+		String volume = getAndRemoveMapKey(refMap, VOLUME);
+		String edition = getAndRemoveMapKey(refMap, EDITION);
+		String editors = getAndRemoveMapKey(refMap, EDITORS);
+		String year = getAndRemoveMapKey(refMap, YEAR);
+		String pubName = getAndRemoveMapKey(refMap, PUBNAME);
+
+		if (state.isCitation()) {
+			if (volume != null || "journal".equalsIgnoreCase(type)) {
+				IArticle article = ReferenceFactory.newArticle();
+				if (pubName != null) {
+					IJournal journal = ReferenceFactory.newJournal();
+					journal.setTitle(pubName);
+					article.setInJournal(journal);
+		}
+				reference = (Reference<?>) article;
+
+			} else {
+				// TODO
+				if (pubName != null){
+					reference  = ReferenceFactory.newBookSection();
 				}else{
-					String value = element.getValue();
-					addDescriptionElement(state, taxon, value, feature, null);
+					reference = ReferenceFactory.newBook();
+		}
+			}
+			// TODO use existing author from name or before
+			TeamOrPersonBase<?> author = createAuthor(authorStr);
+			reference.setAuthorTeam(author);
+
+			reference.setTitle(titleStr);
+			if (StringUtils.isNotBlank(titleCache)) {
+				reference.setTitleCache(titleCache, true);
+			}
+			reference.setEdition(edition);
+			reference.setEditor(editors);
+
+			if (pubName != null) {
+				Reference<?> inReference;
+				if (reference.getType().equals(ReferenceType.Article)) {
+					inReference = ReferenceFactory.newJournal();
+		} else {
+					inReference = ReferenceFactory.newGeneric();
+				}
+				inReference.setTitle(pubName);
+				reference.setInReference(inReference);
+			}
+
+			
+		} else {  //no citation
+			if (volume != null || "journal".equalsIgnoreCase(type)) {
+				IArticle article = ReferenceFactory.newArticle();
+				if (pubName != null) {
+					IJournal journal = ReferenceFactory.newJournal();
+					journal.setTitle(pubName);
+					article.setInJournal(journal);
+			}
+				reference = (Reference<?>) article;
+
+			} else {
+				Reference<?> bookOrPartOf = ReferenceFactory.newGeneric();
+				reference = bookOrPartOf;
+	}
+
+			// TODO type
+			TeamOrPersonBase<?> author = createAuthor(authorStr);
+			reference.setAuthorTeam(author);
+
+			reference.setTitle(titleStr);
+			if (StringUtils.isNotBlank(titleCache)) {
+				reference.setTitleCache(titleCache, true);
+			}
+			reference.setEdition(edition);
+			reference.setEditor(editors);
+
+			if (pubName != null) {
+				Reference<?> inReference;
+				if (reference.getType().equals(ReferenceType.Article)) {
+					inReference = ReferenceFactory.newJournal();
+				} else {
+					inReference = ReferenceFactory.newGeneric();
+		}
+				inReference.setTitle(pubName);
+				reference.setInReference(inReference);
+	}
+		}
+		reference.setVolume(volume);
+		reference.setDatePublished(TimePeriod.parseString(year));
+
+		// TODO
+		String[] unhandledList = new String[]{ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS};
+		for (String unhandled : unhandledList){
+			String value = getAndRemoveMapKey(refMap, unhandled);
+			if (isNotBlank(value)){
+				this.handleNotYetImplementedAttributeValue(parentEvent, CLASS, unhandled);
+			}
+		}
+		
+		for (String key : refMap.keySet()) {
+			if (!DETAILS.equalsIgnoreCase(key)) {
+				this.fireUnexpectedAttributeValue(parentEvent, CLASS, key);
+			}
+		}
+
+		return reference;
+	}
+
+	private TeamOrPersonBase createAuthor(String authorTitle) {
+		// TODO atomize and also use by name creation
+		TeamOrPersonBase result = Team.NewTitledInstance(authorTitle,
+				authorTitle);
+		return result;
+	}
+
+	private String getAndRemoveMapKey(Map<String, String> map, String key) {
+		String result = map.get(key);
+		map.remove(key);
+		if (result != null) {
+			result = normalize(result);
+	}
+		return StringUtils.stripToNull(result);
+	}
+
+	private void doCitation(MarkupImportState state, NonViralName name,
+			String classValue, Reference reference, String microCitation,
+			XMLEvent parentEvent) {
+		if (PUBLICATION.equalsIgnoreCase(classValue)) {
+			name.setNomenclaturalReference(reference);
+			name.setNomenclaturalMicroReference(microCitation);
+		} else if (USAGE.equalsIgnoreCase(classValue)) {
+			Taxon taxon = state.getCurrentTaxon();
+			TaxonDescription td = this.getTaxonDescription(taxon, state
+					.getConfig().getSourceReference(), false, true);
+			TextData citation = TextData.NewInstance(Feature.CITATION());
+			// TODO name used in source
+			citation.addSource(null, null, reference, microCitation);
+			td.addElement(citation);
+		} else if (TYPE.equalsIgnoreCase(classValue)) {
+			handleNotYetImplementedAttributeValue(parentEvent, CLASS,
+					classValue);
+		} else {
+			// TODO Not yet implemented
+			handleNotYetImplementedAttributeValue(parentEvent, CLASS,
+					classValue);
+		}
+	}
+
+	private void handleFeature(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		String classValue = getClassOnlyAttribute(parentEvent);
+		Feature feature = makeFeature(classValue, state, parentEvent);
+		Taxon taxon = state.getCurrentTaxon();
+		TaxonDescription taxonDescription = getTaxonDescription(taxon, state.getConfig().getSourceReference(), NO_IMAGE_GALLERY, CREATE_NEW);
+		// TextData figureHolderTextData = null; //for use with one TextData for
+		// all figure only
+
+		boolean isDescription = feature.equals(Feature.DESCRIPTION());
+		DescriptionElementBase lastDescriptionElement = null;
+		
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return;
+			} else if (isEndingElement(next, DISTRIBUTION_LIST) || isEndingElement(next, HABITAT_LIST)) { 
+				// only handle list elements
+			} else if (isStartingElement(next, HEADING)) {
+				makeFeatureHeading(state, reader, classValue, feature, next);
+			} else if (isStartingElement(next, WRITER)) {
+				makeFeatureWriter(state, reader, feature, taxon, next);
+//			} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
+//				if (!feature.equals(Feature.DISTRIBUTION())) {
+//					String message = "Distribution locality only allowed for feature of type 'distribution'";
+//					fireWarningEvent(message, next, 4);
+//				}
+//				handleDistributionLocality(state, reader, next);
+			} else if (isStartingElement(next, DISTRIBUTION_LIST) || isStartingElement(next, HABITAT_LIST)) {
+				// only handle single list elements
+			} else if (isStartingElement(next, HABITAT)) {
+				if (!(feature.equals(Feature.HABITAT())
+						|| feature.equals(Feature.HABITAT_ECOLOGY()) 
+						|| feature.equals(Feature.ECOLOGY()))) {
+					String message = "Habitat only allowed for feature of type 'habitat','habitat ecology' or 'ecology'";
+					fireWarningEvent(message, next, 4);
+			}
+				handleHabitat(state, reader, next);
+			} else if (isStartingElement(next, CHAR)) {
+				TextData textData = handleChar(state, reader, next);
+				taxonDescription.addElement(textData);
+			} else if (isStartingElement(next, STRING)) {
+				lastDescriptionElement = makeFeatureString(state, reader,feature, taxonDescription, lastDescriptionElement,next);
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				lastDescriptionElement = makeFeatureFigureRef(state, reader, taxonDescription, isDescription, lastDescriptionElement, next);
+			} else if (isStartingElement(next, REFERENCES)) {
+				// TODO details/microcitation ??
+
+				List<Reference<?>> refs = handleReferences(state, reader, next);
+				if (!refs.isEmpty()) {
+					// TODO
+					Reference<?> descriptionRef = state.getConfig().getSourceReference();
+					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
+					TextData featurePlaceholder = getFeaturePlaceholder(state, description, feature, true);
+					for (Reference<?> citation : refs) {
+						featurePlaceholder.addSource(null, null, citation, null);
+		}
+				} else {
+					String message = "No reference found in references";
+					fireWarningEvent(message, next, 6);
+	}
+			} else if (isStartingElement(next, NUM)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, NUM)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<Feature> has no closing tag");
+	}
+
+	/**
+	 * @param state
+	 * @param reader
+	 * @param taxonDescription
+	 * @param isDescription
+	 * @param lastDescriptionElement
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private DescriptionElementBase makeFeatureFigureRef(MarkupImportState state, XMLEventReader reader,TaxonDescription taxonDescription, 
+					boolean isDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next)throws XMLStreamException {
+		FigureDataHolder figureHolder = handleFigureRef(state, reader, next);
+		Feature figureFeature = getFeature(state,MarkupTransformer.uuidFigures, "Figures", "Figures", "Fig.",null);
+		if (isDescription) {
+			TextData figureHolderTextData = null;
+			// if (figureHolderTextData == null){
+			figureHolderTextData = TextData.NewInstance(figureFeature);
+			if (StringUtils.isNotBlank(figureHolder.num)) {
+				String annotationText = "<num>" + figureHolder.num.trim()
+						+ "</num>";
+				Annotation annotation = Annotation.NewInstance(annotationText,
+						AnnotationType.TECHNICAL(), Language.DEFAULT());
+				figureHolderTextData.addAnnotation(annotation);
+				}
+			if (StringUtils.isNotBlank(figureHolder.figurePart)) {
+				String annotationText = "<figurePart>"+ figureHolder.figurePart.trim() + "</figurePart>";
+				Annotation annotation = Annotation.NewInstance(annotationText,AnnotationType.EDITORIAL(), Language.DEFAULT());
+				figureHolderTextData.addAnnotation(annotation);
+			}
+			// if (StringUtils.isNotBlank(figureText)){
+			// figureHolderTextData.putText(Language.DEFAULT(), figureText);
+			// }
+			taxonDescription.addElement(figureHolderTextData);
+			// }
+			registerFigureDemand(state, figureHolderTextData, figureHolder.ref);
+		} else {
+			if (lastDescriptionElement == null) {
+				String message = "No description element created yet that can be referred by figure. Create new TextData instead";
+				fireWarningEvent(message, next, 4);
+				lastDescriptionElement = TextData.NewInstance(figureFeature);
+				taxonDescription.addElement(lastDescriptionElement);
+		}
+			registerFigureDemand(state, lastDescriptionElement,
+					figureHolder.ref);
+		}
+		return lastDescriptionElement;
+	}
+
+	/**
+	 * @param state
+	 * @param reader
+	 * @param feature
+	 * @param taxonDescription
+	 * @param lastDescriptionElement
+	 * @param distributionList 
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature, 
+				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next) throws XMLStreamException {
+		Map<String, String> subheadingMap = handleString(state, reader, next, feature);
+		for (String subheading : subheadingMap.keySet()) {
+			Feature subheadingFeature = feature;
+			if (StringUtils.isNotBlank(subheading) && subheadingMap.size() > 1) {
+				subheadingFeature = makeFeature(subheading, state, next);
+			}
+			TextData textData = TextData.NewInstance(subheadingFeature);
+			textData.putText(Language.DEFAULT(), subheadingMap.get(subheading));
+			taxonDescription.addElement(textData);
+			// TODO how to handle figures when these data are split in
+			// subheadings
+			lastDescriptionElement = textData;
+		}
+		return lastDescriptionElement;
+	}
+
+	/**
+	 * @param state
+	 * @param reader
+	 * @param feature
+	 * @param taxon
+	 * @param next
+	 * @throws XMLStreamException
+	 */
+	private void makeFeatureWriter(MarkupImportState state,XMLEventReader reader, Feature feature, Taxon taxon, XMLEvent next) throws XMLStreamException {
+		WriterDataHolder writer = handleWriter(state, reader, next);
+		if (isNotBlank(writer.writer)) {
+			// TODO
+			Reference<?> ref = state.getConfig().getSourceReference();
+			TaxonDescription description = getTaxonDescription(taxon, ref,
+					false, true);
+			TextData featurePlaceholder = getFeaturePlaceholder(state,
+					description, feature, true);
+			featurePlaceholder.addAnnotation(writer.annotation);
+			registerFootnotes(state, featurePlaceholder, writer.footnotes);
+		} else {
+			String message = "Writer element is empty";
+			fireWarningEvent(message, next, 4);
+		}
+	}
+
+	/**
+	 * @param state
+	 * @param reader
+	 * @param classValue
+	 * @param feature
+	 * @param next
+	 * @throws XMLStreamException
+	 */
+	private void makeFeatureHeading(MarkupImportState state, XMLEventReader reader, String classValue, Feature feature, XMLEvent next) throws XMLStreamException {
+		String heading = handleHeading(state, reader, next);
+		if (StringUtils.isNotBlank(heading)) {
+			if (!heading.equalsIgnoreCase(classValue)) {
+		try {
+					if (!feature.equals(state.getTransformer().getFeatureByKey(
+							heading))) {
+						UUID headerFeatureUuid = state.getTransformer()
+								.getFeatureUuid(heading);
+						if (!feature.getUuid().equals(headerFeatureUuid)) {
+							String message = "Feature heading '%s' differs from feature class '%s' and can not be transformed to feature";
+							message = String.format(message, heading,
+									classValue);
+							fireWarningEvent(message, next, 1);
+			}
+			}
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+		}
+			} else {
+				// do nothing
+	}
+		}
+	}
+
+	private List<Reference<?>> handleReferences(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		// attributes
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String bibliography = getAndRemoveAttributeValue(attributes,
+				BIBLIOGRAPHY);
+		String serialsAbbreviations = getAndRemoveAttributeValue(attributes,
+				SERIALS_ABBREVIATIONS);
+		if (isNotBlank(bibliography) || isNotBlank(serialsAbbreviations)) {
+			String message = "Attributes not yet implemented for <references>";
+			fireWarningEvent(message, parentEvent, 4);
+				}
+
+		List<Reference<?>> result = new ArrayList<Reference<?>>();
+
+		// elements
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (next.isEndElement()) {
+				if (isMyEndingElement(next, parentEvent)) {
+					return result;
+				} else {
+					if (isEndingElement(next, HEADING)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, WRITER)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, FOOTNOTE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, STRING)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, REF_NUM)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else {
+						handleUnexpectedEndElement(next.asEndElement());
+					}
+					}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, HEADING)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, SUB_HEADING)) {
+					String subheading = getCData(state, reader, next).trim();
+					String excludePattern = "(i?)(References?|Literature):?";
+					if (!subheading.matches(excludePattern)) {
+						fireNotYetImplementedElement(next.getLocation(), next.asStartElement().getName(), 0);
+				}
+				} else if (isStartingElement(next, WRITER)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, FOOTNOTE)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, STRING)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, REF_NUM)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, REFERENCE)) {
+					Reference<?> ref = handleReference(state, reader, next);
+					result.add(ref);
+				} else {
+					handleUnexpectedStartElement(next);
+			}
+			} else {
+				handleUnexpectedElement(next);
+		}
+		}
+		throw new IllegalStateException("<References> has no closing tag");
+	}
+
+	private void handleHabitat(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		Taxon taxon = state.getCurrentTaxon();
+		// TODO which ref to take?
+		Reference<?> ref = state.getConfig().getSourceReference();
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				TaxonDescription description = getTaxonDescription(taxon, ref,
+						false, true);
+				UUID uuidExtractedHabitat = MarkupTransformer.uuidExtractedHabitat;
+				Feature feature = getFeature(
+						state,
+						uuidExtractedHabitat,
+						"Extracted Habitat",
+						"An structured habitat that was extracted from a habitat text",
+						"extr. habit.", null);
+				TextData habitat = TextData.NewInstance(feature);
+				habitat.putText(Language.DEFAULT(), text);
+				description.addElement(habitat);
+
+				return;
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, ALTITUDE)) {
+					text = text.trim() + getTaggedCData(state, reader, next);
+				} else if (isStartingElement(next, LIFE_CYCLE_PERIODS)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+	}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(next);
+	}
+	}
+		throw new IllegalStateException("<Habitat> has no closing tag");
+	}
+
+	private String getTaggedCData(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		String text = getXmlTag(parentEvent);
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				text += getXmlTag(next);
+				return text;
+			} else if (next.isStartElement()) {
+				text += getTaggedCData(state, reader, next);
+			} else if (next.isEndElement()) {
+				text += getTaggedCData(state, reader, next);
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+	}
+		}
+		throw new IllegalStateException("Some tag has no closing tag");
+	}
+
+	private String handleDistributionLocality(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, CLASS);
+		String statusValue =getAndRemoveAttributeValue(attributes, STATUS);
+		String frequencyValue =getAndRemoveAttributeValue(attributes, FREQUENCY);
+	
+
+		Taxon taxon = state.getCurrentTaxon();
+		// TODO which ref to take?
+		Reference<?> ref = state.getConfig().getSourceReference();
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (StringUtils.isNotBlank(text)) {
+					String label = CdmUtils.removeTrailingDot(normalize(text));
+					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
+	
+					//status
+					PresenceAbsenceTermBase<?> status = null;
+					if (isNotBlank(statusValue)){
+						try {
+							status = state.getTransformer().getPresenceTermByKey(statusValue);
+							if (status == null){
+								//TODO
+								String message = "The status '%s' could not be transformed to an CDM status";
+								fireWarningEvent(message, next, 4);
+							}
+						} catch (UndefinedTransformerMethodException e) {
+							throw new RuntimeException(e);
+						}
+		}else{
+						status = PresenceTerm.PRESENT();
+		}
+					//frequency
+					if (isNotBlank(frequencyValue)){
+						String message = "The frequency attribute is currently not yet available in CDM";
+						fireWarningEvent(message, parentEvent, 6);
+	}
+	
+					NamedArea higherArea = null;
+					List<NamedArea> areas = new ArrayList<NamedArea>(); 
+		
+					String patSingleArea = "([^,\\(]{3,})";
+					String patSeparator = "(,|\\sand\\s)";
+					String hierarchiePattern = String.format("%s\\((%s(%s%s)*)\\)",patSingleArea, patSingleArea, patSeparator, patSingleArea);
+					Pattern patHierarchie = Pattern.compile(hierarchiePattern, Pattern.CASE_INSENSITIVE);
+					Matcher matcher = patHierarchie.matcher(label); 
+					if (matcher.matches()){
+						String higherAreaStr = matcher.group(1).trim();
+						higherArea =  makeArea(state, higherAreaStr, level);
+						String[] innerAreas = matcher.group(2).split(patSeparator);
+						for (String innerArea : innerAreas){
+							if (isNotBlank(innerArea)){
+								NamedArea singleArea = makeArea(state, innerArea.trim(), level);
+								areas.add(singleArea);
+								NamedArea partOf = singleArea.getPartOf();
+//								if (partOf == null){
+//									singleArea.setPartOf(higherArea);
+//								}
+		}
+						}
+				}else{
+						NamedArea singleArea = makeArea(state, label, level);
+						areas.add(singleArea);
+				}
+					
+					for (NamedArea area : areas){
+						//create distribution
+						Distribution distribution = Distribution.NewInstance(area,status);
+						description.addElement(distribution);
+			}
+				} else {
+					String message = "Empty distribution locality";
+					fireWarningEvent(message, next, 4);
+		}
+				return text;
+			} else if (isStartingElement(next, COORDINATES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, COORDINATES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+	}
+		}
+		throw new IllegalStateException("<DistributionLocality> has no closing tag");
+	}
+
+	/**
+	 * @param state
+	 * @param areaName
+	 * @param level
+	 * @return 
+	 */
+	private NamedArea makeArea(MarkupImportState state, String areaName, NamedAreaLevel level) {
+		
+		
+		//TODO FM vocabulary
+		TermVocabulary<NamedArea> voc = null; 
+		NamedAreaType areaType = null;
+		
+		NamedArea area = null;
+		try {
+			area = state.getTransformer().getNamedAreaByKey(areaName);
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (area == null){
+			boolean isNewInState = false;
+			UUID uuid = state.getAreaUuid(areaName);
+			if (uuid == null){
+				isNewInState = true;
+				
+				
+				try {
+					uuid = state.getTransformer().getNamedAreaUuid(areaName);
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+				}
+			}	
+			TermMatchMode matchMode = TermMatchMode.UUID_LABEL;
+			area = getNamedArea(state, uuid, areaName, areaName, areaName, areaType, level, voc, matchMode);
+			if (isNewInState){
+				state.putAreaUuid(areaName, area.getUuid());
+				
+				//TODO just for testing -> make generic and move to better place
+					String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+					String layerFieldName ="nam";
+				
+				if ("Bangka".equals(areaName)){
+					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+			}
+				if ("Luzon".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("HERMANA MAYOR ISLAND#CENTRAL LUZON",
+							"HERMANA MENOR ISLAND#CENTRAL LUZON",
+							"CENTRAL LUZON");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+		}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+	}
+				if ("Mindanao".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("NORTHERN MINDANAO",
+							"SOUTHERN MINDANAO",
+							"WESTERN MINDANAO");
+					//TODO to be continued
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Palawan".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("PALAWAN#SOUTHERN TAGALOG");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
 				}
 				
+
 			}
 		}
-		
-		List<Element> elements = element.getChildren();
-		if (! elements.isEmpty()){
-			logger.warn("Char has unhandled children");
-		}
+		return area;
 	}
-
+	
 
 	/**
-	 * @param taxon
+	 * @param state
+	 * @param levelString
+	 * @param next
 	 * @return
 	 */
-	protected TaxonDescription getDescription(Taxon taxon) {
-		for (TaxonDescription description : taxon.getDescriptions()){
-			if (! description.isImageGallery()){
-				return description;
-			}
+	private NamedAreaLevel makeNamedAreaLevel(MarkupImportState state,
+			String levelString, XMLEvent next) {
+		NamedAreaLevel level;
+		try {
+			level = state.getTransformer().getNamedAreaLevelByKey(levelString);
+			if (level == null) {
+				UUID levelUuid = state.getTransformer().getNamedAreaLevelUuid(levelString);
+				if (levelUuid == null) {
+					String message = "Unknown distribution locality class (named area level): %s. Create new level instead.";
+					message = String.format(message, levelString);
+					fireWarningEvent(message, next, 6);
 		}
-		TaxonDescription newDescription = TaxonDescription.NewInstance(taxon);
-		return newDescription;
+				level = getNamedAreaLevel(state, levelUuid, levelString,
+						levelString, levelString, null);
+	}
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return level;
 	}
 
+	private String handleHeading(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return text;
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, FOOTNOTE)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+				}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+			}
+		}
+		throw new IllegalStateException("<String> has no closing tag");
+
+	}
+
+	/**
+	 * Handle string
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @param feature only needed for distributionLocalities
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private Map<String, String> handleString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature)throws XMLStreamException {
+		// attributes
+		String classValue = getClassOnlyAttribute(parentEvent, false);
+		if (StringUtils.isNotBlank(classValue)) {
+			String message = "class attribute for <string> not yet implemented";
+			fireWarningEvent(message, parentEvent, 2);
+		}
+
+		// subheadings
+		Map<String, String> subHeadingMap = new HashMap<String, String>();
+		String currentSubheading = null;
+
+		boolean isTextMode = true;
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				putCurrentSubheading(subHeadingMap, currentSubheading, text);
+				return subHeadingMap;
+			} else if (isStartingElement(next, BR)) {
+				text += "<br/>";
+				isTextMode = false;
+			} else if (isEndingElement(next, BR)) {
+				isTextMode = true;
+			} else if (isHtml(next)) {
+				text += getXmlTag(next);
+			} else if (isStartingElement(next, SUB_HEADING)) {
+				text = putCurrentSubheading(subHeadingMap,currentSubheading, text);
+				// TODO footnotes
+				currentSubheading = getCData(state, reader, next).trim();
+			} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
+				if (feature != null && !feature.equals(Feature.DISTRIBUTION())) {
+					String message = "Distribution locality only allowed for feature of type 'distribution'";
+					fireWarningEvent(message, next, 4);
+	}
+				text += handleDistributionLocality(state, reader, next);
+			} else if (next.isCharacters()) {
+				if (!isTextMode) {
+					String message = "String is not in text mode";
+					fireWarningEvent(message, next, 6);
+				} else {
+					text += next.asCharacters().getData();
+				}
+			} else if (isStartingElement(next, HEADING)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, HEADING)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, QUOTE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, QUOTE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, DEDICATION)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, DEDICATION)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, TAXONTYPE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, TAXONTYPE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FULL_NAME)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FULL_NAME)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			}else if (isStartingElement(next, REFERENCES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, REFERENCES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, GATHERING)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, GATHERING)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, ANNOTATION)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, ANNOTATION)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, HABITAT)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, HABITAT)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FIGURE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FIGURE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FIGURE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FOOTNOTE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FOOTNOTE)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, WRITER)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, WRITER)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, DATES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, DATES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<String> has no closing tag");
+	}
+
+	/**
+	 * @param subHeadingMap
+	 * @param currentSubheading
+	 * @param text
+	 * @return
+	 */
+	private String putCurrentSubheading(Map<String, String> subHeadingMap, String currentSubheading, String text) {
+		if (StringUtils.isNotBlank(text)) {
+			text = removeStartingMinus(text);
+			subHeadingMap.put(currentSubheading, text.trim());
+	}
+		return "";
+	}
+
+	private String removeStartingMinus(String string) {
+		string = replaceStart(string, "-");
+		string = replaceStart(string, "\u002d");
+		string = replaceStart(string, "\u2013");
+		string = replaceStart(string, "\u2014");
+		string = replaceStart(string, "--");
+		return string;
+	}
+	
+	/**
+	 * @param value
+	 * @param replacementString
+	 */
+	private String replaceStart(String value, String replacementString) {
+		if (value.startsWith(replacementString) ){
+			value = value.substring(replacementString.length()).trim();
+					}
+		while (value.startsWith("-") || value.startsWith("\u2014") ){
+			value = value.substring("-".length()).trim();
+				}
+		return value;
+			}
+	
+	private String getXmlTag(XMLEvent event) {
+		String result;
+		if (event.isStartElement()) {
+			result = "<" + event.asStartElement().getName().getLocalPart()
+					+ ">";
+		} else if (event.isEndElement()) {
+			result = "</" + event.asEndElement().getName().getLocalPart() + ">";
+		} else {
+			String message = "Only start or end elements are allowed as Html tags";
+			throw new IllegalStateException(message);
+		}
+		return result;
+	}
+
+	protected static final List<String> htmlList = Arrays.asList("sub", "sup",
+			"ol", "ul", "li", "i", "b", "table", "br");
+
+	private boolean isHtml(XMLEvent event) {
+		if (event.isStartElement()) {
+			String tag = event.asStartElement().getName().getLocalPart();
+			return htmlList.contains(tag);
+		} else if (event.isEndElement()) {
+			String tag = event.asEndElement().getName().getLocalPart();
+			return htmlList.contains(tag);
+		} else {
+			return false;
+		}
+
+	}
+
+	private TextData handleChar(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent) throws XMLStreamException {
+		String classValue = getClassOnlyAttribute(parentEvent);
+		Feature feature = makeFeature(classValue, state, parentEvent);
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				TextData textData = TextData.NewInstance(feature);
+				textData.putText(Language.DEFAULT(), text);
+				return textData;
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FIGURE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, ANNOTATION)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, ITALICS)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, BOLD)) {
+					handleNotYetImplementedElement(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+				}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+			}
+		}
+		throw new IllegalStateException("RefPart has no closing tag");
+	}
 
 	/**
 	 * @param classValue
-	 * @param state 
+	 * @param state
+	 * @param parentEvent
 	 * @return
-	 * @throws UndefinedTransformerMethodException 
+	 * @throws UndefinedTransformerMethodException
 	 */
-	private Feature getFeature(String classValue, MarkupImportState state) {
+	private Feature makeFeature(String classValue, MarkupImportState state, XMLEvent parentEvent) {
 		UUID uuid;
 		try {
+			Feature feature = state.getTransformer().getFeatureByKey(classValue);
+			if (feature != null) {
+				return feature;
+			}
 			uuid = state.getTransformer().getFeatureUuid(classValue);
-			if (uuid == null){
-				logger.info("Uuid is null for " + classValue);
+			if (uuid == null) {
+				// TODO
+				String message = "Uuid is not defined for %s";
+				message = String.format(message, classValue);
+				fireWarningEvent(message, parentEvent, 8);
 			}
 			String featureText = StringUtils.capitalize(classValue);
-			Feature feature = getFeature(state, uuid, featureText, featureText, classValue);
-			if (feature == null){
+
+			// TODO eFlora vocabulary
+			TermVocabulary<Feature> voc = null;
+			feature = getFeature(state, uuid, featureText, featureText, classValue, voc);
+			if (feature == null) {
 				throw new NullPointerException(classValue + " not recognized as a feature");
 			}
 			return feature;
 		} catch (Exception e) {
-			logger.warn("Could not create feature for " + classValue + ": " + e.getMessage()) ;
+			String message = "Could not create feature for %s: %s";
+			message = String.format(message, classValue, e.getMessage());
+			fireWarningEvent(message, parentEvent, 4);
 			return Feature.UNKNOWN();
 		}
 	}
 
-
 	/**
+	 * This comes from the old version, needs to be checked on need
+	 * 
 	 * @param state
-	 * @param element
-	 * @param taxon
-	 * @param unhandledTitleClassess 
 	 */
-	private void handleTitle(MarkupImportState state, Element element, Taxon taxon, Set<String> unhandledTitleClassess) {
-		// attributes
-		List<Attribute> attributes = element.getAttributes();
-		for (Attribute attribute : attributes){
-			if (! attribute.getName().equalsIgnoreCase("class") ){
-				if (! attribute.getName().equalsIgnoreCase("num")){
-					logger.warn("Title has unhandled attribute " +  attribute.getName());
-				}else{
-					//TODO num attribute in taxon
-				}
-			}else{
-				String classValue = attribute.getValue();
-				try {
-					Rank rank;
-					try {
-						rank = Rank.getRankByNameOrAbbreviation(classValue);
-					} catch (Exception e) {
-						//TODO nc
-						rank = Rank.getRankByEnglishName(classValue, NomenclaturalCode.ICBN, false);
-					}
-					taxon.getName().setRank(rank);
-					if (rank.equals(Rank.FAMILY()) || rank.equals(Rank.GENUS())){
-						handleGenus(element.getValue(), taxon.getName());
-					}else if (rank.equals(Rank.SUBGENUS())){
-						handleSubGenus(element.getValue(), taxon.getName());
-					}else if (rank.equals(Rank.SECTION_BOTANY())){
-						handleSection(element.getValue(), taxon.getName());
-					}else if (rank.equals(Rank.SPECIES())){
-						handleSpecies(element.getValue(), taxon.getName());
-					}else if (rank.equals(Rank.SUBSPECIES())){
-						handleSubSpecies(element.getValue(), taxon.getName());
-					}else if (rank.equals(Rank.VARIETY())){
-						handleVariety(element.getValue(), taxon.getName());
-					}else{
-						logger.warn("Unhandled rank: " + rank.getLabel());
-					}
-				} catch (UnknownCdmTypeException e) {
-					logger.warn("Unknown rank " + classValue);
-					unhandledTitleClassess.add(classValue);
-				}
-			}
+	private void doAllTheOldOtherStuff(MarkupImportState state) {
+		state.putTree(null, null);
+		if (unmatchedLeads == null) {
+			unmatchedLeads = UnmatchedLeads.NewInstance();
 		}
-		List<Element> elements = element.getChildren();
-		if (! elements.isEmpty()){
-			logger.warn("Title has unexpected children");
-		}
-		UUID uuidTitle = MarkupTransformer.uuidTitle;
-		ExtensionType titleExtension = this.getExtensionType(state, uuidTitle, "title", "title", "title");
-		taxon.addExtension(element.getTextNormalize(), titleExtension);
-		
+		state.setUnmatchedLeads(unmatchedLeads);
+
+		// TransactionStatus tx = startTransaction();
+		unmatchedLeads.saveToSession(getPolytomousKeyNodeService());
+
+		// TODO generally do not store the reference object in the config
+		Reference sourceReference = state.getConfig().getSourceReference();
+		getReferenceService().saveOrUpdate(sourceReference);
 	}
 
-
-	/**
-	 * @param value
-	 * @param taxonNameBase 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common
+	 * .IImportConfigurator)
 	 */
-	private void handleSubGenus(String value, TaxonNameBase taxonNameBase) {
-		String name = value.replace("Subgenus", "").trim();
-		((NonViralName)taxonNameBase).setInfraGenericEpithet(name);
+	protected boolean isIgnore(MarkupImportState state) {
+		return !state.getConfig().isDoTaxa();
 	}
-	
-	/**
-	 * @param value
-	 * @param taxonNameBase 
-	 */
-	private void handleSection(String value, TaxonNameBase taxonNameBase) {
-		String name = value.replace("Section", "").trim();
-		((NonViralName)taxonNameBase).setInfraGenericEpithet(name);
-	}
-	
-	/**
-	 * @param value
-	 * @param taxonNameBase 
-	 */
-	private void handleSpecies(String value, TaxonNameBase taxonNameBase) {
-		//do nothing
-	}
-	
-	/**
-	 * @param value
-	 * @param taxonNameBase 
-	 */
-	private void handleVariety(String value, TaxonNameBase taxonNameBase) {
-		//do nothing
-	}
-	
-	/**
-	 * @param value
-	 * @param taxonNameBase 
-	 */
-	private void handleSubSpecies(String value, TaxonNameBase taxonNameBase) {
-		//do nothing
-	}
-
-	
-	private Pattern rexGenusAuthor = Pattern.compile("(\\[|\\().*(\\]|\\))");
-	
-	/**
-	 * @param value
-	 * @param taxonNameBase 
-	 */
-	protected void handleGenus(String value, TaxonNameBase taxonName) {
-		Matcher matcher = rexGenusAuthor.matcher(value);
-		if (matcher.find()){
-			String author = matcher.group();
-//			String genus = value.replace(author, "");
-			author = author.substring(1, author.length() - 1);
-			Team team = Team.NewInstance();
-			team.setTitleCache(author, true);
-			Credit credit = Credit.NewInstance(team, null);
-			taxonName.addCredit(credit);
-//			NonViralName nvn = (NonViralName)taxonName;
-//			nvn.setCombinationAuthorTeam(team);
-//			nvn.setGenusOrUninomial(genus);
-		}else{
-			logger.info("No Author match for " + value);
-		}
-	}
-	
-
-	/**
-	 * @param taxon
-	 * @param lastTaxon
-	 */
-	private void handleTaxonRelation(MarkupImportState state, Taxon taxon, Taxon lastTaxon) {
-		
-		Classification tree = getTree(state);
-		if (lastTaxon == null){
-			tree.addChildTaxon(taxon, null, null, null);
-			return;
-		}
-		Rank thisRank = taxon.getName().getRank();
-		Rank lastRank = lastTaxon.getName().getRank();
-		if (lastTaxon.getTaxonNodes().size() > 0){
-			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
-			if (thisRank.isLower(lastRank )  ){
-				lastNode.addChildTaxon(taxon, null, null, null);
-				fillMissingEpithetsForTaxa(lastTaxon, taxon);
-			}else if (thisRank.equals(lastRank)){
-				TaxonNode parent = lastNode.getParent();
-				if (parent != null){
-					parent.addChildTaxon(taxon, null, null, null);
-					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
-				}else{
-					tree.addChildTaxon(taxon, null, null, null);
-				}
-			}else if (thisRank.isHigher(lastRank)){
-				handleTaxonRelation(state, taxon, lastNode.getParent().getTaxon());
-//				TaxonNode parentNode = handleTaxonRelation(state, taxon, lastNode.getParent().getTaxon());
-//				parentNode.addChildTaxon(taxon, null, null, null);
-			}
-		}else{
-			logger.warn("Last taxon has no node");
-		}
-	}
-
-
-
-	/**
-	 * @param state
-	 * @return 
-	 */
-	private Classification getTree(MarkupImportState state) {
-		Classification result = state.getTree(null);
-		if (result == null){
-			UUID uuid = state.getConfig().getClassificationUuid();
-			if (uuid == null){
-				logger.warn("No classification uuid is defined");
-				result = getNewClassification(state);
-			}else{
-				result = getClassificationService().find(uuid);
-				if (result == null){
-					result = getNewClassification(state);
-					result.setUuid(uuid);
-				}
-			}
-			state.putTree(null, result);
-		}
-		return result;
-	}
-
-
-	private Classification getNewClassification(MarkupImportState state) {
-		Classification result;
-		result = Classification.NewInstance(state.getConfig().getClassificationTitle());
-		state.putTree(null, result);
-		return result;
-	}
-
-
-	/**
-	 * @param state 
-	 * @param taxon
-	 * @param value
-	 * @param feature
-	 * @return 
-	 */
-	private TextData addDescriptionElement(MarkupImportState state, Taxon taxon, String value, Feature feature, String references) {
-		TextData textData = TextData.NewInstance(feature);
-		Language textLanguage = getDefaultLanguage(state);
-		textData.putText(textLanguage, value);
-		TaxonDescription description = getDescription(taxon);
-		description.addElement(textData);
-		if (references != null){
-			makeOriginalSourceReferences(textData, ";", references);
-		}
-		return textData;
-	}
-
-	private Language getDefaultLanguage(MarkupImportState state) {
-		UUID defaultLanguageUuid = state.getConfig().getDefaultLanguageUuid();
-		if (defaultLanguageUuid != null){
-			Language result = state.getDefaultLanguage();
-			if (result == null || ! result.getUuid().equals(defaultLanguageUuid)){
-				result = (Language)getTermService().find(defaultLanguageUuid);
-				state.setDefaultLanguage(result);
-				if (result == null){
-					logger.warn("Default language for " + defaultLanguageUuid +  " does not exist.");
-				}
-			}
-			return result;
-		}else{
-			return Language.DEFAULT();
-		}
-	}
-
-
-	/**
-	 * @param elNomenclature
-	 */
-	private void verifyNoAttribute(Element element) {
-		List<Attribute> attributes = element.getAttributes();
-		if (! attributes.isEmpty()){
-			logger.warn(element.getName() + " has unhandled attributes: " + attributes.get(0).getValue() + "..." );
-		}
-	}
-	
-	/**
-	 * @param elNomenclature
-	 */
-	protected void verifyNoChildren(Element element) {
-		verifyNoChildren(element, false);
-	}
-	
-	/**
-	 * @param elNomenclature
-	 */
-	private void verifyNoChildren(Element element, boolean ignoreLineBreak) {
-		List<Element> children = element.getChildren();
-		if (! children.isEmpty()){
-			if (ignoreLineBreak == true){
-				for (Element child : children){
-					if (! child.getName().equalsIgnoreCase("BR")){
-						logger.warn(element.getName() + " has unhandled child: " + child.getName());
-					}
-				}
-			}else{
-				logger.warn(element.getName() + " has unhandled children");
-			}
-		}
-	}
-	
-	
-
-	/**
-	 * Parses the nomenclatural status from the references titleCache. If a nomenclatural status
-	 * exists it is added to the name and the nom. status part of the references title cache is 
-	 * removed. Requires protected title cache.
-	 * @param ref
-	 * @param nonViralName
-	 */
-	protected void parseNomStatus(Reference ref, NonViralName nonViralName) {
-		String titleToParse = ref.getTitleCache();
-		
-		String noStatusTitle = parser.parseNomStatus(titleToParse, nonViralName);
-		if (! noStatusTitle.equals(titleToParse)){
-			ref.setTitleCache(noStatusTitle, true);
-		}
-	}
-
-	
-	/**
-	 * Extracts the date published part and returns micro reference
-	 * @param ref
-	 * @return
-	 */
-	private String parseReferenceYearAndDetail(Reference ref){
-		String detailResult = null;
-		String titleToParse = ref.getTitleCache();
-		titleToParse = removeStartingSymbols(titleToParse, ref);
-		String reReference = "^\\.{1,}";
-//		String reYear = "\\([1-2]{1}[0-9]{3}\\)";
-		String oneMonth = "(Feb.|Dec.|March|June|July)";
-		String reYear = oneMonth + "?\\s?[1-2]\\s?[0-9]\\s?[0-9]\\s?[0-9]\\s?";
-		String secondYear = "(\\s?[1-2]\\s?[0-9])?\\s?[0-9]\\s?[0-9]\\s?";
-		
-		String reYearPeriod = "\\(" + reYear + "(\\-" + secondYear + ")?\\)";
-		String reDetail = "\\.{1,10}$";
-		
-		//pattern for the whole string
-		Pattern patReference = Pattern.compile(/*reReference +*/ reYearPeriod /*+ reDetail */);
-		Matcher matcher = patReference.matcher(titleToParse);
-		if (matcher.find()){
-			int start = matcher.start();
-			int end = matcher.end();
-			
-			//title and other information precedes the year part
-			String title = titleToParse.substring(0, start).trim();
-			//detail follows the year part
-			String detail = titleToParse.substring(end).trim();
-			
-			//time period
-			String strPeriod = matcher.group().trim();
-			strPeriod = strPeriod.substring(1, strPeriod.length()-1);   //remove brackets
-			Pattern patStartMonth = Pattern.compile("^" + oneMonth);
-			matcher = patStartMonth.matcher(strPeriod);
-			strPeriod = strPeriod.replace(" ", "");
-			Integer startMonth = null;
-			if (matcher.find()){
-				end = matcher.end();
-				strPeriod = strPeriod.substring(0, end) + " " + strPeriod.substring(end);
-				startMonth = getMonth(strPeriod.substring(0, end));
-			}
-			
-			TimePeriod datePublished = TimePeriod.parseString(strPeriod);
-			if (startMonth != null){
-				datePublished.setStartMonth(startMonth);
-			}
-			ref.setDatePublished(datePublished);
-			ref.setTitle(title);
-			detailResult = CdmUtils.removeTrailingDot(detail);
-			if (detailResult.endsWith(".") || detailResult.endsWith(";") || detailResult.endsWith(",")  ){
-				detailResult = detailResult.substring(0, detailResult.length() -1);
-			}
-			ref.setProtectedTitleCache(false);
-		}else{
-			logger.warn("Could not parse reference: " +  titleToParse);
-		}
-		return detailResult;
-		
-	}
-
-	
-	
-	private Integer getMonth(String month) {
-		if (month.startsWith("Jan")){
-			return 1;
-		}else if (month.startsWith("Feb")){
-			return 2;
-		}else if (month.startsWith("Mar")){
-			return 3;
-		}else if (month.startsWith("Apr")){
-			return 4;
-		}else if (month.startsWith("May")){
-			return 5;
-		}else if (month.startsWith("Jun")){
-			return 6;
-		}else if (month.startsWith("Jul")){
-			return 7;
-		}else if (month.startsWith("Aug")){
-			return 8;
-		}else if (month.startsWith("Sep")){
-			return 9;
-		}else if (month.startsWith("Oct")){
-			return 10;
-		}else if (month.startsWith("Nov")){
-			return 11;
-		}else if (month.startsWith("Dec")){
-			return 12;
-		}else{
-			logger.warn("Month not yet supported: " + month);
-			return null;
-		}
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	protected boolean isIgnore(MarkupImportState state){
-		return ! state.getConfig().isDoTaxa();
-	}
-
-
-
 
 }

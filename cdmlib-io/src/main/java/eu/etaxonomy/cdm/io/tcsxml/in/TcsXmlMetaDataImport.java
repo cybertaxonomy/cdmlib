@@ -50,7 +50,7 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<Tcs
 
 	
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){
+	public void doInvoke(TcsXmlImportState state){
 		logger.info("start make MetaData ...");
 		boolean success = true;
 		String childName;
@@ -98,7 +98,10 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<Tcs
 //		}
 	
 		logger.info("end make MetaData ...");
-		return success;
+		if (!success){
+			state.setUnsuccessfull();
+	}
+		return;
 	}
 	
 	

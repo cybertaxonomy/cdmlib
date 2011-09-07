@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -44,8 +43,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	/* (non-Javadoc)
 	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
 	 */
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
@@ -114,6 +112,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
 					registerObservers(config, cdmIo);
+					state.setCurrentIO(cdmIo);
 					result &= cdmIo.check(state);
 					unRegisterObservers(config, cdmIo);
 				}else{
@@ -167,16 +166,17 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		ImportStateBase state = config.getNewState();
 		state.initialize(config);
 
-		
+		state.setSuccess(true);
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
 				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
-//					result &= cdmIo.invoke(config, stores);
+					registerObservers(config, cdmIo);
 					state.setCurrentIO(cdmIo);
 					result &= cdmIo.invoke(state);
+					unRegisterObservers(config, cdmIo);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;

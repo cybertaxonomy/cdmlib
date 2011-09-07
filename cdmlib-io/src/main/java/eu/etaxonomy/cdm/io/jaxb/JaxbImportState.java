@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class JaxbImportState<CONFIG extends JaxbImportConfigurator> extends ImportStateBase<CONFIG, CdmImportBase>{
+public class JaxbImportState extends ImportStateBase<JaxbImportConfigurator, CdmImportBase<JaxbImportConfigurator, JaxbImportState>>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbImportState.class);
 	
@@ -34,7 +34,7 @@ public class JaxbImportState<CONFIG extends JaxbImportConfigurator> extends Impo
 //	}
 
 	
-	public JaxbImportState(CONFIG config) {
+	public JaxbImportState(JaxbImportConfigurator config) {
 		super(config);
 	}
 

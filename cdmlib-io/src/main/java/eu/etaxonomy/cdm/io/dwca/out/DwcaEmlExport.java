@@ -63,7 +63,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, null);
@@ -73,7 +73,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 		
 		DwcaEmlRecord emlRecord = config.getEmlRecord();
 		if (emlRecord == null){
-			return true;
+			return;
 		}
 		
 		XMLStreamWriter writer = null;
@@ -128,7 +128,7 @@ public class DwcaEmlExport extends DwcaExportBase {
 			closeWriter(writer, state);
 		}
 		
-		return true;
+		return;
 	}
 
 

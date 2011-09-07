@@ -17,7 +17,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -86,7 +85,7 @@ public class DbImportMediaMapper extends DbImportMultiAttributeMapperBase<Descri
 		}
 		Media media = Media.NewInstance(uri1, size, mimeType, suffix);
 		if (media != null){
-			MediaRepresentation secondRepresentation = MediaRepresentation.NewInstance(mimeType, suffix, uri2, size);
+			MediaRepresentation secondRepresentation = MediaRepresentation.NewInstance(mimeType, suffix, uri2, size, null);
 			media.addRepresentation(secondRepresentation);
 		}else{
 			media = Media.NewInstance(uri2, size, mimeType, suffix);

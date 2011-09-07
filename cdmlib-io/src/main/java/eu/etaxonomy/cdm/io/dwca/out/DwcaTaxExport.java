@@ -68,7 +68,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 		
@@ -120,7 +120,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 			closeWriter(writer, state);
 		}
 		commitTransaction(txStatus);
-		return true;
+		return;
 		
 	}
 
@@ -203,7 +203,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 		//originalNameUsage
 		// ??? - is not a name usage (concept)
 		if (basionym != null){
-			record.setOriginalNameUsageId(basionym.getUuid());
+			//FIXME needs to be a coreID otherwise use string only
+//			record.setOriginalNameUsageId(basionym.getUuid());
+			record.setOriginalNameUsageId(null);
 			record.setOriginalNameUsage(basionym.getTitleCache());
 		}
 		

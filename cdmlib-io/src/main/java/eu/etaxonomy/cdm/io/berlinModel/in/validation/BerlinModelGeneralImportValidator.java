@@ -59,10 +59,9 @@ public class BerlinModelGeneralImportValidator extends BerlinModelImportBase imp
 		return result;
 	}
 	
-	protected boolean doInvoke(BerlinModelImportState state){
-		boolean success = true;
+	protected void doInvoke(BerlinModelImportState state){
 		//do nothing
-		return success;
+		return;
 		
 	}
 	

@@ -8,9 +8,10 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/> 
 
+	<!-- includes external services beans e.g. my/cdm/ext/geo/IGeoServiceAreaMapping  -->
+	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+
 	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
 	<context:component-scan base-package="eu/etaxonomy/cdm/io"/>
 
-	<!-- eu/etaxonomy/cdm/api/service/UserService -->
-     
 </beans>

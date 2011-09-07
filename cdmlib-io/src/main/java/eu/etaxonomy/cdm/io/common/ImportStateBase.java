@@ -51,7 +51,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	private Map<Object,Classification> treeMap = new HashMap<Object,Classification>();
 
-	private Map<Reference,UUID> treeUuidMap = new HashMap<Reference,UUID>();
+	private Map<Reference<?>,UUID> treeUuidMap = new HashMap<Reference<?>,UUID>();
 
 	private Map<String,UUID> classificationKeyUuidMap = new HashMap<String,UUID>();
 	
@@ -69,8 +69,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	
 	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
-	
-
 	
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
@@ -285,6 +283,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void setCheck(boolean isCheck) {
 		this.isCheck = isCheck;
 	}
+
 
 	
 }

@@ -61,7 +61,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	//@SuppressWarnings("unchecked")
 	@Override
-	public boolean doInvoke(TcsXmlImportState state){
+	public void doInvoke(TcsXmlImportState state){
 		
 		logger.info("start make TaxonNames ...");
 		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
@@ -185,7 +185,11 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		getNameService().save((Collection)col);
 
 		logger.info("end makeTaxonNames ...");
-		return success.getValue();
+		if (!success.getValue()){
+			state.setUnsuccessfull();
+		}
+
+		return;
 
 	}
 	

@@ -22,30 +22,17 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelOccurrenceImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelOccurrenceSourceImportValidator;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -92,16 +79,16 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	
 
 	@Override
-	protected boolean doInvoke(BerlinModelImportState state) {
+	protected void doInvoke(BerlinModelImportState state) {
 		try {
 			sourceNumberRefIdMap = makeSourceNameReferenceIdMap(state);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		boolean result = super.doInvoke(state);
+		super.doInvoke(state);
 		sourceNumberRefIdMap = null;
-		return result;
+		return;
 	}
 
 	/* (non-Javadoc)

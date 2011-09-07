@@ -12,10 +12,10 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -27,11 +27,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 08.04.2011
  * @version 1.0
  */
-public class SpecimenRow {
+public class SpecimenRow extends ExcelRowBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenRow.class);
 
-	private UUID uuid = null; 
 	private String basisOfRecord;
 
 	private String country;
@@ -49,8 +48,6 @@ public class SpecimenRow {
 	private String collectorsNumber;
 
 	private String sex;
-	private String ecology;
-	private String plantDescription;
 
 	private String accessionNumber;
 	private String barcode;
@@ -70,16 +67,10 @@ public class SpecimenRow {
 	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
 	private TreeMap<Integer, DeterminationLight> determinations = new TreeMap<Integer, DeterminationLight>();
 	private List<PostfixTerm> levels  = new ArrayList<PostfixTerm>(); 
-	private List<PostfixTerm> extensions  = new ArrayList<PostfixTerm>(); 
 	
 
 	
 	public SpecimenRow() {
-	}
-	
-	protected class PostfixTerm{
-		String term;
-		String postfix;
 	}
 	
 
@@ -102,17 +93,6 @@ public class SpecimenRow {
 	
 // **************************** GETTER / SETTER *********************************/	
 	
-
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
-
-
-	public UUID getUuid() {
-		return uuid;
-	}
-
-
 	public void setBasisOfRecord(String basisOfRecord) {
 		this.basisOfRecord = basisOfRecord;
 	}
@@ -206,39 +186,6 @@ public class SpecimenRow {
 	 */
 	public void setAltitude(String altitude) {
 		this.altitude = altitude;
-	}
-
-
-
-	/**
-	 * @return the ecology
-	 */
-	public String getEcology() {
-		return ecology;
-	}
-
-
-	/**
-	 * @param ecology the ecology to set
-	 */
-	public void setEcology(String ecology) {
-		this.ecology = ecology;
-	}
-
-
-	/**
-	 * @return the plantDescription
-	 */
-	public String getPlantDescription() {
-		return plantDescription;
-	}
-
-
-	/**
-	 * @param plantDescription the plantDescription to set
-	 */
-	public void setPlantDescription(String plantDescription) {
-		this.plantDescription = plantDescription;
 	}
 
 
@@ -558,19 +505,6 @@ public class SpecimenRow {
 		return levels;
 	}
 	
-
-	public void addExtension(String levelPostfix, String value) {
-		PostfixTerm term = new PostfixTerm();
-		term.term = value;
-		term.postfix = levelPostfix;
-		this.extensions.add(term);
-	}
-	
-	public List<PostfixTerm> getExtensions(){
-		return extensions;
-	}
-
-
 	public void setAltitudeMax(String altitudeMax) {
 		this.altitudeMax = altitudeMax;
 	}

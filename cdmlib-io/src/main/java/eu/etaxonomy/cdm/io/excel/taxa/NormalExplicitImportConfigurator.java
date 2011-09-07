@@ -37,8 +37,8 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	};
 	
 	public static NormalExplicitImportConfigurator NewInstance(URI uri, ICdmDataSource destination, 
-						NomenclaturalCode nomenclaturalCode){
-		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode);
+						NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){
+		return new NormalExplicitImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
 	
 	
@@ -46,11 +46,14 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	 * @param url
 	 * @param destination
 	 */
-	private NormalExplicitImportConfigurator(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode) {
+	private NormalExplicitImportConfigurator(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
 		super(uri, destination);
+		if (dbSchemaValidation == null){
+			dbSchemaValidation = DbSchemaValidation.CREATE;
+		}
 		setSource(uri);
 		setDestination(destination);
-		setDbSchemaValidation(DbSchemaValidation.CREATE);
+		setDbSchemaValidation(dbSchemaValidation);
 		setNomenclaturalCode(nomenclaturalCode);
 	}
 	

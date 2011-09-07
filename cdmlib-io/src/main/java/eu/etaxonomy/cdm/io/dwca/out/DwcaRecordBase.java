@@ -204,6 +204,9 @@ public abstract class DwcaRecordBase {
 		if (StringUtils.isBlank(defaultValue)){
 			String strToPrint = addSeparator ? config.getFieldsTerminatedBy() : "";
 			if (StringUtils.isNotBlank(value)){
+				//Replace quotes by double quotes
+				value = value.replace("\"", "\"\"");
+				
 				value = value.replace(config.getLinesTerminatedBy(), "\\r");
 				
 				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices

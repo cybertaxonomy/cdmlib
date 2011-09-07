@@ -12,6 +12,8 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/> 
 
+	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
     
     <bean id="hibernateProperties" 

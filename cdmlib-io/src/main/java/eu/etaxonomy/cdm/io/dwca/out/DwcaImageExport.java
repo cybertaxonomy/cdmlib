@@ -59,7 +59,7 @@ public class DwcaImageExport extends DwcaExportBase {
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(DwcaTaxExportState state){
+	protected void doInvoke(DwcaTaxExportState state){
 		DwcaTaxExportConfigurator config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
 
@@ -109,7 +109,7 @@ public class DwcaImageExport extends DwcaExportBase {
 		}
 		
 		commitTransaction(txStatus);
-		return true;
+		return;
 	}
 	
 

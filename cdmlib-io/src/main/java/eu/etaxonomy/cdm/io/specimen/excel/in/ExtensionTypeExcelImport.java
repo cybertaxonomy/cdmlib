@@ -45,8 +45,7 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 	}
 	
 	@Override
-	protected boolean analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
-		boolean success = true;
+	protected void analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
     	Set<String> keys = record.keySet();
     	
     	NamedAreaLevellRow row = new NamedAreaLevellRow();
@@ -87,16 +86,16 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 			} else if(key.equalsIgnoreCase(POSTFIX_COLUMN)) {
 				row.setPostfix(value);
 			}else {
-				success = false;
+				state.setUnsuccessfull();
 				logger.error("Unexpected column header " + key);
 			}
     	}
-    	return success;
+    	return;
 	}
 
 
 	@Override
-	protected boolean firstPass(SpecimenCdmExcelImportState state) {
+	protected void firstPass(SpecimenCdmExcelImportState state) {
 		NamedAreaLevellRow row = state.getNamedAreaLevelRow();
 		
 		//level
@@ -113,15 +112,15 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 		
 		//save
 		getTermService().save(term);
-		return true;
+		return;
 	}
 
 
 
 	@Override
-	protected boolean secondPass(SpecimenCdmExcelImportState state) {
+	protected void secondPass(SpecimenCdmExcelImportState state) {
 		//no second path defined yet
-		return true;
+		return;
 	}
 
 	/* (non-Javadoc)

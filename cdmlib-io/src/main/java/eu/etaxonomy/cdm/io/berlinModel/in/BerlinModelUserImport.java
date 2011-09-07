@@ -55,8 +55,8 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 		return validator.validate(state);
 	}
 	
-	protected boolean doInvoke(BerlinModelImportState state){
-		
+	protected void doInvoke(BerlinModelImportState state){
+		boolean success = true;
 		MapWrapper<User> userMap = (MapWrapper<User>)state.getStore(ICdmIO.USER_STORE);
 		
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -65,9 +65,6 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 		String cdmAttrName;
 
 		logger.info("start make "+pluralString+" ...");
-		boolean success = true ;
-		
-		
 		
 		//get data from database
 		String strQuery = 
@@ -112,19 +109,24 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 				}catch(Exception ex){
 					logger.error(ex.getMessage());
 					ex.printStackTrace();
+					state.setUnsuccessfull();
 					success = false;
 				}
 			} //while rs.hasNext()
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
-			return false;
+			state.setUnsuccessfull();
+			return;
 		}
 			
 		logger.info("save " + i + " "+pluralString + " ...");
 		getUserService().save(userMap.objects());
 
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
-		return success;
+		if (!success){
+			state.setUnsuccessfull();
+	}
+		return;
 	}
 	
 	

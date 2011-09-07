@@ -7,7 +7,7 @@
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
     <version>3.0.7-SNAPSHOT</version>
-	<relativePath>pom.xml</relativePath>
+	<relativePath>../pom.xml</relativePath>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
@@ -45,6 +45,10 @@
    	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-ext</artifactId>
   	</dependency>
   	<dependency>
         <groupId>org.unitils</groupId>

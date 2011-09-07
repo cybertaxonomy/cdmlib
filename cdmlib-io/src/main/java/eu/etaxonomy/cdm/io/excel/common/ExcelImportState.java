@@ -19,11 +19,12 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase> extends ImportStateBase<CONFIG, ExcelImporterBase>{
+public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase> extends ImportStateBase<CONFIG, ExcelImporterBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
 
 	private Integer currentLine;
+	private ROW currentRow;
 
 	public Integer getCurrentLine() {
 		return currentLine;
@@ -43,5 +44,19 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase> extend
 	public ExcelImportState(CONFIG config) {
 		super(config);
 	}
+
+
+	/**
+	 * The data holder class in which results for the current record are stored.
+	 * @return
+	 */
+	public ROW getCurrentRow() {
+		return currentRow;
+	}
+	
+	public void setCurrentRow(ROW currentRow) {
+		this.currentRow = currentRow;
+	}
+
 
 }

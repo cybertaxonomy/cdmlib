@@ -56,9 +56,8 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
-	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
-	protected abstract boolean doInvoke(EndnoteImportState state);
+	protected abstract void doInvoke(EndnoteImportState state);
 
 	
 //	/* (non-Javadoc)
@@ -195,7 +194,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 		String linkType = element.getAttributeValue("linkType");
 		String ref = element.getAttributeValue("ref");
 		if(ref == null && linkType == null){
-			result = (T) refFactory.newReference(refType);
+			result = (T) ReferenceFactory.newReference(refType);
 				
 			if (result != null){
 				String title = element.getTextNormalize();
@@ -235,7 +234,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 			if (elAccordingToDetailed != null){
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
-				result = refFactory.newGeneric();
+				result = ReferenceFactory.newGeneric();
 				String title = elSimple.getTextNormalize();
 				result.setTitleCache(title, true);
 			}

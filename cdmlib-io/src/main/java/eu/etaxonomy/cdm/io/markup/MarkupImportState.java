@@ -10,18 +10,23 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-
-import javax.xml.stream.XMLEventReader;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
@@ -39,8 +44,29 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private Set<PolytomousKeyNode> polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
 	
+	private PolytomousKey currentKey;
+	
 	private Language defaultLanguage;
 	
+	private Taxon currentTaxon;
+	private String currentTaxonNum;
+	
+	private boolean isCitation = false;
+	private boolean isNameType = false;
+	private boolean isProParte = false;
+	
+	private String baseMediaUrl = null;
+	
+	private Map<String, FootnoteDataHolder> footnoteRegister = new HashMap<String, FootnoteDataHolder>();
+	
+	private Map<String, Media> figureRegister = new HashMap<String, Media>();
+	
+	private Map<String, Set<AnnotatableEntity>> footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+	
+	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
+	
+		
 //**************************** CONSTRUCTOR ******************************************/
 	
 	public MarkupImportState(MarkupImportConfigurator config) {
@@ -88,5 +114,131 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		this.defaultLanguage = defaultLanguage;
 	}
 
+	
+	public void setCurrentTaxon(Taxon currentTaxon) {
+		this.currentTaxon = currentTaxon;
+	}
+
+	public Taxon getCurrentTaxon() {
+		return currentTaxon;
+	}
+	
+	public void setCurrentTaxonNum(String currentTaxonNum) {
+		this.currentTaxonNum = currentTaxonNum;
+	}
+
+	public String getCurrentTaxonNum() {
+		return currentTaxonNum;
+	}
+
+
+
+	/**
+	 * Is the import currently handling a citation?
+	 * @return
+	 */
+	public boolean isCitation() {
+		return isCitation;
+	}
+	
+	public void setCitation(boolean isCitation) {
+		this.isCitation = isCitation;
+	}
+
+
+	public boolean isNameType() {
+		return isNameType;
+	}
+	
+	public void setNameType(boolean isNameType) {
+		this.isNameType = isNameType;
+	}
+
+	public void setProParte(boolean isProParte) {
+		this.isProParte = isProParte;
+	}
+
+	public boolean isProParte() {
+		return isProParte;
+	}
+
+	public void setBaseMediaUrl(String baseMediaUrl) {
+		this.baseMediaUrl = baseMediaUrl;
+	}
+
+	public String getBaseMediaUrl() {
+		return baseMediaUrl;
+	}
+
+	
+	
+	public void registerFootnote(FootnoteDataHolder footnote) {
+		footnoteRegister.put(footnote.id, footnote);
+	}
+
+	public FootnoteDataHolder getFootnote(String key) {
+		return footnoteRegister.get(key);
+	}
+	
+	
+	public void registerFigure(String key, Media figure) {
+		figureRegister.put(key, figure);
+	}
+
+	public Media getFigure(String key) {
+		return figureRegister.get(key);
+	}
+
+	public Set<AnnotatableEntity> getFootnoteDemands(String footnoteId){
+		return footnoteRefRegister.get(footnoteId);
+	}
+	
+	public void putFootnoteDemands(String footnoteId, Set<AnnotatableEntity> demands){
+		footnoteRefRegister.put(footnoteId, demands);
+	}
+	
+
+	public Set<AnnotatableEntity> getFigureDemands(String figureId){
+		return figureRefRegister.get(figureId);
+	}
+	
+	public void putFigureDemands(String figureId, Set<AnnotatableEntity> demands){
+		figureRefRegister.put(figureId, demands);
+	}
+
+	/**
+	 * @param key
+	 */
+	public void setCurrentKey(PolytomousKey key) {
+		this.currentKey = key;
+	}
+	
+	/**
+	 * @return the currentKey
+	 */
+	public PolytomousKey getCurrentKey() {
+		return currentKey;
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 * @see java.util.Map#get(java.lang.Object)
+	 */
+	public UUID getAreaUuid(Object key) {
+		return areaMap.get(key);
+	}
+
+	/**
+	 * @param key
+	 * @param value
+	 * @return
+	 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
+	 */
+	public UUID putAreaUuid(String key, UUID value) {
+		return areaMap.put(key, value);
+	}
+	
+	
 
 }

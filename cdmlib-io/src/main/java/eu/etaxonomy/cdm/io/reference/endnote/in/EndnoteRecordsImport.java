@@ -82,7 +82,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 	}
 		
 	@Override
-	public boolean doInvoke(EndnoteImportState state){
+	public void doInvoke(EndnoteImportState state){
 		logger.info("start make XML ...");
 		boolean success = true;
 		String childName;
@@ -2099,7 +2099,10 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		logger.info(i + " Records handled. Saving ...");
 		referenceService.save(referenceMap.objects());
 		logger.info("end make Records ...");
-		return success;
+		if (!success){
+			state.setUnsuccessfull();
+		}
+		return;
 	}	
 			
 	/* (non-Javadoc)
