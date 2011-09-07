@@ -1,3 +1,8 @@
+		----
+		Developing with the CDM Library
+		----
+
+
 Developing with the CDM Library
 
 	<Table of Contents>
@@ -5,11 +10,13 @@ Developing with the CDM Library
 %{toc|section=0|fromDepth=2|toDepth=3}
 	
 
-  <<Note:>> If you are not familiar with eclipse, maven or subversion please read the {{{http://dev.e-taxonomy.eu/trac/wiki/DeveloperApplications}developer applications document}} for brief introductions. Please see {{{./troubleshooting.html}Troubleshooting}} in case you run into problems or contact {{{mailto:editsupport@bgbm.org}editsupport@bgbm.org}}.
+  <<Note:>> The CDM Library uses Apache Maven for dependency management. If you are not familiar with that please take a look at the {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}developer resources on the wiki}}. In case you run into problems, you might want to check {{{./troubleshooting.html}Troubleshooting}} or contact {{{mailto:editsupport@bgbm.org}editsupport@bgbm.org}} directly.
 
 * Integrating the CDM Library into a maven project
 
-  To integrate the CDM Library into your personal maven project pelase add our maven repository to your POM: {{http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/}}. To use the <cdmlib-service> package add the following dependency to you POM (adapt the right version number !!):
+	To integrate the CDM Library into your personal maven project pelase add our maven repository to your POM: 
+	{{http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/}}. To use the <cdmlib-service> package add the following 
+	dependency to you POM (adapt the right version number !!):
 
 ---
 <dependency>
@@ -22,7 +29,10 @@ Developing with the CDM Library
 
 * Spring applications with the CDM Library
 
-  In your own applicationContext.xml you can simply import the cdm service spring beans from the library. In addition it also needs a datasource bean and a hibernateProperties bean specific for that datasource. The CDM Library comes with an embedded hypersonic database that is super easy to use. All you need to do is to import that hsql specific spring configuration like this:
+	In your own applicationContext.xml you can simply import the cdm service spring beans from the library. 
+	In addition it also needs a datasource bean and a hibernateProperties bean specific for that datasource. 
+	The CDM Library comes with an embedded hypersonic database that is super easy to use. All you need to do 
+	is to import that hsql specific spring configuration like this:
 
 ---
 applicationContext.xml
@@ -39,7 +49,8 @@ applicationContext.xml
 </beans>
 ---
 
-  In case you want to define the datasource within your own applicationContext you can surely do so. For a typical mysql database it looks like this: 
+	In case you want to define the datasource within your own applicationContext you can surely do so. 
+	For a typical mysql database it looks like this: 
 
 ---
 applicationContext.xml
@@ -78,70 +89,70 @@ applicationContext.xml
 ---
 
 
-* Developing the CDM Library
+* Developing the CDM Library with Eclipse
 
-  To use the entire CDM Library with Eclipse, you need some plugins and to follow this installation guide:
+	To use the entire CDM Library with {{{http://www.eclipse.org/} Eclipse}}, you must meet the following prerequisites:
 
-    * install maven 2.0.x commandline tools locally (http://maven.apache.org/download.html). Follow the instruction to install maven on your local machine.
+    * Maven 2.2.1 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}}} for installation instructions.
 
-    * install subclipse 1.6.x in eclipse if not yet installed (Update Site: http://subclipse.tigris.org/update_1.6.x). 
+    * Subclipse 1.6.x (for convenient subversion access from Eclipse). {{{http://subclipse.tigris.org/}}} 
 
-    * make sure Java JDK >= 1.6 is installed (JRE is not enough) and JAVA_HOME is set to JDK path
+    * Java JDK >= 1.6 (JRE is not enough) and JAVA_HOME is set to JDK path
 
-    * checkout cdmlib and create eclipse artifacts (using e.g. tortoiseSVN):
+	[]
+	
+** Preparing the CDM Library
+	
+	Start by checking out the source code from the subversion repository:
 
 ---
 $ svn co http://dev.e-taxonomy.eu/svn/trunk/cdmlib/ .
 ---
 
-    * make sure maven has run at least one time (to create the .m2 folder). If unsure how to do this, run <<<mvn install>>> in the new checked out folder ../cdmlib/cmlib-commons
-    
-	* Set in Eclipse preferences (not project properties) M2_REPO java class variable (menue: java-buildPath-Classpath), pointing to your local repository. 
-    	
-		* In OSX for example    /Users/USERNAME/.m2/repository 
-    
-		* In WinXP for example  C:\Documents and Settings\USERNAME\.m2\repository
-		
-    * setup new eclipse workspace (where ever you want but using the cdmlib folder may be comfortable
-    
-	* run the following commands in your cdmlib folder
+	Change into the cdmlib directory, compile and install the cdmlib packages in your local repository. This will also download the dependencies into your local repository.
 
 ---
+$ cd cdmlib
 $ mvn install 
 ---
+
+	Let maven create project dependencies and Eclipse metafiles (.project s.o.)
  
-	  to compile and install the cdmlib packages in your local repository.
-      
 --- 
 $ mvn eclipse:eclipse 
 ---
  
-      to let maven create project dependencies and Eclipse metafiles (.project s.o.)
+** Configuring Eclipse
+	
+	* Setup a new Eclipse workspace (where ever you want but using the cdmlib folder may be comfortable)
 
-    * create the java projects: 
+	* In Eclipse preferences (not project properties) set a java class variable called <<<M2_REPO>>>, pointing to your local repository. 
 
-       * In Eclipse open the Import Wizard: File->Import->General->Existing Projects into Workspace. 
+		* Eclipse Preferences: Java -> Build Path -> Classpath
+		
+		* Click <<<New>>>. In the upcoming dialog, enter <<<M2_REPO>>> as the variables name and browse the filesystem for the location of the maven repository
+		
+			* In OSX for example    <<</Users/USERNAME/.m2/repository>>>
+			
+			* In WinXP for example  <<<C:\Documents and Settings\USERNAME\.m2\repository>>>
 
-       * Choose "Select root directory". Click "Browse" and navigate to your cdmlib folder (should open by default) and confirm the file dialog.
+	* Import the cdmlib projects: 
 
-       * The projects should now show in the Import Wizard window. Select the projects you want wo work on and hit OK.
+		* In Eclipse open the Import Wizard: File -> Import -> General -> Existing Projects into Workspace
 
-    * Install AspectJ compiler {{http://www.eclipse.org/aspectj/downloads.php}} , make sure you add the \<aspectj install dir\>/lib/aspectjrt.jar to your class path and <aspectj install dir>/lib/ to your path
+		* Choose "Select root directory". Click "Browse" and navigate to your cdmlib folder and confirm the file dialog.
 
-    * Install AspectJ Development Tools (AJDT) - Plugin (for eclipse) (Update-Site:{{http://download.eclipse.org/tools/ajdt/xx/dev/update}}) where xx depends on your eclipse installation: xx=35 for eclipse 3.5 and xx=36 for eclipse 3.6
-
-    * Referesh cdmlib-model project within eclipse 
-
-    * Convert the cdmlib-model to AspectJ (right mouse click on project -> AspectJ Tools -> ...).
-!! Each time when running mvn eclipse:eclipse on cdmlib-model (or on cdmlib parent folder) you have to first remove and then add AspectJ anew!! 
-
-    * It is also recommended to use the EclipseCodeTemplate
+		* The projects should now show in the Import Wizard window. Select the projects you want wo work on (usually all) and hit OK.
 
 
 * Where do I go from here?
 
-	Now that you have integrated or installed the CDM Library you are probably looking for documentation on how to develop with it. A good start is to read the {{{./reference.html}reference documentation}} of the CDM Library. The {{{./cdm-uml}UML diagrams}} are also a good starting point to get familiar with the structure of the Common Data Model itself or consult the {{{./apidocs}javadoc}} for the API documentation.
+	Now that you have integrated or installed the CDM Library you are probably looking for documentation 
+	on how to develop with it. A good start is to read the {{{./reference.html}reference documentation}} 
+	of the CDM Library. The {{{./cdm-uml}UML diagrams}} are also a good starting point to get familiar
+	with the structure of the Common Data Model itself or consult the {{{./apidocs}javadoc}} for the API documentation.
+	Please also have a look at the {{{http://dev.e-taxonomy.eu/trac/wiki/GeneralDev} general information}} and 
+	{{{http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev} further information about coding with the CDM Library}} in the development wiki.
 	
-	If you want to start coding immediately, we prepared some {{{https://dev.e-taxonomy.eu/trac/wiki/CDMLibraryExamples}code examples}} in the developers wiki.
 
 
