@@ -29,7 +29,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -186,30 +188,6 @@ public class TaxonTest extends EntityTestBase {
 		rootT.removeDescription(desc); //test if reflection method in removeDescription() works
 		assertFalse("The description has not properly been removed from the taxon", rootT.getDescriptions().contains(desc));
 		assertEquals("The taxon has not properly been removed from the description", null, desc.getTaxon());
-	}
-	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#NewInstance(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference)}.
-	 */
-	@Test
-	public void testNewInstance() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon()}.
-	 */
-	@Test
-	public void testTaxon() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.Reference)}.
-	 */
-	@Test
-	public void testTaxonTaxonNameBaseReferenceBase() {
-		logger.warn("Not yet implemented");
 	}
 
 	/**
@@ -513,6 +491,40 @@ public class TaxonTest extends EntityTestBase {
 	public void testGetHeterotypicSynonymyGroups() {
 		logger.warn("Not yet implemented");
 	}
+	
+	
+	@Test
+	public void testAddRemoveSynonymInSameGroup(){
+		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(null);
+		Taxon taxon = Taxon.NewInstance(taxonName, null);
+		TaxonNameBase<?,?> synonymName1 = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> synonymName2 = BotanicalName.NewInstance(null);
+		
+		// add a synonym to the taxon
+		Synonym synonym1 = taxon.addHeterotypicSynonymName(synonymName1).getSynonym();
+		// get the homotypic group of that synonym
+		HomotypicalGroup homotypicGroupOfSynonym = synonym1.getHomotypicGroup();
+		// add another synonym into the homotypic group we just created
+		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, homotypicGroupOfSynonym, null, null).getSynonym();
+		// everything is fine
+		Assert.assertEquals("We should have two synonyms in the group", 2, taxon.getSynonymsInGroup(homotypicGroupOfSynonym).size());
+		
+		// removing the synonym from the taxon
+		taxon.removeSynonym(synonym2);
+		
+		// get the homotypical group via the methods in Taxon
+		HomotypicalGroup homotypicGroupViaTaxon = taxon.getHeterotypicSynonymyGroups().iterator().next();
+		
+		// the group is for sure the same as the synonyms one
+		Assert.assertSame("Accessing the homotypic group via the taxon methods should result in the same object", homotypicGroupOfSynonym, homotypicGroupViaTaxon);
+		
+		// although it might be correct that the synonym is not deleted from the taxonomic group 
+		// we would not expect it to be here, since we just deleted it from the taxon and are accessing synonyms
+		// via methods in Taxon
+		Assert.assertEquals("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted", 
+				1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size()); 
+	}
+	
 	
 	@Test
 	public void testClone(){

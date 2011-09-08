@@ -986,9 +986,9 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/ZoologicalNameTest.java -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/occurrence/SpecimenTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/reference/PublicationBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/ClassificationTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/RemoveSynonymsInSameHomotypicGroupTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparatorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/agent/PersonDefaultCacheStrategyTest.java -text
@@ -1005,8 +1005,10 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/BookSection
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/generate/IdentificationKeyGeneratorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NameTypeParserTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverterTest.java -text

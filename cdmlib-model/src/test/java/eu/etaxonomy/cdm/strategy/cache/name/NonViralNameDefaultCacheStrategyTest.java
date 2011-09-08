@@ -25,11 +25,13 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.TaggedText;
 
 /**
  * @author a.mueller
@@ -51,6 +53,8 @@ public class NonViralNameDefaultCacheStrategyTest {
 	private static final String exAuthorString = "Exaut.";
 	private static final String basAuthorString = "Basio, A.";
 	private static final String exBasAuthorString = "ExBas. N.";
+	
+	private static final String referenceTitle = "My Reference";
 
 	private BotanicalName familyName;
 	private BotanicalName genusName;
@@ -94,6 +98,9 @@ public class NonViralNameDefaultCacheStrategyTest {
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
 		
+		citationRef = ReferenceFactory.newGeneric();
+		citationRef.setTitleCache(referenceTitle, true);
+		
 	}
 
 //**************************** TESTS **************************************************
@@ -103,7 +110,8 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testGetTitleCache() {
-		logger.warn("Not yet implemented");
+		Assert.assertEquals(speciesNameString, speciesName.getTitleCache());
+		//TODO not yet completed
 	}
 
 	/**
@@ -111,7 +119,9 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testGetFullTitleCache() {
-		logger.warn("Not yet implemented");
+		subSpeciesName.setNomenclaturalReference(citationRef);
+		Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+		//TODO not yet completed
 	}
 
 
@@ -229,6 +239,24 @@ public class NonViralNameDefaultCacheStrategyTest {
 		Assert.assertEquals("Should be 'Abies alba subsp. \u00D7beta'", "Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
 		subSpeciesName.setMonomHybrid(true);
 		Assert.assertEquals("Should be '\u00D7Abies alba subsp. \u00D7beta'", "\u00D7Abies alba subsp. \u00D7beta", subSpeciesName.getTitleCache());
+	}
+	
+	@Test
+	public void testHybridFormula(){
+		this.speciesName.setCombinationAuthorTeam(author);
+		Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
+		Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
+		
+		NonViralName hybridName = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName secondParent = NonViralName.NewInstance(Rank.SPECIES());
+		
+		secondParent.setTitleCache("Second parent Mill.", true);
+		hybridName.addHybridParent(speciesName, HybridRelationshipType.FIRST_PARENT(), null);
+		hybridName.addHybridParent(secondParent, HybridRelationshipType.SECOND_PARENT(), null);
+		hybridName.setHybridFormula(true);
+		
+		Assert.assertEquals("", "Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache());
+		
 	}
 	
 	@Test
@@ -434,13 +462,14 @@ public class NonViralNameDefaultCacheStrategyTest {
 	@Test
 	public void testGetInfraGenericNames(){
 		String author = "Anyauthor";
-		NonViralName nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
+		NonViralName<?> nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
 		nonViralName.setGenusOrUninomial("Genus");
 		nonViralName.setInfraGenericEpithet("subgenus");
 		nonViralName.setAuthorshipCache(author);
 		
 		//test ordinary infrageneric
-		String subGenusNameCache = strategy.getInfraGenusNameCache(nonViralName);
+		List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
+		String subGenusNameCache = strategy.createString(subGenusNameCacheTagged);
 		assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
 		String subGenusTitle = strategy.getTitleCache(nonViralName);
 		assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
@@ -449,7 +478,10 @@ public class NonViralNameDefaultCacheStrategyTest {
 		nonViralName.setRank(Rank.SPECIESAGGREGATE());
 		nonViralName.setSpecificEpithet("myspecies");
 		nonViralName.setInfraGenericEpithet(null);
-		String aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
+		
+		List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
+		
+		String aggrNameCache = strategy.createString(aggrNameCacheTagged);
 		assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
 		String aggrNameTitle = strategy.getTitleCache(nonViralName);
 		Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
@@ -463,7 +495,10 @@ public class NonViralNameDefaultCacheStrategyTest {
 		nonViralName.setRank(Rank.SPECIESAGGREGATE());
 		nonViralName.setSpecificEpithet("myspecies");
 		nonViralName.setInfraGenericEpithet("Infragenus");
-		aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
+		
+		
+		aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
+		aggrNameCache = strategy.createString(aggrNameCacheTagged);
 		assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
 		
 		aggrNameTitle = strategy.getTitleCache(nonViralName);
@@ -478,14 +513,14 @@ public class NonViralNameDefaultCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.NonViralName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getTaggedNameDeprecated(eu.etaxonomy.cdm.model.name.NonViralName)}.
 	 */
 	@Test
 	public void testGetTaggedNameSpeciesAggregate() {
 		BotanicalName speciesAggregate = BotanicalName.NewInstance(Rank.SPECIESAGGREGATE());
 		speciesAggregate.setGenusOrUninomial("Mygenus");
 		speciesAggregate.setSpecificEpithet("myspecies");
-		List<Object> taggedName = strategy.getTaggedName(speciesAggregate);
+		List<Object> taggedName = strategy.getTaggedNameDeprecated(speciesAggregate);
 		Assert.assertEquals("1rd tag must be genus epithet", "Mygenus", taggedName.get(0));
 		Assert.assertEquals("2rd tag must be species epithet", "myspecies", taggedName.get(1));
 		Assert.assertEquals("3rd tag must be aggregate marker", "aggr.",taggedName.get(2));
@@ -494,7 +529,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	
 	@Test 
 	public void testGetTaggedNameSubspecies(){
-		List taggedName = strategy.getTaggedName(subSpeciesName);
+		List taggedName = strategy.getTaggedNameDeprecated(subSpeciesName);
 		Assert.assertEquals("First tag should be 'Abies'", "Abies", taggedName.get(0));
 		Assert.assertEquals("Second tag should be 'alba'", "alba", taggedName.get(1));
 		Assert.assertEquals("Third tag should be subspecies rank", Rank.SUBSPECIES(), taggedName.get(2));

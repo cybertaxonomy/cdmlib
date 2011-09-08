@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -66,20 +66,19 @@ public class TaxonComparatorTest {
 	}
 
 /******************** TESTS *****************************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonComparator#compare(eu.etaxonomy.cdm.model.taxon.TaxonBase, eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
 	 */
 	@Test
 	public void testCompare() {
 		logger.debug("start testCompare");
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		
-		Reference sec = refFactory.newBook();
-		
-		Reference ref1 = refFactory.newBook();
-		Reference ref2 = refFactory.newBook();
-		Reference ref3 = refFactory.newBook();
+
+        Reference sec = ReferenceFactory.newBook();
+
+        Reference ref1 = ReferenceFactory.newBook();
+        Reference ref2 = ReferenceFactory.newBook();
+        Reference ref3 = ReferenceFactory.newBook();
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		Calendar cal3 = Calendar.getInstance();
@@ -90,36 +89,36 @@ public class TaxonComparatorTest {
 		ref1.setDatePublished(TimePeriod.NewInstance(cal1));
 //		ref2.setDatePublished(TimePeriod.NewInstance(cal2));
 		ref3.setDatePublished(TimePeriod.NewInstance(cal3));
-		
+
 		BotanicalName botName1 =  BotanicalName.NewInstance(null);
 		BotanicalName botName2 =  BotanicalName.NewInstance(null);
 		BotanicalName botName3 =  BotanicalName.NewInstance(null);
 		ZoologicalName zooName1 = ZoologicalName.NewInstance(null);
-		
+
 		botName1.setNomenclaturalReference(ref1);
 		botName2.setNomenclaturalReference(ref2);
 		botName3.setNomenclaturalReference(ref3);
 		zooName1.setPublicationYear(1823);
-		
+
 		List<TaxonBase> list = new ArrayList<TaxonBase>();
-		
+
 		Taxon taxon1 = Taxon.NewInstance(botName1, sec);
 		Taxon taxon2 = Taxon.NewInstance(botName2, sec);
 		Taxon taxon3 = Taxon.NewInstance(botName3, sec);
 		Taxon zooTaxon4 = Taxon.NewInstance(zooName1, sec);
-		
+
 		taxon1.setId(1);
 		taxon2.setId(2);
 		taxon3.setId(3);
 		zooTaxon4.setId(4);
-		
-		
+
+
 		list.add(taxon3);
 		list.add(taxon2);
 		list.add(taxon1);
 		list.add(zooTaxon4);
 		Collections.sort(list, new TaxonComparator());
-		
+
 		for (TaxonBase taxon : list){
 			String year = "";
 			TaxonNameBase<?,?> tnb = taxon.getName();
