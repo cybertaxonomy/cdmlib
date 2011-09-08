@@ -24,12 +24,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -48,7 +47,6 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -210,7 +208,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	}
 
 	private void createAdminUser(){
-		User firstUser = User.NewInstance("admin", "0000");
+		User firstUser = User.NewInstance("admin", "00000");
 		getUserService().save(firstUser);
 		logger.info("Admin user created.");
 	}
@@ -228,7 +226,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public boolean testDefinedTermsAreMissing(){
 		UUID englishUuid = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		DefinedTermBase<?> english = this.getTermService().getByUri(englishUuid.toString());
+		DefinedTermBase<?> english = this.getTermService().load(englishUuid);
 		if ( english == null || ! english.getUuid().equals(englishUuid)){
 			return true;
 		}else{

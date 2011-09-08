@@ -1,4 +1,3 @@
-
     create table Address (
         id integer not null,
         created timestamp,
@@ -90,6 +89,9 @@
         titleCache varchar(255),
         createdby_id integer,
         updatedby_id integer,
+        code varchar(255),
+        name varchar(255),
+        ispartof_id integer,
         nomenclaturaltitle varchar(255),
         firstname varchar(255),
         lastname varchar(255),
@@ -99,9 +101,6 @@
         prefix varchar(255),
         suffix varchar(255),
         protectednomenclaturaltitlecache bit,
-        code varchar(255),
-        name varchar(255),
-        ispartof_id integer,
         primary key (id, REV)
     );
 
@@ -399,6 +398,158 @@
         primary key (CDM_VIEW_id, superviews_id),
         unique (superviews_id)
     );
+    
+    
+    create table Classification (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        microreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        name_id integer,
+        reference_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+
+    create table Classification_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        microreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        name_id integer,
+        reference_id integer,
+        primary key (id, REV)
+    );
+
+    create table Classification_Annotation (
+        Classification_id integer not null,
+        annotations_id integer not null,
+        primary key (Classification_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Classification_Annotation_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, annotations_id)
+    );
+
+    create table Classification_Credit (
+        Classification_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        primary key (Classification_id, sortIndex),
+        unique (credits_id)
+    );
+
+    create table Classification_Credit_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        credits_id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, credits_id, sortIndex)
+    );
+
+    create table Classification_Extension (
+        Classification_id integer not null,
+        extensions_id integer not null,
+        primary key (Classification_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table Classification_Extension_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, extensions_id)
+    );
+
+    create table Classification_Marker (
+        Classification_id integer not null,
+        markers_id integer not null,
+        primary key (Classification_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Classification_Marker_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, markers_id)
+    );
+
+    create table Classification_OriginalSourceBase (
+        Classification_id integer not null,
+        sources_id integer not null,
+        primary key (Classification_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table Classification_OriginalSourceBase_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, sources_id)
+    );
+
+    create table Classification_Rights (
+        Classification_id integer not null,
+        rights_id integer not null,
+        primary key (Classification_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table Classification_Rights_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, rights_id)
+    );
+
+    create table Classification_TaxonNode (
+        Classification_id integer not null,
+        rootnodes_id integer not null,
+        primary key (Classification_id, rootnodes_id),
+        unique (rootnodes_id)
+    );
+
+    create table Classification_TaxonNode_AUD (
+        REV integer not null,
+        Classification_id integer not null,
+        rootnodes_id integer not null,
+        revtype tinyint,
+        primary key (REV, Classification_id, rootnodes_id)
+    );
+
 
     create table Collection (
         id integer not null,
@@ -685,10 +836,12 @@
         kindof_id integer,
         partof_id integer,
         vocabulary_id integer,
+        istechnical bit,
+        orderindex integer,
         iso639_1 varchar(2),
         iso639_2 varchar(3),
-        orderindex integer,
-        istechnical bit,
+        symmetrical bit,
+        transitive bit,
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
@@ -699,10 +852,8 @@
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
-        symmetrical bit,
-        transitive bit,
-        defaultcolor varchar(255),
         iso3166_a2 varchar(2),
+        defaultcolor varchar(255),
         supportscategoricaldata bit,
         supportscommontaxonname bit,
         supportsdistribution bit,
@@ -1003,7 +1154,7 @@
         createdby_id integer,
         updatedby_id integer,
         taxon_id integer,
-        taxonName_id integer,
+        taxonname_id integer,
         primary key (id),
         unique (uuid)
     );
@@ -1027,7 +1178,7 @@
         createdby_id integer,
         updatedby_id integer,
         taxon_id integer,
-        taxonName_id integer,
+        taxonname_id integer,
         primary key (id, REV)
     );
 
@@ -1228,15 +1379,15 @@
         updatedby_id integer,
         feature_id integer,
         indescription_id integer,
-        format_id integer,
-        unit_id integer,
-        associatedspecimenorobservation_id integer,
         orderrelevant bit,
-        taxon2_id integer,
+        associatedspecimenorobservation_id integer,
         name varchar(255),
         language_id integer,
+        taxon2_id integer,
         area_id integer,
         status_id integer,
+        unit_id integer,
+        format_id integer,
         primary key (id, REV)
     );
 
@@ -1570,6 +1721,7 @@
     );
 
     create table FeatureTree_AUD (
+        DTYPE varchar(31) not null,
         id integer not null,
         REV integer not null,
         revtype tinyint,
@@ -1696,6 +1848,20 @@
         rights_id integer not null,
         revtype tinyint,
         primary key (REV, FeatureTree_id, rights_id)
+    );
+
+    create table FeatureTree_TaxonBase (
+        FeatureTree_id integer not null,
+        coveredtaxa_id integer not null,
+        primary key (FeatureTree_id, coveredtaxa_id)
+    );
+
+    create table FeatureTree_TaxonBase_AUD (
+        REV integer not null,
+        FeatureTree_id integer not null,
+        coveredtaxa_id integer not null,
+        revtype tinyint,
+        primary key (REV, FeatureTree_id, coveredtaxa_id)
     );
 
     create table GatheringEvent (
@@ -2016,7 +2182,6 @@
         primary key (id, REV)
     );
     
-              
     create table KeyStatement (
         id integer not null,
         created timestamp,
@@ -2056,7 +2221,6 @@
         revtype tinyint,
         primary key (REV, keyStatement_id, label_id, label_mapkey_id)
     );
-
 
     create table LSIDAuthority (
         id integer not null,
@@ -2526,6 +2690,48 @@
         primary key (REV, Media_id, coveredtaxa_id)
     );
 
+    create table MultiAccessKey_NamedArea (
+        WorkingSet_id integer not null,
+        geographicalscope_id integer not null,
+        primary key (WorkingSet_id, geographicalscope_id)
+    );
+
+    create table MultiAccessKey_NamedArea_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        geographicalscope_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, geographicalscope_id)
+    );
+
+    create table MultiAccessKey_Scope (
+        WorkingSet_id integer not null,
+        scoperestrictions_id integer not null,
+        primary key (WorkingSet_id, scoperestrictions_id)
+    );
+
+    create table MultiAccessKey_Scope_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        scoperestrictions_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, scoperestrictions_id)
+    );
+
+    create table MultiAccessKey_Taxon (
+        multiAccessKey_id integer not null,
+        taxon_id integer not null,
+        primary key (multiAccessKey_id, taxon_id)
+    );
+
+    create table MultiAccessKey_Taxon_AUD (
+        REV integer not null,
+        multiAccessKey_id integer not null,
+        taxon_id integer not null,
+        revtype tinyint,
+        primary key (REV, multiAccessKey_id, taxon_id)
+    );
+
     create table NameRelationship (
         id integer not null,
         created timestamp,
@@ -2742,8 +2948,7 @@
         grantedauthorities_id integer not null,
         primary key (PermissionGroup_id, grantedauthorities_id)
     );
-    
-    
+
    create table PolytomousKey (
        	id integer not null,
         created timestamp,
@@ -2860,7 +3065,7 @@
         revtype tinyint,
         primary key (REV, PolytomousKey_id, geographicalscope_id)
     );
-
+    
     create table PolytomousKey_OriginalSourceBase (
         PolytomousKey_id integer not null,
         sources_id integer not null,
@@ -2920,6 +3125,20 @@
         primary key (REV, polytomousKey_id, taxon_id)
     );
     
+    create table PolytomousKey_TaxonBase (
+        polytomousKey_id integer not null,
+        coveredtaxa_id integer not null,
+        primary key (polytomousKey_id, coveredtaxa_id)
+    );
+
+    create table PolytomousKey_TaxonBase_AUD (
+        REV integer not null,
+        polytomousKey_id integer not null,
+        coveredtaxa_id integer not null,
+        revtype tinyint,
+        primary key (REV, polytomousKey_id, coveredtaxa_id)
+    );
+    
         
     create table PolytomousKeyNode (
         id integer not null,
@@ -2927,7 +3146,7 @@
         uuid varchar(36),
         updated timestamp,
         nodenumber integer,
-	sortindex integer,
+        sortindex integer,
         createdby_id integer,
         updatedby_id integer,
         key_id integer,
@@ -2949,9 +3168,9 @@
         created timestamp,
         uuid varchar(36),
         updated timestamp,
-        sortindex integer,
         nodenumber integer,
-	createdby_id integer,
+        sortindex integer,
+        createdby_id integer,
         updatedby_id integer,
         key_id integer,
         parent_id integer,
@@ -2963,7 +3182,24 @@
         othernode_id integer,
         primary key (id, REV)
     );
-       
+    
+    create table PolytomousKeyNode_LanguageString (
+		PolytomousKeyNode_id integer not null,
+		modifyingtext_id integer not null,
+		modifyingtext_mapkey_id integer not null,
+		primary key (PolytomousKeyNode_id, modifyingtext_mapkey_id),
+		unique (modifyingtext_id)
+	)
+	
+	create table PolytomousKeyNode_LanguageString_AUD (
+		REV integer not null,
+		revtype tinyint,
+		PolytomousKeyNode_id integer not null,
+		modifyingtext_id integer not null,
+		modifyingtext_mapkey_id integer not null,
+		primary key (REV, PolytomousKeyNode_id, modifyingtext_id, modifyingtext_mapkey_id)
+	)
+    
     create table PolytomousKeyNode_PolytomousKeyNode_AUD(
     	id integer not null,
         REV integer not null,
@@ -3519,16 +3755,16 @@
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
+        barcode varchar(255),
         fieldnotes varchar(255),
         fieldnumber varchar(255),
-        barcode varchar(255),
         createdby_id integer,
         updatedby_id integer,
         lifestage_id integer,
-        sex_id integer,
-        collection_id integer,
+        sex_id integer,    
         exsiccatum varchar(255),
     	primarycollector_id integer,
+        collection_id integer,
         derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
@@ -3536,6 +3772,7 @@
         primary key (id),
         unique (uuid)
     );
+    
 
     create table SpecimenOrObservationBase_AUD (
         DTYPE varchar(31) not null,
@@ -3557,19 +3794,19 @@
         updatedby_id integer,
         lifestage_id integer,
         sex_id integer,
+        fieldnotes varchar(255),
+        fieldnumber varchar(255),
+        barcode varchar(255),
+        exsiccatum varchar(255),
+        gatheringevent_id integer,
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
-        exsiccatum varchar(255),
-    	primarycollector_id integer,
+        primarycollector_id integer,
         collection_id integer,
         derivedfrom_id integer,
         storedunder_id integer,
         preservation_id integer,
-        fieldnotes varchar(255),
-        fieldnumber varchar(255),
-        barcode varchar(255),
-        gatheringevent_id integer,
         primary key (id, REV)
     );
 
@@ -3650,7 +3887,7 @@
         revtype tinyint,
         primary key (REV, SpecimenOrObservationBase_id, definition_id, definition_mapkey_id)
     );
-    
+
     create table SpecimenOrObservationBase_Marker (
         SpecimenOrObservationBase_id integer not null,
         markers_id integer not null,
@@ -4143,6 +4380,7 @@
         homotypicalgroup_id integer,
         nomenclaturalreference_id integer,
         rank_id integer,
+        acronym varchar(255),
         authorshipcache varchar(255),
         binomhybrid bit,
         genusoruninomial varchar(255),
@@ -4159,14 +4397,13 @@
         combinationauthorteam_id integer,
         exbasionymauthorteam_id integer,
         excombinationauthorteam_id integer,
-        nameapprobation varchar(255),
-        subgenusauthorship varchar(255),
+        anamorphic bit,
         breed varchar(255),
         originalpublicationyear integer,
         publicationyear integer,
-        acronym varchar(255),
-        anamorphic bit,
         cultivarname varchar(255),
+        nameapprobation varchar(255),
+        subgenusauthorship varchar(255),
         primary key (id, REV)
     );
 
@@ -4423,156 +4660,6 @@
         markers_id integer not null,
         revtype tinyint,
         primary key (REV, TaxonRelationship_id, markers_id)
-    );
-
-    create table Classification (
-        id integer not null,
-        created timestamp,
-        uuid varchar(36),
-        updated timestamp,
-        lsid_authority varchar(255),
-        lsid_lsid varchar(255),
-        lsid_namespace varchar(255),
-        lsid_object varchar(255),
-        lsid_revision varchar(255),
-        protectedtitlecache bit not null,
-        titleCache varchar(255),
-        microreference varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        name_id integer,
-        reference_id integer,
-        primary key (id),
-        unique (uuid)
-    );
-
-    create table Classification_AUD (
-        id integer not null,
-        REV integer not null,
-        revtype tinyint,
-        created timestamp,
-        uuid varchar(36),
-        updated timestamp,
-        lsid_authority varchar(255),
-        lsid_lsid varchar(255),
-        lsid_namespace varchar(255),
-        lsid_object varchar(255),
-        lsid_revision varchar(255),
-        protectedtitlecache bit,
-        titleCache varchar(255),
-        microreference varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        name_id integer,
-        reference_id integer,
-        primary key (id, REV)
-    );
-
-    create table Classification_Annotation (
-        Classification_id integer not null,
-        annotations_id integer not null,
-        primary key (Classification_id, annotations_id),
-        unique (annotations_id)
-    );
-
-    create table Classification_Annotation_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        annotations_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, annotations_id)
-    );
-
-    create table Classification_Credit (
-        Classification_id integer not null,
-        credits_id integer not null,
-        sortIndex integer not null,
-        primary key (Classification_id, sortIndex),
-        unique (credits_id)
-    );
-
-    create table Classification_Credit_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        credits_id integer not null,
-        sortIndex integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, credits_id, sortIndex)
-    );
-
-    create table Classification_Extension (
-        Classification_id integer not null,
-        extensions_id integer not null,
-        primary key (Classification_id, extensions_id),
-        unique (extensions_id)
-    );
-
-    create table Classification_Extension_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        extensions_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, extensions_id)
-    );
-
-    create table Classification_Marker (
-        Classification_id integer not null,
-        markers_id integer not null,
-        primary key (Classification_id, markers_id),
-        unique (markers_id)
-    );
-
-    create table Classification_Marker_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        markers_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, markers_id)
-    );
-
-    create table Classification_OriginalSourceBase (
-        Classification_id integer not null,
-        sources_id integer not null,
-        primary key (Classification_id, sources_id),
-        unique (sources_id)
-    );
-
-    create table Classification_OriginalSourceBase_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        sources_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, sources_id)
-    );
-
-    create table Classification_Rights (
-        Classification_id integer not null,
-        rights_id integer not null,
-        primary key (Classification_id, rights_id),
-        unique (rights_id)
-    );
-
-    create table Classification_Rights_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        rights_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, rights_id)
-    );
-
-    create table Classification_TaxonNode (
-        Classification_id integer not null,
-        rootnodes_id integer not null,
-        primary key (Classification_id, rootnodes_id),
-        unique (rootnodes_id)
-    );
-
-    create table Classification_TaxonNode_AUD (
-        REV integer not null,
-        Classification_id integer not null,
-        rootnodes_id integer not null,
-        revtype tinyint,
-        primary key (REV, Classification_id, rootnodes_id)
     );
 
     create table TermVocabulary (
@@ -4858,6 +4945,106 @@
         members_id integer not null,
         groups_id integer not null,
         primary key (members_id, groups_id)
+    );
+
+    create table WorkingSet (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        descriptivesystem_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+
+    create table WorkingSet_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        descriptivesystem_id integer,
+        primary key (id, REV)
+    );
+
+    create table WorkingSet_Annotation (
+        WorkingSet_id integer not null,
+        annotations_id integer not null,
+        primary key (WorkingSet_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table WorkingSet_Annotation_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, annotations_id)
+    );
+
+    create table WorkingSet_DescriptionBase (
+        WorkingSet_id integer not null,
+        descriptions_id integer not null,
+        primary key (WorkingSet_id, descriptions_id)
+    );
+
+    create table WorkingSet_DescriptionBase_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        descriptions_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, descriptions_id)
+    );
+
+    create table WorkingSet_Marker (
+        WorkingSet_id integer not null,
+        markers_id integer not null,
+        primary key (WorkingSet_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table WorkingSet_Marker_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, markers_id)
+    );
+
+    create table WorkingSet_Representation (
+        WorkingSet_id integer not null,
+        representations_id integer not null,
+        primary key (WorkingSet_id, representations_id),
+        unique (representations_id)
+    );
+
+    create table WorkingSet_Representation_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        representations_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, representations_id)
+    );
+
+    create table WorkingSet_TaxonBase (
+        WorkingSet_id integer not null,
+        coveredtaxa_id integer not null,
+        primary key (WorkingSet_id, coveredtaxa_id)
+    );
+
+    create table WorkingSet_TaxonBase_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        coveredtaxa_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, coveredtaxa_id)
     );
 
     alter table Address 
@@ -5691,7 +5878,7 @@
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDA93512F 
-        foreign key (taxonName_id) 
+        foreign key (taxonname_id) 
         references TaxonNameBase;
 
     alter table DescriptionBase 
@@ -6359,6 +6546,21 @@
         foreign key (REV) 
         references AuditEvent;
 
+    alter table FeatureTree_TaxonBase 
+        add constraint FKEC78E5B0ED57882F 
+        foreign key (FeatureTree_id) 
+        references FeatureTree;
+
+    alter table FeatureTree_TaxonBase 
+        add constraint FKEC78E5B07C3D0017 
+        foreign key (coveredtaxa_id) 
+        references TaxonBase;
+
+    alter table FeatureTree_TaxonBase_AUD 
+        add constraint FK955ABB8134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
     alter table GatheringEvent 
         add constraint FK6F1286F38B455EC6 
         foreign key (locality_id) 
@@ -6994,6 +7196,51 @@
         foreign key (REV) 
         references AuditEvent;
 
+    alter table MultiAccessKey_NamedArea 
+        add constraint FK1F5A74893FF8E7B2 
+        foreign key (geographicalscope_id) 
+        references DefinedTermBase;
+
+    alter table MultiAccessKey_NamedArea 
+        add constraint FK1F5A7489B4555A9A 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_NamedArea_AUD 
+        add constraint FK4CB735DA34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MultiAccessKey_Scope 
+        add constraint FKCC6CE4F7546985E4 
+        foreign key (scoperestrictions_id) 
+        references DefinedTermBase;
+
+    alter table MultiAccessKey_Scope 
+        add constraint FKCC6CE4F7B4555A9A 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_Scope_AUD 
+        add constraint FK511FBF4834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MultiAccessKey_Taxon 
+        add constraint FKCC7A356DB64A7AD3 
+        foreign key (multiAccessKey_id) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_Taxon 
+        add constraint FKCC7A356DDE9A3DE3 
+        foreign key (taxon_id) 
+        references TaxonBase;
+
+    alter table MultiAccessKey_Taxon_AUD 
+        add constraint FKF083E4BE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
     alter table NameRelationship 
         add constraint FK5E510834FF2DB2C 
         foreign key (createdby_id) 
@@ -7183,6 +7430,67 @@
         add constraint FK53114371857F6C2 
         foreign key (grantedauthorities_id) 
         references GrantedAuthorityImpl;
+
+    alter table PolytomousKeyNode_LanguageString 
+        add constraint FK5574E12EF05D08D4 
+        foreign key (modifyingtext_id) 
+        references LanguageString;
+
+    alter table PolytomousKeyNode_LanguageString 
+        add constraint FK5574E12EF135C42B 
+        foreign key (PolytomousKeyNode_id) 
+        references PolytomousKeyNode;
+
+    alter table PolytomousKeyNode_LanguageString 
+        add constraint FK5574E12E9682414B 
+        foreign key (modifyingtext_mapkey_id) 
+        references DefinedTermBase;
+
+
+    alter table PolytomousKey_NamedArea 
+        add constraint FK1C727CFF3FF8E7B2 
+        foreign key (geographicalscope_id) 
+        references DefinedTermBase;
+
+    alter table PolytomousKey_NamedArea 
+        add constraint FK1C727CFFED57882F 
+        foreign key (PolytomousKey_id) 
+        references PolytomousKey;
+
+    alter table PolytomousKey_NamedArea_AUD 
+        add constraint FK750A135034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table PolytomousKey_Scope 
+        add constraint FK8D97986DED57882F 
+        foreign key (PolytomousKey_id) 
+        references PolytomousKey;
+
+    alter table PolytomousKey_Scope 
+        add constraint FK8D97986D546985E4 
+        foreign key (scoperestrictions_id) 
+        references DefinedTermBase;
+
+    alter table PolytomousKey_Scope_AUD 
+        add constraint FK4E37C7BE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table PolytomousKey_Taxon 
+        add constraint FK8DA4E8E389D9775 
+        foreign key (polytomousKey_id) 
+        references PolytomousKey;
+
+    alter table PolytomousKey_Taxon 
+        add constraint FK8DA4E8E3DE9A3DE3 
+        foreign key (taxon_id) 
+        references TaxonBase;
+
+    alter table PolytomousKey_Taxon_AUD 
+        add constraint FKED9BED3434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
 
     create index ReferenceTitleCacheIndex on Reference (titleCache);
 
@@ -7615,6 +7923,12 @@
 
     create index specimenOrObservationBaseTitleCacheIndex on SpecimenOrObservationBase (titleCache);
 
+    
+    alter table SpecimenOrObservationBase 
+        add constraint FK11CB3232F75F225E 
+        foreign key (primarycollector_id) 
+        references AgentBase;
+    
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32727CC340C5 
         foreign key (storedunder_id) 
@@ -7649,12 +7963,6 @@
         add constraint FK21CA32724AAB411A 
         foreign key (derivedfrom_id) 
         references DerivationEvent;
-        
-        
-    alter table SpecimenOrObservationBase 
-        add constraint FK11CB3232F75F225E 
-        foreign key (primarycollector_id) 
-        references AgentBase;
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA3272F95F225A 
@@ -8799,3 +9107,98 @@
         add constraint FK812DE753DA9DCB5F 
         foreign key (groups_id) 
         references PermissionGroup;
+
+    alter table WorkingSet 
+        add constraint FK668D5B914FF2DB2C 
+        foreign key (createdby_id) 
+        references UserAccount;
+
+    alter table WorkingSet 
+        add constraint FK668D5B9123DB7F04 
+        foreign key (descriptivesystem_id) 
+        references FeatureTree;
+
+    alter table WorkingSet 
+        add constraint FK668D5B91BC5DA539 
+        foreign key (updatedby_id) 
+        references UserAccount;
+
+    alter table WorkingSet_AUD 
+        add constraint FK628F58E234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Annotation 
+        add constraint FKCBBA8CBDBBD2C869 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Annotation 
+        add constraint FKCBBA8CBD1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table WorkingSet_Annotation_AUD 
+        add constraint FK1E28140E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_DescriptionBase 
+        add constraint FK731CC81F33B8A841 
+        foreign key (descriptions_id) 
+        references DescriptionBase;
+
+    alter table WorkingSet_DescriptionBase 
+        add constraint FK731CC81FBBD2C869 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_DescriptionBase_AUD 
+        add constraint FK8959CE7034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Marker 
+        add constraint FK9CB22CC8777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table WorkingSet_Marker 
+        add constraint FK9CB22CC8BBD2C869 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Marker_AUD 
+        add constraint FK6AEAB69934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Representation 
+        add constraint FKA003835BB31C4747 
+        foreign key (representations_id) 
+        references Representation;
+
+    alter table WorkingSet_Representation 
+        add constraint FKA003835BBBD2C869 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Representation_AUD 
+        add constraint FK21B88BAC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_TaxonBase 
+        add constraint FK34EB896DB4555A9A 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_TaxonBase 
+        add constraint FK34EB896D7C3D0017 
+        foreign key (coveredtaxa_id) 
+        references TaxonBase;
+
+    alter table WorkingSet_TaxonBase_AUD 
+        add constraint FK582B38BE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;

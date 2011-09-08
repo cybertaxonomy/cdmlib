@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +32,12 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ITermService extends IIdentifiableEntityService<DefinedTermBase> {
 
-	public DefinedTermBase getByUri(String uri);
+	/**
+	 * Returns a term according to it's uri
+	 * @param uri
+	 * @return
+	 */
+	public DefinedTermBase getByUri(URI uri);
 
 	public UUID saveLanguageData(LanguageStringBase languageData);
 	

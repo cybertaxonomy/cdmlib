@@ -22,10 +22,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
@@ -123,6 +127,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	NamedArea country = WaterbodyOrCountry.GERMANY();
 
+	private UsernamePasswordAuthenticationToken token;
+	private Authentication authentication;
+	
+	@SpringBeanByName
+	private AuthenticationManager authenticationManager;
+	
+	
 	// ****************************** SET UP
 	// *****************************************/
 
@@ -139,6 +150,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+		
 		specimen = Specimen.NewInstance();
 
 		derivationEvent = DerivationEvent.NewInstance();
@@ -203,6 +216,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 	@DataSet("DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml")
 	@ExpectedDataSet
 	public void testSetFieldObjectImageGallery() {
+		authentication = authenticationManager.authenticate(token);
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		
+		
 		UUID imageFeatureUuid = Feature.IMAGE().getUuid();
 		Feature imageFeature = (Feature) termService.find(imageFeatureUuid);
 

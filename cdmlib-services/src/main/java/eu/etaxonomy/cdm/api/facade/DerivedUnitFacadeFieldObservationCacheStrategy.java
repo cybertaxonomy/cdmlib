@@ -133,11 +133,14 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 
 	private String getCollectorAndFieldNumber(DerivedUnitFacade facade) {
 		String result = "";
-		AgentBase collector = facade.getCollector();
+		AgentBase<?> collector = facade.getCollector();
 		String fieldNumber = facade.getFieldNumber();
 		Person primaryCollector = facade.getPrimaryCollector();
+		
 		if (collector == null){
 			return fieldNumber;
+		}else if(collector.isProtectedTitleCache()){
+			return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
 		}else{
 			result = "";
 			Team collectorTeam;
@@ -147,11 +150,12 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 					primaryCollector = CdmBase.deproxy(collector, Person.class);
 				}
 				collectorTeam.addTeamMember(primaryCollector);
-			} else if (collector.isInstanceOf(Team.class)){
+			} else if (collector.isInstanceOf(Team.class) && ! collector.isProtectedTitleCache() ){
 				collectorTeam = CdmBase.deproxy(collector, Team.class);
 			}else{
 				return  CdmUtils.concat(" ", collector.getTitleCache(), fieldNumber);
 			}
+			
 			int counter = 0;
 			int teamSize = collectorTeam.getTeamMembers().size();
 			boolean fieldNumberAdded = false;
@@ -187,7 +191,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 	 * @return
 	 */
 	private String getMemberString(Person member) {
-		if (StringUtils.isNotBlank(member.getLastname())){
+		if (StringUtils.isNotBlank(member.getLastname()) && ! member.isProtectedTitleCache() ){
 			String result = member.getLastname();
 			if  (StringUtils.isNotBlank(member.getFirstname())){
 				result = member.getFirstname().substring(0,1) + ". " + result;

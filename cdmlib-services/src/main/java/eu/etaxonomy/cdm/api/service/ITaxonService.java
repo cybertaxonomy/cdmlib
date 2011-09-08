@@ -409,6 +409,26 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public String getPhylumName(TaxonNameBase name);
 	
 	public long deleteSynonymRelationships(Synonym syn);
+	
+	
+	/**
+	 * Removes a synonym.
+	 * 
+	 * In detail it removes 
+	 *  <li>all synonym relationship to the given taxon or to all taxa if taxon is <code>null</code></li>
+	 *  <li>the synonym concept if it is not referenced by any synonym relationship anymore</li>
+	 *  <BR><BR>
+	 *  If <code>removeNameIfPossible</code> is true 
+	 *  it also removes the synonym name if it is not used in any other context
+	 *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)
+	 *  
+	 * @param taxon
+	 * @param synonym
+	 * @param removeNameIfPossible
+	 */
+	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible);
+	
+	
 	/**
 	 * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied) 
 	 * depending on direction, where the supplied taxon is relatedTo or the supplied synonym is relatedFrom.

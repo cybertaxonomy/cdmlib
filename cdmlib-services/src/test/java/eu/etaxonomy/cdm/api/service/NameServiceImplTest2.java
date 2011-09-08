@@ -31,6 +31,9 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	@SpringBeanByType
 	private INameService service;
 	
+	@SpringBeanByType
+	private ITermService termService;
+	
 /* ******************** TESTS ********************************************/
 	
 	/**
@@ -111,6 +114,8 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	@Test
 	public void testGetRankVocabulary() {
 		OrderedTermVocabulary<Rank> rankVocabulary = service.getRankVocabulary();
+		//OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary<Rank>) termService.listByTermClass(Rank.class, 0, 0, null, null);
+	
 		assertNotNull(rankVocabulary);
 		assertEquals(62, rankVocabulary.size());
 		Rank highestRank = rankVocabulary.getHighestTerm();

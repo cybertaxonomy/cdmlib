@@ -82,9 +82,6 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	private IDescriptionService descriptionService;
 	
 	@SpringBeanByName
-	private ITaxonNodeService taxonNodeService;
-	
-	@SpringBeanByName
 	private IUserService userService;
 	
 	
@@ -183,7 +180,11 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	@Test
 	public void testCascadingInSpringSecurityAccesDenied(){
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		/*authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		*/
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
@@ -191,15 +192,12 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		Taxon taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
 		description.setTitleCache("test");
-		assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
-		System.err.println(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
-		Collection<GrantedAuthority> authorities = authentication.getAuthorities();
-		for (GrantedAuthority authority: authorities){
-			System.err.println(authority.getAuthority());
-		}
+		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+		
+		
 		//during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it, 
 		//when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
-		taxonService.saveOrUpdate(taxon);
+		//taxonService.saveOrUpdate(taxon);
 		
 		
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
@@ -207,9 +205,11 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		context.setAuthentication(authentication);
 		
 		//taxonService.saveOrUpdate(taxon);
-		
+		taxon = null;
 				
 		descriptionService.saveOrUpdate(description);
+		taxon = (Taxon)taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+		assertTrue(taxon.getDescriptions().contains(description));
 		
 		
 		

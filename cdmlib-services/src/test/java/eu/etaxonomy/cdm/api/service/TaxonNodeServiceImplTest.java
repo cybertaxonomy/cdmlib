@@ -16,8 +16,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -26,11 +33,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
+import org.springframework.security.core.Authentication;
+
 /**
  * @author n.hoffmann
  * @created Dec 16, 2010
  * @version 1.0
  */
+
 public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 
 	@SpringBeanByType
@@ -41,6 +51,9 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 	
 	@SpringBeanByType
 	private IReferenceService referenceService;
+	
+	@SpringBeanByType
+	private ITermService termService;
 	
 	private static final UUID t1Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
 	private static final UUID t2Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
@@ -53,43 +66,58 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 	private Taxon t2;
 	private Synonym s1;
 	private SynonymRelationshipType synonymRelationshipType;
-	private Reference reference;
+	private Reference<?> reference;
 	private String referenceDetail;
 	private Classification classification;
 	private TaxonNode node2;
 	private TaxonNode node1;
+	
+	@SpringBeanByName
+	private AuthenticationManager authenticationManager;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		
-		classification = classificationService.load(classificationUuid);
-		
-		node1 = taxonNodeService.load(node1Uuid);
-		
-		node2 = taxonNodeService.load(node2Uuid);
-		
-		reference = referenceService.load(referenceUuid);
-		
-		// referencing
-		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-		referenceDetail = "test"; 
 	}
-	
+		
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-	@Ignore
+	@DataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {
+		
+		
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("ben", "sPePhAz6"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		
+		
+		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
+		node2 = taxonNodeService.load(node2Uuid);
+		reference = referenceService.load(referenceUuid);
+//		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
+		referenceDetail = "test"; 
+
+		//
+		//TODO
+	
+
 		// descriptions
+		t1 = node1.getTaxon();
+		t2 = node2.getTaxon();
+		Assert.assertEquals(2, t1.getDescriptions().size());
+		Assert.assertTrue(t2.getSynonyms().isEmpty());
+		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		
 		taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-		
+		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		Assert.assertTrue(t2.getDescriptions().size() == 2);
+		Assert.assertEquals(2, t2.getDescriptions().size());
 		
 	}
 

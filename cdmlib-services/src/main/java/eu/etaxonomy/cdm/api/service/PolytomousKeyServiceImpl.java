@@ -92,10 +92,6 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	
 	/**
 	 * Returns the polytomous key specified by the given <code>uuid</code>.
-	 * The specified polytomous key either can be one of those stored in the CDM database or can be the 
-	 * DefaultFeatureTree (contains all Features in use). 
-	 * The uuid of the DefaultFeatureTree is defined in {@link IFeatureTreeService#DefaultFeatureTreeUuid}.
-	 * The DefaultFeatureTree is also returned if no feature tree at all is stored in the cdm database.
 	 *  
 	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
 	 */

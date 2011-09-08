@@ -10,11 +10,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -29,8 +26,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -88,10 +83,6 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}
 	 * .
 	 */
-	@Test
-	public final void loadTreeBranchTo() {
-		logger.warn("Not yet implemented"); // TODO
-	}
 
 	/**
 	 * Test method for
@@ -100,7 +91,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testSearchTaxaByName() {
-		logger.warn("Not yet implemented"); // TODO
+		logger.warn("testSearchTaxaByName not yet implemented"); // TODO
 	}
 
 	
@@ -128,22 +119,28 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	public final void testMakeSynonymTaxon(){
+	public final void testChangeSynonymToAcceptedTaxon(){
 		Rank rank = Rank.SPECIES();
 		//HomotypicalGroup group = HomotypicalGroup.NewInstance();
 		Taxon tax1 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
 		Taxon tax2 = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+		Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+		synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
 		//tax2.addHeterotypicSynonymName(synonym.getName());
 		tax2.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		BotanicalName name = (BotanicalName)synonym.getName();
-		UUID uuidTaxon = service.save(tax1);
-		UUID uuidSyn = service.save(synonym);
-		UUID uuidGenus = service.save(tax2);
+		tax2.addSynonym(synonym2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		
-		Taxon tax = service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
+		service.save(tax1);
+		UUID uuidSyn = service.save(synonym);
+		service.save(synonym2);
+		service.save(tax2);
+		
+		Taxon taxon = service.changeSynonymToAcceptedTaxon(synonym, tax2, true, true, null, null);
+		//test flush (resave deleted object)
 		TaxonBase<?> syn = service.find(uuidSyn);
 		assertNull(syn);
+		Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, taxon.getSynonymRelations().size());
 		
 		
 	
