@@ -17,6 +17,8 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -65,19 +67,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         	evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, null);
         }
         
-        	//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
+        	
 		if (evalPermission.className != null) {
 			return evalPermission(authorities, evalPermission,
 					(CdmBase) targetDomainObject);
-			/*if (evalPermission.className.equals(CdmPermissionClass.USER)) {
-				return evalPermission(authorities, evalPermission,
-						(CdmBase) targetDomainObject);
-			} else {
-				return true;
-			}*/
+			
 		}else{
-			//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
-			//see also AuthorityPermission constructor
 			return true;
 		}
         
@@ -95,12 +90,22 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
 
+    	 for (GrantedAuthority authority: authorities){
+    		 if (authority.getAuthority().equals("ALL.ADMIN"))return true;
+    	 }
+    	
+    	
     	if (targetDomainObject instanceof DescriptionElementBase){
     		return DescriptionPermissionEvaluator.hasPermission(authorities, (DescriptionElementBase)targetDomainObject, evalPermission);
     	}
     	if (targetDomainObject instanceof DescriptionBase){
     		return DescriptionPermissionEvaluator.hasPermission(authorities, (DescriptionBase)targetDomainObject, evalPermission);
-    	}
+    	}  	
+    	
+    	
+    	
+    	
+    	
         for (GrantedAuthority authority: authorities){
             AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
             //evaluate authorities
