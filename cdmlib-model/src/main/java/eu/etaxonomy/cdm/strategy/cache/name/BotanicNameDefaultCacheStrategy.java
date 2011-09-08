@@ -46,6 +46,7 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 	 * @param exAuthor the ex-author
 	 * @return
 	 */
+	@Override
 	protected String getAuthorAndExAuthor(INomenclaturalAuthor author, INomenclaturalAuthor exAuthor){
 		String result = "";
 		String authorString = "";

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -25,15 +26,60 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 
 
 	/**
-	 * Returns an array of name tokens that together make up the full name
-	 * a token can be a String (for name parts), Rank, AuthorTeam (for entire authorship string), 
+	 * Returns an array of name tokens that together make up the full name.
+	 * A token can be a String (for name parts), Rank, AuthorTeam (for entire authorship string), 
 	 * Date or Reference
 	 * Example: ["Abies","alba",Rank.SUBSPECIES,"alpina",AuthorTeam("Greuther (L.)")]
 	 * 
+	 * @deprecated use {@link #getTaggedTitle(TaxonNameBase)} or 
+	 * {@link #getTaggedFullTitle(TaxonNameBase)} or {@link #getNameCache(TaxonNameBase)} instead.
+	 * Will be removed in version 3.1
 	 * @param taxonNameBase
 	 * @return
 	 */
-	public List<Object> getTaggedName(T taxonNameBase);
+	public List<Object> getTaggedNameDeprecated(T taxonNameBase);
 	
+	/**
+	 * Returns a list of name typified tokens that together make up the name (including authorship etc.).
+	 * A token (taggedText) is a string and a type which indicates which part of a name the text
+	 * belongs to. Types may be name (indicating a core part of the name, e.g. a name epithet),
+	 * author (indicating an authorship part), rank, reference, etc.).
+	 * <BR>
+	 * Example: ["Abies"/name,"alba"/name,Rank.SUBSPECIES/rank,"alpina"/name,
+	 * "Greuther (L.)"/authorship]
+	 * 
+	 * @param taxonNameBase
+	 * @return the tagged list, <code>null</code> if taxonName is <code>null</code>
+	 */
+	public List<TaggedText> getTaggedTitle(T taxonName);
+	
+	/**
+	 * Same as {@link #getTaggedTitle(TaxonNameBase)} but also includes the reference and
+	 * the nomenclatural status in the result. 
+	 * @param taxonName
+	 * @return
+	 */
+	public List<TaggedText> getTaggedFullTitle(T taxonName);
+	
+	/**
+	 * Same as {@link #getTaggedTitle(TaxonNameBase)} but not including authorship. 
+	 * @param taxonName
+	 * @return
+	 */
+	public List<TaggedText> getTaggedName(T taxonName);
+	
+	
+	/**
+	 * Returns the full title cache as a string.
+	 * @param taxonNameBase
+	 * @return
+	 */
 	public String getFullTitleCache(T taxonNameBase);
+	
+	/**
+	 * Returns the name cache as a string.
+	 * @param taxonNameBase
+	 * @return
+	 */
+	public String getNameCache(T taxonNameBase);
 }

@@ -21,8 +21,8 @@ import eu.etaxonomy.cdm.model.name.BacterialName;
  *
  */
 public class BacterialNameDefaultCacheStrategy<NAME extends BacterialName> extends NonViralNameDefaultCacheStrategy<NAME> implements  INonViralNameCacheStrategy<NAME> {
+	private static final long serialVersionUID = 7369285557176649585L;
 	private static final Logger logger = Logger.getLogger(BacterialNameDefaultCacheStrategy.class);
-	
 	final static UUID uuid = UUID.fromString("b97cf0af-2f97-487e-8d06-cbe924f3222a");
 	
 	static {
