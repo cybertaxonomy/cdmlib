@@ -3,28 +3,28 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-    
-    <!-- 
+
+    <!--
         ===============================================================
-        This is the configuaration file for the 
+        This is the configuration file for the
         eu.etaxonomy.cdm.remote.view.PatternViewResolver
         ===============================================================
-        
+
     	- bean names are ant style patterns
-    	- the eu.etaxonomy.cdm.remote.view.PatternViewResolver 
+      - the eu.etaxonomy.cdm.remote.view.PatternViewResolver
     	  must be used to resolve patterns used as bean names
     -->
-    
+
     <!-- entity services -->
     <bean name="**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
     	<property name="jsonConfig" ref="jsonConfig" />
     </bean>
-    
+
     <!-- taxonomy service -->
     <bean name="**/classification **/classification/* **/classification/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigClassification" />
     </bean>
-    
+
     <!-- portal service -->
     <bean name="**/portal/* **/portal/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigPortal" />
