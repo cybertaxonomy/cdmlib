@@ -852,9 +852,11 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/Merge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/MergeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/MergeMode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/INonViralNameParser.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NameTypeParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplRegExBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ParserProblem.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/SpecimenTypeParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserHistory.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level2.java -text
