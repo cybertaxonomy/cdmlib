@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -59,12 +59,12 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 {
 	@Autowired
 	private IFeatureTreeService featureTreeService;
-	
-	
+
+
 	public DescriptionController(){
 		super();
 	}
-	
+
 	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
 			new String[]{
 				"representations",
@@ -72,7 +72,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 				"root.children.feature.representations",
 				"root.children.children.feature.representations",
 			});
-	
+
 	@InitBinder
 	@Override
 	public void initBinder(WebDataBinder binder) {
@@ -80,7 +80,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
 	 */
@@ -89,7 +89,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	public void setService(IDescriptionService service) {
 		this.service = service;
 	}
-	
+
 	/**
 	 * @param request
 	 * @param response
@@ -99,14 +99,14 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	@RequestMapping(value = {"/featureTree/{uuid}"}, method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(
 			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
+            HttpServletRequest request,
 			HttpServletResponse response)throws IOException {
 		FeatureTree featureTree = getCdmBaseInstance(FeatureTree.class, featureTreeService, uuid, response, FEATURETREE_INIT_STRATEGY);
 		return featureTree;
 	}
-	
-	
-	@RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
+
+
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("descriptionelement_uuid") UUID uuid,
 			HttpServletRequest request,
@@ -151,36 +151,36 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		logger.info("doGenerateNaturalLanguageDescription() - " + request.getServletPath());
 
 		DescriptionBase description = service.load(uuid);
-		
+
 		ModelAndView mv = new ModelAndView();
-		
+
 		List<Language> languages = LocaleContext.getLanguages();
-		
+
 		if(!(description instanceof TaxonDescription)){
 			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
 			// will terminate thread
 		}
-		
+
 		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, null);
 		if(featureTree == null){
 			HttpStatusMessage.UUID_NOT_FOUND.send(response);
 			// will terminate thread
 		}
-		
+
 		String naturalLanguageDescription = service.generateNaturalLanguageDescription(
-				featureTree, 
-				(TaxonDescription)description, 
+                featureTree,
+                (TaxonDescription)description,
 				languages,
 				", ");
-		
+
 		TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
 		textData.putText(Language.DEFAULT(), naturalLanguageDescription);
 
 		mv.addObject(textData);
-		
+
 		return mv;
 	}
-	
+
 
 	@RequestMapping(value = "/description/{uuid}/hasStructuredData", method = RequestMethod.GET)
 	public ModelAndView doHasStructuredData(
@@ -190,18 +190,18 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		logger.info("doHasStructuredData() - " + request.getServletPath());
 
 		ModelAndView mv = new ModelAndView();
-		
+
 		DescriptionBase description = service.load(uuid);
-		
+
 		if(!(description instanceof TaxonDescription)){
 			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
 			// will terminate thread
 		}
-		
+
 		boolean hasStructuredData = service.hasStructuredData(description);
-		
+
 		mv.addObject(hasStructuredData);
-		
+
 		return mv;
 	}
 

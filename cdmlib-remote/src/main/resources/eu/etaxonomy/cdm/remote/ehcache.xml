@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache>
-	<diskStore path="java.io.tmpdir/${eu.etaxonomy.cdm.ehcache.diskstore.path}" />
+  <!--
+    diskStore: see http://www.ehcache.org/documentation/user-guide/storage-options#ltdiskstoregt-configuration-element
+  -->
+  <diskStore path="java.io.tmpdir/cdm-server-ehcache" />
 	<defaultCache maxElementsInMemory="10" eternal="false"
 		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" />
 	<cache
 		name="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController.resumptionToken"
-		eternal="false" maxElementsInMemory="25" 
+    eternal="false" maxElementsInMemory="25"
 		overflowToDisk="true" timeToIdleSeconds="0" timeToLiveSeconds="86400" />
 	<!--
 		  <cache
         name="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController.resumptionToken"
-        eternal="false" maxElementsInMemory="25" 
+        eternal="false" maxElementsInMemory="25"
         maxElementsOnDisk="50"
         overflowToDisk="true" timeToIdleSeconds="0" timeToLiveSeconds="86400" />
 		<cache
