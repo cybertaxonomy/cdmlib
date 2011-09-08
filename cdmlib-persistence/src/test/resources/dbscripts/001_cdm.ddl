@@ -1700,7 +1700,6 @@
     );
 
     create table FeatureTree (
-        DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -3183,6 +3182,23 @@
         othernode_id integer,
         primary key (id, REV)
     );
+    
+    create table PolytomousKeyNode_LanguageString (
+		PolytomousKeyNode_id integer not null,
+		modifyingtext_id integer not null,
+		modifyingtext_mapkey_id integer not null,
+		primary key (PolytomousKeyNode_id, modifyingtext_mapkey_id),
+		unique (modifyingtext_id)
+	)
+	
+	create table PolytomousKeyNode_LanguageString_AUD (
+		REV integer not null,
+		revtype tinyint,
+		PolytomousKeyNode_id integer not null,
+		modifyingtext_id integer not null,
+		modifyingtext_mapkey_id integer not null,
+		primary key (REV, PolytomousKeyNode_id, modifyingtext_id, modifyingtext_mapkey_id)
+	)
     
     create table PolytomousKeyNode_PolytomousKeyNode_AUD(
     	id integer not null,
@@ -7414,6 +7430,22 @@
         add constraint FK53114371857F6C2 
         foreign key (grantedauthorities_id) 
         references GrantedAuthorityImpl;
+
+    alter table PolytomousKeyNode_LanguageString 
+        add constraint FK5574E12EF05D08D4 
+        foreign key (modifyingtext_id) 
+        references LanguageString;
+
+    alter table PolytomousKeyNode_LanguageString 
+        add constraint FK5574E12EF135C42B 
+        foreign key (PolytomousKeyNode_id) 
+        references PolytomousKeyNode;
+
+    alter table PolytomousKeyNode_LanguageString 
+        add constraint FK5574E12E9682414B 
+        foreign key (modifyingtext_mapkey_id) 
+        references DefinedTermBase;
+
 
     alter table PolytomousKey_NamedArea 
         add constraint FK1C727CFF3FF8E7B2 

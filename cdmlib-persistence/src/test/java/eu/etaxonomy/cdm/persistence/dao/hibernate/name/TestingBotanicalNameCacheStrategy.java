@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.strategy.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 public class TestingBotanicalNameCacheStrategy implements
@@ -33,13 +34,34 @@ public class TestingBotanicalNameCacheStrategy implements
 		return "test.botanical.fullTitleCache"+ taxonNameBase.getId();
 	}
 
-	public List<Object> getTaggedName(BotanicalName taxonNameBase) {
+
+	public String getTitleCache(BotanicalName object) {
+		return "test.botanical.titleCache"+ object.getId();
+	}
+
+	
+
+	public List<Object> getTaggedNameDeprecated(BotanicalName taxonNameBase) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public List<TaggedText> getTaggedTitle(BotanicalName taxonName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String getTitleCache(BotanicalName object) {
-		return "test.botanical.titleCache"+ object.getId();
+	@Override
+	public List<TaggedText> getTaggedFullTitle(BotanicalName taxonName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TaggedText> getTaggedName(BotanicalName taxonName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

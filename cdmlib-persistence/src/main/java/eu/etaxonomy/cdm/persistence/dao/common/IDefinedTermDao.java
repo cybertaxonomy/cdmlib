@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -161,7 +162,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 */
 	public <T extends DefinedTermBase> int countIncludes(Set<T> definedTerms);
 
-	public DefinedTermBase findByUri(String uri);
+	public DefinedTermBase findByUri(URI uri);
 	
 	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

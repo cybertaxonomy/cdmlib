@@ -32,10 +32,12 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 
 	public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
 		Object entity = event.getObject();
-		//System.err.println("SaveEntityListener" + event.getEntityName()+ event.getEntity().getClass());
+		
         if (entity != null){
+        	
             Class<?> entityClazz = entity.getClass();
 			if(ICdmBase.class.isAssignableFrom(entityClazz)) {
+				//System.err.println("SaveEntityListener: " + entity + " - "+ entity.getClass().getSimpleName());
 				ICdmBase cdmBase = (ICdmBase)entity;
 				cdmBase.setCreated(new DateTime());
 			

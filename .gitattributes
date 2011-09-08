@@ -1307,7 +1307,6 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-persistence/src/test/resources/META-INF/persistence.xml -text
 cdmlib-persistence/src/test/resources/dbscripts/001_cdm.ddl -text
-cdmlib-persistence/src/test/resources/dbscripts/IDescriptionDao.java -text
 cdmlib-persistence/src/test/resources/dbscripts/hibernate.cfg.xml -text
 cdmlib-persistence/src/test/resources/dbscripts/hibernate.properties -text
 cdmlib-persistence/src/test/resources/eu.etaxonomy.cdm.model.common.DefinedTermBase/segments.gen -text

@@ -380,8 +380,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	
 	public T load(UUID uuid) {
 		T bean = findByUuid(uuid);
-		if(bean == null) 
+		if(bean == null){ 
 			return null;
+		}
 		defaultBeanInitializer.load(bean);
 		
 		return bean;
@@ -390,9 +391,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 	public T load(UUID uuid, List<String> propertyPaths){
 		T bean = findByUuid(uuid);
-		if(bean == null) 
+		if(bean == null){ 
 			return bean;
-		
+		}
 		defaultBeanInitializer.initialize(bean, propertyPaths);
 		
 		return bean;

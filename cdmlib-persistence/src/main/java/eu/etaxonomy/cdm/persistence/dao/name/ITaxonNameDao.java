@@ -293,8 +293,4 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start);
 	
 	public ZoologicalName findZoologicalNameByUUID(UUID uuid);
-
-	public UuidAndTitleCache<TaxonNameBase> findByNameForEditor(String searchString,
-			MatchMode matchMode);
-
 }

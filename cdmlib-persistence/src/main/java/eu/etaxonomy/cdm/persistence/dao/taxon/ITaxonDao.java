@@ -411,7 +411,15 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			Classification classification, MatchMode matchMode,
 			Set<NamedArea> namedAreas);
 	
-	public long deleteSynonymRelationships(Synonym syn);
+	/**
+	 * Deletes all synonym relationships of a given synonym.
+	 * If taxon is given only those relationships to the taxon
+	 * are deleted.
+	 * @param synonym the synonym
+	 * @param taxon the taxon, may be <code>null</code>
+	 * @return
+	 */
+	public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
 	public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
 

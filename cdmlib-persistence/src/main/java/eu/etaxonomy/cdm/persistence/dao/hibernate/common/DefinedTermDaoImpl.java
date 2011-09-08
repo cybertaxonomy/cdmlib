@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -585,7 +586,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		return results;
 	}
 
-	public DefinedTermBase findByUri(String uri) {
+	public DefinedTermBase findByUri(URI uri) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = getSession().createQuery("select term from DefinedTermBase term where term.uri = :uri");
