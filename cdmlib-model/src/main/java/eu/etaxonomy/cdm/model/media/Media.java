@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -149,7 +150,23 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
      * @return Media
      */
     public static Media NewInstance(URI uri, Integer size, String mimeType, String suffix){
-        MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size);
+    	//TODO improve type recognition
+    	Class<? extends MediaRepresentationPart> clazz = null;
+    	if (StringUtils.isNotBlank(mimeType)){
+    		if (mimeType.matches("image.*")){
+    			clazz = ImageFile.class;
+    		}
+    	}
+    	if (StringUtils.isNotBlank(suffix)){
+    		if (suffix.matches("\\.(gif|jpe?g|tiff?)")){
+    			clazz = ImageFile.class;
+    		}
+    	}else if (uri != null){
+    		if (uri.toString().matches("\\.(gif|jpe?g|tiff?)")){
+    			clazz = ImageFile.class;
+    		}
+    	}
+    	MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size,clazz);
         if (representation == null){
             return null;
         }
@@ -167,11 +184,10 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
     }
 
     private void setMediaCacheStrategy() {
-        if (getClass() == Media.class){
+//      if (getClass() == Media.class){
             this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
+//      }
         }
-
-    }
 
 
     public Set<MediaRepresentation> getRepresentations(){

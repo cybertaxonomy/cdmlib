@@ -27,9 +27,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -314,18 +312,11 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 		return NomenclaturalCode.ICBN;
 	}
 
-	/**
-	 * 
-	 * @param zoologicalName
-	 * @return
-	 */
-	public static BotanicalName valueOf(TaxonNameBase taxonNameBase){
-		logger.error("valueOf not implemented yet.");
-		return null;
-	}
 	
 	/**
-	 * @param name
+	 * Checks if this name is an autonym.<BR>
+	 * An autonym is a taxon name that has equal specific and infra specific epithets.<BR>
+	 * {@link http://ibot.sav.sk/icbn/frameset/0010Ch2Sec1a006.htm#6.8. Vienna Code §6.8}
 	 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
 	 */
 	@Override

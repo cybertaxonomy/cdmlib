@@ -269,7 +269,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 
 	/**
 	 * Replaces ALL accepted taxa of this synonym by the new accepted taxon.
-	 * The citation information (citation /microcitation) is kept of the synonym relationship
+	 * The citation information (citation /microcitation) of the synonym relationship
 	 * is kept.
 	 * @param newAcceptedTaxon
 	 * 			the new accepted taxon
@@ -288,13 +288,23 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	 * @param acceptedTaxon
 	 */
 	public void replaceAcceptedTaxon(Taxon newAcceptedTaxon, SynonymRelationshipType relType, boolean copyCitationInfo, Reference citation, String microCitation) {
-		Set<SynonymRelationship> rels = this.getSynonymRelations();
+		Set<SynonymRelationship> rels = new HashSet<SynonymRelationship>();
+		rels.addAll(this.getSynonymRelations());  //avoid concurrent modification exception
+		
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
+			//remove old
 			oldAcceptedTaxon.getSynonymRelations().remove(rel);
-			rel.setAcceptedTaxon(newAcceptedTaxon);
-			newAcceptedTaxon.getSynonymRelations().add(rel);
-			rel.setType(relType);
+			Synonym syn = rel.getSynonym();  //syn should be this
+			syn.getSynonymRelations().remove(rel);
+			//create new
+			SynonymRelationship newRel = (SynonymRelationship)rel.clone();
+			newRel.setAcceptedTaxon(newAcceptedTaxon);
+			newAcceptedTaxon.getSynonymRelations().add(newRel);
+			newRel.setSynonym(syn);
+			syn.getSynonymRelations().add(newRel);
+			
+			newRel.setType(relType);
 		}
 	}
 //*********************** CLONE ********************************************************/

@@ -42,9 +42,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "ReferencedMedia")
 @Entity
 @Audited
-public abstract class ReferencedMedia extends Media implements IReferencedEntity {
-	
-	static Logger logger = Logger.getLogger(ReferencedMedia.class);
+public abstract class ReferencedMediaBase extends Media implements IReferencedEntity {
+	private static final long serialVersionUID = 4118655992311004088L;
+	static Logger logger = Logger.getLogger(ReferencedMediaBase.class);
 	
 	@XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
@@ -54,13 +54,13 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private Reference citation;
+	private Reference<?> citation;
 
-	public Reference getCitation(){
+	public Reference<?> getCitation(){
 		return this.citation;
 	}
 	
-	public void setCitation(Reference citation){
+	public void setCitation(Reference<?> citation){
 		this.citation = citation;
 	}
 

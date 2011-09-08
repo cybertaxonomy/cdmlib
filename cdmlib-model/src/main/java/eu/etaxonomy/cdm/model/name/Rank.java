@@ -757,20 +757,26 @@ public class Rank extends OrderedTermBase<Rank> {
 		
 		}else{ 
 			if (rankName == null){
-				rankName = "(null)";
+				rankName = "(null)";  //see NPE above
 			}
 			if (useUnknown){
 				logger.info("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");
 				return Rank.UNKNOWN_RANK();
 			}else{
-				if (rankName == null){
-					rankName = "(null)";
-				}
 				throw new UnknownCdmTypeException("Unknown rank name: " + rankName);
 			}
 		}
 	}
 
+	/**
+	 * Defines the rank according to the English name.
+	 * @param rankName English rank name.
+	 * @param nc Defines the handling of the section and subsection ranks. These are in different orders depending on the
+	 * nomenclatural code.
+	 * @param useUnknown if true, the "Unknown" rank is returned as a placeholder.
+	 * @return
+	 * @throws UnknownCdmTypeException never thrown if useUnknown is true
+	 */
 	public static Rank getRankByEnglishName(String rankName, NomenclaturalCode nc, boolean useUnknown) throws UnknownCdmTypeException{
 		Rank result = null;
 		if (rankName == null){ 

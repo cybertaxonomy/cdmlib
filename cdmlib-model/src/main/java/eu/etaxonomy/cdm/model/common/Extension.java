@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.envers.Audited;
@@ -122,8 +123,23 @@ public class Extension extends VersionableEntity implements Cloneable {
 	public void setValue(String value){
 		this.value = value;
 	}
+
+//***************************** TO STRING ***********************************
 	
-	//****************** CLONE ************************************************/
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
+	 */
+	@Override
+	public String toString() {
+		if (StringUtils.isNotBlank(this.value)){
+			return "Ext.: " + this.value;
+		}else{
+			return super.toString();
+		}
+	}
+	 
+	
+//****************** CLONE ************************************************/
 	 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()

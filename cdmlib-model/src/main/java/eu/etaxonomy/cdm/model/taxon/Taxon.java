@@ -1409,7 +1409,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		if (this.getHomotypicGroup() == null){
 			return null;
 		}else{
-			return this.getHomotypicGroup().getSynonymsInGroup(this.getSec());
+			return this.getSynonymsInGroup(this.getHomotypicGroup());
 		}
 	}
 	
@@ -1440,7 +1440,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	/**
 	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} {@link Synonym synonyms} of
-	 * <i>this</i> taxon belongs to. {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of homotypic synonyms
+	 * <i>this</i> taxon belong to. {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of homotypic synonyms
 	 * belong to the same homotypical group as the taxon name of <i>this</i>
 	 * taxon. Taxon names of heterotypic synonyms belong to at least one other
 	 * homotypical group. <BR>
@@ -1502,13 +1502,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	}
 
 	/**
-	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} heterotypic
-	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
-	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least
-	 * one homotypical group which cannot be the homotypical group to which the
+	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} 
+	 * that contain {@link Synonym synonyms} that are heterotypic to <i>this</i> taxon.
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms 
+	 * belong to a homotypical group which cannot be the homotypical group to which the
 	 * taxon name of <i>this</i> taxon belongs. This method returns the same
 	 * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
-	 * but the homotypical group to which the taxon name of <i>this</i> taxon
+	 * but without the homotypical group to which the taxon name of <i>this</i> taxon
 	 * belongs.<BR>
 	 * The list returned is ordered according to the date of publication of the
 	 * first published name within each homotypical group.
@@ -1525,7 +1525,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		//sort
 		Map<Synonym, HomotypicalGroup> map = new HashMap<Synonym, HomotypicalGroup>();
 		for (HomotypicalGroup homotypicalGroup: list){
-			List<Synonym> synonymList = homotypicalGroup.getSynonymsInGroup(getSec());
+			List<Synonym> synonymList = getSynonymsInGroup(homotypicalGroup);
 			if (synonymList.size() > 0){
 				map.put(synonymList.get(0), homotypicalGroup);
 			}
@@ -1541,6 +1541,37 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		//sort end
 		return result;
 	}
+	
+	/**
+	 * Retrieves the ordered list (depending on the date of publication) of
+	 * {@link taxon.Synonym synonyms} (according to a given reference)
+	 * the {@link TaxonNameBase taxon names} of which belong to the homotypical group.
+	 * If other names are part of the group that are not considered synonyms of 
+	 * <i>this</i> taxon, then they will not be included in
+	 * the result set.
+	 * 
+	 * @param homoGroup
+	 * @see			TaxonNameBase#getSynonyms()
+	 * @see			TaxonNameBase#getTaxa()
+	 * @see			taxon.Synonym
+	 */
+	@Transient
+	public List<Synonym> getSynonymsInGroup(HomotypicalGroup homoGroup){
+		List<Synonym> result = new ArrayList<Synonym>();
+		
+		for (TaxonNameBase<?, ?>name : homoGroup.getTypifiedNames()){
+			for (Synonym synonym : name.getSynonyms()){
+				for(SynonymRelationship synRel : synonym.getSynonymRelations()){
+					if (synRel.getAcceptedTaxon().equals(this)){
+						result.add(synRel.getSynonym());
+					}
+				}
+			}
+		}
+		Collections.sort(result, new TaxonComparator());
+		return result;
+	}
+
 	
 	/**
 	 * Returns the image gallery description. If no image gallery exists, a new one is created using the 

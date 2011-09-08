@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
@@ -187,6 +188,22 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		}
 	}
 	
+// ***************************** TO STRING ***********************************
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
+	 */
+	@Override
+	public String toString() {
+		if (StringUtils.isNotBlank(this.text)){
+			return "Ann.: " + this.text;
+		}else{
+			return super.toString();
+		}
+	}
+	
+	
 	
 //****************** CLONE ************************************************/
 	 
@@ -201,7 +218,8 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		result.setLinkbackUrl(this.linkbackUrl);
 		return result;
 	}
-	
+
+
 	/**
 	 * Clones this annotation and sets the clone's annotated object to 'annotatedObject'
 	 * @see java.lang.Object#clone()

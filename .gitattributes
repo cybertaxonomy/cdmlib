@@ -551,6 +551,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/TeamOrPersonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package.html -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AbstractStringComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotatableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -text
@@ -677,7 +678,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentation.java
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentationPart.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaUtils.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MovieFile.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ReferencedMedia.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ReferencedMediaBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Rights.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/RightsTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/package-info.java -text
@@ -762,6 +763,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package-info.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/AlternativeTreeRoot.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Classification.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITaxonNodeComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITreeNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/IllegalAncestryException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Synonym.java -text
@@ -772,6 +774,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeByNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package-info.java -text
