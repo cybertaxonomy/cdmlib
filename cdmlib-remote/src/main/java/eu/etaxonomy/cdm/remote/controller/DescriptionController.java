@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 @Controller
 @RequestMapping(value = {"/description/{uuid}", "/description/{uuid_list}"})
-public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
+public class DescriptionController extends BaseController<DescriptionBase, IDescriptionService>
 {
     @Autowired
     private IFeatureTreeService featureTreeService;
@@ -119,7 +119,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
             return null;
         }
 
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
+        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
     }
 

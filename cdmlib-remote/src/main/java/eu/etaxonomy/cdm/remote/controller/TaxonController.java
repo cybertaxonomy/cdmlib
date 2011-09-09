@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
  */
 @Controller
 @RequestMapping(value = {"/taxon/{uuid}"})
-public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
+public class TaxonController extends BaseController<TaxonBase, ITaxonService>
 {
     public static final Logger logger = Logger.getLogger(TaxonController.class);
 

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 @Controller
 @RequestMapping(value = {"/portal/media/{uuid}"})
-public class MediaPortalController extends AnnotatableController<Media, IMediaService>
+public class MediaPortalController extends BaseController<Media, IMediaService>
 {
 
 	private static final List<String> MEDIA_INIT_STRATEGY = Arrays.asList(new String []{

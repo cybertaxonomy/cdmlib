@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -52,101 +52,101 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
 
 @Controller
 @RequestMapping(value = {"/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionElement/{descriptionelement_uuid}", "/portal/featureTree/{featuretree_uuid}"})
-public class DescriptionPortalController extends AnnotatableController<DescriptionBase, IDescriptionService>
+public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
-	@Autowired
-	private IFeatureTreeService featureTreeService;
-	
-	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
-			new String[]{
-				"representations",
-				"root.feature.representations",
-				"root.children.feature.representations",
-			});
-	private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
-			"elements.sources.citation.$",
-			"elements.area.$",
-			});
-	protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
-			"$",
-			"elements.$",
-			"elements.sources.citation.authorTeam.$",
-			"elements.sources.nameUsedInSource.originalNameString",
-			"elements.area.level",
-			"elements.modifyingText",
-	});
-	
-	@InitBinder
-	@Override
-	public void initBinder(WebDataBinder binder) {
-		super.initBinder(binder);
-		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
-		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Autowired
-	@Override
-	public void setService(IDescriptionService service) {
-		this.service = service;
-	}
-	
-	/**
-	 * TODO write controller method documentation
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	
-	@RequestMapping(value = {"/portal/featureTree/{featuretree_uuid}"}, method = RequestMethod.GET)
-	public FeatureTree doGetFeatureTree(
-			@PathVariable("featuretree_uuid") UUID featureUuid,
-			HttpServletRequest request, 
-			HttpServletResponse response)throws IOException {
-		//UUID featureTreeUuid = readValueUuid(request, null);
-		FeatureTree featureTree = featureTreeService.load(featureUuid, FEATURETREE_INIT_STRATEGY);
-		if(featureTree == null){
-			HttpStatusMessage.UUID_NOT_FOUND.send(response);
-		}
-		return featureTree;
-	}
-	
-	@RequestMapping(value = "/portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
-	public Pager<Annotation> getAnnotations(
-			@PathVariable("descriptionelement_uuid") UUID uuid,
-			HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		logger.info("getAnnotations() - " + request.getServletPath());
-		DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
-		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
-		return annotations;
-	}
-	
-	@RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
-	public DistributionTree doGetOrderedDistributionsB(
-			@PathVariable("uuid_list") UuidList descriptionUuidList,
-			@RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
-			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
-		Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
-		TaxonDescription description;
-		for (UUID descriptionUuid : descriptionUuidList) {
-			description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
-			taxonDescriptions.add(description);
-		}
-		DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
-		return distTree;
-	}
+    @Autowired
+    private IFeatureTreeService featureTreeService;
+
+    private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
+            new String[]{
+                "representations",
+                "root.feature.representations",
+                "root.children.feature.representations",
+            });
+    private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "elements.sources.citation.$",
+            "elements.area.$",
+            });
+    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "elements.$",
+            "elements.sources.citation.authorTeam.$",
+            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.area.level",
+            "elements.modifyingText",
+    });
+
+    @InitBinder
+    @Override
+    public void initBinder(WebDataBinder binder) {
+        super.initBinder(binder);
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Autowired
+    @Override
+    public void setService(IDescriptionService service) {
+        this.service = service;
+    }
+
+    /**
+     * TODO write controller method documentation
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+
+    @RequestMapping(value = {"/portal/featureTree/{featuretree_uuid}"}, method = RequestMethod.GET)
+    public FeatureTree doGetFeatureTree(
+            @PathVariable("featuretree_uuid") UUID featureUuid,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+        //UUID featureTreeUuid = readValueUuid(request, null);
+        FeatureTree featureTree = featureTreeService.load(featureUuid, FEATURETREE_INIT_STRATEGY);
+        if(featureTree == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        return featureTree;
+    }
+
+    @RequestMapping(value = "/portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
+    public Pager<Annotation> getAnnotations(
+            @PathVariable("descriptionelement_uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("getAnnotations() - " + request.getServletPath());
+        DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
+        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
+        return annotations;
+    }
+
+    @RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
+    public DistributionTree doGetOrderedDistributionsB(
+            @PathVariable("uuid_list") UuidList descriptionUuidList,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
+            HttpServletRequest request, HttpServletResponse response) {
+        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
+        Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
+        TaxonDescription description;
+        for (UUID descriptionUuid : descriptionUuidList) {
+            description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
+            taxonDescriptions.add(description);
+        }
+        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
+        return distTree;
+    }
 
 }

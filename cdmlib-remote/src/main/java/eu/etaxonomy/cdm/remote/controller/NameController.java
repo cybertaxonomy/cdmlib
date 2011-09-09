@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 @Controller
 @RequestMapping(value = {"/name/{uuid}"})
-public class NameController extends AnnotatableController<TaxonNameBase, INameService>
+public class NameController extends BaseController<TaxonNameBase, INameService>
 {
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
