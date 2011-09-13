@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import junit.framework.Assert;
+
 import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +38,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -337,5 +340,23 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		TaxonDescription clonedDescription = (TaxonDescription)description.clone();
 		this.descriptionDao.save(clonedDescription);
 	}
+	
+	//see #2592
+	@Test
+	public void testSaveScope(){
+		int n1 = this.descriptionDao.count();
+		Taxon taxon = Taxon.NewInstance(null, null);
+		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+		this.taxonDao.save(taxon);
+		int n2 = this.descriptionDao.count();
+		Assert.assertEquals(1, n2-n1);
+		
+		Sex scope = Sex.FEMALE();
+		description.addScope(scope);
+		
+		this.descriptionDao.saveOrUpdate(description);
+		
+	}
+	
 	
 }
