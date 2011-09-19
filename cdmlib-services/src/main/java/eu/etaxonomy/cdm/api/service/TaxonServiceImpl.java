@@ -670,11 +670,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (removeNameIfPossible){
 			TaxonNameBase name = synonym.getName();
 			nameService.delete(name);
-			//check is used
-				//name relationship
-				//concept
-				//descriptionElementSource
-				//
 		}
 	}
 	
