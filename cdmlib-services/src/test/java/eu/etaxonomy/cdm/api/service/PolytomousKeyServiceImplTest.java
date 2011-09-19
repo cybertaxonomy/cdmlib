@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @date 23.08.2011
  *
  */
+@Ignore
 public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(PolytomousKeyServiceImplTest.class);
 
