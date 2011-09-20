@@ -233,7 +233,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 					partitioner.startDoSave();
 					taxaToSave.add(taxonBase);
 				} catch (Exception e) {
-					logger.warn("An exception occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");
+					logger.warn("An exception (" +e.getMessage()+") occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");
 					success = false;
 				}
 			}
