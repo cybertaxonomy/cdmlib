@@ -144,7 +144,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						 logger.warn("from TaxonName for RelName (" + relNameId + ") does not exist in store");
 					}
 					if (nameTo == null){
-						logger.warn("to TaxonNames for RelName (" + relNameId + ") does not exist in store");
+						logger.warn("to TaxonName for RelName (" + relNameId + ") does not exist in store");
 					}
 					success = false;
 				}
