@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_HAS_SAME_TYPE_AS;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_BASIONYM_FOR;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_CONSERVED_TYPE_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_VALIDATION_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_VALIDATION_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_FEMALE_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_FIRST_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_HOMONYM_OF;
@@ -189,6 +191,10 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, rule) ;
 		}else if (relQualifierFk == NAME_REL_HAS_SAME_TYPE_AS){
 			nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());
+		}else if (relQualifierFk == NAME_REL_IS_VALIDATION_OF){
+			nameRelationship = nameTo.addRelationshipToName(nameFrom, NameRelationshipType.VALIDATED_BY_NAME(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_IS_LATER_VALIDATION_OF){
+			nameRelationship = nameTo.addRelationshipToName(nameFrom, NameRelationshipType.LATER_VALIDATED_BY_NAME(), citation, microcitation, rule) ;
 		}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF || relQualifierFk == NAME_REL_IS_LECTOTYPE_OF || relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED ){
 			boolean isRejectedType = (relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF);
 			boolean isConservedType = (relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF);
