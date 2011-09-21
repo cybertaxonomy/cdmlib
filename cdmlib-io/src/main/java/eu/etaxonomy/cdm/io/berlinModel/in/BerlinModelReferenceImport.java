@@ -137,7 +137,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	};
 	
 	protected static String[] unclearMappers = new String[]{
-			"isPaper", "exportDate", 
+			/*"isPaper",*/ "exportDate", 
 	};
 	
 	//TODO isPaper
