@@ -196,8 +196,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	}
 
-	// ****************************** TESTS
-	// *****************************************/
+	// ****************************** TESTS*****************************/
 
 	@Test
 	@DataSet("DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml")
@@ -206,17 +205,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		UUID imageFeatureUuid = Feature.IMAGE().getUuid();
 		Feature imageFeature = (Feature) termService.find(imageFeatureUuid);
 
-		DerivedUnitFacade facade = DerivedUnitFacade
-				.NewInstance(DerivedUnitType.Specimen);
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
 		facade.setFieldNumber("12345");
-		Media media = Media.NewInstance(URI.create("www.abc.de"), 200, null,
-				"jpeg");
+		Media media = Media.NewInstance(URI.create("www.abc.de"), 200, null,"jpeg");
 
 		try {
-			SpecimenDescription imageGallery = SpecimenDescription
-					.NewInstance();
-			imageGallery.addDescribedSpecimenOrObservation(facade
-					.innerFieldObservation());
+			SpecimenDescription imageGallery = SpecimenDescription.NewInstance();
+			imageGallery.addDescribedSpecimenOrObservation(facade.innerFieldObservation());
 			imageGallery.setImageGallery(true);
 			TextData textData = TextData.NewInstance();
 			textData.setFeature(imageFeature);
@@ -250,10 +245,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		// UUID specimenUUID =
 		// UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
 		// Specimen specimen = (Specimen)service.find(specimenUUID);
-		DerivedUnitFacade facade = DerivedUnitFacade
-				.NewInstance(DerivedUnitType.Specimen);
-		Media media = Media.NewInstance(URI.create("www.derivedUnitImage.de"),
-				200, null, "png");
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		Media media = Media.NewInstance(URI.create("www.derivedUnitImage.de"),200, null, "png");
 
 		try {
 			SpecimenDescription imageGallery = SpecimenDescription
