@@ -199,7 +199,6 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					String fact = CdmUtils.Nz(rs.getString("Fact"));
 					String notes = CdmUtils.Nz(rs.getString("notes"));
 					Boolean doubtfulFlag = rs.getBoolean("DoubtfulFlag");
-					Boolean publishFlag = rs.getBoolean("publishFlag");
 					
 					TaxonBase taxonBase = getTaxon(taxonMap, taxonIdObj, taxonId);
 					Feature feature = getFeature(featureMap, categoryFkObj, categoryFk) ;
@@ -314,7 +313,13 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							textData.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), true));
 						}
 						//publisheFlag
-						textData.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+						String strPublishFlag = "publishFlag";
+						boolean publishFlagExists = state.getConfig().getSource().checkColumnExists(dbTableName, strPublishFlag);
+						if (publishFlagExists){
+							Boolean publishFlag = rs.getBoolean(strPublishFlag);
+							textData.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+						}
+						
 						//Sequence
 						Integer sequence = rs.getInt("Sequence");
 						if (sequence != null && sequence != 999){

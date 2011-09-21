@@ -33,17 +33,16 @@ public class BerlinModelFactsImportValidator implements IOValidator<BerlinModelI
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-		logger.warn("Checking for Facts not yet fully implemented");
-		result &= checkDesignationRefsExist(bmiConfig);
+		result &= checkDesignationRefsExist(state);
+		result &= checkFactsForSynonyms(state);
 		return result;
 	}
 	
 	
-	private boolean checkDesignationRefsExist(BerlinModelImportConfigurator config){
+	private boolean checkDesignationRefsExist(BerlinModelImportState state){
 		try {
 			boolean result = true;
-			Source source = config.getSource();
+			Source source = state.getConfig().getSource();
 			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
 					" FROM Fact " +
 					" WHERE (NOT (PTDesignationRefFk IS NULL) ) OR " +
@@ -54,6 +53,31 @@ public class BerlinModelFactsImportValidator implements IOValidator<BerlinModelI
 			if (count > 0){
 				System.out.println("========================================================");
 				logger.warn("There are "+count+" Facts with not empty designation references. Designation references are not imported.");
+				
+				System.out.println("========================================================");
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
+	private boolean checkFactsForSynonyms(BerlinModelImportState state){
+		try {
+			boolean result = true;
+			Source source = state.getConfig().getSource();
+			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
+					" FROM Fact " +
+						"INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk" +
+					" WHERE PTaxon.StatusFk IN (2, 3, 4)";
+			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+			rs.next();
+			int count = rs.getInt("n");
+			if (count > 0){
+				System.out.println("========================================================");
+				logger.warn("There are "+count+" Facts with attached synonyms.");
 				
 				System.out.println("========================================================");
 			}

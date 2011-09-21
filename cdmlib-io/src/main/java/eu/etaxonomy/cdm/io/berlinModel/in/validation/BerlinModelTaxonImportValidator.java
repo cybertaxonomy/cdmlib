@@ -31,8 +31,7 @@ public class BerlinModelTaxonImportValidator implements IOValidator<BerlinModelI
 	public boolean validate(BerlinModelImportState state){
 		boolean result = true;
 		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-		logger.warn("Checking for Taxa not yet fully implemented");
-		result &= checkTaxonStatus(bmiConfig);
+//		result &= checkTaxonStatus(bmiConfig); //handled by TaxonRelationValidator
 		result &= checkInactivated(bmiConfig);
 		return result;
 	}

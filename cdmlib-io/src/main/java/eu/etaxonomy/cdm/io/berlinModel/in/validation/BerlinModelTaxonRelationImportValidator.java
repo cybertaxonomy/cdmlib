@@ -33,18 +33,17 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-		logger.warn("Checking for TaxonRelations not yet fully implemented");
-		result &= checkInActivatedStatus(bmiConfig);
-		
+		result &= checkInActivatedStatus(state);
+		result &= checkSynonymRelationsWithAcceptedTaxa(state);
+		result &= checkRelPTaxonWithNotes(state);
 		return result;
 	}
 	
 	
-	private boolean checkInActivatedStatus(BerlinModelImportConfigurator bmiConfig){
+	private boolean checkInActivatedStatus(BerlinModelImportState state){
 		try {
 			boolean result = true;
-			Source source = bmiConfig.getSource();
+			Source source = state.getConfig().getSource();
 			String strSQL = 
 				" SELECT RelPTaxon.RelPTaxonId, RelPTaxon.RelQualifierFk, FromName.FullNameCache AS FromName, RelPTaxon.PTNameFk1 AS FromNameID, "  +
 		    			" Status.Status AS FromStatus, ToName.FullNameCache AS ToName, RelPTaxon.PTNameFk2 AS ToNameId, ToStatus.Status AS ToStatus, FromTaxon.DoubtfulFlag AS doubtfulFrom, ToTaxon.DoubtfulFlag AS doubtfulTo" + 
@@ -117,6 +116,62 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 				logger.warn("There are " + n + " RelPTaxa with a note. Notes for RelPTaxa are not imported!");
 				System.out.println("========================================================");
 				success = false;
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return success;
+	}
+	
+	/**
+	 * @param state
+	 * @return
+	 */
+	private boolean checkSynonymRelationsWithAcceptedTaxa(BerlinModelImportState state) {
+		boolean success = true;
+		try {
+			
+			Source source = state.getConfig().getSource();
+			String strQuery = 
+				"SELECT RelPTaxon.RelPTaxonId, RelPTQualifier, PTaxon.RIdentifier, Name.FullNameCache fromName, PTaxon.PTRefFk, Name.NameId as fromNameId, AcceptedName.FullNameCache acceptedName" +
+				" FROM RelPTaxon INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " +
+					" INNER JOIN RelPTQualifier ON RelPTaxon.RelQualifierFk = RelPTQualifier.RelPTQualifierId " +
+					" LEFT OUTER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
+					" LEFT OUTER JOIN Name AS AcceptedName ON RelPTaxon.PTNameFk2 = AcceptedName.NameId " +
+				" WHERE (PTaxon.StatusFk = 1) AND (RelPTaxon.RelQualifierFk IN (2, 4, 5, 6, 7))";
+			ResultSet rs = source.getResultSet(strQuery);
+			boolean firstRow = true;
+			int i = 0;
+			while (rs.next()){
+				i++;
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are accepted taxa being synonyms in a synonym relationship!");
+					System.out.println("========================================================");
+				}
+
+				int relPTaxonId = rs.getInt("RelPTaxonId");
+				String relType = rs.getString("RelPTQualifier");
+				int fromIdentifier = rs.getInt("RIdentifier");
+				String fromName = rs.getString("fromName");
+				int fromRefFk = rs.getInt("PTRefFk");
+				int fromNameId = rs.getInt("fromNameId");
+//				String fromStatus = rs.getString("FromStatus");
+				
+				
+				String toName = rs.getString("acceptedName");
+//				int toNameId = rs.getInt("ToNameId");
+//				String toStatus = rs.getString("ToStatus");
+//				String doubtfulFrom = String.valueOf(rs.getObject("doubtfulFrom"));
+//				String doubtfulTo = String.valueOf(rs.getObject("doubtfulTo"));
+				
+				
+				System.out.println("RelPTaxonId:" + relPTaxonId + 
+						"\n TaxonRIdentifier: " + fromIdentifier + "\n name: " + fromName + "\n nameId: " + fromNameId + "\n RefFk: " + fromRefFk + "\n RelType: " + relType  
+						+ "\n acceptedName: " + toName //+ "\n  ToNameId: " + toNameId + "\n  ToStatus: " + toStatus + "\n  ToDoubtful: " + doubtfulTo )
+						);
+				success = (firstRow = false);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

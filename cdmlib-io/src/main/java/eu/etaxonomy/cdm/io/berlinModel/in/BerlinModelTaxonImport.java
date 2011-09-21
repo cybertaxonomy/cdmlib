@@ -223,10 +223,14 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 						taxonBase.setUseNameCache(true);
 					}
 					//publisheFlag
-					Boolean publishFlag = rs.getBoolean("PublishFlag");
-					if (config.getTaxonPublishMarker().doMark(publishFlag)){
-						taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+					boolean publishFlagExists = state.getConfig().getSource().checkColumnExists("PTaxon", "PublishFlag");
+					if (publishFlagExists){
+						Boolean publishFlag = rs.getBoolean("PublishFlag");
+						if (config.getTaxonPublishMarker().doMark(publishFlag)){
+							taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+						}
 					}
+					
 					//Notes
 					doIdCreatedUpdatedNotes(state, taxonBase, rs, taxonId, NAMESPACE);
 					
