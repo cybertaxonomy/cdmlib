@@ -83,6 +83,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmBooleanMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmOneToManyMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmStringMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmUriMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelAuthorImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelAuthorTeamImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelCommonNamesImport.java -text
