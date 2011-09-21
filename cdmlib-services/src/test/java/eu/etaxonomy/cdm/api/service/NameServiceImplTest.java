@@ -54,6 +54,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
 	private ITaxonService taxonService;
+
+	@SpringBeanByType
+	private ITermService termService;
+
 	
 /* ******************** TESTS ********************************************/
 	
@@ -171,9 +175,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void testDeleteTaxonNameBaseWithNameRelations() {
 		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 
-		NonViralName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
 		basionym.setTitleCache("basionym", true);
 		
 		name1.addBasionym(basionym);
@@ -210,11 +214,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void testDeleteTaxonNameBaseWithHybridRelations() {
 		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
-		NonViralName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
-		NonViralName parent = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName parent = BotanicalName.NewInstance(getSpeciesRank());
 		parent.setTitleCache("parent", true);
-		NonViralName child = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName child = BotanicalName.NewInstance(getSpeciesRank());
 		child.setTitleCache("child", true);
 		
 		name1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), null);
@@ -244,7 +248,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertNull("Name should not be in database anymore",name1);
 		
 		//child
-		name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.addHybridChild(child, HybridRelationshipType.FIRST_PARENT(), null);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
@@ -277,9 +281,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void testDeleteTaxonNameBaseInConcept() {
 		final String[] tableNames = new String[]{"TaxonNameBase","TaxonBase"};
 
-		NonViralName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
 		basionym.setTitleCache("basionym", true);
 
 		Taxon taxon = Taxon.NewInstance(name1, null);
@@ -320,7 +324,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void testDeleteTaxonNameBaseAsStoredUnder() {
 		final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
 
-		NonViralName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
 		Specimen specimen = Specimen.NewInstance();
 		specimen.setStoredUnder(name1);
@@ -361,9 +365,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void testDeleteTaxonNameBaseInSource() {
 		final String[] tableNames = new String[]{"TaxonNameBase","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};
 
-		NonViralName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
+		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(getSpeciesRank());
 		taxonName.setTitleCache("taxonName", true);
 		Taxon taxon = Taxon.NewInstance(taxonName, null);
 		
@@ -412,11 +416,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void testDeleteTaxonNameBase() {
 		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 
-		NonViralName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
 		
 		//TaxonNameDescription
-		name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1 = BotanicalName.NewInstance(getSpeciesRank());
 		TaxonNameDescription nameDesc = TaxonNameDescription.NewInstance(name1);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
@@ -428,7 +432,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		printDataSet(System.out, tableNames);
 
 		//NomenclaturalStatus
-		name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1 = BotanicalName.NewInstance(getSpeciesRank());
 		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
 		name1.addStatus(status);
 		nameService.save(name1);
@@ -451,6 +455,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		endTransaction();
 //		printDataSet(System.out, tableNames);
 		startNewTransaction();
+	}
+	
+
+	/**
+	 * @return
+	 */
+	private Rank getSpeciesRank() {
+		return (Rank)termService.find(Rank.uuidSpecies);
 	}
 
 
