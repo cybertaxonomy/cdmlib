@@ -361,6 +361,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertNull("Name should not be in database anymore",name1);
 		specimen = (Specimen)occurrenceService.find(specimen.getUuid());
 		Assert.assertNotNull("Specimen should still be in database",specimen);
+		
+		occurrenceService.delete(specimen); //this is to better run this test in the test suit
+		
 	}
 	
 	/**
