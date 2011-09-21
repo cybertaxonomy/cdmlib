@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -24,20 +25,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -50,6 +50,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -81,6 +83,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     private ITypeDesignationDao typeDesignationDao;
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
+	@Autowired
+	private ICdmGenericDao genericDao;
 
     /**
      * Constructor
@@ -89,7 +93,91 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         if (logger.isDebugEnabled()) { logger.debug("Load NameService Bean"); }
     }
 
+//********************* METHODS ****************************************************************//	
+	
+	@Override
+	public UUID delete(TaxonNameBase name){
+		NameDeletionConfigurator config = new NameDeletionConfigurator();
+		return delete(name, config);
+	}
+	
+	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config){
+		//check is used
+		//relationships
+		if (config.isRemoveAllNameRelationships()){
+			Set<NameRelationship> rels = name.getNameRelations();
+			for (NameRelationship rel : rels){
+				name.removeNameRelationship(rel);
+			}
+		}
+		if (! name.getNameRelations().isEmpty()){
+			String message = "Name can't be deleted as it is used in name relationship(s).";
+			throw new RuntimeException(message);
+		}
+		//concepts
+		if (! name.getTaxonBases().isEmpty()){
+			String message = "Name can't be deleted as it is used in concept(s).";
+			throw new RuntimeException(message);
+		}
+		//hybrid relationships
+		if (name.isInstanceOf(NonViralName.class)){
+			NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+			if (! nvn.getHybridChildRelations().isEmpty()){
+				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s).";
+				throw new RuntimeException(message);
+			}
+			if (! nvn.getHybridParentRelations().isEmpty()){
+				String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s).";
+				throw new RuntimeException(message);
+			}
+		}
+		
+		
+
+		
+		Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+		
+		for (CdmBase referencingObject : referencingObjects){
+			//DerivedUnitBase?.storedUnder
+			if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
+				String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+				message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+				throw new RuntimeException(message);
+			}
+			//DescriptionElementSource#nameUsedInSource
+			if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+				String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+//				message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+				throw new RuntimeException(message);
+			}
+			//TaxonNameDescriptions#taxonName
+			//should be deleted via cascade?
+//			if (referencingObject.isInstanceOf(TaxonNameDescription.class)){
+//				String message = "Name can't be deleted as it is has taxon name description(s)";
+//				throw new RuntimeException(message);
+//			}
+			
+			//NomenclaturalStatus
+			//should be deleted via cascade?
+//		    
+				
+		}
+		
+		//check is used
+//	    which name relations can be automatically deleted without throwing an exception
+
+		//	    TypeDesignations?
+		
+
+//	    inline references
+		
+		
+		dao.delete(name);
+		return name.getUuid();
+	}
+
 //********************* METHODS ****************************************************************//
+
 
     public List getNamesByName(String name){
         return super.findCdmObjectsByTitle(name);
