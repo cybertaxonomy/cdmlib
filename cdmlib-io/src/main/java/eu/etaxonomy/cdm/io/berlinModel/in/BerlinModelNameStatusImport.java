@@ -249,7 +249,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 				if (ref == null ){
 					//TODO
 					if (! config.isIgnoreNull()){logger.warn("Reference (refFk = " + nomRefFk + ") for NomStatus of TaxonName (nameId = " + nameId + ")"+
-						" was not found in reference store. Nomenclatural reference was not set!!");}
+						" was not found in reference store. Nomenclatural status reference was not set!!");}
 				}else{
 					nomStatus.setCitation(ref);
 				}
