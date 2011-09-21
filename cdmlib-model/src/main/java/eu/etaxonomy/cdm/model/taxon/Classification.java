@@ -316,7 +316,7 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 				return null;
 			}
 			if (parent == child){
-				logger.warn("A taxon should never be its own child. Chilc not added");
+				logger.warn("A taxon should never be its own child. Child not added");
 				return null;
 			}
 			TaxonNode parentNode = this.getNode(parent);
