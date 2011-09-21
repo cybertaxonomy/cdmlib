@@ -226,7 +226,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		child.setTitleCache("child", true);
 		
 		HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
-		name1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), null);
+		name1.addHybridParent(parent, relType, null);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
 
@@ -254,7 +254,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 		//child
 		name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.addHybridChild(child, HybridRelationshipType.FIRST_PARENT(), null);
+		name1.addHybridChild(child, relType, null);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
 		
@@ -378,7 +378,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		Feature feature = (Feature)termService.find(Feature.DESCRIPTION().getUuid());
-		TextData textData = TextData.NewInstance("Any text", Language.DEFAULT(), null);
+		Language lang = (Language)termService.find(Language.DEFAULT().getUuid());
+		TextData textData = TextData.NewInstance("Any text", lang, null);
 		textData.setFeature(feature);
 		taxonDescription.addElement(textData);
 		DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, name1, "");
