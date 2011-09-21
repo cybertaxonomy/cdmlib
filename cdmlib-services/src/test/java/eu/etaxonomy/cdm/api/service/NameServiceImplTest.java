@@ -21,11 +21,13 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -180,7 +182,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
 		basionym.setTitleCache("basionym", true);
 		
-		name1.addBasionym(basionym);
+		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+		basionym.addRelationshipToName(name1,nameRelType , null, null, null);
+//		name1.addBasionym(basionym);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
 		
@@ -221,6 +225,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		NonViralName child = BotanicalName.NewInstance(getSpeciesRank());
 		child.setTitleCache("child", true);
 		
+		HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
 		name1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), null);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
@@ -372,7 +377,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = Taxon.NewInstance(taxonName, null);
 		
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
+		Feature feature = (Feature)termService.find(Feature.DESCRIPTION().getUuid());
 		TextData textData = TextData.NewInstance("Any text", Language.DEFAULT(), null);
+		textData.setFeature(feature);
 		taxonDescription.addElement(textData);
 		DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, name1, "");
 		textData.addSource(source);
@@ -433,7 +440,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
 		//NomenclaturalStatus
 		name1 = BotanicalName.NewInstance(getSpeciesRank());
-		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+		NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)termService.find(NomenclaturalStatusType.ILLEGITIMATE().getUuid());
+		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(nomStatusType);
 		name1.addStatus(status);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
