@@ -37,7 +37,7 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
         	
             Class<?> entityClazz = entity.getClass();
 			if(ICdmBase.class.isAssignableFrom(entityClazz)) {
-				//System.err.println("SaveEntityListener: " + entity + " - "+ entity.getClass().getSimpleName());
+				
 				ICdmBase cdmBase = (ICdmBase)entity;
 				cdmBase.setCreated(new DateTime());
 			

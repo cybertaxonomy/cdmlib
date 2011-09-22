@@ -5,14 +5,14 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 public class TestingBotanicalNameCacheStrategy implements
@@ -25,7 +25,7 @@ public class TestingBotanicalNameCacheStrategy implements
 	public String getLastEpithet(BotanicalName taxonNameBase) {
 		return "test.botanical.lastEpithet"+ taxonNameBase.getId();
 	}
-	
+
 	public String getNameCache(BotanicalName taxonNameBase) {
 		return "test.botanical.nameCache"+ taxonNameBase.getId();
 	}
@@ -34,18 +34,10 @@ public class TestingBotanicalNameCacheStrategy implements
 		return "test.botanical.fullTitleCache"+ taxonNameBase.getId();
 	}
 
-
 	public String getTitleCache(BotanicalName object) {
 		return "test.botanical.titleCache"+ object.getId();
 	}
 
-	
-
-	public List<Object> getTaggedNameDeprecated(BotanicalName taxonNameBase) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public List<TaggedText> getTaggedTitle(BotanicalName taxonName) {
 		// TODO Auto-generated method stub

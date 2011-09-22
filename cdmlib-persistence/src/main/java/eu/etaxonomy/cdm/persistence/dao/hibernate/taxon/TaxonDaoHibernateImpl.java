@@ -285,7 +285,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			for(int i = 0; i<results.size();i++){
 				result = results.get(i);
 				
-				//unterscheiden von taxa und synonymen
+				//differentiate taxa and synonyms
 				if (clazz.equals(Taxon.class)){
 						resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
 				}else if (clazz.equals(Synonym.class)){
@@ -1895,10 +1895,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
 		results = query.list();
 		}catch(Exception e){
-			System.err.println(name.getUuid());
+			logger.error(name.getUuid());
 			return null;
 		}
-		System.err.println("phylum of "+ name.getTitleCache() );
+		logger.debug("phylum of "+ name.getTitleCache() );
 		return (String)results.get(0);
 	}
 

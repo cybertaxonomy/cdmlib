@@ -959,7 +959,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	assertNotNull("getTaxaByCommonName should return a list", textData);
     	assertFalse("the list should not be empty", textData.isEmpty());
     	assertEquals("There should be one Taxon with common name", 1,textData.size());
-//    	System.err.println("Number of common names: " +textData.size());
+
     	
     }
     
