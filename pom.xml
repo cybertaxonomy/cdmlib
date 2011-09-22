@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>3.0.7-SNAPSHOT</version>
+	<version>3.0.8-SNAPSHOT</version>
 	<name>CDM Library</name>
 	<description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -1104,7 +1104,15 @@
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
 				<version>3.0.5.RELEASE</version>
-				<!--<exclusions>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+          </exclusion>
 					<exclusion>
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-context</artifactId>
@@ -1125,7 +1133,7 @@
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-support</artifactId>
 					</exclusion>
-				</exclusions>-->
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
