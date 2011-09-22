@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,14 +30,14 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.TagEnum;
-import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
 
 /**
- * This class is a default implementation for the INonViralNameCacheStrategy<T extends NonViralName> 
+ * This class is a default implementation for the INonViralNameCacheStrategy<T extends NonViralName>
  * interface.<BR>
  * The method implements a cache strategy for botanical names so no method has to be overwritten by
  * a subclass for botanic names.
@@ -52,21 +52,21 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  */
 public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends NameCacheStrategyBase<T> implements INonViralNameCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
-	
+
 	final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
-	
+
 	protected String NameAuthorSeperator = " ";
 	protected String BasionymStart = "(";
 	protected String BasionymEnd = ")";
 	protected String ExAuthorSeperator = " ex ";
 	protected CharSequence BasionymAuthorCombinationAuthorSeperator = " ";
-	
+
 	@Override
 	public  UUID getUuid(){
 		return uuid;
 	}
 
-	
+
 	/**
 	 * Factory method
 	 * @return NonViralNameDefaultCacheStrategy A new instance of  NonViralNameDefaultCacheStrategy
@@ -74,7 +74,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	public static NonViralNameDefaultCacheStrategy NewInstance(){
 		return new NonViralNameDefaultCacheStrategy();
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return NonViralNameDefaultCacheStrategy A new instance of  NonViralNameDefaultCacheStrategy
@@ -82,7 +82,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	public static <T extends NonViralName<?>> NonViralNameDefaultCacheStrategy<T> NewInstance(Class<T> clazz){
 		return new NonViralNameDefaultCacheStrategy<T>();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -91,7 +91,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 
 /* **************** GETTER / SETTER **************************************/
-	
+
 	/**
 	 * String that separates the NameCache part from the AuthorCache part
 	 * @return
@@ -163,7 +163,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		BasionymAuthorCombinationAuthorSeperator = basionymAuthorCombinationAuthorSeperator;
 	}
 
-	
+
 //** *****************************************************************************************/
 
 	/* (non-Javadoc)
@@ -194,7 +194,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 	}
 
-	
+
 	/**
 	 * Generates and returns the "name cache" (only scientific name without author teams and year).
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
@@ -208,7 +208,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			return result;
 		}
 	}
-	
+
 
 	/**
 	 * Creates a string from tagged text.
@@ -217,7 +217,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 */
 	protected static String createString(List<TaggedText> tags) {
 		StringBuffer result = new StringBuffer();
-		
+
 		boolean isSeparator;
 		boolean wasSeparator = true;  //true for start tag
 		for (TaggedText tag: tags){
@@ -230,9 +230,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 		return result.toString();
 		}
-	
-// ******************* Authorship ******************************/	
-	
+
+// ******************* Authorship ******************************/
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.name.NonViralName)
@@ -248,7 +248,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		return getNonCacheAuthorshipCache(nonViralName);
 
 	}
-	
+
 	/**
 	 * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorshipfield.
 	 * @throws NullPointerException if nonViralName is null.
@@ -273,7 +273,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		result = CdmUtils.concat(BasionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
 		return result;
 	}
-	
+
 	/**
 	 * Returns the AuthorCache part for a combination of an author and an ex author. This applies on combination authors
 	 * as well as on basionym/orginal combination authors.
@@ -297,8 +297,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		result = exAuthorString + authorString;
 		return result;
 	}
- 
-	
+
+
 	/**
 	 * Checks if the given name should include the author in it's cached version.<BR>
 	 * This is usually the case but not for <i>species aggregates</i>.
@@ -313,8 +313,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			return true;
 	}
 	}
-	
-// ************* TAGGED NAME ***************************************/	
+
+// ************* TAGGED NAME ***************************************/
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getTaggedFullTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
@@ -322,24 +322,24 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	@Override
 	public List<TaggedText> getTaggedFullTitle(T nonViralName) {
 		List<TaggedText> tags = new ArrayList<TaggedText>();
-		
+
 		//null
 		if (nonViralName == null){
 			return null;
 		}
-		
+
 		//protected full title cache
 		if (nonViralName.isProtectedFullTitleCache()){
 			tags.add(new TaggedText(TagEnum.fullName, nonViralName.getFullTitleCache()));
 			return tags;
 		}
-		
+
 		//title cache
 //		String titleCache = nonViralName.getTitleCache();
 		List<TaggedText> titleTags = getTaggedTitle(nonViralName);
 		tags.addAll(titleTags);
-		
-		
+
+
 		//reference
 		String microReference = nonViralName.getNomenclaturalMicroReference();
 		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
@@ -357,7 +357,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			}
 			tags.add(new TaggedText(TagEnum.reference, referenceBaseCache));
 		}
-		
+
 		//nomenclatural status
 		Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
@@ -387,9 +387,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		tags.addAll(nomStatusTags);
 		return tags;
-		
+
 	}
-		
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getTaggedTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
@@ -399,9 +399,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 
 		List<TaggedText> tags = new ArrayList<TaggedText>();
-		
+
 		//TODO how to handle protected fullTitleCache here?
-		
+
 		if (nonViralName.isProtectedTitleCache()){
 			//protected title cache
 			tags.add(new TaggedText(TagEnum.name, nonViralName.getTitleCache()));
@@ -436,8 +436,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		return tags;
 
 	}
-	
-	
+
+
 	/**
 	 * Returns the tag list of the name part (without author and reference).
 	 * @param nonViralName
@@ -449,7 +449,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		Rank rank = nonViralName.getRank();
-		
+
 		if (nonViralName.isProtectedNameCache()){
 			tags.add(new TaggedText(TagEnum.name, nonViralName.getNameCache()));
 		}else if (rank == null){
@@ -466,35 +466,35 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			tags = getGenusOrUninomialTaggedNameCache(nonViralName);
 		}else if (rank.isSupraGeneric()){
 			tags = getGenusOrUninomialTaggedNameCache(nonViralName);
-		}else{ 
+        }else{
 			logger.warn("Name Strategy for Name (UUID: " + nonViralName.getUuid() +  ") not yet implemented");
 		}
 		//TODO handle appended phrase here instead of different places, check first if this is true for all
 		//cases
-		
+
 		return tags;
 
 	}
 
 
-		
+
 
 //***************************** PRIVATES ***************************************/
-		
+
 
 	/**
 	 * Returns the tag list for an autonym taxon.
-	 * 
+     *
 	 * @see NonViralName#isAutonym()
 	 * @see BotanicalName#isAutonym()
 	 * @param nonViralName
 	 * @return
 	 */
 	private List<TaggedText> handleTaggedAutonym(T nonViralName) {
-		
+
 		//species part
 		List<TaggedText> tags = getSpeciesTaggedNameCache(nonViralName);
-		
+
 		//author
 		//TODO should this include basionym authors and ex authors
 		INomenclaturalAuthor author = nonViralName.getCombinationAuthorTeam();
@@ -513,8 +513,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (StringUtils.isNotBlank(authorPart)){
 			tags.add(new TaggedText(TagEnum.authors, authorPart));
 		}
-		
-					
+
+
 		//infra species marker
 		if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
 			//TODO handle exception
@@ -525,18 +525,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				tags.add(new TaggedText(TagEnum.rank, infraSpeciesMarker));
 			}
 		}
-		
+
 		//infra species
 		String infraSpeciesPart = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim().replace("null", "");
 		if (StringUtils.isNotBlank(infraSpeciesPart)){
 			tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
 		}
-		
+
 		return tags;
 	}
-	
-		
-	
+
+
+
 	/**
 	 * Returns the tag list for rankless taxa.
 	 * @param nonViralName
@@ -548,15 +548,15 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (StringUtils.isNotBlank(speciesEpi)){
 			tags.add(new TaggedText(TagEnum.name, speciesEpi));
 		}
-		
+
 		String infraSpeciesEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim().replace("null", "");
 		if (StringUtils.isNotBlank(infraSpeciesEpi)){
 			tags.add(new TaggedText(TagEnum.name, infraSpeciesEpi));
 		}
-		
+
 		//result += " (rankless)";
 		addAppendedTaggedPhrase(tags, nonViralName);
-		return tags;			
+        return tags;
 	}
 
 	/**
@@ -566,22 +566,22 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 */
 	private List<TaggedText> getUninomialTaggedPart(NonViralName<?> nonViralName) {
 		List<TaggedText> tags = new ArrayList<TaggedText>();
-		
+
 		if (nonViralName.isMonomHybrid()){
 			addHybridPrefix(tags);
 		}
-		
+
 		String uninomial = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim().replace("null", "");
 		if (StringUtils.isNotBlank(uninomial)){
 			tags.add(new TaggedText(TagEnum.name, uninomial));
 		}
-			
+
 		return tags;
 	}
-	
+
 	/**
 	 * Returns the tag list for an genus or higher taxon.
-	 * 
+     *
 	 * @param nonViralName
 	 * @return
 	 */
@@ -590,10 +590,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		addAppendedTaggedPhrase(tags, nonViralName);
 		return tags;
 			}
-		
+
 	/**
 	 * Returns the tag list for an infrageneric taxon (including species aggregates).
-	 * 
+     *
 	 * @see #getSpeciesAggregateTaggedCache(NonViralName)
 	 * @param nonViralName
 	 * @return
@@ -603,10 +603,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (rank.isSpeciesAggregate()){
 			return getSpeciesAggregateTaggedCache(nonViralName);
 		}
-		
+
 		//genus
 		List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
-		
+
 		//marker
 		String infraGenericMarker = "'unhandled infrageneric rank'";
 		if (rank != null){
@@ -617,31 +617,31 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			}
 		}
 		tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
-		
-		
+
+
 		String infraGenEpi = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim().replace("null", "");
 		if (StringUtils.isNotBlank(infraGenEpi)){
 			tags.add(new TaggedText(TagEnum.name, infraGenEpi));
 		}
-		
+
 		addAppendedTaggedPhrase(tags, nonViralName);
 		return tags;
 	}
-	
+
 	/**
 	 * Returns the tag list for a species aggregate (or similar) taxon.<BR>
-	 * Possible ranks for a <i>species aggregate</i> are "aggr.", "species group", ...	
+     * Possible ranks for a <i>species aggregate</i> are "aggr.", "species group", ...
 	 * @param nonViralName
 	 * @return
 	 */
 	protected List<TaggedText> getSpeciesAggregateTaggedCache(NonViralName<?> nonViralName){
 		List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
-		
+
 		addSpeciesAggregateTaggedEpithet(tags, nonViralName);
 		addAppendedTaggedPhrase(tags, nonViralName);
 		return tags;
 	}
-	
+
 	/**
 	 * Adds the aggregate tag to the tag list.
 	 * @param tags
@@ -659,7 +659,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 	}
 
-		
+
 	/**
 	 * Returns the tag list for a species taxon.
 	 * @param nonViralName
@@ -679,7 +679,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName){
 		return getInfraSpeciesTaggedNameCache(nonViralName, true);
 	}
-		
+
 	/**
 	 * Creates the tag list for an infraspecific taxon. In include is true the result will contain
 	 * the infraspecific marker (e.g. "var.")
@@ -689,7 +689,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 */
 	protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName, boolean includeMarker){
 		List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
-		if (includeMarker){ 
+        if (includeMarker){
 			String marker = (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
 			if (StringUtils.isNotBlank(marker)){
 				tags.add(new TaggedText(TagEnum.rank, marker));
@@ -699,12 +699,12 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName.isTrinomHybrid()){
 			addHybridPrefix(tags);
 		}
-		
+
 		infrSpecEpi = infrSpecEpi.trim().replace("null", "");
 		if (StringUtils.isNotBlank(infrSpecEpi)){
 			tags.add(new TaggedText(TagEnum.name, infrSpecEpi));
 		}
-		
+
 		addAppendedTaggedPhrase(tags, nonViralName);
 		return tags;
 	}
@@ -727,7 +727,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	private List<TaggedText> getGenusAndSpeciesTaggedPart(NonViralName<?> nonViralName) {
 		//Uninomial
 		List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
-		
+
 		//InfraGenericEpi
 		boolean hasInfraGenericEpi = StringUtils.isNotBlank(nonViralName.getInfraGenericEpithet());
 		if (hasInfraGenericEpi){
@@ -742,16 +742,16 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 		//Species Epi
 		String specEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
-		if (! hasInfraGenericEpi && nonViralName.isBinomHybrid() || 
+        if (! hasInfraGenericEpi && nonViralName.isBinomHybrid() ||
 				hasInfraGenericEpi && nonViralName.isTrinomHybrid()){
-			addHybridPrefix(tags); 
+            addHybridPrefix(tags);
 		}
 		if (StringUtils.isNotBlank(specEpi)){
 			tags.add(new TaggedText(TagEnum.name, specEpi));
 		}
 		return tags;
 	}
-	
+
 	/**
 	 * Adds the tag for the appended phrase if an appended phrase exists
 	 * @param tags
@@ -776,92 +776,5 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				return taxonNameBase.getInfraSpecificEpithet();
 			}
 		}
-	
-// *************************** DEPRECATED ***************************************************/
-	
 
-	//Old: may be replaced once getTagged(Full)Title is fully tested
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	@Override
-	@Deprecated
-	public List<Object> getTaggedNameDeprecated(T nonViralName) {
-		List<Object> tags = new ArrayList<Object>();
-		
-		if (nonViralName.isProtectedNameCache() ||
-				nonViralName.isProtectedAuthorshipCache() ||
-				nonViralName.isProtectedFullTitleCache() ||
-				nonViralName.isProtectedTitleCache()){
-			tags.add(nonViralName.getTitleCache());
-			return tags;
-		}
-		
-		// Why does it make sense to add the nameCache in case of non existing genusOrUninomial?
-//		if (nonViralName.getGenusOrUninomial() == null){
-//			tags.add(nonViralName.getNameCache());
-//		}else{
-		
-		if (nonViralName.getGenusOrUninomial() != null) {
-			tags.add(nonViralName.getGenusOrUninomial());
-		}
-		if (nonViralName.isSpecies() || nonViralName.isInfraSpecific()){
-			tags.add(nonViralName.getSpecificEpithet());			
-		}
-		
-		// No autonym 
-		if (nonViralName.isInfraSpecific() && ! nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
-			tags.add(nonViralName.getRank());			
-			tags.add(nonViralName.getInfraSpecificEpithet());			
-		}
-		
-		if (nonViralName.isInfraGeneric()){
-			//TODO choose right strategy or generic approach?
-			// --- strategy 1 --- 
-					
-			if (nonViralName.getRank().isSpeciesAggregate()){
-				tags.add(nonViralName.getSpecificEpithet());
-				tags.add(getSpeciesAggregateEpithet(nonViralName));
-			}else{
-				tags.add(nonViralName.getRank());	
-				tags.add(nonViralName.getInfraGenericEpithet());	
-			}
-			// --- strategy 2 --- 
-//			tags.add('('+nvn.getInfraGenericEpithet()+')');	
-		}
-		Team authorTeam = Team.NewInstance();
-		authorTeam.setProtectedTitleCache(true);
-		authorTeam.setTitleCache(nonViralName.getAuthorshipCache(), true);
-		tags.add(authorTeam);
-		
-		// Name is an autonym. Rank and infraspecific epitheton follow the author
-		if (nonViralName.isInfraSpecific() && nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
-			tags.add(nonViralName.getRank());			
-			tags.add(nonViralName.getInfraSpecificEpithet());			
-		}
-		
-		if(! "".equals(nonViralName.getAppendedPhrase())&& (nonViralName.getAppendedPhrase() != null)){
-			tags.add(nonViralName.getAppendedPhrase());
-		}
-		
-		return tags;
-	}
-	
-	
-	/**
-	 * @deprecated use only for {@link #getTaggedNameDeprecated(NonViralName)}. Delete when the later 
-	 * is deleted.
-	 */
-	@Deprecated 
-	private String getSpeciesAggregateEpithet(NonViralName<?> nonViralName) {
-		String marker;
-		try {
-			marker = nonViralName.getRank().getInfraGenericMarker();
-		} catch (UnknownCdmTypeException e) {
-			marker = "'unknown aggregat type'";
-		}
-		return marker;
-	}
-
-	
 }

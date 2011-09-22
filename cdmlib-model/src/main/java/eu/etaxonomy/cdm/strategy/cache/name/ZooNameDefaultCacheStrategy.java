@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
 	@SuppressWarnings("unused")

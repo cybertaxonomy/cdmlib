@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author AM
@@ -33,7 +33,7 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
 	public NameCacheStrategyBase() {
 		super();
 	}
-	
+
 
 	/**
 	 * Generates and returns the title cache of the given name.
@@ -49,10 +49,6 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
 	 */
 	public abstract String getFullTitleCache(T name);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-	 */
-	public abstract List<Object> getTaggedNameDeprecated(T taxonNameBase);
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
