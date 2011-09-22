@@ -90,17 +90,16 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
 
+    	//if user has administrator rights return true;
     	 for (GrantedAuthority authority: authorities){
     		 if (authority.getAuthority().equals("ALL.ADMIN"))return true;
     	 }
     	
-    	
-    	if (targetDomainObject instanceof DescriptionElementBase){
-    		return DescriptionPermissionEvaluator.hasPermission(authorities, (DescriptionElementBase)targetDomainObject, evalPermission);
+    	//if targetDomainObject is instance of DescriptionBase or DescriptionElementBase use the DescriptionPermissionEvaluator
+    	if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionElementBase){
+    		return DescriptionPermissionEvaluator.hasPermission(authorities, targetDomainObject, evalPermission);
     	}
-    	if (targetDomainObject instanceof DescriptionBase){
-    		return DescriptionPermissionEvaluator.hasPermission(authorities, (DescriptionBase)targetDomainObject, evalPermission);
-    	}  	
+    	 	
     	
     	
     	
@@ -109,7 +108,9 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         for (GrantedAuthority authority: authorities){
             AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
             //evaluate authorities
-           if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))&& (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
+           //if classnames match or the authorityClassName is ALL, AND the permission matches or is ADMIN the evaluation is successful 
+            if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))
+            		&& (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
                 if (authorityPermission.targetUuid != null){
                     //TODO
 
@@ -118,7 +119,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                 }
 
             }
-
+            //if authority is restricted to only one object (and the cascaded objects???) 
             if (authorityPermission.targetUuid != null){
                 if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
                     if (authorityPermission.permission.equals(evalPermission.permission)){
@@ -126,6 +127,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                     }
                 }
             }
+            //if the user has the rights for a subtree
             if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals(CdmPermissionClass.TAXONNODE.toString())){
                
                 TaxonNode node = (TaxonNode)targetDomainObject;

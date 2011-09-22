@@ -28,54 +28,59 @@ import eu.etaxonomy.cdm.model.description.Feature;
 public class DescriptionPermissionEvaluator {
 	
 	public static boolean hasPermission(Collection<GrantedAuthority> authorities,
-			DescriptionElementBase targetDomainObject, AuthorityPermission evalPermission) {
-		
-		Feature feature = targetDomainObject.getFeature();
+			Object targetDomainObject, AuthorityPermission evalPermission) {
+		Feature feature = null;
 		String authorityString;
+		AuthorityPermission authorityPermission;
+		
+				
+		if (targetDomainObject instanceof DescriptionElementBase){
+			feature = ((DescriptionElementBase)targetDomainObject).getFeature();
+		} 		
+		
 		for (GrantedAuthority authority: authorities){
 			
 			authorityString = authority.getAuthority();
-			AuthorityPermission authorityPermission = new AuthorityPermission(authorityString);
+			authorityPermission = new AuthorityPermission(authorityString);
 			
-			System.err.println("class: " + authorityPermission.className + "permission: "+ authorityPermission.permission);
-			
-			if (authorityPermission.className.equals(CdmPermissionClass.ALL) && authorityPermission.permission.equals(CdmPermission.ADMIN)){
-				return true;
-			}
-			//String label = feature.getLabel();
-			try{
-				
-				if (authorityString.contains(feature.getLabel()) && (evalPermission.permission.equals(authorityPermission.permission) || authorityPermission.equals(CdmPermission.ADMIN))){
-					System.err.println("No Exception!");
-					return true;
+			if (targetDomainObject instanceof DescriptionElementBase){
+				try{
+					//check for a special feature
+					if (feature != null){
+						if (authorityString.contains(feature.getLabel()) && (evalPermission.permission.equals(authorityPermission.permission) || authorityPermission.equals(CdmPermission.ADMIN))){
+							return true;
+						}
+					}
+				}catch(Exception e){
+					//in tests the initialisation of terms like features fails...
+					if (org.hibernate.ObjectNotFoundException.class.isInstance(e)){
+						if (evalPermission.permission.equals(authorityPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN)){
+							return true;
+						}
+					}else {
+						return false;
+					}
+					
 				}
-			}catch(Exception e){
-				
-				if (org.hibernate.ObjectNotFoundException.class.isInstance(e)){
-					System.err.println("Exception!");
-					if (evalPermission.permission.equals(authorityPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN)){
-						System.err.println("but permission is ok!");
+				//the user has the general right for descriptions
+				if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
+					//no special feature
+					if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && (authority.getAuthority().contains(evalPermission.permission.toString()) || authorityPermission.equals(CdmPermission.ADMIN))){
 						return true;
 					}
-				}else {
-					System.err.println("permission is false");
-					return false;
 				}
-				
-			}
-			if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
-				System.err.println("no feature");
-				if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && (authority.getAuthority().contains(evalPermission.permission.toString()) || authorityPermission.equals(CdmPermission.ADMIN))){
+			} else{
+				if (authorityPermission.getClassName().equals(CdmPermissionClass.DESCRIPTIONBASE) && authorityPermission.permission.equals(evalPermission.permission)){
 					return true;
 				}
 			}
 		}
-		System.err.println("no authorities");
+		
 		return false;
 	}
 	
 	
-	public static boolean hasPermission (Collection<GrantedAuthority> authorities,
+	/*public static boolean hasPermission (Collection<GrantedAuthority> authorities,
 			DescriptionBase targetDomainObject, AuthorityPermission evalPermission){
 		Set<DescriptionElementBase> elements = targetDomainObject.getElements();
 		
@@ -97,5 +102,5 @@ public class DescriptionPermissionEvaluator {
 		
 		return false;
 		
-	}
+	}*/
 }
