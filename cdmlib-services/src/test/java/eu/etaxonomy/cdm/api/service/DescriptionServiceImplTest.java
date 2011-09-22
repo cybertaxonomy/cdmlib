@@ -145,9 +145,9 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 		Assert.assertEquals(3, sourceDescription.getElements().size());
 		
 		TaxonDescription targetDescription = TaxonDescription.NewInstance();
-		System.err.println("TitleCache of source description: "+sourceDescription.getTitleCache());
+		logger.debug("TitleCache of source description: "+sourceDescription.getTitleCache());
 		this.service.save(sourceDescription);
-		System.err.println("TitleCache of source description 2: "+sourceDescription.getTitleCache());
+		logger.debug("TitleCache of source description 2: "+sourceDescription.getTitleCache());
 		/*
 		this.service.save(targetDescription);
 		

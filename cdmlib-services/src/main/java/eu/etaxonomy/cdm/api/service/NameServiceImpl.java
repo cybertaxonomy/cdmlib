@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -59,8 +59,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.TaggedText;
-import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
@@ -68,7 +67,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxonNameDao> implements INameService {
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
-	
+
 	@Autowired
 	protected ITermVocabularyDao vocabularyDao;
 	@Autowired
@@ -90,17 +89,17 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		if (logger.isDebugEnabled()) { logger.debug("Load NameService Bean"); }
 	}
 
-//********************* METHODS ****************************************************************//	
-	
+//********************* METHODS ****************************************************************//
+
 	public List getNamesByName(String name){
 		return super.findCdmObjectsByTitle(name);
 	}
-	
+
 	public List<NonViralName> getNamesByNameCache(String nameCache){
 		List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
 		return result;
 	}
-	
+
 	public List getNamesByName(String name, CdmBase sessionObject){
 		return super.findCdmObjectsByTitle(name, sessionObject);
 	}
@@ -108,16 +107,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public List findNamesByTitle(String title){
 		return super.findCdmObjectsByTitle(title);
 	}
-	
+
 	public List findNamesByTitle(String title, CdmBase sessionObject){
 		return super.findCdmObjectsByTitle(title, sessionObject);
 	}
-	
+
 	@Transactional(readOnly = false)
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
 		return homotypicalGroupDao.saveAll(homotypicalGroups);
 	}
-	
+
 	@Transactional(readOnly = false)
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
 		return typeDesignationDao.saveAll(typeDesignationCollection);
@@ -135,7 +134,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
 		return nomStatusDao.list(limit, start);
 	}
-	 
+
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
 		return typeDesignationDao.getAllTypeDesignations(limit, start);
 	}
@@ -146,7 +145,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
 		return homotypicalGroupDao.list(limit, start);
 	}
-	
+
 	/**
 	 * FIXME Candidate for harmonization
 	 * remove
@@ -155,74 +154,74 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
 		return dao.getRelationships(limit, start);
 	}
-	
+
 	/**
 	 * FIXME Candidate for harmonization
-	 * is this the same as termService.getVocabulary(VocabularyEnum.Rank) 
+     * is this the same as termService.getVocabulary(VocabularyEnum.Rank)
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
 	 */
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {
 		String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
 		UUID uuid = UUID.fromString(uuidString);
-		OrderedTermVocabulary<Rank> rankVocabulary = 
+        OrderedTermVocabulary<Rank> rankVocabulary =
 			(OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
 		return rankVocabulary;
 	}
 
 	/**
  	 * FIXME Candidate for harmonization
-	 * is this the same as termService.getVocabulary(VocabularyEnum.NameRelationshipType) 
+     * is this the same as termService.getVocabulary(VocabularyEnum.NameRelationshipType)
 	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
 	 */
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
 		String uuidString = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
 		UUID uuid = UUID.fromString(uuidString);
-		TermVocabulary<NameRelationshipType> nameRelTypeVocabulary = 
+        TermVocabulary<NameRelationshipType> nameRelTypeVocabulary =
 			(TermVocabulary)vocabularyDao.findByUuid(uuid);
 		return nameRelTypeVocabulary;
 	}
 
 	/**
  	 * FIXME Candidate for harmonization
-	 * is this the same as termService.getVocabulary(VocabularyEnum.StatusType) 
+     * is this the same as termService.getVocabulary(VocabularyEnum.StatusType)
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
 	 */
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
 		String uuidString = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
 		UUID uuid = UUID.fromString(uuidString);
-		TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary = 
+        TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary =
 			(TermVocabulary)vocabularyDao.findByUuid(uuid);
 		return nomStatusTypeVocabulary;
 	}
 
 	/**
  	 * FIXME Candidate for harmonization
-	 * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus) 
+     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
 	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
 	 */
 	public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
 		String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
 		UUID uuid = UUID.fromString(uuidString);
-		TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary = 
+        TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary =
 			(TermVocabulary)vocabularyDao.findByUuid(uuid);
 		return typeDesigStatusVocabulary;
 	}
-	
+
 	/**
   	 * FIXME Candidate for harmonization
 	 * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
-	 * and also seems to duplicate the above method, differing only in the DAO used and the return type 
+     * and also seems to duplicate the above method, differing only in the DAO used and the return type
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
 	 */
 	public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary() {
 		String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
 		UUID uuid = UUID.fromString(uuidString);
-		OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary = 
+        OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary =
 			(OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
 		return typeDesignationVocabulary;
 	}
@@ -235,22 +234,22 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 	public Pager<HybridRelationship> getHybridNames(NonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countHybridNames(name, type);
-		
+
 		List<HybridRelationship> results = new ArrayList<HybridRelationship>();
 		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) { // no point checking again
-			results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths); 
+            results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths);
 		}
-		
+
 		return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#listNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
 	 */
 	@Override
 	public List<NameRelationship> listNameRelationships(TaxonNameBase name,	Direction direction, NameRelationshipType type, Integer pageSize,
 			Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-		
+
 		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
 
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
@@ -278,33 +277,33 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
 		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
 	}
-	
+
 	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
 	}
-	
+
 	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
 		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
 	}
-	
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, 
-			Integer pageSize, Integer pageNumber) {	
+
+    public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status,
+            Integer pageSize, Integer pageNumber) {
 		return getTypeDesignations(name, status, pageSize, pageNumber, null);
 	}
-	
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, 
+
+    public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status,
 				Integer pageSize, Integer pageNumber, List<String> propertyPaths){
         Integer numberOfResults = dao.countTypeDesignations(name, status);
-		
+
 		List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getTypeDesignations(name, status, pageSize, pageNumber, propertyPaths); 
+            results = dao.getTypeDesignations(name, status, pageSize, pageNumber, propertyPaths);
 		}
-		
+
 		return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);
 	}
-	
+
     /**
      * FIXME Candidate for harmonization
 	 * rename search
@@ -312,12 +311,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
         Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
-		
+
 		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths); 
+            results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths);
 		}
-		
+
 		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
@@ -330,12 +329,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 	public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
 		Integer numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
-		
+
 		 List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
 		 if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-				results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
+                results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		 }
-			
+
 		  return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
@@ -355,7 +354,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
-	
+
 	@Override
 	protected void setOtherCachesNull(TaxonNameBase name) {
 		if (name.isInstanceOf(NonViralName.class)){
@@ -378,8 +377,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	@Override
 	public List<TaggedText> getTaggedName(UUID uuid) {
 		TaxonNameBase taxonNameBase = dao.load(uuid);
-		return TaggedTextGenerator.getTaggedName(taxonNameBase);
+        List taggedName = taxonNameBase.getTaggedName();
+        return taggedName;
 	}
-	
-	
+
+
 }

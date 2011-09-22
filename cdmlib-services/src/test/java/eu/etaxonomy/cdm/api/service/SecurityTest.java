@@ -50,6 +50,8 @@ import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
 
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -222,6 +224,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		context.setAuthentication(authentication);
 		Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+		description.addElement(Distribution.NewInstance());
 		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
 		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
 		
