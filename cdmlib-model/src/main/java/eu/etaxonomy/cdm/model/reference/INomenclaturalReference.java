@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
  /**

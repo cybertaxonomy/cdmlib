@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
