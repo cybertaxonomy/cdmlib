@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 @Deprecated
 @Controller
 @RequestMapping(value = {"/portal/polytomousKey/{uuid}"})
-public class PolytomousKeyPortalController extends AnnotatableController<PolytomousKey, IPolytomousKeyService> {
+public class PolytomousKeyPortalController extends BaseController<PolytomousKey, IPolytomousKeyService> {
 	public static final Logger logger = Logger.getLogger(PolytomousKeyPortalController.class);
 	
 	@Autowired

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 @Controller
 @RequestMapping(value = {"/occurrence/{uuid}"})
-public class OccurrenceController extends AnnotatableController<SpecimenOrObservationBase, IOccurrenceService>
+public class OccurrenceController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
 {
 		
 	/* (non-Javadoc)

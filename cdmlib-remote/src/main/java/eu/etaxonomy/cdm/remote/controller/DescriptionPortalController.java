@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -52,18 +52,18 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
 
 @Controller
 @RequestMapping(value = {"/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionElement/{descriptionelement_uuid}", "/portal/featureTree/{featuretree_uuid}"})
-public class DescriptionPortalController extends AnnotatableController<DescriptionBase, IDescriptionService>
+public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
 	@Autowired
 	private IFeatureTreeService featureTreeService;
-	
+
 	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
 			new String[]{
 				"representations",
@@ -82,7 +82,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 			"elements.area.level",
 			"elements.modifyingText",
 	});
-	
+
 	@InitBinder
 	@Override
 	public void initBinder(WebDataBinder binder) {
@@ -90,7 +90,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
 		binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
 	 */
@@ -99,20 +99,20 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 	public void setService(IDescriptionService service) {
 		this.service = service;
 	}
-	
+
 	/**
 	 * TODO write controller method documentation
-	 * 
+     *
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws IOException
 	 */
-	
+
 	@RequestMapping(value = {"/portal/featureTree/{featuretree_uuid}"}, method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(
 			@PathVariable("featuretree_uuid") UUID featureUuid,
-			HttpServletRequest request, 
+            HttpServletRequest request,
 			HttpServletResponse response)throws IOException {
 		//UUID featureTreeUuid = readValueUuid(request, null);
 		FeatureTree featureTree = featureTreeService.load(featureUuid, FEATURETREE_INIT_STRATEGY);
@@ -121,7 +121,7 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 		}
 		return featureTree;
 	}
-	
+
 	@RequestMapping(value = "/portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(
 			@PathVariable("descriptionelement_uuid") UUID uuid,
@@ -129,10 +129,10 @@ public class DescriptionPortalController extends AnnotatableController<Descripti
 			HttpServletResponse response) throws IOException {
 		logger.info("getAnnotations() - " + request.getServletPath());
 		DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
-		Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
+        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
 		return annotations;
 	}
-	
+
 	@RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
 	public DistributionTree doGetOrderedDistributionsB(
 			@PathVariable("uuid_list") UuidList descriptionUuidList,

@@ -1478,7 +1478,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractControlle
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AgentController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AgentListController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AnnotatableController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BadResumptionTokenException.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BaseController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/BaseListController.java -text

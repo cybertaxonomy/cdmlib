@@ -1,9 +1,9 @@
 // $Id: TaxonBaseBeanProcessor.java 5473 2009-03-25 13:42:07Z a.kohlbecker $
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -19,7 +19,6 @@ import net.sf.json.JsonConfig;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * @author a.kohlbecker
@@ -35,8 +34,8 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 	@Override
 	public List<String> getIgnorePropNames() {
 		return Arrays.asList(new String[]{
-				// ignore nameRelations to avoid LazyLoadingExceptions coming 
-				// from NameRelationshipBeanProcessor.secondStep() in which 
+                // ignore nameRelations to avoid LazyLoadingExceptions coming
+                // from NameRelationshipBeanProcessor.secondStep() in which
 				// the transient field fromName is added to the serialization
 				"relationsFromThisName",
 				"relationsToThisName",
@@ -55,10 +54,10 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 		if(logger.isDebugEnabled()){
 			logger.debug("processing second step" + bean);
 		}
-		json.element("taggedName", TaggedTextGenerator.getTaggedName(bean), jsonConfig);
+        json.element("taggedName", bean.getTaggedName(), jsonConfig);
 		return json;
 	}
 
-	
+
 
 }

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,20 +32,19 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.TaggedTextGenerator;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
 
 @Controller
 @RequestMapping(value = {"/name/{uuid}"})
-public class NameController extends AnnotatableController<TaxonNameBase, INameService>
+public class NameController extends BaseController<TaxonNameBase, INameService>
 {
-	
+
 	private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
 			"typeStatus.representations",
 			"typifiedNames",
@@ -54,16 +53,16 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 			"citation",
 			"citation.authorTeam.$",
 	});
-	
+
 	private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
-			
+
 	});
-	
+
 	public NameController(){
 		super();
 		setInitializationStrategy(Arrays.asList(new String[]{"$"})); //TODO still needed????
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
 	 */
@@ -72,14 +71,14 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	public void setService(INameService service) {
 		this.service = service;
 	}
-	
-	
+
+
 	/**
-     * Get the list of {@link TypeDesignationBase}s of the 
+     * Get the list of {@link TypeDesignationBase}s of the
 	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
 	 * <p>
 	 * URI: <b>&#x002F;{datasource-name}&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
-	 * 
+     *
 	 * @param request
 	 * @param response
 	 * @return a List of {@link TypeDesignationBase} entities which are initialized
@@ -90,22 +89,22 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	public List<TypeDesignationBase> doGetNameTypeDesignations(
 			@PathVariable("uuid") UUID uuid, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		
+
 		logger.info("doGetTypeDesignations()" + request.getServletPath());
 		TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
 				(List<String>) null);
 		Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null,
 				null, null, TYPEDESIGNATION_INIT_STRATEGY);
 		return p.getRecords();
-		
+
 	}
 
 	@RequestMapping(
 			value = {"nameCache"},
 			method = RequestMethod.GET)
-	public List<String> doGetNameCache(@PathVariable("uuid") UUID uuid, 
+    public List<String> doGetNameCache(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response)throws IOException {
-		
+
 		logger.info("doGetNameCache()" + request.getServletPath());
 		TaxonNameBase tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
 		NonViralName nvn = (NonViralName) tnb;
@@ -113,19 +112,19 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 		List result = new ArrayList<String>();
 		result.add(nameCacheString);
 		return result;
-		
+
 	}
-	
+
 	@RequestMapping(value = "taggedName", method = RequestMethod.GET)
 	public ModelAndView doGetTaggedName(
 			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
+            HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.addObject(service.getTaggedName(uuid));
 		return mv;
 	}
-	
+
 }

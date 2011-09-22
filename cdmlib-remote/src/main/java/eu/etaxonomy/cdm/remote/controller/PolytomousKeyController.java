@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
  */
 @Controller
 @RequestMapping(value = {"/polytomousKey/{uuid}"})
-public class PolytomousKeyController extends AnnotatableController<PolytomousKey, IPolytomousKeyService> {
+public class PolytomousKeyController extends BaseController<PolytomousKey, IPolytomousKeyService> {
 	public static final Logger logger = Logger.getLogger(PolytomousKeyController.class);
 	
 	@Autowired

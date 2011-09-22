@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 @Controller
 @RequestMapping(value = {"/reference/{uuid}"})
-public class ReferenceController extends AnnotatableController<Reference, IReferenceService>
+public class ReferenceController extends BaseController<Reference, IReferenceService>
 {
 	
 	private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{

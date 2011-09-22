@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  */
 @Controller
 @RequestMapping(value = {"/classification/{uuid}"})
-public class ClassificationController extends AnnotatableController<Classification,IClassificationService> {
+public class ClassificationController extends BaseController<Classification,IClassificationService> {
 
 
 	private ITermService termService;

@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  */
 @Controller
 @RequestMapping(value = {"/portal/classification/{uuid}"})
-public class ClassificationPortalController extends AnnotatableController<Classification,IClassificationService> {
+public class ClassificationPortalController extends BaseController<Classification,IClassificationService> {
 	
 	
 	private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{

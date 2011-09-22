@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 
 @Controller
 @RequestMapping(value = {"/media/{uuid}"})
-public class MediaController extends AnnotatableController<Media, IMediaService>
+public class MediaController extends BaseController<Media, IMediaService>
 {
 
     /* (non-Javadoc)
