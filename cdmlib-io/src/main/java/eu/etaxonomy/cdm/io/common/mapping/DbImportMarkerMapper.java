@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.mail.MethodNotSupportedException;
@@ -49,12 +50,12 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 	 * @param labelAbbrev
 	 * @return
 	 */
-	public static DbImportMarkerMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev){
-		return new DbImportMarkerMapper(dbAttributeString, uuid, label, text, labelAbbrev);
+	public static DbImportMarkerMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev, Boolean ignoreValue){
+		return new DbImportMarkerMapper(dbAttributeString, uuid, label, text, labelAbbrev, ignoreValue);
 	}
 	
-	public static DbImportMarkerMapper NewInstance(String dbAttributeString, MarkerType markerType){
-		return new DbImportMarkerMapper(dbAttributeString, markerType);
+	public static DbImportMarkerMapper NewInstance(String dbAttributeString, MarkerType markerType, Boolean ignoreValue){
+		return new DbImportMarkerMapper(dbAttributeString, markerType, ignoreValue);
 	}
 	
 //***************** VARIABLES **********************************************************/
@@ -64,6 +65,7 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 	private String text;
 	private String labelAbbrev;
 	private UUID uuid;
+	private Boolean ignoreValue;
 
 //******************************** CONSTRUCTOR *****************************************************************/
 	/**
@@ -73,21 +75,23 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 	 * @param text
 	 * @param labelAbbrev
 	 */
-	private DbImportMarkerMapper(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev) {
+	private DbImportMarkerMapper(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev, Boolean ignoreValue) {
 		super(dbAttributeString, dbAttributeString);
 		this.uuid = uuid;
 		this.label = label;
 		this.text = text;
 		this.labelAbbrev = labelAbbrev;
+		this.ignoreValue = ignoreValue;
 	}
 	
 	/**
 	 * @param dbAttributeString
 	 * @param extensionType
 	 */
-	private DbImportMarkerMapper(String dbAttributeString, MarkerType markerType) {
+	private DbImportMarkerMapper(String dbAttributeString, MarkerType markerType, Boolean ignoreValue) {
 		super(dbAttributeString, dbAttributeString);
 		this.markerType = markerType;
+		this.ignoreValue = ignoreValue;
 	}
 	
 //****************************** METHODS ***************************************************/
@@ -116,6 +120,17 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		}
 	}
 	
+	
+	/**
+	 * @param valueMap
+	 * @param cdmBase
+	 * @return
+	 */
+	public boolean invoke(Map<String, Object> valueMap, CdmBase cdmBase){
+		Object dbValueObject = valueMap.get(this.getSourceAttribute().toLowerCase());
+		Boolean dbValue = (Boolean) (dbValueObject == null? null: dbValueObject);
+		return invoke(dbValue, cdmBase);
+	}
 	
 	/**
 	 * @param dbValue
@@ -153,7 +168,7 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		if (ignore){
 			return annotatableEntity;
 		}
-		if (dbValue != null){
+		if (dbValue != null && ! dbValue.equals(this.ignoreValue)){
 			Marker.NewInstance(annotatableEntity, dbValue, this.markerType);
 		}
 		return annotatableEntity;
