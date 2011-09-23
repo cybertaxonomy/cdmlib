@@ -440,11 +440,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			
 			//created, updated, notes
 			doCreatedUpdatedNotes(state, referenceBase, rs);						
-
-//			//isPaper
-//			if ((Boolean)valueMap.get("isPaper".toLowerCase())){
-//				logger.warn("IsPaper is not yet implemented, but reference " +  refId + " is paper");
-//			}
 			
 			//idInSource
 			String idInSource = (String)valueMap.get("IdInSource".toLowerCase());
