@@ -13,6 +13,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_AC
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PARTIAL_SYN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PRO_PARTE_SYN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SYNONYM;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_UNRESOLVED;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -169,9 +170,12 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 				Taxon taxon;
 				try {
 					logger.debug(statusFk);
-					if (statusFk == T_STATUS_ACCEPTED){
+					if (statusFk == T_STATUS_ACCEPTED || statusFk == T_STATUS_UNRESOLVED ){
 						taxon = Taxon.NewInstance(taxonName, reference);
 						taxonBase = taxon;
+						if (statusFk == T_STATUS_UNRESOLVED){
+							taxon.setTaxonStatusUnknown(true);
+						}
 					}else if (statusFk == T_STATUS_SYNONYM || statusFk == T_STATUS_PRO_PARTE_SYN || statusFk == T_STATUS_PARTIAL_SYN){
 						synonym = Synonym.NewInstance(taxonName, reference);
 						taxonBase = synonym;
