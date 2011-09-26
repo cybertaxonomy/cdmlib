@@ -546,7 +546,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     /**
      * Returns the set of all {@link NameRelationship name relationships}
-     * in which <i>this</i> taxon name is involved as a source.
+     * in which <i>this</i> taxon name is involved as a source ("from"-side).
      *
      * @see    #getNameRelations()
      * @see    #getRelationsToThisName()
@@ -561,7 +561,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     /**
      * Returns the set of all {@link NameRelationship name relationships}
-     * in which <i>this</i> taxon name is involved as a target.
+     * in which <i>this</i> taxon name is involved as a target ("to"-side).
      *
      * @see    #getNameRelations()
      * @see    #getRelationsFromThisName()
