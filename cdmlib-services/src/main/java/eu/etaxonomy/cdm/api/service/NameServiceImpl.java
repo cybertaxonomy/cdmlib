@@ -190,7 +190,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 				name.removeNameRelationship(rel);
 			}
 		}else{
-			Set<NameRelationship> rels = name.getRelationsToThisName();
+			Set<NameRelationship> rels = name.getRelationsFromThisName();
 			for (NameRelationship rel : rels){
 				if (config.isIgnoreHasBasionym() || config.isIgnoreHasReplacedSynonym()){
 					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
@@ -198,7 +198,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 					}
 				}
 			}
-			rels = name.getRelationsFromThisName();
+			rels = name.getRelationsToThisName();
 			for (NameRelationship rel : rels){
 				if (config.isIgnoreIsBasionymFor() || config.isIgnoreIsReplacedSynonymFor()  ){
 					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
