@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  *
  */
-//@Ignore
 public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
 
@@ -179,16 +178,17 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
 		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
 		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
-		basionym.setTitleCache("basionym", true);
+		TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
+		nameWithBasionym.setTitleCache("nameWithBasionym", true);
 		
 		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-		basionym.addRelationshipToName(name1,nameRelType , null, null, null);
+		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
 //		name1.addBasionym(basionym);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
 		
 		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as name relationships exist.");
 		} catch (Exception e) {
@@ -203,13 +203,46 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 		name1 = (NonViralName)nameService.find(name1.getUuid());
 		Assert.assertNotNull("Name should still be in database",name1);
-		name1.removeBasionyms();
+		nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
+		nameWithBasionym.removeBasionyms();
 		nameService.delete(name1); //should throw now exception
 		commitAndStartNewTransaction(tableNames);
 		name1 = (NonViralName)nameService.find(name1.getUuid());
 		Assert.assertNull("Name should not be in database anymore",name1);
 
 	}
+	
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+	 */
+	@Test
+	public void testDeleteTaxonNameBaseConfiguratorWithNameRelations() {
+		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
+		name1.setTitleCache("Name1", true);
+		TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
+		nameWithBasionym.setTitleCache("nameWithBasionym", true);
+		
+		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+		nameService.save(name1);
+		commitAndStartNewTransaction(tableNames);
+		NameDeletionConfigurator config = new NameDeletionConfigurator();
+		config.setIgnoreIsBasionymFor(true);
+		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			nameService.delete(name1, config);
+			commitAndStartNewTransaction(tableNames);
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			Assert.assertNull("Name should not be in database anymore",name1);
+
+		} catch (Exception e) {
+			Assert.fail("Delete should not throw an error for .");
+		}
+	}
+
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.

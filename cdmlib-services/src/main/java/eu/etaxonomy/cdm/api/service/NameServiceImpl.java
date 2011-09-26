@@ -182,15 +182,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	 * @param name
 	 * @param config
 	 */
-	private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name,
-			NameDeletionConfigurator config) {
+	private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name, NameDeletionConfigurator config) {
 		if (config.isRemoveAllNameRelationships()){
 			Set<NameRelationship> rels = name.getNameRelations();
 			for (NameRelationship rel : rels){
 				name.removeNameRelationship(rel);
 			}
 		}else{
-			Set<NameRelationship> rels = name.getRelationsFromThisName();
+			//relations to this name
+			Set<NameRelationship> rels = name.getRelationsToThisName();
 			for (NameRelationship rel : rels){
 				if (config.isIgnoreHasBasionym() || config.isIgnoreHasReplacedSynonym()){
 					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
@@ -198,7 +198,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 					}
 				}
 			}
-			rels = name.getRelationsToThisName();
+			//relations from this name
+			rels = name.getRelationsFromThisName();
 			for (NameRelationship rel : rels){
 				if (config.isIgnoreIsBasionymFor() || config.isIgnoreIsReplacedSynonymFor()  ){
 					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
