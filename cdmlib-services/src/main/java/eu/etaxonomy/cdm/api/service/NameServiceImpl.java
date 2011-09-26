@@ -132,10 +132,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		//hybrid relationships
 		if (name.isInstanceOf(NonViralName.class)){
 			NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
-			if (! nvn.getHybridChildRelations().isEmpty()){
-				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-				throw new RuntimeException(message);
-			}
+//			if (! nvn.getHybridChildRelations().isEmpty()){
+//				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
+//				throw new RuntimeException(message);
+//			}
 			if (! nvn.getHybridParentRelations().isEmpty()){
 				String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
 				throw new RuntimeException(message);

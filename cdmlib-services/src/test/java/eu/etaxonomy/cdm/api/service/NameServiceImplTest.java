@@ -378,28 +378,22 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		name1.addHybridParent(parent, relType, null);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
-
+		Assert.assertEquals("'Parent' should be a parent in a hybrid relation.", 1,parent.getHybridParentRelations().size());
+//		printDataSet(System.out, tableNames);
+		
 		//parent
 		try {
+			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
 			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as hybrid parent exist.");
+			//delete via cascade -> no exception
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is a child in")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
-				printDataSet(System.out, tableNames);
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
+			Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + e.getMessage());
 		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		name1.removeHybridParent(parent);
-		nameService.delete(name1); //should throw now exception
 		commitAndStartNewTransaction(tableNames);
 		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
 		Assert.assertNull("Name should not be in database anymore",name1);
+		parent = (NonViralName<?>)nameService.find(parent.getUuid());
+		Assert.assertEquals("'Parent' should not be a parent anymore.", 0,parent.getHybridParentRelations().size());
 		
 		//child
 		name1 = BotanicalName.NewInstance(getSpeciesRank());
