@@ -1468,6 +1468,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	
 	/**
+	 * The status of this taxon is unknown it could also be some kind of synonym.
 	 * @return the taxonStatusUnknown
 	 */
 	public boolean isTaxonStatusUnknown() {
