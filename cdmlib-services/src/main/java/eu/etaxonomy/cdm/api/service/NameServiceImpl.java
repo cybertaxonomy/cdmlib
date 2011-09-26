@@ -34,10 +34,9 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -95,21 +94,24 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 //********************* METHODS ****************************************************************//	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
+	 */
 	@Override
 	public UUID delete(TaxonNameBase name){
-		NameDeletionConfigurator config = new NameDeletionConfigurator();
+		NameDeletionConfigurator config = new NameDeletionConfigurator();  
 		return delete(name, config);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
+	 */
+	@Override
 	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config){
 		//check is used
 		//relationships
-		if (config.isRemoveAllNameRelationships()){
-			Set<NameRelationship> rels = name.getNameRelations();
-			for (NameRelationship rel : rels){
-				name.removeNameRelationship(rel);
-			}
-		}
+		removeNameRelationshipsByDeleteConfig(name, config);
+		
 		if (! name.getNameRelations().isEmpty()){
 			String message = "Name can't be deleted as it is used in name relationship(s).";
 			throw new RuntimeException(message);
@@ -174,6 +176,38 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		
 		dao.delete(name);
 		return name.getUuid();
+	}
+
+	/**
+	 * @param name
+	 * @param config
+	 */
+	private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name,
+			NameDeletionConfigurator config) {
+		if (config.isRemoveAllNameRelationships()){
+			Set<NameRelationship> rels = name.getNameRelations();
+			for (NameRelationship rel : rels){
+				name.removeNameRelationship(rel);
+			}
+		}else{
+			Set<NameRelationship> rels = name.getRelationsToThisName();
+			for (NameRelationship rel : rels){
+				if (config.isIgnoreHasBasionym() || config.isIgnoreHasReplacedSynonym()){
+					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
+						name.removeNameRelationship(rel);
+					}
+				}
+			}
+			rels = name.getRelationsFromThisName();
+			for (NameRelationship rel : rels){
+				if (config.isIgnoreIsBasionymFor() || config.isIgnoreIsReplacedSynonymFor()  ){
+					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
+						name.removeNameRelationship(rel);
+					}
+				}
+			}
+			
+		}
 	}
 
 //********************* METHODS ****************************************************************//

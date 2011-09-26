@@ -43,7 +43,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
-
+	/**
+	 * Deletes a name. Depening on the configurator state links to the name will either be 
+	 * deleted or throw exceptions.
+	 * @param name
+	 * @param config
+	 */
+	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config);
+	
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
