@@ -192,19 +192,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 			//relations to this name
 			Set<NameRelationship> rels = name.getRelationsToThisName();
 			for (NameRelationship rel : rels){
-				if (config.isIgnoreHasBasionym() || config.isIgnoreHasReplacedSynonym()){
-					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
+				if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
 						name.removeNameRelationship(rel);
-					}
+				}else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+					name.removeNameRelationship(rel);
 				}
 			}
 			//relations from this name
 			rels = name.getRelationsFromThisName();
 			for (NameRelationship rel : rels){
-				if (config.isIgnoreIsBasionymFor() || config.isIgnoreIsReplacedSynonymFor()  ){
-					if (NameRelationshipType.BASIONYM().equals(rel.getType())){
-						name.removeNameRelationship(rel);
-					}
+				if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
+					name.removeNameRelationship(rel);
+				}else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+					name.removeNameRelationship(rel);
 				}
 			}
 			

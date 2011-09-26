@@ -183,7 +183,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
 		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
-//		name1.addBasionym(basionym);
+//		nameWithBasionym.addBasionym(name1);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
 		
@@ -230,6 +230,24 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
 		NameDeletionConfigurator config = new NameDeletionConfigurator();
+		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			nameService.delete(name1, config);
+			Assert.fail("Delete should throw an error as long as name relationships exist.");
+		} catch (Exception e) {
+			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+				//ok
+				endTransaction();  //exception rolls back transaction!
+				printDataSet(System.out, tableNames);
+				startNewTransaction();
+			}else{
+				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+			}
+		}
+		name1 = (NonViralName)nameService.find(name1.getUuid());
+		Assert.assertNotNull("Name should still be in database",name1);
+
+		//ignore is basionym for
 		config.setIgnoreIsBasionymFor(true);
 		try {
 			name1 = (NonViralName)nameService.find(name1.getUuid());
@@ -237,13 +255,107 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			commitAndStartNewTransaction(tableNames);
 			name1 = (NonViralName)nameService.find(name1.getUuid());
 			Assert.assertNull("Name should not be in database anymore",name1);
+		} catch (Exception e) {
+			Assert.fail("Delete should not throw an error for .");
+		}
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+	 */
+	@Test
+	public void testDeleteTaxonNameBaseConfiguratorWithNameRelationsAll() {
+		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
+		name1.setTitleCache("Name1", true);
+		TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
+		nameWithBasionym.setTitleCache("nameWithBasionym", true);
+		
+		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+		nameService.save(name1);
+		commitAndStartNewTransaction(tableNames);
+		NameDeletionConfigurator config = new NameDeletionConfigurator();
+		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			nameService.delete(name1, config);
+			Assert.fail("Delete should throw an error as long as name relationships exist.");
+		} catch (Exception e) {
+			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+				//ok
+				endTransaction();  //exception rolls back transaction!
+				printDataSet(System.out, tableNames);
+				startNewTransaction();
+			}else{
+				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+			}
+		}
+		name1 = (NonViralName)nameService.find(name1.getUuid());
+		Assert.assertNotNull("Name should still be in database",name1);
+
+		//ignore all name relationships
+		config.setRemoveAllNameRelationships(true);
+		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			nameService.delete(name1, config);
+			commitAndStartNewTransaction(tableNames);
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			Assert.assertNull("Name should not be in database anymore",name1);
 		} catch (Exception e) {
 			Assert.fail("Delete should not throw an error for .");
 		}
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+	 */
+	@Test
+	public void testDeleteTaxonNameBaseConfiguratorWithHasBasionym() {
+		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
+		NonViralName name1 = BotanicalName.NewInstance(getSpeciesRank());
+		name1.setTitleCache("Name1", true);
+		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
+		basionym.setTitleCache("basionym", true);
+		
+		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+		basionym.addRelationshipToName(name1,nameRelType , null, null, null);
+		nameService.save(name1);
+		commitAndStartNewTransaction(tableNames);
+		NameDeletionConfigurator config = new NameDeletionConfigurator();
+		config.setIgnoreHasBasionym(false);
+		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			nameService.delete(name1, config);
+			Assert.fail("Delete should throw an error as long as name relationships exist.");
+		} catch (Exception e) {
+			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+				//ok
+				endTransaction();  //exception rolls back transaction!
+				printDataSet(System.out, tableNames);
+				startNewTransaction();
+			}else{
+				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+			}
+		}
+		name1 = (NonViralName)nameService.find(name1.getUuid());
+		Assert.assertNotNull("Name should still be in database",name1);
+
+		//ignore has basionym
+		config.setIgnoreHasBasionym(true);
+		try {
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			nameService.delete(name1, config);
+			commitAndStartNewTransaction(tableNames);
+			name1 = (NonViralName)nameService.find(name1.getUuid());
+			Assert.assertNull("Name should not be in database anymore",name1);
+		} catch (Exception e) {
+			Assert.fail("Delete should not throw an error for .");
+		}
+	}
+	
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
 	 */
