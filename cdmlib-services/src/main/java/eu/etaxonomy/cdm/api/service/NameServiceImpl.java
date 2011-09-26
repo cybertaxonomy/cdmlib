@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -108,37 +109,47 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	 */
 	@Override
 	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config){
-		//check is used
-		//relationships
+		
+		
+		//remove references to this name
 		removeNameRelationshipsByDeleteConfig(name, config);
 		
+		
+		//check if this name is still used somewhere
+		
+		//name relationships
 		if (! name.getNameRelations().isEmpty()){
-			String message = "Name can't be deleted as it is used in name relationship(s).";
+			String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
 			throw new RuntimeException(message);
 		}
+		
 		//concepts
 		if (! name.getTaxonBases().isEmpty()){
-			String message = "Name can't be deleted as it is used in concept(s).";
+			String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
 			throw new RuntimeException(message);
 		}
+		
 		//hybrid relationships
 		if (name.isInstanceOf(NonViralName.class)){
 			NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
 			if (! nvn.getHybridChildRelations().isEmpty()){
-				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s).";
+				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
 				throw new RuntimeException(message);
 			}
 			if (! nvn.getHybridParentRelations().isEmpty()){
-				String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s).";
+				String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
 				throw new RuntimeException(message);
 			}
 		}
+//		
+//		//type designations
+//		if (! name.getTypeDesignations().isEmpty()){
+//			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
+//			throw new RuntimeException(message);
+//		}
 		
-		
-
-		
+		//check references with only reverse mapping
 		Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
-		
 		for (CdmBase referencingObject : referencingObjects){
 			//DerivedUnitBase?.storedUnder
 			if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
@@ -149,19 +160,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 			//DescriptionElementSource#nameUsedInSource
 			if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
 				String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-//				message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
 				throw new RuntimeException(message);
 			}
+			//NameTypeDesignation#typeName
+			if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+				String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+				throw new RuntimeException(message);
+			}
+
 			//TaxonNameDescriptions#taxonName
-			//should be deleted via cascade?
-//			if (referencingObject.isInstanceOf(TaxonNameDescription.class)){
-//				String message = "Name can't be deleted as it is has taxon name description(s)";
-//				throw new RuntimeException(message);
-//			}
+			//deleted via cascade?
 			
 			//NomenclaturalStatus
-			//should be deleted via cascade?
-//		    
+			//deleted via cascade?    
 				
 		}
 		
@@ -171,7 +182,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		//	    TypeDesignations?
 		
 
-//	    inline references
+		//inline references
 		
 		
 		dao.delete(name);
