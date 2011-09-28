@@ -107,11 +107,11 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 
 
     @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
-    public Pager<Annotation> getAnnotations(
+    public Pager<Annotation> getDescriptionElementAnnotations(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAnnotations() - " + request.getServletPath());
+        logger.info("getDescriptionElementAnnotations() - " + request.getServletPath());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         if(annotatableEntity == null){
             HttpStatusMessage.UUID_INVALID.send(response);

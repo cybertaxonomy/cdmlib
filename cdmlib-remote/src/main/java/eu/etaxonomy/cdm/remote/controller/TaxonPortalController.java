@@ -369,7 +369,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         pagerParams.normalizeAndValidate(response);
 
         ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
-        config.setPageNumber(pagerParams.getPageNumber());
+        config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
         config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );

@@ -44,9 +44,6 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
-    public static final Integer DEFAULT_PAGESIZE = 20;
-    public static final Integer DEFAULT_PAGE_NUMBER = 0;
-
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
@@ -55,9 +52,11 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 
 
     /**
-     * @param pageNumber
-     *            the number of the page to be returned, the first page has the
-     *            pageNumber = 1 - <i>optional parameter</i>
+     * NOTE: The indices for pages are 0-based see {@link Pager}
+     *
+     * @param pageIndex
+     *            the index of the page to be returned, the first page has the
+     *            pageIndex = 0 - <i>optional parameter</i>
      * @param pageSize
      *            the maximum number of entities returned per page (can be null
      *            to return all entities in a single page) - <i>optional
@@ -70,17 +69,17 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
      */
     @RequestMapping(method = RequestMethod.GET, params = "pageNumber")
     public Pager<T> doPage(
-            @RequestParam(value = "pageNumber") Integer pageNumber,
+            @RequestParam(value = "pageNumber") Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class<T> type,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
             {
 
-        PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageNumber(), null, DEFAULT_INIT_STRATEGY);
+        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, DEFAULT_INIT_STRATEGY);
     }
 
     /**
@@ -114,7 +113,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "class", required = false) Class<T> type) {
 
         //if(start == null){ start = 0;}
-        if(limit == null){ limit = DEFAULT_PAGESIZE;}
+        if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
         if(limit < 1){ limit = null;}
         return service.list(type, limit, start, null, DEFAULT_INIT_STRATEGY);
     }
