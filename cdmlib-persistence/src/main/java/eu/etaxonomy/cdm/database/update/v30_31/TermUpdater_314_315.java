@@ -70,10 +70,7 @@ public class TermUpdater_314_315 extends TermUpdaterBase implements ITermUpdater
 		String label = null;
 		String abbrev;
 		UUID uuidLang = Language.uuidEnglish;
-		String dtype;
-		boolean isOrdered;
-		UUID uuidVocabulary;
-		UUID uuidAfterTerm;
+
 		
 		String stepName;
 		
