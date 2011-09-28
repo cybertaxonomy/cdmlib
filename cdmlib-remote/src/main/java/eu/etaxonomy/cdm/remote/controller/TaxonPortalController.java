@@ -532,9 +532,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         logger.info("doGetTaxonRelations()" + request.getServletPath());
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        List<TaxonRelationship> results = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+        List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+        List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
 
-        return results;
+        List<TaxonRelationship> allRelationships = new ArrayList<TaxonRelationship>(toRelationships.size() + fromRelationships.size());
+        allRelationships.addAll(toRelationships);
+        allRelationships.addAll(fromRelationships);
+
+        return allRelationships;
     }
 
     /**
