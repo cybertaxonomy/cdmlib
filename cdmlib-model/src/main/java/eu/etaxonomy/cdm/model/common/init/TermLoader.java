@@ -125,11 +125,11 @@ public class TermLoader implements ITermLoader {
 	}
 
 	private List<String> arrayedLine(String [] nextLine){
-		ArrayList<String> csvTermAttributeList = new ArrayList<String>(10);
+		ArrayList<String> csvTermAttributeList = new ArrayList<String>(15);
 		for (String col : nextLine){
 			csvTermAttributeList.add(col);
 		}
-		while (csvTermAttributeList.size()<10){
+		while (csvTermAttributeList.size()<15){
 			csvTermAttributeList.add("");
 		}
 		return csvTermAttributeList;
