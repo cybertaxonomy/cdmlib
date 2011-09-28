@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.11.2010
  *
  */
-public interface IUpdater<U extends IUpdater> {
+public interface IUpdater<U extends IUpdater<U>> {
 	
 	
 	/**

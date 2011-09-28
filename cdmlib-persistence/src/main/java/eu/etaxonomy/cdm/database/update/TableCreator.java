@@ -26,8 +26,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableCreator extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
+public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
 	
 	private static final boolean SORT_INDEX = true;

@@ -53,7 +53,7 @@ public class CdmUpdaterTest {
 	@Test
 	public void testUpdateToCurrentVersion() {
 		CdmUpdater cdmUpdater = new CdmUpdater();
-		ICdmDataSource datasource = cdm_test_andreasM();
+		ICdmDataSource datasource = cdm_test_algaterra();
 		try {
 			boolean connectionAvailable = datasource.testConnection();
 			Assert.assertTrue("Testdatabase is not available", connectionAvailable);
@@ -69,6 +69,14 @@ public class CdmUpdaterTest {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasM"; 
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	private static ICdmDataSource cdm_test_algaterra(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "160.45.63.201";
+		String cdmDB = "cdm_edit_algaterra"; 
 		String cdmUserName = "edit";
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}

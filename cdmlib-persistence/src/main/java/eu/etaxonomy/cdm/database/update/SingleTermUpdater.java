@@ -20,11 +20,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
+ * Creates a new term if a term with the same given uuid does not exist yet
  * @author a.mueller
  * @date 10.09.2010
  *
  */
-public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	

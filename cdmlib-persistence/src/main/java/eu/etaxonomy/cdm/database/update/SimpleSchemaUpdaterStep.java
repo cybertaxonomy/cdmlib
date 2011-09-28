@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 13.09.2010
  *
  */
-public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase implements ISchemaUpdaterStep, ITermUpdaterStep{
+public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaUpdaterStep> implements ISchemaUpdaterStep, ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SimpleSchemaUpdaterStep.class);
 	

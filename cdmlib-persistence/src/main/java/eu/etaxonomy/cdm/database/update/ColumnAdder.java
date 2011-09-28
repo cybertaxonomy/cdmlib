@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnAdder extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
+public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements ISchemaUpdaterStep {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
 	

@@ -1079,6 +1079,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpda
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableDroper.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableNameChanger.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermRepresentationUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UniqueIndexDropper.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UpdaterBase.java -text
@@ -1099,6 +1100,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpd
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_311_312.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_312_313.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_313_314.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_314_315.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_31_311.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text

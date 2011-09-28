@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
  * @date 16.11.2010
  *
  */
-public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater> implements IUpdater<U> {
+public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>> implements IUpdater<U> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	

@@ -113,7 +113,7 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_314_315.NewInstance();
 	}
 
 	/* (non-Javadoc)
