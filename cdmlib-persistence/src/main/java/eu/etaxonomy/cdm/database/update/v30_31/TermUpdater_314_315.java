@@ -54,9 +54,10 @@ public class TermUpdater_314_315 extends TermUpdaterBase implements ITermUpdater
 	protected List<ITermUpdaterStep> getUpdaterList() {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 
-		String identical = "\u2261";  //identical
+//		String identical = "\u2261";  //identical
 //		String identical = "\u2258";  //corresponds to
 //		String identical = "\u2263";  //strictly equivalent to
+		String identical = "\u2245"; //APPROXIMATELY EQUAL TO
 		String included = "\u2282";
 		String includes = "\u2283";
 		String overlaps = "\u2295";
