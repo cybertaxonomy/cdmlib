@@ -133,7 +133,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
+	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 		
 		if (dbSchemaValidation == null){
@@ -151,7 +151,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
+	protected boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
@@ -207,13 +207,13 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		return true;
 	}
 
-	private void createAdminUser(){
+	protected void createAdminUser(){
 		User firstUser = User.NewInstance("admin", "00000");
 		getUserService().save(firstUser);
 		logger.info("Admin user created.");
 	}
 	
-	private void createMetadata(){
+	protected void createMetadata(){
 		List<CdmMetaData> metaData = CdmMetaData.defaultMetaData();
 		getCommonService().saveAllMetaData(metaData);
 		logger.info("Metadata created.");
@@ -293,14 +293,14 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	/**
 	 * closes the application context
 	 */
-	private void closeApplicationContext(){
+	protected void closeApplicationContext(){
 		if (applicationContext != null){
 			logger.info("Close ApplicationContext");
 			applicationContext.close();
 		}
 	}
 	
-	private void init(){
+	protected void init(){
 		logger.debug("Init " +  this.getClass().getName() + " ... ");
 		if (logger.isDebugEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
 		//TODO delete next row (was just for testing)
