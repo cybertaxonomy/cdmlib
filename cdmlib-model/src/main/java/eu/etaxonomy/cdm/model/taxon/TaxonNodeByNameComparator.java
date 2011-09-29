@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * Comparator that compares two TaxonNode instances by the titleCache of their referenced names.
@@ -29,6 +31,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
 
 
     private boolean ignoreHybridSign = true;
+    private boolean sortInfraGenericFirst = true;
 
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -38,34 +41,49 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
 
         String titleCache1 = null;
         String titleCache2 = null;
-
+        TaxonNameBase name1 = o1.getTaxon().getName();
+        TaxonNameBase name2 = o2.getTaxon().getName();
+        
+              
         if(o1.getTaxon() != null && o1.getTaxon().getName() != null ){
-
+        	       	
             if (o1.getTaxon().getName() instanceof NonViralName){
-                NonViralName nonViralName = (NonViralName)o1.getTaxon().getName();
-                if (nonViralName.isInfraSpecific()){
+            	NonViralName nonViralName = (NonViralName)name1;
+                if (name1.isInfraSpecific()){
                     if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
                         titleCache1 = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
                     }
                 }
+                if (name1.isInfraGeneric()){
+                	titleCache1 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
+                }
+                if (nonViralName.getRank().isSpeciesAggregate()){
+                	titleCache1 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
+                }
 
             }
             if (titleCache1 == null){
-                titleCache1 = o1.getTaxon().getName().getTitleCache();
+                titleCache1 = name1.getTitleCache();
             }
         }
         if(o2.getTaxon() != null && o2.getTaxon().getName() != null){
             if (o2.getTaxon().getName() instanceof NonViralName){
-                NonViralName nonViralName = (NonViralName)o2.getTaxon().getName();
+            	NonViralName nonViralName = (NonViralName)name2;
                 if (nonViralName.isInfraSpecific()){
                     if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
                         titleCache2 = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
                     }
                 }
+                if (nonViralName.isInfraGeneric()){
+                	titleCache2 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
+                }
+                if (nonViralName.getRank().isSpeciesAggregate()){
+                	titleCache2 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
+                }
 
             }
             if (titleCache2 == null){
-                titleCache2 = o2.getTaxon().getName().getTitleCache();
+                titleCache2 = name2.getTitleCache();
             }
         }
 
@@ -79,20 +97,20 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
 
         StringTokenizer s2 = new StringTokenizer(titleCache1, "\"");
         if (s2.countTokens()>0){
-            titleCache1 = null;
+            titleCache1 = "";
         }
         while(s2.hasMoreTokens()){
             titleCache1 += s2.nextToken();
         }
         s2 = new StringTokenizer(titleCache2, "\"");
         if (s2.countTokens()>0){
-            titleCache2 = null;
+            titleCache2 = "";
         }
 
         while(s2.hasMoreTokens()){
             titleCache2 += s2.nextToken();
         }
-
+        
         return titleCache1.compareTo(titleCache2);
     }
 
@@ -105,5 +123,12 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
         this.ignoreHybridSign = ignore;
     }
 
+    public boolean isSortInfraGenericFirst() {
+        return sortInfraGenericFirst;
+    }
+
+    public void setSortInfraGenericFirst(boolean infraGenericFirst) {
+        this.sortInfraGenericFirst = infraGenericFirst;
+    }
 
 }
