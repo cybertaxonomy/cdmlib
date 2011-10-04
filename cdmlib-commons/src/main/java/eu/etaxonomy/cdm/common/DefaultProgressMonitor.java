@@ -26,7 +26,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	private boolean isCanceled = false;
 	private String taskName = "No task name";
 	private int totalWork = 0;
-	private int workDone = 0;
+	private double workDone = 0;
 	private String subTask = "No subtask name";
 	
 
@@ -83,7 +83,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	@Override
 	public void subTask(String subTask) {
 		this.subTask = subTask;
-		logger.info(getPercentage() + "% done. Next Task: " + subTask);
+		logger.info(/*getPercentage() + "% done." + */  " Next Task: " + subTask);
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +91,20 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 	 */
 	@Override
 	public void worked(int work) {
+		computeWorked(work);
+//		this.workDone = this.workDone +  work;
+	}
+	
+
+	@Override
+	public void internalWorked(double work) {
+		computeWorked(work);
+//		this.workDone = this.workDone +  work;
+	}
+	
+	private void computeWorked(double work){
 		this.workDone = this.workDone +  work;
+		logger.info(getPercentage() + "% done (Completed Task: " + subTask + ")");
 	}
 	
 	/* (non-Javadoc)
@@ -111,9 +124,11 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 		exception.printStackTrace();
 	}
 
-	public float getPercentage(){
-		float result = Float.valueOf(this.workDone) * 100 /this.totalWork ;
+	public double getPercentage(){
+		double result = this.workDone * 100 /this.totalWork ;
 		return result;
 	}
+
+
 
 }

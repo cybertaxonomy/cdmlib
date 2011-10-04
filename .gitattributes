@@ -12,8 +12,10 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ExcelUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/FileCopy.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/IProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/NullProgressMonitor.java -text svneol=unset#text/plain
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ProgressMonitorWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/StreamUtils.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/SubProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/Tree.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/TreeNode.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/UriUtils.java -text

@@ -92,4 +92,10 @@ public class NullProgressMonitor implements IProgressMonitor {
 
 	}
 
+	@Override
+	public void internalWorked(double work) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

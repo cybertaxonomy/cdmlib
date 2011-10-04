@@ -1,3 +1,4 @@
+
 package eu.etaxonomy.cdm.common;
 
 
@@ -113,6 +114,15 @@ public interface IProgressMonitor {
 	 * @param work a non-negative number of work units just completed
 	 */
 	public void worked(int work);
+	
+    /**
+     * Internal method to handle scaling correctly. This method
+     * must not be called by a client. Clients should 
+     * always use the method </code>worked(int)</code>.
+     * 
+     * @param work the amount of work done
+     */
+    public void internalWorked(double work);
 	
 	
 	/**

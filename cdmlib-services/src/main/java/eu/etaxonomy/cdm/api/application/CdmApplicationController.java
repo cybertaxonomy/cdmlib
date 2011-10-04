@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.common.IProgressMonitor;
 import eu.etaxonomy.cdm.common.NullProgressMonitor;
-import eu.etaxonomy.cdm.common.tmp.SubProgressMonitor;
+import eu.etaxonomy.cdm.common.SubProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -87,7 +87,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public static CdmApplicationController NewInstance() {
 		logger.info("Start CdmApplicationController with default data source");
-		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
@@ -98,7 +98,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) {
 		logger.info("Start CdmApplicationController with default data source");
-		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
 
@@ -132,7 +132,23 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 //	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners) {
 //		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor,listeners);
 //	}
-	
+
+
+	/**
+	 * @return
+	 */
+	protected static ClassPathResource getClasspathResource() {
+		return new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+	}	
+
+	/**
+	 * @return
+	 */
+	protected static CdmPersistentDataSource getDefaultDatasource() {
+		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+		return dataSource;
+	}
+
 
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
@@ -140,18 +156,18 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
+	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 		
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
-		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : getClasspathResource();
 		this.progressMonitor = progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 		
 		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, listeners);
 	}
-		
+
 	
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.

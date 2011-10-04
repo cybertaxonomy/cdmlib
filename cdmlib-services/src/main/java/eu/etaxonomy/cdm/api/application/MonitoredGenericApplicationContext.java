@@ -17,7 +17,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 
 import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.tmp.SubProgressMonitor;
+import eu.etaxonomy.cdm.common.SubProgressMonitor;
 
 /**
  * {@link GenericApplicationContext Generic application context} which allows progress monitoring.
