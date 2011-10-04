@@ -81,6 +81,15 @@ public class CdmUpdaterTest {
 		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+//	private static ICdmDataSource cdm_import(){
+//		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+//		String cdmServer = "160.45.63.151";
+//		String cdmDB = "cdm_production_campanulaceae"; 
+//		String cdmUserName = "edit";
+//		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+//	}
+	
+	
 	
 	
 	private static ICdmDataSource makeDestination(DatabaseTypeEnum dbType, String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
