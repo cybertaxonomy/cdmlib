@@ -123,8 +123,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	NamedArea country = WaterbodyOrCountry.GERMANY();
 
-	// ****************************** SET UP
-	// *****************************************/
+	// ****************************** SET UP **********************************/
 
 	/**
 	 * @throws java.lang.Exception
@@ -198,7 +197,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	// ****************************** TESTS*****************************/
 
-	@Ignore //doesn't run in suite
+//	@Ignore //doesn't run in suite 
 	@Test
 	@DataSet("DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml")
 	@ExpectedDataSet
