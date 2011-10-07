@@ -204,7 +204,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
-				printDataSet(System.out, tableNames);
+//				printDataSet(System.out, tableNames);
 				startNewTransaction();
 			}else{
 				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
@@ -247,7 +247,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
-				printDataSet(System.out, tableNames);
+//				printDataSet(System.out, tableNames);
 				startNewTransaction();
 			}else{
 				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
@@ -294,7 +294,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
-				printDataSet(System.out, tableNames);
+//				printDataSet(System.out, tableNames);
 				startNewTransaction();
 			}else{
 				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
@@ -342,7 +342,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
-				printDataSet(System.out, tableNames);
+//				printDataSet(System.out, tableNames);
 				startNewTransaction();
 			}else{
 				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
@@ -708,13 +708,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		name1.addTypeDesignation(typeDesignation, addToAllNames);
 		nameService.save(name1);
 		commitAndStartNewTransaction(tableNames);
-		printDataSet(System.out, tableNames);
 		
 		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
 		nameService.delete(name1);  //should throw now exception
 		setComplete(); 
 		endTransaction();
-		printDataSet(System.out, tableNames);
+//		printDataSet(System.out, tableNames);
 		
 	}
 	
