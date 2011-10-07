@@ -206,6 +206,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		Feature imageFeature = (Feature) termService.find(imageFeatureUuid);
 
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		facade.innerDerivedUnit().setUuid(UUID.fromString("77af784f-931b-4857-be9a-48ccf31ed3f1"));
 		facade.setFieldNumber("12345");
 		Media media = Media.NewInstance(URI.create("www.abc.de"), 200, null,"jpeg");
 
@@ -225,13 +226,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		}
 		this.service.save(facade.innerDerivedUnit());
 
-		// setComplete(); endTransaction();
-		// try {if (true){printDataSet(System.out, new
-		// String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
-		// ,"DERIVATIONEVENT",
-		// "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA","DESCRIPTIONBASE_SPECIMENOROBSERVATIONBASE",
-		// "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
-		// } catch(Exception e) { logger.warn(e);}
+		 setComplete(); endTransaction();
+		 try {if (true){printDataSet(System.out, new
+		 String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
+		 ,"DERIVATIONEVENT",
+		 "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA","DESCRIPTIONBASE_SPECIMENOROBSERVATIONBASE",
+		 "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
+		 } catch(Exception e) { logger.warn(e);}
 
 	}
 
