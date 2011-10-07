@@ -203,7 +203,6 @@ public class TestCdmDbComparator {
 			"TypeDesignationBase", 
 //			"TypeDesignationBase_Annotation", 
 //			"TypeDesignationBase_Marker", 
-//			"TypeDesignationBase_TaxonNameBase"
 	};
 
 //	@Autowired

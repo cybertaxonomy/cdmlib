@@ -138,7 +138,16 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	}
 	
 	//********* METHODS **************************************/
-
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#removeType()
+	 */
+	@Override
+	public void removeType() {
+		this.setTypeSpecimen(null);
+	}
+	
 	/** 
 	 * Returns the {@link occurrence.DerivedUnitBase derived unit} (specimen or figure) that is used
 	 * in <i>this</i> specimen type designation to typify the {@link TaxonNameBase taxon name}.
@@ -199,5 +208,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 			return null;
 		}
 	}
+
 	
 }

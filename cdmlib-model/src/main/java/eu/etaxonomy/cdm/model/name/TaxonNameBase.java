@@ -20,6 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -166,14 +167,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-//	@JoinTable(
-//        name="TypeDesignationBase_TaxonNameBase",
-//        joinColumns=@JoinColumn(name="typifiednames_id"),
-//        inverseJoinColumns=@javax.persistence.JoinColumn(name="TypeDesignationBase_id")
-//    )
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@JoinTable(
+        name="TaxonNameBase_TypeDesignationBase",
+        joinColumns=@javax.persistence.JoinColumn(name="TaxonNameBase_id"),
+        inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
+    )
+    @Cascade({CascadeType.SAVE_UPDATE})
     @NotNull
-    private Set<TypeDesignationBase<?>> typeDesignations = new HashSet<TypeDesignationBase<?>>();
+    private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
 
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
@@ -926,9 +927,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see     NameTypeDesignation
      * @see     SpecimenTypeDesignation
      */
-    public Set<TypeDesignationBase<?>> getTypeDesignations() {
+    public Set<TypeDesignationBase> getTypeDesignations() {
         if(typeDesignations == null) {
-            this.typeDesignations = new HashSet<TypeDesignationBase<?>>();
+            this.typeDesignations = new HashSet<TypeDesignationBase>();
         }
         return typeDesignations;
     }
@@ -939,9 +940,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      *
      * @param  typeDesignation  the type designation which should be deleted
      */
-    public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
-        logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
+    @SuppressWarnings("deprecation")
+	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
         this.typeDesignations.remove(typeDesignation);
+        typeDesignation.removeTypifiedName(this);
     }
 
     /**
@@ -1115,7 +1117,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      *
      */
     public boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames){
-        //at them moment typeDesignations are not persisted with the homotypical group
+        //currently typeDesignations are not persisted with the homotypical group
         //so explicit adding to the homotypical group is not necessary.
         if (typeDesignation != null){
             checkHomotypicalGroup(typeDesignation);

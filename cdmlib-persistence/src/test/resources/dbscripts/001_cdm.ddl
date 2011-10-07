@@ -4887,20 +4887,6 @@
         primary key (REV, TypeDesignationBase_id, markers_id)
     );
 
-    create table TypeDesignationBase_TaxonNameBase (
-        TypeDesignationBase_id integer not null,
-        typifiednames_id integer not null,
-        primary key (TypeDesignationBase_id, typifiednames_id)
-    );
-
-    create table TypeDesignationBase_TaxonNameBase_AUD (
-        REV integer not null,
-        TypeDesignationBase_id integer not null,
-        typifiednames_id integer not null,
-        revtype tinyint,
-        primary key (REV, TypeDesignationBase_id, typifiednames_id)
-    );
-
     create table UserAccount (
         id integer not null,
         created timestamp,
@@ -9057,22 +9043,7 @@
         add constraint FKECA3515C34869AAE 
         foreign key (REV) 
         references AuditEvent;
-
-    alter table TypeDesignationBase_TaxonNameBase 
-        add constraint FKF61156F54D901A92 
-        foreign key (typifiednames_id) 
-        references TaxonNameBase;
-
-    alter table TypeDesignationBase_TaxonNameBase 
-        add constraint FKF61156F544E9E6D4 
-        foreign key (TypeDesignationBase_id) 
-        references TypeDesignationBase;
-
-    alter table TypeDesignationBase_TaxonNameBase_AUD 
-        add constraint FK4F1F024634869AAE 
-        foreign key (REV) 
-        references AuditEvent;
-
+ 
     alter table UserAccount 
         add constraint FKB3F13C24FF2DB2C 
         foreign key (createdby_id) 

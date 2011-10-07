@@ -47,7 +47,7 @@
 	<xsd:element name="SEQUENCE_RIGHTS_AUD" type="SEQUENCE_RIGHTS_AUD__type" />
 	<xsd:element name="DESCRIPTIONBASE_EXTENSION_AUD" type="DESCRIPTIONBASE_EXTENSION_AUD__type" />
 	<xsd:element name="SYNONYMRELATIONSHIP_MARKER_AUD" type="SYNONYMRELATIONSHIP_MARKER_AUD__type" />
-	<xsd:element name="TYPEDESIGNATIONBASE_TAXONNAMEBASE_AUD" type="TYPEDESIGNATIONBASE_TAXONNAMEBASE_AUD__type" />
+	<xsd:element name="TAXONNAMEBASE_TYPEDESIGNATIONBASE_AUD" type="TAXONNAMEBASE_TYPEDESIGNATIONBASE_AUD__type" />
 	<xsd:element name="MEDIA_AUD" type="MEDIA_AUD__type" />
 	<xsd:element name="SPECIMENOROBSERVATIONBASE_EXTENSION" type="SPECIMENOROBSERVATIONBASE_EXTENSION__type" />
 	<xsd:element name="RIGHTS_AUD" type="RIGHTS_AUD__type" />
@@ -216,7 +216,7 @@
 	<xsd:element name="DERIVATIONEVENT" type="DERIVATIONEVENT__type" />
 	<xsd:element name="COLLECTION_MARKER_AUD" type="COLLECTION_MARKER_AUD__type" />
 	<xsd:element name="FEATURETREE_REPRESENTATION_AUD" type="FEATURETREE_REPRESENTATION_AUD__type" />
-	<xsd:element name="TYPEDESIGNATIONBASE_TAXONNAMEBASE" type="TYPEDESIGNATIONBASE_TAXONNAMEBASE__type" />
+	<xsd:element name="TAXONNAMEBASE_TYPEDESIGNATIONBASE" type="TAXONNAMEBASE_TYPEDESIGNATIONBASE__type" />
 	<xsd:element name="MEDIA_LANGUAGESTRING_AUD" type="MEDIA_LANGUAGESTRING_AUD__type" />
 	<xsd:element name="MEDIAREPRESENTATION_MEDIAREPRESENTATIONPART_AUD" type="MEDIAREPRESENTATION_MEDIAREPRESENTATIONPART_AUD__type" />
 	<xsd:element name="INDIVIDUALASSOCIATION_LANGUAGESTRING" type="INDIVIDUALASSOCIATION_LANGUAGESTRING__type" />
@@ -686,9 +686,9 @@
 		<xsd:attribute name="REVTYPE" use="optional" />
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="TYPEDESIGNATIONBASE_TAXONNAMEBASE_AUD__type">
-		<xsd:attribute name="TYPEDESIGNATIONBASE_ID" use="optional" />
-		<xsd:attribute name="TYPIFIEDNAMES_ID" use="optional" />
+	<xsd:complexType name="TAXONNAMEBASE_TYPEDESIGNATIONBASE_AUD__type">
+		<xsd:attribute name="TYPEDESIGNATIONS_ID" use="optional" />
+		<xsd:attribute name="TAXONNAMEBASE_ID" use="optional" />
 		<xsd:attribute name="REVTYPE" use="optional" />
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
@@ -2141,9 +2141,9 @@
 		<xsd:attribute name="REPRESENTATIONS_ID" use="optional" />
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="TYPEDESIGNATIONBASE_TAXONNAMEBASE__type">
-		<xsd:attribute name="TYPEDESIGNATIONBASE_ID" use="optional" />
-		<xsd:attribute name="TYPIFIEDNAMES_ID" use="optional" />
+	<xsd:complexType name="TAXONNAMEBASE_TYPEDESIGNATIONBASE__type">
+		<xsd:attribute name="TYPEDESIGNATIONS_ID" use="optional" />
+		<xsd:attribute name="TAXONNAMEBASE_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="MEDIA_LANGUAGESTRING_AUD__type">
 		<xsd:attribute name="MEDIA_ID" use="optional" />

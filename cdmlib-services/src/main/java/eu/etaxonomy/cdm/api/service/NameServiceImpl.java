@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,7 +143,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 				throw new RuntimeException(message);
 			}
 		}
-//		
+		
+		//all type designation relationships are removed as they belong to the name
+		deleteTypeDesignation(name, null);
 //		//type designations
 //		if (! name.getTypeDesignations().isEmpty()){
 //			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
@@ -176,18 +180,49 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 				
 		}
 		
-		//check is used
-//	    which name relations can be automatically deleted without throwing an exception
-
-		//	    TypeDesignations?
-		
-
-		//inline references
-		
+		//TODO inline references
 		
 		dao.delete(name);
 		return name.getUuid();
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#deleteTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.TypeDesignationBase)
+	 */
+	@Override
+	public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
+		if (name == null && typeDesignation == null){
+			return;
+		}else if (name != null && typeDesignation != null){
+			removeSingleDesignation(name, typeDesignation);
+		}else if (name != null){
+			Set<TypeDesignationBase> designationSet = new HashSet<TypeDesignationBase>(name.getTypeDesignations());
+			for (Object o : designationSet){
+				TypeDesignationBase desig = CdmBase.deproxy(o, TypeDesignationBase.class);
+				removeSingleDesignation(name, desig);
+			}
+		}else if (typeDesignation != null){
+			Set<TaxonNameBase> nameSet = new HashSet<TaxonNameBase>(typeDesignation.getTypifiedNames());
+			for (Object o : nameSet){
+				TaxonNameBase singleName = CdmBase.deproxy(o, TaxonNameBase.class);
+				removeSingleDesignation(singleName, typeDesignation);
+			}
+		}
+	}
+
+	/**
+	 * @param name
+	 * @param typeDesignation
+	 */
+	private void removeSingleDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation) {
+		name.removeTypeDesignation(typeDesignation);
+		if (typeDesignation.getTypifiedNames().isEmpty()){
+			typeDesignation.removeType();
+			typeDesignationDao.delete(typeDesignation);
+		}
+	}
+	
+	
 
 	/**
 	 * @param name

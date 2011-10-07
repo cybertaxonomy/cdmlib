@@ -71,7 +71,6 @@ cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
-cdmlib-ext/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
@@ -472,7 +471,6 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImportTest.java -tex
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/test/function/TestDatabase.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
-cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
@@ -1376,6 +1374,10 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.tif -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsBidirectionalCascade-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsCascadeFromSpecimen-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsCascadeToSpecimen-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsWithAuditing-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/reference/ReferenceDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testAddChild-result.xml -text
@@ -1876,7 +1878,6 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -tex
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/NeededForCorrectTermLoadingTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
-cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetDerivedUnitImageGallery-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetDerivedUnitImageGallery.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery-result.xml -text

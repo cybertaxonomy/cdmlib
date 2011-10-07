@@ -50,6 +50,19 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param config
 	 */
 	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config);
+
+	/**
+	 * Removes the given type designation from the given taxon name and deletes it from
+	 * the database if it is not connected to any other name.
+	 * If <code>typeDesignation</code> is <code>null</code> all type designations are deleted
+	 * from the given taxon name. If <code>name</code> is <code>null</code> all names are removed from
+	 * the given type designation. If both are <code>null</code> nothing happens.
+	 * @param typeDesignation
+	 * @param name
+	 * @return
+	 */
+	public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation);
+
 	
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
