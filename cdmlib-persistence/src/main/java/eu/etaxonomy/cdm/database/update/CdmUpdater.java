@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.database.update;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.DefaultProgressMonitor;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;

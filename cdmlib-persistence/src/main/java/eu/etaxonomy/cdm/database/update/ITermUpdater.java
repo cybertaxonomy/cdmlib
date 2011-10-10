@@ -9,7 +9,7 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
