@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.common;
+package eu.etaxonomy.cdm.common.monitor;
 
 
 /*******************************************************************************

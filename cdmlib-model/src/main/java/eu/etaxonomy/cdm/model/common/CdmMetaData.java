@@ -19,7 +19,7 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * @author a.mueller

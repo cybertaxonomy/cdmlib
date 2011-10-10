@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.jdom.Document;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 
 /**

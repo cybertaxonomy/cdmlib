@@ -16,8 +16,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.SubProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 
 /**
  * {@link GenericApplicationContext Generic application context} which allows progress monitoring.
@@ -58,9 +58,19 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
 		String task = "Invoke bean factory post processors";
 		currentMonitor.subTask(task);
 		super.invokeBeanFactoryPostProcessors(beanFactory);
+		
 		currentMonitor.worked(countInvokeBeanFactoryPostProcessors);
+		checkMonitorCancelled(currentMonitor);
 	}
 	
+	private void checkMonitorCancelled(IProgressMonitor monitor) {
+		if (monitor.isCanceled()){
+			throw new RuntimeException("Task has been cancelled");
+		}
+		
+	}
+
+
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory){
 		String task = "Finish bean factory initialization";
 		currentMonitor.subTask(task);

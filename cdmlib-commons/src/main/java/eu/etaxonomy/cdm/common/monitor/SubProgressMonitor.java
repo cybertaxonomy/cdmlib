@@ -9,7 +9,7 @@
          * Contributors:
          *     IBM Corporation - initial API and implementation
          *******************************************************************************/
-package eu.etaxonomy.cdm.common;
+package eu.etaxonomy.cdm.common.monitor;
 
 
 /**

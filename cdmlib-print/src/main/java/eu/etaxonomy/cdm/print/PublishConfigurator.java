@@ -23,8 +23,8 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
 
 /**
