@@ -58,28 +58,22 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
 
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
 		String task = "Invoke bean factory post processors";
+		checkMonitorCancelled(currentMonitor);
 		currentMonitor.subTask(task);
 		super.invokeBeanFactoryPostProcessors(beanFactory);
-		
 		currentMonitor.worked(countInvokeBeanFactoryPostProcessors);
 		checkMonitorCancelled(currentMonitor);
 	}
-	
-	private void checkMonitorCancelled(IProgressMonitor monitor) {
-		if (monitor.isCanceled()){
-			throw new CancellationException();
-		}
-		
-	}
-
 
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory){
+		checkMonitorCancelled(currentMonitor);
 		String task = "Finish bean factory initialization";
 		currentMonitor.subTask(task);
 		IProgressMonitor subMonitor	= new SubProgressMonitor(currentMonitor, countFinishBeanFactoryInitialization);
 		getMyBeanFactory().setCurrentMonitor(subMonitor);
 		super.finishBeanFactoryInitialization(beanFactory);
-//		currentMonitor.worked();
+		checkMonitorCancelled(currentMonitor);
+		
 	}
 
 	/**
@@ -94,14 +88,13 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
 	 * @see org.springframework.context.support.AbstractApplicationContext#refresh()
 	 */
 	public void refresh(IProgressMonitor monitor) throws BeansException, IllegalStateException {
+		checkMonitorCancelled(monitor);
 		String message = "Refresh application context. This might take a while ...";
-//		progressMonitor.subTask(message);
 		currentMonitor = monitor;
-//		getMyBeanFactory().setMainMonitor(monitor);
 		beginTask(message, countTasks);
 		super.refresh();
 		taskDone();
-		
+		checkMonitorCancelled(monitor);
 	}
 
 
@@ -128,5 +121,12 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
 	
 	private MonitoredListableBeanFactory getMyBeanFactory(){
 		return (MonitoredListableBeanFactory)getBeanFactory();
+	}
+	
+	
+	private void checkMonitorCancelled(IProgressMonitor monitor) {
+		if (monitor != null && monitor.isCanceled()){
+			throw new CancellationException();
+		}	
 	}
 }

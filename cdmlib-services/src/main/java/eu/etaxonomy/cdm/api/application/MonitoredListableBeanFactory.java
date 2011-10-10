@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CancellationException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -56,6 +57,7 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 	
 	public void preInstantiateSingletons() throws BeansException {
 		isInitializingBeans = true;
+		checkMonitorCancelled(currentMonitor);
 		int countBeans = 0;
 		for (String beanName : getBeanDefinitionNames()) {
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
@@ -87,14 +89,23 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 	
 	protected Object createBean(final String name, final RootBeanDefinition mbd, final Object[] args){
 		boolean doMonitor = isInitializingBeans && beansToMonitor.contains(name) && !alreadyMonitoredBeans.contains(name);
+		checkMonitorCancelled(currentMonitor);
 		if (doMonitor){
-			String message = "Handle bean '%s'";
-			message = String.format(message, name);
+			String message;
+			if (name.equals("sessionFactory")){
+				message = "Initializing persistence context ...";
+			}else if(name.equals("persistentTermInitializer")){
+				message = "Loading terms ...";
+			}else{
+				message = "Handling '%s'";
+				message = String.format(message, name);
+			}
 			currentMonitor.subTask(message);
 			alreadyMonitoredBeans.add(name);
 		}
 		Object result = super.createBean(name, mbd, args);
 		if (doMonitor){
+			checkMonitorCancelled(currentMonitor);
 			currentMonitor.worked(1);
 		}
 		return result;
@@ -106,6 +117,12 @@ public class MonitoredListableBeanFactory extends DefaultListableBeanFactory {
 	 */
 	public void setCurrentMonitor(IProgressMonitor monitor) {
 		this.currentMonitor = monitor;
+	}
+	
+	private void checkMonitorCancelled(IProgressMonitor monitor) {
+		if (monitor != null && monitor.isCanceled()){
+			throw new CancellationException();
+		}	
 	}
 		
 }
