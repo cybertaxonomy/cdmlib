@@ -19,7 +19,6 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/AudioInfo.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/ImageInfo.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/MediaInfo.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/MimeType.java -text
-cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/CancelException.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/DefaultProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/IProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/NullProgressMonitor.java -text svneol=unset#text/plain
