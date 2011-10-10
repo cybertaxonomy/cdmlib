@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.concurrent.CancellationException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver;
@@ -65,7 +67,7 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
 	
 	private void checkMonitorCancelled(IProgressMonitor monitor) {
 		if (monitor.isCanceled()){
-			throw new RuntimeException("Task has been cancelled");
+			throw new CancellationException();
 		}
 		
 	}
