@@ -21,11 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -35,6 +36,8 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	private IIdentificationKeyDao identificationKeyDao;
 	private ITaxonDao taxonDao;
+	
+//	private IPolytomousKeyNodeDao nodeDao;
 
 
 	@Autowired
@@ -51,6 +54,11 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	protected void setDao(ITaxonDao taxonDao) {
 		this.taxonDao = taxonDao;
 	}
+
+//	@Autowired
+//	protected void setDao(IPolytomousKeyNodeDao nodeDao) {
+//		this.nodeDao = nodeDao;
+//	}
 
 
 	/* (non-Javadoc)
@@ -118,5 +126,18 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults, pageSize, list);
 		return pager;
 	}
+
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
+//	 */
+//	@Override
+//	public UUID delete(PolytomousKey key) {
+//		
+////		nodeDao.deleteForKey(key);
+//		
+//		return super.delete(key);
+//	}
+	
+	
 	
 }
