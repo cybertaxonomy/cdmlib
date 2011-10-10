@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
