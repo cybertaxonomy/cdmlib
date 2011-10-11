@@ -18,11 +18,13 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableDroper;
 
 
 /**
+ * NOT YET USED
  * @author a.mueller
- * @created Nov 08, 2010
+ * @created Oct 11, 2011
  */
 public class SchemaUpdater_301_31 extends SchemaUpdaterBase {
 
@@ -53,8 +55,11 @@ public class SchemaUpdater_301_31 extends SchemaUpdaterBase {
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 		
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
-		String stepName;
 		
+		//drop TypeDesignationBase_TaxonNameBase
+		String stepName = "Drop duplicate TypeDesignation-TaxonName table";
+		String tableName = "TypeDesignationBase_TaxonNameBase";
+		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		
 		return stepList;
 	}
