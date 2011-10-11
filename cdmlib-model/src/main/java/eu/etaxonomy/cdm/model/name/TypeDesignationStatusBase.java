@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<?>> extends OrderedTermBase<T> {
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
+	private static final long serialVersionUID = 8451277496688711357L;	
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty type designation status instance.
