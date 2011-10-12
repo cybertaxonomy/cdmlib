@@ -55,6 +55,7 @@ public class CdmUpdater {
 			result &= currentSchemaUpdater.invoke(datasource, monitor);
 			// the above apparently did not work while testing. Did not want to set the version in CdmMetaData yet
 //			result &= currentSchemaUpdater.invoke(currentSchemaUpdater.getTargetVersion(), datasource, monitor);
+			
 			result &= currentTermUpdater.invoke(datasource, monitor);
 		} catch (Exception e) {
 			result = false;

@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
 	
 	private String tableName;
@@ -85,21 +84,32 @@ public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements I
 	}
 
 	private boolean addColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
-			datasource.executeUpdate(updateQuery);
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
 			
 			if (defaultValue instanceof Boolean){
 				updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
 				updateQuery = updateQuery.replace("@tableName", tableName);
 				updateQuery = updateQuery.replace("@columnName", newColumnName);
-				datasource.executeUpdate(updateQuery);
+				try {
+					datasource.executeUpdate(updateQuery);
+				} catch (SQLException e) {
+					logger.error(e);
+					result = false;
+				}
 			}
 			if (referencedTable != null){
-				TableCreator.makeForeignKey(tableName, datasource, newColumnName, referencedTable);
+				result &= TableCreator.makeForeignKey(tableName, datasource, newColumnName, referencedTable);
 			}
 			
-			return true;
+			return result;
 		} catch ( DatabaseTypeNotSupportedException e) {
 			return false;
 		}

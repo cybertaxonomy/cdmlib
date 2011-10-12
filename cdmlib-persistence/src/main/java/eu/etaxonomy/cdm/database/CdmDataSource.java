@@ -309,6 +309,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	 */
 	public NomenclaturalCode getNomenclaturalCode() {
 		return nomenclaturalCode;
-	}		
+	}
+	
 }
 

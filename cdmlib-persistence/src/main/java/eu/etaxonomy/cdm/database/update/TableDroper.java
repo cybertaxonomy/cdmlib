@@ -55,10 +55,16 @@ public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements I
 	}
 
 	private boolean removeTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
-			datasource.executeUpdate(updateQuery);
-			return true;
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
+			return result;
 		} catch ( DatabaseTypeNotSupportedException e) {
 			return false;
 		}

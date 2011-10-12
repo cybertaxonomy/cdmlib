@@ -59,6 +59,7 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase<ColumnNameChanger> 
 	}
 
 	private boolean changeColumnName(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		
@@ -83,9 +84,14 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase<ColumnNameChanger> 
 		updateQuery = updateQuery.replace("@oldColumnName", oldColumnName);
 		updateQuery = updateQuery.replace("@newColumnName", newColumnName);
 		updateQuery = updateQuery.replace("@definition", getDefinition());
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
 
-		return true;
+		return result;
 	}
 
 	private CharSequence getDefinition() {

@@ -141,6 +141,7 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 	}
 
 	private boolean createTable(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
+		boolean result = true;
 		String updateQuery = "CREATE TABLE @tableName (";
 		if (isAudit){
 			updateQuery += " REV integer not null, revtype tinyint, ";
@@ -172,9 +173,14 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 			updateQuery += " ENGINE=MYISAM DEFAULT CHARSET=utf8 ";
 		}
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
-		createForeignKeys(tableName, isAudit, datasource, monitor);
-		return true;
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
+		result &= createForeignKeys(tableName, isAudit, datasource, monitor);
+		return result;
 	}
 
 
@@ -221,30 +227,33 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		}
 	}
 	
-	private void createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		if (includeCdmBaseAttributes){
 			String attribute = "updatedby";
 			String referencedTable = "UserAccount";
-			makeForeignKey(tableName, datasource, attribute, referencedTable);
+			result &= makeForeignKey(tableName, datasource, attribute, referencedTable);
 			
 			attribute = "createdby";
 			referencedTable = "UserAccount";
-			makeForeignKey(tableName, datasource, attribute, referencedTable);			
+			result &= makeForeignKey(tableName, datasource, attribute, referencedTable);			
 		
 		}
 		if (isAudit){
 			String attribute = "REV";
 			String referencedTable = "AuditEvent";
-			makeForeignKey(tableName, datasource, attribute, referencedTable);
+			result &= makeForeignKey(tableName, datasource, attribute, referencedTable);
 		}
 		for (ColumnAdder adder : this.columnAdders){
 			if (adder.getReferencedTable() != null){
-				makeForeignKey(tableName, datasource, adder.getNewColumnName(), adder.getReferencedTable()); 
+				result &= makeForeignKey(tableName, datasource, adder.getNewColumnName(), adder.getReferencedTable()); 
 			}
 		}
+		return result;
 	}
 
-	public static void makeForeignKey(String tableName, ICdmDataSource datasource, String attribute, String referencedTable) {
+	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, String attribute, String referencedTable) {
+		boolean result = true;
 		String index = "FK@tableName_@attribute";
 		index = index.replace("@tableName", tableName);
 		index = index.replace("@attribute", attribute);
@@ -260,7 +269,13 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		updateQuery = updateQuery.replace("@referencedTable", referencedTable);
 		
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
+		return result;
 	}
 
 

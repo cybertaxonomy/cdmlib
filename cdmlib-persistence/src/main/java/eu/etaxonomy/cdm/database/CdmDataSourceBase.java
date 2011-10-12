@@ -35,21 +35,29 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	
 
 	public Connection getConnection() throws SQLException {
-
 		return getConnection(getUsername(), getPassword());
 	}
 	
 
 	public Connection getConnection(String username, String password) throws SQLException {
 		try {
-			if(connection != null && connection.isValid(TIMEOUT)){
-				return connection;
+			if(connection != null){
+				boolean isValid = true;
+//				try{
+//					isValid = connection.isValid(TIMEOUT);
+//				} catch (java.lang.AbstractMethodError e){
+//					logger.error("Problems with Connection.isValid method\n" + "Exception: " + e.toString());
+//				}
+				if (isValid){
+					return connection;
+				}
 			}else{
 				IDatabaseType dbType = getDatabaseType().getDatabaseType();
 				String classString = dbType.getClassString();
 				Class.forName(classString);
 				String mUrl = dbType.getConnectionString(this);
-				return DriverManager.getConnection(mUrl, username, password);	
+				Connection connection = DriverManager.getConnection(mUrl, username, password);
+				return 	connection;
 			}
 		} catch (ClassNotFoundException e) {
 			logger.error("Database driver class could not be loaded\n" + "Exception: " + e.toString());
@@ -125,12 +133,12 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 
 	}
 	
-    /**
-     * Executes an update
-     * @return return code
-     */
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#executeUpdate(java.lang.String)
+	 */
 	@Override
-	public int executeUpdate (String sqlUpdate) {
+	public int executeUpdate (String sqlUpdate) throws SQLException{
 		
 		int result;
 		Connection connection = null;
@@ -143,8 +151,58 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			result = statement.executeUpdate(sqlUpdate);
 			return result;
 		} catch(SQLException e) {
+			try{
+				if (! connection.getAutoCommit()){
+					connection.rollback();
+				}
+			}catch (SQLException ex){
+				//do nothing -  maybe throw RuntimeException in future
+				throw new RuntimeException(ex);
+			}
 			logger.error("Problems when executing update\n  " + sqlUpdate + " \n" + "Exception: " + e);
-			return 0;
+			throw e;
+		}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#startTransaction()
+	 */
+	@Override
+	public void startTransaction() {
+		try {
+			Connection connection = getConnection();
+			connection.setAutoCommit(false);
+			this.connection = connection;
+	    	return;
+		} catch(SQLException e) {
+			logger.error("Problems when starting transaction \n" + "Exception: " + e);
+			return;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#commitTransaction()
+	 */
+	@Override
+	public void commitTransaction() throws SQLException {
+		try {
+			Connection connection = getConnection();
+			connection.commit();
+	    } catch(SQLException e) {
+			logger.error("Problems when commiting transaction \n" + "Exception: " + e);
+			throw e;
+		}
+	}
+	
+	@Override
+	public void rollback() throws SQLException {
+		try {
+			Connection connection = getConnection();
+			connection.rollback();
+	    } catch(SQLException e) {
+			logger.error("Problems when rolling back transaction \n" + "Exception: " + e);
+			throw e;
 		}
 	}
 	

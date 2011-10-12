@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  *
  */
 public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PolytomousKeyDataMover.class);
 	
 	private String featureTreeTableName;
@@ -64,18 +62,20 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 	}
 
 	private boolean movePolytomousKeys(String featureTreeTableName, String featureNodeTableName, String polytomousKeyTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, IProgressMonitor monitor, boolean isAudit) throws SQLException {
-		movePolytomousKey(featureTreeTableName, polytomousKeyTableName, datasource, isAudit);
-		movePolytomousKeyMns(featureTreeTableName, polytomousKeyTableName, datasource, isAudit);
-		movePolytomousKeyNodes(featureTreeTableName, featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
+		boolean result = true;
+		result &= movePolytomousKey(featureTreeTableName, polytomousKeyTableName, datasource, isAudit);
+		result &= movePolytomousKeyMns(featureTreeTableName, polytomousKeyTableName, datasource, isAudit);
+		result &= movePolytomousKeyNodes(featureTreeTableName, featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
 
-		moveQuestions(featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
+		result &= moveQuestions(featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
 		
-		deleteOldData(datasource, isAudit);
+		result &= deleteOldData(datasource, isAudit);
 		return true;
 	}
 
 
-	private void moveQuestions(String featureNodeTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit) throws SQLException {
+	private boolean moveQuestions(String featureNodeTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit) throws SQLException {
+		boolean result = true;
 		String aud = "";
 		String audValue = "";
 		String audParam = "";
@@ -107,7 +107,12 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			}
 			updateQuery = updateQuery.replace("@_aud", aud);
 			updateQuery = updateQuery.replace("@audParam", audParam);
-			datasource.executeUpdate(updateQuery);
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
 			
 			//create entry in Language String
 			updateQuery = " INSERT INTO LanguageString@_aud (id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @audParam) " + 
@@ -127,7 +132,12 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			}
 			updateQuery = updateQuery.replace("@_aud", aud);
 			updateQuery = updateQuery.replace("@audParam", audParam);
-			datasource.executeUpdate(updateQuery);
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
 					
 			//create entry in KeyStatement_LanguageString
 			updateQuery = " INSERT INTO KeyStatement_LanguageString@_aud (KeyStatement_id, label_id, label_mapkey_id @audParam) " + 
@@ -142,7 +152,12 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			}
 			updateQuery = updateQuery.replace("@_aud", aud);
 			updateQuery = updateQuery.replace("@audParam", audParam);
-			datasource.executeUpdate(updateQuery);
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
 			
 			//link polytomouskeynode statement to KeyStatement
 			updateQuery = " UPDATE PolytomousKeyNode@_aud " + 
@@ -150,11 +165,14 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 					" WHERE id = @id ";
 			updateQuery = updateQuery.replace("@id", nullSafe(rs.getObject("FeatureNode_id")));
 			updateQuery = updateQuery.replace("@_aud", aud);
-			datasource.executeUpdate(updateQuery);
-			
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
 		}
-		
-			
+		return result;
 		
 		
 //		// move representations
@@ -235,7 +253,8 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		}
 	}
 
-	private void deleteOldData(ICdmDataSource datasource, boolean isAudit) {
+	private boolean deleteOldData(ICdmDataSource datasource, boolean isAudit) {
+		boolean result = true;
 		String updateQuery; 
 		String featureNodeTable = "FeatureNode" +  (isAudit ? "_AUD" : "");
 		String featureTreeTable = "FeatureTree" + (isAudit ? "_AUD" : "");
@@ -247,27 +266,42 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		updateQuery = updateQuery.replace("@representationTable", representationTable);
 		updateQuery = updateQuery.replace("@oldMnTable", oldMnTable);
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
 		
 //		feature nodes
 		updateQuery = " DELETE FROM @featureNodeTable WHERE featuretree_id IN (SELECT t.id FROM @featureTreeTable t WHERE t.DTYPE = 'PolytomousKey' )";
 		updateQuery = updateQuery.replace("@featureNodeTable", featureNodeTable);
 		updateQuery = updateQuery.replace("@featureTreeTable", featureTreeTable);
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
 		
 		//trees
 		updateQuery = " DELETE FROM @featureTreeTable WHERE DTYPE = 'PolytomousKey' " ;
 		updateQuery = updateQuery.replace("@featureTreeTable", featureTreeTable);
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
+		return result;
 		
 		
 	}
 
-	private void movePolytomousKeyNodes(String featureTreeTableName,
-			String featureNodeTableName, String polytomousKeyNodeTableName,
-			ICdmDataSource datasource, boolean isAudit) {
+	private boolean movePolytomousKeyNodes(String featureTreeTableName, String featureNodeTableName, 
+			String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit) {
 		String updateQuery;
 		
 		//PolytomousKey node
@@ -288,22 +322,29 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		updateQuery = updateQuery.replace("@audit", audit);
 		updateQuery = updateQuery.replace("@nAudit", nAudit);
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			return false;
+		}
+		return true;
 	}
 
-	private void movePolytomousKeyMns(String featureTreeTableName, String polytomousKeyTableName, ICdmDataSource datasource, boolean isAudit) {
+	private boolean  movePolytomousKeyMns(String featureTreeTableName, String polytomousKeyTableName, ICdmDataSource datasource, boolean isAudit) {
 		//PolytomousKey MN update
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Annotation", null, datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Credit", null, datasource, isAudit, true);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Extension", null, datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Marker", null, datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "OriginalSourceBase", "Sources", datasource, isAudit, false);
-		updateMnTables(featureTreeTableName, polytomousKeyTableName, "Rights", "Rights", datasource, isAudit, false);
+		boolean result = true;
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Annotation", null, datasource, isAudit, false);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Credit", null, datasource, isAudit, true);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Extension", null, datasource, isAudit, false);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Marker", null, datasource, isAudit, false);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "OriginalSourceBase", "Sources", datasource, isAudit, false);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Rights", "Rights", datasource, isAudit, false);
+		return result;
 	}
 
-	private void movePolytomousKey(String featureTreeTableName,
-			String polytomousKeyTableName, ICdmDataSource datasource,
-			boolean isAudit) {
+	private boolean movePolytomousKey(String featureTreeTableName, String polytomousKeyTableName, 
+			ICdmDataSource datasource, boolean isAudit) {
 		//PolytomousKey
 		//TODO monitor polytomous keys with uri for data loss
 		
@@ -317,10 +358,16 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			audit = ", REV, revtype";
 		}
 		updateQuery = updateQuery.replace("@audit", audit);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			return false;
+		}
+		return true;
 	}
 
-	private void updateMnTables(String featureTreeTableName, String polytomousKeyTableName, String attributeName, String attributePluralString, ICdmDataSource datasource, boolean isAudit, boolean hasSortIndex) {
+	private boolean updateMnTables(String featureTreeTableName, String polytomousKeyTableName, String attributeName, String attributePluralString, ICdmDataSource datasource, boolean isAudit, boolean hasSortIndex) {
 		String updateQuery;
 		String audit;
 		if (isAudit){
@@ -347,7 +394,13 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		}
 		updateQuery = updateQuery.replace("@audit", audit);
 		logger.debug(updateQuery);
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			return false;
+		}
+		return true;
 	}
 
 }

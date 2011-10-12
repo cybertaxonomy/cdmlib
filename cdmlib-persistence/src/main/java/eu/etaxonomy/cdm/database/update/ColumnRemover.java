@@ -57,10 +57,16 @@ public class ColumnRemover extends SchemaUpdaterStepBase<ColumnRemover> implemen
 	}
 
 	private boolean removeColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
-			datasource.executeUpdate(updateQuery);
-			return true;
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
+			return result;
 		} catch ( DatabaseTypeNotSupportedException e) {
 			return false;
 		}

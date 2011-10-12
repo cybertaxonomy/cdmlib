@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +55,12 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		if (query == null){
 			query = queryMap.get(null);
 		}
-		datasource.executeUpdate(query);
+		try {
+			datasource.executeUpdate(query);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
 		return (result == true )? 0 : null;
 	}
 

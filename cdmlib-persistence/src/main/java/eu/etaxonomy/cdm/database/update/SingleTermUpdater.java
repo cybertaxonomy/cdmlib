@@ -63,6 +63,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 
 	
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.monitor.IProgressMonitor)
+	 */
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
  		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
 		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
@@ -167,7 +170,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	}
 
 
-	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Feature.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
 				" supportscategoricaldata = " + getBoolean(false, datasource) + ", " + 
