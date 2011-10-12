@@ -64,14 +64,36 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation);
 
 	
+	/**
+	 * Saves the given type designations.
+	 * @param typeDesignationCollection
+	 * @return
+	 */
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
 		
+	/**
+	 * Saves the given homotypical groups.
+	 * @param homotypicalGroups
+	 * @return
+	 */
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups);
 
+	/**
+	 * Returns all nomenclatural status.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
 	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
 
+	/**
+	 * Returns all type designations.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
 	
 	/**
