@@ -628,7 +628,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#createInferredSynonyms(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
      */
     public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type) {
-
         return this.dao.createInferredSynonyms(taxon, tree, type);
     }
 
@@ -636,7 +635,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findIdenticalTaxonNames(java.util.List)
      */
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath) {
-
         return this.dao.findIdenticalTaxonNames(propertyPath);
     }
 
