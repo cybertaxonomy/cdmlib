@@ -83,21 +83,19 @@ public class DatabaseEnumTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getConnectionString(java.lang.String, java.lang.String, int)}.
 	 */
-	@Ignore
 	@Test
 	public void testGetConnectionStringStringStringInt() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", 1234, null, null, null);
-		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
+		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getConnectionString(java.lang.String, java.lang.String)}.
 	 */
-	@Ignore
 	@Test
 	public void testGetConnectionStringStringString() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null);
-		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
+		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
 		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServer2005Instance("192.168.2.10", "cdm_test", -1, null, null, null);
 		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseEnumTest.dbEnumSql2005.getConnectionString(sqlServerDataSource));
 	}
