@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -103,32 +105,39 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	@Override
 	public UUID delete(TaxonNameBase name){
 		NameDeletionConfigurator config = new NameDeletionConfigurator();  
-		return delete(name, config);
+		try {
+			return delete(name, config);
+		} catch (ReferencedObjectUndeletableException e) {
+			//TODO throw DeleteException - current implementation is preliminary for testing
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
 	 */
 	@Override
-	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config){
-		
+	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException{
+		if (name == null){
+			return null;
+		}
 		
 		//remove references to this name
 		removeNameRelationshipsByDeleteConfig(name, config);
-		
 		
 		//check if this name is still used somewhere
 		
 		//name relationships
 		if (! name.getNameRelations().isEmpty()){
 			String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-			throw new RuntimeException(message);
+			throw new ReferencedObjectUndeletableException(message);
+//			return null;
 		}
 		
 		//concepts
 		if (! name.getTaxonBases().isEmpty()){
 			String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-			throw new RuntimeException(message);
+			throw new ReferencedObjectUndeletableException(message);
 		}
 		
 		//hybrid relationships
@@ -140,7 +149,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 //			}
 			if (! nvn.getHybridParentRelations().isEmpty()){
 				String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-				throw new RuntimeException(message);
+				throw new ReferencedObjectUndeletableException(message);
 			}
 		}
 		
@@ -149,7 +158,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 //		//type designations
 //		if (! name.getTypeDesignations().isEmpty()){
 //			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
-//			throw new RuntimeException(message);
+//			throw new ReferrencedObjectUndeletableException(message);
 //		}
 		
 		//check references with only reverse mapping
@@ -159,17 +168,17 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 			if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
 				String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
 				message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
-				throw new RuntimeException(message);
+				throw new ReferencedObjectUndeletableException(message);
 			}
 			//DescriptionElementSource#nameUsedInSource
 			if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
 				String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-				throw new RuntimeException(message);
+				throw new ReferencedObjectUndeletableException(message);
 			}
 			//NameTypeDesignation#typeName
 			if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
 				String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-				throw new RuntimeException(message);
+				throw new ReferencedObjectUndeletableException(message);
 			}
 
 			//TaxonNameDescriptions#taxonName
