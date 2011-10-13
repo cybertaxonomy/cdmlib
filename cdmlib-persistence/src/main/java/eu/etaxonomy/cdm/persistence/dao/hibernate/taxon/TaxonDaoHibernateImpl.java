@@ -767,7 +767,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		    }
 		    return (List<RelationshipBase>)criteria.list();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
 			return (List<RelationshipBase>)query.getResultList();
 		}
 	}
