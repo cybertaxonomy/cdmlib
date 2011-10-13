@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -42,6 +43,9 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private ITaxonNameDao taxonNameDao;
 
+	@SpringBeanByType
+	private ITaxonDao taxonDao;
+
 	private UUID uuid;
 	
 	/**
@@ -55,17 +59,18 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.hibernate.CdmDeleteListener#onDelete(org.hibernate.event.DeleteEvent, java.util.Set)}.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	@DataSet("CdmDeleteListenerTest.xml")
 	@ExpectedDataSet
 	public void testOnDelete() throws Exception {
-		NonViralName name = (NonViralName)taxonNameDao.findByUuid(uuid);
+		NonViralName<?> name = (NonViralName<?>)taxonNameDao.findByUuid(uuid);
 		/**
 		 * Ended up with some horrible hibernate errors otherwise
 		 */
 		taxonNameDao.refresh(name, LockMode.READ, null);
 		assertNotNull(name);
+//		int nRels = taxonDao.countAllRelationships();  //TODO needs fixing on test side or dao method side as it jumps into auditing 
+//		Assert.assertEquals("There should be 2 relationships", 2, nRels);
 		Set<NameRelationship> relations = name.getNameRelations();
 		Assert.assertEquals("There must be 1 name relationship", 1, relations.size());
 		name.removeNameRelationship(relations.iterator().next());
@@ -74,7 +79,13 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 		Assert.assertEquals("There must be 1 parent relationship", 1, hybridRels.size());
 		
 		taxonNameDao.saveOrUpdate(name);
+		
 		setComplete();
 		endTransaction();
+		startNewTransaction();
+		
+//		nRels = taxonDao.countAllRelationships();
+//		Assert.assertEquals("There should be 1 relationship now", 1, nRels);
+		
 	}
 }

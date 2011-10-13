@@ -13,9 +13,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.EntityEntry;
+import org.hibernate.engine.Status;
 import org.hibernate.event.DeleteEvent;
 import org.hibernate.event.DeleteEventListener;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 
@@ -26,7 +29,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
  */
 public class CdmDeleteListener implements DeleteEventListener {
 	private static final long serialVersionUID = -5511287200489449838L;
-	@SuppressWarnings("unused")
 	protected static final Logger logger = Logger.getLogger(CdmDeleteListener.class);
 
 	/* (non-Javadoc)
@@ -43,8 +45,7 @@ public class CdmDeleteListener implements DeleteEventListener {
 	/* (non-Javadoc)
 	 * @see org.hibernate.event.DeleteEventListener#onDelete(org.hibernate.event.DeleteEvent, java.util.Set)
 	 */
-	public void onDelete(DeleteEvent event, Set transientEntities)
-			throws HibernateException {
+	public void onDelete(DeleteEvent event, Set transientEntities)throws HibernateException {
 		Object entity = event.getObject();
 		if(entity != null && RelationshipBase.class.isAssignableFrom(entity.getClass())) {
 			logger.info("Deleting " + entity);
@@ -63,7 +64,14 @@ public class CdmDeleteListener implements DeleteEventListener {
 			for (IRelated rel : deletedObjects){
 				if (rel != null){
 					logger.info("Updating related entity " + rel);
-					event.getSession().update(rel);
+					Object o = CdmBase.deproxy(rel, CdmBase.class);
+					EntityEntry entry = event.getSession().getPersistenceContext().getEntry(o);
+					if (entry == null){
+						System.out.println();
+					}
+					if (!entry.getStatus().equals(Status.DELETED)){
+						event.getSession().update(rel);
+					}
 				}
 			}
 		}
