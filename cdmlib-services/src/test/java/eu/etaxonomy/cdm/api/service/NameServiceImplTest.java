@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -201,7 +202,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as name relationships exist.");
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+			if (e.getMessage().contains("Name can't be deleted as it is used in name relationship")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
 //				printDataSet(System.out, tableNames);
@@ -410,7 +411,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as hybrid child exist.");
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is a parent in")){
+			if (e.getMessage().contains("Name can't be deleted as it is a parent in")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
 				startNewTransaction();
@@ -448,7 +449,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as name is used in a concept.");
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used in concept")){
+			if (e.getMessage().contains("Name can't be deleted as it is used in concept")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
 				startNewTransaction();
@@ -489,7 +490,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as name is used for specimen#storedUnder.");
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used as derivedUnit#storedUnder")){
+			if (e.getMessage().contains("Name can't be deleted as it is used as derivedUnit#storedUnder")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
 				startNewTransaction();
@@ -543,7 +544,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as name is used in a source.");
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource")){
+			if (e.getMessage().contains("Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
 				startNewTransaction();
@@ -591,7 +592,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 			nameService.delete(name1);
 			Assert.fail("Delete should throw an error as long as name is used in a type designation.");
 		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used as a name type")){
+			if (e.getMessage().contains("Name can't be deleted as it is used as a name type")){
 				//ok
 				endTransaction();  //exception rolls back transaction!
 				startNewTransaction();
@@ -684,7 +685,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
 	 */
 	@Test
-//	@Ignore //Mapping not yet correctly implemented
 	public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
 		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -914,18 +914,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 	}	
 	
-	
-	/**
-	 * @param tableNames
-	 */
-	private void commitAndStartNewTransaction(final String[] tableNames) {
-		setComplete(); 
-		endTransaction();
-//		printDataSet(System.out, tableNames);
-		startNewTransaction();
-	}
-	
-
 	/**
 	 * @return
 	 */
