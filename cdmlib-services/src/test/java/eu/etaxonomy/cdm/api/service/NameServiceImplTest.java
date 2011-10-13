@@ -629,7 +629,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		//TaxonNameDescription
 		name1 = BotanicalName.NewInstance(getSpeciesRank());
 		TaxonNameDescription.NewInstance(name1);
-		nameService.save(name1);
+		nameService.saveOrUpdate(name1);
 		commitAndStartNewTransaction(tableNames);
 		
 		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -647,7 +647,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)termService.find(NomenclaturalStatusType.ILLEGITIMATE().getUuid());
 		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(nomStatusType);
 		name1.addStatus(status);
-		nameService.save(name1);
+		nameService.saveOrUpdate(name1);
 		commitAndStartNewTransaction(tableNames);
 		
 		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -706,7 +706,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 		boolean addToAllNames = true;
 		name1.addTypeDesignation(typeDesignation, addToAllNames);
-		nameService.save(name1);
+		nameService.saveOrUpdate(name1);
 		commitAndStartNewTransaction(tableNames);
 		
 		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
