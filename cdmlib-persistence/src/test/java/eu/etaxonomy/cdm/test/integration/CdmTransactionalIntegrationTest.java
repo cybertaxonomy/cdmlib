@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.test.integration;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,6 +23,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 @Transactional(TransactionMode.DISABLED)
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
+	protected static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTest.class);
+
 	/** 
 	 * The transaction manager to use  
 	 */
@@ -125,10 +128,10 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 		this.complete = !this.isRollback();
 
 		if (this.transactionManager == null) {
-			CdmTransactionalIntegrationTest.logger.info("No transaction manager set: test will NOT run within a transaction");
+			logger.info("No transaction manager set: test will NOT run within a transaction");
 		}
 		else if (this.transactionDefinition == null) {
-			CdmTransactionalIntegrationTest.logger.info("No transaction definition set: test will NOT run within a transaction");
+			logger.info("No transaction definition set: test will NOT run within a transaction");
 		}
 		else {
 			onSetUpBeforeTransaction();
@@ -272,11 +275,11 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 			try {
 				if (commit) {
 					this.transactionManager.commit(this.transactionStatus);
-					CdmTransactionalIntegrationTest.logger.debug("Committed transaction after execution of test");
+					logger.debug("Committed transaction after execution of test");
 				}
 				else {
 					this.transactionManager.rollback(this.transactionStatus);
-					CdmTransactionalIntegrationTest.logger.debug("Rolled back transaction after execution of test.");
+					logger.debug("Rolled back transaction after execution of test.");
 				}
 			}
 			finally {
@@ -284,6 +287,20 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 			}
 		}
 	}
+	
+	protected void rollback() {
+
+		if (this.transactionStatus != null) {
+			try {
+				this.transactionManager.rollback(this.transactionStatus);
+				logger.debug("Rolled back transaction after execution of test.");
+			}
+			finally {
+				this.transactionStatus = null;
+			}
+		}
+	}
+	
 
 	/**
 	 * Start a new transaction. Only call this method if
@@ -307,10 +324,21 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 		++this.transactionsStarted;
 		this.complete = !this.isRollback();
 
-		if (CdmTransactionalIntegrationTest.logger.isDebugEnabled()) {
-			CdmTransactionalIntegrationTest.logger.debug("Began transaction (" + this.transactionsStarted + "): transaction manager ["
+		if (logger.isDebugEnabled()) {
+			logger.debug("Began transaction (" + this.transactionsStarted + "): transaction manager ["
 					+ this.transactionManager + "]; rollback [" + this.isRollback() + "].");
 		}
+	}
+	
+	
+	/**
+	 * @param tableNames
+	 */
+	protected void commitAndStartNewTransaction(final String[] tableNames) {
+		setComplete(); 
+		endTransaction();
+//		printDataSet(System.out, tableNames);
+		startNewTransaction();
 	}
 
 }
