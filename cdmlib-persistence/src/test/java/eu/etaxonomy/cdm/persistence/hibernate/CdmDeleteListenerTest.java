@@ -70,7 +70,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 		Assert.assertEquals("There must be 1 name relationship", 1, relations.size());
 		name.removeNameRelationship(relations.iterator().next());
 		
-		Set<HybridRelationship> hybridRels = name.getParentRelationships();
+		Set<HybridRelationship> hybridRels = name.getHybridParentRelations();
 		Assert.assertEquals("There must be 1 parent relationship", 1, hybridRels.size());
 		
 		taxonNameDao.saveOrUpdate(name);
