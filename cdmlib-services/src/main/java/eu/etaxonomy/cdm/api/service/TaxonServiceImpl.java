@@ -11,7 +11,6 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteException;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -642,10 +643,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Synonym, boolean)
 	 */
-	//TODO move to dao??
 	@Transactional(readOnly = false)
 	@Override
-	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible) {
+	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible /*,boolean newHomotypicGroup*/) {
+		if (synonym == null){
+			return;
+		}
+		synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
+		
 		//remove synonymRelationship
 		Set<Taxon> taxonSet = new HashSet<Taxon>();
 		if (taxon != null){
@@ -653,21 +658,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}else{
 			taxonSet.addAll(synonym.getAcceptedTaxa());
 		}
-		Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
-		for (Taxon taxon2 : taxonSet){
-			dao.deleteSynonymRelationships(synonym, taxon2);
+		for (Taxon relatedTaxon : taxonSet){
+//			dao.deleteSynonymRelationships(synonym, relatedTaxon);
+			relatedTaxon.removeSynonym(synonym, true);
 		}
+		this.saveOrUpdate(synonym);
 		
 		//TODO remove name from homotypical group?
 		
 		//remove synonym (if necessary)
 		if (synonym.getSynonymRelations().isEmpty()){
+			TaxonNameBase<?,?> name = synonym.getName();
+			synonym.setName(null);
 			dao.delete(synonym);
-		}
-		
-		if (removeNameIfPossible){
-			TaxonNameBase name = synonym.getName();
-			nameService.delete(name);
+			
+			//remove name if possible (and required)
+			if (name != null && removeNameIfPossible){
+				try{
+					nameService.delete(name, new NameDeletionConfigurator());
+				}catch (DeleteException ex){
+					if (logger.isDebugEnabled())logger.debug("Name wasn't deleted as it is referenced");
+				}
+			}
 		}
 	}
 	

@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteException;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -442,7 +443,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	
 	/**
-	 * Removes a synonym.
+	 * Removes a synonym.<BR><BR>
 	 * 
 	 * In detail it removes 
 	 *  <li>all synonym relationship to the given taxon or to all taxa if taxon is <code>null</code></li>
@@ -450,11 +451,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 *  <BR><BR>
 	 *  If <code>removeNameIfPossible</code> is true 
 	 *  it also removes the synonym name if it is not used in any other context
-	 *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)
+	 *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)<BR><BR>
+	 *  
+	 *  If synonym is <code>null</code> the method has no effect.
 	 *  
 	 * @param taxon
 	 * @param synonym
 	 * @param removeNameIfPossible
+	 * @throws DeleteException 
 	 */
 	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible);
 	
