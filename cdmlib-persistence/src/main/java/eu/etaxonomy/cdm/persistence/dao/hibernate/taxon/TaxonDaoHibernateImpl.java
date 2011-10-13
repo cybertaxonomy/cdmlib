@@ -755,12 +755,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllRelationships(java.lang.Integer, java.lang.Integer)
 	 */
-	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
+	@Override
+	public List<RelationshipBase> getAllRelationships(/*Class<? extends RelationshipBase> clazz,*/ Integer limit, Integer start) {
+		Class<? extends RelationshipBase> clazz = RelationshipBase.class;  //preliminary, see #2653
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Criteria criteria = getSession().createCriteria(RelationshipBase.class);
+		    Criteria criteria = getSession().createCriteria(clazz);
 		    criteria.setFirstResult(start);
-		    criteria.setMaxResults(limit);
+		    if (limit != null){
+		    	criteria.setMaxResults(limit);
+		    }
 		    return (List<RelationshipBase>)criteria.list();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
@@ -1934,7 +1938,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (taxon != null){
 			q.setParameter("taxon", taxon);
 		}
-		return q.executeUpdate();
+		long result = q.executeUpdate();
+		
+		return result;
 	}
 
 
