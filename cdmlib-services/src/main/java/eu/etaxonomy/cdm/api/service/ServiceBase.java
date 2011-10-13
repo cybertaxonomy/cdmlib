@@ -112,7 +112,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	public UUID merge(T newInstance) {
+	public T merge(T newInstance) {
 		return dao.merge(newInstance);
 	}
 	

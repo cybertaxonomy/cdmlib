@@ -231,11 +231,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		if (logger.isDebugEnabled()){logger.debug("dao clear end");}
 	}
 
-	public UUID merge(T transientObject) throws DataAccessException {
+	public T merge(T transientObject) throws DataAccessException {
 		Session session = getSession();
-		session.merge(transientObject);
+		T persistentObject = (T)session.merge(transientObject);
 		if (logger.isDebugEnabled()){logger.debug("dao merge end");}
-		return transientObject.getUuid();
+		return persistentObject;
 	}
 	
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {

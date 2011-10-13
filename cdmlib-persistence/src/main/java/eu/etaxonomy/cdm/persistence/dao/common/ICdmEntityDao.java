@@ -46,7 +46,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 */
 	public UUID save(T newOrManagedObject) throws DataAccessException;
 	
-	public UUID merge(T transientObject) throws DataAccessException;
+	public T merge(T transientObject) throws DataAccessException;
 	
 	/**
 	 * Obtains the specified LockMode on the supplied object
