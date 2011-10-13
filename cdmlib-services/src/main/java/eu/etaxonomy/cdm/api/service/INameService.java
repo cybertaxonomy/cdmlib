@@ -17,6 +17,8 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -45,11 +47,13 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 
 	/**
 	 * Deletes a name. Depening on the configurator state links to the name will either be 
-	 * deleted or throw exceptions.
+	 * deleted or throw exceptions.<BR>
+	 * If name is <code>null</code> this method has no effect.
 	 * @param name
 	 * @param config
+	 * @throws ReferencedObjectUndeletableException 
 	 */
-	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config);
+	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException;
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from
