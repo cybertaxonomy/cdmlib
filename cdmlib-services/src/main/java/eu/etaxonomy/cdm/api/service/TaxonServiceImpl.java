@@ -190,7 +190,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	//TODO correct delete handling still needs to be implemented / checked
 	@Override
 	@Transactional(readOnly = false)
-	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws IllegalArgumentException{
+	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException{
 		
 		TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
 		TaxonNameBase<?,?> synonymName = synonym.getName();
@@ -199,7 +199,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		//check synonym is not homotypic
 		if (acceptedName.getHomotypicalGroup().equals(synonymHomotypicGroup)){
 			String message = "The accepted taxon and the synonym are part of the same homotypical group and therefore can not be both accepted.";
-			throw new IllegalArgumentException(message);
+			throw new HomotypicalGroupChangeException(message);
 		}
 		
 		Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());

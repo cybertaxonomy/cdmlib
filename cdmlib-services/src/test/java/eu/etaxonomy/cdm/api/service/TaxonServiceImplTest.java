@@ -164,7 +164,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		service.save(synonym2);
 		service.save(taxWithSyn);
 		
-		Taxon taxon = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true, true, null, null);
+		Taxon taxon = null;
+		try {
+			taxon = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true, true, null, null);
+		} catch (HomotypicalGroupChangeException e) {
+			Assert.fail("Invocation of change method should not throw an exception");
+		}
 		//test flush (resave deleted object)
 		TaxonBase<?> syn = service.find(uuidSyn);
 		assertNull(syn);

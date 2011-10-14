@@ -170,7 +170,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 *          in the homotypic group. It is up to the implementing class to 
 	 *          handle this situation via an exception or in another way.
 	 */
-	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws IllegalArgumentException;
+	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException;
 	
 	/**
 	 * TODO still needed and correct?

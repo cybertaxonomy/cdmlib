@@ -45,7 +45,7 @@ public class TaxonServiceImplBusinessTest {
 	private Synonym s2;
 	private Taxon t2;
 	private Taxon t1;
-	private TaxonServiceImpl service;
+	private ITaxonService service;
 	private String referenceDetail;
 	private Reference<?> reference;
 	private SynonymRelationshipType homoTypicSynonymRelationshipType;
@@ -112,7 +112,7 @@ public class TaxonServiceImplBusinessTest {
 		try {
 			taxon = service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym, copyCitationInfo, null, null);
 			Assert.fail("Change must fail for synonym and taxon in same homotypical group");
-		} catch (IllegalArgumentException e) {
+		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		} 
 		t1.addSynonym(s2, heteroTypicSynonymRelationshipType);
@@ -120,7 +120,7 @@ public class TaxonServiceImplBusinessTest {
 		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
 		try {
 			taxon = service.changeSynonymToAcceptedTaxon(s2, t1, deleteSynonym, copyCitationInfo, null, null);
-		} catch (IllegalArgumentException e) {
+		} catch (HomotypicalGroupChangeException e) {
 			Assert.fail("Change must not throw exception for heterotypic synonym change");
 		} 
 		
@@ -152,7 +152,12 @@ public class TaxonServiceImplBusinessTest {
 		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup2);
 			
 		//run
-		Taxon newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false, true, null, null);
+		Taxon newTaxon = null;
+		try {
+			newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false, true, null, null);
+		} catch (HomotypicalGroupChangeException e1) {
+			Assert.fail("Invocation of change method should not throw an exception");
+		}
 	
 		Assert.assertEquals("Former accepted taxon should now have 2 synonyms left", 2, t1.getSynonyms().size());
 		Assert.assertEquals("Former accepted taxon should now have 1 heterotypic synonym group left", 1, t1.getHeterotypicSynonymyGroups().size());
@@ -182,7 +187,7 @@ public class TaxonServiceImplBusinessTest {
 		try {
 			service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false, true, null, null);
 			Assert.fail("The method should throw an exception when invoked on taxa in the same homotypical group");
-		} catch (IllegalArgumentException e) {
+		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		}
 		
