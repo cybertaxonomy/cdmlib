@@ -125,6 +125,9 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 */
 	protected SynonymRelationship(Synonym synonym, Taxon taxon, SynonymRelationshipType type, Reference citation, String citationMicroReference) {
 		super(synonym, taxon, type, citation, citationMicroReference);
+		if (type != null && type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF()) && taxon != null && taxon.getName() != null && synonym != null && synonym != null){
+			taxon.getName().getHomotypicalGroup().addTypifiedName(synonym.getName());
+		}
 	}
 	
 

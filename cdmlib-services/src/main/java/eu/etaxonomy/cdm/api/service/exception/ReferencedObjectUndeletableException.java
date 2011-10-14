@@ -7,7 +7,8 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.config;
+package eu.etaxonomy.cdm.api.service.exception;
+
 
 /**
  * Exception that is thrown when an object that is to be deleted within a deleteXXX
@@ -16,7 +17,7 @@ package eu.etaxonomy.cdm.api.service.config;
  * @date 12.10.2011
  *
  */
-public class ReferencedObjectUndeletableException extends DeleteException {
+public class ReferencedObjectUndeletableException extends DataChangeNoRollbackException {
 	private static final long serialVersionUID = -7232205281413184907L;
 
 	

@@ -1797,15 +1797,16 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/DeleteException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/MatchingTaxonConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ReferencedObjectUndeletableException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataMapper.java -text
@@ -1898,6 +1899,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientific
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testDeleteSynonym.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TermServiceImplTest.xml -text

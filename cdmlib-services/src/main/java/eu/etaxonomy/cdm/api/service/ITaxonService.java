@@ -13,9 +13,10 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteException;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -213,15 +214,29 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     
 	
 	/**
-	 * Move a synonym to another taxon, effectively removing the old synonym relationship
+	 * Moves a synonym to another taxon and removes the old synonym relationship.
 	 * 
-	 * @param synonymRelation
-	 * @param toTaxon
-	 * @param reference
-	 * @param referenceDetail
-	 * @return
+	 * @param oldSynonymRelation the old synonym relationship defining the synonym to move and the old accepted taxon.
+	 * @param newTaxon the taxon the synonym will be moved to
+	 * @param moveHomotypicGroup if the synonym belongs to a homotypical group with other synonyms and 
+	 * 		<code>moveHomotypicGroup</code> is <code>true</code> all these synonyms are moved to the new taxon, 
+	 * 		if <code>false</code> a {@link HomotypicalGroupChangeException} is thrown.
+	 * 		<code>MoveHomotypicGroup</code> has no effect if the synonym is the only synonym in it's homotypic group.  
+	 * @param newSynonymRelationshipType the synonym relationship type of the new synonym relations. Default is 
+	 * 		{@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() heterotypic}.
+	 * @param newReference The reference for the new synonym relation(s).
+	 * @param newReferenceDetail The reference detail for the new synonym relation(s).
+	 * @param keepReference if no <code>newReference</code> and/or no <code>newReferenceDetail</code>
+	 * 		is defined they are taken from the old synonym relation(s) if <code>keepReference</code> is
+	 * 		<code>true</code>. If <code>false</code> the reference and the reference detail will be taken
+	 * 		only from the <code>newReference</code> and <code>newReferenceDetail</code>.
+	 * @return The new synonym relationship. If <code>moveHomotypicGroup</code> is <code>true</code> additionally
+	 * 		created new synonym relationships must be retrieved separately from the new taxon.
+	 * @throws HomotypicalGroupChangeException Exception is thrown if (1) synonym is homotypic to the old accepted taxon or
+	 * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
 	 */
-	public Taxon moveSynonymToAnotherTaxon(SynonymRelationship synonymRelation, Taxon toTaxon, SynonymRelationshipType synonymRelationshipType, Reference reference, String referenceDetail);
+	public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, Taxon newTaxon, boolean moveHomotypicGroup,
+			SynonymRelationshipType newSynonymRelationshipType, Reference newReference, String newReferenceDetail, boolean keepReference) throws HomotypicalGroupChangeException;
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
@@ -452,15 +467,17 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 *  If <code>removeNameIfPossible</code> is true 
 	 *  it also removes the synonym name if it is not used in any other context
 	 *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)<BR><BR>
+	 *  If <code>newHomotypicGroupIfNeeded</code> is <code>true</code> and the synonym name is not deleted and 
+	 *  the name is homotypic to the taxon the name is moved to a new homotypical group.<BR><BR>
 	 *  
 	 *  If synonym is <code>null</code> the method has no effect.
 	 *  
 	 * @param taxon
 	 * @param synonym
 	 * @param removeNameIfPossible
-	 * @throws DeleteException 
+	 * @throws DataChangeNoRollbackException 
 	 */
-	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible);
+	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible, boolean newHomotypicGroupIfNeeded);
 	
 	
 	/**

@@ -349,10 +349,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 *
 	 * @param synonymRelation  	the synonym relationship which should be deleted
 	 * @param removeSynonymNameFromHomotypicalGroup 
-	 * 							if set to true the synonym name will also be deleted from its homotypical group
-	 * @see     		  		#getSynonymRelations()
-	 * @see     		  		#addSynonymRelation(SynonymRelationship)
-	 * @see 			  		#removeSynonym(Synonym)
+	 * 				if <code>true</code> the synonym name will also be deleted from its homotypical group if the 
+	 * 				group contains other names
+	 * @see    	#getSynonymRelations()
+	 * @see    	#addSynonymRelation(SynonymRelationship)
+	 * @see 	#removeSynonym(Synonym)
 	 */
 	public void removeSynonymRelation(SynonymRelationship synonymRelation, boolean removeSynonymNameFromHomotypicalGroup) {
 		synonymRelation.setAcceptedTaxon(null);
@@ -361,7 +362,10 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 			synonymRelation.setSynonym(null);
 			synonym.removeSynonymRelation(synonymRelation);
 			if(removeSynonymNameFromHomotypicalGroup){
-				synonym.getName().getHomotypicalGroup().removeTypifiedName(synonym.getName());
+				HomotypicalGroup synHG = synonym.getName().getHomotypicalGroup();
+				if (synHG.getTypifiedNames().size() > 1){
+					synHG.removeTypifiedName(synonym.getName());
+				}
 			}
 		}
 		this.synonymRelations.remove(synonymRelation);
@@ -1370,13 +1374,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * themselves will be set to "null".
 	 *
 	 * @param  synonym  the synonym involved in the synonym relationship which should be deleted
-	 * @param removeSynonymNameFromHomotypicalGroup if true the removed synonyms name will get a new homotypic group
-	 * to make sure that it is not together in a homotypic group with any other synonm of this taxon
-	 * anymore.
+	 * @param removeSynonymNameFromHomotypicalGroup if <code>true</code> the removed synonyms 
+	 * 		name will get a new homotypic group in case it is together with other names in a group.
 	 * @see     		#getSynonymRelations()
 	 * @see     		#addSynonym(Synonym, SynonymRelationshipType)
 	 * @see     		#addSynonym(Synonym, SynonymRelationshipType, Reference, String)
 	 * @see 			#removeSynonymRelation(SynonymRelationship)
+	 * @see				#removeSynonymRelation(SynonymRelationship, boolean)
 	 */
 	public void removeSynonym(Synonym synonym, boolean removeSynonymNameFromHomotypicalGroup){
 		Set<SynonymRelationship> synonymRelationships = new HashSet<SynonymRelationship>();

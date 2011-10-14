@@ -16,16 +16,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteException;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -641,11 +644,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Synonym, boolean)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
 	 */
 	@Transactional(readOnly = false)
 	@Override
-	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible /*,boolean newHomotypicGroup*/) {
+	public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible,boolean newHomotypicGroupIfNeeded) {
 		if (synonym == null){
 			return;
 		}
@@ -660,7 +663,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		for (Taxon relatedTaxon : taxonSet){
 //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
-			relatedTaxon.removeSynonym(synonym, true);
+			relatedTaxon.removeSynonym(synonym, newHomotypicGroupIfNeeded);
 		}
 		this.saveOrUpdate(synonym);
 		
@@ -676,7 +679,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if (name != null && removeNameIfPossible){
 				try{
 					nameService.delete(name, new NameDeletionConfigurator());
-				}catch (DeleteException ex){
+				}catch (DataChangeNoRollbackException ex){
 					if (logger.isDebugEnabled())logger.debug("Name wasn't deleted as it is referenced");
 				}
 			}
@@ -860,19 +863,84 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return null;
     }
 
+
     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#moveSynonymToAnotherTaxon(eu.etaxonomy.cdm.model.taxon.SynonymRelationship, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#moveSynonymToAnotherTaxon(eu.etaxonomy.cdm.model.taxon.SynonymRelationship, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, boolean)
      */
     @Override
-    public Taxon moveSynonymToAnotherTaxon(SynonymRelationship synonymRelation,
-            Taxon toTaxon, SynonymRelationshipType synonymRelationshipType, Reference reference, String referenceDetail) {
-        Taxon fromTaxon = synonymRelation.getAcceptedTaxon();
-
-        toTaxon.addSynonym(synonymRelation.getSynonym(), synonymRelationshipType, reference, referenceDetail);
-
-        fromTaxon.removeSynonymRelation(synonymRelation);
-
-        return toTaxon;
+    public SynonymRelationship moveSynonymToAnotherTaxon(SynonymRelationship oldSynonymRelation, Taxon newTaxon, boolean moveHomotypicGroup,
+    		SynonymRelationshipType newSynonymRelationshipType, Reference reference, String referenceDetail, boolean keepReference) throws HomotypicalGroupChangeException {
+        
+    	Synonym synonym = oldSynonymRelation.getSynonym();
+    	Taxon fromTaxon = oldSynonymRelation.getAcceptedTaxon();
+        //TODO what if there is no name ?? Concepts may be cached (e.g. via TCS import)
+    	TaxonNameBase<?,?> synonymName = synonym.getName();
+        TaxonNameBase<?,?> fromTaxonName = fromTaxon.getName();
+        //set default relationship type
+        if (newSynonymRelationshipType == null){
+        	newSynonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+        }
+        boolean newRelTypeIsHomotypic = newSynonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        
+        HomotypicalGroup homotypicGroup = synonymName.getHomotypicalGroup();
+        int hgSize = homotypicGroup.getTypifiedNames().size();
+        boolean isSingleInGroup = !(hgSize > 1);
+        
+        if (! isSingleInGroup){
+        	boolean isHomotypicToAccepted = synonymName.isHomotypic(fromTaxonName);
+            boolean hasHomotypicSynonymRelatives = isHomotypicToAccepted ? hgSize > 2 : hgSize > 1;
+        	if (isHomotypicToAccepted){
+            	String message = "Synonym is in homotypic group with accepted taxon%s. First remove synonym from homotypic group of accepted taxon before moving to other taxon.";
+            	String homotypicRelatives = hasHomotypicSynonymRelatives ? " and other synonym(s)":"";
+            	message = String.format(message, homotypicRelatives);
+            	throw new HomotypicalGroupChangeException(message);
+            }
+        	if (! moveHomotypicGroup){
+        		String message = "Synonym is in homotypic group with other synonym(s). Either move complete homotypic group or remove synonym from homotypic group prior to moving to other taxon.";
+            	throw new HomotypicalGroupChangeException(message);
+            }
+        }else{
+        	moveHomotypicGroup = true;  //single synonym always allows to moveCompleteGroup
+        }
+        Assert.assertTrue("Synonym can only be moved with complete homotypic group", moveHomotypicGroup);
+        
+        SynonymRelationship result = null;
+        //move all synonyms to new taxon
+        List<Synonym> homotypicSynonyms = fromTaxon.getSynonymsInGroup(homotypicGroup);
+        for (Synonym syn: homotypicSynonyms){
+        	Set<SynonymRelationship> synRelations = syn.getSynonymRelations();
+        	for (SynonymRelationship synRelation : synRelations){
+        		if (fromTaxon.equals(synRelation.getAcceptedTaxon())){
+        			Reference<?> newReference = reference;
+        			if (newReference == null && keepReference){
+        				newReference = synRelation.getCitation();
+        			}
+        			String newRefDetail = referenceDetail;
+        			if (newRefDetail == null && keepReference){
+        				newRefDetail = synRelation.getCitationMicroReference();
+        			}
+        			SynonymRelationship newSynRelation = newTaxon.addSynonym(syn, newSynonymRelationshipType, newReference, newRefDetail);
+                	fromTaxon.removeSynonymRelation(synRelation, false);
+//                	
+                	//change homotypic group of synonym if relType is 'homotypic'
+//                	if (newRelTypeIsHomotypic){
+//                		newTaxon.getName().getHomotypicalGroup().addTypifiedName(syn.getName());
+//                	}
+                	//set result
+                	if (synRelation.equals(oldSynonymRelation)){
+                		result = newSynRelation;
+                	}
+        		}
+        	}
+        	
+        }
+        saveOrUpdate(newTaxon);
+        //Assert that there is a result 
+        if (result == null){
+        	String message = "Old synonym relation could not be transformed into new relation. This should not happen.";
+        	throw new IllegalStateException(message);
+        }
+        return result;
     }
 
     /* (non-Javadoc)
