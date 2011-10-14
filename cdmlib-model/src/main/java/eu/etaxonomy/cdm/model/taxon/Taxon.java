@@ -1556,10 +1556,10 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see			taxon.Synonym
 	 */
 	@Transient
-	public List<Synonym> getSynonymsInGroup(HomotypicalGroup homoGroup){
+	public List<Synonym> getSynonymsInGroup(HomotypicalGroup homotypicGroup){
 		List<Synonym> result = new ArrayList<Synonym>();
 		
-		for (TaxonNameBase<?, ?>name : homoGroup.getTypifiedNames()){
+		for (TaxonNameBase<?, ?>name : homotypicGroup.getTypifiedNames()){
 			for (Synonym synonym : name.getSynonyms()){
 				for(SynonymRelationship synRel : synonym.getSynonymRelations()){
 					if (synRel.getAcceptedTaxon().equals(this)){
