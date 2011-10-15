@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -902,7 +901,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }else{
         	moveHomotypicGroup = true;  //single synonym always allows to moveCompleteGroup
         }
-        Assert.assertTrue("Synonym can only be moved with complete homotypic group", moveHomotypicGroup);
+//        Assert.assertTrue("Synonym can only be moved with complete homotypic group", moveHomotypicGroup);
         
         SynonymRelationship result = null;
         //move all synonyms to new taxon
