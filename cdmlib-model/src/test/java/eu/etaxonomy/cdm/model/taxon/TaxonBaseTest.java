@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -35,9 +34,10 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  *
  */
 public class TaxonBaseTest extends EntityTestBase {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
 	
-	private Reference sec;
+	private Reference<?> sec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
@@ -56,8 +56,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		sec= refFactory.newBook();
+		sec= ReferenceFactory.newBook();
 		sec.setTitleCache("Schoenes saftiges Allg�u", true);
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
@@ -149,7 +148,7 @@ public class TaxonBaseTest extends EntityTestBase {
 		String infraGenericEpithet = "test";
 		test.setGenusOrUninomial(genus);
 		test.setInfraGenericEpithet(infraGenericEpithet);
-		Reference secRef = ReferenceFactory.newArticle();
+		Reference<?> secRef = ReferenceFactory.newArticle();
 		secRef.setTitle("Test ...");
 		freeT.setSec(secRef);
 		freeT.setName(test);
