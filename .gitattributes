@@ -266,6 +266,18 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerMethodException.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Archive.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/ArchiveEntryBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Core.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Coreid.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Extension.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Field.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Files.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Id.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/ObjectFactory.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/package-info.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDescriptionExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDescriptionRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaDistributionExport.java -text
@@ -442,6 +454,7 @@ cdmlib-io/src/main/resources/schema/cdm/reference.xsd -text
 cdmlib-io/src/main/resources/schema/cdm/taxon.xsd -text
 cdmlib-io/src/main/resources/schema/xml/XMLSchema.xsd -text
 cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
@@ -475,6 +488,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.ja
 cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input-original.xls -text
