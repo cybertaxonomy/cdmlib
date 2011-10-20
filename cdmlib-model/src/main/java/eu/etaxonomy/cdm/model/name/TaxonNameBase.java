@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -107,6 +108,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "taxonBases"
 })
 @XmlRootElement(name = "TaxonNameBase")
+@org.hibernate.annotations.Entity(selectBeforeUpdate = true)
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)

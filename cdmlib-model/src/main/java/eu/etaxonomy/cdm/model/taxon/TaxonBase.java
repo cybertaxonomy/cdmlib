@@ -70,8 +70,8 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
     "useNameCache"
 })
 @Entity
+@org.hibernate.annotations.Entity (selectBeforeUpdate = true)
 @Audited
-//@PreFilter("hasPermission(filterObject, 'edit')")
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
@@ -186,6 +186,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
+	
 	public TaxonNameBase getName(){
 		return this.name;
 	}

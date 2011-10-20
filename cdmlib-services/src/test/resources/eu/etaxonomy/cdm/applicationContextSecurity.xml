@@ -39,9 +39,9 @@
 	    <property name="namingStrategy">
 	    	<bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
 	    </property>
- 		<!--  <property name="entityInterceptor">
+ 		<property name="entityInterceptor">
     		<bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmSecurityHibernateInterceptor"/>
-  		</property> -->
+  		</property>
 	    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
 	    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
 	    <property name="dataSource" ref="dataSource"/>

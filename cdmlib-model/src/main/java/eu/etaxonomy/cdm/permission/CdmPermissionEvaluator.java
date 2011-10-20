@@ -46,19 +46,25 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication,
             Object targetDomainObject, Object permission) {
        
+    	
+    	AuthorityPermission evalPermission;
         CdmPermission cdmPermission;
 		if (!(permission instanceof CdmPermission)){
 			String permissionString = (String)permission;
 			if (permissionString.equals("changePassword")){
-				return (targetDomainObject.equals(((User)authentication.getPrincipal()).getUsername()));
+				if (targetDomainObject.equals(((User)authentication.getPrincipal())))return true;
+				else{
+					cdmPermission = CdmPermission.ADMIN;
+				}
+			}else{
+				cdmPermission = CdmPermission.valueOf(permissionString);
 			}
-			cdmPermission = CdmPermission.valueOf(permissionString);
 		}else {
 			cdmPermission = (CdmPermission)permission;
 		}
 		
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
-        AuthorityPermission evalPermission;
+        
         try{
         	//evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
         	evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());

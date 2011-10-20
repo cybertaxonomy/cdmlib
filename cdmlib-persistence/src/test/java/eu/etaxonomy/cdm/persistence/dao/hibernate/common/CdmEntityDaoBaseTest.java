@@ -102,6 +102,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	@ExpectedDataSet
 	public void testSaveOrUpdate() {
+		@SuppressWarnings("rawtypes")
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
@@ -133,6 +134,9 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 		assert user != null : "User cannot be null";
 		setAuthentication(user);
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+		cdmBase.setDoubtful(true);
+		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+		
 	}	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.

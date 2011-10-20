@@ -267,6 +267,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see    #addElement(DescriptionElementBase)
 	 * @see    #removeElement(DescriptionElementBase)
 	 */
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
 	public Set<DescriptionElementBase> getElements() {
 		return this.descriptionElements;
 	}

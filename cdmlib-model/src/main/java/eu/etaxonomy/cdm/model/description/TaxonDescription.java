@@ -94,6 +94,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 	@XmlSchemaType(name="IDREF")
 //	@JoinColumn(name="taxon_fk")
 	//@Cascade(CascadeType.SAVE_UPDATE)
+	
 	private Taxon taxon;
 
 	
@@ -150,7 +151,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 		}
 
 //************************** METHODS **********************************************/
-	
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	public Taxon getTaxon() {
 		return taxon;
 	}

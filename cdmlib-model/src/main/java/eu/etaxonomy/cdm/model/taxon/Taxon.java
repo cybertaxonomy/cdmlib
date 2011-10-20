@@ -214,6 +214,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see #addDescription(TaxonDescription)
 	 * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	public Set<TaxonDescription> getDescriptions() {
 		if(descriptions == null) {
 			descriptions = new HashSet<TaxonDescription>();

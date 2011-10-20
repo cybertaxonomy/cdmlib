@@ -125,6 +125,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 		Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 		UUID uuid = taxonService.save(expectedTaxon);
+		//taxonService.getSession().flush();
 		TaxonBase<?> actualTaxon = taxonService.load(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 		

@@ -199,6 +199,7 @@ public class UserServiceImplTest {
 		
 		String username = "ben";
 		String newPassword = "password2";
+		System.err.println("change password for ben");
 		userService.changePasswordForUser(username, newPassword);
 		username = "user4";
 		String password = "password";
@@ -208,7 +209,7 @@ public class UserServiceImplTest {
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
-		
+		System.err.println("change password for user4");
 		userService.changePasswordForUser(username, "newPassword");
 				
 	}

@@ -1,8 +1,14 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.hibernate.HibernateException;
+import org.hibernate.annotations.Persister;
+import org.hibernate.engine.EntityKey;
+import org.hibernate.event.DirtyCheckEvent;
+import org.hibernate.event.DirtyCheckEventListener;
 import org.hibernate.event.SaveOrUpdateEvent;
 import org.hibernate.event.SaveOrUpdateEventListener;
+import org.hibernate.event.def.DefaultDirtyCheckEventListener;
+import org.hibernate.persister.entity.EntityPersister;
 import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +32,10 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 			throws HibernateException {
 		//System.err.println("SaveOrUpdateListener" + event.getEntity().getClass());
 		Object entity = event.getObject();
+			
+	
+		
+		
 		if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
 			
 			CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
@@ -41,8 +51,8 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 						versionableEntity.setUpdatedBy(user);
 					} 
 					if (SecurityContextHolder.getContext().getAuthentication()!= null){
-						
-						if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
+											
+						/*if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
 							if (entity instanceof SpecimenDescription){
 								//TODO
 							}else if (entity instanceof TaxonDescription){
@@ -55,14 +65,18 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 									permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), taxonName, CdmPermission.UPDATE);
 							} else{
 							
-								throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
+								throw new EvaluationFailedException("Permission evaluation failed for test test" + event.getEntity());
 							}
-						}
+						}*/
 					}
 				}else{
 						if (SecurityContextHolder.getContext().getAuthentication()!= null){
-						
-						if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.UPDATE)){
+							/*eventListener.onDirtyCheck(dirtyCheckEvent);
+							if (dirtyCheckEvent.isDirty()){
+								System.err.println("This entity is dirty: " + entity);
+							}*/
+							
+						/*if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.UPDATE)){
 							if (entity instanceof SpecimenDescription){
 								//TODO
 							}else if (entity instanceof TaxonDescription){
@@ -77,7 +91,7 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 							
 								throw new EvaluationFailedException("Permission evaluation failed for " + event.getEntity());
 							}
-						}
+						}*/
 					}
 				}
 			}

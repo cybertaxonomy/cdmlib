@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
+@org.hibernate.annotations.Entity (selectBeforeUpdate = true)
 @Audited
 public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable{
 	private static final long serialVersionUID = -4743289894926587693L;
@@ -268,10 +269,12 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     }
 
 //*********** GETTER / SETTER ***********************************/
-
+	
 	public Taxon getTaxon() {
 		return taxon;
 	}
+	
+	
 	protected void setTaxon(Taxon taxon) {
 		this.taxon = taxon;
 		if (taxon != null){
