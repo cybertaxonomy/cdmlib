@@ -51,63 +51,74 @@ public class ExcelUtils {
     		}else{
     			sheet = wb.getSheet(worksheetName);
     		}
-    		HSSFRow row;
-    		HSSFCell cell;
-
-    		int rows; // No of rows
-    		rows = sheet.getPhysicalNumberOfRows();
-			if(logger.isDebugEnabled()) { logger.debug("Number of rows: " + rows); }
-
-    		int cols = 0; // Number of columns
-    		int tmp = 0;
-
-    		// This trick ensures that we get the data properly even if it doesn't start from first few rows
-    		for(int i = 0; i < 10 || i < rows; i++) {
-    			row = sheet.getRow(i);
-     			if(row != null) {
-    				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-    				if(tmp > cols){
-    					cols = tmp;
-    				}
-    			}
-    		}
     		
-    		//first row
-    		ArrayList<String> columns = new ArrayList<String>();
-    		row = sheet.getRow(0);
-    		for (int c = 0; c < cols; c++){
-    			cell = row.getCell(c);
-				if(cell != null) {
-					columns.add(cell.toString());
-					if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
-				} else {
-					if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
-				}
-    		}
-    		
-    		//value rows
-    		for(int r = 1; r < rows; r++) {
-    			row = sheet.getRow(r);
-    			HashMap<String, String> headers = new HashMap<String, String>();
-    			boolean notEmpty = checkIsEmptyRow(row);
-    			if(notEmpty) {
-    				for(int c = 0; c < cols; c++) {
-    					cell = row.getCell(c);
-    					if(cell != null) {
-    						if (c >= columns.size()){
-    							String message = "Cell has no header. There are only %d headers but more not-null cells in approx. row %d. Cell is neglected.";
-    							message = String.format(message, columns.size(),row.getRowNum());
-    							logger.warn(message);
-    						}else{
-    							if(logger.isDebugEnabled()) { logger.debug(String.format("Cell #%d: %s", c, cell.toString())); }
-    							headers.put(columns.get(c), getCellValue(cell));	
-    						}
-    					} else {
-    						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
-    					}
-    				}
+    		if (sheet== null){
+    			if (worksheetName != null){
+    				logger.debug(worksheetName + " not provided!");
     			}
-    			recordList.add(headers);
+    		}else{
+	    		HSSFRow row;
+	    		HSSFCell cell;
+	
+	    		int rows; // No of rows
+	    		rows = sheet.getPhysicalNumberOfRows();
+				if(logger.isDebugEnabled()) { logger.debug("Number of rows: " + rows); }
+	
+	    		int cols = 0; // Number of columns
+	    		int tmp = 0;
+	
+	    		// This trick ensures that we get the data properly even if it doesn't start from first few rows
+	    		for(int i = 0; i < 10 || i < rows; i++) {
+	    			row = sheet.getRow(i);
+	     			if(row != null) {
+	    				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+	    				if(tmp > cols){
+	    					cols = tmp;
+	    				}
+	    			}
+	    		}
+    		
+    		
+	    		//first row
+	    		ArrayList<String> columns = new ArrayList<String>();
+	    		row = sheet.getRow(0);
+	    		for (int c = 0; c < cols; c++){
+	    			cell = row.getCell(c);
+					if(cell != null) {
+						columns.add(cell.toString());
+						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
+					} else {
+						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
+					}
+	    		}
+	    		
+	    		//value rows
+	    		for(int r = 1; r < rows; r++) {
+	    			row = sheet.getRow(r);
+	    			HashMap<String, String> headers = new HashMap<String, String>();
+	    			boolean notEmpty = checkIsEmptyRow(row);
+	    			if(notEmpty) {
+	    				for(int c = 0; c < cols; c++) {
+	    					if (row == null){
+	    						System.out.println("XXX");
+	    					}
+	    					cell = row.getCell(c);
+	    					if(cell != null) {
+	    						if (c >= columns.size()){
+	    							String message = "Cell has no header. There are only %d headers but more not-null cells in approx. row %d. Cell is neglected.";
+	    							message = String.format(message, columns.size(),row.getRowNum());
+	    							logger.warn(message);
+	    						}else{
+	    							if(logger.isDebugEnabled()) { logger.debug(String.format("Cell #%d: %s", c, cell.toString())); }
+	    							headers.put(columns.get(c), getCellValue(cell));	
+	    						}
+	    					} else {
+	    						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
+	    					}
+	    				}
+	    			}
+	    			recordList.add(headers);
+	    		}
     		}
     	} catch(FileNotFoundException fne) {
     		throw new FileNotFoundException(uri.toString());
@@ -172,7 +183,7 @@ public class ExcelUtils {
 	 */
 	private static boolean checkIsEmptyRow(HSSFRow row) {
 		if (row == null){
-			return true;
+			return false;
 		}
 		boolean notEmpty = false;
 		for (int j = 0; j<row.getLastCellNum(); j++){
