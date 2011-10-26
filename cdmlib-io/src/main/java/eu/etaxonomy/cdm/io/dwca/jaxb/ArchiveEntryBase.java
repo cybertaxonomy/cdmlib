@@ -42,7 +42,7 @@ public abstract class ArchiveEntryBase {
     @XmlAttribute(required = true)
     protected String linesTerminatedBy;
     @XmlAttribute(required = true)
-    protected byte ignoreHeaderLines;
+    protected boolean ignoreHeaderLines;
     @XmlAttribute(required = true)
     protected String fieldsTerminatedBy;
     @XmlAttribute(required = true)
@@ -157,7 +157,7 @@ public abstract class ArchiveEntryBase {
      * Gets the value of the ignoreHeaderLines property.
      * 
      */
-    public byte getIgnoreHeaderLines() {
+    public boolean getIgnoreHeaderLines() {
         return ignoreHeaderLines;
     }
 
@@ -165,7 +165,7 @@ public abstract class ArchiveEntryBase {
      * Sets the value of the ignoreHeaderLines property.
      * 
      */
-    public void setIgnoreHeaderLines(byte value) {
+    public void setIgnoreHeaderLines(boolean value) {
         this.ignoreHeaderLines = value;
     }
 

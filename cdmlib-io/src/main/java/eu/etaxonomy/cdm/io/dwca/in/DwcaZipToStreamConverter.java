@@ -78,13 +78,17 @@ public class DwcaZipToStreamConverter {
 		Core core = archive.getCore();
 		char fieldTerminatedBy = core.getFieldsTerminatedBy().charAt(0);
 		char fieldsEnclosedBy = core.getFieldsEnclosedBy().charAt(0);
-		int skipLines = core.getIgnoreHeaderLines();
+		boolean ignoreHeader = core.getIgnoreHeaderLines();
+		String linesTerminatedBy = core.getLinesTerminatedBy();
+		String encoding = core.getEncoding();
+		int skipLines = ignoreHeader? 1 : 0;
 		
 		String fileLocation = core.getFiles().getLocation();
 		InputStream coreCsvInputStream = makeInputStream(fileLocation);
-		Reader coreReader = new InputStreamReader(coreCsvInputStream); 
-		CSVReader csvReader = new CSVReader(coreReader, fieldTerminatedBy,fieldsEnclosedBy,skipLines);
+		Reader coreReader = new InputStreamReader(coreCsvInputStream, encoding); 
+		CSVReader csvReader = new CSVReader(coreReader, fieldTerminatedBy,fieldsEnclosedBy, skipLines);
 		CsvStream coreStream = new CsvStream(csvReader, core);
+		
 		//		InputStream s;
 //		s.
 		
