@@ -10,7 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParsePosition;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
@@ -464,6 +468,7 @@ public class TimePeriod implements Cloneable, Serializable {
 		periodString = periodString.trim();
 		
 		result.setFreeText(null);
+		Date date;
 		
 		//case "1806"[1807];
 		if (uncorrectYearPatter.matcher(periodString).matches()){
@@ -487,11 +492,67 @@ public class TimePeriod implements Cloneable, Serializable {
 			parseDotDatePattern(periodString, result);
 		}else if (standardPattern.matcher(periodString).matches()){
 			parseStandardPattern(periodString, result);
+//TODO first check ambiguity of parser results e.g. for 7/12/11 
+//		}else if (isDateString(periodString)){
+//			String[] startEnd = makeStartEnd(periodString);
+//			String start = startEnd[0];
+//			DateTime startDateTime = dateStringParse(start, true);
+//			result.setStart(startDateTime);
+//			if (startEnd.length > 1){
+//				DateTime endDateTime = dateStringParse(startEnd[1], true);
+//				;
+//				result.setEnd(endDateTime.toLocalDate());
+//			}
+			
 		}else{
 			result.setFreeText(periodString);
 		}
 		return result;
 	}
+
+	private static boolean isDateString(String periodString) {
+		String[] startEnd = makeStartEnd(periodString);
+		String start = startEnd[0];
+		DateTime startDateTime = dateStringParse(start, true);
+		if (startDateTime == null){
+			return false;
+		}
+		if (startEnd.length > 1){
+			DateTime endDateTime = dateStringParse(startEnd[1], true);
+			if (endDateTime != null){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * @param periodString
+	 * @return
+	 */
+	private static String[] makeStartEnd(String periodString) {
+		String[] startEnd = new String[]{periodString};
+		if (periodString.contains("-") && periodString.matches("^-{2,}-^-{2,}")){
+			startEnd = periodString.split("-");
+		}
+		return startEnd;
+	}
+
+
+	private static DateTime dateStringParse(String string, boolean strict) {
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		ParsePosition pos = new ParsePosition(0);
+		Date a = dateFormat.parse(string, pos);
+		if (a == null || pos.getIndex() != string.length()){
+			return null;
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(a);
+		DateTime result = new DateTime(cal);
+		return result;
+	}
+
 
 	/**
 	 * @param periodString

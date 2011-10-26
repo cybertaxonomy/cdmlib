@@ -368,7 +368,7 @@ public class CoordinateConverter {
 
     //removes whitespace characters
     private String removeWhiteSpace(String str){
-        str = str.replaceFirst("\\s*", "");
+        str = str.replaceFirst("\\s+", "");
         return str;
     }
 
@@ -397,7 +397,7 @@ public class CoordinateConverter {
 
 
     public ConversionResults tryConvert(String str){
-        //some local variables
+        //some local variables 
         int sign; //sign of the coordinate
         String[] decimalBit, ddmmss, ddmm; //arrays for splitting
         double dd = 0, mm = 0, ss = 0, mmm = 0, sss = 0, dec = 0; //parts of the coordinates
