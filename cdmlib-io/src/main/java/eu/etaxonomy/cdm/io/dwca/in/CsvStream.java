@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
+import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Field;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -57,9 +58,9 @@ public class CsvStream {
 			if (archiveEntry instanceof Core){
 				Core core = (Core)archiveEntry;
 				result.put("id", next[core.getId().getIndex()]);
-			}else if(archiveEntry instanceof Core){
-				Core core = (Core)archiveEntry;
-				result.put("id", next[core.getId().getIndex()]);
+			}else if(archiveEntry instanceof Extension){
+				Extension extension = (Extension)archiveEntry;
+				result.put("coreId", next[extension.getCoreid().getIndex()]);
 			}else{
 				throw new RuntimeException("Unhandled achiveEntry type");
 			}

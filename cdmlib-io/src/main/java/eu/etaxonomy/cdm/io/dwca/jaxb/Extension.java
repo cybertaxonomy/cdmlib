@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
+	
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -86,6 +86,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "extension")
 public class Extension extends ArchiveEntryBase{
 
+	public static final String VERNACULAR_NAME = "http://rs.gbif.org/terms/1.0/VernacularName";
+
+	
     @XmlElement(required = true)
     protected Coreid coreid;
  

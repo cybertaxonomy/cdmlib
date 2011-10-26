@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -28,7 +30,9 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
+import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
+import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
 
 /**
@@ -75,24 +79,54 @@ public class DwcaZipToStreamConverter {
 	
 	public CsvStream getCoreStream() throws IOException{
 		initArchive();
-		Core core = archive.getCore();
-		char fieldTerminatedBy = core.getFieldsTerminatedBy().charAt(0);
-		char fieldsEnclosedBy = core.getFieldsEnclosedBy().charAt(0);
-		boolean ignoreHeader = core.getIgnoreHeaderLines();
-		String linesTerminatedBy = core.getLinesTerminatedBy();
-		String encoding = core.getEncoding();
+		ArchiveEntryBase core = archive.getCore();
+		return makeStream(core);
+	}
+	
+	public CsvStream getStream(String rowType) throws IOException{
+		initArchive();
+		
+		ArchiveEntryBase archiveEntry = null; 
+		List<Extension> extensions = archive.getExtension();
+		for (Extension extension : extensions){
+			if (rowType.equalsIgnoreCase(extension.getRowType())){
+				archiveEntry = extension;
+				break;
+			}
+		}
+		return makeStream(archiveEntry);
+	}
+
+
+	/**
+	 * Creates the CsvStream for an archive entry. Returns null if archive entry is null.
+	 * @param archiveEntry
+	 * @return
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
+	 */
+	private CsvStream makeStream(ArchiveEntryBase archiveEntry)
+			throws IOException, UnsupportedEncodingException {
+		if (archiveEntry == null){
+			return null;
+		}
+		char fieldTerminatedBy = archiveEntry.getFieldsTerminatedBy().charAt(0);
+		char fieldsEnclosedBy = archiveEntry.getFieldsEnclosedBy().charAt(0);
+		boolean ignoreHeader = archiveEntry.getIgnoreHeaderLines();
+		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
+		String encoding = archiveEntry.getEncoding();
 		int skipLines = ignoreHeader? 1 : 0;
 		
-		String fileLocation = core.getFiles().getLocation();
+		String fileLocation = archiveEntry.getFiles().getLocation();
 		InputStream coreCsvInputStream = makeInputStream(fileLocation);
 		Reader coreReader = new InputStreamReader(coreCsvInputStream, encoding); 
 		CSVReader csvReader = new CSVReader(coreReader, fieldTerminatedBy,fieldsEnclosedBy, skipLines);
-		CsvStream coreStream = new CsvStream(csvReader, core);
+		CsvStream csvStream = new CsvStream(csvReader, archiveEntry);
 		
 		//		InputStream s;
 //		s.
 		
-		return coreStream;
+		return csvStream;
 	}
 
 

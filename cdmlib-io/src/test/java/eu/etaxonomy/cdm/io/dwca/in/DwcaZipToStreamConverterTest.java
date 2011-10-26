@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
+
 
 /**
  * @author a.mueller
@@ -80,5 +82,39 @@ public class DwcaZipToStreamConverterTest {
 		
 	}
 	
+	
+	@Test 
+	public void testGetVernacularStream(){
+		try {
+			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
+			Assert.assertNotNull("Vernacular stream should not be null", vernacularStream);
+			Map<String, String> next = vernacularStream.read();
+			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
+		} catch (IOException e) {
+			Assert.fail();
+		}
+		
+	}
+
+	/**
+	 * This test tests the correct handling of core/extension attributes like encoding, fieldsTerminatedBy, 
+	 * fieldsEnclosdeBy, ignoreHeaderLines, linesTerminatedBy
+	 * TODO encoding + linesTerminatedBy not yet tested
+	 */
+	@Test 
+	public void testCoreExtensionAttributes(){
+		try {
+			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
+			Map<String, String> next = vernacularStream.read();
+			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
+			Assert.assertEquals("First entry should be coreid1", "1", next.get("coreId"));
+			Assert.assertEquals("First entries language should be 'en' ", "en", next.get("http://purl.org/dc/terms/language"));
+			
+		} catch (IOException e) {
+			Assert.fail();
+		}
+		
+	}
+
 	
 }
