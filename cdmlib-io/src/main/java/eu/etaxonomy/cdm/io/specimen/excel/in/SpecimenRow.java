@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -46,6 +48,7 @@ public class SpecimenRow extends ExcelRowBase{
 	private String collectingDate;
 	private String collectingDateEnd;
 	private String collectorsNumber;
+	private String primaryCollector;
 
 	private String sex;
 
@@ -77,6 +80,7 @@ public class SpecimenRow extends ExcelRowBase{
 	
 	//	may be public if necessary
 	protected class DeterminationLight{
+		String taxonUuid;
 		String family;
 		String genus;
 		String rank;
@@ -88,6 +92,19 @@ public class SpecimenRow extends ExcelRowBase{
 		String determinedBy;
 		String determinedWhen;
 		String notes;
+		
+		public boolean hasTaxonInformation() {
+			boolean result = StringUtils.isNotBlank(taxonUuid) 
+			 	|| StringUtils.isNotBlank(family) 	
+			 	|| StringUtils.isNotBlank(genus)
+			 	|| StringUtils.isNotBlank(rank)
+			 	|| StringUtils.isNotBlank(fullName)
+			 	|| StringUtils.isNotBlank(speciesEpi)
+				|| StringUtils.isNotBlank(author)
+				|| StringUtils.isNotBlank(infraSpeciesEpi);
+			return result;
+		}
+
 	}
 	
 	
@@ -306,6 +323,30 @@ public class SpecimenRow extends ExcelRowBase{
 		return getOrdered(sources);
 	}
 
+
+	public void setCollectors(String value) {
+		//TODO better parse somewhere else? Quick and dirty implementation
+		List<String> authors = new ArrayList<String>();
+		String[] splits = value.split("&");
+		for (String split: splits){
+			split = split.trim();
+			authors.add(split);
+		}
+		int index = 1;
+		for (int i = 0; i < authors.size() ; i++){
+			String author = authors.get(i);
+			if (i < authors.size()-1){
+				String[] internalSplits = author.split(",");
+				for (String internal : internalSplits){
+					internal = internal.trim();
+					this.collectors.put(index++, internal);
+				}
+			}else{
+				this.collectors.put(index++, author);
+			}
+		}
+	}
+	
 	public void putCollector(int key, String collector){
 		this.collectors.put(key, collector);
 	}
@@ -372,6 +413,11 @@ public class SpecimenRow extends ExcelRowBase{
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
 		determinationEvent.fullName = fullName;
 	}
+	
+	public void putDeterminationTaxonUuid(int key, String taxonUuid){
+		DeterminationLight determinationEvent = getOrMakeDetermination(key);
+		determinationEvent.taxonUuid = taxonUuid;
+	}
 
 	public void putDeterminationRank(int key, String rank){
 		DeterminationLight determinationEvent = getOrMakeDetermination(key);
@@ -418,8 +464,24 @@ public class SpecimenRow extends ExcelRowBase{
 		determinationEvent.modifier = modifier;
 	}
 	
+	
 	public List<DeterminationLight> getDetermination() {
-		return getOrdered(determinations);
+		List<DeterminationLight> result = getOrdered(determinations);
+		if (determinations.size() > 1 && getCommonDetermination()!= null ){
+			result.remove(getCommonDetermination());
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the determination with key "0".
+	 * @return
+	 */
+	public DeterminationLight getCommonDetermination() {
+		if (determinations.get(0) != null){
+			return determinations.get(0);
+		}
+		return null;
 	}
 	
 	
@@ -514,5 +576,20 @@ public class SpecimenRow extends ExcelRowBase{
 		return altitudeMax;
 	}
 
+
+	/**
+	 * @param primaryCollector the primaryCollector to set
+	 */
+	public void setPrimaryCollector(String primaryCollector) {
+		this.primaryCollector = primaryCollector;
+	}
+
+
+	/**
+	 * @return the primaryCollector
+	 */
+	public String getPrimaryCollector() {
+		return primaryCollector;
+	}
 	
 }
