@@ -12,12 +12,16 @@ package eu.etaxonomy.cdm.common;
 
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.Format;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -99,9 +103,6 @@ public class ExcelUtils {
 	    			boolean notEmpty = checkIsEmptyRow(row);
 	    			if(notEmpty) {
 	    				for(int c = 0; c < cols; c++) {
-	    					if (row == null){
-	    						System.out.println("XXX");
-	    					}
 	    					cell = row.getCell(c);
 	    					if(cell != null) {
 	    						if (c >= columns.size()){
@@ -162,11 +163,33 @@ public class ExcelUtils {
 
 
 	/**
+	 * Returns the numeric cell value. In case the cell is formatted as
+	 * a date it returns a date (using the dates toString() method.
 	 * @param cell
 	 * @return
 	 */
 	private static String getNumericCellValue(HSSFCell cell) {
 		Double number = cell.getNumericCellValue();
+//		HSSFCellStyle style = cell.getCellStyle();
+//		String dataFormatString = style.getDataFormatString();
+//		int index = style.getIndex();
+		HSSFDataFormatter formatter = new HSSFDataFormatter();
+//		Format defFormat = formatter.getDefaultFormat(cell);
+		Format format = formatter.createFormat(cell);
+//		String v = formatter.formatCellValue(cell);
+		if (format != null && format instanceof DateFormat){
+			//TODO use ISO or similar format once TimePeriod knows how to parse this
+//			String result = formatter.formatCellValue(cell);
+			Date date = cell.getDateCellValue();
+			Locale locale = Locale.GERMAN;
+			DateFormat df = DateFormat.getDateInstance(2,locale);
+			String result = df.format(date); //result of type dd.mm.yyyy
+//			String result = date.toString();
+			
+			return result;
+		}
+//		System.out.println(d);
+
 		if (number.intValue() == number){
 			return String.valueOf(number.intValue());
 		}else{
