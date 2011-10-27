@@ -49,6 +49,12 @@ public class DescriptionPermissionEvaluator {
 					if (feature != null){
 						if (authorityString.contains(feature.getLabel()) && (evalPermission.permission.equals(authorityPermission.permission) || authorityPermission.equals(CdmPermission.ADMIN))){
 							return true;
+						} else if (authorityPermission.className.equals(CdmPermissionClass.DESCRIPTIONBASE)) {
+							if (evalPermission.permission.equals(authorityPermission.permission) ){
+								return true;
+							} else if (authorityPermission.permission.equals(CdmPermission.ADMIN)){
+								return true;
+							}
 						}
 					}
 				}catch(Exception e){
@@ -63,9 +69,9 @@ public class DescriptionPermissionEvaluator {
 					
 				}
 				//the user has the general right for descriptions
-				if (authority.getAuthority().contains(CdmPermissionClass.DESCRIPTIONBASE.toString())){
+				if (authorityPermission.className.equals(CdmPermissionClass.DESCRIPTIONBASE)){
 					//no special feature
-					if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && (authority.getAuthority().contains(evalPermission.permission.toString()) || authorityPermission.equals(CdmPermission.ADMIN))){
+					if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && (authorityPermission.className.equals(evalPermission.permission) || authorityPermission.equals(CdmPermission.ADMIN))){
 						return true;
 					}
 				}

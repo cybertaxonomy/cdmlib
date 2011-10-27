@@ -117,12 +117,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
            //if classnames match or the authorityClassName is ALL, AND the permission matches or is ADMIN the evaluation is successful 
             if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))
             		&& (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
-                if (authorityPermission.targetUuid != null){
+               /* if (authorityPermission.targetUuid != null){
                     //TODO
 
-                }else{
+                }else{*/
                 	return true;
-                }
+                //}
 
             }
             //if authority is restricted to only one object (and the cascaded objects???) 
@@ -134,7 +134,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                 }
             }
             //if the user has the rights for a subtree
-            if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals(CdmPermissionClass.TAXONNODE.toString())){
+            if (authorityPermission.className.equals(CdmPermissionClass.TAXONBASE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals("TaxonNode")){
                
                 TaxonNode node = (TaxonNode)targetDomainObject;
                 TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);

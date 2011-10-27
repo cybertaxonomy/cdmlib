@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 06.07.2011
  */
 public enum CdmPermissionClass {
-	USER, TAXONNODE, DESCRIPTIONBASE, DESCRIPTIONELEMENTBASE, TAXONBASE, ALL, CLASSIFICATION;
+	USER, DESCRIPTIONBASE, DESCRIPTIONELEMENTBASE, TAXONBASE, ALL, TAXONNODE;
 	
 	
 	public static CdmPermissionClass getValueOf(Object s){

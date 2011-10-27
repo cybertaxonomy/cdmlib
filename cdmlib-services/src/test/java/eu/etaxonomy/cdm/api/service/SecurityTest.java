@@ -32,6 +32,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.ExpectedException;
 
 
 import org.unitils.database.annotations.Transactional;
@@ -79,6 +80,9 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	@SpringBeanByName
 	private ITaxonService taxonService;
+	
+	@SpringBeanByName
+	private ITaxonNodeService taxonNodeService;
 	
 	@SpringBeanByName
 	private IDescriptionService descriptionService;
@@ -234,12 +238,13 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		assertTrue(descriptions.contains(description));
+		
+		
 	}
 	
 	@Test
-	
 	public void testSaveSynonym(){
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonomist", "test4"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 		
@@ -248,12 +253,29 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		
 	}
 	
+	@Test(expected= EvaluationFailedException.class)
+	public void testEditPartOfClassification(){
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+		SecurityContext context = SecurityContextHolder.getContext();
+		context.setAuthentication(authentication);
+		
+		TaxonNode node = taxonNodeService.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
+		
+		node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
+		taxonNodeService.saveOrUpdate(node);
+		
+		node = taxonNodeService.load(UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9"));
+		node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
+		taxonNodeService.saveOrUpdate(node);
+		
+	}
+	
 	public static void main(String[] args){
 		Md5PasswordEncoder encoder =new Md5PasswordEncoder();
 	
 		ReflectionSaltSource saltSource = new ReflectionSaltSource();
 		saltSource.setUserPropertyToUse("getUsername");
-		User user = User.NewInstance("admin", "xyz");
+		User user = User.NewInstance("taxonomist", "test4");
 		System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
 	}
 }
