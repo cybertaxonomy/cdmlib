@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 
 
-public class BenchmarkSDDImportTest extends CdmTransactionalIntegrationTest {
+public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     SDDImport sddImport;
@@ -45,8 +45,8 @@ public class BenchmarkSDDImportTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     INameService nameService;
 
-//    @Rule
-//    public MethodRule benchmarkRun = new BenchmarkRule();
+    @Rule
+    public MethodRule benchmarkRun = new BenchmarkRule();
 
     private SDDImportConfigurator configurator;
 
@@ -57,14 +57,14 @@ public class BenchmarkSDDImportTest extends CdmTransactionalIntegrationTest {
         configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
     }
 
-    //@BenchmarkOptions(benchmarkRounds = 0, warmupRounds = 0)
+    @BenchmarkOptions(benchmarkRounds = 0, warmupRounds = 0)
     @Test
     public void testInit() {
         assertNotNull("sddImport should not be null", sddImport);
         assertNotNull("nameService should not be null", nameService);
     }
 
-    //@BenchmarkOptions(benchmarkRounds = 2, warmupRounds = 0)
+    @BenchmarkOptions(benchmarkRounds = 2, warmupRounds = 0)
     @Test
     public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
