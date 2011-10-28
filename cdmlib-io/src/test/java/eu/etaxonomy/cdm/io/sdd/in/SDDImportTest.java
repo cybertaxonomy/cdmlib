@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @version 1.0
  */
 
-//@Ignore // we ignore this test at the moment because it does not run with maven
+@Ignore // we ignore this test at the moment because it does not run with maven
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
