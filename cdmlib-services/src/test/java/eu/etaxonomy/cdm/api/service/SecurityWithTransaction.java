@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 @SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
 @DataSet("SecurityTest.xml")
 @Transactional
+@Ignore
 public class SecurityWithTransaction {
 	private static final Logger logger = Logger
 			.getLogger(SecurityWithTransaction.class);
@@ -77,7 +79,7 @@ public class SecurityWithTransaction {
 	
 	@Test
 	public void testDeleteTaxon(){
-		token = new UsernamePasswordAuthenticationToken("taxonomist", "test3");
+		token = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
 		authentication = authenticationManager.authenticate(token);
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
