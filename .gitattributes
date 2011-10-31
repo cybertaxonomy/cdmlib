@@ -516,7 +516,6 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TaxonNameTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TaxonTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TermTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA-export-sdd.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml -text
