@@ -485,7 +485,6 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImportTest.java -tex
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/test/function/TestDatabase.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
-cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip -text
