@@ -52,7 +52,48 @@
     </dependency>
     <dependency>
         <groupId>org.unitils</groupId>
-        <artifactId>unitils</artifactId>
+        <artifactId>unitils-core</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-database</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbmaintainer</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-mock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-inject</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-spring</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
@@ -61,7 +102,6 @@
     <dependency>
       <groupId>com.carrotsearch</groupId>
       <artifactId>junit-benchmarks</artifactId>
-      <version>0.3.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

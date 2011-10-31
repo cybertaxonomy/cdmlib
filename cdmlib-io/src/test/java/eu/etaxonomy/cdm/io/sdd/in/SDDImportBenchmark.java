@@ -57,7 +57,7 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
         configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
     }
 
-    @BenchmarkOptions(benchmarkRounds = 0, warmupRounds = 0)
+    @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
     @Test
     public void testInit() {
         assertNotNull("sddImport should not be null", sddImport);

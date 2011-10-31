@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!-- 
+  <!--
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
    -->
-	<parent>
-		<groupId>eu.etaxonomy</groupId>
-		<artifactId>cdmlib-parent</artifactId>
-		<version>3.0.9-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>eu.etaxonomy</groupId>
+    <artifactId>cdmlib-parent</artifactId>
+    <version>3.0.9-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-services</artifactId>
@@ -33,7 +33,7 @@
             <Bundle-Activator>eu.etaxonomy.cdm.services.impl.Activator</Bundle-Activator>
           </instructions>
         </configuration>
-      </plugin>      
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -48,21 +48,62 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.core</artifactId>
       <version>1.0.0</version>
-    </dependency>    
-  	<dependency>
-  		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-persistence</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-persistence</artifactId>
-  		<type>test-jar</type>
-  		<scope>test</scope>
-  		<version>${project.version}</version>
-  	</dependency>
+    </dependency>
+    <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-persistence</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-persistence</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
         <groupId>org.unitils</groupId>
-        <artifactId>unitils</artifactId>
+        <artifactId>unitils-core</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-database</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbmaintainer</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-mock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-inject</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-spring</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
@@ -72,39 +113,44 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
     </dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>org.springframework.test</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>xerces</groupId>
-  		<artifactId>xercesImpl</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>jaxen</groupId>
-  		<artifactId>jaxen</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.eclipse</groupId>
-  		<artifactId>osgi</artifactId>
-  	</dependency>
-  	<dependency>
-    	<groupId>org.springframework.security</groupId>
-    	<artifactId>spring-security-core</artifactId>
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>junit-benchmarks</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>osgi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
     </dependency>
     <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
-		<version>3.0.5.RELEASE</version>
+    <version>3.0.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.lsid</groupId>
       <artifactId>lsid-server</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-lang</groupId>
-  		<artifactId>commons-lang</artifactId>
-  	</dependency>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
   </dependencies>
 </project>
 
