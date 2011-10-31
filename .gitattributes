@@ -71,6 +71,7 @@ cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-ext/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
