@@ -1652,6 +1652,7 @@
         featureTree_id integer not null,
         feature_id integer,
         parent_id integer,
+        sortindex integer,
         primary key (id),
         unique (uuid)
     );
@@ -1668,6 +1669,7 @@
        	featureTree_id integer not null,
         feature_id integer,
         parent_id integer,
+        sortindex integer,
         primary key (id, REV)
     );
 

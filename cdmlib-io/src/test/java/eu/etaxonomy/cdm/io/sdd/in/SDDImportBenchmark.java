@@ -45,8 +45,9 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     INameService nameService;
 
-    @Rule
-    public MethodRule benchmarkRun = new BenchmarkRule();
+//    not working with unitils 1.0
+//    @Rule
+//    public MethodRule benchmarkRun = new BenchmarkRule();
 
     private SDDImportConfigurator configurator;
 
@@ -57,14 +58,14 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
         configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
     }
 
-    @BenchmarkOptions(benchmarkRounds = 0, warmupRounds = 0)
+//    @BenchmarkOptions(benchmarkRounds = 0, warmupRounds = 0)
     @Test
     public void testInit() {
         assertNotNull("sddImport should not be null", sddImport);
         assertNotNull("nameService should not be null", nameService);
     }
 
-    @BenchmarkOptions(benchmarkRounds = 2, warmupRounds = 0)
+//    @BenchmarkOptions(benchmarkRounds = 2, warmupRounds = 0)
     @Test
     public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
