@@ -1,0 +1,10 @@
+Import successful... but the following XML elements have been skipped :
+
+1 element <Dataset.Publications>
+1 element <Dataset.TaxonNames>
+1 element <Dataset.CodedDescriptions.CodedDescription.Scope>
+1 element <Dataset.Agents.Agent.Links>
+1 element <Dataset.CodedDescriptions.CodedDescription.SummaryData.TextChar>
+1 element <Dataset.Characters.TextCharacter>
+1 element <Dataset.Characters.QuantitativeCharacter.Default>
+
