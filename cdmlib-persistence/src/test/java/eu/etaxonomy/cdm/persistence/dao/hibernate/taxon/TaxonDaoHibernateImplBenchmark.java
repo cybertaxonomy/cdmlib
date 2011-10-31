@@ -74,8 +74,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
 
     private Taxon taxonAcherontia;
 
-    private static final int BENCHMARK_ROUNDS = 10;
-
+    private static final int BENCHMARK_ROUNDS = 20;
 
     @Before
     public void setUp() {
@@ -126,28 +125,18 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
 
     @Test
     @DataSet(value="TaxonDaoHibernateImplTest.xml")
-    public void testCreateDelete() {
-        Taxon parent = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
-        assert parent != null : "taxon cannot be null";
-        List<Taxon> newTaxa = new ArrayList<Taxon>(BENCHMARK_ROUNDS);
+    public void updateTaxon() {
 
+        Taxon taxon = (Taxon) taxonDao.findByUuid(acherontiaLachesis);
+
+        long startMillis = System.currentTimeMillis();
         for(int indx = 0; indx < BENCHMARK_ROUNDS; indx++){
-            Taxon child = Taxon.NewInstance(null, null);
-            child.setTitleCache("Acherontia lachesis benchmark_" + indx + " Eitschberger, 2003", true);
-            child.addTaxonRelation(parent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),null, null);
-            newTaxa.add(child);
-            logger.info("[" + indx + "] " + child.getTitleCache());
-            taxonDao.save(child);
-            //commitAndStartNewTransaction(null);
-
+            taxon.setTitleCache("Acherontia lachesis benchmark_" + indx + " Eitschberger, 2003", true);
+            taxonDao.saveOrUpdate(taxon);
+            logger.debug("[" + indx + "]" + taxon.getTitleCache());
         }
-
-        for(Taxon child: newTaxa){
-            taxonDao.delete(child);
-        }
-
-//        setComplete();
-//        endTransaction();
+        double duration = ((double)(System.currentTimeMillis() - startMillis) ) / BENCHMARK_ROUNDS ;
+        logger.info("Benchmark result - [update one Taxon] : " + duration + "ms (" + BENCHMARK_ROUNDS +" benchmark rounds )");
     }
 
 

@@ -53,7 +53,7 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA-export-sdd.xml");
+        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml");
         Assert.assertNotNull(url);
         configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
     }
