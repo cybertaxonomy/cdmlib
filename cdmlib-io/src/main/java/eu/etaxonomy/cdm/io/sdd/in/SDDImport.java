@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -96,6 +97,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private static int modCount = 1000;
 
+	private UUID uuidAnnotationTypeLocation = UUID.fromString("a3737e07-72e3-46d2-986d-fa4cf5de0b63");
+	
+	
 	private Map<String,Person> authors = new HashMap<String,Person>();
 	private Map<String,String> citations = new HashMap<String,String>();
 	private Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
@@ -605,11 +609,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				Reference publication = publications.get(citations.get(ref));
+				Reference<?> publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
-					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
-					annotationTypes.add(annotationType);
+					//TODO move to a generic place (implemented in hurry therefore dirty)
+					AnnotationType annotationType = getAnnotationType(state, uuidAnnotationTypeLocation, "location", "location", "location", null);
+//					annotationTypes.add(annotationType);  TODO necessary??
 					location.setAnnotationType(annotationType);
 					(publication).addAnnotation(location);
 				}
@@ -662,7 +667,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private void saveAnnotationType() {
 		for (AnnotationType annotationType: annotationTypes){
-			getTermService().save(annotationType); 
+			getTermService().saveOrUpdate(annotationType); 
 		}
 	}
 
