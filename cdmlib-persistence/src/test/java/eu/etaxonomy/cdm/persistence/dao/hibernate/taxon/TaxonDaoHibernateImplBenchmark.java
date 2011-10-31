@@ -122,7 +122,6 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
         logger.warn("testInit()");
         assertNotNull("Instance of ITaxonDao expected",taxonDao);
         assertNotNull("Instance of IReferenceDao expected",referenceDao);
-
     }
 
     @Test
