@@ -136,6 +136,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
      */
     @Test
     @DataSet
+    @Ignore
     public final void testloadRankSpecificRootNodes(){
     	Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
     	
