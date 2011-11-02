@@ -26,12 +26,6 @@ public class CdmIoApplicationController extends CdmApplicationController {
 	}
 	
 	
-	public CdmIoApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners) {
-		super(applicationContextResource, dataSource, dbSchemaValidation,
-				omitTermLoading, progressMonitor, listeners);
-	}
-
-
 	public static CdmIoApplicationController NewInstance() {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), defaultDbSchemaValidation, false);
 	}
@@ -45,18 +39,17 @@ public class CdmIoApplicationController extends CdmApplicationController {
 	 * @param dataSource
 	 */
 	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource) {
-		return CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, defaultDbSchemaValidation, false);
+		return (CdmIoApplicationController) CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, defaultDbSchemaValidation, false);
 	}
 
 	
 	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
-		return CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, false);
+		return (CdmIoApplicationController) CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, false);
 	}
 
 	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
-		return CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, omitTermLoading);
-	}
-	
+		return (CdmIoApplicationController) CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, omitTermLoading);
+	}	
 
 	/**
 	 * @return
