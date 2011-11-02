@@ -3992,8 +3992,7 @@
     create table StateData_DefinedTermBase (
         StateData_id integer not null,
         modifiers_id integer not null,
-        primary key (StateData_id, modifiers_id),
-        unique (modifiers_id)
+        primary key (StateData_id, modifiers_id)
     );
 
     create table StateData_DefinedTermBase_AUD (
