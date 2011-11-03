@@ -179,7 +179,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
 				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 				TaxonDescription description = TaxonDescription.NewInstance(taxon);
-				description.addDescriptionSource(taxon.getSec());
+				description.addSource(null, null, taxon.getSec(), null);
 				for (DescriptionElementBase geo: geoList){
 					description.addElement(geo);
 					DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, taxon.getSec(), null);

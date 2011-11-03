@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.sdd.in;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -31,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @version 1.0
  */
 
-@Ignore // we ignore this test at the moment because it does not run with maven
+//@Ignore // we ignore this test at the moment because it does not run with maven
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
@@ -45,8 +47,10 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	@Before
 	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+//		URI uri = url.toURI();
+		URI	uri = URI.create("file:///C:/localCopy/Data/xper/Cichorieae-DA2.sdd.xml");
 		Assert.assertNotNull(url);
-		configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
+		configurator = SDDImportConfigurator.NewInstance(uri, null);
 	}
 	
 	@Test
