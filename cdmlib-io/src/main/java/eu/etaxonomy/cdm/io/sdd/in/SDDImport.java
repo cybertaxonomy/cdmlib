@@ -109,10 +109,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,String> locations = new HashMap<String,String>();
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
-	private Map<String,Reference> publications = new HashMap<String,Reference>();
+	private Map<String,Reference<?>> publications = new HashMap<String,Reference<?>>();
 	private Map<String,State> states = new HashMap<String,State>();
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
-	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
+	private Map<String,NonViralName<?>> taxonNameBases = new HashMap<String,NonViralName<?>>();
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 	private Map<String,TaxonNode> taxonNodes = new HashMap<String,TaxonNode>();
 	private Map<String,NamedArea> namedAreas = new HashMap<String,NamedArea>();
@@ -120,14 +120,14 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,Modifier> modifiers = new HashMap<String,Modifier>();
 	
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
-	private Set<TermVocabulary> vocabularies = new HashSet<TermVocabulary>();
+	private Set<TermVocabulary<?>> vocabularies = new HashSet<TermVocabulary<?>>();
 
 	private Set<Feature> descriptiveConcepts = new HashSet<Feature>();
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 //	private Set<Feature> featureSet = new HashSet<Feature>();
-	private Set<Reference> sources = new HashSet<Reference>();
-	private Reference sec = ReferenceFactory.newDatabase();
-	private Reference sourceReference = null;
+	private Set<Reference<?>> sources = new HashSet<Reference<?>>();
+	private Reference<?> sec = ReferenceFactory.newDatabase();
+	private Reference<?> sourceReference = null;
 
 	private Language datasetLanguage = null;
 	private WorkingSet workingSet = null;
@@ -177,7 +177,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		// <TechnicalMetadata created="2006-04-20T10:00:00">
 		importTechnicalMetadata(root, sddNamespace, sddConfig);
 		List<Element> elDatasets = root.getChildren("Dataset",sddNamespace);
-		int i = 0;
+//		int i = 0;
 
 		//for each Dataset
 		logger.info("start Dataset ...");
@@ -389,12 +389,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			if (StringUtils.isNotBlank(ref)) {
 				if (ve instanceof TaxonDescription) {
 					TaxonDescription td = (TaxonDescription) ve;
-					if (td.getDescriptionSources().size() > 0) {
-						this.associateImageWithCdmBase(ref,(Reference) td.getDescriptionSources().toArray()[0]);
+					if (td.getSources().size() > 0) {
+						this.associateImageWithCdmBase(ref, td.getSources().iterator().next().getCitation());
 					} else {
-						Reference descriptionSource = ReferenceFactory.newGeneric();
+						Reference<?> descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
-						td.addDescriptionSource(descriptionSource);
+						td.addSource(null, null, descriptionSource, null);
 						this.associateImageWithCdmBase(ref,descriptionSource);
 					}
 				} else {
@@ -618,7 +618,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					location.setAnnotationType(annotationType);
 					(publication).addAnnotation(location);
 				}
-				td.addDescriptionSource(publication);
+				td.addSource(null, null,publication, null);
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
@@ -632,11 +632,11 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 		saveFeatures();
 		
-		for (Reference publication : publications.values()){
+		for (Reference<?> publication : publications.values()){
 			getReferenceService().save(publication); 
 		}
 		
-		for (Reference source : sources){
+		for (Reference<?> source : sources){
 			getReferenceService().save(source); 
 		}
 
@@ -659,7 +659,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 * 
 	 */
 	private void saveVocabularies() {
-		for (TermVocabulary vocabulary : vocabularies ){
+		for (TermVocabulary<?> vocabulary : vocabularies ){
 			getVocabularyService().save(vocabulary);
 		}
 		
@@ -749,7 +749,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Element elSpecimens = elDataset.getChild("Specimens",sddNamespace);
 		if (elSpecimens != null){
 			List<Element> listSpecimens = elSpecimens.getChildren("Specimen", sddNamespace);
-			int j = 0;
 			for (Element elSpecimen : listSpecimens) {
 				String id = elSpecimen.getAttributeValue("id");
 				Specimen specimen = null;
@@ -881,7 +880,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				String id = elTaxonName.getAttributeValue("id");
 				String uri = elTaxonName.getAttributeValue("uri");
 
-				NonViralName tnb = null;
+				NonViralName<?> tnb = null;
 				if (!id.equals("")) {
 					tnb = NonViralName.NewInstance(null);
 					IdentifiableSource source = null;
@@ -1188,7 +1187,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 */
 	private Taxon handleCDNoScope(Namespace sddNamespace, SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
-		NonViralName nonViralName = NonViralName.NewInstance(null);
+		NonViralName<?> nonViralName = NonViralName.NewInstance(null);
 		String id = new String("" + taxonNamesCount);
 		IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
@@ -1225,7 +1224,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Taxon taxon = null;
 		Element elTaxonName = elScope.getChild("TaxonName", sddNamespace);
 		String ref = elTaxonName.getAttributeValue("ref");
-		NonViralName nonViralName = taxonNameBases.get(ref);
+		NonViralName<?> nonViralName = taxonNameBases.get(ref);
 		
 		if(cdmState.getConfig().isDoMatchTaxa()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
@@ -1508,7 +1507,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				try {
 
 					String idP = elPublication.getAttributeValue("id");
-					Reference publication = ReferenceFactory.newArticle();
+					Reference<?> publication = ReferenceFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, cdmState);
 
 					publications.put(idP,publication);
@@ -1585,7 +1584,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						if (lcb != null) {
 							for (int k = 0; k < lcb.size(); k++) {
 								if (lcb.get(k) instanceof DefinedTermBase) {
-									DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
+									DefinedTermBase<?> dtb = (DefinedTermBase<?>) lcb.get(k);
 									// if (lcb.get(0) instanceof DefinedTermBase) {
 									// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
 									//									if (dtb!=null) {
@@ -1598,7 +1597,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 									//										}
 									//									}
 								} else if (lcb.get(k) instanceof Reference) {
-									Reference rb = (Reference) lcb.get(k);
+									Reference<?> rb = (Reference<?>) lcb.get(k);
 									//} else if (lcb.get(0) instanceof Reference) {
 									//Reference rb = (Reference) lcb.get(0);
 									// rb.setTitleCache(label);
@@ -1859,13 +1858,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						Classification classification =  Classification.NewInstance(label);
 						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", cdmState);
 					
-						Set<TaxonNode> root = classification.getChildNodes();
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 						
 						for (Element elNode : listNodes){
 							String idN = elNode.getAttributeValue("id");
-							TaxonNameBase tnb = null;
+							TaxonNameBase<?,?> tnb = null;
 							if (!idN.equals("")) {
 								Element elTaxonName = elNode.getChild("TaxonName", sddNamespace);
 								String refTN = elTaxonName.getAttributeValue("ref");

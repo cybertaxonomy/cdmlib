@@ -136,7 +136,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 								description.addElement(protolog);
 								taxonNameBase.addDescription(description);
 								if (citation != null){
-									description.addDescriptionSource(citation);
+									description.addSource(null, null, citation, null);
 									protolog.addSource(null, null, citation, nameFactRefDetail, null, null);
 								}
 							}//end NAME_FACT_PROTOLOGUE

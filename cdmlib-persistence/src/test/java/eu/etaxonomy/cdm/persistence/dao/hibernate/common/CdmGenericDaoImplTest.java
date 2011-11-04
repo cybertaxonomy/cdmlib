@@ -655,7 +655,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon1);
 		taxDesc.setTitleCache("taxDesc", true);
-		taxDesc.addDescriptionSource(article2);
+		taxDesc.addSource(null, null, article2, null);
 
 		taxonDao.save(taxon1);
 
@@ -686,8 +686,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("Media number should be 2 (1 from each of the merged objects)", 2, article1.getMedia().size());
 
 		//Description sources
-		Assert.assertEquals("Number of sources for taxon description must be 1", 1, taxDesc.getDescriptionSources().size());
-		Assert.assertTrue("Taxon description must have article1 as source", taxDesc.getDescriptionSources().contains(article1));
+		Assert.assertEquals("Number of sources for taxon description must be 1", 1, taxDesc.getSources().size());
+		Assert.assertEquals("Taxon description must have article1 as source", taxDesc.getSources().iterator().next().getCitation(),article1);
 	
 		//test exceptions
 		testMergeExceptions(name1, name2, taxon1, zooName1);

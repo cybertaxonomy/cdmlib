@@ -1909,6 +1909,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testUpdateTitleCache-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text

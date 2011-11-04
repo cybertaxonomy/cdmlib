@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -232,14 +233,44 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 					entity.setProtectedTitleCache(true);
 					String titleCache = entity.getTitleCache();
 					entity.setProtectedTitleCache(false);
+					String nameCache = null;
+					if (entity instanceof NonViralName ){
+						NonViralName nvn = (NonViralName) entity;
+						if (!nvn.isProtectedNameCache()){
+							nvn.setProtectedNameCache(true);
+							nameCache = nvn.getNameCache();
+							nvn.setProtectedNameCache(false);
+						}
+						
+						
+					}
 					setOtherCachesNull(entity); //TODO find better solution
 					String newTitleCache = entityCacheStrategy.getTitleCache(entity);
-					if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache)){
+					if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache) ){
 						entity.setTitleCache(null, false);
 						entity.getTitleCache();
+						if (entity instanceof NonViralName){
+							NonViralName nvn = (NonViralName) entity;
+							String newnameCache = nvn.getNameCache();
+						}
 						entitiesToUpdate.add(entity);
+					}else if (entity instanceof NonViralName){
+						NonViralName nvn = (NonViralName) entity;
+						String newnameCache = nvn.getNameCache();
+						if (nameCache == null || (nameCache != null && !nameCache.equals(newnameCache))){
+							entitiesToUpdate.add(entity);
+						}
 					}
+					
 				}
+			}
+			for (T entity: entitiesToUpdate){
+				if (entity.getTitleCache() != null){
+					System.err.println(entity.getTitleCache());
+				}else{
+					System.err.println("no titleCache" + ((NonViralName)entity).getNameCache());
+				}
+				
 			}
 			saveOrUpdate(entitiesToUpdate);
 			monitor.worked(worked++);

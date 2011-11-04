@@ -1,6 +1,9 @@
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -23,11 +26,11 @@ public class CdmIoApplicationController extends CdmApplicationController {
 	}
 	
 	
-	public static CdmApplicationController NewInstance() {
+	public static CdmIoApplicationController NewInstance() {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), defaultDbSchemaValidation, false);
 	}
 	
-	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) {
+	public static CdmIoApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), dbSchemaValidation, false);
 	}
 	/**
@@ -35,19 +38,18 @@ public class CdmIoApplicationController extends CdmApplicationController {
 	 * default database schema validation type
 	 * @param dataSource
 	 */
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) {
-		return CdmApplicationController.NewInstance(getClasspathResource(), dataSource, defaultDbSchemaValidation, false);
+	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource) {
+		return (CdmIoApplicationController) CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, defaultDbSchemaValidation, false);
 	}
 
 	
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
-		return CdmApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, false);
+	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
+		return (CdmIoApplicationController) CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, false);
 	}
 
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
-		return CdmApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, omitTermLoading);
-	}
-
+	public static CdmIoApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
+		return (CdmIoApplicationController) CdmIoApplicationController.NewInstance(getClasspathResource(), dataSource, dbSchemaValidation, omitTermLoading);
+	}	
 
 	/**
 	 * @return
