@@ -1622,7 +1622,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 				} catch (Exception e) {
 					//FIXME
-					logger.warn("Could not attach MediaObject " + j + "(SDD: " + id + ") to several objects.");
+					logger.warn("Could not attach MediaObject " + j + "(SDD: " + id + ") to several objects: " + e.getMessage());
 					cdmState.setUnsuccessfull();
 				}
 
