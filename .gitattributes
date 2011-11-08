@@ -1724,7 +1724,6 @@ cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmIoApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
