@@ -78,7 +78,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
 	private IProgressMonitor progressMonitor;
 	
-	final static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
+	final protected static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
 	
 	

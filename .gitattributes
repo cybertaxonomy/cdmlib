@@ -81,6 +81,7 @@ cdmlib-ext/src/test/resources/unitils.properties -text
 cdmlib-io/LICENSE.TXT -text
 cdmlib-io/README.TXT -text
 cdmlib-io/pom.xml -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/api/application/CdmIoApplicationController.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmBooleanMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmOneToManyMapper.java -text
