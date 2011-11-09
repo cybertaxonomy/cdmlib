@@ -58,7 +58,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Audited
 public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable{
     private static final long serialVersionUID = -4743289894926587693L;
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
 
     @XmlElement(name = "taxon")
