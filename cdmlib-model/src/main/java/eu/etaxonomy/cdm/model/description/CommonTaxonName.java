@@ -32,7 +32,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * This class represents common or vernacular names for {@link Taxon taxa}.
