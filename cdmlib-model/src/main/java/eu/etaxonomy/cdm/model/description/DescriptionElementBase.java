@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
