@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -170,7 +171,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		return (Integer) inner.uniqueResult();
 	}
 
-	public int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes) {
+	public int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(TaxonDescription.class);
@@ -195,11 +196,15 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 				criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
 			}
 
+			
+			addMarkerTypesCriterion(markerTypes, criteria);
+
+			
 			criteria.setProjection(Projections.rowCount());
 
 			return (Integer)criteria.uniqueResult();
 		} else {
-			if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty())) {
+			if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty()) && (markerTypes == null || markerTypes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
 				if(taxon != null) {
 				    query.add(AuditEntity.relatedId("taxon").eq(taxon.getId()));
@@ -211,6 +216,25 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			} else {
 				throw new OperationNotSupportedInPriorViewException("countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes)");
 			}
+		}
+	}
+
+	/**
+	 * @param markerTypes
+	 * @param criteria
+	 *
+	 */
+	//TODO move to AnnotatableEntityDao(?)
+	private void addMarkerTypesCriterion(Set<MarkerType> markerTypes,
+			Criteria criteria) {
+		if(markerTypes != null && !markerTypes.isEmpty()) {
+			Set<Integer> markerTypeIds = new HashSet<Integer>();
+			for(MarkerType markerType : markerTypes) {
+				markerTypeIds.add(markerType.getId());
+			}
+			criteria.createCriteria("markers").add(Restrictions.eq("flag", true))
+					.createAlias("markerType", "mt")
+			 		.add(Restrictions.in("id", markerTypeIds));
 		}
 	}
 
@@ -285,7 +309,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 	}
 
-	public List<TaxonDescription> getTaxonDescriptions(Taxon taxon,	Set<Scope> scopes, Set<NamedArea> geographicalScopes,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public List<TaxonDescription> getTaxonDescriptions(Taxon taxon,	Set<Scope> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(TaxonDescription.class);
@@ -309,6 +333,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 				}
 				criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
 			}
+			
+			addMarkerTypesCriterion(markerTypes, criteria);
 
 			if(pageSize != null) {
 				criteria.setMaxResults(pageSize);
@@ -323,12 +349,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
 			return results;
 		} else {
-			if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty())) {
+			if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty())&& (markerTypes == null || markerTypes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
 				if(taxon != null) {
 				    query.add(AuditEntity.relatedId("taxon").eq(taxon.getId()));
 				}
-				
+
 				if(pageSize != null) {
 			        query.setMaxResults(pageSize);
 			        if(pageNumber != null) {
