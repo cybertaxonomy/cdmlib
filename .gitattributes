@@ -1817,6 +1817,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableSe
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/MatchingTaxonConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
