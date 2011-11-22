@@ -393,42 +393,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	public void removeSource(DescriptionElementSource source) {
 		this.sources.remove(source);
 	}
-	
-//	
-//	/**
-//	 * Sets the citation micro reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-//	 * It will be removed in v2.3
-//	 * If more than one source exists an IllegalStateException is thrown
-//	 **/
-//	@Transient
-//	@Deprecated
-//	public void setCitationMicroReference(String citationMicroReference){
-//		if (this.sources.size() < 1){
-//			Reference citation = null;
-//			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, citationMicroReference));
-//		}else if (this.sources.size() > 1){
-//			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
-//		}else{
-//			this.sources.iterator().next().setCitationMicroReference(citationMicroReference);
-//		}
-//	}
-//	
-//	/**
-//	 * Sets the citation of the first source. This method is deprecated and exists only to be compliant with version 2.0.
-//	 * It will be removed in v2.3
-//	 * If more than one source exists an IllegalStateException is thrown
-//	 **/
-//	@Deprecated
-//	public void setCitation(Reference citation) {
-//		if (this.sources.size() < 1){
-//			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
-//		}else if (this.sources.size() > 1){
-//			throw new IllegalStateException("When adding a citation via the setCitation method there must be only one source available");
-//		}else{
-//			this.sources.iterator().next().setCitation(citation);
-//		}
-//	}
-	
+
 
 //************************** CLONE **********************************************************/	
 	
