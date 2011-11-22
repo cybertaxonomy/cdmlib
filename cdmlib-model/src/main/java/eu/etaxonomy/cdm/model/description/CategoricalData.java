@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -32,7 +31,6 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
