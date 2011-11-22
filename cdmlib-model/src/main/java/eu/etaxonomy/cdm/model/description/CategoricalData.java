@@ -16,6 +16,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -108,6 +109,20 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 	protected void setStates(List<StateData> states){
 		this.states = states;
 	}
+	
+	/**
+	 * Convenience method which returns only the list of states. Leaving out modifiers and modifying text.
+	 * @return
+	 */
+	@Transient
+	public List<State> getStatesOnly(){
+		List<State> result = new ArrayList<State>();
+		for (StateData stateData : getStates()){
+			State state = stateData.getState();
+			result.add(state);
+		}
+		return result;
+	}
 
 	/**
 	 * Adds a {@link State state} to the list of {@link #getStates() states}
@@ -119,6 +134,19 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 	public void addState(StateData state){
 		this.states.add(state);
 	}
+	
+	/**
+	 * Convenience method which creates a state data from a given state with no modifiers
+	 * and adds it to the list of state data
+	 * @see #addState(StateData)
+	 * @param state
+	 */
+	public void addState(State state){
+		StateData stateData = StateData.NewInstance(state);
+		this.states.add(stateData);
+	}
+	
+	
 	/** 
 	 * Removes one element from the set of {@link #getStates() states}
 	 * describing the {@link Feature feature} corresponding to <i>this</i> categorical data.

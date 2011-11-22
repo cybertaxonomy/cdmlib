@@ -87,13 +87,8 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
 	private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
-	
-	/** 
-	 * Class constructor: creates a new empty state data instance.
-	 */
-	public StateData() {
-		super();
-	}
+
+//********************* FACTORY METHODS ************************\
 	
 	/** 
 	 * Creates a new empty state data instance.
@@ -101,7 +96,34 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 	public static StateData NewInstance(){
 		return new StateData();
 	}
+	
+	
+	/** 
+	 * Creates a new empty state data instance.
+	 */
+	public static StateData NewInstance(State state){
+		return new StateData();
+	}
+	
+	/** 
+	 * Creates a new empty state data instance.
+	 */
+	public static StateData NewInstance(String term, String label, String labelAbbrev){
+		State state = State.NewInstance(term, label, labelAbbrev);
+		return NewInstance(state);
+	}
+	
+//*************************** CONSTRUCTOR ************************\	
+	
+	/** 
+	 * Class constructor: creates a new empty state data instance.
+	 */
+	public StateData() {
+		super();
+	}
 
+//************************** GETTER /SETTER *************************\
+	
 	/** 
 	 * Returns the {@link State state term} used in <i>this</i> state data.
 	 */

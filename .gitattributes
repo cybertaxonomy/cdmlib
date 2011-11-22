@@ -972,6 +972,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermVocabularyTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TimePeriodTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/TermLoaderTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/CategoricalDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/DescriptionElementTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/FeatureTreeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PolytomousKeyNodeTest.java -text
