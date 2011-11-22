@@ -415,6 +415,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		}
 		return result;
 	}
+	
+	
 
 //************************** CLONE **********************************************************/	
 	
