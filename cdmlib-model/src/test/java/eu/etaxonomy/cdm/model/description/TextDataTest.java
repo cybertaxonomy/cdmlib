@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.MultilanguageText;
  * @version 1.0
  */
 public class TextDataTest {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TextDataTest.class);
 
 	
@@ -83,7 +84,6 @@ public class TextDataTest {
 		assertNotNull(textData1.getMultilanguageText());
 		assertEquals(1, textData1.size());
 		assertEquals(1, textData1.countLanguages());
-		LanguageString languageString = LanguageString.NewInstance("testText", Language.DEFAULT());
 //		assertEquals("testText", textData1.getMultilanguageText().getText(Language.DEFAULT()));
 		assertNotNull(textData1.getFormat());
 		assertSame(format1, textData1.getFormat());
