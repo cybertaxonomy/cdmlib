@@ -404,17 +404,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
 		Assert.assertEquals("There should be 1 description", 1, descriptions.size());
 		TaxonDescription desc = descriptions.iterator().next();
-		
-		Set<Marker> markers = desc.getMarkers();
-		boolean hasMarkerImportedAsFalse = false;
-		for (Marker marker: markers){
-			if (marker.getMarkerType().getUuid().equals(uuidImported)){
-				if (marker.getFlag() == false){
-					hasMarkerImportedAsFalse = true;
-					break;
-				}
-			}
-		}
+		boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);
 		Assert.assertTrue("The only description should have a negative marker on 'imported'", hasMarkerImportedAsFalse);
 		
 	}

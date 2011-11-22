@@ -84,6 +84,17 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 		    marker.setMarkedObj(null);
 		}
 	}
+	
+	public boolean hasMarker(MarkerType type, boolean value){
+		for (Marker marker: getMarkers()){
+			if (marker.getMarkerType().equals(type)){
+				if (marker.getFlag() == value){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 //*************** ANNOTATIONS **********************************************
 	
