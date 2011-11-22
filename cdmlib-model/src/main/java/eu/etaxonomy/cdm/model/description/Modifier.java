@@ -54,6 +54,20 @@ public class Modifier extends OrderedTermBase<Modifier> {
 	private static final Logger logger = Logger.getLogger(Modifier.class);
 	
 	protected static Map<UUID, Modifier> termMap = null;
+
+
+	/** 
+	 * Creates a new empty modifier instance.
+	 * 
+	 * @see #Modifier(String, String, String)
+	 */
+	public static Modifier NewInstance(){
+		return new Modifier();
+	}
+	
+	public static Modifier NewInstance(String term, String label, String labelAbbrev){
+		return new Modifier(term, label, labelAbbrev);
+	}
 	
 	/** 
 	 * Class constructor: creates a new empty modifier instance.
@@ -78,16 +92,6 @@ public class Modifier extends OrderedTermBase<Modifier> {
 	public Modifier(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
-
-	/** 
-	 * Creates a new empty modifier instance.
-	 * 
-	 * @see #Modifier(String, String, String)
-	 */
-	public static Modifier NewInstance(){
-		return new Modifier();
-	}
-
 
 	
 //************************** METHODS ********************************

@@ -393,7 +393,28 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 	public void removeSource(DescriptionElementSource source) {
 		this.sources.remove(source);
 	}
+	
+// ******************* METHODS *************************************************************/	
 
+	protected Map<TermVocabulary, List<Modifier>> makeModifierMap(){
+		Map<TermVocabulary, List<Modifier>> result = new HashMap<TermVocabulary, List<Modifier>>();
+		for (Modifier modifier : getModifiers()){
+			TermVocabulary<Modifier> voc = modifier.getVocabulary();
+			if (result.get(voc) == null){
+				result.put(voc, new ArrayList<Modifier>());
+			}
+			result.get(voc).add(modifier);
+		}
+		return result;
+	}
+	
+	public List<Modifier> getModifiers(TermVocabulary voc){
+		List<Modifier> result = makeModifierMap().get(voc);
+		if (result == null){
+			result = new ArrayList<Modifier>();
+		}
+		return result;
+	}
 
 //************************** CLONE **********************************************************/	
 	
