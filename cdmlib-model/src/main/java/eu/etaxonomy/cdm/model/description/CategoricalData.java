@@ -81,6 +81,16 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 	@NotEmpty(groups = Level2.class)
 	private List<StateData> states = new ArrayList<StateData>();
 
+//****************************** FACTORY METHOD *******************************/	
+	
+	/** 
+	 * Creates a new empty categorical data instance.
+	 */
+	public static CategoricalData NewInstance(){
+		return new CategoricalData();
+	}
+
+//*******************  CONSTRUCTOR *********************************************/	
 	
 	/** 
 	 * Class constructor: creates a new empty categorical data instance.
@@ -89,13 +99,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 		super(null);
 	}
 	
-	/** 
-	 * Creates a new empty categorical data instance.
-	 */
-	public static CategoricalData NewInstance(){
-		logger.debug("NewInstance");
-		return new CategoricalData();
-	}
+// ****************** GETTER / SETTER *********************************************/	
 	
 	/** 
 	 * Returns the (ordered) list of {@link State states} describing the {@link Feature feature}
@@ -106,23 +110,10 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 		return this.states;
 	}
 	
-	protected void setStates(List<StateData> states){
-		this.states = states;
+	protected void setStates(List<StateData> stateData){
+		this.states = stateData;
 	}
-	
-	/**
-	 * Convenience method which returns only the list of states. Leaving out modifiers and modifying text.
-	 * @return
-	 */
-	@Transient
-	public List<State> getStatesOnly(){
-		List<State> result = new ArrayList<State>();
-		for (StateData stateData : getStates()){
-			State state = stateData.getState();
-			result.add(state);
-		}
-		return result;
-	}
+
 
 	/**
 	 * Adds a {@link State state} to the list of {@link #getStates() states}
@@ -176,6 +167,37 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 	 */
 	public void setOrderRelevant(boolean orderRelevant){
 		this.orderRelevant = orderRelevant;
+	}
+	
+// ********************* CONVENIENCE ******************************************/	
+	
+	/**
+	 * Convenience method which returns only the list of states. Leaving out modifiers and modifying text.
+	 * @return
+	 */
+	@Transient
+	public List<State> getStatesOnly(){
+		List<State> result = new ArrayList<State>();
+		for (StateData stateData : getStates()){
+			State state = stateData.getState();
+			result.add(state);
+		}
+		return result;
+	}
+	
+	/**
+	 * Convenience method which to set the list of states (no modifiers or modifying text allowed).
+	 * All existing state data are removed.
+	 * @return
+	 */
+	@Transient
+	public List<StateData> setStatesOnly(List<State> states){
+		this.states.clear();
+		for (State state : states){
+			StateData stateDate = StateData.NewInstance(state);
+			this.states.add(stateDate);
+		}
+		return this.states;
 	}
 	
 

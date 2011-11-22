@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -58,8 +60,36 @@ public class CategoricalDataTest {
 		
 		List<State> states = data.getStatesOnly();
 		Assert.assertEquals("There should be 2 states", 2, states.size());
+
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.description.CategoricalData#setStatesOnly(List)}.
+	 */
+	@Test
+	public void testSetStatesOnly() {
+		TaxonDescription desc = TaxonDescription.NewInstance();
+		CategoricalData data = CategoricalData.NewInstance();
+		desc.addElement(data);
+		TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance("Use category vocabulary", "use categories", null, null); 
+		State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
+		useCategoryVocabulary.addTerm(useCategory1);
+		data.addState(useCategory1);
+		Assert.assertEquals("There should be 1 state now", 1, data.getStates().size());
 		
+		State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
+		useCategoryVocabulary.addTerm(useCategory2);
+		State useCategory3 = State.NewInstance("My 3rd use category", "use category 3", null);
+		useCategoryVocabulary.addTerm(useCategory3);
+		List<State> newStates = new ArrayList<State>();
+		newStates.addAll(Arrays.asList(useCategory2, useCategory3));
 		
+		List<StateData> states = data.setStatesOnly(newStates);
+		Assert.assertEquals("There should be 2 states", 2, states.size());
+		Assert.assertEquals("There should be 2 states", 2, data.getStates().size());
+		Assert.assertFalse("Category 1 should not be included anymore", data.getStatesOnly().contains(useCategory1));
+		Assert.assertFalse("Category 2 should be included", data.getStatesOnly().contains(useCategory2));
+
 	}
 
 }
