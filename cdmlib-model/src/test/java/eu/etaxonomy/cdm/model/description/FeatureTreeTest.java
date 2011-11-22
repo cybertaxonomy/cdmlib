@@ -2,6 +2,10 @@ package eu.etaxonomy.cdm.model.description;
 
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -11,14 +15,8 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertNotSame;
-
 public class FeatureTreeTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureTreeTest.class);
 	
 	private FeatureTree testTree;
