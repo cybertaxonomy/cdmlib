@@ -85,13 +85,13 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param taxon The taxon which the description refers to (can be null for all TaxonDescription instances)
 	 * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
 	 * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
-	 * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+	 * @param markerTypes Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonDescription instances
 	 */
-	List<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	List<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method

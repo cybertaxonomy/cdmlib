@@ -234,7 +234,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			}
 			criteria.createCriteria("markers").add(Restrictions.eq("flag", true))
 					.createAlias("markerType", "mt")
-			 		.add(Restrictions.in("id", markerTypeIds));
+			 		.add(Restrictions.in("mt.id", markerTypeIds));
 		}
 	}
 
