@@ -192,7 +192,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonDescription instances
 	 */
-	public Pager<TaxonDescription> pageMarkedTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * @see {@link #getTaxonDescriptions(Taxon, Set, Set, Integer, Integer, List)}
@@ -220,7 +220,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<TaxonDescription> listMarkedTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths); 
+	public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths); 
 
 	
 	/**
