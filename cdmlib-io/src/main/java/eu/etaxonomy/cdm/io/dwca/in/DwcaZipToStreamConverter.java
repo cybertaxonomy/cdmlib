@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,12 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.IoStateBase;
+import eu.etaxonomy.cdm.io.dwca.TermUris;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
-import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
 
@@ -43,12 +48,24 @@ import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
  * @date 17.10.2011
  *
  */
-public class DwcaZipToStreamConverter {
-	@SuppressWarnings("unused")
+public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 	private static Logger logger = Logger.getLogger(DwcaZipToStreamConverter.class);
 
 	private final String META_XML = "meta.xml";
 	protected static final boolean IS_CORE = true;
+	
+	private List<TermUris> extensionList = Arrays.asList(
+			TermUris.DWC_RESOURCE_RELATIONSHIP,
+			TermUris.GBIF_TYPES_AND_SPECIMEN,
+			TermUris.GBIF_VERNACULAR_NAMES,
+			TermUris.GBIF_IDENTIFIER,
+			TermUris.GBIF_SPECIES_PROFILE,
+			TermUris.GBIF_REFERENCE,
+			TermUris.GBIF_SPECIES_PROFILE,
+			TermUris.GBIF_DESCRIPTION,
+			TermUris.GBIF_IMAGE
+	);
+			
 	
 	private URI dwcaZip;
 	private Map<String, DwcaMetaDataRecord> metaRecords = new HashMap<String, DwcaMetaDataRecord>(); 
@@ -96,6 +113,43 @@ public class DwcaZipToStreamConverter {
 		}
 		return makeStream(archiveEntry);
 	}
+	
+	public CsvStream getStream(TermUris rowType) throws IOException{
+		return getStream(rowType.getUriString());
+	}
+
+	public IReader<CsvStream> getStreamStream(STATE state){
+		List<CsvStream> streamList = new ArrayList<CsvStream>();
+		try {
+			streamList.add(getCoreStream()); //for taxa and names
+		} catch (IOException e) {
+			String message = "Core stream not available for %s: %s";
+			logger.warn(String.format(message, "taxa", e.getMessage()));
+			state.setSuccess(false);
+		} 
+		try {
+			streamList.add(getCoreStream());//for taxon and name relations
+		} catch (IOException e) {
+			String message = "Core stream not available for %s: %s";
+			logger.warn(String.format(message, "taxon relations", e.getMessage()));
+			state.setSuccess(false);
+		}  
+		for (TermUris extension : extensionList){
+			CsvStream extensionStream;
+			try {
+				extensionStream = getStream(extension);
+				if (extensionStream != null){
+					streamList.add(extensionStream);
+				}
+			} catch (IOException e) {
+				String message = "Extension stream not available for extension %s: %s";
+				logger.warn(String.format(message, extension.getUriString(), e.getMessage()));
+				state.setSuccess(false);
+			}
+		}
+		IReader<CsvStream> result = new ListReader<CsvStream>(streamList);
+		return result;
+	}
 
 
 	/**
@@ -105,8 +159,7 @@ public class DwcaZipToStreamConverter {
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	private CsvStream makeStream(ArchiveEntryBase archiveEntry)
-			throws IOException, UnsupportedEncodingException {
+	private CsvStream makeStream(ArchiveEntryBase archiveEntry) throws IOException, UnsupportedEncodingException {
 		if (archiveEntry == null){
 			return null;
 		}
@@ -167,6 +220,10 @@ public class DwcaZipToStreamConverter {
 	private InputStream makeInputStream(String name) throws IOException {
 		ZipFile zip = new ZipFile(new File(dwcaZip), ZipFile.OPEN_READ);
 		ZipEntry metaEntry = zip.getEntry(name);
+		if (metaEntry == null){
+			String message = "Zip entry for %s not available";
+			throw new IOException(String.format(message, name));
+		}
 		InputStream metaInputStream = zip.getInputStream(metaEntry);
 		return metaInputStream;
 	}

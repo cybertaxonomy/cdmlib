@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.TermUris;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;

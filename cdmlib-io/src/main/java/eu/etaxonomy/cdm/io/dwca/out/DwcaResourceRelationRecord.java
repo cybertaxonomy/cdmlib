@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.TermUris;
 import eu.etaxonomy.cdm.model.common.Annotation;
 
 /**
