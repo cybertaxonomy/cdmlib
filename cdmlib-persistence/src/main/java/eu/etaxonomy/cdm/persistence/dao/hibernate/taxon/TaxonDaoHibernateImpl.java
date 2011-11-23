@@ -1079,7 +1079,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
             
-			criteria.add(Restrictions.eq("relatedTo", taxon));
+			if(direction != null) {
+				criteria.add(Restrictions.eq(direction.name(), taxon));				
+			}
+			
 		    if(type != null) {
 		    	criteria.add(Restrictions.eq("type", type));
 		    } 
