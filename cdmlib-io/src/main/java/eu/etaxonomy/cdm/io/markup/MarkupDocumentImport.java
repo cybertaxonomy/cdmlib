@@ -136,6 +136,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String BR = "br";
 	private static final String CHAR = "char";
 	private static final String CITATION = "citation";
+	private static final String COLLECTION_AND_TYPE = "collectionAndType";
 	private static final String COLLECTION_TYPE_STATUS = "collectionTypeStatus";
 	private static final String COLLECTOR = "collector";
 	private static final String COORDINATES = "coordinates";
@@ -191,6 +192,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String NOTES = "notes";
 	private static final String NUM = "num";
 	private static final String ORIGINAL_DETERMINATION = "originalDetermination";
+	private static final String PAGES = "pages";
 	private static final String PARAUT = "paraut";
 	private static final String PUBFULLNAME = "pubfullname";
 	private static final String PUBLICATION = "publication";
@@ -467,7 +469,11 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		Rank lastRank = lastTaxon.getName().getRank();
 		if (lastTaxon.getTaxonNodes().size() > 0) {
 			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
-			if (thisRank.isLower(lastRank)) {
+			if (thisRank == null){
+				String message = "rank is undefined for taxon '%s'. Can't create classification without rank.";
+				message = String.format(message, taxon.getName().getTitleCache());
+				fireWarningEvent(message, makeLocationStr(dataLocation), 6);
+			}else if (thisRank.isLower(lastRank)) {
 				lastNode.addChildTaxon(taxon, null, null, null);
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			} else if (thisRank.equals(lastRank)) {
@@ -479,8 +485,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					tree.addChildTaxon(taxon, null, null, null);
 				}
 			} else if (thisRank.isHigher(lastRank)) {
-				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),
-						dataLocation);
+				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),	dataLocation);
 				// TaxonNode parentNode = handleTaxonRelation(state, taxon,
 				// lastNode.getParent().getTaxon());
 				// parentNode.addChildTaxon(taxon, null, null, null);
@@ -558,6 +563,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					} else if (isEndingElement(next, REFERENCES)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, FIGURE_REF)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
 					}
@@ -599,6 +607,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 						fireWarningEvent(message, next, 8);
 					}
 				} else if (isStartingElement(next, REFERENCES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, FIGURE_REF)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, FIGURE)) {
 					handleFigure(state, reader, next);
@@ -1738,6 +1748,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					} else if (isEndingElement(next, SPECIMEN_TYPE)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, COLLECTION_AND_TYPE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, CITATION)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
@@ -1763,6 +1776,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				} else if (isStartingElement(next, ORIGINAL_DETERMINATION)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, COLLECTION_AND_TYPE)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, NOTES)) {
 					handleNotYetImplementedElement(next);
@@ -2495,6 +2510,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		String editors = getAndRemoveMapKey(refMap, EDITORS);
 		String year = getAndRemoveMapKey(refMap, YEAR);
 		String pubName = getAndRemoveMapKey(refMap, PUBNAME);
+		String pages = getAndRemoveMapKey(refMap, PAGES);
 
 		if (state.isCitation()) {
 			if (volume != null || "journal".equalsIgnoreCase(type)) {
@@ -2576,6 +2592,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		}
 		reference.setVolume(volume);
 		reference.setDatePublished(TimePeriod.parseString(year));
+		//TODO check if this is handled correctly in FM markup
+		reference.setPages(pages);
 
 		// TODO
 		String[] unhandledList = new String[]{ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS};
@@ -3486,7 +3504,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			uuid = state.getTransformer().getFeatureUuid(classValue);
 			if (uuid == null) {
 				// TODO
-				String message = "Uuid is not defined for %s";
+				String message = "Uuid is not defined for '%s'";
 				message = String.format(message, classValue);
 				fireWarningEvent(message, parentEvent, 8);
 			}
