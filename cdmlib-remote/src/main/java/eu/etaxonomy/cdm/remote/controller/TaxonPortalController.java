@@ -211,7 +211,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "$",
             "type.inverseRepresentations",
             "fromTaxon.sec",
-            "fromTaxon.name"
+            "fromTaxon.name",
+            "toTaxon.sec",
+            "toTaxon.name"
     });
 
     private static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
