@@ -23,6 +23,7 @@
              <value>PolytomousKey.root</value>
              <value>PolytomousKeyNode.children</value>
              <value>PolytomousKeyNode.question</value>
+             <value>PolytomousKeyNode.feature</value>
              <value>PolytomousKeyNode.statement</value>
              <value>PolytomousKeyNode.modifyingText</value>
 
