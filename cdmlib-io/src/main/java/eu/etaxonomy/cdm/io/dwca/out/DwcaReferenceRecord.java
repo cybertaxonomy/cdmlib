@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -102,22 +102,22 @@ public class DwcaReferenceRecord extends DwcaRecordBase{
 	
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		print(isbnIssn, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
-		print(uri, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
-		print(doi, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
-		print(lsid, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
-		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
-		print(title, writer, IS_NOT_FIRST, TermUris.DC_TITLE);
-		print(creator, writer, IS_NOT_FIRST, TermUris.DC_CREATOR);
+		print(isbnIssn, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
+		print(uri, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
+		print(doi, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
+		print(lsid, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION);
+		print(title, writer, IS_NOT_FIRST, TermUri.DC_TITLE);
+		print(creator, writer, IS_NOT_FIRST, TermUri.DC_CREATOR);
 		//TODO
-		print(getTimePeriod(date), writer, IS_NOT_FIRST, TermUris.DC_DATE);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
-		print(description, writer, IS_NOT_FIRST, TermUris.DC_DESCRIPTION);
-		print(subject, writer, IS_NOT_FIRST, TermUris.DC_SUBJECT);
-		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
-		print(rights, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS);
-		print(taxonRemarks, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_REMARKS);
-		print(type, writer, IS_NOT_FIRST, TermUris.DC_TYPE);
+		print(getTimePeriod(date), writer, IS_NOT_FIRST, TermUri.DC_DATE);
+		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
+		print(description, writer, IS_NOT_FIRST, TermUri.DC_DESCRIPTION);
+		print(subject, writer, IS_NOT_FIRST, TermUri.DC_SUBJECT);
+		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);
+		print(rights, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS);
+		print(taxonRemarks, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_REMARKS);
+		print(type, writer, IS_NOT_FIRST, TermUri.DC_TYPE);
 		writer.println();
 	}
 

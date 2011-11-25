@@ -5,7 +5,7 @@ import java.net.URI;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImportState>{
@@ -33,12 +33,12 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	 * @return
 	 */
 	private void handleCsvItemStream(DwcaImportState state, CsvStreamItem item) {
-		IConverter<CsvStreamItem, IReader<CdmBase>, DwcaImportState> converter = getConverter(item, state);
+		IConverter<CsvStreamItem, IReader<CdmBase>> converter = getConverter(item, state);
 		if (converter == null){
 			state.setSuccess(false);
 			return;
 		}
-		IReader<CdmBase> resultReader = converter.map(item, state);
+		IReader<CdmBase> resultReader = converter.map(item);
 		while (resultReader.hasNext()){
 			save(resultReader.read(),state);
 		}
@@ -46,7 +46,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	}
 
 	private void finalizeStream(CsvStream csvStream, DwcaImportState state) {
-		if (csvStream.getTerm().equals(TermUris.DWC_TAXON)){
+		if (csvStream.getTerm().equals(TermUri.DWC_TAXON)){
 			if (state.isTaxaCreated() == false){
 				state.setTaxaCreated(true);
 			}
@@ -65,18 +65,18 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		}
 	}
 
-	private IConverter<CsvStreamItem,IReader<CdmBase>, DwcaImportState> getConverter(CsvStreamItem item, DwcaImportState state) {
-		TermUris namespace = item.term;
-		if (namespace.equals(TermUris.DWC_TAXON)){
+	private IConverter<CsvStreamItem,IReader<CdmBase>> getConverter(CsvStreamItem item, DwcaImportState state) {
+		TermUri namespace = item.term;
+		if (namespace.equals(TermUri.DWC_TAXON)){
 			if (! state.isTaxaCreated()){
-				return new DwcTaxonCsv2CdmTaxonConverter();
+				return new DwcTaxonCsv2CdmTaxonConverter(state);
 			}else{
-				return new DwcTaxonCsv2CdmTaxonRelationConverter();
+				return new DwcTaxonCsv2CdmTaxonRelationConverter(state);
 			}
-		}else if (namespace.equals(TermUris.GBIF_VERNACULAR_NAMES)){
-			return new GbifVernacularNameCsv2CdmConverter();
-		}else if (namespace.equals(TermUris.GBIF_DESCRIPTION)){
-			return new GbifDescriptionCsv2CdmConverter();
+		}else if (namespace.equals(TermUri.GBIF_VERNACULAR_NAMES)){
+			return new GbifVernacularNameCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
+			return new GbifDescriptionCsv2CdmConverter(state);
 		}else{
 			String message = "Now converter available for %s";
 			logger.error(String.format(message, namespace));

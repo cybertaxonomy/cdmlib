@@ -34,7 +34,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.IoStateBase;
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
@@ -54,16 +54,16 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 	private final String META_XML = "meta.xml";
 	protected static final boolean IS_CORE = true;
 	
-	private List<TermUris> extensionList = Arrays.asList(
-			TermUris.DWC_RESOURCE_RELATIONSHIP,
-			TermUris.GBIF_TYPES_AND_SPECIMEN,
-			TermUris.GBIF_VERNACULAR_NAMES,
-			TermUris.GBIF_IDENTIFIER,
-			TermUris.GBIF_SPECIES_PROFILE,
-			TermUris.GBIF_REFERENCE,
-			TermUris.GBIF_SPECIES_PROFILE,
-			TermUris.GBIF_DESCRIPTION,
-			TermUris.GBIF_IMAGE
+	private List<TermUri> extensionList = Arrays.asList(
+			TermUri.DWC_RESOURCE_RELATIONSHIP,
+			TermUri.GBIF_TYPES_AND_SPECIMEN,
+			TermUri.GBIF_VERNACULAR_NAMES,
+			TermUri.GBIF_IDENTIFIER,
+			TermUri.GBIF_SPECIES_PROFILE,
+			TermUri.GBIF_REFERENCE,
+			TermUri.GBIF_SPECIES_PROFILE,
+			TermUri.GBIF_DESCRIPTION,
+			TermUri.GBIF_IMAGE
 	);
 			
 	
@@ -114,7 +114,7 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		return makeStream(archiveEntry);
 	}
 	
-	public CsvStream getStream(TermUris rowType) throws IOException{
+	public CsvStream getStream(TermUri rowType) throws IOException{
 		return getStream(rowType.getUriString());
 	}
 
@@ -134,7 +134,7 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 			logger.warn(String.format(message, "taxon relations", e.getMessage()));
 			state.setSuccess(false);
 		}  
-		for (TermUris extension : extensionList){
+		for (TermUri extension : extensionList){
 			CsvStream extensionStream;
 			try {
 				extensionStream = getStream(extension);

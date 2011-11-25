@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -35,12 +35,22 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @date 22.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, IReader<CdmBase>, DwcaImportState>{
+public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>>{
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
+	
+	
+	/**
+	 * @param state
+	 */
+	public DwcTaxonCsv2CdmTaxonConverter(DwcaImportState state) {
+		super();
+		this.state = state;
+	}
 
-	public IReader<CdmBase> map(CsvStreamItem item, DwcaImportState state){
+
+	public IReader<CdmBase> map(CsvStreamItem item){
 		List<CdmBase> resultList = new ArrayList<CdmBase>(); 
 		
 		Map<String, String> csvTaxonRecord = item.map;
@@ -55,26 +65,14 @@ public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, 
 		resultList.add(source);
 		csvTaxonRecord.remove(ID);
 		
-		Rank rank = getRank(csvTaxonRecord);
+		Rank rank = getRank(item);
 
-		NomenclaturalCode nomCode = getNomCode(csvTaxonRecord);
-		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank);
+		NomenclaturalCode nomCode = getNomCode(item);
+		TaxonNameBase<?,?> name = getScientificName(item, nomCode, rank);
 		taxonBase.setName(name);
 		
-		Reference<?> sec = getSec(csvTaxonRecord);
+		Reference<?> sec = getNameAccordingTo(csvTaxonRecord);
 		taxonBase.setSec(sec);
-		
-		
-
-
-		
-
-//	    <!-- Taxonomic rank -->
-//	    <field index='7' term='http://rs.tdwg.org/dwc/terms/taxonRank'/>
-
-//	    <!-- Infraspecific marker if displayed in complete scientific name -->
-//	    <field index='8' term='http://rs.tdwg.org/dwc/terms/verbatimTaxonRank'/>
-
 		
 //		    <field index="0" term="http://rs.tdwg.org/dwc/terms/taxonID"/>
 		
@@ -135,8 +133,8 @@ public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, 
 	}
 
 
-	private Reference<?> getSec(Map<String, String> csvTaxonRecord) {
-		String strSec = csvTaxonRecord.get(TermUris.DWC_NAME_ACCORDING_TO);
+	private Reference<?> getNameAccordingTo(Map<String, String> csvTaxonRecord) {
+		String strSec = csvTaxonRecord.get(TermUri.DWC_NAME_ACCORDING_TO);
 		if (strSec != null){
 			Reference<?> sec = ReferenceFactory.newGeneric();
 			sec.setTitleCache(strSec, true);
@@ -146,12 +144,14 @@ public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, 
 	}
 
 
-	private NomenclaturalCode getNomCode(Map<String, String> csvTaxonRecord) {
-		String strNomCode = csvTaxonRecord.get(TermUris.DWC_NOMENCLATURAL_CODE);
+	private NomenclaturalCode getNomCode(CsvStreamItem item) {
+		String strNomCode = getValue(item, TermUri.DWC_NOMENCLATURAL_CODE);
 		if (strNomCode != null){
 			NomenclaturalCode nomCode = NomenclaturalCode.fromString(strNomCode);
 			if (nomCode == null){
-				logger.warn("NomCode not recognized");
+				String message = "NomCode '%s' not recognized";
+				message = String.format(message, strNomCode);
+				fireWarningEvent(message, item, 4);
 			}
 			return nomCode;
 		}
@@ -159,35 +159,61 @@ public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, 
 	}
 
 
-	private TaxonNameBase<?,?> getScientificName(Map<String, String> csvTaxonRecord, NomenclaturalCode nomCode, Rank rank) {
-		String strScientificName = csvTaxonRecord.get(TermUris.DWC_SCIENTIFIC_NAME);
+	private TaxonNameBase<?,?> getScientificName(CsvStreamItem item, NomenclaturalCode nomCode, Rank rank) {
+		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		if (strScientificName != null){
 			INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
 			TaxonNameBase<?,?> name = parser.parseFullName(strScientificName, nomCode, rank);
+			if (rank != null && name != null && name.getRank() != null && 
+					! rank.equals(name.getRank())){
+				String message = "Parsed rank %s differs from given rank %s";
+				message = String.format(message, name.getRank().getTitleCache(), rank.getTitleCache());
+				fireWarningEvent(message, item, 4);
+			}
 			return name;
-		}else{
-			logger.warn("Scientific name not given");
+		}
+		String strScientificNameId = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_ID);
+		if (strScientificNameId != null){
+			String message = "ScientificNameId not yet implemented: '%s'";
+			message = String.format(message, strScientificNameId);
+			fireWarningEvent(message, item, 4);
 		}
 		return null;
 	}
 
 
-	private Rank getRank(Map<String, String> csvTaxonRecord) {
+	private Rank getRank(CsvStreamItem csvTaxonRecord) {
 		boolean USE_UNKNOWN = true;
-		String strRank = csvTaxonRecord.get("http://rs.tdwg.org/dwc/terms/taxonRank");
+		Rank rank = null;
+		String strRank = getValue(csvTaxonRecord,TermUri.DWC_TAXON_RANK);
+		String strVerbatimRank = getValue(csvTaxonRecord,TermUri.DWC_VERBATIM_TAXON_RANK);
 		if (strRank != null){
 			try {
-				Rank rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+				rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
-					//TODO
-					logger.warn("Unknown rank: " + strRank);
+					String message = "Rank can not be defined for '%s'";
+					message = String.format(message, strRank);
+					fireWarningEvent(message, csvTaxonRecord, 4);
 				}
-				return rank;
 			} catch (UnknownCdmTypeException e) {
 				//should not happen as USE_UNKNOWN is used
+				rank = Rank.UNKNOWN_RANK();
 			}
 		}
-		return null;
+		if ( (rank == null || rank.equals(Rank.UNKNOWN_RANK())) && strVerbatimRank != null){
+			try {
+				rank = Rank.getRankByNameOrAbbreviation(strVerbatimRank, USE_UNKNOWN);
+				if (rank.equals(Rank.UNKNOWN_RANK())){
+					String message = "Rank can not be defined for '%s'";
+					message = String.format(message, strVerbatimRank);
+					fireWarningEvent(message, csvTaxonRecord, 4);
+				}
+			} catch (UnknownCdmTypeException e) {
+				//should not happen as USE_UNKNOWN is used
+				rank = Rank.UNKNOWN_RANK();
+			}
+		}
+		return rank;
 	}
 
 
@@ -195,7 +221,7 @@ public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, 
 		TaxonNameBase<?,?> name = null;
 		Reference<?> sec = null;
 		TaxonBase<?> result;
-		String status = csvTaxonRecord.get(TermUris.DWC_TAXONOMIC_STATUS);
+		String status = csvTaxonRecord.get(TermUri.DWC_TAXONOMIC_STATUS);
 		if (status != null){
 			if (status.matches("accepted|valid|misapplied")){
 				result = Taxon.NewInstance(name, sec);
@@ -204,7 +230,7 @@ public class DwcTaxonCsv2CdmTaxonConverter implements IConverter<CsvStreamItem, 
 			}else{
 				result = Taxon.NewUnknownStatusInstance(name, sec);
 			}
-			csvTaxonRecord.remove(TermUris.DWC_TAXONOMIC_STATUS);
+			csvTaxonRecord.remove(TermUri.DWC_TAXONOMIC_STATUS);
 		}else{
 			result = Taxon.NewUnknownStatusInstance(name, sec);
 		}

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.Annotation;
 
 /**
@@ -76,13 +76,13 @@ public class DwcaResourceRelationRecord extends DwcaRecordBase {
 	
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		print(getResourceRelationshipId(), writer, IS_NOT_FIRST, TermUris.DWC_RESOURCE_RELATIONSHIP_ID);
-		print(relatedResourceId, writer, IS_NOT_FIRST, TermUris.DWC_RELATED_RESOURCE_ID);
-		print(relationshipOfResource, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_OF_RESOURCE);
-		print(relationshipAccordingTo, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_ACCORDING_TO);
-		print(relationshipEstablishedDate, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_ESTABLISHED_DATE);
-		printNotes(relationshipRemarks, writer, IS_NOT_FIRST, TermUris.DWC_RELATIONSHIP_REMARKS);
-		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
+		print(getResourceRelationshipId(), writer, IS_NOT_FIRST, TermUri.DWC_RESOURCE_RELATIONSHIP_ID);
+		print(relatedResourceId, writer, IS_NOT_FIRST, TermUri.DWC_RELATED_RESOURCE_ID);
+		print(relationshipOfResource, writer, IS_NOT_FIRST, TermUri.DWC_RELATIONSHIP_OF_RESOURCE);
+		print(relationshipAccordingTo, writer, IS_NOT_FIRST, TermUri.DWC_RELATIONSHIP_ACCORDING_TO);
+		print(relationshipEstablishedDate, writer, IS_NOT_FIRST, TermUri.DWC_RELATIONSHIP_ESTABLISHED_DATE);
+		printNotes(relationshipRemarks, writer, IS_NOT_FIRST, TermUri.DWC_RELATIONSHIP_REMARKS);
+		print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
 		writer.println();
 	}
 

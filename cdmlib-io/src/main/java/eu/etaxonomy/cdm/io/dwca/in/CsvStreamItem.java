@@ -14,7 +14,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 
 /**
  * @author a.mueller
@@ -25,9 +25,26 @@ public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CsvStream.class);
 
-	public TermUris term;
+	public TermUri term;
 	public Map<String, String> map;
+	CsvStream stream;
 	
+	/**
+	 * @param term
+	 * @param map
+	 * @param stream
+	 */
+	public CsvStreamItem(TermUri term, Map<String, String> map,
+			CsvStream stream) {
+		super();
+		this.term = term;
+		this.map = map;
+		this.stream = stream;
+	}
+
+	public String getLocation() {
+		return CdmUtils.concat("/", stream.getFilesLocation() ,String.valueOf(stream.getLine()));
+	}
 	
 	@Override
 	public String toString(){
@@ -37,5 +54,7 @@ public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 			return "[" + CdmUtils.concat("|", term.getUriString(), map.toString()) + "]";
 		}
 	}
+
+
 	
 }

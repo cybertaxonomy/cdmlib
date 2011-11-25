@@ -90,10 +90,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 
-	public void setObservers(Set<IIoObserver> observers) {
-		this.observers = observers;
-	}
-
 	/**
 	 * Sets the observers for this import/export
 	 * @return
@@ -101,4 +97,17 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	public Set<IIoObserver> getObservers() {
 		return observers;
 	}
+	
+	public void setObservers(Set<IIoObserver> observers) {
+		this.observers = observers;
+	}
+	
+	public boolean addObserver(IIoObserver observer){
+		return this.observers.add(observer);
+	}
+	
+	public boolean removeObserver(IIoObserver observer){
+		return this.observers.remove(observer);
+	}
+
 }

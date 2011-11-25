@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * @date 27.04.2011
  *
  */
-public enum TermUris {
+public enum TermUri {
 	DC_ACCESS_RIGHTS("http://purl.org/dc/terms/accessRights"),
 	DC_AUDIENCE("http://purl.org/dc/terms/audience"),	
 	DC_BIBLIOGRAPHIC_CITATION("http://purl.org/dc/terms/bibliographicCitation"),
@@ -141,12 +141,12 @@ public enum TermUris {
 	;
 	
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermUris.class);
+	private static final Logger logger = Logger.getLogger(TermUri.class);
 
 
 	private URI uri;
 	
-	private TermUris(String uri){
+	private TermUri(String uri){
 		try {
 			this.uri = new URI(uri);
 		} catch (URISyntaxException e) {
@@ -168,8 +168,8 @@ public enum TermUris {
 		return getUriString();
 	}
 	
-	public static TermUris valueOfUriString(String termUriString){
-		for (TermUris term: TermUris.values()){
+	public static TermUri valueOfUriString(String termUriString){
+		for (TermUri term: TermUri.values()){
 			if (term.getUriString().equals(termUriString)){
 				return term;
 			}

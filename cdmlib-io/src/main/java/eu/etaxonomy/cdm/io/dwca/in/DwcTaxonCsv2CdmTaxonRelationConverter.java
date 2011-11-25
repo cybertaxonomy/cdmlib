@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -27,12 +28,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 23.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>, STATE>{
+public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>>{
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
+	
+	/**
+	 * @param state
+	 */
+	public DwcTaxonCsv2CdmTaxonRelationConverter(DwcaImportState state) {
+		super();
+		this.state = state;
+	}
 
-	public IReader<CdmBase> map(CsvStreamItem item, DwcaImportState state){
+
+	public IReader<CdmBase> map(CsvStreamItem item){
 		List<CdmBase> resultList = new ArrayList<CdmBase>(); 
 		
 		Map<String, String> csvRecord = item.map;
@@ -47,23 +57,23 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		}else{
 			resultList.add(taxonBase);
 			
-			handleAcceptedNameUsage(csvRecord, state, taxonBase);
+			handleAcceptedNameUsage(item, state, taxonBase);
 			
-			handleParentNameUsage(csvRecord, state, taxonBase);
+			handleParentNameUsage(item, state, taxonBase);
 			
-			handleKingdom(csvRecord, state);
+			handleKingdom(item, state);
 			
-			handlePhylum(csvRecord, state);
+			handlePhylum(item, state);
 			
-			handleClass(csvRecord, state);
+			handleClass(item, state);
 			
-			handleOrder(csvRecord, state);
+			handleOrder(item, state);
 			
-			handleFamily(csvRecord, state);
+			handleFamily(item, state);
 			
-			handleGenus(csvRecord, state);
+			handleGenus(item, state);
 			
-			handleSubGenus(csvRecord, state);
+			handleSubGenus(item, state);
 			
 		}
 		
@@ -95,55 +105,56 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
-	private void handleSubGenus(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handleSubGenus(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleGenus(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handleGenus(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleFamily(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handleFamily(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleOrder(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handleOrder(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleClass(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handleClass(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handlePhylum(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handlePhylum(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleKingdom(Map<String, String> csvRecord, DwcaImportState state) {
+	private void handleKingdom(CsvStreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleParentNameUsage(Map<String, String> csvRecord, DwcaImportState state, TaxonBase<?> taxonBase) {
-		if (exists(TermUris.DWC_PARENT_NAME_USAGE_ID) || exists(TermUris.DWC_PARENT_NAME_USAGE)){
+	private void handleParentNameUsage(CsvStreamItem csvRecord, DwcaImportState state, TaxonBase<?> taxonBase) {
+		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, csvRecord) || exists(TermUri.DWC_PARENT_NAME_USAGE, csvRecord)){
 			if (taxonBase.isInstanceOf(Taxon.class)){
 			
 			}else{
+				String message = "PARENT_NAME_USAGE given for Synonym";
 				//TODO check "is this Taxon"
-				logger.warn("PARENT_NAME_USAGE given for Synonym");
+				fireWarningEvent(message, csvRecord, 4);
 			}
 		}
 
@@ -151,13 +162,14 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
-	private void handleAcceptedNameUsage(Map<String, String> csvRecord, DwcaImportState state, TaxonBase taxonBase) {
-		if (exists(TermUris.DWC_ACCEPTED_NAME_USAGE_ID) || exists(TermUris.DWC_ACCEPTED_NAME_USAGE)){
+	private void handleAcceptedNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase taxonBase) {
+		if (exists(TermUri.DWC_ACCEPTED_NAME_USAGE_ID, item) || exists(TermUri.DWC_ACCEPTED_NAME_USAGE, item)){
 			if (taxonBase.isInstanceOf(Synonym.class)){
 				
 			}else{
+				String message = "ACCEPTED_NAME_USAGE given for non Synonym";
 				//TODO check "is this Taxon"
-				logger.warn("ACCEPTED_NAME_USAGE given for non Synonym");
+				fireWarningEvent(message, item, 4);
 			}
 		}
 
@@ -170,11 +182,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		return null;
 	}
 
-
-	private boolean exists(TermUris dwcAcceptedNameUsageId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 
 	

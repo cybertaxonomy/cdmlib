@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
@@ -34,16 +34,16 @@ public class CsvStream implements IReader<CsvStreamItem>{
 
 	private CSVReader csvReader;
 	private ArchiveEntryBase archiveEntry;
-	private TermUris term;
-
-
+	private TermUri term;
+	private int line = 0;
+	
 	private CsvStreamItem next;
 	
 	public CsvStream (CSVReader csvReader, ArchiveEntryBase archiveEntry){
 		this.csvReader = csvReader;
 		this.archiveEntry = archiveEntry;
 		String rowType = archiveEntry.getRowType();
-		term = TermUris.valueOfUriString(rowType);
+		term = TermUri.valueOfUriString(rowType);
 		//FIXME what if null?
 	}
 	
@@ -51,15 +51,19 @@ public class CsvStream implements IReader<CsvStreamItem>{
 		if (next != null){
 			return true;
 		}else{
-			next = read();
+			next = readMe();
 			return (next != null);
 		}
 	}
 	
 	public CsvStreamItem read(){
-		CsvStreamItem resultItem = new CsvStreamItem();
+		line++;
+		return readMe();
+	}
+	
+	private CsvStreamItem readMe(){
+		CsvStreamItem resultItem = new CsvStreamItem(term, null, this);
 		Map<String, String> resultMap;
-		resultItem.term = term;
 		if (next != null){
 			resultItem = next;
 			next = null;
@@ -106,11 +110,15 @@ public class CsvStream implements IReader<CsvStreamItem>{
 		}
 	}
 	
+	public int getLine(){
+		return line;
+	}
+	
 	
 	/**
 	 * @return the term
 	 */
-	public TermUris getTerm() {
+	public TermUri getTerm() {
 		return term;
 	}
 	
@@ -122,5 +130,8 @@ public class CsvStream implements IReader<CsvStreamItem>{
 			return "CsvStream for " + CdmUtils.Nz(archiveEntry.getRowType());
 		}
 	}
-	
+
+	public String getFilesLocation() {
+		return this.archiveEntry.getFiles().getLocation();
+	}
 }

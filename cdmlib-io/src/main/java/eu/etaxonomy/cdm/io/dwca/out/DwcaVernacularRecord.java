@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
@@ -102,19 +102,19 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		
-		print(vernacularName, writer, IS_NOT_FIRST, TermUris.DWC_VERNACULAR_NAME);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
-		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
-		print(temporal, writer, IS_NOT_FIRST, TermUris.DC_TEMPORAL);
-		print(locationId, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
-		print(locality, writer, IS_NOT_FIRST, TermUris.DWC_LOCALITY);
-		print(countryCode, writer, IS_NOT_FIRST, TermUris.DWC_COUNTRY_CODE);
-		print(getSex(sex), writer, IS_NOT_FIRST, TermUris.DWC_SEX);
-		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUris.DWC_LIFESTAGE);
-		print(isPlural, writer, IS_NOT_FIRST, TermUris.GBIF_IS_PLURAL);
-		print(isPreferredName, writer, IS_NOT_FIRST, TermUris.GBIF_IS_PREFERRED_NAME);
-		print(organismPart, writer, IS_NOT_FIRST, TermUris.GBIF_ORGANISM_PART);
-		print(taxonRemarks, writer, IS_NOT_FIRST, TermUris.DWC_TAXON_REMARKS);
+		print(vernacularName, writer, IS_NOT_FIRST, TermUri.DWC_VERNACULAR_NAME);
+		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
+		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);
+		print(temporal, writer, IS_NOT_FIRST, TermUri.DC_TEMPORAL);
+		print(locationId, writer, IS_NOT_FIRST, TermUri.DWC_LOCATION_ID);
+		print(locality, writer, IS_NOT_FIRST, TermUri.DWC_LOCALITY);
+		print(countryCode, writer, IS_NOT_FIRST, TermUri.DWC_COUNTRY_CODE);
+		print(getSex(sex), writer, IS_NOT_FIRST, TermUri.DWC_SEX);
+		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUri.DWC_LIFESTAGE);
+		print(isPlural, writer, IS_NOT_FIRST, TermUri.GBIF_IS_PLURAL);
+		print(isPreferredName, writer, IS_NOT_FIRST, TermUri.GBIF_IS_PREFERRED_NAME);
+		print(organismPart, writer, IS_NOT_FIRST, TermUri.GBIF_ORGANISM_PART);
+		print(taxonRemarks, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_REMARKS);
 		writer.println();
 	}
 

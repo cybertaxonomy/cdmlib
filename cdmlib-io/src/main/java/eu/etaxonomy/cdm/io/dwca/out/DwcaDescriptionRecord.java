@@ -15,7 +15,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -83,15 +83,15 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		print(description, writer, IS_NOT_FIRST, TermUris.DC_DESCRIPTION);
-		print(getFeature(type), writer, IS_NOT_FIRST, TermUris.DC_TYPE);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
-		print(language, writer, IS_NOT_FIRST, TermUris.DC_LANGUAGE);
-		print(creator, writer, IS_NOT_FIRST, TermUris.DC_CREATOR);
-		print(contributor, writer, IS_NOT_FIRST, TermUris.DC_CONTRIBUTOR);
-		print(audience, writer, IS_NOT_FIRST, TermUris.DC_AUDIENCE);
-		print(license, writer, IS_NOT_FIRST, TermUris.DC_LICENSE);
-		print(rightsHolder, writer, IS_NOT_FIRST, TermUris.DC_RIGHTS_HOLDER);
+		print(description, writer, IS_NOT_FIRST, TermUri.DC_DESCRIPTION);
+		print(getFeature(type), writer, IS_NOT_FIRST, TermUri.DC_TYPE);
+		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
+		print(language, writer, IS_NOT_FIRST, TermUri.DC_LANGUAGE);
+		print(creator, writer, IS_NOT_FIRST, TermUri.DC_CREATOR);
+		print(contributor, writer, IS_NOT_FIRST, TermUri.DC_CONTRIBUTOR);
+		print(audience, writer, IS_NOT_FIRST, TermUri.DC_AUDIENCE);
+		print(license, writer, IS_NOT_FIRST, TermUri.DC_LICENSE);
+		print(rightsHolder, writer, IS_NOT_FIRST, TermUri.DC_RIGHTS_HOLDER);
 		writer.print(config.getLinesTerminatedBy());
 	}
 

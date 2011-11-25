@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Sex;
@@ -110,23 +110,23 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUris.DC_BIBLIOGRAPHIC_CITATION);
-		print(getDesignationType(typeStatus), writer, IS_NOT_FIRST, TermUris.DWC_TYPE_STATUS);
-		print(typeDesignatedBy, writer, IS_NOT_FIRST, TermUris.DWC_TYPE_DESIGNATED_BY);
-		print(scientificName, writer, IS_NOT_FIRST, TermUris.DWC_SCIENTIFIC_NAME);
-		print(getRank(taxonRank), writer, IS_NOT_FIRST, TermUris.DWC_TAXON_RANK);
-		print(occurrenceId, writer, IS_NOT_FIRST, TermUris.DWC_OCCURRENCE_ID);
-		print(institutionCode, writer, IS_NOT_FIRST, TermUris.DWC_INSTITUTION_CODE);
-		print(collectionCode, writer, IS_NOT_FIRST, TermUris.DWC_COLLECTION_CODE);
-		print(catalogNumber, writer, IS_NOT_FIRST, TermUris.DWC_CATALOG_NUMBER);
-		print(locality, writer, IS_NOT_FIRST, TermUris.DWC_LOCALITY);
-		print(getSex(sex), writer, IS_NOT_FIRST, TermUris.DWC_SEX);
-		print(recordedBy, writer, IS_NOT_FIRST, TermUris.DWC_RECORDED_BY);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
-		print(getTimePeriod(eventDate), writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_EVENT_DATE);
-		print(verbatimLabel, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_LABEL);
-		print(verbatimLongitude, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_LONGITUDE);
-		print(verbatimLatitude, writer, IS_NOT_FIRST, TermUris.DWC_VERBATIM_LATITUDE);
+		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION);
+		print(getDesignationType(typeStatus), writer, IS_NOT_FIRST, TermUri.DWC_TYPE_STATUS);
+		print(typeDesignatedBy, writer, IS_NOT_FIRST, TermUri.DWC_TYPE_DESIGNATED_BY);
+		print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
+		print(getRank(taxonRank), writer, IS_NOT_FIRST, TermUri.DWC_TAXON_RANK);
+		print(occurrenceId, writer, IS_NOT_FIRST, TermUri.DWC_OCCURRENCE_ID);
+		print(institutionCode, writer, IS_NOT_FIRST, TermUri.DWC_INSTITUTION_CODE);
+		print(collectionCode, writer, IS_NOT_FIRST, TermUri.DWC_COLLECTION_CODE);
+		print(catalogNumber, writer, IS_NOT_FIRST, TermUri.DWC_CATALOG_NUMBER);
+		print(locality, writer, IS_NOT_FIRST, TermUri.DWC_LOCALITY);
+		print(getSex(sex), writer, IS_NOT_FIRST, TermUri.DWC_SEX);
+		print(recordedBy, writer, IS_NOT_FIRST, TermUri.DWC_RECORDED_BY);
+		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
+		print(getTimePeriod(eventDate), writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_EVENT_DATE);
+		print(verbatimLabel, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_LABEL);
+		print(verbatimLongitude, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_LONGITUDE);
+		print(verbatimLatitude, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_LATITUDE);
 		writer.println();
 	}
 

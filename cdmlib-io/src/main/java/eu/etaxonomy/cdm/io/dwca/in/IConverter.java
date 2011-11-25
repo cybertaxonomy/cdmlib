@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import eu.etaxonomy.cdm.io.common.IoStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -17,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 23.11.2011
  *
  */
-public interface IConverter<IN extends IConverterInput, OUT extends IConverterOutput, STATE extends IoStateBase> {
+public interface IConverter<IN extends IConverterInput, OUT extends IConverterOutput> {
 
-	public IReader<CdmBase> map(IN item, STATE state); 
+	public IReader<CdmBase> map(IN item); 
 }

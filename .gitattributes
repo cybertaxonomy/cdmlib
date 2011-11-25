@@ -267,7 +267,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerMethodException.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUris.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConverterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text

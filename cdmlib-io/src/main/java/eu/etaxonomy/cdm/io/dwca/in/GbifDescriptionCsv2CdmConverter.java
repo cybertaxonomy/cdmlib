@@ -15,32 +15,30 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.dwca.TermUris;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
  * @date 22.11.2011
  *
  */
-public class GbifDescriptionCsv2CdmConverter implements IConverter<CsvStreamItem, IReader<CdmBase>, DwcaImportState>{
-	private static Logger logger = Logger.getLogger(GbifDescriptionCsv2CdmConverter.class);
+public class GbifDescriptionCsv2CdmConverter extends ConverterBase<DwcaImportState>  implements IConverter<CsvStreamItem, IReader<CdmBase>>{
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(GbifDescriptionCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
+	
+	/**
+	 * @param state
+	 */
+	public GbifDescriptionCsv2CdmConverter(DwcaImportState state) {
+		super();
+		this.state = state;
+	}
 
-	public IReader<CdmBase> map(CsvStreamItem item, DwcaImportState state ){
+	public IReader<CdmBase> map(CsvStreamItem item ){
 		List<CdmBase> resultList = new ArrayList<CdmBase>(); 
 		
 		Map<String, String> csv = item.map;
@@ -51,7 +49,8 @@ public class GbifDescriptionCsv2CdmConverter implements IConverter<CsvStreamItem
 		if (taxon != null){
 			resultList.add(taxon);
 		}
-		logger.warn("Not yet implemented");
+		String message = "Not yet implemented"; 
+		fireWarningEvent(message, item, 15);
 		return new ListReader<CdmBase>(resultList);
 		
 	}

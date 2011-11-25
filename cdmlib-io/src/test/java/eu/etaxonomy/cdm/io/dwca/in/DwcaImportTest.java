@@ -20,6 +20,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
+
 /**
  * @author a.mueller
  * @date 23.11.2011
@@ -45,6 +47,7 @@ public class DwcaImportTest {
 		assertNotNull("URI for the test file '" + inputFile + "' does not exist", uri);
 		try {
 			configurator = DwcaImportConfigurator.NewInstance(url.toURI(), null);
+			configurator.addObserver(new LoggingIoObserver());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();
