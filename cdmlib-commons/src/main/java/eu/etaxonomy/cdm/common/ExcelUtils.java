@@ -153,7 +153,7 @@ public class ExcelUtils {
 					}
 					return strValue;
 				} catch (Exception e) {
-					String message = "Formula cell (%s:%s) can't be transformed to string";
+					String message = "Formula cell (%s) can't be transformed to string";
 					message = String.format(message, getExcelCellString(cell));
 					throw new RuntimeException(message, e);
 				}
@@ -168,7 +168,7 @@ public class ExcelUtils {
 		}
 	}
 
-	private static String getExcelCellString(HSSFCell cell){
+	public static String getExcelCellString(HSSFCell cell){
 		String result = "%s%s";
 		result = String.format(result, getExcelColString(cell.getColumnIndex()), cell.getRowIndex());
 		return result;
