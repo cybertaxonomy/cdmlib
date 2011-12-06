@@ -320,8 +320,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
+			DefinedTermBase term = getTermService().find(uuid);
+			namedArea = CdmBase.deproxy(term,NamedArea.class);
 			//TODO matching still experimental
-			namedArea = CdmBase.deproxy(getTermService().find(uuid),NamedArea.class);
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
 				//TODO test
 				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitle(clazz, label, null, null, null, null, null, null);
@@ -374,12 +375,25 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		NamedAreaLevel namedAreaLevel = state.getNamedAreaLevel(uuid);
 		if (namedAreaLevel == null){
-			namedAreaLevel = CdmBase.deproxy(getTermService().find(uuid), NamedAreaLevel.class);
+			//TODO propPath just for testing
+			List<String> propPath = Arrays.asList("vocabulary");
+			DefinedTermBase<NamedAreaLevel> term = getTermService().load(uuid, propPath);
+			namedAreaLevel = CdmBase.deproxy(term, NamedAreaLevel.class);
 			if (namedAreaLevel == null){
 				namedAreaLevel = NamedAreaLevel.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
 					voc = getVocabulary(uuidUserDefinedNamedAreaLevelVocabulary, "User defined vocabulary for named area levels", "User Defined Named Area Levels", null, null, isOrdered, namedAreaLevel);
+				}
+				//FIXME only for debugging
+				Set<NamedAreaLevel> terms = voc.getTerms();
+				for (NamedAreaLevel level : terms){
+					TermVocabulary<NamedAreaLevel> levelVoc = level.getVocabulary();
+					if (levelVoc == null){
+						logger.error("Level voc is null");
+					}else{
+						logger.warn("Level voc is not null");
+					}
 				}
 				voc.addTerm(namedAreaLevel);
 				namedAreaLevel.setUuid(uuid);
