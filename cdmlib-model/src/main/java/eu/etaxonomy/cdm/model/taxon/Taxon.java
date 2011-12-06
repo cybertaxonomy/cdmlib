@@ -999,6 +999,31 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		}
 		return taxa;
 	}
+	/** 
+	 * Returns the set of taxa playing the target role in {@link TaxonRelationship taxon relationships}
+	 * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
+	 * <i>this</i> taxon plays the source role. A misapplied name is a taxon the
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} of which has been erroneously used
+	 * by its {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
+	 * as the one meant by <i>this</i> ("accepted/correct") taxon. 
+	 * 
+	 * @see  #getTaxonRelations()
+	 * @see  #getRelationsToThisTaxon()
+	 * @see  #addMisappliedName(Taxon, Reference, String)
+	 */
+	@Transient
+	public Set<Taxon> getTaxonForMisappliedName(){
+		Set<Taxon> taxa = new HashSet<Taxon>();
+		Set<TaxonRelationship> rels = this.getRelationsFromThisTaxon();
+		for (TaxonRelationship rel: rels){
+			TaxonRelationshipType tt = rel.getType();
+			TaxonRelationshipType incl = TaxonRelationshipType.MISAPPLIED_NAME_FOR(); 
+			if (tt.equals(incl)){
+				taxa.add(rel.getToTaxon());
+			}
+		}
+		return taxa;
+	}
 		
 	
 	/*
