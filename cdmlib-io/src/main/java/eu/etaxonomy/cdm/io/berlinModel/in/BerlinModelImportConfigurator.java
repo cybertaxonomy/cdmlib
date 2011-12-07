@@ -83,6 +83,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private File mediaPath;
 	private int maximumNumberOfNameFacts;
 	private boolean isIgnore0AuthorTeam = false;
+
+	private String taxonTable = "PTaxon";
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -459,6 +461,21 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setDoRelTaxa(boolean doRelTaxa) {
 		this.doRelTaxa = doRelTaxa;
 	}
+
+
+
+	public String getTaxonTable() {
+		return this.taxonTable ;
+	}
+
+	/**
+	 * @param taxonTable the taxonTable to set
+	 */
+	public void setTaxonTable(String taxonTable) {
+		this.taxonTable = taxonTable;
+	}
+	
+	
 
 
 

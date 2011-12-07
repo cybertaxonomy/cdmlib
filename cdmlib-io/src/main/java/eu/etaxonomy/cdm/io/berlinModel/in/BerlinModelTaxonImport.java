@@ -92,7 +92,8 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String sqlSelect = " SELECT RIdentifier";
-		String sqlFrom = " FROM PTaxon ";
+		String taxonTable = state.getConfig().getTaxonTable();
+		String sqlFrom = String.format(" FROM %s ", taxonTable);
 		String sqlWhere = "";
 		
 		String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere ;
