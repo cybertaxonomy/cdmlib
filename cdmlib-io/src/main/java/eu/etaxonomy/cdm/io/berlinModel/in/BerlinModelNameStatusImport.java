@@ -119,7 +119,13 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 				if (taxonName != null ){
 					try{
 						NomenclaturalStatus nomStatus = BerlinModelTransformer.nomStatusFkToNomStatus(nomStatusFk, nomStatusLabel);
-						if (nomStatus.getType().getId() == 0){
+						if (nomStatus == null){
+							String message = "Nomenclatural status could not be defined for %s ; %s";
+							message = String.format(message, nomStatusFk, nomStatusLabel);
+							logger.warn(message);
+							success = false;
+							continue;
+						}else if(nomStatus.getType().getId() == 0){
 							getTermService().save(nomStatus.getType());
 						}
 						

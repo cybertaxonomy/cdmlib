@@ -109,6 +109,7 @@ public final class BerlinModelTransformer {
 	public static int NAME_REL_IS_REJECTED_IN_FAVOUR_OF = 14;
 	public static int NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF = 15;
 	public static int NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF = 16;
+	public static int NAME_REL_IS_ALTERNATIVE_NAME_FOR = 17;
 	public static int NAME_REL_HAS_SAME_TYPE_AS = 18;
 	public static int NAME_REL_IS_LECTOTYPE_OF = 61;
 	public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;

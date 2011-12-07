@@ -20,6 +20,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LECTOTYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_MALE_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_ALTERNATIVE_NAME_FOR;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REJECTED_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REPLACED_SYNONYM_FOR;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_SECOND_PARENT_OF;
@@ -223,6 +224,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 			
 		}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
 			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_IS_ALTERNATIVE_NAME_FOR){
+			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ALTERNATIVE_NAME(), citation, microcitation, rule) ;
 		}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
 			//HybridRelationships
 			if (! (nameTo instanceof NonViralName ) || ! (nameFrom instanceof NonViralName)){
