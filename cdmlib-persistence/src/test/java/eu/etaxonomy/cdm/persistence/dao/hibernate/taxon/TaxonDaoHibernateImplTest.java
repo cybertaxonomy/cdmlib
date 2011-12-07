@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import junitx.framework.Assert;
+
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
@@ -117,7 +119,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		atroposAgassiz = UUID.fromString("d75b2e3d-7394-4ada-b6a5-93175b8751c1");
 		atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
 		rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
-		retheraSecCdmtest = UUID.fromString("a9f42927-e507-433a-9629-62073a908aae");
+		retheraSecCdmtest = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
 		
 		
 		mimas = UUID.fromString("900052b7-b69c-4e26-a8f0-01c215214c40");
@@ -254,6 +256,22 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertEquals("Results list should contain one entity",1,results.size());
+	}
+	
+	
+	@Test
+	@DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+	public void testGetTaxaByNameWithMisappliedNames(){
+		
+		Classification classification = classificationDao.load(classificationUuid);
+		
+		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "R*", classification, MatchMode.BEGINNING, null, null, null, null, true);
+		
+		Assert.assertEquals("There should be 2 Taxa", 2, results.size());
+		
+		results = taxonDao.getTaxaByName(Taxon.class, "R*", null, MatchMode.BEGINNING, null, null, null, null, true);
+		Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+		
 	}	
 	
 	/**
@@ -312,12 +330,16 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
 		Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
 		taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
+		
 		logger.warn("addSynonym(..)");
-		this.taxonDao.clear();
+		//this.taxonDao.clear();
 		Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
 		Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
 		taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
-		this.taxonDao.clear();
+		this.taxonDao.save(taxonRetheraSecCdmtest);
+		//this.taxonDao.clear();
+		Taxon test = (Taxon)this.taxonDao.findByUuid(retheraSecCdmtest);
+		
 		// 1. searching for a taxon (Rethera)
 		//long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 		
@@ -352,7 +374,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName(TaxonBase.class, "A", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
+		assertTrue("expected to find 7 taxa but found "+results.size(), results.size() == 8);
 	}
 
 	

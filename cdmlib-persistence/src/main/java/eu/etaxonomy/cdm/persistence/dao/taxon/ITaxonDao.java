@@ -447,5 +447,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas);
 
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString,
+			Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths,
+			boolean doIncludeMisappliedNames);
+
 	
 }

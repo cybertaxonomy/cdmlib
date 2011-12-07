@@ -525,7 +525,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 taxa = dao.getTaxaByName(clazz,
                     configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
                     configurator.getNamedAreas(), configurator.getPageSize(),
-                    configurator.getPageNumber(), propertyPath);
+                    configurator.getPageNumber(), propertyPath, configurator.isDoMisappliedNames());
             }
         }
 

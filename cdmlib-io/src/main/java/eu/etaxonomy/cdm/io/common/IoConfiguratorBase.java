@@ -32,7 +32,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
-	private CdmApplicationController cdmApp = null;
+	protected CdmApplicationController cdmApp = null;
 	
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	

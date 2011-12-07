@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)}.
 	 */
-	@Ignore // TaxonServiceSearchTest.xml cannot be inserted - structure changed?
+	//@Ignore // TaxonServiceSearchTest.xml cannot be inserted - structure changed?
 	@Test
 	@DataSet
 	public final void testFindTaxaAndNames() {
@@ -80,8 +81,8 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 						": Name Cache = " + nameCache + ", Title Cache = " + list.get(i).getTitleCache());
 			}
 		}
-		assertEquals(list.get(1).getTitleCache(), "Abies mill. sec. ???");
-		assertEquals(list.get(4).getTitleCache(), "Abies alba Mill. sec. ???");
+		System.err.println("number of taxa: "+list.size());
+		assertTrue(list.size()==8);
 	}
 	
 //	@Test

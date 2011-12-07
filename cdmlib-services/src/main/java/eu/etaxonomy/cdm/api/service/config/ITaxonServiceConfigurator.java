@@ -63,4 +63,8 @@ public interface ITaxonServiceConfigurator<T extends TaxonBase> extends IIdentif
 	public List<String> getSynonymPropertyPath();
 	
 	public void setSynonymPropertyPath(List<String> synonymPropertyPath);
+	
+	public boolean isDoMisappliedNames();
+	
+	public void setDoMisappliedNames(boolean doMisappliedNames);
 }

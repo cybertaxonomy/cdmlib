@@ -8,8 +8,11 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -102,54 +105,46 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 //		return dbSchemaValidation;
 //	}
 	
-//	/**
-//	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-//	 * If a controller was already created before the last created controller is returned.
-//	 * @return
-//	 */
-//	public CdmApplicationController getCdmAppController(){
-//		return getCdmAppController(false);
-//	}
-//	
-//	/**
-//	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
-//	 * @return
-//	 */
-//	public CdmApplicationController getNewCdmAppController(){
-//		return getCdmAppController(true, false);
-//	}
-//	
-//	/**
-//	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-//	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
-//	 * been created before a new controller is returned.
-//	 * @return
-//	 */
-//	public CdmApplicationController getCdmAppController(boolean createNew){
-//		return getCdmAppController(createNew, false);
-//	}
-//	
-//	
-//	/**
-//	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-//	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
-//	 * been created before a new controller is returned.
-//	 * @return
-//	 */
-//	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading){
-//		if (cdmApp == null || createNew == true){
-//			try {
-//				cdmApp = CdmApplicationController.NewInstance(this.getSource(), this.getDbSchemaValidation(), omitTermLoading);
-//			} catch (DataSourceNotFoundException e) {
-//				logger.error("could not connect to destination database");
-//				return null;
-//			}catch (TermNotFoundException e) {
-//				logger.error("could not find needed term in destination datasource");
-//				return null;
-//			}
-//		}
-//		return cdmApp;
-//	}
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If a controller was already created before the last created controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(){
+		return getCdmAppController(false);
+	}
+	
+	/**
+	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
+	 * @return
+	 */
+	public CdmApplicationController getNewCdmAppController(){
+		return getCdmAppController(true, false);
+	}
+	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(boolean createNew){
+		return getCdmAppController(createNew, false);
+	}
+	
+	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading){
+		if (cdmApp == null || createNew == true){
+			cdmApp = CdmApplicationController.NewInstance(this.getSource(), this.getDbSchemaValidation(), omitTermLoading);
+		}
+		return cdmApp;
+	}
 	
 	
 	/**
