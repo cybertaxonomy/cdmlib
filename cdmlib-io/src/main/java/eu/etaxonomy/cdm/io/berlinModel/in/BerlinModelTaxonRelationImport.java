@@ -340,7 +340,20 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		
 	}
 	
-
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (state.getConfig().getRelTaxaIdQuery() != null){
+			return state.getConfig().getRelTaxaIdQuery();
+		}else{
+			return super.getIdQuery(state);
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */
@@ -397,7 +410,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		return result;
 	}
-	
+
+
 	private SynonymRelationship getSynRel (int relQualifierFk, Taxon toTaxon, Synonym synonym, Reference citation, String microcitation){
 		SynonymRelationship result;
 		if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||

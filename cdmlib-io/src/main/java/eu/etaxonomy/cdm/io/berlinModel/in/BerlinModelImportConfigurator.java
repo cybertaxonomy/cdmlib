@@ -88,6 +88,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	private String classificationQuery = null;
 
+	private String relTaxaIdQuery = null;
+
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				BerlinModelGeneralImportValidator.class
@@ -488,6 +490,17 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 */
 	public void setClassificationQuery(String classificationQuery) {
 		this.classificationQuery = classificationQuery;
+	}
+
+	/**
+	 * @param relTaxaIdQuery the relTaxaIdQuery to set
+	 */
+	public void setRelTaxaIdQuery(String relTaxaIdQuery) {
+		this.relTaxaIdQuery = relTaxaIdQuery;
+	}
+
+	public String getRelTaxaIdQuery() {
+		return this.relTaxaIdQuery ;
 	}
 
 
