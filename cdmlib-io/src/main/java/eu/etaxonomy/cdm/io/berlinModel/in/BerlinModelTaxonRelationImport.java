@@ -82,9 +82,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 */
 	private void makeClassifications(BerlinModelImportState state) throws SQLException{
 		logger.info("start make classification ...");
-		Source source = state.getConfig().getSource();
-
-		Set<String> idSet = getTreeReferenceIdSet(source);
+		
+		Set<String> idSet = getTreeReferenceIdSet(state);
 		
 		//nom reference map
 		String nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
@@ -98,7 +97,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 //		idSet = new HashSet<String>();
 		Map<String, Reference> biblioRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 		
-		ResultSet rs = source.getResultSet(getClassificationQuery()) ;
+		ResultSet rs = state.getConfig().getSource().getResultSet(getClassificationQuery(state)) ;
 		int i = 0;
 		//for each reference
 		try {
@@ -111,7 +110,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					String ptRefFk= String.valueOf(ptRefFkObj);
 					Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 					
-					rs.getString("RefCache");
 					String treeName = "Classification - No Name";
 					String refCache = rs.getString("RefCache");
 					if (CdmUtils.isNotEmpty(refCache)){
@@ -148,9 +146,10 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 * @return
 	 * @throws SQLException 
 	 */
-	private Set<String> getTreeReferenceIdSet(Source source) throws SQLException {
+	private Set<String> getTreeReferenceIdSet(BerlinModelImportState state) throws SQLException {
+		Source source = state.getConfig().getSource();
 		Set<String> result = new HashSet<String>();
-		ResultSet rs = source.getResultSet(getClassificationQuery()) ;
+		ResultSet rs = source.getResultSet(getClassificationQuery(state)) ;
 		while (rs.next()){
 			Object id = rs.getObject("PTRefFk");
 			result.add(String.valueOf(id));
@@ -161,13 +160,17 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	/**
 	 * @return
 	 */
-	private String getClassificationQuery() {
-		String strQuery = "SELECT PTaxon.PTRefFk, Reference.RefCache " + 
-						" FROM RelPTaxon INNER JOIN " + 
-							" PTaxon AS PTaxon ON RelPTaxon.PTNameFk2 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon.PTRefFk INNER JOIN " +
-							" Reference ON PTaxon.PTRefFk = Reference.RefId " + 
-						" WHERE (RelPTaxon.RelQualifierFk = 1) " + 
-						" GROUP BY PTaxon.PTRefFk, Reference.RefCache ";
+	private String getClassificationQuery(BerlinModelImportState state) {
+		String strQuerySelect = "SELECT PTaxon.PTRefFk, Reference.RefCache ";  
+		String strQueryFrom = " FROM RelPTaxon " + 
+							" INNER JOIN PTaxon AS PTaxon ON RelPTaxon.PTNameFk2 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon.PTRefFk " +
+							" INNER JOIN Reference ON PTaxon.PTRefFk = Reference.RefId "; 
+		String strQueryWhere = " WHERE (RelPTaxon.RelQualifierFk = 1) "; 
+		String strQueryGroupBy = " GROUP BY PTaxon.PTRefFk, Reference.RefCache ";
+		String strQuery = strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
+		if (state.getConfig().getClassificationQuery() == null){
+			strQuery = state.getConfig().getClassificationQuery();
+		}
 		return strQuery;
 	}
 	

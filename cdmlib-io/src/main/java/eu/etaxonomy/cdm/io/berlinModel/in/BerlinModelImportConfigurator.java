@@ -85,7 +85,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private boolean isIgnore0AuthorTeam = false;
 
 	private String taxonTable = "PTaxon";
-	
+
+	private String classificationQuery = null;
+
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				BerlinModelGeneralImportValidator.class
@@ -474,8 +476,20 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setTaxonTable(String taxonTable) {
 		this.taxonTable = taxonTable;
 	}
+
+
+
+	public String getClassificationQuery() {
+		return this.classificationQuery ;
+	}
 	
-	
+	/**
+	 * @param classificationQuery the classificationQuery to set
+	 */
+	public void setClassificationQuery(String classificationQuery) {
+		this.classificationQuery = classificationQuery;
+	}
+
 
 
 
