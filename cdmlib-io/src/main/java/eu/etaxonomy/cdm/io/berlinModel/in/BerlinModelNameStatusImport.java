@@ -58,7 +58,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
+	protected String getIdQuery(BerlinModelImportState state) {
 		return " SELECT RIdentifier FROM " + getTableName();
 	}
 

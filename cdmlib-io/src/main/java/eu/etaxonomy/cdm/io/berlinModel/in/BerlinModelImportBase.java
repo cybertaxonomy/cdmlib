@@ -61,7 +61,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			
 			logger.info("start make " + getPluralString() + " ...");
 
-			String strIdQuery = getIdQuery();
+			String strIdQuery = getIdQuery(state);
 			String strRecordQuery = getRecordQuery(config);
 
 			int recordsPerTransaction = config.getRecordsPerTransaction();
@@ -96,7 +96,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	/**
 	 * @return
 	 */
-	protected String getIdQuery(){
+	protected String getIdQuery(BerlinModelImportState state){
 		String result = " SELECT " + getTableName() + "id FROM " + getTableName();
 		return result;
 	}

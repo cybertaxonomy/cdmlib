@@ -80,7 +80,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	
 
 	@Override
-	protected String getIdQuery() {
+	protected String getIdQuery(BerlinModelImportState state) {
 		String result = " SELECT CommonNameId FROM emCommonName ";
 		return result;
 	}

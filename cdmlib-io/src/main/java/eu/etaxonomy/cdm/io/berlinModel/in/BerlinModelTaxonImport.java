@@ -90,8 +90,13 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
-		return " SELECT RIdentifier FROM PTaxon ";
+	protected String getIdQuery(BerlinModelImportState state) {
+		String sqlSelect = " SELECT RIdentifier";
+		String sqlFrom = " FROM PTaxon ";
+		String sqlWhere = "";
+		
+		String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere ;
+		return sql;
 	}
 
 

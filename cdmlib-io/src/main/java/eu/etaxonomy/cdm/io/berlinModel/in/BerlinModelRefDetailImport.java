@@ -73,7 +73,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
+	protected String getIdQuery(BerlinModelImportState state) {
 		String strQuery = " SELECT RefDetail.RefDetailId " +
         	" FROM RefDetail " +
         	" WHERE (RefDetail.PreliminaryFlag = 1)";

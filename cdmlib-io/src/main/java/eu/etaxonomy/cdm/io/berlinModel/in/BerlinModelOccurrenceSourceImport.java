@@ -59,7 +59,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
+	protected String getIdQuery(BerlinModelImportState state) {
 		return " SELECT occurrenceSourceId FROM " + getTableName();
 	}
 
