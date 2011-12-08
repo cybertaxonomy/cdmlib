@@ -125,8 +125,16 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 							logger.warn(message);
 							success = false;
 							continue;
-						}else if(nomStatus.getType().getId() == 0){
-							getTermService().save(nomStatus.getType());
+						}else{
+							if (nomStatus.getType() == null){
+								String message = "Nomenclatural status type could not be defined for %s ; %s";
+								message = String.format(message, nomStatusFk, nomStatusLabel);
+								logger.warn(message);
+								success = false;
+								continue;
+							}else if(nomStatus.getType().getId() == 0){
+								getTermService().save(nomStatus.getType());
+							}
 						}
 						
 						//reference
