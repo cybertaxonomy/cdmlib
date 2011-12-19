@@ -365,10 +365,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param taxon
 	 */
 	private boolean isFirstMisappliedName = true;
-	private Taxon getMisappliedName(Map<String, Reference> biblioRefMap, Map<String, Reference> nomRefMap, 
-			Object misNameRefFk, Taxon taxon) {
+	private Taxon getMisappliedName(Map<String, Reference> biblioRefMap, Map<String, Reference> nomRefMap, Object misNameRefFk, Taxon taxon) {
 		Taxon misappliedTaxon = null;
-		Reference misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
+		Reference<?> misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
 		misappliedTaxon = Taxon.NewInstance(taxon.getName(), misNameRef);
 		Set<String> includeProperty = new HashSet<String>();
 		try {
@@ -613,7 +612,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 */
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
@@ -635,14 +634,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
 			idSet = nameIdSet;
-			Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, TaxonNameBase<?,?>> nameMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 
 			//name map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
 			cdmClass = Taxon.class;
 			idSet = taxonIdSet;
-			Map<String, TaxonNameBase> taxonMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, TaxonNameBase<?,?>> taxonMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
 
 			//nom reference map
@@ -656,7 +655,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference<?>> biblioReferenceMap = (Map<String, Reference<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
 		} catch (SQLException e) {
