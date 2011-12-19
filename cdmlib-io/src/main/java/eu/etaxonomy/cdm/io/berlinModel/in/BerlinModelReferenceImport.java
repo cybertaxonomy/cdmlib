@@ -28,6 +28,7 @@ import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -903,7 +904,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			String sourceAttribute = mapper.getSourceAttributeList().get(0).toLowerCase();
 			Object value = valueMap.get(sourceAttribute);
 			if (mapper instanceof CdmUriMapper && value != null){
-				value = URI.create(value.toString());
+				try {
+					value = new URI (value.toString());
+				} catch (URISyntaxException e) {
+					logger.error("URI syntax exception: " + value.toString());
+					value = null;
+				}
 			}
 			if (value != null){
 				String destinationAttribute = mapper.getDestinationAttribute();
