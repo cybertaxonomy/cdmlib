@@ -84,11 +84,14 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private int maximumNumberOfNameFacts;
 	private boolean isIgnore0AuthorTeam = false;
 
+	
+	//Data Filter
 	private String taxonTable = "PTaxon";
-
 	private String classificationQuery = null;
-
 	private String relTaxaIdQuery = null;
+	private String nameIdTable = null;
+	private String referenceFilter = null;
+	
 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -501,6 +504,34 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public String getRelTaxaIdQuery() {
 		return this.relTaxaIdQuery ;
+	}
+
+
+
+	/**
+	 * @return the nameIdTable
+	 */
+	public String getNameIdTable() {
+		return nameIdTable;
+	}
+
+
+
+	/**
+	 * @param nameIdTable the nameIdTable to set
+	 */
+	public void setNameIdTable(String nameIdTable) {
+		this.nameIdTable = nameIdTable;
+	}
+
+
+
+	public void setReferenceFilter(String referenceFilter) {
+		this.referenceFilter = referenceFilter;
+	}
+
+	public String getReferenceFilter() {
+		return referenceFilter;
 	}
 
 

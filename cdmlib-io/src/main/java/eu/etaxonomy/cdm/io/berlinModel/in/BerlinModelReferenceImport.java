@@ -204,15 +204,20 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 		String strSelectIdBase = strSelectId + strFrom;
 		
+		String referenceFilter = CdmUtils.Nz(state.getConfig().getReferenceFilter());
+		if (! referenceFilter.isEmpty()){
+			referenceFilter = " AND " + referenceFilter + " ";
+		}
+		
 		String strIdQueryNoInRef = strSelectIdBase + 
-			" AND (Reference.InRefFk is NULL) ";
+			" AND (Reference.InRefFk is NULL) " +  referenceFilter;
 		String strIdQuery1InRef = strSelectIdBase + 
-			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) ";
+			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) "  +  referenceFilter;
 		String strIdQuery2InRefs = strSelectIdBase + 
-			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) ";
+			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) "  +  referenceFilter;
 
 		if (config.getDoReferences() == CONCEPT_REFERENCES){
-			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) ";
+			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) " + referenceFilter;
 		}
 
 		String strRecordQuery = strSelectFull + strFrom + strWherePartitioned;

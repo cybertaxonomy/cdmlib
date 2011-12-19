@@ -68,6 +68,20 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		super();
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (state.getConfig().getNameIdTable()==null ){
+			return super.getIdQuery(state);
+		}else{
+			return "SELECT nameId FROM " + state.getConfig().getNameIdTable() + ""; 
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery()
 	 */
@@ -99,6 +113,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
 		return strRecordQuery;
 	}
+
 
 
 	/* (non-Javadoc)
