@@ -91,6 +91,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String relTaxaIdQuery = null;
 	private String nameIdTable = null;
 	private String referenceFilter = null;
+	private String factFilter = null;
 	
 
 	protected void makeIoClassList(){
@@ -532,6 +533,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public String getReferenceFilter() {
 		return referenceFilter;
+	}
+
+
+
+	public void setFactFilter(String factFilter) {
+		this.factFilter = factFilter;
+	}
+
+
+
+	public String getFactFilter() {
+		return factFilter;
 	}
 
 
