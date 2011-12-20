@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +60,12 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		return " SELECT RIdentifier FROM " + getTableName();
+		String result =  " SELECT RIdentifier FROM " + getTableName();
+		
+		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
+			result += " WHERE nameFk IN (SELECT NameId FROM v_cdm_exp_allNames)";
+		}
+		return result;
 	}
 
 

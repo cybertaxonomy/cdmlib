@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -72,6 +73,21 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		super();
 	}
 
+	
+
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
+			String result = super.getIdQuery(state);
+			result += " WHERE nameFk1 IN (SELECT NameId FROM v_cdm_exp_allNames) OR ";
+			result += "       nameFk2 IN (SELECT NameId FROM v_cdm_exp_allNames)";
+			return result;
+		}else{
+			return super.getIdQuery(state);
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */

@@ -90,7 +90,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String classificationQuery = null;
 	private String relTaxaIdQuery = null;
 	private String nameIdTable = null;
-	private String referenceFilter = null;
+	private String referenceIdTable = null;
 	private String factFilter = null;
 	
 
@@ -527,12 +527,12 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 
 
-	public void setReferenceFilter(String referenceFilter) {
-		this.referenceFilter = referenceFilter;
+	public void setReferenceIdTable(String referenceIdTable) {
+		this.referenceIdTable = referenceIdTable;
 	}
 
-	public String getReferenceFilter() {
-		return referenceFilter;
+	public String getReferenceIdTable() {
+		return referenceIdTable;
 	}
 
 

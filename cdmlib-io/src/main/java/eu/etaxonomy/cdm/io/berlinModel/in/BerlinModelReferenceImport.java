@@ -182,13 +182,18 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk, RefSource.RefSource " ;
 		String strFrom =  " FROM Reference AS InInReference " +
 		    	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
-		    	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk " + 
+		    	" RIGHT OUTER JOIN %s ON InReference.RefId = Reference.InRefFk " + 
 		    	" LEFT OUTER JOIN RefSource ON Reference.RefSourceFk = RefSource.RefSourceId " +
 		    	" WHERE (1=1) ";
 		String strWherePartitioned = " AND (Reference.refId IN ("+ ID_LIST_TOKEN + ") ) "; 
-
+		
+		String referenceTable = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
+		referenceTable = referenceTable.isEmpty() ? " Reference"  : referenceTable + " as Reference ";
+		String strIdFrom = String.format(strFrom, referenceTable );
+		
+		
 		//test max number of recursions
-		String strQueryTestMaxRecursion = strSelectId + strFrom +  
+		String strQueryTestMaxRecursion = strSelectId + strIdFrom +  
 			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
 		ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTestMaxRecursion);
 		try {
@@ -203,12 +208,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			success = false;
 		}
 
-		String strSelectIdBase = strSelectId + strFrom;
+		String strSelectIdBase = strSelectId + strIdFrom;
 		
-		String referenceFilter = CdmUtils.Nz(state.getConfig().getReferenceFilter());
+		String referenceFilter = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
 		if (! referenceFilter.isEmpty()){
 			referenceFilter = " AND " + referenceFilter + " ";
 		}
+		referenceFilter = "";  //don't use it for now
 		
 		String strIdQueryNoInRef = strSelectIdBase + 
 			" AND (Reference.InRefFk is NULL) " +  referenceFilter;
@@ -221,7 +227,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) " + referenceFilter;
 		}
 
-		String strRecordQuery = strSelectFull + strFrom + strWherePartitioned;
+		String strRecordQuery = strSelectFull + String.format(strFrom, " Reference ") + strWherePartitioned;
 		
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{

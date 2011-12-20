@@ -72,6 +72,23 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	public BerlinModelNameFactsImport(){
 		super();
 	}
+	
+	
+	
+
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
+			String result = super.getIdQuery(state);
+			result += " WHERE ptNameFk IN (SELECT NameId FROM v_cdm_exp_allNames)";
+			return result;
+		}else{
+			return super.getIdQuery(state);
+		}
+	}
+
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
