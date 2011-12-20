@@ -160,7 +160,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = super.getIdQuery(state);
 		if (StringUtils.isNotBlank(state.getConfig().getFactFilter())){
-			result += state.getConfig().getFactFilter();
+			result += " WHERE " + state.getConfig().getFactFilter();
 		}else{
 			result = super.getIdQuery(state);
 		}
