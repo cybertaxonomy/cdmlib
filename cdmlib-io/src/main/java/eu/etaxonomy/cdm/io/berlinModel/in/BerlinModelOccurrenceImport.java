@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -72,7 +73,11 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		return " SELECT occurrenceId FROM " + getTableName();
+		String result = " SELECT occurrenceId FROM " + getTableName();
+		if (StringUtils.isNotBlank(state.getConfig().getOccurrenceFilter())){
+			result += " WHERE " +  state.getConfig().getOccurrenceFilter(); 
+		} 
+		return result;
 	}
 
 	/* (non-Javadoc)
