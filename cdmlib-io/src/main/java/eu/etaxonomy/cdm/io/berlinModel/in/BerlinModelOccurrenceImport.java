@@ -58,7 +58,6 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	public static final String NAMESPACE = "Occurrence";
 	
 	
-	
 	private static int modCount = 5000;
 	private static final String pluralString = "occurrences";
 	private static final String dbTableName = "emOccurrence";  //??
