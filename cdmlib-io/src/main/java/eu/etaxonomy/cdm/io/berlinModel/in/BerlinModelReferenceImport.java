@@ -175,7 +175,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 
-		String strSelectId = "Select Reference.RefId as refId";
+		String strSelectId = " SELECT Reference.RefId as refId ";
 		String strSelectFull = 
 			" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
 			" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk, " +
