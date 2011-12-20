@@ -92,6 +92,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String nameIdTable = null;
 	private String referenceIdTable = null;
 	private String factFilter = null;
+	private String occurrenceFilter = null;
 	
 
 	protected void makeIoClassList(){
@@ -545,6 +546,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public String getFactFilter() {
 		return factFilter;
+	}
+
+
+
+	public String getOccurrenceFilter() {
+		return occurrenceFilter;
+	}
+
+
+
+	public void setOccurrenceFilter(String occurrenceFilter) {
+		this.occurrenceFilter = occurrenceFilter;
 	}
 
 
