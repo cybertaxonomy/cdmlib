@@ -77,10 +77,11 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
+		if (StringUtils.isNotBlank(state.getConfig().getNameIdTable())){
 			String result = super.getIdQuery(state);
-			result += " WHERE nameFk1 IN (SELECT NameId FROM v_cdm_exp_allNames) OR ";
-			result += "       nameFk2 IN (SELECT NameId FROM v_cdm_exp_allNames)";
+			result += " WHERE nameFk1 IN (SELECT NameId FROM %s) OR ";
+			result += "       nameFk2 IN (SELECT NameId FROM %s)";
+			result = String.format(result, state.getConfig().getNameIdTable(),state.getConfig().getNameIdTable() );
 			return result;
 		}else{
 			return super.getIdQuery(state);

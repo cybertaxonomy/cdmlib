@@ -80,7 +80,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	protected String getIdQuery(BerlinModelImportState state) {
 		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
 			String result = super.getIdQuery(state);
-			result += " WHERE ptNameFk IN (SELECT NameId FROM v_cdm_exp_allNames)";
+			result += " WHERE ptNameFk IN (SELECT NameId FROM " + state.getConfig().getNameIdTable() + ")";
 			return result;
 		}else{
 			return super.getIdQuery(state);
