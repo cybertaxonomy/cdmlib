@@ -166,6 +166,107 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 
 
+//	@Override
+//	protected void doInvoke_old(BerlinModelImportState state){
+//		logger.info("start make " + getPluralString() + " ...");
+//
+//		boolean success = true;
+//		initializeMappers(state);
+//		BerlinModelImportConfigurator config = state.getConfig();
+//		Source source = config.getSource();
+//
+//		String strSelectId = " SELECT Reference.RefId as refId ";
+//		String strSelectFull = 
+//			" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
+//			" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk, " +
+//			" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk, RefSource.RefSource " ;
+//		String strFrom =  " FROM Reference AS InInReference " +
+//		    	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
+//		    	" RIGHT OUTER JOIN %s ON InReference.RefId = Reference.InRefFk " + 
+//		    	" LEFT OUTER JOIN RefSource ON Reference.RefSourceFk = RefSource.RefSourceId " +
+//		    	" WHERE (1=1) ";
+//		String strWherePartitioned = " AND (Reference.refId IN ("+ ID_LIST_TOKEN + ") ) "; 
+//		
+//		String referenceTable = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
+//		referenceTable = referenceTable.isEmpty() ? " Reference"  : referenceTable + " as Reference ";
+//		String strIdFrom = String.format(strFrom, referenceTable );
+//		
+//		
+//		//test max number of recursions
+//		String strQueryTestMaxRecursion = strSelectId + strIdFrom +  
+//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
+//		ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTestMaxRecursion);
+//		try {
+//			if (testMaxRecursionResultSet.next() == true){
+//				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
+//				state.setUnsuccessfull();
+//				return;
+//			}
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//			logger.error("There are references with more then 2 in-reference recursion. Maximum number of allowed recursions is 2. Records will not be stored.");
+//			success = false;
+//		}
+//
+//		String strSelectIdBase = strSelectId + strIdFrom;
+//		
+//		String referenceFilter = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
+//		if (! referenceFilter.isEmpty()){
+//			referenceFilter = " AND " + referenceFilter + " ";
+//		}
+//		referenceFilter = "";  //don't use it for now
+//		
+//		String strIdQueryNoInRef = strSelectIdBase + 
+//			" AND (Reference.InRefFk is NULL) " +  referenceFilter;
+//		String strIdQuery1InRef = strSelectIdBase + 
+//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) "  +  referenceFilter;
+//		String strIdQuery2InRefs = strSelectIdBase + 
+//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) "  +  referenceFilter;
+//
+//		if (config.getDoReferences() == CONCEPT_REFERENCES){
+//			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) " + referenceFilter;
+//		}
+//
+//		String strRecordQuery = strSelectFull + String.format(strFrom, " Reference ") + strWherePartitioned;
+//		
+//		int recordsPerTransaction = config.getRecordsPerTransaction();
+//		try{
+//			//NoInRefs
+//			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQueryNoInRef, strRecordQuery, recordsPerTransaction);
+//			while (partitioner.nextPartition()){
+//				partitioner.doPartition(this, state);
+//			}
+//			logger.info("end make references with no in-references ... " + getSuccessString(success));
+//
+//			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
+//
+//				//1InRef
+//				partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery1InRef, strRecordQuery, recordsPerTransaction);
+//				while (partitioner.nextPartition()){
+//					partitioner.doPartition(this, state);
+//				}
+//				logger.info("end make references with no 1 in-reference ... " + getSuccessString(success));
+//	
+//				//2InRefs
+//				partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery2InRefs, strRecordQuery, recordsPerTransaction);
+//				while (partitioner.nextPartition()){
+//					partitioner.doPartition(this, state);
+//				}
+//				logger.info("end make references with no 2 in-reference ... " + getSuccessString(success));
+//			}
+//
+//		} catch (SQLException e) {
+//			logger.error("SQLException:" +  e);
+//			state.setUnsuccessfull();
+//			return;
+//		}
+//		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
+//		if (! success){
+//			state.setUnsuccessfull();
+//		}
+//		return;
+//	}
+
 	@Override
 	protected void doInvoke(BerlinModelImportState state){
 		logger.info("start make " + getPluralString() + " ...");
@@ -177,13 +278,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 		String strSelectId = " SELECT Reference.RefId as refId ";
 		String strSelectFull = 
-			" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
-			" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk, " +
-			" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk, RefSource.RefSource " ;
-		String strFrom =  " FROM Reference AS InInReference " +
-		    	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
-		    	" RIGHT OUTER JOIN %s ON InReference.RefId = Reference.InRefFk " + 
-		    	" LEFT OUTER JOIN RefSource ON Reference.RefSourceFk = RefSource.RefSourceId " +
+			" SELECT Reference.* ,InReference.RefCategoryFk as InRefCategoryFk, RefSource.RefSource " ;
+		String strFrom =  " FROM %s  " + 
+		    	" LEFT OUTER JOIN Reference as InReference ON InReference.refId = Reference.inRefFk " +
+				" LEFT OUTER JOIN RefSource ON Reference.RefSourceFk = RefSource.RefSourceId " +
 		    	" WHERE (1=1) ";
 		String strWherePartitioned = " AND (Reference.refId IN ("+ ID_LIST_TOKEN + ") ) "; 
 		
@@ -193,20 +291,20 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 		
 		//test max number of recursions
-		String strQueryTestMaxRecursion = strSelectId + strIdFrom +  
-			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
-		ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTestMaxRecursion);
-		try {
-			if (testMaxRecursionResultSet.next() == true){
-				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
-				state.setUnsuccessfull();
-				return;
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			logger.error("There are references with more then 2 in-reference recursion. Maximum number of allowed recursions is 2. Records will not be stored.");
-			success = false;
-		}
+//		String strQueryTestMaxRecursion = strSelectId + strIdFrom +  
+//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
+//		ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTestMaxRecursion);
+//		try {
+//			if (testMaxRecursionResultSet.next() == true){
+//				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
+//				state.setUnsuccessfull();
+//				return;
+//			}
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//			logger.error("There are references with more then 2 in-reference recursion. Maximum number of allowed recursions is 2. Records will not be stored.");
+//			success = false;
+//		}
 
 		String strSelectIdBase = strSelectId + strIdFrom;
 		
@@ -216,44 +314,36 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 		referenceFilter = "";  //don't use it for now
 		
-		String strIdQueryNoInRef = strSelectIdBase + 
-			" AND (Reference.InRefFk is NULL) " +  referenceFilter;
-		String strIdQuery1InRef = strSelectIdBase + 
-			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) "  +  referenceFilter;
-		String strIdQuery2InRefs = strSelectIdBase + 
-			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) "  +  referenceFilter;
-
-		if (config.getDoReferences() == CONCEPT_REFERENCES){
-			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) " + referenceFilter;
-		}
+		String strIdQueryFirstPath = strSelectId + strIdFrom ;
+		String strIdQuerySecondPath = strSelectId + strIdFrom + " AND (Reference.InRefFk is NOT NULL) ";
+		
+//		if (config.getDoReferences() == CONCEPT_REFERENCES){
+//			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) " + referenceFilter;
+//		}
 
 		String strRecordQuery = strSelectFull + String.format(strFrom, " Reference ") + strWherePartitioned;
 		
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{
-			//NoInRefs
-			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQueryNoInRef, strRecordQuery, recordsPerTransaction);
+			//firstPath 
+			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQueryFirstPath, strRecordQuery, recordsPerTransaction);
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
 			logger.info("end make references with no in-references ... " + getSuccessString(success));
+			state.setReferenceSecondPath(true);
 
-			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
+//			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
 
-				//1InRef
-				partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery1InRef, strRecordQuery, recordsPerTransaction);
-				while (partitioner.nextPartition()){
-					partitioner.doPartition(this, state);
-				}
-				logger.info("end make references with no 1 in-reference ... " + getSuccessString(success));
-	
-				//2InRefs
-				partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery2InRefs, strRecordQuery, recordsPerTransaction);
-				while (partitioner.nextPartition()){
-					partitioner.doPartition(this, state);
-				}
-				logger.info("end make references with no 2 in-reference ... " + getSuccessString(success));
+			//secondPath
+			partitioner = ResultSetPartitioner.NewInstance(source, strIdQuerySecondPath, strRecordQuery, recordsPerTransaction);
+			while (partitioner.nextPartition()){
+				partitioner.doPartition(this, state);
 			}
+			logger.info("end make references with no 1 in-reference ... " + getSuccessString(success));
+			state.setReferenceSecondPath(false);
+			
+//			}
 
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -268,14 +358,16 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 
 	
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		if (state.isReferenceSecondPath()){
+			return doPartitionSecondPath(partitioner, state);
+		}
 		boolean success = true;
-//		MapWrapper<Reference> referenceStore= new MapWrapper<Reference>(null);
-//		MapWrapper<Reference> nomRefStore= new MapWrapper<Reference>(null);
 
 		Map<Integer, Reference> nomRefToSave = new HashMap<Integer, Reference>();
 		Map<Integer, Reference> biblioRefToSave = new HashMap<Integer, Reference>();
@@ -286,18 +378,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		BerlinModelImportConfigurator config = state.getConfig();
 		
 		try {
-//			//get data from database
-//				//strQueryBase += " AND Reference.refId = 1933 " ; //7000000
-//			
-//			int j = 0;
-//			Iterator<ResultSet> resultSetListIterator =  resultSetList.listIterator();
-//			//for each resultsetlist
-//			while (resultSetListIterator.hasNext()){
+
 				int i = 0;
 				RefCounter refCounter  = new RefCounter();
 				
-//				ResultSet rs = resultSetListIterator.next();
 				ResultSet rs = partitioner.getResultSet();
+
 				//for each resultset
 				while (rs.next()){
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round -" );}
@@ -321,7 +407,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				getReferenceService().save(nomRefToSave.values());
 				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
 				getReferenceService().save(biblioRefToSave.values());
-//				j++;
+
 //			}//end resultSetList	
 
 			logger.info("end makeReferences ..." + getSuccessString(success));;
@@ -334,6 +420,72 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 
 
+	private boolean doPartitionSecondPath(ResultSetPartitioner partitioner, BerlinModelImportState state) {
+		boolean success = true;
+
+		Map<Integer, Reference> nomRefToSave = new HashMap<Integer, Reference>();
+		Map<Integer, Reference> biblioRefToSave = new HashMap<Integer, Reference>();
+		
+		Map<String, Reference> relatedNomReferences = partitioner.getObjectMap(NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> relatedBiblioReferences = partitioner.getObjectMap(BIBLIO_REFERENCE_NAMESPACE);
+		
+		try {
+				int i = 0;
+				RefCounter refCounter  = new RefCounter();
+			
+				ResultSet rs = partitioner.getResultSet();
+				//for each resultset
+				while (rs.next()){
+					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round -" );}
+				
+					Integer refId = rs.getInt("refId");
+					
+					Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
+					Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
+					
+					Reference<?> inReference = relatedNomReferences.get("inRefFk");
+					if (thisNomRef != null){
+						thisNomRef.setInReference(inReference);
+						nomRefToSave.put(refId, thisNomRef);
+					}
+					if (thisBiblioRef != null){
+						thisBiblioRef.setInReference(inReference);
+						biblioRefToSave.put(refId, thisBiblioRef);
+					}
+					
+					
+//					success &= makeSingleReferenceRecord(rs, state, partitioner, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences, refCounter);
+				} // end resultSet
+								
+				//for the concept reference a fixed uuid may be needed -> change uuid
+				Integer sourceSecId = (Integer) state.getConfig().getSourceSecId();
+				Reference<?> sec = biblioRefToSave.get(sourceSecId);
+				if (sec == null){
+					sec = nomRefToSave.get(sourceSecId);	
+				}
+				if (sec != null){
+					sec.setUuid(state.getConfig().getSecUuid());
+					logger.info("SecUuid changed to: " + state.getConfig().getSecUuid());
+				}
+				
+				//save and store in map
+				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
+				getReferenceService().save(nomRefToSave.values());
+				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
+				getReferenceService().save(biblioRefToSave.values());
+				
+//			}//end resultSetList	
+
+			logger.info("end makeReferences ..." + getSuccessString(success));;
+			return success;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	}
+
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */
@@ -351,6 +503,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			while (rs.next()){
 				handleForeignKey(rs, teamIdSet, "NomAuthorTeamFk");
 				handleForeignKey(rs, referenceIdSet, "InRefFk");
+				//TODO only needed in second path but state not available here to check if state is second path
+				handleForeignKey(rs, referenceIdSet, "refId");
 			}
 			
 			//team map
@@ -601,7 +755,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		if (inRefFk != null){
 			if (inRefCategoryFk == REF_JOURNAL){
 				int inRefFkInt = (Integer)inRefFk;
-				if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
+				if (true){
+					//changed for first/second path implementation, if this is successful the following code can be deleted
+				}else if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
 					Reference<?> inJournal = getReferenceFromMaps(inRefFkInt, nomRefToSave, relatedNomReferences);
 					if (inJournal == null){
 						inJournal = getReferenceFromMaps(inRefFkInt, biblioRefToSave, relatedBiblioReferences);
@@ -639,14 +795,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 		if (inRefCategoryFk == null){
 			//null -> error
-			logger.warn("Part-Of-Other-Title has not inRefCategoryFk! RefId = " + refId + ". ReferenceType set to Generic.");
+			logger.warn("Part-Of-Other-Title has no inRefCategoryFk! RefId = " + refId + ". ReferenceType set to Generic.");
 			result = makeUnknown(valueMap);
 		}else if (inRefCategoryFk == REF_BOOK){
 			//BookSection
 			IBookSection bookSection = ReferenceFactory.newBookSection();
-			result = (Reference)bookSection;
-			if (inRefFk != null){
-				int inRefFkInt = (Integer)inRefFk;
+			result = (Reference<?>)bookSection;
+			if (inRefFk != null && false){   //&& false added for first/second path implementation, following code can be deleted or moved if this is successful
+				int inRefFkInt = (Integer) inRefFk;
 				if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
 					Reference<?> inBook = getReferenceFromMaps(inRefFkInt, nomRefToSave, relatedNomReferences);
 					if (inBook == null){
@@ -714,14 +870,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 	private Reference<?> makeWebSite(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Website'");}
-		Reference webPage = ReferenceFactory.newWebPage();
+		Reference<?> webPage = ReferenceFactory.newWebPage();
 		makeStandardMapper(valueMap, webPage); //placePublished, publisher
 		return webPage;
 	}
 	
 	private Reference<?> makeUnknown(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Unknown'");}
-		Reference generic = ReferenceFactory.newGeneric();
+		Reference<?> generic = ReferenceFactory.newGeneric();
 //		generic.setSeries(series);
 		makeStandardMapper(valueMap, generic); //pages, placePublished, publisher, series, volume
 		return generic;
@@ -729,7 +885,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 	private Reference<?> makeInformal(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Informal'");}
-		Reference generic = ReferenceFactory.newGeneric();
+		Reference<?> generic = ReferenceFactory.newGeneric();
 //		informal.setSeries(series);
 		makeStandardMapper(valueMap, generic);//editor, pages, placePublished, publisher, series, volume
 		String informal = (String)valueMap.get("InformalRefCategory".toLowerCase());
@@ -768,7 +924,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				Map<String, Reference> relatedBiblioReferences, 
 				Map<String, Reference> relatedNomReferences){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Book'");}
-		Reference book = ReferenceFactory.newBook();
+		Reference<?> book = ReferenceFactory.newBook();
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
 		
 		//Set bookAttributes = new String[]{"edition", "isbn", "pages","publicationTown","publisher","volume"};
@@ -792,7 +948,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		//Series (as Reference)
-		if (inRefFk != null){
+		if (inRefFk != null && false){  //&&false added for first/second path implementation, following code may be removed if this is successful
 			int inRefFkInt = (Integer)inRefFk;
 			if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
 				Reference<?> inSeries = getReferenceFromMaps(inRefFkInt, nomRefToSave, relatedNomReferences);
@@ -838,7 +994,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			int inRefFkInt,
 			Map<Integer, Reference> refToSaveMap,
 			Map<String, Reference> relatedRefMap) {
-		Reference result = null;
+		Reference<?> result = null;
 		result = refToSaveMap.get(inRefFkInt);
 		if (result == null){
 			result = relatedRefMap.get(String.valueOf(inRefFkInt));
@@ -848,21 +1004,21 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 	private Reference<?> makePrintSeries(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'PrintSeries'");}
-		Reference printSeries = ReferenceFactory.newPrintSeries();
+		Reference<?> printSeries = ReferenceFactory.newPrintSeries();
 		makeStandardMapper(valueMap, printSeries, null);
 		return printSeries;
 	}
 	
 	private Reference<?> makeProceedings(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Proceedings'");}
-		Reference proceedings = ReferenceFactory.newProceedings();
+		Reference<?> proceedings = ReferenceFactory.newProceedings();
 		makeStandardMapper(valueMap, proceedings, null);	
 		return proceedings;
 	}
 
 	private Reference<?> makeThesis(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Thesis'");}
-		Reference thesis = ReferenceFactory.newThesis();
+		Reference<?> thesis = ReferenceFactory.newThesis();
 		makeStandardMapper(valueMap, thesis, null);	
 		return thesis;
 	}
@@ -871,7 +1027,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	private Reference<?> makeJournalVolume(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'JournalVolume'");}
 		//Proceedings proceedings = Proceedings.NewInstance();
-		Reference journalVolume = ReferenceFactory.newGeneric();
+		Reference<?> journalVolume = ReferenceFactory.newGeneric();
 		makeStandardMapper(valueMap, journalVolume, null);	
 		logger.warn("Journal volumes not yet implemented. Generic created instead but with errors");
 		return journalVolume;
