@@ -13,9 +13,9 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -106,7 +106,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 			Source source = state.getConfig().getSource();
 			String strQuery = 
 				"SELECT count(*) AS n FROM RelPTaxon " + 
-				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(Notes)) <> '')";
+				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(Notes)) <> '') ";
 			ResultSet rs = source.getResultSet(strQuery);
 			rs.next();
 			int n;
@@ -139,7 +139,8 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 					" INNER JOIN RelPTQualifier ON RelPTaxon.RelQualifierFk = RelPTQualifier.RelPTQualifierId " +
 					" LEFT OUTER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
 					" LEFT OUTER JOIN Name AS AcceptedName ON RelPTaxon.PTNameFk2 = AcceptedName.NameId " +
-				" WHERE (PTaxon.StatusFk = 1) AND (RelPTaxon.RelQualifierFk IN (2, 4, 5, 6, 7))";
+				" WHERE (PTaxon.StatusFk = 1) AND (RelPTaxon.RelQualifierFk IN (2, 4, 5, 6, 7)) ";
+			
 			ResultSet rs = source.getResultSet(strQuery);
 			boolean firstRow = true;
 			int i = 0;
@@ -157,15 +158,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 				String fromName = rs.getString("fromName");
 				int fromRefFk = rs.getInt("PTRefFk");
 				int fromNameId = rs.getInt("fromNameId");
-//				String fromStatus = rs.getString("FromStatus");
-				
-				
 				String toName = rs.getString("acceptedName");
-//				int toNameId = rs.getInt("ToNameId");
-//				String toStatus = rs.getString("ToStatus");
-//				String doubtfulFrom = String.valueOf(rs.getObject("doubtfulFrom"));
-//				String doubtfulTo = String.valueOf(rs.getObject("doubtfulTo"));
-				
 				
 				System.out.println("RelPTaxonId:" + relPTaxonId + 
 						"\n TaxonRIdentifier: " + fromIdentifier + "\n name: " + fromName + "\n nameId: " + fromNameId + "\n RefFk: " + fromRefFk + "\n RelType: " + relType  

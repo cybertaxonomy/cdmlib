@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
@@ -77,14 +78,20 @@ public class BerlinModelTaxonImportValidator implements IOValidator<BerlinModelI
 		}
 	}
 	
-	private boolean checkInactivated(BerlinModelImportConfigurator bmiConfig){
+	private boolean checkInactivated(BerlinModelImportConfigurator config){
 		try {
 			boolean result = true;
-			Source source = bmiConfig.getSource();
+			Source source = config.getSource();
 			String strSQL = " SELECT * "  +
-				" FROM PTaxon " +
-					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
-				" WHERE (PTaxon.DoubtfulFlag = 'i') ";
+				" FROM PTaxon t " +
+					" INNER JOIN Name ON t.PTNameFk = Name.NameId " +
+				" WHERE (t.DoubtfulFlag = 'i') ";
+			
+			if (StringUtils.isNotBlank(config.getTaxonTable())){
+				strSQL += String.format(" AND (t.RIdentifier IN " +
+                        " (SELECT RIdentifier FROM %s ))" , config.getTaxonTable()) ; 
+			}
+			
 			ResultSet rs = source.getResultSet(strSQL);
 			boolean firstRow = true;
 			int i = 0;
