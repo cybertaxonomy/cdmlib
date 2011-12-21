@@ -551,6 +551,7 @@ cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DateTimeBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DescriptionBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialUserType.java -text
@@ -1270,6 +1271,9 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/NativeSqlOrd
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/OrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/RandomOrder.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/view/IAuditEventDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/search/CdmMassIndexer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/search/ICdmMassIndexer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/search/LuceneSearch.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/H2CorrectedDialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/HSQLCorrectedDialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/MySQL5InnoDBUtf8Dialect.java -text
