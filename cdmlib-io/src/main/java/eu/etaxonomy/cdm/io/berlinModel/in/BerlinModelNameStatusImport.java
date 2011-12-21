@@ -63,7 +63,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 		String result =  " SELECT RIdentifier FROM " + getTableName();
 		
 		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
-			result += " WHERE nameFk IN (SELECT NameId " + state.getConfig().getNameIdTable() + ")";
+			result += " WHERE nameFk IN (SELECT NameId FROM " + state.getConfig().getNameIdTable() + ")";
 		}
 		return result;
 	}
