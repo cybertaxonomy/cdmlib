@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
  * @version 1.0
  */
 public class BerlinModelAuthorTeamImportValidator implements IOValidator<BerlinModelImportState> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorTeamImportValidator.class);
 
 	/* (non-Javadoc)
@@ -28,7 +29,7 @@ public class BerlinModelAuthorTeamImportValidator implements IOValidator<BerlinM
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for authorteams not yet implemented");
+		System.out.println("Checking for authorteams not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

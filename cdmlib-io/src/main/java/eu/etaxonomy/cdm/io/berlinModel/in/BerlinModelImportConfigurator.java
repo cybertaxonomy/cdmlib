@@ -93,6 +93,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String referenceIdTable = null;
 	private String factFilter = null;
 	private String occurrenceFilter = null;
+	private String commonNameFilter = null;
 	
 
 	protected void makeIoClassList(){
@@ -558,6 +559,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setOccurrenceFilter(String occurrenceFilter) {
 		this.occurrenceFilter = occurrenceFilter;
+	}
+
+
+
+	public String getCommonNameFilter() {
+		return commonNameFilter;
+	}
+
+
+
+	public void setCommonNameFilter(String commonNameFilter) {
+		this.commonNameFilter = commonNameFilter;
 	}
 
 

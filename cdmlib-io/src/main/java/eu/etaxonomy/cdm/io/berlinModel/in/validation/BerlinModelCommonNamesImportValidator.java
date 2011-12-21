@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
@@ -33,7 +34,6 @@ public class BerlinModelCommonNamesImportValidator implements IOValidator<Berlin
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for common names not yet implemented");
 		result &= checkUnreferredNameUsedInSource(state.getConfig());
 		result &= checkUnreferredLanguageRefFk(state.getConfig());
 		
@@ -44,12 +44,17 @@ public class BerlinModelCommonNamesImportValidator implements IOValidator<Berlin
 		try {
 			boolean result = true;
 			Source source = config.getSource();
-			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
+			String strQuery = "SELECT Count(*) as n " +
 					" FROM emCommonName " +
 					" WHERE (emCommonName.NameInSourceFk NOT IN " + 
 							"(SELECT NameId FROM Name AS Name_1)) AND " + 
-						"(emCommonName.NameInSourceFk <> - 1)";
-			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+						"(emCommonName.NameInSourceFk <> - 1) ";
+			
+			if (StringUtils.isNotBlank(config.getCommonNameFilter())){
+				strQuery += String.format(" AND (%s) ", config.getCommonNameFilter()) ; 
+			}
+			
+			ResultSet rs = source.getResultSet(strQuery);
 			rs.next();
 			int count = rs.getInt("n");
 			if (count > 0){

@@ -28,7 +28,7 @@ public class BerlinModelWebMarkerCategoryImportValidator implements IOValidator<
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for web categories not yet implemented");
+		System.out.println("Checking for web categories not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

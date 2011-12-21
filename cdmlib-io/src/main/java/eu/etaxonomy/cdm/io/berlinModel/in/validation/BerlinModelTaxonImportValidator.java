@@ -99,7 +99,7 @@ public class BerlinModelTaxonImportValidator implements IOValidator<BerlinModelI
 				i++;
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are taxa that have a doubtful flag 'i'(inactivated). Inactivated is not supported by CDM!");
+					System.out.println("There are taxa that have a doubtful flag 'i'(inactivated). Inactivated is not supported by CDM!");
 					System.out.println("========================================================");
 				}
 				int rIdentifier = rs.getInt("RIdentifier");

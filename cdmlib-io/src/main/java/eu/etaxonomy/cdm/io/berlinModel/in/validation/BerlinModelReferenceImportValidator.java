@@ -365,7 +365,7 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 						" WHERE (Ref.RefCategoryFk = 2) AND ((Ref.Volume IS NOT NULL) OR (Ref.Series IS NOT NULL) OR (Ref.Edition IS NOT NULL)) " ; 
 				
 				if (StringUtils.isNotBlank(config.getReferenceIdTable())){
-					strQuery += String.format(" AND (reference.refId IN " +
+					strQuery += String.format(" AND (Ref.refId IN " +
 	                        " (SELECT refId FROM %s ))" , config.getReferenceIdTable()) ; 
 				}
 				
@@ -417,13 +417,14 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 						" FROM Reference AS Ref " + 
 						 	" INNER JOIN RefCategory ON Ref.RefCategoryFk = RefCategory.RefCategoryId " +
 						 	"  LEFT OUTER JOIN Reference AS InRef ON Ref.InRefFk = InRef.RefId " +
-						" WHERE (Ref.RefCategoryFk = 1) AND (NOT (Ref.Edition IS NULL))  " +
-						" ORDER BY InRef.RefId ";
+						" WHERE (Ref.RefCategoryFk = 1) AND (NOT (Ref.Edition IS NULL))  ";
 				
 				if (StringUtils.isNotBlank(config.getReferenceIdTable())){
-					strQuery += String.format(" AND (reference.refId IN " +
-	                        " (SELECT refId FROM %s ))" , config.getReferenceIdTable()) ; 
+					strQuery += String.format(" AND (Ref.refId IN " +
+	                        " (SELECT refId FROM %s )) " , config.getReferenceIdTable()) ; 
 				}
+				strQuery += " ORDER BY InRef.RefId ";
+				
 				
 				ResultSet rs = source.getResultSet(strQuery);
 				boolean firstRow = true;
