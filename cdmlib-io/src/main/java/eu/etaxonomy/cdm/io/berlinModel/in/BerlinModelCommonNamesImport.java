@@ -81,7 +81,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		String result = " SELECT CommonNameId FROM emCommonName ";
+		String result = " SELECT CommonNameId FROM emCommonName WHERE (1=1) ";
 		if (StringUtils.isNotBlank(state.getConfig().getCommonNameFilter())){
 			result += " AND " + state.getConfig().getCommonNameFilter();
 		}
