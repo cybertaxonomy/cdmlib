@@ -286,6 +286,11 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}else if("Bt".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidBalticStates, "Baltic states (Estonia, Latvia, Lithuania) and Kaliningrad region", "Euro+Med area 'Baltic states (Estonia, Latvia, Lithuania) and Kaliningrad region'", "Bt", null, null);
 		}
+		else if("Tu".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidTurkey, "Turkey", "Euro+Med area 'Turkey' (without AE(T))", "Tu", null, null);
+		}else if("Cc".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidCaucasia, "Caucasia (Ab + Ar + Gg + Rf(CS))", "Euro+Med area 'Caucasia (Ab + Ar + Gg + Rf(CS))'", "Cc", null, null);
+		}
 		
 		return null;
 	}
