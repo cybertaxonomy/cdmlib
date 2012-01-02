@@ -61,8 +61,8 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = "SELECT occurrenceSourceId FROM " + getTableName();
-		if (state.getConfig().getOccurrenceFilter() != null){
-			result += " WHERE " +  state.getConfig().getOccurrenceFilter();
+		if (state.getConfig().getOccurrenceSourceFilter() != null){
+			result += " WHERE " +  state.getConfig().getOccurrenceSourceFilter();
 		}
 		return result;
 	}
