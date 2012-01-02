@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -165,7 +166,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                        }
                 	 }
                      if (areas.size() == 0){
-                    	 logger.warn("No areas defined for occurrence " + occurrenceId);
+                    	 String areaId = rs.getString("AreaId");
+                    	 logger.warn("No areas defined for occurrence " + occurrenceId + ". EMCode: " + CdmUtils.Nz(emCodeString) + ". AreaId: " + areaId );
                      }
                      for (NamedArea area : areas){
                            Distribution distribution = Distribution.NewInstance(area, status);
@@ -221,10 +223,13 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	private NamedArea getOtherAreas(BerlinModelImportState state, String emCodeString, String tdwgCodeString) {
 		String em = CdmUtils.Nz(emCodeString).trim();
 		String tdwg = CdmUtils.Nz(tdwgCodeString).trim();
+		//Cichorieae + E+M
 		if ("EM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.euroMedUuid, "Euro+Med", "Euro+Med area", "EM", null, null);
-		}else if("Rf".equals(em)){
+		}else if("Rf".equals(tdwg)){
 			return WaterbodyOrCountry.RUSSIANFEDERATION();
+		
+		//Cichorieae
 		}else if("KRY-OO + UKR-UK".equals(tdwg)){
 			return WaterbodyOrCountry.UKRAINE();
 		}else if("TCS-AZ + TCS-NA".equals(tdwg)){
@@ -232,6 +237,56 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}else if("TCS-AB + TCS-AD + TCS-GR".equals(tdwg)){
 			return WaterbodyOrCountry.GEORGIA();
 		}
+		//E+M
+		else if("EUR".equals(em)){
+			return TdwgArea.getAreaByTdwgLabel("1");
+		}else if("14".equals(em)){
+			return TdwgArea.getAreaByTdwgLabel("14");
+		}else if("21".equals(em)){
+			return TdwgArea.getAreaByTdwgLabel("21");
+		}else if("33".equals(em)){
+			return TdwgArea.getAreaByTdwgLabel("33");
+		
+		//TODO Azores, Canary Is. 
+		
+		}else if("Ir".equals(em)){
+			return WaterbodyOrCountry.ISRAELSTATEOF();
+		}else if("Md(D)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidDesertas, "Desertas", "Euro+Med area 'Desertas'", "Md(D)", null, null);
+		}else if("Md(M)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidMadeira, "Madeira", "Euro+Med area 'Madeira'", "Md(M)", null, null);
+		}else if("Md(P)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidPortoSanto, "Porto Santo", "Euro+Med area 'Porto Santo'", "Md(P)", null, null);
+		}else if("Rf(E)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidEasternEuropeanRussia, "Eastern European Russia", "Euro+Med area 'Eastern European Russia'", "Rf(E)", null, null);
+		}else if("SM".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSerbiaMontenegro, "Serbia & Montenegro", "Euro+Med area 'Serbia & Montenegro'", "SM", NamedAreaType.ADMINISTRATION_AREA(), null);
+		}else if("LS".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidLebanonSyria, "Lebanon-Syria", "Euro+Med area 'Lebanon-Syria'", "LS", null, null);
+		}else if("Rs".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidUssr, "Former USSR", "Euro+Med area 'Former USSR'", "Rs", NamedAreaType.ADMINISTRATION_AREA(), null);
+		}else if("Si".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSicilyMalta, "Sicily with Malta", "Euro+Med area 'Sicily with Malta'", "Si", null, null);
+		}else if("Az(L)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidFlores, "Flores", "Euro+Med area 'Flores'", "Az(L)", null, null);
+		}else if("Rs(N)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidRussiaNorthern, "Russia Northern", "Euro+Med area 'Russia Northern'", "Rs(N)", null, null);
+		}else if("Rs(B)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidRussiaBaltic, "Russia Baltic", "Euro+Med area 'Russia Baltic'", "Rs(B)", null, null);
+		}else if("Rs(C)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidRussiaCentral, "Russia Central", "Euro+Med area 'Russia Central'", "Rs(C)", null, null);
+		}else if("Rs(W)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidRussiaSouthWest, "Russia Southwest", "Euro+Med area 'Russia Southwest'", "Rs(W)", null, null);
+		}else if("Rs(E)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidRussiaSouthEast, "Russia Southeast", "Euro+Med area 'Russia Southeast'", "Rs(E)", null, null);
+		}else if("AE".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidEastAegeanIslands, "East Aegean Islands", "Euro+Med area 'East Aegean Islands'", "AE", null, null);
+		}else if("AE(T)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidTurkishEastAegeanIslands, "Turkish East Aegean Islands", "Euro+Med area 'Turkish East Aegean Islands'", "AE(T)", null, null);
+		}else if("Bt".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidBalticStates, "Baltic states (Estonia, Latvia, Lithuania) and Kaliningrad region", "Euro+Med area 'Baltic states (Estonia, Latvia, Lithuania) and Kaliningrad region'", "Bt", null, null);
+		}
+		
 		return null;
 	}
 

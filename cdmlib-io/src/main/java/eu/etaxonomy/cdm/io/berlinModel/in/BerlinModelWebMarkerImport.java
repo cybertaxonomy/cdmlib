@@ -55,7 +55,11 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		return " SELECT markerId FROM " + getTableName();
+		String result = " SELECT markerId FROM " + getTableName();
+		if (state.getConfig().getWebMarkerFilter() != null){
+			result += " WHERE " +  state.getConfig().getWebMarkerFilter();
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)

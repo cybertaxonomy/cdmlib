@@ -60,7 +60,11 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		return " SELECT occurrenceSourceId FROM " + getTableName();
+		String result = "SELECT occurrenceSourceId FROM " + getTableName();
+		if (state.getConfig().getOccurrenceFilter() != null){
+			result += " WHERE " +  state.getConfig().getOccurrenceFilter();
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +85,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	@Override
 	protected void doInvoke(BerlinModelImportState state) {
 		try {
-			sourceNumberRefIdMap = makeSourceNameReferenceIdMap(state);
+			sourceNumberRefIdMap = makeSourceNumberReferenceIdMap(state);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -106,6 +110,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
                 
                 if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("occurrence sources handled: " + (i-1));}
                 
+                Integer occurrenceSourceId = rs.getInt("OccurrenceSourceId");
                 Integer occurrenceFk = (Integer)rs.getObject("OccurrenceFk");
     			String sourceNumber = rs.getString("SourceNumber");
     			String oldName = rs.getString("OldName");
@@ -118,7 +123,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
     			}
     			if (distribution != null){
     				Integer refId = sourceNumberRefIdMap.get(sourceNumber);
-    				Reference ref = getReference(refId, state);
+    				Reference<?> ref = getReference(refId, state);
 
     				if (ref != null){
     					DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
@@ -132,10 +137,10 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
     					}
     					distribution.addSource(originalSource);
     				}else{
-    					logger.warn("reference for sourceNumber "+sourceNumber+" could not be found." );
+    					logger.warn("reference for sourceNumber "+sourceNumber+" could not be found. OccurrenceSourceId: " + occurrenceSourceId );
     				}
     			}else{
-    				logger.warn("distribution ("+occurrenceFk+") could not be found." );
+    				logger.warn("distribution ("+occurrenceFk+") for occurrence source (" + occurrenceSourceId + ") could not be found." );
     			}
                 
             }
@@ -257,7 +262,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	 * @return
      * @throws SQLException 
 	 */
-	private Map<String, Integer> makeSourceNameReferenceIdMap(BerlinModelImportState state) throws SQLException {
+	private Map<String, Integer> makeSourceNumberReferenceIdMap(BerlinModelImportState state) throws SQLException {
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		
 		Source source = state.getConfig().getSource();

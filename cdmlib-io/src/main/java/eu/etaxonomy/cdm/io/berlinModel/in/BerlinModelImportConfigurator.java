@@ -92,8 +92,10 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String nameIdTable = null;
 	private String referenceIdTable = null;
 	private String factFilter = null;
-	private String occurrenceFilter = null;
 	private String commonNameFilter = null;
+	private String occurrenceFilter = null;
+	private String occurrenceSourceFilter = null;
+	private String webMarkerFilter = null;
 	
 
 	protected void makeIoClassList(){
@@ -571,6 +573,30 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setCommonNameFilter(String commonNameFilter) {
 		this.commonNameFilter = commonNameFilter;
+	}
+
+
+
+	public String getOccurrenceSourceFilter() {
+		return occurrenceSourceFilter;
+	}
+
+
+
+	public void setOccurrenceSourceFilter(String occurrenceSourceFilter) {
+		this.occurrenceSourceFilter = occurrenceSourceFilter;
+	}
+
+
+
+	public String getWebMarkerFilter() {
+		return webMarkerFilter;
+	}
+
+
+
+	public void setWebMarkerFilter(String webMarkerFilter) {
+		this.webMarkerFilter = webMarkerFilter;
 	}
 
 

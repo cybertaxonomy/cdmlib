@@ -51,8 +51,25 @@ public final class BerlinModelTransformer {
 	
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
-
 	
+	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
+	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
+	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
+	public static UUID uuidEasternEuropeanRussia = UUID.fromString("3f013375-0e0a-40c3-8a14-84c0535fab40");
+	public static UUID uuidSerbiaMontenegro = UUID.fromString("8926dbe6-863e-47a9-98a0-7dc9ed2c57f7");
+	public static UUID uuidLebanonSyria = UUID.fromString("0c45f250-99da-4b19-aa89-c3e56cfdf103");
+	public static UUID uuidUssr = UUID.fromString("a512e00a-45f3-4be5-82fa-bba8d675696f");
+	public static UUID uuidSicilyMalta = UUID.fromString("424d81ee-d272-4ae8-9600-0a334049cd72");
+	public static UUID uuidFlores = UUID.fromString("ef0067c2-8bbb-4e37-8462-97b03f51ba43");
+	public static UUID uuidRussiaNorthern = UUID.fromString("c23bc1c9-a775-4426-b883-07d4d7d47eed");
+	public static UUID uuidRussiaBaltic = UUID.fromString("579dad44-9439-4b19-8716-ab90d8f27944");
+	public static UUID uuidRussiaCentral = UUID.fromString("8bbc8c6a-2ef2-4024-ad51-66fe34c70092");
+	public static UUID uuidRussiaSouthWest = UUID.fromString("daa5c207-5567-4690-8742-5e4d153b6a64");
+	public static UUID uuidRussiaSouthEast = UUID.fromString("e8516598-b529-489e-9ee8-63bbbd295c1b");
+	public static UUID uuidEastAegeanIslands = UUID.fromString("1c429593-c493-46e6-971a-0d70be690da8");
+	public static UUID uuidTurkishEastAegeanIslands = UUID.fromString("ba35dba3-ac70-41ae-81c2-2070943f44f2");
+	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
+
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;
