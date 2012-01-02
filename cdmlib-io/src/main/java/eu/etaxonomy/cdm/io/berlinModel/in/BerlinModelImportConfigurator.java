@@ -65,7 +65,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
 
-	
+	private boolean useSingleClassification = false;
 	
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
@@ -597,6 +597,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setWebMarkerFilter(String webMarkerFilter) {
 		this.webMarkerFilter = webMarkerFilter;
+	}
+
+
+
+	public boolean isUseSingleClassification() {
+		return useSingleClassification;
+	}
+
+
+
+	public void setUseSingleClassification(boolean useSingleClassification) {
+		this.useSingleClassification = useSingleClassification;
 	}
 
 

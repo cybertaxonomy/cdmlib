@@ -167,7 +167,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 	 }
                      if (areas.size() == 0){
                     	 String areaId = rs.getString("AreaId");
-                    	 logger.warn("No areas defined for occurrence " + occurrenceId + ". EMCode: " + CdmUtils.Nz(emCodeString) + ". AreaId: " + areaId );
+                    	 logger.warn("No areas defined for occurrence " + occurrenceId + ". EMCode: " + CdmUtils.Nz(emCodeString).trim() + ". AreaId: " + areaId );
                      }
                      for (NamedArea area : areas){
                            Distribution distribution = Distribution.NewInstance(area, status);
@@ -226,7 +226,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		//Cichorieae + E+M
 		if ("EM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.euroMedUuid, "Euro+Med", "Euro+Med area", "EM", null, null);
-		}else if("Rf".equals(tdwg)){
+		}else if("Rf".equals(em)){
 			return WaterbodyOrCountry.RUSSIANFEDERATION();
 		
 		//Cichorieae
@@ -239,13 +239,13 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}
 		//E+M
 		else if("EUR".equals(em)){
-			return TdwgArea.getAreaByTdwgLabel("1");
+			return TdwgArea.getAreaByTdwgAbbreviation("1");
 		}else if("14".equals(em)){
-			return TdwgArea.getAreaByTdwgLabel("14");
+			return TdwgArea.getAreaByTdwgAbbreviation("14");
 		}else if("21".equals(em)){
-			return TdwgArea.getAreaByTdwgLabel("21");
+			return TdwgArea.getAreaByTdwgAbbreviation("21");
 		}else if("33".equals(em)){
-			return TdwgArea.getAreaByTdwgLabel("33");
+			return TdwgArea.getAreaByTdwgAbbreviation("33");
 		
 		//TODO Azores, Canary Is. 
 		

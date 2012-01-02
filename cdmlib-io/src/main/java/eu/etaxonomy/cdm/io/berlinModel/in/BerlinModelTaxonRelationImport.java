@@ -83,12 +83,13 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	private void makeClassifications(BerlinModelImportState state) throws SQLException{
 		logger.info("start make classification ...");
 		
+		
 		Set<String> idSet = getTreeReferenceIdSet(state);
 		
 		//nom reference map
 		String nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
 		Class cdmClass = Reference.class;
-		idSet = new HashSet<String>();
+//			idSet = new HashSet<String>();
 		Map<String, Reference> nomRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 		
 		//biblio reference map
@@ -97,10 +98,13 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 //		idSet = new HashSet<String>();
 		Map<String, Reference> biblioRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 		
+		String treeName = "Classification - No Name";
+		
 		ResultSet rs = state.getConfig().getSource().getResultSet(getClassificationQuery(state)) ;
 		int i = 0;
 		//for each reference
 		try {
+			//TODO handle case useSingleClassification = true && sourceSecId = null, which returns no record
 			while (rs.next()){
 				
 				try {
@@ -110,7 +114,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					String ptRefFk= String.valueOf(ptRefFkObj);
 					Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 					
-					String treeName = "Classification - No Name";
 					String refCache = rs.getString("RefCache");
 					if (CdmUtils.isNotEmpty(refCache)){
 						treeName = refCache;
@@ -167,6 +170,14 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 							" INNER JOIN Reference ON PTaxon.PTRefFk = Reference.RefId "; 
 		String strQueryWhere = " WHERE (RelPTaxon.RelQualifierFk = 1) "; 
 		String strQueryGroupBy = " GROUP BY PTaxon.PTRefFk, Reference.RefCache ";
+		if (state.getConfig().isUseSingleClassification()){
+			if (state.getConfig().getSourceSecId()!= null){
+				strQueryWhere += " AND PTaxon.PTRefFk = " + state.getConfig().getSourceSecId() +  " ";
+			}else{
+				strQueryWhere += " AND (1=0) ";
+			}
+		}
+		
 		String strQuery = strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
 		if (state.getConfig().getClassificationQuery() == null){
 			strQuery = state.getConfig().getClassificationQuery();
@@ -470,6 +481,19 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	}
 	
 	private TaxonNode makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, Classification> classificationMap, int treeRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
+		Classification tree = getClassificationTree(state, classificationMap, treeRefFk);
+		return tree.addParentChild(parent, child, citation, microCitation);
+	}
+
+	private Classification getClassificationTree(BerlinModelImportState state, Map<Integer, Classification> classificationMap, int treeRefFk) {
+		if (state.getConfig().isUseSingleClassification()){
+			if (state.getConfig().getSourceSecId() != null){
+				treeRefFk = (Integer)state.getConfig().getSourceSecId();	
+			}else{
+				treeRefFk = 1;
+			}
+			
+		}
 		Classification tree = classificationMap.get(treeRefFk);
 		if (tree == null){
 			UUID treeUuid = state.getTreeUuidByIntTreeKey(treeRefFk);
@@ -479,7 +503,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		if (tree == null){
 			throw new IllegalStateException("Tree for ToTaxon reference does not exist.");
 		}
-		return tree.addParentChild(parent, child, citation, microCitation);
+		return tree;
 	}
 	
 	
