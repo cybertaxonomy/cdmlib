@@ -55,9 +55,18 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		return dao.findByUuid(vocabularyType.getUuid());
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IVocabularyService#listByTermClass(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
 	public <TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return dao.listByTermClass(clazz, limit, start, orderHints, propertyPaths);
+		boolean includeSubclasses = false;
+		return (List)listByTermClass(clazz, includeSubclasses, limit, start, orderHints, propertyPaths);
 	}	
+
+	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return dao.listByTermClass(clazz, includeSubclasses, limit, start, orderHints, propertyPaths);
+	}
 	
 	/** 
 	 * (non-Javadoc)
