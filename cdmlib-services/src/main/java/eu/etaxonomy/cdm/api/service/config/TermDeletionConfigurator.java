@@ -81,9 +81,12 @@ public class TermDeletionConfigurator {
 
 	
 	/**
-	 * If <code>true</code> specifiing terms will be detached from this term prior to
-	 * deletion. If <code>false</code> deletion will be aborted if <code>this</code> 
-	 * term is a generalization of any another term.<BR>
+	 * If <code>true</code> more specific terms will be detached from this term prior to
+	 * deletion. If <code>this</code> term has a generalization itself the specific terms will be
+	 * attached to this generalization.<BR>
+	 * If <code>false</code> deletion will be aborted if <code>this</code> 
+	 * term is a generalization of any another term.
+	 * <BR>
 	 * Default value is <code>false</code>. 
 	 */
 	public boolean isDeleteGeneralizationOfRelations() {
