@@ -60,7 +60,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		logger.info("start make " + pluralString + " ...");
 				
 		//queryStrings
-		String strIdQuery = getIdQuery();
+		String strIdQuery = getIdQuery(state);
 		
 		String strRecordQuery = getRecordQuery(config);
 		String strQuerySequence = 
@@ -86,10 +86,16 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		return;
 	}
 	
-	protected String getIdQuery(){
+	@Override
+	protected String getIdQuery(BerlinModelImportState state){
+		String strWhere = " WHERE (1=1) ";
+		if (state.getConfig().getAuthorTeamFilter() != null){
+			strWhere += state.getConfig().getAuthorTeamFilter();
+		}
 		String idQuery = 
 				" SELECT authorTeamId " +
                 " FROM AuthorTeam " + 
+                strWhere +
                 " ORDER BY authorTeamId ";
 		return idQuery;
 	}

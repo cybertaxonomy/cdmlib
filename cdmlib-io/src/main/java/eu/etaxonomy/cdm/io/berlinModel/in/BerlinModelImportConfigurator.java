@@ -86,11 +86,14 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	
 	//Data Filter
+
 	private String taxonTable = "PTaxon";
 	private String classificationQuery = null;
 	private String relTaxaIdQuery = null;
 	private String nameIdTable = null;
 	private String referenceIdTable = null;
+	private String authorTeamFilter = null;
+	private String authorFilter = null;
 	private String factFilter = null;
 	private String commonNameFilter = null;
 	private String occurrenceFilter = null;
@@ -610,6 +613,28 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setUseSingleClassification(boolean useSingleClassification) {
 		this.useSingleClassification = useSingleClassification;
 	}
+
+
+	public void setAuthorTeamFilter(String authorTeamFilter) {
+		this.authorTeamFilter = authorTeamFilter;
+	}
+
+	public String getAuthorTeamFilter() {
+		return authorTeamFilter;
+	}
+
+
+
+	public String getAuthorFilter() {
+		return authorFilter;
+	}
+
+
+
+	public void setAuthorFilter(String authorFilter) {
+		this.authorFilter = authorFilter;
+	}
+
 
 
 

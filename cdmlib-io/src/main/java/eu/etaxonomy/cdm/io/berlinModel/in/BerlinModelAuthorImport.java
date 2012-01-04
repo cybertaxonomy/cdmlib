@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +52,17 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		super();
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
+	 */
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		String result = " SELECT authorId FROM " + getTableName();
+		if (StringUtils.isNotBlank(state.getConfig().getAuthorFilter())){
+			result += " WHERE " +  state.getConfig().getAuthorFilter(); 
+		} 
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
