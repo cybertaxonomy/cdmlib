@@ -61,11 +61,12 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 	@Override
 	public <TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		boolean includeSubclasses = false;
-		return (List)listByTermClass(clazz, includeSubclasses, limit, start, orderHints, propertyPaths);
+		boolean includeEmptyVocs = false;
+		return (List)listByTermClass(clazz, includeSubclasses, includeEmptyVocs, limit, start, orderHints, propertyPaths);
 	}	
 
-	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return dao.listByTermClass(clazz, includeSubclasses, limit, start, orderHints, propertyPaths);
+	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return dao.listByTermClass(clazz, includeSubclasses, includeEmptyVocs,limit, start, orderHints, propertyPaths);
 	}
 	
 	/** 

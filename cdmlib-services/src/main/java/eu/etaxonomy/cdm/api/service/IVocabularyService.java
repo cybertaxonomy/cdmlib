@@ -45,6 +45,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @param <TERM>
      * @param clazz the term class of the terms in the vocabulary
      * @param includeSubclasses if <code>true</code> all subclasses of clazz will be included for computation of the result
+     * @param includeEmptyVocs if <code>true</code> all vocabularies that do not contain any term will be included in the result
      * @param limit The maximum number of vocabularies returned (can be null for all vocabularies)
      * @param start The offset from the start of the result set (0 - based, can be null - equivalent of starting at the beginning of the recordset)
      * @param orderHints 
@@ -55,7 +56,7 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      * @return a list of term vocabularies
      * @see #listByTermClass(Class, Integer, Integer, List, List)
      */
-	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	
 	/**
