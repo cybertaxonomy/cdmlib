@@ -1771,6 +1771,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CommonServiceImpl.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultQuantitativeDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeletionResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeltaTextDataProcessor.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
@@ -1844,6 +1845,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionCo
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text
