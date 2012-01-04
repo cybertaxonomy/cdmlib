@@ -325,7 +325,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 						Extension.NewInstance(reference, refLanguageIso639_2, refLanguageIsoExtensionType);
 					}
 				}else if (CdmUtils.isNotEmpty(refLanguage) || CdmUtils.isNotEmpty(refLanguageIso639_2)){
-					logger.warn("Reference is null (" + languageRefRefFk + ") but refLanguage (" + CdmUtils.Nz(refLanguage) + ") or iso639_2 (" + CdmUtils.Nz(refLanguageIso639_2) + ") was not null");
+					logger.warn("Reference is null (" + languageRefRefFk + ") but refLanguage (" + CdmUtils.Nz(refLanguage) + ") or iso639_2 (" + CdmUtils.Nz(refLanguageIso639_2) + ") was not null for common name ("+ commonNameId +")");
 				}
 				
 				//status
@@ -641,11 +641,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, TaxonNameBase<?,?>> nameMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 
-			//name map
+			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
-			cdmClass = Taxon.class;
+			cdmClass = TaxonBase.class;
 			idSet = taxonIdSet;
-			Map<String, TaxonNameBase<?,?>> taxonMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, TaxonBase<?>> taxonMap = (Map<String, TaxonBase<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
 
 			//nom reference map
