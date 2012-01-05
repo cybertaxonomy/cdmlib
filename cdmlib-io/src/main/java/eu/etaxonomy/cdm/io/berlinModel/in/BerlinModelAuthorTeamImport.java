@@ -90,7 +90,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	protected String getIdQuery(BerlinModelImportState state){
 		String strWhere = " WHERE (1=1) ";
 		if (state.getConfig().getAuthorTeamFilter() != null){
-			strWhere += state.getConfig().getAuthorTeamFilter();
+			strWhere += " AND " + state.getConfig().getAuthorTeamFilter();
 		}
 		String idQuery = 
 				" SELECT authorTeamId " +
