@@ -44,7 +44,6 @@ public class DescriptionBaseClassBridge implements FieldBridge {
      * java.lang.Object, org.apache.lucene.document.Document,
      * org.hibernate.search.bridge.LuceneOptions)
      */
-    @Override
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
             if (entity instanceof TaxonDescription) {
                 Taxon taxon = ((TaxonDescription) entity).getTaxon();
