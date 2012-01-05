@@ -48,8 +48,10 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	private static final String pluralString = "occurrence sources";
 	private static final String dbTableName = "emOccurrenceSource";  //??
 	
+	
 	private Map<String, Integer> sourceNumberRefIdMap;
-
+	private Set<String> unfoundReferences = new HashSet<String>();
+	
 
 	public BerlinModelOccurrenceSourceImport(){
 		super();
@@ -84,6 +86,8 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 
 	@Override
 	protected void doInvoke(BerlinModelImportState state) {
+		unfoundReferences = new HashSet<String>();
+		
 		try {
 			sourceNumberRefIdMap = makeSourceNumberReferenceIdMap(state);
 		} catch (SQLException e) {
@@ -92,6 +96,9 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 		}
 		super.doInvoke(state);
 		sourceNumberRefIdMap = null;
+		if (unfoundReferences.size()>0){
+			logger.warn("Not found references: " + unfoundReferences);
+		}
 		return;
 	}
 
@@ -138,6 +145,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
     					distribution.addSource(originalSource);
     				}else{
     					logger.warn("reference for sourceNumber "+sourceNumber+" could not be found. OccurrenceSourceId: " + occurrenceSourceId );
+    					unfoundReferences.add(sourceNumber);
     				}
     			}else{
     				logger.warn("distribution ("+occurrenceFk+") for occurrence source (" + occurrenceSourceId + ") could not be found." );
