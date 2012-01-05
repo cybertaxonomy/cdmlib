@@ -702,5 +702,23 @@ public final class BerlinModelTransformer {
 			
 	}
 	
+	public static UUID getWebMarkerUuid (int markerCategoryId){
+		if (markerCategoryId == 1){
+			return UUID.fromString("d8554418-d1ae-471d-a1bd-a0cbc7ab860c");  //any as not to find in cichorieae
+		}else if (markerCategoryId == 2){
+			return UUID.fromString("7f189c48-8632-4870-9ec8-e4d2489f324e");
+		}else if (markerCategoryId == 3){
+			return UUID.fromString("9a115e6b-8210-4dd3-825a-6fed11016c63");
+		}else if (markerCategoryId == 4){
+			return UUID.fromString("1d287011-2054-41c5-a919-17ac1d0a9270");
+		}else if (markerCategoryId == 9){
+			return UUID.fromString("cc5eca5c-1ae5-4feb-9a95-507fc167b0c9");
+		}else{
+			logger.warn("Unknown webMarker category: " + markerCategoryId);
+			return null;
+		}
+		
+	}
+	
 	
 }

@@ -149,7 +149,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			//get E+M - TDWG Mapping
 			Map<String, String> emTdwgMap = getEmTdwgMap(source);
 			//fill regionMap
-			fillRegionMap(source, sqlWhere, emTdwgMap);
+			fillRegionMap(state, sqlWhere, emTdwgMap);
 			
 			return;
 		} catch (NumberFormatException e) {
@@ -471,9 +471,12 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @return
 	 * @throws SQLException
 	 */
-	private void getRegionFks(BerlinModelImportState state, SortedSet<Integer> regionFks,
-			Source source) throws SQLException {
+	private void getRegionFks(BerlinModelImportState state, SortedSet<Integer> regionFks, Source source) throws SQLException {
 		String sql = " SELECT DISTINCT RegionFks FROM emCommonName";
+		if (state.getConfig().getCommonNameFilter() != null){
+			sql += " WHERE " + state.getConfig().getCommonNameFilter(); 
+		}
+		
 		ResultSet rs = source.getResultSet(sql);
 		while (rs.next()){
 			String strRegionFks = rs.getString("RegionFks"); 
@@ -494,13 +497,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
-	 * @param source
+	 * @param state
 	 * @param sqlWhere
 	 * @param emTdwgMap
 	 * @throws SQLException
 	 */
-	private void fillRegionMap(Source source, String sqlWhere,
+	private void fillRegionMap(BerlinModelImportState state, String sqlWhere,
 			Map<String, String> emTdwgMap) throws SQLException {
+		Source source = state.getConfig().getSource();
 		String sql;
 		ResultSet rs;
 		sql = " SELECT RegionId, Region FROM emLanguageRegion WHERE RegionId IN ("+ sqlWhere+ ") ";
@@ -510,7 +514,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			String region = rs.getString("Region");
 			String[] splitRegion = region.split("-");
 			if (splitRegion.length <= 1){
-				NamedArea newArea = NamedArea.NewInstance(region, region, null);
+				NamedArea newArea = getNamedArea(state, null, region, "Language region '" + region + "'", null, null, null);
 				getTermService().save(newArea);
 				regionMap.put(String.valueOf(regionId), newArea);
 				logger.warn("Found new area: " +  region);
