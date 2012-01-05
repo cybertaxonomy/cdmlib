@@ -220,7 +220,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				TaxonBase taxonBase = null;
 				taxonBase  = taxonMap.get(String.valueOf(taxonId));
 				if (taxonBase == null){
-					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + " not imported");
+					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + "(" + commonNameId + ") not imported");
 					continue;
 				}else if (! taxonBase.isInstanceOf(Taxon.class)){
 					logger.warn("taxon (" + taxonId + ") is not accepted. Can't import common name " +  commonNameId);
@@ -276,7 +276,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				TaxonNameBase nameUsedInSource = taxonNameMap.get(String.valueOf(nameInSourceFk));
 				if (nameInSourceFk != null && nameUsedInSource == null){
-					logger.warn("Name used in source (" + nameInSourceFk + ") was not found");
+					logger.warn("Name used in source (" + nameInSourceFk + ") was not found for common name " + commonNameId);
 				}
 				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				for (CommonTaxonName commonTaxonName : commonTaxonNames){
