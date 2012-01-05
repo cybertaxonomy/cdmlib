@@ -73,11 +73,11 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
             " FROM AuthorTeamSequence " +
 				strWhere + 	
             " ORDER By authorTeamFk, Sequence ";
-		rsSequence = source.getResultSet(strQuerySequence) ;
 		
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{
 			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
+			rsSequence = source.getResultSet(strQuerySequence) ;
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
