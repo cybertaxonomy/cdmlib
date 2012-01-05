@@ -63,9 +63,15 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		String strIdQuery = getIdQuery(state);
 		
 		String strRecordQuery = getRecordQuery(config);
+		String strWhere = " WHERE (1=1) ";
+		if (state.getConfig().getAuthorTeamFilter() != null){
+			strWhere += " AND " + state.getConfig().getAuthorTeamFilter();
+			strWhere = strWhere.replaceFirst("authorTeamId", "authorTeamFk");
+		}
 		String strQuerySequence = 
 			" SELECT *  " +
-            " FROM AuthorTeamSequence " + 
+            " FROM AuthorTeamSequence " +
+				strWhere + 	
             " ORDER By authorTeamFk, Sequence ";
 		rsSequence = source.getResultSet(strQuerySequence) ;
 		
