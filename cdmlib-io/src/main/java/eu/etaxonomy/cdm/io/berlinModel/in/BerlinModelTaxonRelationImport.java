@@ -314,7 +314,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						//TODO
 						//etc.
 					}else{
-						//TODO
 						if (taxon2 != null && taxon1 == null){
 							logger.warn("First taxon ("+taxon1Id+") for RelPTaxon " + relPTaxonId + " does not exist in store");
 						}else if (taxon2 == null && taxon1 != null){
