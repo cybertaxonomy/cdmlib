@@ -77,7 +77,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{
 			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
-			rsSequence = source.getResultSet(strQuerySequence) ;
+			rsSequence = source.getResultSet(strQuerySequence) ; //only here, to reduce deadlock/timeout probability
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
