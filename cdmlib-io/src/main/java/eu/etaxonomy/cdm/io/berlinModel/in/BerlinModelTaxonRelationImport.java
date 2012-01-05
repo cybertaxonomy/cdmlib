@@ -315,7 +315,14 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						//etc.
 					}else{
 						//TODO
-						logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
+						if (taxon2 != null && taxon1 == null){
+							logger.warn("First taxon ("+taxon1Id+") for RelPTaxon " + relPTaxonId + " does not exist in store");
+						}else if (taxon2 == null && taxon1 != null){
+							logger.warn("Second taxon ("+taxon2Id +") for RelPTaxon " + relPTaxonId + " does not exist in store");
+						}else{
+							logger.warn("Both taxa ("+taxon1Id+","+taxon2Id +") for RelPTaxon " + relPTaxonId + " do not exist in store");
+						}
+						
 						success = false;
 					}
 				} catch (Exception e) {
