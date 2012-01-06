@@ -87,7 +87,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 					} catch (Exception e) {
 						result = false;
 						logger.error("Error occurred in mapping.invoke");
-						e.printStackTrace();
+						logger.error(e.getStackTrace());
 						continue;
 					}
 				}else{
