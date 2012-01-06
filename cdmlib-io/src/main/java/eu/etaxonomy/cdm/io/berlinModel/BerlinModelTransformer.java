@@ -71,7 +71,12 @@ public final class BerlinModelTransformer {
 	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
 	public static UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
 	public static UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
-
+	
+	//language areas
+	public static UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
+	public static UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
+	
+	
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;

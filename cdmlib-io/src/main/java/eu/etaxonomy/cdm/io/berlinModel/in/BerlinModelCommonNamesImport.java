@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelCommonNamesImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -522,7 +524,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String emCode = splitRegion[1].trim();
 				String tdwgCode = emTdwgMap.get(emCode);
 				if (StringUtils.isNotBlank(tdwgCode) ){
-					NamedArea tdwgArea = getNamedArea(tdwgCode);
+					NamedArea tdwgArea = getNamedArea(state, tdwgCode);
 					regionMap.put(String.valueOf(regionId), tdwgArea);
 				}else{
 					logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
@@ -533,21 +535,25 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * @param state 
 	 * @param tdwgCode
 	 */
-	private NamedArea getNamedArea(String tdwgCode) {
+	private NamedArea getNamedArea(BerlinModelImportState state, String tdwgCode) {
 		NamedArea area;
 		if (tdwgCode.equalsIgnoreCase("Ab")){
-			area = NamedArea.NewInstance("Azerbaijan (including Nakhichevan)", "Azerbaijan & Nakhichevan", "Ab");
+			area = getNamedArea(state, BerlinModelTransformer.uuidAzerbaijanNakhichevan, "Azerbaijan & Nakhichevan", "Azerbaijan (including Nakhichevan)",  "Ab", null, null);
 			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
-			area = NamedArea.NewInstance("The Russian Federation", "The Russian Federation", "Rf");
+			area = WaterbodyOrCountry.RUSSIANFEDERATION();
 			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Uk")){
-			area = NamedArea.NewInstance("Ukraine (including Crimea)", "Ukraine & Crimea", "Uk");
+			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
 			getTermService().save(area);
 		}else{
 			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
+		}
+		if (area == null){
+			logger.warn("Area is null for " + tdwgCode);
 		}
 		return area;
 	}
