@@ -86,7 +86,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 						objectToSave = dbMapper.invoke(rs, objectToSave);
 					} catch (Exception e) {
 						result = false;
-						logger.error("Error occurred in mapping.invoke");
+						logger.error("Error occurred in mapping.invoke of mapper " + this.toString());
 						logger.error(e.getStackTrace());
 						continue;
 					}
