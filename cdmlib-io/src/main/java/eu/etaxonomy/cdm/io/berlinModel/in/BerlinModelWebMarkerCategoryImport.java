@@ -82,7 +82,7 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 						String markerDescription = rs.getString("MarkerDescription");
 						String markerCategory = rs.getString("MarkerCategory");
 						UUID uuid = BerlinModelTransformer.getWebMarkerUuid(markerCategoryId);
-						getMarkerType(state, uuid, markerDescription, markerCategory, null);
+						markerType = getMarkerType(state, uuid, markerDescription, markerCategory, null);
 						getTermService().saveOrUpdate(markerType);
 					}
 					state.putDefinedTermToMap(dbTableName, markerCategoryId, markerType);
