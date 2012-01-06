@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
@@ -98,13 +99,16 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	 */
 	public void addOriginalSource(ResultSet rs, CREATE cdmBase) throws SQLException {
 		if (cdmBase instanceof ISourceable ){
+			if (StringUtils.isBlank(dbIdAttribute)){
+				return;
+			}
 			IOriginalSource source;
 			ISourceable sourceable = (ISourceable)cdmBase;
 			Object id = rs.getObject(dbIdAttribute);
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;
 			//FIXME
-			Reference citation = null;
+			Reference<?> citation = null;
 			//importMapperHelper.getState().getConfig()xxx;
 			String microCitation = null;
 			if (cdmBase instanceof IdentifiableEntity){
