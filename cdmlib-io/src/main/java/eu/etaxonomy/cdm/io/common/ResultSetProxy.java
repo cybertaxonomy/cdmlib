@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
  * @created 24.08.2010
  */
 public class ResultSetProxy implements ResultSet {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ResultSetProxy.class);
 	
 // ************************** FACTORY METHODS *********************************/
@@ -643,9 +642,16 @@ public class ResultSetProxy implements ResultSet {
 		if (proxyMap.get(columnLabel) != null){
 			return proxyMap.get(columnLabel);
 		}else{
-			Object result = resultSet.getObject(columnLabel);
-			proxyMap.put(columnLabel, result);
-			return result;
+			try {
+				Object result = resultSet.getObject(columnLabel);
+				proxyMap.put(columnLabel, result);
+				return result;
+			} catch (SQLException e) {
+				String message = " SQLException occurred when retrieving database value for column %s.";
+				message = String.format(message, columnLabel);
+				logger.error(message);
+				throw e;
+			}
 		}
 	}
 
