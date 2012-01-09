@@ -129,6 +129,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			makeRegions(state);
 		} catch (Exception e) {
 			logger.error("Error when creating common name regions:" + e.getMessage());
+			e.printStackTrace();
 			state.setUnsuccessfull();
 		}
 		super.doInvoke(state);
@@ -545,7 +546,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
 			area = WaterbodyOrCountry.RUSSIANFEDERATION();
-			getTermService().save(area);
+//			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Uk")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
 			getTermService().save(area);
