@@ -1837,6 +1837,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/DeleteConfiguratorBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorFactory.java -text

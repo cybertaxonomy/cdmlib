@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
  * @date 09.11.2011
  *
  */
-public class TaxonNodeDeletionConfigurator {
+public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeDeletionConfigurator.class);
 

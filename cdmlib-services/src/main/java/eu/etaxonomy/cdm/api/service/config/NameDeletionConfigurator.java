@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
  * @date 19.09.2011
  *
  */
-public class NameDeletionConfigurator {
+public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameDeletionConfigurator.class);
 

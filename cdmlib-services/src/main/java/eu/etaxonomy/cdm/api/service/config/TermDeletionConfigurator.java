@@ -12,10 +12,6 @@ package eu.etaxonomy.cdm.api.service.config;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * This class is used to configure taxon node deletion.
@@ -26,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * @date 09.11.2011
  *
  */
-public class TermDeletionConfigurator {
+public class TermDeletionConfigurator extends DeleteConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermDeletionConfigurator.class);
 
@@ -42,16 +38,16 @@ public class TermDeletionConfigurator {
 
 	private boolean deleteMediaIfPossible = false;
 
-	/**
-	 * If <code>true</code> all included terms are also deleted (recursivly).<BR>
-	 * Default value is <code>true</code>. 
-	 */
-	public boolean isDeleteIncludedTerms() {
-		return deleteIncludedTerms;
-	}
-	public void setDeleteIncludedTerms(boolean deleteIncludedTerms) {
-		this.deleteIncludedTerms = deleteIncludedTerms;
-	}
+//	/**
+//	 * If <code>true</code> all included terms are also deleted (recursivly).<BR>
+//	 * Default value is <code>true</code>. 
+//	 */
+//	public boolean isDeleteIncludedTerms() {
+//		return deleteIncludedTerms;
+//	}
+//	public void setDeleteIncludedTerms(boolean deleteIncludedTerms) {
+//		this.deleteIncludedTerms = deleteIncludedTerms;
+//	}
 
 	/**
 	 * If <code>true</code> included terms will be attached to the parent

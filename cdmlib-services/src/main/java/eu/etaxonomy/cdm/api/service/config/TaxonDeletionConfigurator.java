@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * @date 09.11.2011
  *
  */
-public class TaxonDeletionConfigurator {
+public class TaxonDeletionConfigurator extends DeleteConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDeletionConfigurator.class);
 
