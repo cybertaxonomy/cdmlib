@@ -237,6 +237,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionType
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportFeatureCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageGalleryMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportLsidMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMarkerCreationMapper.java -text
@@ -255,6 +256,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportSynonymMapper
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTaxIncludedInMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTextDataCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportTruncatedStringMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportUuidMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbNotYetImplementedMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbSingleAttributeImportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/ICheckIgnoreMapper.java -text
