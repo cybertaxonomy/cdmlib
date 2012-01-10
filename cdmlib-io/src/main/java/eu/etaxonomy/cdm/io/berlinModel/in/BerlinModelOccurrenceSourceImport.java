@@ -97,7 +97,8 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 		super.doInvoke(state);
 		sourceNumberRefIdMap = null;
 		if (unfoundReferences.size()>0){
-			logger.warn("Not found references: " + unfoundReferences);
+			String unfound = "'" + CdmUtils.concat("','", unfoundReferences.toArray(new String[]{})) + "'"; 
+			logger.warn("Not found references: " + unfound);
 		}
 		return;
 	}
