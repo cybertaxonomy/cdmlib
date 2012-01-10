@@ -17,12 +17,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public abstract class CdmExportBase<CONFIG extends IExportConfigurator, STATE extends ExportStateBase> extends CdmIoBase<STATE> implements ICdmExport<CONFIG, STATE>{
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdmExportBase.class);
-
-
-
-	
-
-	
 
 }
