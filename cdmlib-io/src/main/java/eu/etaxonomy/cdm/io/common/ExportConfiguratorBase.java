@@ -105,14 +105,14 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 //		return dbSchemaValidation;
 //	}
 	
-	/**
-	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-	 * If a controller was already created before the last created controller is returned.
-	 * @return
-	 */
-	public CdmApplicationController getCdmAppController(){
-		return getCdmAppController(false);
-	}
+//	/**
+//	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+//	 * If a controller was already created before the last created controller is returned.
+//	 * @return
+//	 */
+//	public CdmApplicationController getCdmAppController(){
+//		return getCdmAppController(false);
+//	}
 	
 	/**
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
