@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.strategy.cache;
 
+import org.apache.commons.lang.StringUtils;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 
 /**
@@ -44,6 +48,16 @@ public class TaggedText {
 		super();
 		this.text = text;
 		this.type = type;
+	}
+	
+	@Override
+	public String toString(){
+		String result = CdmUtils.concat(":", type.toString(), text);
+		if (StringUtils.isBlank(result)){
+			return super.toString();
+		}else{
+			return result;
+		}
 	}
 	
 }
