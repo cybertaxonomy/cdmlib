@@ -81,7 +81,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	/** 
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
 	 * where the taxonBase.name.nameCache property matches the String queryString.
-	 * @param clazz
+	 * @param doTaxa
+	 * @param doSynonyms
 	 * @param queryString
 	 * @param classification TODO
 	 * @param matchMode
@@ -91,11 +92,12 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param propertyPaths TODO
 	 * @return list of found taxa
 	 */
-	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+	public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
-	 * @param clazz
+	 * @param doTaxa
+	 * @param doSynonyms
 	 * @param queryString
 	 * @param classification TODO
 	 * @param matchMode
@@ -132,7 +134,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * Returns a count of TaxonBase instances where the
 	 * taxon.name properties match the parameters passed.
 	 * 
-	 * @param clazz 
+	 * @param doTaxa
+	 * @param doSynonyms
 	 * @param uninomial
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -152,7 +155,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * which searches for {@link TaxonNameBase}<strong><code>.titleCache</code>
 	 * </strong>
 	 * 
-	 * @param clazz optionally filter by class (can be null to return all taxa)
+	 * @param doTaxa
+	 * @param doSynonyms
 	 * @param uninomial 
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -183,7 +187,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param onlyAcccepted
 	 * @return
 	 */
-	public List<TaxonBase> findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
+	public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
 	public List<TaxonBase> getTaxaByCommonName(String queryString, Classification classification,
 	MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
@@ -444,10 +448,10 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+	public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas);
 
-	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString,
+	public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString,
 			Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths,
 			boolean doIncludeMisappliedNames);
 

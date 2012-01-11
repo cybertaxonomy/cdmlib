@@ -492,21 +492,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator){
 
         List<UuidAndTitleCache<TaxonBase>> result = new ArrayList<UuidAndTitleCache<TaxonBase>>();
-        Class<? extends TaxonBase> clazz = null;
-        if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
-            clazz = TaxonBase.class;
-            //propertyPath.addAll(configurator.getTaxonPropertyPath());
-            //propertyPath.addAll(configurator.getSynonymPropertyPath());
-        } else if(configurator.isDoTaxa()) {
-            clazz = Taxon.class;
-            //propertyPath = configurator.getTaxonPropertyPath();
-        } else if (configurator.isDoSynonyms()) {
-            clazz = Synonym.class;
-            //propertyPath = configurator.getSynonymPropertyPath();
-        }
+//        Class<? extends TaxonBase> clazz = null;
+//        if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
+//            clazz = TaxonBase.class;
+//            //propertyPath.addAll(configurator.getTaxonPropertyPath());
+//            //propertyPath.addAll(configurator.getSynonymPropertyPath());
+//        } else if(configurator.isDoTaxa()) {
+//            clazz = Taxon.class;
+//            //propertyPath = configurator.getTaxonPropertyPath();
+//        } else if (configurator.isDoSynonyms()) {
+//            clazz = Synonym.class;
+//            //propertyPath = configurator.getSynonymPropertyPath();
+//        }
 
 
-        result = dao.getTaxaByNameForEditor(clazz, configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
+        result = dao.getTaxaByNameForEditor(configurator.isDoTaxa(), configurator.isDoSynonyms(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
         return result;
     }
 
@@ -538,7 +538,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             clazz = Synonym.class;
             //propertyPath = configurator.getSynonymPropertyPath();
         }
-
+        
         if(clazz != null){
             if(configurator.getPageSize() != null){ // no point counting if we need all anyway
                 numberTaxaResults =
@@ -548,7 +548,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
 
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
-                taxa = dao.getTaxaByName(clazz,
+                taxa = dao.getTaxaByName(configurator.isDoTaxa(), configurator.isDoSynonyms(),
                     configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
                     configurator.getNamedAreas(), configurator.getPageSize(),
                     configurator.getPageNumber(), propertyPath, configurator.isDoMisappliedNames());
@@ -768,7 +768,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Taxon bestCandidate = null;
         try{
             // 1. search for acceptet taxa
-            List<TaxonBase> taxonList = dao.findByNameTitleCache(Taxon.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
+            List<TaxonBase> taxonList = dao.findByNameTitleCache(true, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
             boolean bestCandidateMatchesSecUuid = false;
             boolean bestCandidateIsInClassification = false;
             int countEqualCandidates = 0;
@@ -819,7 +819,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             // 2. search for synonyms
             if (config.isIncludeSynonyms()){
-                List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
+                List<TaxonBase> synonymList = dao.findByNameTitleCache(false, true, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, null, null);
                 for(TaxonBase taxonBase : synonymList){
                     if(taxonBase instanceof Synonym){
                         Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
@@ -874,7 +874,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     @Override
     public Synonym findBestMatchingSynonym(String taxonName) {
-        List<TaxonBase> synonymList = dao.findByNameTitleCache(Synonym.class, taxonName, null, MatchMode.EXACT, null, 0, null, null);
+        List<TaxonBase> synonymList = dao.findByNameTitleCache(false, true, taxonName, null, MatchMode.EXACT, null, 0, null, null);
         if(! synonymList.isEmpty()){
             Synonym result = CdmBase.deproxy(synonymList.iterator().next(), Synonym.class);
             if(synonymList.size() == 1){
