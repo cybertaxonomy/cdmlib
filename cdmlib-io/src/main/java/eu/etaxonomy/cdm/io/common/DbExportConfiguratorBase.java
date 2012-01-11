@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class DbExportConfiguratorBase extends ExportConfiguratorBase<Source> implements IExportConfigurator{
+public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> extends ExportConfiguratorBase<Source> implements IExportConfigurator<STATE>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DbExportConfiguratorBase.class);
 	
