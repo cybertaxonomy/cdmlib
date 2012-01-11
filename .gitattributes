@@ -158,6 +158,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbSequenceMap
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbSingleAttributeExportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbTimePeriodMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbUriMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbUserMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/FactCategoryMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IDbExportMapper.java -text
