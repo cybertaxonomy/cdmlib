@@ -16,12 +16,12 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbConstantMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbConstantMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;

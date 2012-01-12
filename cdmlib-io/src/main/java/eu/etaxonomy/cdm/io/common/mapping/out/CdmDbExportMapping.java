@@ -18,8 +18,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;

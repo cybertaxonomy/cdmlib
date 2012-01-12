@@ -15,10 +15,6 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSequenceMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;

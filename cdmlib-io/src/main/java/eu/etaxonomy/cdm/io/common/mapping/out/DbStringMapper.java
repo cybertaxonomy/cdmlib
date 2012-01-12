@@ -8,9 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
-
-import java.net.URI;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
@@ -23,32 +21,32 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
-	private static final Logger logger = Logger.getLogger(DbUriMapper.class);
+public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
+	private static final Logger logger = Logger.getLogger(DbStringMapper.class);
 
 	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
 	
-	public static DbUriMapper NewInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbUriMapper(cdmAttributeString, dbAttributeString, null, true);
+	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString){
+		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, true);
 	}
 	
-	public static DbUriMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbUriMapper(cdmAttributeString, dbAttributeString, null, false);
+	public static DbStringMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
+		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, false);
 	}
 
-	public static DbUriMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
-		return new DbUriMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
+	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
+		return new DbStringMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
 	}
 	
-	public static DbUriMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
-		return new DbUriMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
+		return new DbStringMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	private DbUriMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
+	private DbStringMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 	
@@ -59,9 +57,8 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
-		URI uri = (URI)super.getValue(cdmBase);
-		String result = (uri == null ? null : uri.toString());
-		if (result !=null && result.length() > getPrecision() && getPrecision() != MAX_PRECISION){
+		String result = (String)super.getValue(cdmBase);
+		if (result != null && result.length() > getPrecision() && getPrecision() != MAX_PRECISION){
 			logger.warn("Truncation (" + result.length() + "->" + getPrecision() + ") needed for Attribute " + getDestinationAttribute() + " in " +  cdmBase + "." );
 			result = result.substring(0, getPrecision());
 		}
@@ -84,7 +81,7 @@ public class DbUriMapper extends DbSingleAttributeExportMapperBase<DbExportState
 	 */
 	@Override
 	public Class<?> getTypeClass() {
-		return URI.class;
+		return String.class;
 	}
 
 }

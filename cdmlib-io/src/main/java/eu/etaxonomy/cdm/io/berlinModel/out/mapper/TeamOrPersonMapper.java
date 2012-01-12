@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IndexCounter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;

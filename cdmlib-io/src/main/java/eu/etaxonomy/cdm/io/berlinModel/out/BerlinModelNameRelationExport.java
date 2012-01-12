@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
