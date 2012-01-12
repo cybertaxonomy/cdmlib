@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -64,9 +65,9 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		return result;
 	}
 	
-	private BerlinModelExportMapping getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
 		mapping.addMapper(DbObjectMapper.NewInstance("name", "PTNameFk"));
 		mapping.addMapper(DbObjectMapper.NewInstance("sec", "PTRefFk"));
 		mapping.addMapper(MethodMapper.NewInstance("StatusFk", this));
@@ -117,7 +118,7 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 			
 			List<TaxonBase> list = getTaxonService().list(null,100000000, 0, null, null);
 			
-			BerlinModelExportMapping mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;

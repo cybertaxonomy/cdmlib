@@ -18,10 +18,10 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportMapping;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -37,7 +37,7 @@ public class FactCategoryMapper extends DbSingleAttributeExportMapperBase<Berlin
 	private static final Logger logger = Logger.getLogger(FactCategoryMapper.class);
 	
 	private PreparedStatement preparedStatement;
-	private BerlinModelExportMapping mapping = null; 
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = null; 
 	private String dbTableName = "NomStatusRel";
 //	protected BerlinModelExportState<?> state;
 
@@ -45,10 +45,9 @@ public class FactCategoryMapper extends DbSingleAttributeExportMapperBase<Berlin
 		return new FactCategoryMapper(cdmAttributeString, dbAttributeString);
 	}
 
-	private BerlinModelExportMapping getMapping(){
-		boolean doExecute = false;
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
 
 		mapping.addMapper(MethodMapper.NewInstance("NomStatusFk", this.getClass(), "getNomStatusFk", NomenclaturalStatus.class));
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "NomStatusRefFk"));

@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -75,9 +76,9 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		return result;
 	}
 	
-	private BerlinModelExportMapping getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("FactId"));
 		mapping.addMapper(MethodMapper.NewInstance("PTNameFk", this.getClass(), "getPTNameFk", TextData.class, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("PTRefFk", this.getClass(), "getPTRefFk", TextData.class, DbExportStateBase.class));
@@ -108,7 +109,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 			
 			List<DescriptionBase> list = getDescriptionService().list(null,1000000000, 0,null,null);
 			
-			BerlinModelExportMapping mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
 			mapping.initialize(state);
 			
 			this.source = state.getConfig().getDestination(); 

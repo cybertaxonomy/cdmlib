@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 /*import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.BookSection;*/
@@ -72,9 +73,9 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<Reference>
 		return result;
 	}
 	
-	private BerlinModelExportMapping getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("RefId"));
 		mapping.addMapper(MethodMapper.NewInstance("RefCategoryFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RefCache", this));
@@ -128,7 +129,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<Reference>
 			
 			List<Reference> list = getReferenceService().list(null,100000000, 0,null,null);
 			
-			BerlinModelExportMapping mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;

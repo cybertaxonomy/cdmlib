@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSequenceMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class CollectionExportMapping extends BerlinModelExportMapping {
+public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG extends DbExportConfiguratorBase<STATE>> extends CdmDbExportMapping<STATE, CONFIG> {
 	private static final Logger logger = Logger.getLogger(CollectionExportMapping.class);
 	
 	private IdMapper parentMapper;

@@ -13,11 +13,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportMapping;
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class TeamOrPersonMapper extends DbObjectMapper {
 
-	BerlinModelExportMapping teamMapping;
+	CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> teamMapping;
 	PreparedStatement stmtInsertTeam;
 	PreparedStatement stmtInsertSequence;
 	PreparedStatement stmtMaxId;
@@ -99,8 +100,7 @@ public class TeamOrPersonMapper extends DbObjectMapper {
 
 
 	@Override
-	public void initialize(PreparedStatement stmt, IndexCounter index,
-			DbExportStateBase state, String tableName) {
+	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase state, String tableName) {
 		super.initialize(stmt, index, state, tableName);
 		Source db = ((BerlinModelExportState)this.getState()).getConfig().getDestination();
 		try {

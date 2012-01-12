@@ -132,7 +132,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelAuthorTea
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelClassificationExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelExportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelExportConfigurator.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelExportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelFactExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelNameRelationExport.java -text
@@ -140,7 +139,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelReference
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonNameExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonRelationExport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/CollectionExportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/CreatedAndNotesMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbAnnotationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbBooleanMapper.java -text
@@ -270,6 +268,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerMethodException.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/CdmDbExportMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/CollectionExportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConverterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
