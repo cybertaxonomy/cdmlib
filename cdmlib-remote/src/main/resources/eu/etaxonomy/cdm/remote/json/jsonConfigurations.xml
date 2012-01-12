@@ -93,6 +93,9 @@
         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
         </entry>
+          <entry key="org.apache.lucene.document.Document">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
+        </entry>
       </map>
     </property>
     <property name="jsonPropertyFilter">
@@ -134,8 +137,8 @@
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
           <entry key="java.net.URI">
-                    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
-                </entry>
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+          </entry>
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />

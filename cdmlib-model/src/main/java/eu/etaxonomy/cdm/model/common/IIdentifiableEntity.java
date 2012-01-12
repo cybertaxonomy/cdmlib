@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,58 +16,63 @@ import eu.etaxonomy.cdm.model.media.Rights;
 
 public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IAnnotatableEntity{
 
-	public LSID getLsid();
+    public LSID getLsid();
 
-	public void setLsid(LSID lsid);
+    public void setLsid(LSID lsid);
 
-	public String generateTitle();
+    public String generateTitle();
 
-	public String getTitleCache();
+    public String getTitleCache();
 
-	public void setTitleCache(String titleCache);
+    /**
+     * Sets the title cache without changing the <code>protectCache</code> flag
+     * @see #setTitleCache(String, boolean)
+     * @param titleCache
+     */
+    public void setTitleCache(String titleCache);
 
-	public void setTitleCache(String titleCache, boolean protectCache);
+    public void setTitleCache(String titleCache, boolean protectCache);
 
-	public Set<Rights> getRights();
+    public Set<Rights> getRights();
 
-	public void addRights(Rights right);
+    public void addRights(Rights right);
 
-	public void removeRights(Rights right);
+    public void removeRights(Rights right);
 
-	public List<Credit> getCredits();
+    public List<Credit> getCredits();
 
-	public Credit getCredits(Integer index);
-	
-	public void addCredit(Credit credig);
-	
-	public void addCredit(Credit credit, int index);
+    public Credit getCredits(Integer index);
 
-	public void removeCredit(Credit credit);
+    public void addCredit(Credit credig);
 
-	public void removeCredit(int index);
+    public void addCredit(Credit credit, int index);
 
-	public Set<Extension> getExtensions();
+    public void removeCredit(Credit credit);
 
-	public void addExtension(Extension extension);
+    public void removeCredit(int index);
 
-	public void removeExtension(Extension extension);
+    public Set<Extension> getExtensions();
 
-	public boolean isProtectedTitleCache();
+    public void addExtension(Extension extension);
 
-	public void setProtectedTitleCache(boolean protectedTitleCache);
+    public void removeExtension(Extension extension);
 
-	/**
-	 * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
-	 * This returns an String that identifies the object well without beeing necessarily unique.
-	 * Specification: This method should never call other object' methods so it can be well used for debugging 
-	 * without problems like lazy loading, unreal states etc.
-	 * Note: If overriding this method's javadoc always copy or link the above requirement. 
-	 * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object. 
-	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString();
+    public boolean isProtectedTitleCache();
 
-	public byte[] getData();
+    public void setProtectedTitleCache(boolean protectedTitleCache);
+
+    /**
+     * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
+     * This returns an String that identifies the object well without beeing necessarily unique.
+     * Specification: This method should never call other object' methods so it can be well used for debugging
+     * without problems like lazy loading, unreal states etc.
+     * Note: If overriding this method's javadoc always copy or link the above requirement.
+     * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object.
+     * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
+     * @see java.lang.Object#toString()
+     */
+    public String toString();
+
+    public byte[] getData();
 
 }

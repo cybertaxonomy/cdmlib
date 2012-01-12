@@ -33,6 +33,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -93,6 +94,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlSchemaType(name="IDREF")
 //	@JoinColumn(name="taxon_fk")
     @Cascade(CascadeType.SAVE_UPDATE)
+    @IndexedEmbedded
     private Taxon taxon;
 
 

@@ -21,6 +21,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.ParseException;
 import org.hibernate.Criteria;
@@ -220,7 +221,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
             Integer pageSize, Integer pageNumber) {
 
-        return getTaxaByName(doTaxa, doSynonyms, queryString, null, matchMode, null, pageSize, pageNumber, null, false);
+        return getTaxaByName(doTaxa, doSynonyms, false, queryString, null, matchMode, null, pageSize, pageNumber, null);
     }
 
     /*
@@ -229,12 +230,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      */
     public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
             Boolean accepted, Integer pageSize, Integer pageNumber) {
-    	
-    	boolean doTaxa = true;
-    	boolean doSynonyms = true;
-    	
+
+        boolean doTaxa = true;
+        boolean doSynonyms = true;
+
         if (accepted == true) {
-        	doSynonyms = false;
+            doSynonyms = false;
         } else {
            doTaxa = false;
         }
@@ -251,7 +252,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         boolean doCount = false;
 
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, doMisappliedNames);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
 
         if (query != null){
             List<TaxonBase> results = query.list();
@@ -265,6 +266,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return new ArrayList<TaxonBase>();
 
     }
+
 
     /*
      * (non-Javadoc)
@@ -291,7 +293,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
                 //differentiate taxa and synonyms
                 if (doTaxa && doSynonyms){
-                	if (result[2].equals("synonym")) {
+                    if (result[2].equals("synonym")) {
                         resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
                     }
                     else {
@@ -345,12 +347,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      */
     private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String searchField, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount) {
-        return prepareQuery(doTaxa, doSynonyms, searchField, queryString, classification,
-                matchMode, namedAreas, doCount, true, false);
+        return prepareQuery(doTaxa, doSynonyms, false, searchField, queryString,
+                classification, matchMode, namedAreas, doCount, true);
     }
 
     /**
-     * @param clazz
      * @param searchField
      * @param queryString
      * @param classification
@@ -361,402 +362,405 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      *            if set true the seach method will not return synonym and taxon
      *            entities but an array containing the uuid, titleCache, and the
      *            DTYPE in lowercase letters.
+     * @param clazz
      * @return
      */
-    private Query prepareQuery(boolean doTaxa, boolean doSynonyms, String searchField, String queryString, Classification classification,
-    			MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doNotReturnFullEntities, boolean doIncludeMisappliedNames){
-    		
-    		String hqlQueryString = matchMode.queryStringFrom(queryString);
-    		String selectWhat;
-    		if (doNotReturnFullEntities){
-    			selectWhat = "t.uuid, t.titleCache ";
-    		}else {
-    			selectWhat = (doCount ? "count(t)": "t");
-    		}
-    		
-    		String hql = "";
-    		Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
-    		if(namedAreas != null && namedAreas.size() > 0){
-    			// expand areas and restrict by distribution area
-    			List<NamedArea> childAreas;
-    			Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
-    			expandNamedAreas(namedAreas, areasExpanded, areaQuery);
-    		}
-    		boolean doAreaRestriction = areasExpanded.size() > 0;
-    		
-    		Set<UUID> namedAreasUuids = new HashSet<UUID>();
-    		for (NamedArea area:areasExpanded){
-    			namedAreasUuids.add(area.getUuid());
-    		}
-    		
-    		String taxonSubselect = null;
-    		String synonymSubselect = null;
-    		String misappliedSelect = null;
-    		
-    		if(classification != null ){
-    			if (!doIncludeMisappliedNames){
-    				if(doAreaRestriction){
-    					
-    					taxonSubselect = "select t.id from" +
-    						" Distribution e" +
-							" join e.inDescription d" +
-							" join d.taxon t" +	
-    						" join t.name n " +
-    						" join t.taxonNodes as tn "+
-    						" where" +
-    						" e.area.uuid in (:namedAreasUuids) AND" +
-    						" tn.classification = :classification" +
-    						" AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    					
-    					
-    					
-    					synonymSubselect = "select s.id from" +
-    						" Distribution e" +
-    						" join e.inDescription d" +
-    						" join d.taxon t" + // the taxa
-    						" join t.taxonNodes as tn "+
-    						" join t.synonymRelations sr" +
-    						" join sr.relatedFrom s" + // the synonyms
-    						" join s.name sn"+ 
-    						" where" +
-    						" e.area.uuid in (:namedAreasUuids) AND" +
-    						" tn.classification = :classification" +
-    						" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    					
-    				} else {
-    					
-    					taxonSubselect = "select t.id from" +
-    						" Taxon t" +
-    						" join t.name n " +
-    						" join t.taxonNodes as tn "+
-    						" where" +
-    						" tn.classification = :classification" +
-    						" AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    					
-    					synonymSubselect = "select s.id from" +
-    						" Taxon t" + // the taxa
-    						" join t.taxonNodes as tn "+
-    						" join t.synonymRelations sr" +
-    						" join sr.relatedFrom s" + // the synonyms
-    						" join s.name sn"+ 
-    						" where" +
-    						" tn.classification = :classification" +
-    						" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    				}	
-    			}else{
-    				if(doAreaRestriction){
-    					if (!doTaxa && !doSynonyms ){
-    						misappliedSelect = "select t.id from" +
-    						" Distribution e" +
-    						" join e.inDescription d" +
-    						" join d.taxon t" +
-    						" join t.name n " +
-    						" join t.taxonNodes as tn "+
-    						" left join t.relationsFromThisTaxon as rft" +
-    						" left join rft.relatedTo as rt" +
-    						" left join rt.taxonNodes as tn2" +
-    						" left join rt.name as n2" +
-    						" left join rft.type as rtype"+
-    						" where" +
-    						" e.area.uuid in (:namedAreasUuids) AND" +
-    						" (tn.classification != :classification" +
-    						" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-    						" AND tn2.classification = :classification" +
-    						" AND rtype = :rType )";
-    						
-    					}else{
-	    					taxonSubselect = "select t.id from" +
-	    						" Distribution e" +
-	    						" join e.inDescription d" +
-	    						" join d.taxon t" +
-	    						" join t.name n " +
-	    						" join t.taxonNodes as tn "+
-	    						" left join t.relationsFromThisTaxon as rft" +
-	    						" left join rft.relatedTo as rt" +
-	    						" left join rt.taxonNodes as tn2" +
-	    						" left join rt.name as n2" +
-	    						" left join rft.type as rtype"+
-	    						" where" +
-	    						" e.area.uuid in (:namedAreasUuids) AND" +
-	    						" (tn.classification = :classification" +
-	    						" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString )" +
-	    						" OR"+
-	    						" (tn.classification != :classification" +
-	    						" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-	    						" AND tn2.classification = :classification" +
-	    						" AND rtype = :rType )";
-	    					
-	    					
-	    					synonymSubselect = "select s.id from" +
-	    						" Distribution e" +
-	    						" join e.inDescription d" +
-	    						" join d.taxon t" + // the taxa
-	    						" join t.taxonNodes as tn "+
-	    						" join t.synonymRelations sr" +
-	    						" join sr.relatedFrom s" + // the synonyms
-	    						" join s.name sn"+ 
-	    						" where" +
-	    						" e.area.uuid in (:namedAreasUuids) AND" +
-	    						" tn.classification != :classification" +
-	    						" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    					}
-    				} else {
-    					if (!doTaxa && !doSynonyms ){
-    						misappliedSelect = "select t.id from" +
-    						" Distribution e" +
-    						" join e.inDescription d" +
-    						" join d.taxon t" +
-    						" join t.name n " +
-    						" join t.taxonNodes as tn "+
-    						" left join t.relationsFromThisTaxon as rft" +
-    						" left join rft.relatedTo as rt" +
-    						" left join rt.taxonNodes as tn2" +
-    						" left join rt.name as n2" +
-    						" left join rft.type as rtype"+
-    						" where" +
-    						" (tn.classification != :classification" +
-    						" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-    						" AND tn2.classification = :classification" +
-    						" AND rtype = :rType )";
-    						
-    					}else{
-	    					taxonSubselect = "select t.id from" +
-	    						" Taxon t" +
-	    						" join t.name n " +
-	    						" join t.taxonNodes as tn "+
-	    						" left join t.relationsFromThisTaxon as rft" +
-	    						" left join rft.relatedTo as rt" +
-	    						" left join rt.taxonNodes as tn2" +
-	    						" left join rt.name as n2" +
-	    						" left join rft.type as rtype"+
-	    						" where " +
-	    						" (tn.classification = :classification" +
-	    						" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString )" +
-	    						" OR"+
-	    						" (tn.classification != :classification" +
-	    						" AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
-	    						" AND tn2.classification = :classification" +
-	    						" AND rtype = :rType )";
-	    					
-	    					synonymSubselect = "select s.id from" +
-	    						" Taxon t" + // the taxa
-	    						" join t.taxonNodes as tn "+
-	    						" join t.synonymRelations sr" +
-	    						" join sr.relatedFrom s" + // the synonyms
-	    						" join s.name sn"+ 
-	    						" where" +
-	    						" tn.classification != :classification" +
-	    						" AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    					}
-    				}	
-    			}
-    		} else {
-    			
-    			if(doAreaRestriction){
-    				
-    				taxonSubselect = "select t.id from " +
-    					" Distribution e" +
-    					" join e.inDescription d" +
-    					" join d.taxon t" +
-    					" join t.name n "+
-    					" where" +
-    					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-    					" n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    				
-    				synonymSubselect = "select s.id from" +
-    					" Distribution e" +
-    					" join e.inDescription d" +
-    					" join d.taxon t" + // the taxa
-    					" join t.synonymRelations sr" +
-    					" join sr.relatedFrom s" + // the synonyms
-    					" join s.name sn"+ 
-    					" where" +
-    					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-    					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    				
-    			} else {
-    				
-    				taxonSubselect = "select t.id from " +
-    					" Taxon t" +
-    					" join t.name n "+
-    					" where" +
-    					" n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+    private Query prepareQuery(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, String searchField, String queryString,
+                Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, boolean doCount, boolean doNotReturnFullEntities){
 
-    				synonymSubselect = "select s.id from" +
-    					" Taxon t" + // the taxa
-    					" join t.synonymRelations sr" +
-    					" join sr.relatedFrom s" + // the synonyms
-    					" join s.name sn"+ 
-    					" where" +
-    					" sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-    			}
-    			
-    		}
-    		
-    		Query subTaxon = null;
-    		Query subSynonym = null;
-    		if(doTaxa && !doSynonyms){
-    			// find Taxa
-    			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
-    			
-    			//subTaxon = getSession().createQuery(taxonSubselect);
-    			
-    			if(doAreaRestriction){
-    				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
-    			}	
-    			if(classification != null){
-    				subTaxon.setParameter("classification", classification);
-    				if (doIncludeMisappliedNames){
-    					subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-    				}
-    			}
-    		} else if(doSynonyms && !doTaxa){
-    			// find synonyms
-    			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
-    			
-    			if(doAreaRestriction){
-    				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
-    			}		
-    			if(classification != null){
-    				subSynonym.setParameter("classification", classification);
-    			}
-    		} else if (doTaxa && doSynonyms){
-    			// find taxa and synonyms
-    			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
-    			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
-    			if(doAreaRestriction){
-    				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
-    				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
-    			}
-    			if(classification != null){
-    				subTaxon.setParameter("classification", classification);
-    				subSynonym.setParameter("classification", classification);
-    			}
-    		}
-    		
-    		List<Integer> taxa = new ArrayList<Integer>();
-    		List<Integer> synonyms = new ArrayList<Integer>();
-    		if (doSynonyms && doTaxa){
-    			taxa = subTaxon.list();
-    			synonyms = subSynonym.list();
-    		}else if(doTaxa ){
-    			taxa = subTaxon.list();
-    		}else if (doSynonyms){
-    			synonyms = subSynonym.list();
-    		}
-    		
-    		if (doTaxa && doSynonyms){
-    			if(synonyms.size()>0 && taxa.size()>0){
-    				if (doNotReturnFullEntities &&  !doCount ){
-    					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-    					hql = "select " + selectWhat + ", case when t.id in (:taxa) then 'taxon' else 'synonym' end" + " from %s t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
-    				}else{
-    					hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
-    				}
-    			}else if (synonyms.size()>0 ){
-    				if (doNotReturnFullEntities &&  !doCount ){
-    					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-    					hql = "select " + selectWhat + ", 'synonym' from %s t" + " where t.id in (:synonyms)";	
-    				} else {
-    					hql = "select " + selectWhat + " from %s t" + " where t.id in (:synonyms)";		
-    				}
-    			} else if (taxa.size()>0 ){
-    				if (doNotReturnFullEntities &&  !doCount ){
-    					// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-    					hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa) ";
-    				} else {
-    					hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa) ";
-    				}
-    			} else{
-    				hql = "select " + selectWhat + " from %s t";
-    			}
-    		} else if(doTaxa){
-    			if  (taxa.size()>0){
-    				if (doNotReturnFullEntities){
-    					hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa)";
-    				}else{
-    					hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa)";
-    				}
-    			}else{
-    				hql = "select " + selectWhat + " from %s t";
-    			}
-    		} else if(doSynonyms){
-    			if (synonyms.size()>0){
-    				if (doNotReturnFullEntities){
-    					hql = "select " + selectWhat + ", 'synonym' from %s t" + " where t.id in (:synonyms)";
-    				}else{
-    					hql = "select " + selectWhat + " from %s t" + " where t.id in (:synonyms)";		
-    				}
-    			}else{
-    				hql = "select " + selectWhat + " from %s t";
-    			}
-    		} 
-    		
-    		String classString;
-    		if (doTaxa && doSynonyms){
-    			classString = "TaxonBase";
-    		} else if (doTaxa){
-    			classString = "Taxon";
-    		} else if (doSynonyms){
-    			classString = "Synonym";
-    		} else{//only misappliedNames
-    			classString = "Taxon";
-    		}
-    		
-    		hql = String.format(hql, classString);
-    		
-    		
-    		if (hql == "") return null;
-    		if(!doCount){
-    			hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
-    		}
-    	
-    		Query query = getSession().createQuery(hql);
-    				
-    		
-    		if (doTaxa && doSynonyms){
-    			// find taxa and synonyms
-    			if (taxa.size()>0){
-    				query.setParameterList("taxa", taxa);
-    			}
-    			if (synonyms.size()>0){
-    				query.setParameterList("synonyms",synonyms);
-    			}
-    			if (taxa.size()== 0 && synonyms.size() == 0){
-    				return null;
-    			}
-    		}else if(doTaxa){
-    			//find taxa
-    			if (taxa.size()>0){
-    				query.setParameterList("taxa", taxa );
-    			}else{
-    				return null;
-    			}
-    		} else if(doSynonyms){
-    			// find synonyms
-    			if (synonyms.size()>0){
-    				query.setParameterList("synonyms", synonyms);
-    			}else{
-    				return null;
-    			}
-    		}	else{
-    			//only misappliedNames
-    			if (taxa.size()>0){
-    				query.setParameterList("taxa", taxa );
-    			}else{
-    				return null;
-    			}
-    		}
-    		
-    		
-    		return query;
-    		
+            String hqlQueryString = matchMode.queryStringFrom(queryString);
+            String selectWhat;
+            if (doNotReturnFullEntities){
+                selectWhat = "t.uuid, t.titleCache ";
+            }else {
+                selectWhat = (doCount ? "count(t)": "t");
+            }
+
+            String hql = "";
+            Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
+            if(namedAreas != null && namedAreas.size() > 0){
+                // expand areas and restrict by distribution area
+                Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
+                expandNamedAreas(namedAreas, areasExpanded, areaQuery);
+            }
+            boolean doAreaRestriction = areasExpanded.size() > 0;
+
+            Set<UUID> namedAreasUuids = new HashSet<UUID>();
+            for (NamedArea area:areasExpanded){
+                namedAreasUuids.add(area.getUuid());
+            }
+
+            String taxonSubselect = null;
+            String synonymSubselect = null;
+            String misappliedSelect = null;
+
+            if(classification != null ){
+                if (!doIncludeMisappliedNames){
+                    if(doAreaRestriction){
+
+                        taxonSubselect = "select t.id from" +
+                            " Distribution e" +
+                            " join e.inDescription d" +
+                            " join d.taxon t" +
+                            " join t.name n " +
+                            " join t.taxonNodes as tn "+
+                            " where" +
+                            " e.area.uuid in (:namedAreasUuids) AND" +
+                            " tn.classification = :classification" +
+                            " AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+
+
+
+                        synonymSubselect = "select s.id from" +
+                            " Distribution e" +
+                            " join e.inDescription d" +
+                            " join d.taxon t" + // the taxa
+                            " join t.taxonNodes as tn "+
+                            " join t.synonymRelations sr" +
+                            " join sr.relatedFrom s" + // the synonyms
+                            " join s.name sn"+
+                            " where" +
+                            " e.area.uuid in (:namedAreasUuids) AND" +
+                            " tn.classification = :classification" +
+                            " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+
+                    } else {
+
+                        taxonSubselect = "select t.id from" +
+                            " Taxon t" +
+                            " join t.name n " +
+                            " join t.taxonNodes as tn "+
+                            " where" +
+                            " tn.classification = :classification" +
+                            " AND n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+
+                        synonymSubselect = "select s.id from" +
+                            " Taxon t" + // the taxa
+                            " join t.taxonNodes as tn "+
+                            " join t.synonymRelations sr" +
+                            " join sr.relatedFrom s" + // the synonyms
+                            " join s.name sn"+
+                            " where" +
+                            " tn.classification = :classification" +
+                            " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+                    }
+                }else{
+                    if(doAreaRestriction){
+                        if (!doTaxa && !doSynonyms ){
+                            misappliedSelect = "select t.id from" +
+                            " Distribution e" +
+                            " join e.inDescription d" +
+                            " join d.taxon t" +
+                            " join t.name n " +
+                            " join t.taxonNodes as tn "+
+                            " left join t.relationsFromThisTaxon as rft" +
+                            " left join rft.relatedTo as rt" +
+                            " left join rt.taxonNodes as tn2" +
+                            " left join rt.name as n2" +
+                            " left join rft.type as rtype"+
+                            " where" +
+                            " e.area.uuid in (:namedAreasUuids) AND" +
+                            " (tn.classification != :classification" +
+                            " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
+                            " AND tn2.classification = :classification" +
+                            " AND rtype = :rType )";
+
+                        }else{
+                            taxonSubselect = "select t.id from" +
+                                " Distribution e" +
+                                " join e.inDescription d" +
+                                " join d.taxon t" +
+                                " join t.name n " +
+                                " join t.taxonNodes as tn "+
+                                " left join t.relationsFromThisTaxon as rft" +
+                                " left join rft.relatedTo as rt" +
+                                " left join rt.taxonNodes as tn2" +
+                                " left join rt.name as n2" +
+                                " left join rft.type as rtype"+
+                                " where" +
+                                " e.area.uuid in (:namedAreasUuids) AND" +
+                                " (tn.classification = :classification" +
+                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString )" +
+                                " OR"+
+                                " (tn.classification != :classification" +
+                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
+                                " AND tn2.classification = :classification" +
+                                " AND rtype = :rType )";
+
+
+                            synonymSubselect = "select s.id from" +
+                                " Distribution e" +
+                                " join e.inDescription d" +
+                                " join d.taxon t" + // the taxa
+                                " join t.taxonNodes as tn "+
+                                " join t.synonymRelations sr" +
+                                " join sr.relatedFrom s" + // the synonyms
+                                " join s.name sn"+
+                                " where" +
+                                " e.area.uuid in (:namedAreasUuids) AND" +
+                                " tn.classification != :classification" +
+                                " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+                        }
+                    } else {
+                        if (!doTaxa && !doSynonyms ){
+                            misappliedSelect = "select t.id from" +
+                            " Distribution e" +
+                            " join e.inDescription d" +
+                            " join d.taxon t" +
+                            " join t.name n " +
+                            " join t.taxonNodes as tn "+
+                            " left join t.relationsFromThisTaxon as rft" +
+                            " left join rft.relatedTo as rt" +
+                            " left join rt.taxonNodes as tn2" +
+                            " left join rt.name as n2" +
+                            " left join rft.type as rtype"+
+                            " where" +
+                            " (tn.classification != :classification" +
+                            " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
+                            " AND tn2.classification = :classification" +
+                            " AND rtype = :rType )";
+
+                        }else{
+                            taxonSubselect = "select t.id from" +
+                                " Taxon t" +
+                                " join t.name n " +
+                                " join t.taxonNodes as tn "+
+                                " left join t.relationsFromThisTaxon as rft" +
+                                " left join rft.relatedTo as rt" +
+                                " left join rt.taxonNodes as tn2" +
+                                " left join rt.name as n2" +
+                                " left join rft.type as rtype"+
+                                " where " +
+                                " (tn.classification = :classification" +
+                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString )" +
+                                " OR"+
+                                " (tn.classification != :classification" +
+                                " AND n." + searchField + " " + matchMode.getMatchOperator() + " :queryString" +
+                                " AND tn2.classification = :classification" +
+                                " AND rtype = :rType )";
+
+                            synonymSubselect = "select s.id from" +
+                                " Taxon t" + // the taxa
+                                " join t.taxonNodes as tn "+
+                                " join t.synonymRelations sr" +
+                                " join sr.relatedFrom s" + // the synonyms
+                                " join s.name sn"+
+                                " where" +
+                                " tn.classification != :classification" +
+                                " AND sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+                        }
+                    }
+                }
+            } else {
+
+                if(doAreaRestriction){
+
+                    taxonSubselect = "select t.id from " +
+                        " Distribution e" +
+                        " join e.inDescription d" +
+                        " join d.taxon t" +
+                        " join t.name n "+
+                        " where" +
+                        (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
+                        " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+
+                    synonymSubselect = "select s.id from" +
+                        " Distribution e" +
+                        " join e.inDescription d" +
+                        " join d.taxon t" + // the taxa
+                        " join t.synonymRelations sr" +
+                        " join sr.relatedFrom s" + // the synonyms
+                        " join s.name sn"+
+                        " where" +
+                        (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
+                        " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+
+                } else {
+
+                    taxonSubselect = "select t.id from " +
+                        " Taxon t" +
+                        " join t.name n "+
+                        " where" +
+                        " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+
+                    synonymSubselect = "select s.id from" +
+                        " Taxon t" + // the taxa
+                        " join t.synonymRelations sr" +
+                        " join sr.relatedFrom s" + // the synonyms
+                        " join s.name sn"+
+                        " where" +
+                        " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+                }
+
+            }
+
+            logger.debug("taxonSubselect: " + taxonSubselect != null ? taxonSubselect: "NULL");
+            logger.debug("synonymSubselect: " + synonymSubselect != null ? synonymSubselect: "NULL");
+
+            Query subTaxon = null;
+            Query subSynonym = null;
+            if(doTaxa && !doSynonyms){
+                // find Taxa
+                subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
+
+                //subTaxon = getSession().createQuery(taxonSubselect);
+
+                if(doAreaRestriction){
+                    subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
+                }
+                if(classification != null){
+                    subTaxon.setParameter("classification", classification);
+                    if (doIncludeMisappliedNames){
+                        subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                    }
+                }
+            } else if(doSynonyms && !doTaxa){
+                // find synonyms
+                subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+
+                if(doAreaRestriction){
+                    subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
+                }
+                if(classification != null){
+                    subSynonym.setParameter("classification", classification);
+                }
+            } else if (doTaxa && doSynonyms){
+                // find taxa and synonyms
+                subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+                subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
+                if(doAreaRestriction){
+                    subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
+                    subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
+                }
+                if(classification != null){
+                    subTaxon.setParameter("classification", classification);
+                    subSynonym.setParameter("classification", classification);
+                }
+            }
+
+            List<Integer> taxa = new ArrayList<Integer>();
+            List<Integer> synonyms = new ArrayList<Integer>();
+            if (doSynonyms && doTaxa){
+                taxa = subTaxon.list();
+                synonyms = subSynonym.list();
+            }else if(doTaxa ){
+                taxa = subTaxon.list();
+            }else if (doSynonyms){
+                synonyms = subSynonym.list();
+            }
+
+            if (doTaxa && doSynonyms){
+                if(synonyms.size()>0 && taxa.size()>0){
+                    if (doNotReturnFullEntities &&  !doCount ){
+                        // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                        hql = "select " + selectWhat + ", case when t.id in (:taxa) then 'taxon' else 'synonym' end" + " from %s t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+                    }else{
+                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
+                    }
+                }else if (synonyms.size()>0 ){
+                    if (doNotReturnFullEntities &&  !doCount ){
+                        // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                        hql = "select " + selectWhat + ", 'synonym' from %s t" + " where t.id in (:synonyms)";
+                    } else {
+                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:synonyms)";
+                    }
+                } else if (taxa.size()>0 ){
+                    if (doNotReturnFullEntities &&  !doCount ){
+                        // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                        hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa) ";
+                    } else {
+                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa) ";
+                    }
+                } else{
+                    hql = "select " + selectWhat + " from %s t";
+                }
+            } else if(doTaxa){
+                if  (taxa.size()>0){
+                    if (doNotReturnFullEntities){
+                        hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa)";
+                    }else{
+                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa)";
+                    }
+                }else{
+                    hql = "select " + selectWhat + " from %s t";
+                }
+            } else if(doSynonyms){
+                if (synonyms.size()>0){
+                    if (doNotReturnFullEntities){
+                        hql = "select " + selectWhat + ", 'synonym' from %s t" + " where t.id in (:synonyms)";
+                    }else{
+                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:synonyms)";
+                    }
+                }else{
+                    hql = "select " + selectWhat + " from %s t";
+                }
+            }
+
+            String classString;
+            if (doTaxa && doSynonyms){
+                classString = "TaxonBase";
+            } else if (doTaxa){
+                classString = "Taxon";
+            } else if (doSynonyms){
+                classString = "Synonym";
+            } else{//only misappliedNames
+                classString = "Taxon";
+            }
+
+            hql = String.format(hql, classString);
+
+
+            if (hql == "") return null;
+            if(!doCount){
+                hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+            }
+
+            logger.debug("hql: " + hql);
+            Query query = getSession().createQuery(hql);
+
+
+            if (doTaxa && doSynonyms){
+                // find taxa and synonyms
+                if (taxa.size()>0){
+                    query.setParameterList("taxa", taxa);
+                }
+                if (synonyms.size()>0){
+                    query.setParameterList("synonyms",synonyms);
+                }
+                if (taxa.size()== 0 && synonyms.size() == 0){
+                    return null;
+                }
+            }else if(doTaxa){
+                //find taxa
+                if (taxa.size()>0){
+                    query.setParameterList("taxa", taxa );
+                }else{
+                    return null;
+                }
+            } else if(doSynonyms){
+                // find synonyms
+                if (synonyms.size()>0){
+                    query.setParameterList("synonyms", synonyms);
+                }else{
+                    return null;
+                }
+            }	else{
+                //only misappliedNames
+                if (taxa.size()>0){
+                    query.setParameterList("taxa", taxa );
+                }else{
+                    return null;
+                }
+            }
+
+
+            return query;
+
 
     }
 
 
     /**
-     * @param clazz
      * @param searchField the field in TaxonNameBase to be searched through usually either <code>nameCache</code> or <code>titleCache</code>
      * @param queryString
      * @param classification TODO
@@ -765,14 +769,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * @param pageSize
      * @param pageNumber
      * @param doCount
+     * @param clazz
      * @return
      *
      * FIXME implement classification restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
      */
-    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, String searchField, String queryString, Classification classification,
-            MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount, boolean doIncludeMisappliedNames) {
+    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, String searchField, String queryString,
+            Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
 
-        Query query = prepareQuery(doTaxa, doSynonyms, searchField, queryString, classification,	matchMode, namedAreas, doCount, false, doIncludeMisappliedNames);
+        Query query = prepareQuery(doTaxa, doSynonyms, doIncludeMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, doCount, false);
 
         if(pageSize != null &&  !doCount) {
             query.setMaxResults(pageSize);
@@ -817,13 +822,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         boolean doTaxa = true;
         boolean doSynonyms = true;
         if (clazz.equals(Taxon.class)){
-        	doSynonyms = false;
+            doSynonyms = false;
         } else if (clazz.equals(Synonym.class)){
-        	doTaxa = false;
+            doTaxa = false;
         }
         */
-        
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount, doMisappliedNames);
+
+
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, doMisappliedNames, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount);
         if (query != null) {
             return (Long)query.uniqueResult();
         }else{
@@ -989,7 +995,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
 
         boolean doCount = false;
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, "titleCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, false);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, false, "titleCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
         if (query != null){
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1125,9 +1131,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
-                
+
         criteria = getSession().createCriteria(clazz);
-        
+
         criteria.setFetchMode( "name", FetchMode.JOIN );
         criteria.createAlias("name", "name");
 
@@ -1173,9 +1179,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
         Criteria criteria = null;
         if (clazz == null){
-        	criteria = getSession().createCriteria(TaxonBase.class);
+            criteria = getSession().createCriteria(TaxonBase.class);
         } else{
-        	criteria = getSession().createCriteria(clazz);
+            criteria = getSession().createCriteria(clazz);
         }
         criteria.setFetchMode( "name", FetchMode.JOIN );
         criteria.createAlias("name", "name");
@@ -2227,37 +2233,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return result;
     }
-
-
-	@Override
-	public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms,
-			String queryString, Classification classification,
-			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
-			Integer pageNumber, List<String> propertyPaths,
-			boolean doIncludeMisappliedNames) {
-		
-		boolean doCount = false;
-		
-		Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, doIncludeMisappliedNames);
-		
-		if (query != null){
-			List<TaxonBase> results = query.list();
-			defaultBeanInitializer.initializeAll(results, propertyPaths);
-			
-			return results;
-		}
-		
-		
-		return new ArrayList<TaxonBase>();
-	}
-
-
-
-
-
-
-
-
 
 
 }

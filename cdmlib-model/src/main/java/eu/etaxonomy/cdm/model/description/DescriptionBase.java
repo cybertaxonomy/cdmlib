@@ -34,6 +34,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 
 import eu.etaxonomy.cdm.hibernate.DescriptionBaseClassBridge;
@@ -123,6 +124,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    @ContainedIn
     private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
     @XmlElement(name = "ImageGallery")

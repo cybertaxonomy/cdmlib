@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -123,9 +124,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      */
     private Class[] indexedClasses() {
         return new Class[] {
-                DescriptionElementBase.class
-//                DescriptionBase.class,
-               // TaxonBase.class
+                DescriptionElementBase.class,
+                Classification.class,
+//                TaxonBase.class
                 };
     }
 }

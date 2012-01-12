@@ -53,6 +53,8 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -102,6 +104,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private ITaxonNameDao nameDao;
+
+    @Autowired
+    private ISearchResultBuilder searchResultBuilder;
 
     @Autowired
     private IOrderedTermVocabularyDao orderedVocabularyDao;
@@ -539,9 +544,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
                 taxa = dao.getTaxaByName(configurator.isDoTaxa(), configurator.isDoSynonyms(),
-                    configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
-                    configurator.getNamedAreas(), configurator.getPageSize(),
-                    configurator.getPageNumber(), propertyPath, configurator.isDoMisappliedNames());
+                    configurator.isDoMisappliedNames(), configurator.getTitleSearchStringSqlized(), configurator.getClassification(),
+                    configurator.getMatchMode(), configurator.getNamedAreas(),
+                    configurator.getPageSize(), configurator.getPageNumber(), propertyPath);
             }
        }
 
@@ -975,33 +980,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public Pager<TaxonBase> findByDescriptionElementFullText(String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         String luceneQueryTemplate = "titleCache:%1$s OR multilanguageText.text:%1$s OR name:%1$s";
         String luceneQuery = String.format(luceneQueryTemplate, queryString);
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), DescriptionElementBase.class);
-
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), clazz);
         TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQuery);
-        Set<Integer> taxonIds = new HashSet<Integer>(topDocsResultSet.totalHits);
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSetFromIds(luceneSearch, topDocsResultSet, dao, "inDescription.taxon.id");
 
-        for (ScoreDoc scoreDoc : topDocsResultSet.scoreDocs) {
-            Document doc = luceneSearch.getSearcher().doc(scoreDoc.doc);
-            String[] taxonIdStrings = doc.getValues("inDescription.taxon.id");
-            if(taxonIdStrings.length > 0){
-                taxonIds.add(Integer.valueOf(taxonIdStrings[0]));
-            }
-//                String[] nameIdStrings = doc.getValues("inDescription.name.id");
-        }
-
-        //TODO implement findById(Set) in BaseDao
-        List<TaxonBase> taxa = new ArrayList<TaxonBase>();
-        for(int id : taxonIds){
-            taxa.add((Taxon) dao.findById(id));
-        }
-
-        return new DefaultPagerImpl<TaxonBase>(pageNumber, taxa.size(), pageSize, taxa);
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
 
     }
 
