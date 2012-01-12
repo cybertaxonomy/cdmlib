@@ -522,27 +522,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // Taxa and synonyms
         long numberTaxaResults = 0L;
 
-        Class<? extends TaxonBase> clazz = null;
+        
         List<String> propertyPath = new ArrayList<String>();
         if(configurator.getTaxonPropertyPath() != null){
             propertyPath.addAll(configurator.getTaxonPropertyPath());
         }
-        if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
-            clazz = TaxonBase.class;
-            //propertyPath.addAll(configurator.getTaxonPropertyPath());
-            //propertyPath.addAll(configurator.getSynonymPropertyPath());
-        } else if(configurator.isDoTaxa()) {
-            clazz = Taxon.class;
-            //propertyPath = configurator.getTaxonPropertyPath();
-        } else if (configurator.isDoSynonyms()) {
-            clazz = Synonym.class;
-            //propertyPath = configurator.getSynonymPropertyPath();
-        }
         
-        if(clazz != null){
+        
+       if (configurator.isDoMisappliedNames() || configurator.isDoSynonyms() || configurator.isDoTaxa()){
             if(configurator.getPageSize() != null){ // no point counting if we need all anyway
                 numberTaxaResults =
-                    dao.countTaxaByName(clazz,
+                    dao.countTaxaByName(configurator.isDoTaxa(),configurator.isDoSynonyms(), configurator.isDoMisappliedNames(),
                         configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(),
                         configurator.getNamedAreas());
             }
@@ -553,7 +543,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     configurator.getNamedAreas(), configurator.getPageSize(),
                     configurator.getPageNumber(), propertyPath, configurator.isDoMisappliedNames());
             }
-        }
+       }
 
         if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
 

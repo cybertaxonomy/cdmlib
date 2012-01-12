@@ -350,27 +350,27 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		//long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 		
 		List<TaxonBase> results = taxonDao.getTaxaByName(true,false, "Rethera", null, MatchMode.BEGINNING, namedAreas,
-			null, null, null);
+			null, null, null, false);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
 		// 2. searching for a taxon (Rethera) contained in a specific classification
 		results = taxonDao.getTaxaByName(true, false, "Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
-			null, null, null);
+			null, null, null, false);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 		
 
 		// 3. searching for Synonyms
 		results = taxonDao.getTaxaByName(false, true, "Atropo", null, MatchMode.ANYWHERE, null,
-			null, null, null);
+			null, null, null, false);
 		assertNotNull("getTaxaByName should return a List", results);
 	
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
 		
 		// 4. searching for Synonyms
 		results = taxonDao.getTaxaByName(false, true, "Atropo", null, MatchMode.BEGINNING, null,
-			null, null, null);
+			null, null, null, false);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
 		
@@ -378,7 +378,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		// 5. searching for a Synonyms and Taxa
 		//   create a synonym relationship first
 		results = taxonDao.getTaxaByName(true, true, "A", null, MatchMode.BEGINNING, namedAreas,
-			null, null, null);
+			null, null, null, false);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find 7 taxa but found "+results.size(), results.size() == 8);
 	}
@@ -453,7 +453,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		int numberOfClassifications = classificationDao.count();
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("taxonNodes");
-		List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, "P*", null, MatchMode.BEGINNING, null, null, null, null);
+		List<TaxonBase> taxa = taxonDao.getTaxaByName(true, true, "P*", null, MatchMode.BEGINNING, null, null, null, null, false);
 		Taxon taxon = (Taxon)taxa.get(0);
 		Set<TaxonNode> nodes = taxon.getTaxonNodes();
 		assertTrue(nodes.size() == 1);
@@ -495,15 +495,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testCountTaxaByName() {
-		long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", null, MatchMode.BEGINNING, null);
+		long numberOfTaxa = taxonDao.countTaxaByName(true, false, false, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 12);
-		numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", null, MatchMode.BEGINNING, null);
+		numberOfTaxa = taxonDao.countTaxaByName(true, false, false, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 12);
-		numberOfTaxa = taxonDao.countTaxaByName(Synonym.class, "A*", null, MatchMode.BEGINNING, null);
+		numberOfTaxa = taxonDao.countTaxaByName(false, true, false, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 3);
-		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", null, MatchMode.BEGINNING, null);
+		numberOfTaxa = taxonDao.countTaxaByName(true, true, false, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 15);
-		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "Aasfwerfwf fffe", null, MatchMode.BEGINNING, null);
+		numberOfTaxa = taxonDao.countTaxaByName(true, true, false, "Aasfwerfwf fffe", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 0);
 //	FIXME implement test for search in specific classification 		
 //		Reference reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));

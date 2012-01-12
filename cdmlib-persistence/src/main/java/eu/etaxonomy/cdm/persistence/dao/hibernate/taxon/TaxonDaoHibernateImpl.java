@@ -220,7 +220,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
             Integer pageSize, Integer pageNumber) {
 
-        return getTaxaByName(doTaxa, doSynonyms, queryString, null, matchMode, null, pageSize, pageNumber, null);
+        return getTaxaByName(doTaxa, doSynonyms, queryString, null, matchMode, null, pageSize, pageNumber, null, false);
     }
 
     /*
@@ -245,13 +245,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
      */
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
+    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
         boolean doCount = false;
 
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, false);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount, doMisappliedNames);
 
         if (query != null){
             List<TaxonBase> results = query.list();
@@ -809,10 +809,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference, java.util.Set)
      */
-    public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+    public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
         MatchMode matchMode, Set<NamedArea> namedAreas) {
 
         boolean doCount = true;
+        /*
         boolean doTaxa = true;
         boolean doSynonyms = true;
         if (clazz.equals(Taxon.class)){
@@ -820,9 +821,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         } else if (clazz.equals(Synonym.class)){
         	doTaxa = false;
         }
+        */
         
-        
-        Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount, false);
+        Query query = prepareTaxaByName(doTaxa, doSynonyms, "nameCache", queryString, classification, matchMode, namedAreas, null, null, doCount, doMisappliedNames);
         if (query != null) {
             return (Long)query.uniqueResult();
         }else{
@@ -1124,9 +1125,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
-        if (clazz == null){
-        	clazz = TaxonBase.class;
-        }
+                
         criteria = getSession().createCriteria(clazz);
         
         criteria.setFetchMode( "name", FetchMode.JOIN );

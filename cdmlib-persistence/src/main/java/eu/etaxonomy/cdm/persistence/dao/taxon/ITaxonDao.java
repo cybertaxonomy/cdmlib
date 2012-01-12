@@ -92,7 +92,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param propertyPaths TODO
 	 * @return list of found taxa
 	 */
-	public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
+	public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
@@ -107,7 +107,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param propertyPaths
 	 * @return
 	 */
-	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+	public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
 			
 			MatchMode matchMode, Set<NamedArea> namedAreas);
 	
@@ -143,7 +143,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param rank
 	 * @return a count of TaxonBase instances
 	 */
-	public int countTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+	public int countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
 
 	/**
 	 * Returns a list of TaxonBase instances where the
