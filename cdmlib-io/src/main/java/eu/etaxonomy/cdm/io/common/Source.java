@@ -83,7 +83,7 @@ public class Source {
     private String mQuery;
     private String mUrl = null;
     private String mDb = null; 
-    private int mPort = 1433; //default port TODO 2 derzeit nur für SQLServer, müsste auch für andere Datenbanken umgesetzt werden
+    private int mPort = 1433; //default port TODO 2 currently only for SQLServer, needs to be implemented also for othe DBMS
     private String mDbms = null;
     private String mServer = null;
     private boolean isCursor;
