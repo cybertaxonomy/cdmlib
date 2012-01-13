@@ -221,7 +221,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					}
 					
 					//created, notes
-					success &= doIdCreatedUpdatedNotes(state, taxonNameBase, rs, nameId, NAMESPACE);
+					boolean excludeUpdated = true;
+					success &= doIdCreatedUpdatedNotes(state, taxonNameBase, rs, nameId, NAMESPACE, excludeUpdated);
 	
 					//NonViralName
 					if (taxonNameBase instanceof NonViralName){

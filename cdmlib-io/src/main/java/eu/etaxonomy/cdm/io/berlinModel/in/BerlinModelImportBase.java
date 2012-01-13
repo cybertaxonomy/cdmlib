@@ -25,11 +25,11 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.io.common.IPartitionedIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -120,18 +120,30 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		return success;
 	}
 	
-	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
-			throws SQLException{
+	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace, boolean excludeUpdated)	
+				throws SQLException{
 		boolean success = true;
 		//id
 		success &= ImportHelper.setOriginalSource(identifiableEntity, state.getConfig().getSourceReference(), id, namespace);
 		//createdUpdateNotes
-		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs);
+		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs, excludeUpdated);
 		return success;
 	}
+
 	
+	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
+			throws SQLException{
+		boolean excludeUpdated = false;
+		return doIdCreatedUpdatedNotes(state, identifiableEntity, rs, id, namespace, excludeUpdated);
+	}
 	
 	protected boolean doCreatedUpdatedNotes(BerlinModelImportState state, AnnotatableEntity annotatableEntity, ResultSet rs)
+			throws SQLException{
+		boolean excludeUpdated = false;
+		return doCreatedUpdatedNotes(state, annotatableEntity, rs, excludeUpdated);
+	}
+	
+	protected boolean doCreatedUpdatedNotes(BerlinModelImportState state, AnnotatableEntity annotatableEntity, ResultSet rs, boolean excludeUpdated)
 			throws SQLException{
 
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -140,11 +152,13 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		createdWho = handleHieraciumPilosella(createdWho);
 		Object updatedWhen = null;
 		String updatedWho = null;
-		try {
-			updatedWhen = rs.getObject("Updated_When");
-			updatedWho = rs.getString("Updated_who");
-		} catch (SQLException e) {
-			//Table "Name" has no updated when/who
+		if (excludeUpdated == false){
+			try {
+				updatedWhen = rs.getObject("Updated_When");
+				updatedWho = rs.getString("Updated_who");
+			} catch (SQLException e) {
+				//Table "Name" has no updated when/who
+			}
 		}
 		String notes = rs.getString("notes");
 		
