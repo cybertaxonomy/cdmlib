@@ -62,7 +62,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.setFlushMode(FlushMode.MANUAL);
         fullTextSession.setCacheMode(CacheMode.IGNORE);
 
-        logger.error("start indexing " + type.getName());
+        logger.info("start indexing " + type.getName());
         Transaction transaction = fullTextSession.beginTransaction();
 
         Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
@@ -78,21 +78,21 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             if (index % BATCH_SIZE == 0 || index == countResult) {
                 fullTextSession.flushToIndexes(); // apply changes to indexes
                 fullTextSession.clear(); // clear since the queue is processed
-                logger.error("\tbatch " + index / BATCH_SIZE + "/" + numOfBatches + " processed");
+                logger.info("\tbatch " + index / BATCH_SIZE + "/" + numOfBatches + " processed");
                 //if(index / BATCH_SIZE > 10 ) break;
             }
         }
 
         //transaction.commit(); // no need to commit, transaction will be committed automatically
-        logger.error("end indexing " + type.getName());
+        logger.info("end indexing " + type.getName());
     }
 
     protected <T extends CdmBase>void purge(Class<T> type) {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        logger.error("purging " + type.getName());
-//        Transaction transaction = fullTextSession.beginTransaction();
+        logger.info("purging " + type.getName());
+
         fullTextSession.purgeAll(type);
         //transaction.commit(); // no need to commit, transaction will be committed automatically
     }

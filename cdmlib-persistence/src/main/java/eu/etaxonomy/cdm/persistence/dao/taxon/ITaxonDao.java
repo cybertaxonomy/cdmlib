@@ -189,7 +189,17 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
-    public List<TaxonBase> getTaxaByCommonName(String queryString, Classification classification,
+    /**
+     * @param queryString
+     * @param classification
+     * @param matchMode
+     * @param namedAreas
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return A List of arrays. Each entry array holds the following entities: Taxon, CommonName, Description, Feature
+     */
+    public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
     MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
     Integer pageNumber, List<String> propertyPaths);
 

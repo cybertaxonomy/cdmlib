@@ -527,13 +527,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // Taxa and synonyms
         long numberTaxaResults = 0L;
 
-        
+
         List<String> propertyPath = new ArrayList<String>();
         if(configurator.getTaxonPropertyPath() != null){
             propertyPath.addAll(configurator.getTaxonPropertyPath());
         }
-        
-        
+
+
        if (configurator.isDoMisappliedNames() || configurator.isDoSynonyms() || configurator.isDoTaxa()){
             if(configurator.getPageSize() != null){ // no point counting if we need all anyway
                 numberTaxaResults =
@@ -581,13 +581,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // Taxa from common names
 
         if (configurator.isDoTaxaByCommonNames()) {
-            taxa = null;
+            taxa = new ArrayList<TaxonBase>();
             numberTaxaResults = 0;
             if(configurator.getPageSize() != null){// no point counting if we need all anyway
                 numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
             }
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-                taxa = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+                List<Object[]> commonNameResults = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+                for( Object[] entry : commonNameResults ) {
+                    taxa.add((TaxonBase) entry[0]);
+                }
             }
             if(taxa != null){
                 results.addAll(taxa);

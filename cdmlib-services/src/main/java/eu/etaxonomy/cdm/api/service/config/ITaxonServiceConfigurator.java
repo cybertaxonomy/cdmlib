@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,47 +24,47 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public interface ITaxonServiceConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
 
-	public boolean isDoTaxa();
-	
-	public void setDoTaxa(boolean doTaxa);
+    public boolean isDoTaxa();
 
-	public boolean isDoSynonyms();
-	
-	public void setDoSynonyms(boolean doSynonyms);
-	
-	public boolean isDoNamesWithoutTaxa();
-	
-	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa);
+    public void setDoTaxa(boolean doTaxa);
 
-	public boolean isDoTaxaByCommonNames();
-	
-	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames);
+    public boolean isDoSynonyms();
 
-	public Classification getClassification();
-	
-	public void setClassification(Classification classification);
-	
-	public Set<NamedArea> getNamedAreas();
+    public void setDoSynonyms(boolean doSynonyms);
 
-	public void setNamedAreas(Set<NamedArea> areas);
-	
-	public List<String> getTaxonPropertyPath();
+    public boolean isDoNamesWithoutTaxa();
 
-	public void setTaxonPropertyPath(List<String> taxonPropertyPath);
-	
-	public List<String> getTaxonNamePropertyPath();
+    public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa);
 
-	public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath);
+    public boolean isDoTaxaByCommonNames();
 
-	public List<String> getCommonNamePropertyPath();
+    public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames);
 
-	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath);
+    public Classification getClassification();
 
-	public List<String> getSynonymPropertyPath();
-	
-	public void setSynonymPropertyPath(List<String> synonymPropertyPath);
-	
-	public boolean isDoMisappliedNames();
-	
-	public void setDoMisappliedNames(boolean doMisappliedNames);
+    public void setClassification(Classification classification);
+
+    public Set<NamedArea> getNamedAreas();
+
+    public void setNamedAreas(Set<NamedArea> areas);
+
+    public List<String> getTaxonPropertyPath();
+
+    public void setTaxonPropertyPath(List<String> taxonPropertyPath);
+
+    public List<String> getTaxonNamePropertyPath();
+
+    public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath);
+
+    public List<String> getCommonNamePropertyPath(); //unused
+
+    public void setCommonNamePropertyPath(List<String> commonNamePropertyPath);
+
+    public List<String> getSynonymPropertyPath(); // unused
+
+    public void setSynonymPropertyPath(List<String> synonymPropertyPath);
+
+    public boolean isDoMisappliedNames();
+
+    public void setDoMisappliedNames(boolean doMisappliedNames);
 }

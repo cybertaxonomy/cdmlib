@@ -317,17 +317,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
      */
-    public List<TaxonBase> getTaxaByCommonName(String queryString, Classification classification,
+    public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
             boolean doCount = false;
             Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
             if (query != null){
-                List<TaxonBase> results = query.list();
+                List<Object[]> results = query.list();
                 defaultBeanInitializer.initializeAll(results, propertyPaths);
                 return results;
             }
-            return new ArrayList<TaxonBase>();
+            return new ArrayList<Object[]>();
 
     }
 
