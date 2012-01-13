@@ -149,7 +149,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 						//Details
 						dbAttrName = "details";
 						cdmAttrName = "citationMicroReference";
-						success &= ImportHelper.addStringValue(rs, nomStatus, dbAttrName, cdmAttrName);
+						success &= ImportHelper.addStringValue(rs, nomStatus, dbAttrName, cdmAttrName, true);
 						
 						//doubtful
 						if (doubtful){

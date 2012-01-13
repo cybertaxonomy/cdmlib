@@ -40,6 +40,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  */
 @Component
 public class BerlinModelAuthorImport extends BerlinModelImportBase {
+	private static final boolean BLANK_TO_NULL = true;
+
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorImport.class);
 
 	public static final String NAMESPACE = "Author";
@@ -102,15 +104,15 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					
 					dbAttrName = "Abbrev";
 					cdmAttrName = "nomenclaturalTitle";
-					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 
 					dbAttrName = "FirstName";
 					cdmAttrName = "firstname";
-					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "LastName";
 					cdmAttrName = "lastname";
-					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					String dates = rs.getString("dates");
 					if (dates != null){

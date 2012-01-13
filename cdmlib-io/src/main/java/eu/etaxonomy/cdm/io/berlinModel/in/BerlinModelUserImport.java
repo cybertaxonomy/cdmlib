@@ -101,7 +101,7 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 					
 					dbAttrName = "RealName";
 					cdmAttrName = "TitleCache";
-					success &= ImportHelper.addStringValue(rs, person, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, person, dbAttrName, cdmAttrName, false);
 	
 	
 					userMap.put(username, user);

@@ -153,6 +153,10 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 					success = handleNameRelationship(success, config, name1Id, name2Id,
 							relQualifierFk, notes, nameFrom, nameTo, citation,
 							microcitation, rule);
+					nameFrom.setTitleCache(null);
+					nameTo.setTitleCache(null);
+					nameFrom.getTitleCache();
+					nameTo.getTitleCache();
 					nameToSave.add(nameFrom);
 					
 					//TODO

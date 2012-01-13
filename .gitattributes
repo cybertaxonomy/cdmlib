@@ -198,6 +198,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/events/IoProgressEvent.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/events/LoggingIoObserver.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmIoMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmSingleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbIgnoreMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportAnnotationCreationMapper.java -text
@@ -270,6 +271,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IDbExportMapper.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IdMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IndexCounter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/MethodMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/ObjectChangeMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConverterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text

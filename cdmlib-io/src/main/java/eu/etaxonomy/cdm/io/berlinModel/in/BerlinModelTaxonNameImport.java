@@ -53,6 +53,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
+	private static final boolean BLANK_TO_NULL = true;
+
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameImport.class);
 
 	public static final String NAMESPACE = "TaxonName";
@@ -176,29 +178,29 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						dbAttrName = "genus";
 					}
 					cdmAttrName = "genusOrUninomial";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "genusSubdivisionEpi";
 					cdmAttrName = "infraGenericEpithet";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "speciesEpi";
 					cdmAttrName = "specificEpithet";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 	
 					dbAttrName = "infraSpeciesEpi";
 					cdmAttrName = "infraSpecificEpithet";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "unnamedNamePhrase";
 					cdmAttrName = "appendedPhrase";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					//Details
 					dbAttrName = "details";
 					cdmAttrName = "nomenclaturalMicroReference";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 	
 					//nomRef
 					success &= makeNomenclaturalReference(config, taxonNameBase, nameId, rs, partitioner);

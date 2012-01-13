@@ -72,19 +72,19 @@ public class ImportHelper {
 		return true;
 	}
 	
-	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, OVERWRITE);
+	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean blankToNull){
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, OVERWRITE, blankToNull);
 	}
 	
-	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean overwriteNull){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
-	}
+//	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean overwriteNull){
+//		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
+//	}
 		
 	public static boolean addBooleanValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE);
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE, false);
 	}
 
-	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull){
+	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull, boolean blankToNull){
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);

@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
+import eu.etaxonomy.cdm.io.common.mapping.CdmMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -55,7 +56,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 			this.preparedStatement = db.getConnection().prepareStatement(strPreparedStatement);
 			index = new IndexCounter(1);
 			
-			for (CdmAttributeMapperBase mapper : this.mapperList){
+			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					dbMapper.initialize(preparedStatement, index, state, dbTableName);
@@ -77,8 +78,11 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 	public boolean invoke(CdmBase cdmBase) throws SQLException{
 		try {
 			boolean result = true;
-			for (CdmAttributeMapperBase mapper : this.mapperList){
-				if (mapper instanceof IDbExportMapper){
+			for (CdmMapperBase mapper : this.mapperList){
+				if (mapper instanceof ObjectChangeMapper){
+					ObjectChangeMapper changeMapper = (ObjectChangeMapper)mapper;
+					cdmBase = changeMapper.getNewObject(cdmBase);
+				}else if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					try {
 						result &= dbMapper.invoke(cdmBase);
@@ -88,7 +92,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 						e.printStackTrace();
 						continue;
 					}
-				}else{
+				}else {
 					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
@@ -154,10 +158,10 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 		this.preparedStatement = preparedStatement;
 	}
 	
-	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
-		List<CdmAttributeMapperBase> list = this.mapperList;
-		return list;
-	}
+//	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
+//		List<CdmAttributeMapperBase> list = this.mapperList;
+//		return list;
+//	}
 	
 	
 }

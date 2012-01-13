@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbStringMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -31,6 +32,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 	private boolean isInitialized = false;;
 	private Class<? extends CdmBase> destinationClass;
 	private DbImportMapping<STATE, CONFIG> secondPathMapping;
+	private boolean blankToNull = false;
 	
 	public DbImportMapping(){
 //		this.dbTableName = tableName;
@@ -40,9 +42,11 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 		if (!isInitialized){
 			//	this.dbTableName = tableName;
 			this.destinationClass = destinationClass;
-			for (CdmAttributeMapperBase mapper: this.mapperList){
+			for (CdmMapperBase mapper: this.mapperList){
 				if (mapper instanceof IDbImportMapper){
 					((IDbImportMapper) mapper).initialize(state, destinationClass);
+				}else{
+					logger.warn("Mapper type " + mapper.getClass().getSimpleName() + " not yet implemented for DB import mapping");
 				}
 			}
 			isInitialized = true;
@@ -51,6 +55,13 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 			}
 		}
 		return true;
+	}
+
+	public void addMapper(CdmAttributeMapperBase mapper){
+		super.addMapper(mapper);
+		if (mapper instanceof DbStringMapper){
+			((DbStringMapper)mapper).setBlankToNull(isBlankToNull());
+		}
 	}
 	
 	/**
@@ -79,7 +90,7 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 		} else {
 			CdmBase objectToSave = null;
 			//		try {
-			for (CdmAttributeMapperBase mapper : this.mapperList){
+			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbImportMapper){
 					IDbImportMapper<DbImportStateBase<?,?>,CdmBase> dbMapper = (IDbImportMapper)mapper;
 					try {
@@ -105,6 +116,22 @@ public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IIm
 	
 	public void setSecondPathMapping(DbImportMapping secondPathMapping){
 		this.secondPathMapping = secondPathMapping;
+	}
+
+	/**
+	 * If <code>true</code> all {@link DbStringMapper} map blank strings to <code>null</code>
+	 * @return
+	 */
+	public boolean isBlankToNull() {
+		return blankToNull;
+	}
+
+	/**
+	 * @see #isBlankToNull()
+	 * @param blankToNull
+	 */
+	public void setBlankToNull(boolean blankToNull) {
+		this.blankToNull = blankToNull;
 	}
 
 //	/**

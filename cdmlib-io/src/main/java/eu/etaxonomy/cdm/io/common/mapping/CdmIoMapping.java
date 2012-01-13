@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.out.ObjectChangeMapper;
+
 
 
 /**
@@ -27,7 +29,7 @@ public class CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(CdmIoMapping.class);
 	
 	//protected List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
-	protected List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
+	protected List<CdmMapperBase> mapperList = new ArrayList<CdmMapperBase>();
 	Set<String> sourceAttributes = new HashSet<String>();
 	Set<String> destinationAttributes = new HashSet<String>();
 	List<String> sourceAttributeList = new ArrayList<String>();
@@ -51,6 +53,13 @@ public class CdmIoMapping {
 			sourceAttributeList.addAll(multipleMapper.getSourceAttributes());
 			destinationAttributes.addAll(multipleMapper.getDestinationAttributes());
 			destinationAttributeList.addAll(multipleMapper.getDestinationAttributeList());
+		}else if (mapper instanceof ObjectChangeMapper){
+			ObjectChangeMapper changeMapper = (ObjectChangeMapper)mapper;
+			sourceAttributes.addAll(changeMapper.getSourceAttributes());
+			sourceAttributeList.addAll(changeMapper.getSourceAttributes());
+			destinationAttributes.addAll(changeMapper.getDestinationAttributes());
+			destinationAttributeList.addAll(changeMapper.getDestinationAttributeList());
+			
 		}else{
 			logger.error("Unknown mapper type: " + mapper.getClass().getSimpleName());
 			throw new IllegalArgumentException("Unknown mapper type: " + mapper.getClass().getSimpleName());

@@ -37,6 +37,11 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		return NewInstance(dbAttributeString, bmeb, methodName);
 	}
 	
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, Class<?> parameterTypes){
+		String methodName = "get" + dbAttributeString;
+		return new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
+	}
+	
 	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, String methodName){
 		Class<?> parameterTypes = bmeb.getStandardMethodParameter();
 		MethodMapper result = new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);

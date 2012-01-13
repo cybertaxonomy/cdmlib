@@ -18,8 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.CdmMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -73,7 +72,7 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CO
 					result = false;
 					continue;
 				}
-				for (CdmAttributeMapperBase mapper : this.mapperList){
+				for (CdmMapperBase mapper : this.mapperList){
 					if (mapper == this.parentMapper){
 						parentMapper.invoke(parent);
 					}else if (mapper == this.sequenceMapper){
