@@ -304,7 +304,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 							}
 						}else {
 							//TODO
-							logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
+							logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented: RelPTaxonId = " + relPTaxonId );
 							success = false;
 						}
 						
