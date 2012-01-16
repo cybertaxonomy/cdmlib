@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public interface ILoadableTerm<T extends IDefinedTerm> {
+public interface ILoadableTerm<T extends IDefinedTerm>{
 
 	/**
 	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine represents the default language

@@ -19,7 +19,6 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,7 +38,6 @@ import org.hibernate.validator.constraints.Length;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
-import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -53,7 +51,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 	FeatureTree.class
 })
 @MappedSuperclass
-public abstract class TermBase extends IdentifiableEntity {
+public abstract class TermBase extends IdentifiableEntity{
 	private static final long serialVersionUID = 1471561531632115822L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermBase.class);
@@ -168,6 +166,9 @@ public abstract class TermBase extends IdentifiableEntity {
 		this.uri = uri;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ITerm#getLabel()
+	 */
 	@Transient
 	public String getLabel() {
 		if(getLabel(Language.DEFAULT())!=null){
@@ -181,6 +182,9 @@ public abstract class TermBase extends IdentifiableEntity {
 		return super.getUuid().toString();
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ITerm#getLabel(eu.etaxonomy.cdm.model.common.Language)
+	 */
 	public String getLabel(Language lang) {
 		Representation repr = this.getRepresentation(lang);
 		return (repr == null) ? null : repr.getLabel();
@@ -203,11 +207,17 @@ public abstract class TermBase extends IdentifiableEntity {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ITerm#getDescription()
+	 */
 	@Transient
 	public String getDescription() {
 		return this.getDescription(Language.DEFAULT());
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ITerm#getDescription(eu.etaxonomy.cdm.model.common.Language)
+	 */
 	public String getDescription(Language lang) {
 		Representation repr = this.getRepresentation(lang);
 		return (repr == null) ? null :repr.getDescription();

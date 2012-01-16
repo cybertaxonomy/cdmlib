@@ -10,11 +10,23 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
+import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IDefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
@@ -36,61 +48,64 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  * @version 1.0
  */
 @XmlEnum
-public enum ReferenceType {
+public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 	//0
 	@XmlEnumValue("Article")   
-	Article("Article", ArticleDefaultCacheStrategy.class),
+	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", ArticleDefaultCacheStrategy.class),
 	//1
 	@XmlEnumValue("Book")      
-	Book("Book", BookDefaultCacheStrategy.class),
+	Book(UUID.fromString("9280876c-accb-4c47-873d-46bbf4296f18"), "Book", BookDefaultCacheStrategy.class),
 	//2
 	@XmlEnumValue("Book Section")  
-	BookSection("Book Section", BookSectionDefaultCacheStrategy.class),
+	BookSection(UUID.fromString("b197435d-deec-46fa-9c66-e0e6c44c57fb"), "Book Section", BookSectionDefaultCacheStrategy.class),
 	//3
 	@XmlEnumValue("CD or DVD")
-	CdDvd("CD or DVD", CdDvdDefaultCacheStrategy.class),
+	CdDvd(UUID.fromString("7d7c9f56-d6fd-45aa-852f-b965afe08ec0"), "CD or DVD", CdDvdDefaultCacheStrategy.class),
 	//4
 	@XmlEnumValue("Database")
-	Database("Database", ReferenceBaseDefaultCacheStrategy.class),
+	Database(UUID.fromString("a36dbaec-0536-4a20-9fbc-e1b10ba35ea6"), "Database", ReferenceBaseDefaultCacheStrategy.class),
 	//5
 	@XmlEnumValue("Generic")
-	Generic("Generic", GenericDefaultCacheStrategy.class),
+	Generic(UUID.fromString("df149dd8-f2b4-421c-b478-acc4cce63f25"), "Generic", GenericDefaultCacheStrategy.class),
 	//6
 	@XmlEnumValue("Inproceedings")
-	InProceedings("In Proceedings", ReferenceBaseDefaultCacheStrategy.class),
+	InProceedings(UUID.fromString("a84dae35-6708-4c3d-8bb6-41b989947fa2"), "In Proceedings", ReferenceBaseDefaultCacheStrategy.class),
 	//7
 	@XmlEnumValue("Journal")
-	Journal("Journal", JournalDefaultCacheStrategy.class),
+	Journal(UUID.fromString("d8675c58-41cd-44fb-86be-e966bd4bc747"), "Journal", JournalDefaultCacheStrategy.class),
 	//8
 	@XmlEnumValue("Map")
-	Map("Map", ReferenceBaseDefaultCacheStrategy.class),
+	Map(UUID.fromString("f4acc990-a277-4d80-9192-bc04be4b1cab"), "Map", ReferenceBaseDefaultCacheStrategy.class),
 	//9
 	@XmlEnumValue("Patent")
-	Patent("Patent", ReferenceBaseDefaultCacheStrategy.class),
+	Patent(UUID.fromString("e44e0e6b-a721-417c-9b03-01926ea0bf56"), "Patent", ReferenceBaseDefaultCacheStrategy.class),
 	//10
 	@XmlEnumValue("Personal Communication")
-	PersonalCommunication("Personal Communication", ReferenceBaseDefaultCacheStrategy.class),
+	PersonalCommunication(UUID.fromString("4ba5607e-1b9d-473c-89dd-8f1c2d27ae50"), "Personal Communication", ReferenceBaseDefaultCacheStrategy.class),
 	//11
 	@XmlEnumValue("Print Series")
-	PrintSeries("Print Series", ReferenceBaseDefaultCacheStrategy.class),
+	PrintSeries(UUID.fromString("d455f30d-2685-4f57-804a-3df5ba4e0888"), "Print Series", ReferenceBaseDefaultCacheStrategy.class),
 	//12
 	@XmlEnumValue("Proceedings")
-	Proceedings("Proceedings", ReferenceBaseDefaultCacheStrategy.class),
+	Proceedings(UUID.fromString("cd934865-cb25-41f1-a155-f344ccb0c57f"), "Proceedings", ReferenceBaseDefaultCacheStrategy.class),
 	//13
 	@XmlEnumValue("Report")
-	Report("Report", ReferenceBaseDefaultCacheStrategy.class),
+	Report(UUID.fromString("4d5459b8-b65b-47cb-9579-2fe7be360d04"), "Report", ReferenceBaseDefaultCacheStrategy.class),
 	//14
 	@XmlEnumValue("Thesis")
-	Thesis("Thesis", ThesisDefaultCacheStrategy.class),
+	Thesis(UUID.fromString("cd054393-4f5e-4842-b820-b820e5732d72"), "Thesis", ThesisDefaultCacheStrategy.class),
 	//15
 	@XmlEnumValue("Web Page")
-	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class);
+	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", ReferenceBaseDefaultCacheStrategy.class);
 	
+	private static final Logger logger = Logger.getLogger(ReferenceType.class);
 	
 	private String readableString;
 	private Class<? extends IReferenceBaseCacheStrategy> cacheStrategy;
+	private UUID uuid;
 	
-	private ReferenceType(String defaultString, Class<? extends IReferenceBaseCacheStrategy> cacheStrategy){
+	private ReferenceType(UUID uuid, String defaultString, Class<? extends IReferenceBaseCacheStrategy> cacheStrategy){
+		this.uuid = uuid;
 		readableString = defaultString;
 		this.cacheStrategy = cacheStrategy;
 	}
@@ -158,6 +173,58 @@ public enum ReferenceType {
 	public boolean isSection(){
 		return (this == BookSection || this == InProceedings 
 				|| isPrintedUnit() || this == Article );
+	}
+
+	
+	public ReferenceType readCsvLine(Class<ReferenceType> termClass,
+			List<String> csvLine, java.util.Map<UUID, DefinedTermBase> terms) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public void writeCsvLine(CSVWriter writer, ReferenceType term) {
+		logger.warn("write csvLine not yet implemented");
+	}
+
+	
+	public UUID getUuid() {
+		return this.uuid;
+	}
+
+	
+	public ReferenceType getByUuid(UUID uuid) {
+		for (ReferenceType referenceType : ReferenceType.values()){
+			if (referenceType.getUuid().equals(uuid)){
+				return referenceType;
+			}
+		}
+		return null;
+	}
+
+	
+	public ReferenceType getKindOf() {
+		return null;
+	}
+
+	
+	public Set<ReferenceType> getGeneralizationOf() {
+		return new HashSet<ReferenceType>();
+	}
+
+	
+	public ReferenceType getPartOf() {
+		return null;
+	}
+
+	
+	public Set<ReferenceType> getIncludes() {
+		return new HashSet<ReferenceType>();
+	}
+
+	
+	public Set<Media> getMedia() {
+		return new HashSet<Media>();
 	}
 	
 }
