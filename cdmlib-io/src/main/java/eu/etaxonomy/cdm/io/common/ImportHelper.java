@@ -89,6 +89,9 @@ public class ImportHelper {
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);
+			if (strValue != null && blankToNull && strValue.toString().trim().equals("") ){
+				strValue = null;
+			}
 			return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull, OBLIGATORY);
 		}catch (SQLException e) {
 			logger.error("SQLException: " +  e);
