@@ -207,7 +207,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 						taxonBase.setDoubtful(true);
 					}else if(doubtful.equals("i")){
 						taxonBase.setDoubtful(false);
-						logger.warn("Doubtful = i (inactivated) does not exist in CDM. Doubtful set to false");
+						logger.warn("Doubtful = i (inactivated) does not exist in CDM. Doubtful set to false. RIdentifier: " + taxonId);
 					}
 					
 					//detail
