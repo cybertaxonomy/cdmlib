@@ -332,7 +332,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * 'Unranked infrageneric'. An infrageneric rank which is on purpose not further defined.
 	 * This sometimes holds for names from the 19th century. 
 	 */
-
 	public static final Rank INFRAGENERICTAXON(){
 		return getTermByUuid(uuidInfragenericTaxon);
 	}
