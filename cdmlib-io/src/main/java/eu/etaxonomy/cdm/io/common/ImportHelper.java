@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
@@ -291,6 +292,9 @@ public class ImportHelper {
 		T result;
 		try {
 			methodName = getGetterMethodName(cdmAttrName, isBoolean);
+			if (cdmBase.isInstanceOf(NonViralName.class)){
+				cdmBase = cdmBase.deproxy(cdmBase, NonViralName.class);
+			}
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
 			result = (T)cdmMethod.invoke(cdmBase);
 			return result;
