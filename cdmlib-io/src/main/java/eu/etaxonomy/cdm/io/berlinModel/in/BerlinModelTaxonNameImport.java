@@ -149,7 +149,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				
 				try {
 					boolean useUnknownRank = true;
-					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
+					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
 					if (rank.getId() == 0){
 						getTermService().save(rank);
 					}

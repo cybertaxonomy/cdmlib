@@ -84,6 +84,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private int maximumNumberOfNameFacts;
 	private boolean isIgnore0AuthorTeam = false;
 
+	private boolean switchSpeciesGroup = false;
 	
 	//Data Filter
 
@@ -633,6 +634,23 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setAuthorFilter(String authorFilter) {
 		this.authorFilter = authorFilter;
+	}
+
+
+
+	public boolean isSwitchSpeciesGroup() {
+		return switchSpeciesGroup;
+	}
+
+
+
+	/**
+	 * If true, the rankId for speicesGroup is changed from 59 to 57 and
+	 * 59 is used for coll. species instead
+	 * @param switchSpeciesGroup
+	 */
+	public void setSwitchSpeciesGroup(boolean switchSpeciesGroup) {
+		this.switchSpeciesGroup = switchSpeciesGroup;
 	}
 
 
