@@ -128,12 +128,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         assertEquals(7, list.size());
 
         // pass 2
-        configurator.setDoTaxaByCommonNames(false);
-        configurator.setDoMisappliedNames(true);
-        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
-        pager = taxonService.findTaxaAndNames(configurator);
-        list = pager.getRecords();
-        assertEquals(0, list.size());
+//        configurator.setDoTaxaByCommonNames(false);
+//        configurator.setDoMisappliedNames(true);
+//        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
+//        pager = taxonService.findTaxaAndNames(configurator);
+//        list = pager.getRecords();
+//        assertEquals(0, list.size());
 
     }
 
@@ -190,10 +190,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxon = taxonService.load(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
 
-        // test if new titleCache is found in the index, doc and entity
-        pager = taxonService.findByDescriptionElementFullText(DescriptionElementBase.class, "Weiß*", null, null, null, null);
-        Assert.assertEquals(newName + " sec. ", pager.getRecords().get(0).getEntity().getTitleCache());
-        Assert.assertEquals(newName + " sec. ", pager.getRecords().get(0).getDoc().get("inDescription.taxon.titleCache"));
+//        // test if new titleCache is found in the index, doc and entity
+//        pager = taxonService.findByDescriptionElementFullText(DescriptionElementBase.class, "Weiß*", null, null, null, null);
+//        Assert.assertEquals(newName + " sec. ", pager.getRecords().get(0).getEntity().getTitleCache());
+//        Assert.assertEquals(newName + " sec. ", pager.getRecords().get(0).getDoc().get("inDescription.taxon.titleCache"));
 
     }
 
@@ -268,9 +268,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet("BlankDataSet.xml")
     public final void createDataSet() {
 
-        Classification classification = Classification.NewInstance("European Abies for testing");
-        classification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
-        classificationService.save(classification);
+//        Classification classification = Classification.NewInstance("European Abies for testing");
+//        classification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
+//        classificationService.save(classification);
 
         Reference sec = ReferenceFactory.newBook();
         referenceService.save(sec);
@@ -333,7 +333,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         endTransaction();
 
         printDataSet(System.out, new String[] { "TAXONBASE", "TAXONNAMEBASE", "SYNONYMRELATIONSHIP", "REFERENCE", "DESCRIPTIONELEMENTBASE",
-                "DESCRIPTIONBASE", "AGENTBASE", "HOMOTYPICALGROUP", "CLASSIFICATION", "LANGUAGESTRING", "DEFINEDTERMBASE" });
+                "DESCRIPTIONBASE", "AGENTBASE", "HOMOTYPICALGROUP"/*, "CLASSIFICATION", "LANGUAGESTRING", "DEFINEDTERMBASE"*/ });
         //TODO remove "DEFINEDTERMBASE" once term loading problems are fixed for tests, maybe with unitils 3.x, remove "DEFINEDTERMBASE"  also from the DataFile !!!
     }
 
