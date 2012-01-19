@@ -608,10 +608,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
                 if(classification != null){
                     subTaxon.setParameter("classification", classification);
+                    if (doIncludeMisappliedNames){
+                    	subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                    }
                 }
-                if (doIncludeMisappliedNames){
-                    subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-                }
+
             }
             if(doSynonyms){
                 // find synonyms

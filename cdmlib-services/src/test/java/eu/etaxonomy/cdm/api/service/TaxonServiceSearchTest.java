@@ -264,7 +264,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         logger.info("Benchmark result - [find taxon by CommonName via lucene] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
     }
 
-    ///@Test
+    //@Test
     @DataSet("BlankDataSet.xml")
     public final void createDataSet() {
 
@@ -333,7 +333,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         endTransaction();
 
         printDataSet(System.out, new String[] { "TAXONBASE", "TAXONNAMEBASE", "SYNONYMRELATIONSHIP", "REFERENCE", "DESCRIPTIONELEMENTBASE",
-                "DESCRIPTIONBASE", "AGENTBASE", "HOMOTYPICALGROUP", "CLASSIFICATION", "LANGUAGESTRING" });
+                "DESCRIPTIONBASE", "AGENTBASE", "HOMOTYPICALGROUP", "CLASSIFICATION", "LANGUAGESTRING", "DEFINEDTERMBASE" });
+        //TODO remove "DEFINEDTERMBASE" once term loading problems are fixed for tests, maybe with unitils 3.x, remove "DEFINEDTERMBASE"  also from the DataFile !!!
     }
 
     /**
