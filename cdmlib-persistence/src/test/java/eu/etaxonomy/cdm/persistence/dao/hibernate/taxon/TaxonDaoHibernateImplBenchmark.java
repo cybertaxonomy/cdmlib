@@ -37,8 +37,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
-import com.carrotsearch.junitbenchmarks.BenchmarkRule;
+//import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
+//import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -79,9 +79,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationTest {
 
-    @Rule
-    public MethodRule benchmarkRun = new BenchmarkRule();
-
+//    @Rule
+//    public MethodRule benchmarkRun = new BenchmarkRule();
 
     @SpringBeanByType
     private ITaxonDao taxonDao;
@@ -161,7 +160,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
         logger.warn("testInit()");
         assertNotNull("Instance of ITaxonDao expected",taxonDao);
         assertNotNull("Instance of IReferenceDao expected",referenceDao);
-        
+
     }
 
     @Test
