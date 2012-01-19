@@ -374,11 +374,12 @@ public final class BerlinModelTransformer {
 	 * @param i
 	 * @return
 	 */
-	private static Rank rankId2NewRank(Integer rankId) {
+	private static Rank rankId2NewRank(Integer rankId, boolean switchRank) {
 		Rank result = null;
 		if (rankId == null){
 			return null;
 		}else if (rankId == 57){
+			
 			if (collSpeciesRank == null){
 				collSpeciesRank = new Rank();
 				Representation representation = Representation.NewInstance("Collective species", "Coll. species", "coll.", Language.ENGLISH());
@@ -391,8 +392,9 @@ public final class BerlinModelTransformer {
 		}
 		return result;
 	}
+
 	
-	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown) throws UnknownCdmTypeException{
+	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown, boolean switchSpeciesGroup) throws UnknownCdmTypeException{
 		Rank result;
 		try {
 			int rankId = rs.getInt("rankFk");
@@ -403,6 +405,13 @@ public final class BerlinModelTransformer {
 			if (logger.isDebugEnabled()){logger.debug(abbrev);}
 			if (logger.isDebugEnabled()){logger.debug(rankName);}
 			
+			if (switchSpeciesGroup){
+				if (rankId == 59){
+					rankId = 57;
+				}else if (rankId == 57){
+					rankId = 59;
+				}
+			}
 			try {
 				result = Rank.getRankByNameOrAbbreviation(abbrev);
 			} catch (UnknownCdmTypeException e) {
@@ -453,7 +462,7 @@ public final class BerlinModelTransformer {
 						case 830: return Rank.SUPERFAMILY();
 						
 						default: {
-							Rank rank = rankId2NewRank(57);
+							Rank rank = rankId2NewRank(57, switchSpeciesGroup);
 							if (rank != null){
 								return rank;
 							}
@@ -473,7 +482,8 @@ public final class BerlinModelTransformer {
 			return Rank.UNKNOWN_RANK();
 		}		
 	}
-	
+
+
 	public static Integer rank2RankId (Rank rank){
 		if (rank == null){
 			return null;
