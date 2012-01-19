@@ -9,11 +9,13 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
@@ -24,6 +26,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.mchange.util.AssertException;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
@@ -41,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -56,12 +61,16 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
+    private static final String CLASSIFICATION_UUID = "2a5ceebb-4830-4524-b330-78461bf8cb6b";
+
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
 
     @SpringBeanByType
     private ITaxonService taxonService;
+    @SpringBeanByType
+    private IClassificationService classificationService;
     @SpringBeanByType
     private IReferenceService referenceService;
     @SpringBeanByType
@@ -88,6 +97,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFindTaxaAndNames() {
 
+        // pass 1
         ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
         configurator.setTitleSearchString("Abies*");
         configurator.setMatchMode(MatchMode.BEGINNING);
@@ -95,6 +105,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         configurator.setDoSynonyms(true);
         configurator.setDoNamesWithoutTaxa(true);
         configurator.setDoTaxaByCommonNames(true);
+
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
         List<IdentifiableEntity> list = pager.getRecords();
 
@@ -114,7 +125,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         }
 
         logger.debug("number of taxa: " + list.size());
-        assertTrue(list.size() == 7);
+        assertEquals(7, list.size());
+
+        // pass 2
+        configurator.setDoTaxaByCommonNames(false);
+        configurator.setDoMisappliedNames(true);
+        configurator.setClassification(classificationService.load(UUID.fromString(CLASSIFICATION_UUID)));
+        pager = taxonService.findTaxaAndNames(configurator);
+        list = pager.getRecords();
+        assertEquals(0, list.size());
+
     }
 
     /**
@@ -244,9 +264,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         logger.info("Benchmark result - [find taxon by CommonName via lucene] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
     }
 
-//    @Test
+    @Test
     @DataSet("BlankDataSet.xml")
     public final void createDataSet() {
+
+        Classification classification = Classification.NewInstance("European Abies for testing");
+        classification.setUuid(UUID.fromString(CLASSIFICATION_UUID));
+        classificationService.save(classification);
 
         Reference sec = ReferenceFactory.newBook();
         referenceService.save(sec);
@@ -309,7 +333,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         endTransaction();
 
         printDataSet(System.out, new String[] { "TAXONBASE", "TAXONNAMEBASE", "SYNONYMRELATIONSHIP", "REFERENCE", "DESCRIPTIONELEMENTBASE",
-                "DESCRIPTIONBASE", "AGENTBASE", "HOMOTYPICALGROUP" });
+                "DESCRIPTIONBASE", "AGENTBASE", "HOMOTYPICALGROUP", "CLASSIFICATION", "LANGUAGESTRING" });
     }
 
     /**

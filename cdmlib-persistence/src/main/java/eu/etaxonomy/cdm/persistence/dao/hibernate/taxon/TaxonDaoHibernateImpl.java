@@ -774,10 +774,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      *
      * FIXME implement classification restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
      */
-    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, String searchField, String queryString,
+    private Query prepareTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String searchField, String queryString,
             Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
 
-        Query query = prepareQuery(doTaxa, doSynonyms, doIncludeMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, doCount, false);
+        Query query = prepareQuery(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, doCount, false);
 
         if(pageSize != null &&  !doCount) {
             query.setMaxResults(pageSize);
