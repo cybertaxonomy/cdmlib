@@ -599,22 +599,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             Query subTaxon = null;
             Query subSynonym = null;
-            if(doTaxa && !doSynonyms){
+            if(doTaxa){
                 // find Taxa
                 subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
-
-                //subTaxon = getSession().createQuery(taxonSubselect);
 
                 if(doAreaRestriction){
                     subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
                 }
                 if(classification != null){
                     subTaxon.setParameter("classification", classification);
-                    if (doIncludeMisappliedNames){
-                        subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-                    }
                 }
-            } else if(doSynonyms && !doTaxa){
+                if (doIncludeMisappliedNames){
+                    subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+                }
+            }
+            if(doSynonyms){
                 // find synonyms
                 subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
 
@@ -623,21 +622,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
                 if(classification != null){
                     subSynonym.setParameter("classification", classification);
-                }
-            } else if (doTaxa && doSynonyms){
-                // find taxa and synonyms
-                subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
-                subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
-                if(doAreaRestriction){
-                    subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
-                    subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
-                }
-                if(classification != null){
-                    subTaxon.setParameter("classification", classification);
-                    subSynonym.setParameter("classification", classification);
-                    if (doIncludeMisappliedNames){
-                        subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-                    }
                 }
             }
 

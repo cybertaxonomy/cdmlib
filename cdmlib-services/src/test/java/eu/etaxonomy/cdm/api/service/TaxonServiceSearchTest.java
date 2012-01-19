@@ -264,7 +264,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         logger.info("Benchmark result - [find taxon by CommonName via lucene] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
     }
 
-    @Test
+    ///@Test
     @DataSet("BlankDataSet.xml")
     public final void createDataSet() {
 
