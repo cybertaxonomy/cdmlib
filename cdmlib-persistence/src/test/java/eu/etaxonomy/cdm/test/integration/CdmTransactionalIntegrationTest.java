@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.integration;
 
@@ -21,28 +21,28 @@ import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-@Transactional(TransactionMode.DISABLED)
+@Transactional(TransactionMode.ROLLBACK)
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
 	protected static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTest.class);
 
-	/** 
-	 * The transaction manager to use  
+	/**
+	 * The transaction manager to use
 	 */
 	@SpringBeanByType
 	PlatformTransactionManager transactionManager;
 
-	/** 
-	 * Should we roll back by default? 
+	/**
+	 * Should we roll back by default?
 	 */
 	private boolean defaultRollback = true;
 
-	/** 
-	 * Should we commit the current transaction? 
+	/**
+	 * Should we commit the current transaction?
 	 */
 	private boolean	complete = false;
 
-	/** 
-	 * Number of transactions started 
+	/**
+	 * Number of transactions started
 	 */
 	private int	transactionsStarted = 0;
 
@@ -287,7 +287,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 			}
 		}
 	}
-	
+
 	protected void rollback() {
 
 		if (this.transactionStatus != null) {
@@ -300,7 +300,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Start a new transaction. Only call this method if
@@ -329,13 +329,13 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 					+ this.transactionManager + "]; rollback [" + this.isRollback() + "].");
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param tableNames
 	 */
 	protected void commitAndStartNewTransaction(final String[] tableNames) {
-		setComplete(); 
+		setComplete();
 		endTransaction();
 //		printDataSet(System.out, tableNames);
 		startNewTransaction();
