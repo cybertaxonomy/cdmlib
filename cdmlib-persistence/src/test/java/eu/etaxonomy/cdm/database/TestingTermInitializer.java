@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.database;
 
@@ -36,15 +36,15 @@ public class TestingTermInitializer extends PersistentTermInitializer {
     private static final Logger logger = Logger.getLogger(TestingTermInitializer.class);
 
 	private DataSource dataSource;
-	
+
 	private Resource termsDataSet;
-	
+
 	private Resource termsDtd;
-	
+
 	public void setTermsDataSet(Resource termsDataSet) {
 		this.termsDataSet = termsDataSet;
 	}
-	
+
 	public void setTermsDtd(Resource termsDtd) {
 		this.termsDtd = termsDtd;
 	}
@@ -53,14 +53,14 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
-	
+
 
     @PostConstruct
 	@Override
 	public void initialize() {
 		super.initialize();
 	}
-	
+
     @Override
 	public void doInitialize(){
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
@@ -69,7 +69,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 		try {
 			connection = getConnection();
 			IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
-			
+
 			DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 		} catch (Exception e) {
 			logger.error(e);
@@ -83,14 +83,17 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 				logger.error(sqle);
 			}
 		}
-		
+
 		transactionManager.commit(txStatus);
-		
+
+		txStatus = transactionManager.getTransaction(txDefinition);
 		for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
 			Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
 			UUID vocabularyUuid = vocabularyType.getUuid();
 			secondPass(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>());
 		}
+		transactionManager.commit(txStatus);
+		//txStatus = transactionManager.getTransaction(txDefinition);
 	}
 
 	protected IDatabaseConnection getConnection() throws SQLException {
