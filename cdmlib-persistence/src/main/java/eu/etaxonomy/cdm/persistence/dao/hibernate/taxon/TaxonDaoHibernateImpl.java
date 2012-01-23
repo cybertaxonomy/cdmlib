@@ -599,6 +599,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             Query subTaxon = null;
             Query subSynonym = null;
+            Query subMisappliedNames = null;
             if(doTaxa){
                 // find Taxa
                 subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
@@ -625,6 +626,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     subSynonym.setParameter("classification", classification);
                 }
             }
+            if (doIncludeMisappliedNames && !doTaxa){
+            	subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
+            	subMisappliedNames.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+            	if(doAreaRestriction){
+            		subMisappliedNames.setParameterList("namedAreasUuids", namedAreasUuids);
+                }
+                if(classification != null){
+                	subMisappliedNames.setParameter("classification", classification);
+                }
+            }
 
             List<Integer> taxa = new ArrayList<Integer>();
             List<Integer> synonyms = new ArrayList<Integer>();
@@ -635,6 +646,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 taxa = subTaxon.list();
             }else if (doSynonyms){
                 synonyms = subSynonym.list();
+            } else{
+            	taxa = subMisappliedNames.list();
             }
 
             if (doTaxa && doSynonyms){
@@ -681,6 +694,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     }
                 }else{
                     hql = "select " + selectWhat + " from %s t";
+                }
+            } else if (doIncludeMisappliedNames){
+            	
+            	if (doNotReturnFullEntities){
+                    hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa)";
+                }else{
+                    hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa)";
                 }
             }
 

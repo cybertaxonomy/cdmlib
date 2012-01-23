@@ -266,7 +266,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         Classification classification = classificationDao.load(classificationUuid);
 
-        List<TaxonBase> results = taxonDao.getTaxaByName(true, false, true, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
+        List<TaxonBase> results = taxonDao.getTaxaByName(true, false, false, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
 
         results = taxonDao.getTaxaByName(true,false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
