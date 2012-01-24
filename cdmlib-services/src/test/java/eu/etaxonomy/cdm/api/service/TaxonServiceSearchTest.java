@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -151,13 +152,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    @Ignore
     public final void testFindByDescriptionElementFullText() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
 
         Pager<SearchResult<TaxonBase>> pager;
-
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(Distribution.class, "Abies", null, null, null, null);
         Assert.assertEquals("Expecting one entity", Integer.valueOf(1), pager.getCount());
         Assert.assertEquals("Abies alba sec. ", pager.getRecords().get(0).getEntity().getTitleCache());
         Assert.assertEquals("Abies alba sec. ", pager.getRecords().get(0).getDoc().get("inDescription.taxon.titleCache"));
