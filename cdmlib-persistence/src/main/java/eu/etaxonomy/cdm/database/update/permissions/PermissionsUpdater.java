@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.v30_31.LanguageLabelUpdater;
