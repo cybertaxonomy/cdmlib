@@ -1823,6 +1823,9 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/Pager.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResult.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
