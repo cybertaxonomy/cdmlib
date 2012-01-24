@@ -102,6 +102,9 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		} catch (InvocationTargetException e) {
 			logger.error("InvocationTargetException: " + e.getLocalizedMessage());
 			return false;
+		} catch (Exception e) {
+			logger.error("Any Exception: " + e.getLocalizedMessage());
+			throw new RuntimeException(e);
 		}
 	}
 	
