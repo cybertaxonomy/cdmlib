@@ -18,8 +18,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.ProviderManager;
@@ -51,8 +51,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
-import eu.etaxonomy.cdm.common.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -86,7 +87,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public static CdmApplicationController NewInstance() {
 		logger.info("Start CdmApplicationController with default data source");
-		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
@@ -97,7 +98,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) {
 		logger.info("Start CdmApplicationController with default data source");
-		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
 
@@ -124,8 +125,30 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	}
 	
 	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor) {
-		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor);
+		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor, null);
 	}
+	
+	//TODO discuss need for listeners before commit to trunk
+//	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners) {
+//		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor,listeners);
+//	}
+
+
+	/**
+	 * @return
+	 */
+	protected static ClassPathResource getClasspathResource() {
+		return new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+	}	
+
+	/**
+	 * @return
+	 */
+	protected static CdmPersistentDataSource getDefaultDatasource() {
+		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+		return dataSource;
+	}
+
 
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
@@ -133,34 +156,38 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor){
+	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 		
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
-		
-		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+		this.applicationContextResource = applicationContextResource != null ? applicationContextResource : getClasspathResource();
 		this.progressMonitor = progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 		
-		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
+		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, listeners);
 	}
-		
+
 	
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
+	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, List<ApplicationListener> listeners){
+
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
 		logger.info("Connecting to '" + dataSource.getName() + "'");
-		progressMonitor.beginTask("Connecting to '" + dataSource.getName() + "'", 6);
-		progressMonitor.worked(1);
-
-		GenericApplicationContext applicationContext =  new GenericApplicationContext();
 		
+		MonitoredGenericApplicationContext applicationContext =  new MonitoredGenericApplicationContext();
+		int refreshTasks = 45;
+		int nTasks = 5 + refreshTasks;
+//		nTasks += applicationContext.countTasks();
+		progressMonitor.beginTask("Connecting to '" + dataSource.getName() + "'", nTasks);
+		
+//		progressMonitor.worked(1);
+
 		BeanDefinition datasourceBean = dataSource.getDatasourceBean();
 		datasourceBean.setAttribute("isLazy", false);
 		progressMonitor.subTask("Registering datasource.");
@@ -181,10 +208,21 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		MutablePropertyValues values = beanDef.getPropertyValues();
 		values.addPropertyValue("omit", omitTermLoading);*/
 		
-		progressMonitor.subTask("This might take a while ...");
-		applicationContext.refresh();
+		if (listeners != null){
+			for(ApplicationListener listener : listeners){
+				applicationContext.addApplicationListener(listener);
+			}
+		}
+		
+//		String message = "Start application context. This might take a while ...";
+////		progressMonitor.subTask(message);
+//		SubProgressMonitor subMonitor= new SubProgressMonitor(progressMonitor, 10);
+//		subMonitor.beginTask(message, 2);
+//		applicationContext.setProgressMonitor(subMonitor);
+		
+		applicationContext.refresh(new SubProgressMonitor(progressMonitor, refreshTasks));
 		applicationContext.start();
-		progressMonitor.worked(1);
+//		progressMonitor.worked(1);
 		
 		progressMonitor.subTask("Cleaning up.");
 		setApplicationContext(applicationContext);
@@ -195,25 +233,28 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		if (userCount == 0 ){
 			progressMonitor.subTask("Creating Admin User");
 			createAdminUser();
-			progressMonitor.worked(1);
 		}
+		progressMonitor.worked(1);
+
+		//CDM Meta Data
 		int metaDataCount = getCommonService().getCdmMetaData().size();
 		if (metaDataCount == 0){
 			progressMonitor.subTask("Creating Meta Data");
 			createMetadata();
-			progressMonitor.worked(1);
 		}
+		progressMonitor.worked(1);
+
 		progressMonitor.done();
 		return true;
 	}
 
-	private void createAdminUser(){
+	protected void createAdminUser(){
 		User firstUser = User.NewInstance("admin", "00000");
 		getUserService().save(firstUser);
 		logger.info("Admin user created.");
 	}
 	
-	private void createMetadata(){
+	protected void createMetadata(){
 		List<CdmMetaData> metaData = CdmMetaData.defaultMetaData();
 		getCommonService().saveAllMetaData(metaData);
 		logger.info("Metadata created.");
@@ -241,7 +282,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource){
 		//logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false);
+		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false, null);
 	}
 	
 	/**
@@ -251,7 +292,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		//logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, dbSchemaValidation, false);
+		return setNewDataSource(dataSource, dbSchemaValidation, false, null);
 	}
 	
 	/**
@@ -262,7 +303,18 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	 */
 	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
+		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, null);
+	}
+	
+	/**
+	 * Changes the ApplicationContext to the new dataSource
+	 * @param dataSource
+	 * @param dbSchemaValidation
+	 * @param omitTermLoading
+	 */
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, List<ApplicationListener> listeners){
+		logger.info("Change datasource to : " + dataSource);
+		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading, listeners);
 	}
 	
 	/**
@@ -293,14 +345,14 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	/**
 	 * closes the application context
 	 */
-	private void closeApplicationContext(){
+	protected void closeApplicationContext(){
 		if (applicationContext != null){
 			logger.info("Close ApplicationContext");
 			applicationContext.close();
 		}
 	}
 	
-	private void init(){
+	protected void init(){
 		logger.debug("Init " +  this.getClass().getName() + " ... ");
 		if (logger.isDebugEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
 		//TODO delete next row (was just for testing)
