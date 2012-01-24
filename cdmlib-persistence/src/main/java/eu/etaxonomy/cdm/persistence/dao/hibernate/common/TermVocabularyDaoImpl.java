@@ -139,4 +139,82 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		return result;
 	}
+	
+	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
+		checkNotInPriorView("TermVocabularyDao.listByTermClass2(Class<TERM> clazz, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
+		List<Integer> intermediateResults;
+		
+		if (includeSubclasses){
+			String hql = " SELECT DISTINCT trm.vocabulary.id " +
+					" FROM %s trm " +
+					" GROUP BY trm.vocabulary ";
+			hql = String.format(hql, clazz.getSimpleName());
+			Query query = getSession().createQuery(hql);
+			intermediateResults = query.list();
+		}else{
+			Criteria criteria = getSession().createCriteria(type);
+			criteria.createAlias("terms", "trms").add(Restrictions.eq("trms.class", clazz.getSimpleName()));		
+			criteria.setProjection(Projections.id());
+			intermediateResults = criteria.list();
+		}
+		if (includeEmptyVocs){
+			intermediateResults.addAll(getEmptyVocIds());
+		}
+			
+		if(intermediateResults.size() == 0) {
+			return new ArrayList<TermVocabulary<? extends TERM>>();
+		}
+		
+		Criteria criteria = getSession().createCriteria(type);
+		criteria.add(Restrictions.in("id", intermediateResults));
+		
+		if(limit != null) {
+		    criteria.setMaxResults(limit);
+	        if(start != null) {
+	    	    criteria.setFirstResult(start);
+	        }
+		}
+		
+		this.addOrder(criteria, orderHints);
+		
+		List<TermVocabulary<? extends TERM>> result = (List<TermVocabulary<? extends TERM>>)criteria.list();
+	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		return result;
+	}
+	
+	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
+		checkNotInPriorView("TermVocabularyDao.listByTermClass2(Class<TERM> clazz, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
+		List<Integer> intermediateResults;
+		
+		intermediateResults = getEmptyVocIds();
+		
+		Criteria criteria = getSession().createCriteria(type);
+		criteria.add(Restrictions.in("id", intermediateResults));
+		
+		if(limit != null) {
+		    criteria.setMaxResults(limit);
+	        if(start != null) {
+	    	    criteria.setFirstResult(start);
+	        }
+		}
+		
+		this.addOrder(criteria, orderHints);
+		
+		List<TermVocabulary> result = (List<TermVocabulary>)criteria.list();
+	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		return result;
+	}
+
+	/**
+	 * @return
+	 */
+	private List<Integer> getEmptyVocIds() {
+		List<Integer> intermediateResults;
+		String hql = " SELECT voc.id " +
+				" FROM TermVocabulary voc " +
+				" WHERE voc.terms.size = 0 ";
+		Query query = getSession().createQuery(hql);
+		intermediateResults = query.list();
+		return intermediateResults;
+	}
 }
