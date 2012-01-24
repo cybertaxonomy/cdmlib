@@ -19,4 +19,9 @@ public interface IPolytomousKeyNodeDao extends IVersionableDao<PolytomousKeyNode
 
 	public List<PolytomousKeyNode> list();
 
+	/**
+	 * @param key
+	 */
+//	public void deleteByKey(PolytomousKey key);
+
 }
