@@ -21,6 +21,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.unitils.dbunit.annotation.DataSet;
@@ -40,6 +41,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 
 public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
+
+	private static final String[] TABLE_NAMES = new String[] {"AGENTBASE", "AGENTBASE_AUD", "AGENTBASE_AGENTBASE", "AGENTBASE_AGENTBASE_AUD", "INSTITUTIONALMEMBERSHIP", "INSTITUTIONALMEMBERSHIP_AUD"};
+
 
 	@SpringBeanByType
 	private IAgentDao agentDao;
@@ -66,7 +70,6 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testCountMembers() {
-		printDataSet(System.err, new String[]{"AGENTBASE"});
 		Team team = (Team)agentDao.findByUuid(uuid);
 		assert team != null : "team must exist";
 
@@ -142,7 +145,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 	@DataSet("AgentDaoImplTest.testFind.xml")
 	public void testFindInCurrentView() {
 		Person person = (Person)agentDao.findByUuid(personUuid);
-		Assert.assertEquals("The person's firstname should be \'Benjamin\' in the current view",person.getFirstname(),"Benjamin");
+		Assert.assertEquals("The person's firstname should be \'Benjamin\' in the current view", "Benjamin", person.getFirstname());
 	}
 
 	@Test

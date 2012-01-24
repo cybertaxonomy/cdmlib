@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
@@ -24,21 +24,22 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class GroupDaoHibernateImplTest extends CdmIntegrationTest {
-	
+public class GroupDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+
 	@SpringBeanByType
 	IGroupDao groupDao;
-	
+
 	@Test
 	public void testFindGroupByUsername() {
 		Group group = groupDao.findGroupByName("Admins");
-		
+
 		assertNotNull("findGroupByName should return a group", group);
 //		assertEquals("the user should have had their authorities loaded",2,group.getAuthorities().size());
 	}
-	
+
 	@Test
 	public void findByName(){
 		String queryString = "Admins";
@@ -49,10 +50,10 @@ public class GroupDaoHibernateImplTest extends CdmIntegrationTest {
 		List<OrderHint> orderHints = null;
 		List<String> propertyPaths = null;
 		List<Group> list = groupDao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
-		
+
 		assertNotNull("A list should be returned", list);
 		assertEquals("2 groups should be returned", 2, list.size());
-		
+
 	}
 
 }
