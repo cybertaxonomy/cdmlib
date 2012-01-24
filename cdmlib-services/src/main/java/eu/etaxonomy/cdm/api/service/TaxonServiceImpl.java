@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
