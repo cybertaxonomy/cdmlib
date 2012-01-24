@@ -112,7 +112,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		String sqlSelect = " SELECT pt.*  ";
 		String sqlFrom = " FROM PTaxon pt "; 
 		if (isEuroMed(config) ){
-			sqlFrom = " PTaxon AS p INNER JOIN v_cdm_exp_taxaAll AS em ON p.RIdentifier = em.RIdentifier ";
+			sqlFrom = " FROM PTaxon AS pt INNER JOIN v_cdm_exp_taxaAll AS em ON pt.RIdentifier = em.RIdentifier ";
 			sqlSelect += " , em.MA ";
 		}
 		
