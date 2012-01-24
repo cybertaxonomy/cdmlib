@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,24 +36,35 @@ import org.apache.log4j.Logger;
  *
  */
 public class CdmUtils {
+    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
+
+
 	private static final Logger logger = Logger.getLogger(CdmUtils.class);
-	
-	
+
+
 	static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
-	
+
 	//folder seperator
 	static String folderSeperator;
 
-	
+    //TODO refactor to: public static File getUserHomeDir()
 	public static String getHomeDir() throws IOException{
+        //TODO why do we need System.getenv("USERPROFILE")? System.getProperty("user.home") is fully sufficient!!
 		String homeDirString = System.getenv("USERPROFILE") != null ? System.getenv("USERPROFILE") : System.getProperty("user.home");
-		
+
 		if( ! new File(homeDirString).canWrite()){
 			throw new IOException("Can not write to home directory. Assumed path is: " + homeDirString);
 		}
-		
+
 		return homeDirString;
 	}
+
+    public static File getCdmHomeDir() {
+        return new File(System.getProperty("user.home")+File.separator+CDM_FOLDER_NAME+File.separator);
+    }
+
+
+
 
 	/**
 	 * Returns the an InputStream for a read-only source
@@ -61,26 +72,26 @@ public class CdmUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream getReadableResourceStream(String resourceFileName) 
+    public static InputStream getReadableResourceStream(String resourceFileName)
 			throws IOException{
 		InputStream urlStream = CdmUtils.class.getResourceAsStream("/"+ resourceFileName);
 		return urlStream;
 	}
-	
+
 	/**
 	 * Returns the an InputStream for a read-only source
 	 * @param resourceFileName the resources path within the classpath(!)
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStreamReader getUtf8ResourceReader(String resourceFileName) 
+    public static InputStreamReader getUtf8ResourceReader(String resourceFileName)
 			throws IOException{
 		InputStream urlStream = CdmUtils.class.getResourceAsStream("/"+ resourceFileName);
 		InputStreamReader inputStreamReader = new InputStreamReader(urlStream, "UTF8");
 		return inputStreamReader;
 	}
 
-	
+
 	/**
 	 * @return
 	 */
@@ -95,8 +106,8 @@ public class CdmUtils {
 		}
 		return folderSeperator;
 	}
-	
-	
+
+
 	/**
 	 * @param url
 	 * @return
@@ -104,7 +115,7 @@ public class CdmUtils {
 	static private boolean urlIsJarOrBundle(URL url){
 		return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
 	}
-	
+
 	/**
 	 * Returns the file name for the file in which 'clazz' is to be found (helps finding according libraries)
 	 * @param clazz
@@ -125,30 +136,30 @@ public class CdmUtils {
 		}
 		return result;
 	}
-	
+
 	static public String testMe(){
 		String message = "This is a test";
 		System.out.println(message);
 		return message;
 	}
-	
+
 	static public String readInputLine(String inputQuestion){
 		try {
-			
+
 			System.out.print(inputQuestion);
-			BufferedReader in = new BufferedReader( new java.io.InputStreamReader( System.in )); 
-			String input; 
-			input = in.readLine(); 
+            BufferedReader in = new BufferedReader( new java.io.InputStreamReader( System.in ));
+            String input;
+            input = in.readLine();
 			return input;
 		} catch (IOException e) {
 			logger.warn("IOExeption");
 			return null;
 		}
 	}
-	
+
 
 	/**
-	 * Returns the trimmed value string if value is not <code>null</code>. 
+     * Returns the trimmed value string if value is not <code>null</code>.
 	 * Returns the empty string if value is <code>null</code>.
 	 * @param value
 	 * @return
@@ -157,7 +168,7 @@ public class CdmUtils {
 		return (value == null ? "" : value);
 	}
 
-	
+
 	/**
 	 * Returns value if value is not <code>null</code>. Returns empty string if value is <code>null</code>.
 	 * @param value
@@ -175,7 +186,7 @@ public class CdmUtils {
 	static public String Nz(String value, String defaultValue){
 		return (value == null ? defaultValue : value);
 	}
-	
+
 	/**
 	 * Returns value if value is not <code>null</code>. Returns 0 if value is <code>null</code>.
 	 * @param value
@@ -193,14 +204,14 @@ public class CdmUtils {
 	static public Long Nz(Long value){
 		return (value == null ? 0 : value);
 	}
-		
+
 	/**
 	 * Concatenates an array of strings using the defined seperator.<BR>
 	 * <code>Null</code> values are interpreted as empty strings.<BR>
 	 * If all strings are <code>null</code> then <code>null</code> is returned.
 	 * @param strings
 	 * @param seperator
-	 * @return String 
+     * @return String
 	 */
 	static public String concat(CharSequence separator, String[] strings){
 		String result = "";
@@ -226,34 +237,34 @@ public class CdmUtils {
 	 * Concatenates two strings, using the defined seperator.<BR>
 	 * <code>Null</code> values are interpreted as empty Strings.<BR>
 	 * If both strings are <code>null</code> then <code>null</code> is returned.
-	 * @see #concat(CharSequence, String[]) 
+     * @see #concat(CharSequence, String[])
 	 * @param seperator
 	 * @param string1
 	 * @param string2
-	 * @return String 
+     * @return String
 	 */
 	static public String concat(CharSequence separator, String string1, String string2){
 		String[] strings = {string1, string2};
 		return concat(separator, strings);
 	}
 
-	
+
     /** Returns a version of the input where all contiguous
      * whitespace characters are replaced with a single
      * space. Line terminators are treated like whitespace.
-     * 
+     *
      * @param inputStr
      * @return
      */
     public static CharSequence removeDuplicateWhitespace(CharSequence inputStr) {
-    	
+
         String patternStr = "\\s+";
         String replaceStr = " ";
         Pattern pattern = Pattern.compile(patternStr);
         Matcher matcher = pattern.matcher(inputStr);
         return matcher.replaceAll(replaceStr);
     }
-    
+
 
     /** Builds a list of strings by splitting an input string
      * with delimiters whitespace, comma, or semicolon
@@ -268,7 +279,7 @@ public class CdmUtils {
     	}
         return resultList;
     }
-    
+
 
 	static public boolean urlExists(String strUrl, boolean withWarning){
 		try {
@@ -288,7 +299,7 @@ public class CdmUtils {
 		};
 		return false;
 	}
-	
+
 	static public URI string2Uri(String string) {
         URI uri = null;
 		try {
@@ -300,7 +311,7 @@ public class CdmUtils {
 		}
 		return uri;
 	}
-    	
+
 	static public boolean isNumeric(String string){
 		if (string == null){
 			return false;
@@ -311,9 +322,9 @@ public class CdmUtils {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Returns true if the passed string starts with an upper case letter.
 	 * @param string
@@ -330,7 +341,7 @@ public class CdmUtils {
 				return false;
 			}
 		}
-		
+
 	}
 
 	/**
@@ -348,7 +359,7 @@ public class CdmUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Tests if two objects are equal or both null. Otherwise returns false
 	 * @param obj1
@@ -364,7 +375,7 @@ public class CdmUtils {
 		}
 		return (obj1.equals(obj2));
 	}
-	
+
 	/**
 	 * Returns false if string is null, "" or string.trim() is ""
 	 * Else true.
@@ -375,7 +386,7 @@ public class CdmUtils {
 	static public boolean isNotEmpty(String string){
 		return !isEmpty(string);
 	}
-	
+
 
 	/**
 	 * Computes all fields recursively
@@ -394,7 +405,7 @@ public class CdmUtils {
 					}
 				}
 			}
-			
+
 			//include superclass fields
 			Class superclass = clazz.getSuperclass();
 			if (superclass != null){
@@ -403,7 +414,7 @@ public class CdmUtils {
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * Returns true, if field has an annotation of type javax.persistence.Annotation
@@ -419,7 +430,7 @@ public class CdmUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Trims the string and if the string ends with a dot removes it.
 	 * @param string
