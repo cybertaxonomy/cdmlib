@@ -94,7 +94,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 			}
 			int count = preparedStatement.executeUpdate();
 			if (logger.isDebugEnabled())logger.debug("Number of rows affected: " + count);
-			for (CollectionExportMapping collectionMapping : this.collectionMappingList ){
+			for (CollectionExportMapping<STATE,CONFIG> collectionMapping : this.collectionMappingList ){
 				result &= collectionMapping.invoke(cdmBase);
 			}
 			return result;
@@ -106,7 +106,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 	}
 	
 	
-	public void addCollectionMapping(CollectionExportMapping collectionMapping){
+	public void addCollectionMapping(CollectionExportMapping<STATE,CONFIG> collectionMapping){
 		this.collectionMappingList.add(collectionMapping);
 	}
 	
