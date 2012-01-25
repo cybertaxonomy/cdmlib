@@ -174,7 +174,7 @@ public interface IService<T extends ICdmBase>{
 	 * @param transientObject the entity to be merged
 	 * @return The unique identifier of the persisted entity
 	 */
-	public UUID merge(T transientObject);
+	public T merge(T transientObject);
 	
 	/**
 	 * Returns a paged list of entities of type <T> optionally restricted

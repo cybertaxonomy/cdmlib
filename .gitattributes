@@ -1734,7 +1734,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeNotSu
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractStringComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotatableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotationService.java -text
@@ -1779,7 +1778,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeSer
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
@@ -1804,7 +1802,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceI
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeByNameComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text

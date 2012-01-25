@@ -145,7 +145,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	
 	@Override
 	@Transactional(readOnly=false)
-	//@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#username, 'changePassword') or hasRole('USER.ADMIN')")
 	public void changePasswordForUser(String username, String newPassword) {
 		Assert.hasText(username);
 		Assert.hasText(newPassword);

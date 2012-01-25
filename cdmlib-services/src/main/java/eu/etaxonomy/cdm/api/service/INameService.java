@@ -17,6 +17,8 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -43,15 +45,59 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
+	/**
+	 * Deletes a name. Depening on the configurator state links to the name will either be 
+	 * deleted or throw exceptions.<BR>
+	 * If name is <code>null</code> this method has no effect.
+	 * @param name
+	 * @param config
+	 * @throws ReferencedObjectUndeletableException 
+	 */
+	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException;
 
+	/**
+	 * Removes the given type designation from the given taxon name and deletes it from
+	 * the database if it is not connected to any other name.
+	 * If <code>typeDesignation</code> is <code>null</code> all type designations are deleted
+	 * from the given taxon name. If <code>name</code> is <code>null</code> all names are removed from
+	 * the given type designation. If both are <code>null</code> nothing happens.
+	 * @param typeDesignation
+	 * @param name
+	 * @return
+	 */
+	public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation);
+
+	
+	/**
+	 * Saves the given type designations.
+	 * @param typeDesignationCollection
+	 * @return
+	 */
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
 		
+	/**
+	 * Saves the given homotypical groups.
+	 * @param homotypicalGroups
+	 * @return
+	 */
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups);
 
+	/**
+	 * Returns all nomenclatural status.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
 	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
 
+	/**
+	 * Returns all type designations.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
 	
 	/**
