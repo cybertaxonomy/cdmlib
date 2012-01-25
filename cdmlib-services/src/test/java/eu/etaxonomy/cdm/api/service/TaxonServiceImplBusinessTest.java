@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -41,17 +42,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 public class TaxonServiceImplBusinessTest {
 
 	private Synonym s1;
+	private Synonym s2;
 	private Taxon t2;
 	private Taxon t1;
-	private TaxonServiceImpl service;
+	private ITaxonService service;
 	private String referenceDetail;
-	private Reference reference;
+	private Reference<?> reference;
 	private SynonymRelationshipType homoTypicSynonymRelationshipType;
 	private SynonymRelationshipType heteroTypicSynonymRelationshipType;
-	private NonViralName s1n;
-	private NonViralName t2n;
-	private NonViralName t1n;
-	private NonViralName s2n;
+	private NonViralName<?> s1n;
+	private NonViralName<?> t2n;
+	private NonViralName<?> t1n;
+	private NonViralName<?> s2n;
 
 	@BeforeClass
 	public static void setUpClass() throws Exception{
@@ -75,6 +77,7 @@ public class TaxonServiceImplBusinessTest {
 		s1 = Synonym.NewInstance(s1n, reference);
 		
 		s2n = NonViralName.NewInstance(null);
+		s2 = Synonym.NewInstance(s2n, reference);
 		
 		// referencing
 		homoTypicSynonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -102,13 +105,28 @@ public class TaxonServiceImplBusinessTest {
 
 		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
 		HomotypicalGroup oldGroup = s1.getName().getHomotypicalGroup();
-		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly one name", 1, oldGroup.getTypifiedNames().size());
-		Taxon taxon = service.changeSynonymToAcceptedTaxon(s1, t1,false, true, null, null);
+		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
+		boolean deleteSynonym = false;
+		boolean copyCitationInfo = true;
+		Taxon taxon = null;
+		try {
+			taxon = service.changeSynonymToAcceptedTaxon(s1, t1, deleteSynonym, copyCitationInfo, null, null);
+			Assert.fail("Change must fail for synonym and taxon in same homotypical group");
+		} catch (HomotypicalGroupChangeException e) {
+			//OK
+		} 
+		t1.addSynonym(s2, heteroTypicSynonymRelationshipType);
+		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
+		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
+		try {
+			taxon = service.changeSynonymToAcceptedTaxon(s2, t1, deleteSynonym, copyCitationInfo, null, null);
+		} catch (HomotypicalGroupChangeException e) {
+			Assert.fail("Change must not throw exception for heterotypic synonym change");
+		} 
 		
-		
-		Assert.assertTrue("Former accepted taxon should not have synonyms anymore", t1.getSynonyms().isEmpty());
+		Assert.assertTrue("Former accepted taxon should still have 1 synonym", t1.getSynonyms().size() == 1);
 		Assert.assertNotNull(taxon);
-		Assert.assertEquals(s1n, taxon.getName());
+		Assert.assertEquals(s2n, taxon.getName());
 		HomotypicalGroup newGroup = taxon.getName().getHomotypicalGroup();
 		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly one name", 1, newGroup.getTypifiedNames().size());
 	}
@@ -134,7 +152,12 @@ public class TaxonServiceImplBusinessTest {
 		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup2);
 			
 		//run
-		Taxon newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false, true, null, null);
+		Taxon newTaxon = null;
+		try {
+			newTaxon = service.changeSynonymToAcceptedTaxon(s1, t1, false, true, null, null);
+		} catch (HomotypicalGroupChangeException e1) {
+			Assert.fail("Invocation of change method should not throw an exception");
+		}
 	
 		Assert.assertEquals("Former accepted taxon should now have 2 synonyms left", 2, t1.getSynonyms().size());
 		Assert.assertEquals("Former accepted taxon should now have 1 heterotypic synonym group left", 1, t1.getHeterotypicSynonymyGroups().size());
@@ -164,7 +187,7 @@ public class TaxonServiceImplBusinessTest {
 		try {
 			service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, false, true, null, null);
 			Assert.fail("The method should throw an exception when invoked on taxa in the same homotypical group");
-		} catch (IllegalArgumentException e) {
+		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		}
 		
@@ -181,30 +204,38 @@ public class TaxonServiceImplBusinessTest {
 		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
 		service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
 	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#moveSynonymToAnotherTaxon(eu.etaxonomy.cdm.model.taxon.SynonymRelationship, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
-	 */
-	@Test
-	public final void testMoveSynonymToAnotherTaxon() {
-		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
-			
-		SynonymRelationship synonymRelation = t1.getSynonymRelations().iterator().next();
-		
-		service.moveSynonymToAnotherTaxon(synonymRelation, t2, homoTypicSynonymRelationshipType, reference, referenceDetail);
-		
-		Assert.assertTrue("t1 should have no synonym relationships", t1.getSynonymRelations().isEmpty());
-		
-		Set<SynonymRelationship> synonymRelations = t2.getSynonymRelations();
-		Assert.assertTrue("t2 should have exactly one synonym relationship", synonymRelations.size() == 1);
-		
-		synonymRelation = synonymRelations.iterator().next();
-		
-		Assert.assertEquals(t2, synonymRelation.getAcceptedTaxon());
-		Assert.assertEquals(homoTypicSynonymRelationshipType, synonymRelation.getType());
-		Assert.assertEquals(reference, synonymRelation.getCitation());
-		Assert.assertEquals(referenceDetail, synonymRelation.getCitationMicroReference());
-	}
+//
+//	Moved to TaxonServiceImplTest
+//	/**
+//	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#moveSynonymToAnotherTaxon(eu.etaxonomy.cdm.model.taxon.SynonymRelationship, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
+//	 */
+//	@Test
+//	public final void testMoveSynonymToAnotherTaxon() {
+//		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
+//			
+//		SynonymRelationship synonymRelation = t1.getSynonymRelations().iterator().next();
+//		
+//		boolean keepReference = false;
+//		boolean moveHomotypicGroup = false;
+//		try {
+//			service.moveSynonymToAnotherTaxon(synonymRelation, t2, moveHomotypicGroup, homoTypicSynonymRelationshipType, reference, referenceDetail, keepReference);
+//		} catch (HomotypicalGroupChangeException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		Assert.assertTrue("t1 should have no synonym relationships", t1.getSynonymRelations().isEmpty());
+//		
+//		Set<SynonymRelationship> synonymRelations = t2.getSynonymRelations();
+//		Assert.assertTrue("t2 should have exactly one synonym relationship", synonymRelations.size() == 1);
+//		
+//		synonymRelation = synonymRelations.iterator().next();
+//		
+//		Assert.assertEquals(t2, synonymRelation.getAcceptedTaxon());
+//		Assert.assertEquals(homoTypicSynonymRelationshipType, synonymRelation.getType());
+//		Assert.assertEquals(reference, synonymRelation.getCitation());
+//		Assert.assertEquals(referenceDetail, synonymRelation.getCitationMicroReference());
+//	}
 	
 	@Test
 	public void changeHomotypicalGroupOfSynonym(){
