@@ -29,6 +29,7 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> ex
 	
 	public enum IdType{
 		CDM_ID,
+		CDM_ID_WITH_EXCEPTIONS,
 		ORIGINAL_SOURCE_ID,
 		MAX_ID
 	}

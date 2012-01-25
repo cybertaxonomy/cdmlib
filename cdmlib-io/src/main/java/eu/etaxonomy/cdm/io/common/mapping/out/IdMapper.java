@@ -64,6 +64,8 @@ public class IdMapper extends DbSingleAttributeExportMapperBase<DbExportStateBas
 		IdType type = getState().getConfig().getIdType();
 		if (type == IdType.CDM_ID){
 			return cdmBase.getId();
+		}else if (type == IdType.CDM_ID_WITH_EXCEPTIONS){
+				return getState().getCurrentIO().getDbId(cdmBase, getState());
 		}else if(type == IdType.MAX_ID){
 			//TODO
 			logger.warn("MAX_ID not yet implemented");

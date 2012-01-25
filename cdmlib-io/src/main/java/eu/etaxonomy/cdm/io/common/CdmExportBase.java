@@ -11,13 +11,18 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
  * @author a.mueller
  * @created 01.07.2008
  * @version 1.0
  */
 public abstract class CdmExportBase<CONFIG extends IExportConfigurator, STATE extends ExportStateBase> extends CdmIoBase<STATE> implements ICdmExport<CONFIG, STATE>{
-	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdmExportBase.class);
 
+	public Object getDbId(CdmBase cdmBase, STATE state){
+		logger.warn("Not yet implemented for export base class");
+		return null;
+	}
 }
