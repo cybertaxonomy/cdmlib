@@ -13,7 +13,7 @@ import org.jdom.Document;
 import org.jdom.transform.XSLTransformException;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.print.Transformator;
 import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
 

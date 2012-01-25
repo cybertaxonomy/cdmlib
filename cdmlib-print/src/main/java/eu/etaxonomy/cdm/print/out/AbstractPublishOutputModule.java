@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * This abstract implementation of the {@link IPublishOutputModule} contains convenience methods for file 
