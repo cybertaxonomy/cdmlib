@@ -1823,6 +1823,9 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionC
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataMapper.java -text
