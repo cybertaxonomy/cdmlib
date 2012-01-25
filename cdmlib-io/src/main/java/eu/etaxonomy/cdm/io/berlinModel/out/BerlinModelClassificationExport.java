@@ -16,11 +16,12 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbConstantMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbConstantMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
@@ -61,9 +62,9 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 		return result;
 	}
 	
-	private BerlinModelExportMapping getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
 //		mapping.addMapper(IdMapper.NewInstance("RelPTaxonId"));  //is Identity column
 		
 		mapping.addMapper(MethodMapper.NewInstance("PTNameFk1", this.getClass(), "getPTNameFk1", standardMethodParameter, DbExportStateBase.class));
@@ -95,7 +96,7 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 			
 			List<Classification> list = getClassificationService().list(null,10000000,0,null,null);
 			
-			BerlinModelExportMapping mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;

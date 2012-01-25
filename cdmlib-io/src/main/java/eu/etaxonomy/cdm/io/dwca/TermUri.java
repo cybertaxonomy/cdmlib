@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.out;
+package eu.etaxonomy.cdm.io.dwca;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * @date 27.04.2011
  *
  */
-public enum TermUris {
+public enum TermUri {
 	DC_ACCESS_RIGHTS("http://purl.org/dc/terms/accessRights"),
 	DC_AUDIENCE("http://purl.org/dc/terms/audience"),	
 	DC_BIBLIOGRAPHIC_CITATION("http://purl.org/dc/terms/bibliographicCitation"),
@@ -96,7 +96,10 @@ public enum TermUris {
 	DWC_INFORMATION_WITHHELD("http://rs.tdwg.org/dwc/terms/informationWithheld"),
 	DWC_DATASET_NAME("http://rs.tdwg.org/dwc/terms/datasetName"),
 	DWC_DATASET_ID("http://rs.tdwg.org/dwc/terms/datasetID"),
-
+	
+	DWC_RESOURCE_RELATIONSHIP("http://rs.tdwg.org/dwc/terms/ResourceRelationship"),
+	DWC_TAXON("http://rs.tdwg.org/dwc/terms/Taxon"),
+	
 	DWC_TYPE_STATUS("http://rs.tdwg.org/dwc/terms/typeStatus"),
 	DWC_TYPE_DESIGNATED_BY("http://rs.tdwg.org/dwc/terms/typeDesignatedBy"),
 	DWC_OCCURRENCE_ID("http://rs.tdwg.org/dwc/terms/occurrenceID"),
@@ -123,19 +126,27 @@ public enum TermUris {
 	
 	TDWG_UNINOMIAL("http://rs.tdwg.org/ontology/voc/TaxonName#uninomial"),
 	TDWG_GENUSPART("http://rs.tdwg.org/ontology/voc/TaxonName#genusPart"),
-	TDWG_INFRAGENERICEPITHET("http://rs.tdwg.org/ontology/voc/TaxonName#infragenericEpithet");
+	TDWG_INFRAGENERICEPITHET("http://rs.tdwg.org/ontology/voc/TaxonName#infragenericEpithet"),
+
+	GBIF_TYPES_AND_SPECIMEN("http://rs.gbif.org/terms/1.0/TypesAndSpecimen"),
+	GBIF_VERNACULAR_NAMES("http://rs.gbif.org/terms/1.0/VernacularName"),
+	GBIF_IDENTIFIER("http://rs.gbif.org/terms/1.0/Identifier"),
+	GBIF_SPECIES_PROFILE("http://rs.gbif.org/terms/1.0/SpeciesProfile"),
+	GBIF_REFERENCE("http://rs.gbif.org/terms/1.0/Reference"),
+	GBIF_DESCRIPTION("http://rs.gbif.org/terms/1.0/Description"),
+	GBIF_DISTRIBUTION("http://rs.gbif.org/terms/1.0/Distribution"),
+	GBIF_IMAGE("http://rs.gbif.org/terms/1.0/Image"),
+
+	
 	;
 	
-	
-
-
-	
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermUris.class);
+	private static final Logger logger = Logger.getLogger(TermUri.class);
+
 
 	private URI uri;
 	
-	private TermUris(String uri){
+	private TermUri(String uri){
 		try {
 			this.uri = new URI(uri);
 		} catch (URISyntaxException e) {
@@ -155,6 +166,15 @@ public enum TermUris {
 	@Override
 	public String toString(){
 		return getUriString();
+	}
+	
+	public static TermUri valueOfUriString(String termUriString){
+		for (TermUri term: TermUri.values()){
+			if (term.getUriString().equals(termUriString)){
+				return term;
+			}
+		}
+		return null;
 	}
 
 }

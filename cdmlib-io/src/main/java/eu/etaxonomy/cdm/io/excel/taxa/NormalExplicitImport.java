@@ -83,44 +83,44 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		String key = keyValue.key;
 		String value = keyValue.value;
 		Integer index = keyValue.index;
-    		if (key.equalsIgnoreCase(ID_COLUMN)) {
-    			int ivalue = floatString2IntValue(value);
-    			normalExplicitRow.setId(ivalue);
-    			
-			} else if(key.equalsIgnoreCase(PARENT_ID_COLUMN)) {
-				int ivalue = floatString2IntValue(value);
-				normalExplicitRow.setParentId(ivalue);
-				
-			} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
-				normalExplicitRow.setRank(value);
-    			
-			} else if(key.equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
-				normalExplicitRow.setScientificName(value);
-    			
-			} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
-				normalExplicitRow.setAuthor(value);
-   			
-			} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN)) {
-				normalExplicitRow.setNameStatus(value);
-    			
-			} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
-				normalExplicitRow.setCommonName(value);
-    			
-			} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
-				normalExplicitRow.setLanguage(value);
+		if (key.equalsIgnoreCase(ID_COLUMN)) {
+			int ivalue = floatString2IntValue(value);
+			normalExplicitRow.setId(ivalue);
 			
-			} else if(key.equalsIgnoreCase(TDWG_COLUMN)) {
+		} else if(key.equalsIgnoreCase(PARENT_ID_COLUMN)) {
+			int ivalue = floatString2IntValue(value);
+			normalExplicitRow.setParentId(ivalue);
+			
+		} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
+			normalExplicitRow.setRank(value);
+			
+		} else if(key.equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
+			normalExplicitRow.setScientificName(value);
+			
+		} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
+			normalExplicitRow.setAuthor(value);
+			
+		} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN)) {
+			normalExplicitRow.setNameStatus(value);
+			
+		} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
+			normalExplicitRow.setCommonName(value);
+			
+		} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
+			normalExplicitRow.setLanguage(value);
+		
+		} else if(key.equalsIgnoreCase(TDWG_COLUMN)) {
 			//TODO replace still necessary?
-				value = value.replace(".0", "");
-				normalExplicitRow.putDistribution(index, value);
+			value = value.replace(".0", "");
+			normalExplicitRow.putDistribution(index, value);
+		
+		} else if(key.equalsIgnoreCase(PROTOLOGUE_COLUMN)) {
+			normalExplicitRow.putProtologue(index, value);
 			
-			} else if(key.equalsIgnoreCase(PROTOLOGUE_COLUMN)) {
-				normalExplicitRow.putProtologue(index, value);
-    			
-			} else if(key.equalsIgnoreCase(IMAGE_COLUMN)) {
-				normalExplicitRow.putImage(index, value);
-    			
-			} else {
+		} else if(key.equalsIgnoreCase(IMAGE_COLUMN)) {
+			normalExplicitRow.putImage(index, value);
+			
+		} else {
 			if (analyzeFeatures(state, keyValue)){
 				//ok
 			}else{
@@ -129,9 +129,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				state.setUnsuccessfull();
 				logger.error(message);
 			}
-    	}
+		}
 		return;
-    }
+	}
 
 
 	/** 
@@ -153,53 +153,53 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		String nameStatus = taxonDataHolder.getNameStatus();
 		Integer id = taxonDataHolder.getId();
 		UUID cdmUuid = taxonDataHolder.getCdmUuid();
-			
+		
 		TaxonBase<?> taxonBase = null;
 		if (cdmUuid != null){
 			taxonBase = getTaxonService().find(cdmUuid);
 		}else{
-		if (CdmUtils.isNotEmpty(taxonNameStr)) {
+			if (CdmUtils.isNotEmpty(taxonNameStr)) {
 
 				// Rank
-			try {
-				rank = Rank.getRankByNameOrAbbreviation(rankStr);
-			} catch (UnknownCdmTypeException ex) {
 				try {
-					rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
-				} catch (UnknownCdmTypeException e) {
+					rank = Rank.getRankByNameOrAbbreviation(rankStr);
+				} catch (UnknownCdmTypeException ex) {
+					try {
+						rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
+					} catch (UnknownCdmTypeException e) {
 						state.setUnsuccessfull();
-					logger.error(rankStr + " is not a valid rank.");
+						logger.error(rankStr + " is not a valid rank.");
+					}
 				}
-			}
-			
+				
 	            //taxon
 				taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, nameStatus);
 			}else{
 				return;
-				}
 			}
-			if (taxonBase == null){
+		}
+		if (taxonBase == null){
 			String message = "Taxon could not be created. Record will not be handled";
 			fireWarningEvent(message, "Record: " + state.getCurrentLine(), 6);
 			logger.warn(message);
 			state.setUnsuccessfull();
 			return;
-			}
-			
-			//protologue
+		}
+		
+		//protologue
 		for (String protologue : taxonDataHolder.getProtologues()){
-				TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
-				this.getNameDescription(taxonBase.getName()).addElement(textData);
-				URI uri;
-				try {
-					uri = new URI(protologue);
-					textData.addMedia(Media.NewInstance(uri, null, null, null));
-				} catch (URISyntaxException e) {
-					String warning = "URISyntaxException when trying to convert to URI: " + protologue;
-					logger.error(warning);
+			TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
+			this.getNameDescription(taxonBase.getName()).addElement(textData);
+			URI uri;
+			try {
+				uri = new URI(protologue);
+				textData.addMedia(Media.NewInstance(uri, null, null, null));
+			} catch (URISyntaxException e) {
+				String warning = "URISyntaxException when trying to convert to URI: " + protologue;
+				logger.error(warning);
 				state.setUnsuccessfull();
-				}	
-			}
+			}	
+		}
 		
 		state.putTaxon(id, taxonBase);
 		getTaxonService().save(taxonBase);
@@ -302,40 +302,40 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				}
 				
 
-			//media
+				//media
 				for (String imageUrl : taxonDataHolder.getImages()){
 					TaxonDescription td = acceptedTaxon.getImageGallery(true);
-				DescriptionElementBase mediaHolder;
-				if (td.getElements().size() != 0){
-					mediaHolder = td.getElements().iterator().next();
-				}else{
-					mediaHolder = TextData.NewInstance(Feature.IMAGE());
-					td.addElement(mediaHolder);
-				}
-				try {
+					DescriptionElementBase mediaHolder;
+					if (td.getElements().size() != 0){
+						mediaHolder = td.getElements().iterator().next();
+					}else{
+						mediaHolder = TextData.NewInstance(Feature.IMAGE());
+						td.addElement(mediaHolder);
+					}
+					try {
 						Media media = getImageMedia(imageUrl, READ_MEDIA_DATA, false);
-					mediaHolder.addMedia(media);
-				} catch (MalformedURLException e) {
-					logger.warn("Can't add media: " + e.getMessage());
+						mediaHolder.addMedia(media);
+					} catch (MalformedURLException e) {
+						logger.warn("Can't add media: " + e.getMessage());
 						state.setUnsuccessfull();
+					}
 				}
-			}
 
-			//tdwg label
+				//tdwg label
 				for (String tdwg : taxonDataHolder.getDistributions()){
 					TaxonDescription td = this.getTaxonDescription(acceptedTaxon, state.getConfig().getSourceReference() ,false, true);
-				NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg);
-				if (area == null){
-					area = TdwgArea.getAreaByTdwgLabel(tdwg);
-				}
-				if (area != null){
-					Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
-					td.addElement(distribution);
-				}else{
-					String message = "TDWG area could not be recognized: " + tdwg;
-					logger.warn(message);
+					NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg);
+					if (area == null){
+						area = TdwgArea.getAreaByTdwgLabel(tdwg);
+					}
+					if (area != null){
+						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+						td.addElement(distribution);
+					}else{
+						String message = "TDWG area could not be recognized: " + tdwg;
+						logger.warn(message);
 						state.setUnsuccessfull();
-				}
+					}
 				}
 				
 				//features
@@ -369,7 +369,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				TextData textData = TextData.NewInstance(feature);
 				textData.putText(language, featureText);
 				td.addElement(textData);
-			
+				
 				SourceDataHolder sourceDataHolder = taxonDataHolder.getFeatureTextReferences(featureUuid, i);
 				List<Map<SourceType, String>> sourceList = sourceDataHolder.getSources();
 				for (Map<SourceType, String> sourceMap : sourceList){
@@ -390,9 +390,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						}else if (type.equals(SourceType.RefExtension)) {
 							ExtensionType extensionType = getExtensionType(state, uuidRefExtension, "RefExtension", "Reference Extension", "RefExt.");
 							Extension extension = Extension.NewInstance(ref, value, extensionType);
-		}
+						}
 						refExists = true;
-    }
+					}
 					if (refExists){
 						ref = getReferenceAccordingToConfig(ref, state);
 						source.setCitation(ref);
@@ -424,28 +424,28 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		return result;
 	}
 
-			
+	
 	private Map<String, UUID> authorMapping = new HashMap<String, UUID>();
 	private Map<UUID, TeamOrPersonBase> authorStore = new HashMap<UUID, TeamOrPersonBase>();
-							
+	
 	private TeamOrPersonBase getAuthorAccordingToConfig(String value, TaxonExcelImportState state) {
 		TeamOrPersonBase result = null;
 		UUID authorUuid = authorMapping.get(value);
 		if (authorUuid != null){
 			result = authorStore.get(authorUuid);
-						}
+		}
 		if (result == null){
 			//TODO parsing
 			TeamOrPersonBase author = Team.NewInstance();
 			author.setTitleCache(value, true);
 			result = author; 
 			authorStore.put(result.getUuid(), result);
-					}
+		}
 		if (authorUuid == null){
 			authorMapping.put(value, result.getUuid());
-					}
+		}
 		return result;
-				}
+	}
 
 
 	private Map<String, UUID> languageMapping = new HashMap<String, UUID>();
@@ -453,7 +453,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	private Language getFeatureLanguage(String featureLanguage, TaxonExcelImportState state) {
 		if (StringUtils.isBlank(featureLanguage)){
 			return null;
-			}
+		}
 		UUID languageUuid = languageMapping.get(featureLanguage);
 		if (languageUuid == null){
 			Language result = getTermService().getLanguageByIso(featureLanguage);

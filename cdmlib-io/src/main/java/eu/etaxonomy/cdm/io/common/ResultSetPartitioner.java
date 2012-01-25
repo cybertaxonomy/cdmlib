@@ -148,7 +148,9 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 			logger.info("Saved " + getCurrentNumberOfRows() + " " + partitionedIO.getPluralString() );
 			profiler.print();
 		}catch(Exception e){
-			throw new RuntimeException(e);
+			String message = "Exception (%s) occurred while handling import partition for %s.";
+			message = String.format(message, e.getLocalizedMessage(), partitionedIO.getPluralString());
+			throw new RuntimeException(message, e);
 		}
 	}
 	

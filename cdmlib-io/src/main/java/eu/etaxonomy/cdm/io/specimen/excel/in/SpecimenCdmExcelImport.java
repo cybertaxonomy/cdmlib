@@ -133,64 +133,64 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		SpecimenRow row = state.getCurrentRow();
 		String value = keyValue.value;
 		if(keyValue.key.matches(BASIS_OF_RECORD_COLUMN)) {
-				row.setBasisOfRecord(value);
+			row.setBasisOfRecord(value);
 		} else if(keyValue.key.matches(COUNTRY_COLUMN)) {
-				row.setCountry(value);
+			row.setCountry(value);
 		} else if(keyValue.key.matches(ISO_COUNTRY_COLUMN)) {
-				row.setIsoCountry(value);
+			row.setIsoCountry(value);
 		} else if(keyValue.key.matches(LOCALITY_COLUMN)) {
-				row.setLocality(value);
+			row.setLocality(value);
 		} else if(keyValue.key.matches(FIELD_NOTES_COLUMN)) {
-				row.setLocality(value);
+			row.setLocality(value);
 		} else if(keyValue.key.matches(ALTITUDE_COLUMN)) {
-				row.setAltitude(value);		
+			row.setAltitude(value);		
 		} else if(keyValue.key.matches(ALTITUDE_MAX_COLUMN)) {
-				row.setAltitudeMax(value);		
+			row.setAltitudeMax(value);		
 		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
 			row.putCollector(keyValue.index, value);		
 		} else if(keyValue.key.matches(PRIMARY_COLLECTOR_COLUMN)) {
 			row.setPrimaryCollector(value);		
 		} else if(keyValue.key.matches(ECOLOGY_COLUMN)) {
-				row.setEcology(value);
+			row.setEcology(value);
 		} else if(keyValue.key.matches(PLANT_DESCRIPTION_COLUMN)) {
-				row.setPlantDescription(value);		
+			row.setPlantDescription(value);		
 		} else if(keyValue.key.matches(SEX_COLUMN)) {
-				row.setSex(value);
+			row.setSex(value);
 		} else if(keyValue.key.matches(COLLECTION_DATE_COLUMN)) {
-				row.setCollectingDate(value);		
+			row.setCollectingDate(value);		
 		} else if(keyValue.key.matches(COLLECTION_DATE_END_COLUMN)) {
-				row.setCollectingDateEnd(value);		
+			row.setCollectingDateEnd(value);		
 		} else if(keyValue.key.matches(COLLECTORS_COLUMN)) {
 			row.setCollectors(value);	
 		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
 			row.putCollector(keyValue.index, value);	
 		} else if(keyValue.key.matches(COLLECTORS_NUMBER_COLUMN)) {
-				row.setCollectorsNumber(value);		
+			row.setCollectorsNumber(value);		
 		} else if(keyValue.key.matches(LONGITUDE_COLUMN)) {
-				row.setLongitude(value);		
+			row.setLongitude(value);		
 		} else if(keyValue.key.matches(LATITUDE_COLUMN)) {
-				row.setLatitude(value);		
+			row.setLatitude(value);		
 		} else if(keyValue.key.matches(REFERENCE_SYSTEM_COLUMN)) {
-				row.setReferenceSystem(value);		
+			row.setReferenceSystem(value);		
 		} else if(keyValue.key.matches(ERROR_RADIUS_COLUMN)) {
-				row.setErrorRadius(value);		
+			row.setErrorRadius(value);		
 		} else if(keyValue.key.matches(AREA_COLUMN)) {
 			if (keyValue.postfix != null){
 				row.addLeveledArea(keyValue.postfix, value);		
-				}else{
-					logger.warn("Not yet implemented");
-				}
+			}else{
+				logger.warn("Not yet implemented");
+			}
+		
 			
-				
-				
+			
 		} else if(keyValue.key.matches(ACCESSION_NUMBER_COLUMN)) {
-				row.setLocality(value);		
+			row.setLocality(value);		
 		} else if(keyValue.key.matches(BARCODE_COLUMN)) {
-				row.setBarcode(value);		
+			row.setBarcode(value);		
 		} else if(keyValue.key.matches(UNIT_NOTES_COLUMN)) {
 			row.putUnitNote(keyValue.index, value);		
+		
 			
-				
 		} else if(keyValue.key.matches(FAMILY_COLUMN)) {
 			row.putDeterminationFamily(keyValue.index, value);		
 		} else if(keyValue.key.matches(GENUS_COLUMN)) {
@@ -215,18 +215,18 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			row.putDeterminationDeterminedBy(keyValue.index, value);			
 		} else if(keyValue.key.matches(DETERMINED_WHEN_COLUMN)) {
 			row.putDeterminationDeterminedWhen(keyValue.index, value);			
-			
+		
 		} else if(keyValue.key.matches(COLLECTION_CODE_COLUMN)) {
-				row.setCollectionCode(value);		
+			row.setCollectionCode(value);		
 		} else if(keyValue.key.matches(COLLECTION_COLUMN)) {
-				row.setCollection(value);		
-			
+			row.setCollection(value);		
+		
 		} else if(keyValue.key.matches(TYPE_CATEGORY_COLUMN)) {
 			row.putTypeCategory(keyValue.index, getSpecimenTypeStatus(state, value));	
 		} else if(keyValue.key.matches(TYPIFIED_NAME_COLUMN)) {
 			row.putTypifiedName(keyValue.index, getTaxonName(state, value));		
-			
-			
+		
+		
 		} else if(keyValue.key.matches(SOURCE_COLUMN)) {
 			row.putSourceReference(keyValue.index, getOrMakeReference(state, value));	
 		} else if(keyValue.key.matches(ID_IN_SOURCE_COLUMN)) {
@@ -234,17 +234,17 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		} else if(keyValue.key.matches(EXTENSION_COLUMN)) {
 			if (keyValue.postfix != null){
 				row.addExtension(keyValue.postfix, value);		
-				}else{
-					logger.warn("Extension without postfix not yet implemented");
-				}
-				
-			}else {
+			}else{
+				logger.warn("Extension without postfix not yet implemented");
+			}
+			
+		}else {
 			state.setUnsuccessfull();
 			logger.error("Unexpected column header " + keyValue.originalKey);
-			}
+		}
 
     	return;
-    	}
+	}
 
 
 	@Override

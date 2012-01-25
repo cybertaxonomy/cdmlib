@@ -72,6 +72,23 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	public BerlinModelNameFactsImport(){
 		super();
 	}
+	
+	
+	
+
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
+			String result = super.getIdQuery(state);
+			result += " WHERE ptNameFk IN (SELECT NameId FROM " + state.getConfig().getNameIdTable() + ")";
+			return result;
+		}else{
+			return super.getIdQuery(state);
+		}
+	}
+
+
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
@@ -136,7 +153,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 								description.addElement(protolog);
 								taxonNameBase.addDescription(description);
 								if (citation != null){
-									description.addDescriptionSource(citation);
+									description.addSource(null, null, citation, null);
 									protolog.addSource(null, null, citation, nameFactRefDetail, null, null);
 								}
 							}//end NAME_FACT_PROTOLOGUE

@@ -8,37 +8,35 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 
 /**
  * @author a.mueller
  * @created 10.06.2009
  * @version 1.0
  */
-public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
-	private static final Logger logger = Logger.getLogger(DbIntegerAnnotationMapper.class);
+public class DbIntegerExtensionMapper extends DbExtensionMapper {
+	private static final Logger logger = Logger.getLogger(DbIntegerExtensionMapper.class);
 
 
 	
-	public static DbIntegerAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString){
-		return new DbIntegerAnnotationMapper(annotationPrefix, dbAttributeString, null);
+	public static DbIntegerExtensionMapper NewInstance(ExtensionType extensionType, String dbAttributeString){
+		return new DbIntegerExtensionMapper(extensionType, dbAttributeString);
 	}
-	
-	public static DbIntegerAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString, Integer defaultValue){
-		return new DbIntegerAnnotationMapper(annotationPrefix, dbAttributeString, defaultValue);
-	}
+
 
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	private DbIntegerAnnotationMapper(String annotationPrefix, String dbAttributeString, Integer defaultValue) {
-		super("annotations", dbAttributeString, defaultValue);
+	private DbIntegerExtensionMapper(ExtensionType extensionType, String dbAttributeString) {
+		super(extensionType, dbAttributeString);
 	}
 
 	/* (non-Javadoc)

@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
@@ -42,12 +43,18 @@ public class BerlinModelFactsImportValidator implements IOValidator<BerlinModelI
 	private boolean checkDesignationRefsExist(BerlinModelImportState state){
 		try {
 			boolean result = true;
+			BerlinModelImportConfigurator config = state.getConfig();
 			Source source = state.getConfig().getSource();
-			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
+			String strQuery = "SELECT Count(*) as n " +
 					" FROM Fact " +
 					" WHERE (NOT (PTDesignationRefFk IS NULL) ) OR " +
                       " (NOT (PTDesignationRefDetailFk IS NULL) )";
-			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+			
+			if (StringUtils.isNotBlank(config.getFactFilter())){
+				strQuery += String.format(" AND (%s) ", config.getFactFilter()) ; 
+			}
+			
+			ResultSet rs = source.getResultSet(strQuery);
 			rs.next();
 			int count = rs.getInt("n");
 			if (count > 0){
@@ -67,12 +74,18 @@ public class BerlinModelFactsImportValidator implements IOValidator<BerlinModelI
 	private boolean checkFactsForSynonyms(BerlinModelImportState state){
 		try {
 			boolean result = true;
-			Source source = state.getConfig().getSource();
-			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
+			BerlinModelImportConfigurator config = state.getConfig();
+			Source source = config.getSource();
+			String strQuery = "SELECT Count(*) as n " +
 					" FROM Fact " +
 						"INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk" +
-					" WHERE PTaxon.StatusFk IN (2, 3, 4)";
-			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+					" WHERE PTaxon.StatusFk IN (2, 3, 4) ";
+			
+			if (StringUtils.isNotBlank(config.getFactFilter())){
+				strQuery += String.format(" AND (%s) ", config.getFactFilter()) ; 
+			}
+			
+			ResultSet rs = source.getResultSet(strQuery);
 			rs.next();
 			int count = rs.getInt("n");
 			if (count > 0){

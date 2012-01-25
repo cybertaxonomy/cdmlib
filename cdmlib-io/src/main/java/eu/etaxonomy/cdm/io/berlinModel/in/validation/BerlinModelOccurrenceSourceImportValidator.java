@@ -36,7 +36,7 @@ public class BerlinModelOccurrenceSourceImportValidator implements IOValidator<B
 		BerlinModelImportConfigurator bmiConfig = state.getConfig();
 //		result &= checkTaxonIsAccepted(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
-		logger.warn("Checking for OccurrenceSources not yet implemented");
+		System.out.println("Checking for OccurrenceSources not yet implemented");
 		return result;
 	}
 	

@@ -28,7 +28,7 @@ public class BerlinModelUserImportValidator implements IOValidator<BerlinModelIm
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for users not yet implemented");
+		System.out.println("Checking for users not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

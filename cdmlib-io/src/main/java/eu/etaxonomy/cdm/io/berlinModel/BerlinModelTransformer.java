@@ -51,7 +51,31 @@ public final class BerlinModelTransformer {
 	
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
-
+	
+	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
+	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
+	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
+	public static UUID uuidEasternEuropeanRussia = UUID.fromString("3f013375-0e0a-40c3-8a14-84c0535fab40");
+	public static UUID uuidSerbiaMontenegro = UUID.fromString("8926dbe6-863e-47a9-98a0-7dc9ed2c57f7");
+	public static UUID uuidLebanonSyria = UUID.fromString("0c45f250-99da-4b19-aa89-c3e56cfdf103");
+	public static UUID uuidUssr = UUID.fromString("a512e00a-45f3-4be5-82fa-bba8d675696f");
+	public static UUID uuidSicilyMalta = UUID.fromString("424d81ee-d272-4ae8-9600-0a334049cd72");
+	public static UUID uuidFlores = UUID.fromString("ef0067c2-8bbb-4e37-8462-97b03f51ba43");
+	public static UUID uuidRussiaNorthern = UUID.fromString("c23bc1c9-a775-4426-b883-07d4d7d47eed");
+	public static UUID uuidRussiaBaltic = UUID.fromString("579dad44-9439-4b19-8716-ab90d8f27944");
+	public static UUID uuidRussiaCentral = UUID.fromString("8bbc8c6a-2ef2-4024-ad51-66fe34c70092");
+	public static UUID uuidRussiaSouthWest = UUID.fromString("daa5c207-5567-4690-8742-5e4d153b6a64");
+	public static UUID uuidRussiaSouthEast = UUID.fromString("e8516598-b529-489e-9ee8-63bbbd295c1b");
+	public static UUID uuidEastAegeanIslands = UUID.fromString("1c429593-c493-46e6-971a-0d70be690da8");
+	public static UUID uuidTurkishEastAegeanIslands = UUID.fromString("ba35dba3-ac70-41ae-81c2-2070943f44f2");
+	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
+	public static UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
+	public static UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
+	
+	//language areas
+	public static UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
+	public static UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
+	
 	
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
@@ -109,6 +133,7 @@ public final class BerlinModelTransformer {
 	public static int NAME_REL_IS_REJECTED_IN_FAVOUR_OF = 14;
 	public static int NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF = 15;
 	public static int NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF = 16;
+	public static int NAME_REL_IS_ALTERNATIVE_NAME_FOR = 17;
 	public static int NAME_REL_HAS_SAME_TYPE_AS = 18;
 	public static int NAME_REL_IS_LECTOTYPE_OF = 61;
 	public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;
@@ -349,11 +374,12 @@ public final class BerlinModelTransformer {
 	 * @param i
 	 * @return
 	 */
-	private static Rank rankId2NewRank(Integer rankId) {
+	private static Rank rankId2NewRank(Integer rankId, boolean switchRank) {
 		Rank result = null;
 		if (rankId == null){
 			return null;
 		}else if (rankId == 57){
+			
 			if (collSpeciesRank == null){
 				collSpeciesRank = new Rank();
 				Representation representation = Representation.NewInstance("Collective species", "Coll. species", "coll.", Language.ENGLISH());
@@ -366,8 +392,9 @@ public final class BerlinModelTransformer {
 		}
 		return result;
 	}
+
 	
-	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown) throws UnknownCdmTypeException{
+	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown, boolean switchSpeciesGroup) throws UnknownCdmTypeException{
 		Rank result;
 		try {
 			int rankId = rs.getInt("rankFk");
@@ -378,6 +405,13 @@ public final class BerlinModelTransformer {
 			if (logger.isDebugEnabled()){logger.debug(abbrev);}
 			if (logger.isDebugEnabled()){logger.debug(rankName);}
 			
+			if (switchSpeciesGroup){
+				if (rankId == 59){
+					rankId = 57;
+				}else if (rankId == 57){
+					rankId = 59;
+				}
+			}
 			try {
 				result = Rank.getRankByNameOrAbbreviation(abbrev);
 			} catch (UnknownCdmTypeException e) {
@@ -428,7 +462,7 @@ public final class BerlinModelTransformer {
 						case 830: return Rank.SUPERFAMILY();
 						
 						default: {
-							Rank rank = rankId2NewRank(57);
+							Rank rank = rankId2NewRank(57, switchSpeciesGroup);
 							if (rank != null){
 								return rank;
 							}
@@ -448,7 +482,8 @@ public final class BerlinModelTransformer {
 			return Rank.UNKNOWN_RANK();
 		}		
 	}
-	
+
+
 	public static Integer rank2RankId (Rank rank){
 		if (rank == null){
 			return null;
@@ -680,6 +715,24 @@ public final class BerlinModelTransformer {
 		//	}else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {return NAME_REL_IS_TYPE_OF;
 			
 			
+	}
+	
+	public static UUID getWebMarkerUuid (int markerCategoryId){
+		if (markerCategoryId == 1){
+			return UUID.fromString("d8554418-d1ae-471d-a1bd-a0cbc7ab860c");  //any as not to find in cichorieae
+		}else if (markerCategoryId == 2){
+			return UUID.fromString("7f189c48-8632-4870-9ec8-e4d2489f324e");
+		}else if (markerCategoryId == 3){
+			return UUID.fromString("9a115e6b-8210-4dd3-825a-6fed11016c63");
+		}else if (markerCategoryId == 4){
+			return UUID.fromString("1d287011-2054-41c5-a919-17ac1d0a9270");
+		}else if (markerCategoryId == 9){
+			return UUID.fromString("cc5eca5c-1ae5-4feb-9a95-507fc167b0c9");
+		}else{
+			logger.warn("Unknown webMarker category: " + markerCategoryId);
+			return null;
+		}
+		
 	}
 	
 	

@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.Source;
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelExportConfigurator extends DbExportConfiguratorBase implements IExportConfigurator{
+public class BerlinModelExportConfigurator extends DbExportConfiguratorBase<BerlinModelExportState> implements IExportConfigurator<BerlinModelExportState>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 
@@ -95,7 +95,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public ExportStateBase getNewState() {
+	public BerlinModelExportState getNewState() {
 		return new BerlinModelExportState(this);
 	}
 	

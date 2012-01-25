@@ -48,7 +48,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	@Override
 	protected void doInvoke(STATE state){
 		
-    	logger.debug("Importing excel data");
+		logger.debug("Importing excel data");
     	
     	configurator = state.getConfig();
     	

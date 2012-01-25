@@ -111,7 +111,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		TaxonDescription description = TaxonDescription.NewInstance();
 		description.setTitleCache(getDescriptionTitle(state), true);
 		if (modsReference != null){
-			description.addDescriptionSource(modsReference);
+			description.addSource(null, null, modsReference, null);
 		}
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);

@@ -112,7 +112,7 @@ import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
  * 
  */
 @Component
-public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<MarkupImportState> {
+public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<MarkupImportState> {
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
 	private static final boolean CREATE_NEW = true;
@@ -136,6 +136,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	private static final String BR = "br";
 	private static final String CHAR = "char";
 	private static final String CITATION = "citation";
+	private static final String COLLECTION_AND_TYPE = "collectionAndType";
 	private static final String COLLECTION_TYPE_STATUS = "collectionTypeStatus";
 	private static final String COLLECTOR = "collector";
 	private static final String COORDINATES = "coordinates";
@@ -191,6 +192,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	private static final String NOTES = "notes";
 	private static final String NUM = "num";
 	private static final String ORIGINAL_DETERMINATION = "originalDetermination";
+	private static final String PAGES = "pages";
 	private static final String PARAUT = "paraut";
 	private static final String PUBFULLNAME = "pubfullname";
 	private static final String PUBLICATION = "publication";
@@ -327,7 +329,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			// "Start", 16);
 
 		}
-		 
+		
 		return;
 
 	}
@@ -363,8 +365,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(event.asEndElement());
 					} else {
 						handleUnexpectedElement(event);
-		}
-	}
+					}
+				}
 			} else if (event.isStartElement()) {
 				if (isStartingElement(event, META_DATA)) {
 					handleMetaData(state, reader, event);
@@ -380,10 +382,10 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(event);
 				} else {
 					handleUnexpectedStartElement(event);
-		}
+				}
 			} else {
 				handleUnexpectedElement(event);
-	}
+			}
 		}
 		throw new IllegalStateException("Publication has no ending element");
 	}
@@ -398,7 +400,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				return;
 			} else if (isStartingElement(next, DEFAULT_MEDIA_URL)) {
 				String baseUrl = getCData(state, reader, next);
-			try {
+				try {
 					new URL(baseUrl);
 					state.setBaseMediaUrl(baseUrl);
 				} catch (MalformedURLException e) {
@@ -432,7 +434,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				for (PolytomousKeyNode node : keyNodesToSave){
 					PolytomousKey key = node.getKey();
 					keySet.add(key);
-					}
+				}
 				save(keySet, state);
 				//unmatched key leads
 				UnmatchedLeads unmatched = state.getUnmatchedLeads();
@@ -467,7 +469,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		Rank lastRank = lastTaxon.getName().getRank();
 		if (lastTaxon.getTaxonNodes().size() > 0) {
 			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
-			if (thisRank.isLower(lastRank)) {
+			if (thisRank == null){
+				String message = "rank is undefined for taxon '%s'. Can't create classification without rank.";
+				message = String.format(message, taxon.getName().getTitleCache());
+				fireWarningEvent(message, makeLocationStr(dataLocation), 6);
+			}else if (thisRank.isLower(lastRank)) {
 				lastNode.addChildTaxon(taxon, null, null, null);
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			} else if (thisRank.equals(lastRank)) {
@@ -477,10 +483,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
 				} else {
 					tree.addChildTaxon(taxon, null, null, null);
-	}
+				}
 			} else if (thisRank.isHigher(lastRank)) {
-				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),
-						dataLocation);
+				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),	dataLocation);
 				// TaxonNode parentNode = handleTaxonRelation(state, taxon,
 				// lastNode.getParent().getTaxon());
 				// parentNode.addChildTaxon(taxon, null, null, null);
@@ -510,13 +515,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				if (result == null) {
 					result = createNewClassification(state);
 					result.setUuid(uuid);
+				}
 			}
-		}
 			state.putTree(null, result);
-	}
+		}
 		save(result, state);
 		return result;
-		}
+	}
 
 	private Classification createNewClassification(MarkupImportState state) {
 		Classification result;
@@ -542,7 +547,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					checkMandatoryElement(hasTitle, parentEvent, TAXONTITLE);
 					checkMandatoryElement(hasNomenclature, parentEvent,	NOMENCLATURE);
 					handleUnexpectedAttributes(parentEvent.getLocation(),attributes);
-			
+					
 					makeKeyNodes(state, parentEvent, taxonTitle);
 					state.setCurrentTaxon(null);
 					state.setCurrentTaxonNum(null);
@@ -556,6 +561,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, REFERENCES)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, FIGURE_REF)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else {
@@ -584,7 +592,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String note = handleNotes(state, reader, next);
 
 					UUID notesUuid;
-			try {
+					try {
 						notesUuid = state.getTransformer().getFeatureUuid(
 								"notes");
 						Feature feature = getFeature(state, notesUuid, "Notes",
@@ -594,11 +602,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						TaxonDescription description = getTaxonDescription(
 								taxon, false, true);
 						description.addElement(textData);
-			} catch (UndefinedTransformerMethodException e) {
+					} catch (UndefinedTransformerMethodException e) {
 						String message = "getFeatureUuid method not yet implemented";
 						fireWarningEvent(message, next, 8);
-			}
+					}
 				} else if (isStartingElement(next, REFERENCES)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, FIGURE_REF)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, FIGURE)) {
 					handleFigure(state, reader, next);
@@ -610,13 +620,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						fireWarningEvent(message, next, 4);
 					} else {
 						registerGivenFootnote(state, footnote);
-			}
+					}
 				} else {
 					handleUnexpectedStartElement(next);
-		}
+				}
 			} else {
 				handleUnexpectedElement(next);
-	}
+			}
 		}
 		throw new IllegalStateException("<Taxon> has no closing tag");
 	}
@@ -648,7 +658,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		}
 		
 	}
-		
+	
 	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
 		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
 		for (PolytomousKeyNode matchingNode : matchingNodes){
@@ -692,11 +702,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				if (isFirstCouplet){
 					node = key.getRoot();
 					isFirstCouplet = false;
-		}
+				}
 				handleCouplet(state, reader, next, node);
 			} else {
 				handleUnexpectedElement(next);
-	}
+			}
 		}
 		throw new IllegalStateException("<key> has no closing tag");
 	}
@@ -716,9 +726,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		if (isNotBlank(keyTitle) ){
 			if (!state.getConfig().isReplaceStandardKeyTitles() || ! keyTitle.matches(standardTitles)){
 				key.setTitleCache(keyTitle, true);
-	}
 			}
 		}
+	}
 
 	private void handleCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode parentNode) throws XMLStreamException {
 		String num = getOnlyAttribute(parentEvent, NUM, true);
@@ -739,7 +749,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				popUnimplemented(next.asEndElement());
 			} else {
 				handleUnexpectedElement(next);
-	}
+			}
 		}
 		throw new IllegalStateException("<couplet> has no closing tag");
 	}
@@ -764,9 +774,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			for(PolytomousKeyNode nodeToMatch: nodes){
 				for (PolytomousKeyNode childNode : childList){
 					nodeToMatch.addChild(childNode);
-		}
+				}
 				state.getUnmatchedLeads().removeNode(unmatchedKey, nodeToMatch);
-	}
+			}
 		}else{
 			String message = "Parent num could not be matched. Please check if num (%s) is correct";
 			message = String.format(message, num);
@@ -799,7 +809,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				handleToCouplet(state, reader, next, myNode);
 			} else if (isStartingElement(next, TO_TAXON)) {
 				handleToTaxon(state, reader, next, myNode);
-		
+			
 			} else if (isStartingElement(next, TO_KEY)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -814,7 +824,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				popUnimplemented(next.asEndElement());
 			} else {
 				handleUnexpectedElement(next);
-	}
+			}
 		}
 		throw new IllegalStateException("<question> has no closing tag");
 	}
@@ -826,10 +836,10 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			String message = "CData ('%s') not handled in <toCouplet>";
 			message = String.format(message, cData);
 			fireWarningEvent(message, next, 4);
-			}
+		}
 		UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(state.getCurrentKey(), num);
 		state.getUnmatchedLeads().addKey(unmatched, node);
-				}
+	}
 
 	private void handleToTaxon(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode node) throws XMLStreamException {
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
@@ -840,7 +850,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(num, taxonStr);
 		state.getUnmatchedLeads().addKey(unmatched, node);
 		return;
-		}
+	}
 	
 	private String makeTaxonKey(String strGoto, Taxon taxon) {
 		String result = "";
@@ -921,7 +931,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		} else {
 			String message = "No taxontitle exists for writer";
 			fireWarningEvent(message, next, 6);
-	}
+		}
 	}
 
 	private String handleNotes(MarkupImportState state, XMLEventReader reader,
@@ -942,7 +952,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					popUnimplemented(next.asEndElement());
 				} else {
 					handleUnexpectedEndElement(next.asEndElement());
-			}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, HEADING)) {
 					handleNotYetImplementedElement(next);
@@ -950,7 +960,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String subheading = getCData(state, reader, next).trim();
 					if (! isNoteHeading(subheading)) {
 						fireNotYetImplementedElement(next.getLocation(), next.asStartElement().getName(), 0);
-		}
+					}
 				} else if (isStartingElement(next, WRITER)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, NUM)) {
@@ -960,7 +970,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					text = makeNotesString(state, reader, text, next);
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
-	}
+				}
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -989,8 +999,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			if ( firstSubheading != null && ! isNoteHeading (firstSubheading) )  {
 				String message = "Subheadings not yet supported in <notes>";
 				fireWarningEvent(message, next, 4);
+			}
 		}
-	}
 		for (String subheading : stringMap.keySet()){
 			text += subheading;
 			text += stringMap.get(subheading);
@@ -1024,7 +1034,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			taxon.setDoubtful(true);
 		} else if (checkAndRemoveAttributeValue(attributes, CLASS, "excluded")) {
 			taxon.setExcluded(true);
-	}
+		}
 		// TODO insufficient, new, expected
 		handleNotYetImplementedAttribute(attributes, CLASS);
 		// From old version
@@ -1051,7 +1061,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		NomenclaturalCode nc = makeNomenclaturalCode(state);
 		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
 		return name;
-			}
+	}
 
 	/**
 	 * @param state
@@ -1087,7 +1097,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						UUID uuidTitle = MarkupTransformer.uuidTaxonTitle;
 						ExtensionType titleExtension = this.getExtensionType(state, uuidTitle, "Taxon Title ","taxon title", "title");
 						taxon.addExtension(titleText, titleExtension);
-	}
+					}
 					taxon.getName().setRank(rank);
 					// TODO check title exists
 					return titleText;
@@ -1154,14 +1164,14 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					return dataHolder;
 				} else {
 					return null;
-		}
+				}
 			} else if (isStartingElement(next, FOOTNOTE_REF)) {
 				FootnoteDataHolder footNote = handleFootnoteRef(state, reader, next);
 				if (footNote.isRef()) {
 					footnotes.add(footNote);
 				} else {
 					logger.warn("Non ref footnotes not yet impelemnted");
-	}
+				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 
@@ -1185,7 +1195,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		if (demands != null) {
 			for (AnnotatableEntity entity : demands) {
 				attachFootnote(state, entity, footnote);
-		}
+			}
 		}
 	}
 
@@ -1208,7 +1218,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			if (demands == null) {
 				demands = new HashSet<AnnotatableEntity>();
 				state.putFootnoteDemands(footnote.ref, demands);
-		}
+			}
 			demands.add(entity);
 		}
 	}
@@ -1252,7 +1262,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			String message = "Unsupported entity to attach media: %s";
 			message = String.format(message, entity.getClass().getName());
 			// toSave = null;
-	}
+		}
 		save(entity, state);
 	}
 
@@ -1319,18 +1329,18 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				String message = "Unknown figure type '%s'";
 				message = String.format(message, type);
 				fireWarningEvent(message, next, 2);
-				}
+			}
 			media = getImageMedia(urlString, READ_MEDIA_DATA, isFigure);
-				
+			
 			if (media != null){
 				// title
 				if (StringUtils.isNotBlank(titleString)) {
 					media.putTitle(Language.DEFAULT(), titleString);
-			}
+				}
 				// legend
 				if (StringUtils.isNotBlank(legendString)) {
 					media.addDescription(legendString, Language.DEFAULT());
-		}
+				}
 				if (StringUtils.isNotBlank(numString)) {
 					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
 					// vol.13)
@@ -1344,12 +1354,12 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				} else {
 					String message = "Figure id should never be empty or null";
 					fireWarningEvent(message, next, 6);
-			}
-		
+				}
+				
 				// text
 				// do nothing
 
-	}
+			}
 		} catch (MalformedURLException e) {
 			String message = "Media uri has incorrect syntax: %s";
 			message = String.format(message, urlString);
@@ -1361,7 +1371,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		}
 
 		registerGivenFigure(state, id, media);
-			}
+	}
 
 	private FigureDataHolder handleFigureRef(MarkupImportState state,
 			XMLEventReader reader, XMLEvent parentEvent)
@@ -1387,9 +1397,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			} else {
 				fireUnexpectedEvent(next, 0);
 			}
-			}
-		throw new IllegalStateException("<figureRef> has no end tag");
 		}
+		throw new IllegalStateException("<figureRef> has no end tag");
+	}
 
 	private FootnoteDataHolder handleFootnote(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		FootnoteDataHolder result = new FootnoteDataHolder();
@@ -1407,7 +1417,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				return result;
 			} else {
 				fireUnexpectedEvent(next, 0);
-	}
+			}
 		}
 		return result;
 	}
@@ -1429,13 +1439,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			// result.string = string;
 			// }else
 			if (isMyEndingElement(next, parentEvent)) {
-		return result;
+				return result;
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 
 			} else {
 				fireUnexpectedEvent(next, 0);
-	}
+			}
 		}
 		return result;
 	}
@@ -1454,7 +1464,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			} else {
 				fireSchemaConflictEventExpectedStartTag(HOMOTYPES, reader);
 				state.setUnsuccessfull();
-		}
+			}
 		}
 		return;
 	}
@@ -1475,7 +1485,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					text += getXmlTag(next);
 				} else {
 					handleUnexpectedEndElement(next.asEndElement());
-			}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, FULL_NAME)) {
 					handleNotYetImplementedElement(next);
@@ -1490,7 +1500,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					text += getXmlTag(next);
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
-		}
+				}
 			} else if (next.isCharacters()) {
 				if (!isTextMode) {
 					String message = "footnoteString is not in text mode";
@@ -1498,7 +1508,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				} else {
 					text += next.asCharacters().getData().trim(); 
 					// getCData(state, reader, next); does not work as we have inner tags like <references>
-	}
+				}
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
 			}
@@ -1515,7 +1525,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		result = String.format(result, fieldObservation.getUuid(), fieldObservation.getTitleCache());
 		save(fieldObservation, state);
 		return result;	
-		}
+	}
 
 	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -1532,10 +1542,10 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				hasReference = true;
 			} else {
 				handleUnexpectedElement(next);
+			}
 		}
-					}
 		throw new IllegalStateException("<References> has no closing tag");
-					}
+	}
 
 	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		Reference<?> reference = handleReference(state, reader, parentEvent);
@@ -1543,7 +1553,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		result = String.format(result, reference.getUuid(), reference.getTitleCache());
 		save(reference, state);
 		return result;
-					}
+	}
 
 	private Reference<?> handleReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -1562,11 +1572,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				hasRefPart = true;
 			} else {
 				handleUnexpectedElement(next);
-				}
 			}
+		}
 		// TODO handle missing end element
 		throw new IllegalStateException("<Reference> has no closing tag");
-		}
+	}
 
 	private void handleHomotypes(MarkupImportState state,
 			XMLEventReader reader, StartElement parentEvent)
@@ -1590,8 +1600,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
-			}
-			}
+					}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, NOM)) {
 					NonViralName<?> name = handleNom(state, reader, next,
@@ -1607,7 +1617,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next);
-		}
+				}
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -1649,7 +1659,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
-	}
+					}
 				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, NOM)) {
@@ -1712,7 +1722,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		} else {
 			firstName = CdmBase.deproxy(names.iterator().next(),
 					NonViralName.class);
-			}
+		}
 
 		DerivedUnitFacade facade = DerivedUnitFacade
 				.NewInstance(DerivedUnitType.Specimen);
@@ -1738,6 +1748,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					} else if (isEndingElement(next, SPECIMEN_TYPE)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, COLLECTION_AND_TYPE)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, CITATION)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
@@ -1749,8 +1762,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
-			}
-			}
+					}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, FULL_TYPE)) {
 					handleNotYetImplementedElement(next);
@@ -1764,19 +1777,21 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
 					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, COLLECTION_AND_TYPE)) {
+					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, NOTES)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, ANNOTATION)) {
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next);
-		}
+				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedElement(next);
+			}
 		}
-	}
 		// TODO handle missing end element
 		throw new IllegalStateException("Specimen type has no closing tag"); 
 	}
@@ -1828,7 +1843,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					message = String.format(message, str);
 					fireWarningEvent(message, event, 4);
 					status = null;
-	}
+				}
 				result.status = status;
 			} else if (str.matches(SpecimenTypeParser.collectionPattern)) {
 				result.collectionString = str;
@@ -1842,7 +1857,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		return result;
 	}
 
-		
+	
 	private void handleGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, HomotypicalGroup homotypicalGroup, DerivedUnitFacade facade) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		boolean hasCollector = false;
@@ -1881,8 +1896,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
-		}
-	}
+					}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, COLLECTOR)) {
 					hasCollector = true;
@@ -1912,10 +1927,10 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next);
-		}
+				}
 			} else {
 				handleUnexpectedElement(next);
-	}
+			}
 		}
 		// TODO handle missing end element
 		throw new IllegalStateException("Collection has no closing tag");
@@ -1949,7 +1964,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						}
 					}
 					// TODO
-			return;
+					return;
 				} else {
 					if (isEndingElement(next, ALTITUDE)) {
 						// NOT YET IMPLEMENTED
@@ -1962,8 +1977,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
-		}
-			}
+					}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, ALTITUDE)) {
 					handleNotYetImplementedElement(next);
@@ -1975,12 +1990,12 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next);
-			}
+				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedElement(next);
-	}
+			}
 		}
 		throw new IllegalStateException("<SpecimenType> has no closing tag"); 
 	}
@@ -1994,11 +2009,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 
 	private AgentBase<?> createCollector(String collectorStr) {
 		return createAuthor(collectorStr);
-		}
+	}
 
 	private String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
 		return getCData(state, reader, next, true);
-				}
+	}
 		
 	/**
 	 * Reads character data. Any element other than character data or the ending
@@ -2013,7 +2028,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	private String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next,boolean checkAttributes) throws XMLStreamException {
 		if (checkAttributes){
 			checkNoAttributes(next);
-			}
+		}
 
 		String text = "";
 		while (reader.hasNext()) {
@@ -2024,8 +2039,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				text += myNext.asCharacters().getData();
 			} else {
 				handleUnexpectedElement(myNext);
+			}
 		}
-	}
 		throw new IllegalStateException("Event has no closing tag");
 
 	}
@@ -2089,7 +2104,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
-			}
+					}
 				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, FULL_NAME)) {
@@ -2118,7 +2133,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		// TODO handle missing end element
 		throw new IllegalStateException("Nom has no closing tag");
 
-			}
+	}
 
 	private void fillName(MarkupImportState state, Map<String, String> nameMap,
 			NonViralName name, XMLEvent event) {
@@ -2162,8 +2177,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				String message = "Status '%s' could not be recognized";
 				message = String.format(message, statusStr);
 				fireWarningEvent(message, event, 4);
+			}
 		}
-	}
 
 		// notes
 		if (StringUtils.isNotBlank(notes)) {
@@ -2191,7 +2206,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			} else {
 				if (name.getRank() == null || rank.isLower(name.getRank())) {
 					name.setRank(rank);
-		}
+				}
 				String value = nameMap.get(key);
 				if (rank.isSupraGeneric() || rank.isGenus()) {
 					name.setGenusOrUninomial(value);
@@ -2205,7 +2220,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String message = "Invalid rank '%s'. Can't decide which epithet to fill with '%s'";
 					message = String.format(message, rank.getTitleCache(),value);
 					fireWarningEvent(message, event, 4);
-	}
+				}
 			}
 
 		}
@@ -2231,8 +2246,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String message = "InfRank '%s' is higher than existing rank ";
 					message = String.format(message, infrankStr);
 					fireWarningEvent(message, event, 2);
-		}
-	}
+				}
+			}
 		}
 	}
 
@@ -2251,7 +2266,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrAut, event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
-				}
+			}
 			if (StringUtils.isNotBlank(infrParAut)) {
 				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut, event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
@@ -2264,13 +2279,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				if (isNotBlank(infrParAut) || isNotBlank(infrAut)){
 					authorStr = infrAut;
 					paraut = infrParAut;
-		}
-		}
+				}
+			}
 			if (StringUtils.isNotBlank(authorStr)) {
 				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr, event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
-	}
+			}
 			if (StringUtils.isNotBlank(paraut)) {
 				INomenclaturalAuthor[] authorAndEx = authorAndEx(paraut, event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
@@ -2293,9 +2308,9 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			result[1] = createAuthor(split[0]);
 		} else {
 			result[0] = createAuthor(split[0]);
-			}
+		}
 		return result;
-			}
+	}
 
 	/**
 	 * Tests if the names rank is consistent with the given author strings.
@@ -2317,7 +2332,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					&& (StringUtils.isNotBlank(paraut) || StringUtils.isNotBlank(authorStr))) {
 				String message = "Rank is infraspecicific but has only specific or higher author(s)";
 				fireWarningEvent(message, event, 4);
-	}
+			}
 		} else {
 			// is not infraspecific
 			if (StringUtils.isNotBlank(infrParAut) 	|| StringUtils.isNotBlank(infrAut)) {
@@ -2374,12 +2389,12 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
-		}
+				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
-	}
+			}
 		}
 		throw new IllegalStateException("name has no closing tag");
 
@@ -2447,11 +2462,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				hasRefPart = true;
 			} else {
 				handleUnexpectedElement(next);
+			}
 		}
-	}
 		throw new IllegalStateException("Citation has no closing tag");
 
-		}
+	}
 
 	private void handleRefPart(MarkupImportState state, XMLEventReader reader,XMLEvent parentEvent, Map<String, String> refMap) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
@@ -2471,13 +2486,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
-		}
+				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
+			}
 		}
-	}
 		throw new IllegalStateException("RefPart has no closing tag");
 
 	}
@@ -2495,6 +2510,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		String editors = getAndRemoveMapKey(refMap, EDITORS);
 		String year = getAndRemoveMapKey(refMap, YEAR);
 		String pubName = getAndRemoveMapKey(refMap, PUBNAME);
+		String pages = getAndRemoveMapKey(refMap, PAGES);
 
 		if (state.isCitation()) {
 			if (volume != null || "journal".equalsIgnoreCase(type)) {
@@ -2503,7 +2519,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					IJournal journal = ReferenceFactory.newJournal();
 					journal.setTitle(pubName);
 					article.setInJournal(journal);
-		}
+				}
 				reference = (Reference<?>) article;
 
 			} else {
@@ -2512,7 +2528,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					reference  = ReferenceFactory.newBookSection();
 				}else{
 					reference = ReferenceFactory.newBook();
-		}
+				}
 			}
 			// TODO use existing author from name or before
 			TeamOrPersonBase<?> author = createAuthor(authorStr);
@@ -2529,7 +2545,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				Reference<?> inReference;
 				if (reference.getType().equals(ReferenceType.Article)) {
 					inReference = ReferenceFactory.newJournal();
-		} else {
+				} else {
 					inReference = ReferenceFactory.newGeneric();
 				}
 				inReference.setTitle(pubName);
@@ -2544,13 +2560,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					IJournal journal = ReferenceFactory.newJournal();
 					journal.setTitle(pubName);
 					article.setInJournal(journal);
-			}
+				}
 				reference = (Reference<?>) article;
 
 			} else {
 				Reference<?> bookOrPartOf = ReferenceFactory.newGeneric();
 				reference = bookOrPartOf;
-	}
+			}
 
 			// TODO type
 			TeamOrPersonBase<?> author = createAuthor(authorStr);
@@ -2569,13 +2585,15 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					inReference = ReferenceFactory.newJournal();
 				} else {
 					inReference = ReferenceFactory.newGeneric();
-		}
+				}
 				inReference.setTitle(pubName);
 				reference.setInReference(inReference);
-	}
+			}
 		}
 		reference.setVolume(volume);
 		reference.setDatePublished(TimePeriod.parseString(year));
+		//TODO check if this is handled correctly in FM markup
+		reference.setPages(pages);
 
 		// TODO
 		String[] unhandledList = new String[]{ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS};
@@ -2607,7 +2625,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		map.remove(key);
 		if (result != null) {
 			result = normalize(result);
-	}
+		}
 		return StringUtils.stripToNull(result);
 	}
 
@@ -2670,7 +2688,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						|| feature.equals(Feature.ECOLOGY()))) {
 					String message = "Habitat only allowed for feature of type 'habitat','habitat ecology' or 'ecology'";
 					fireWarningEvent(message, next, 4);
-			}
+				}
 				handleHabitat(state, reader, next);
 			} else if (isStartingElement(next, CHAR)) {
 				TextData textData = handleChar(state, reader, next);
@@ -2690,11 +2708,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					TextData featurePlaceholder = getFeaturePlaceholder(state, description, feature, true);
 					for (Reference<?> citation : refs) {
 						featurePlaceholder.addSource(null, null, citation, null);
-		}
+					}
 				} else {
 					String message = "No reference found in references";
 					fireWarningEvent(message, next, 6);
-	}
+				}
 			} else if (isStartingElement(next, NUM)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -2732,7 +2750,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				Annotation annotation = Annotation.NewInstance(annotationText,
 						AnnotationType.TECHNICAL(), Language.DEFAULT());
 				figureHolderTextData.addAnnotation(annotation);
-				}
+			}
 			if (StringUtils.isNotBlank(figureHolder.figurePart)) {
 				String annotationText = "<figurePart>"+ figureHolder.figurePart.trim() + "</figurePart>";
 				Annotation annotation = Annotation.NewInstance(annotationText,AnnotationType.EDITORIAL(), Language.DEFAULT());
@@ -2750,7 +2768,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				fireWarningEvent(message, next, 4);
 				lastDescriptionElement = TextData.NewInstance(figureFeature);
 				taxonDescription.addElement(lastDescriptionElement);
-		}
+			}
 			registerFigureDemand(state, lastDescriptionElement,
 					figureHolder.ref);
 		}
@@ -2823,7 +2841,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		String heading = handleHeading(state, reader, next);
 		if (StringUtils.isNotBlank(heading)) {
 			if (!heading.equalsIgnoreCase(classValue)) {
-		try {
+				try {
 					if (!feature.equals(state.getTransformer().getFeatureByKey(
 							heading))) {
 						UUID headerFeatureUuid = state.getTransformer()
@@ -2833,14 +2851,14 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 							message = String.format(message, heading,
 									classValue);
 							fireWarningEvent(message, next, 1);
-			}
-			}
+						}
+					}
 				} catch (UndefinedTransformerMethodException e) {
 					throw new RuntimeException(e);
-		}
+				}
 			} else {
 				// do nothing
-	}
+			}
 		}
 	}
 
@@ -2854,7 +2872,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		if (isNotBlank(bibliography) || isNotBlank(serialsAbbreviations)) {
 			String message = "Attributes not yet implemented for <references>";
 			fireWarningEvent(message, parentEvent, 4);
-				}
+		}
 
 		List<Reference<?>> result = new ArrayList<Reference<?>>();
 
@@ -2883,7 +2901,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
 					}
-					}
+				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, HEADING)) {
 					handleNotYetImplementedElement(next);
@@ -2892,7 +2910,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String excludePattern = "(i?)(References?|Literature):?";
 					if (!subheading.matches(excludePattern)) {
 						fireNotYetImplementedElement(next.getLocation(), next.asStartElement().getName(), 0);
-				}
+					}
 				} else if (isStartingElement(next, WRITER)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, FOOTNOTE)) {
@@ -2906,10 +2924,10 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					result.add(ref);
 				} else {
 					handleUnexpectedStartElement(next);
-			}
+				}
 			} else {
 				handleUnexpectedElement(next);
-		}
+			}
 		}
 		throw new IllegalStateException("<References> has no closing tag");
 	}
@@ -2945,13 +2963,13 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					handleNotYetImplementedElement(next);
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
-	}
+				}
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedElement(next);
-	}
-	}
+			}
+		}
 		throw new IllegalStateException("<Habitat> has no closing tag");
 	}
 
@@ -2972,7 +2990,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
-	}
+			}
 		}
 		throw new IllegalStateException("Some tag has no closing tag");
 	}
@@ -2982,7 +3000,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, CLASS);
 		String statusValue =getAndRemoveAttributeValue(attributes, STATUS);
 		String frequencyValue =getAndRemoveAttributeValue(attributes, FREQUENCY);
-	
+		
 
 		Taxon taxon = state.getCurrentTaxon();
 		// TODO which ref to take?
@@ -2996,7 +3014,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String label = CdmUtils.removeTrailingDot(normalize(text));
 					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
-	
+					
 					//status
 					PresenceAbsenceTermBase<?> status = null;
 					if (isNotBlank(statusValue)){
@@ -3010,18 +3028,18 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 						} catch (UndefinedTransformerMethodException e) {
 							throw new RuntimeException(e);
 						}
-		}else{
+					}else{
 						status = PresenceTerm.PRESENT();
-		}
+					}
 					//frequency
 					if (isNotBlank(frequencyValue)){
 						String message = "The frequency attribute is currently not yet available in CDM";
 						fireWarningEvent(message, parentEvent, 6);
-	}
-	
+					}
+					
 					NamedArea higherArea = null;
 					List<NamedArea> areas = new ArrayList<NamedArea>(); 
-		
+					
 					String patSingleArea = "([^,\\(]{3,})";
 					String patSeparator = "(,|\\sand\\s)";
 					String hierarchiePattern = String.format("%s\\((%s(%s%s)*)\\)",patSingleArea, patSingleArea, patSeparator, patSingleArea);
@@ -3039,22 +3057,22 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 //								if (partOf == null){
 //									singleArea.setPartOf(higherArea);
 //								}
-		}
+							}
 						}
-				}else{
+					}else{
 						NamedArea singleArea = makeArea(state, label, level);
 						areas.add(singleArea);
-				}
+					}
 					
 					for (NamedArea area : areas){
 						//create distribution
 						Distribution distribution = Distribution.NewInstance(area,status);
 						description.addElement(distribution);
-			}
+					}
 				} else {
 					String message = "Empty distribution locality";
 					fireWarningEvent(message, next, 4);
-		}
+				}
 				return text;
 			} else if (isStartingElement(next, COORDINATES)) {
 				//TODO
@@ -3066,7 +3084,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				text += next.asCharacters().getData();
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
-	}
+			}
 		}
 		throw new IllegalStateException("<DistributionLocality> has no closing tag");
 	}
@@ -3109,8 +3127,8 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				state.putAreaUuid(areaName, area.getUuid());
 				
 				//TODO just for testing -> make generic and move to better place
-					String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
-					String layerFieldName ="nam";
+				String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+				String layerFieldName ="nam";
 				
 				if ("Bangka".equals(areaName)){
 					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
@@ -3118,7 +3136,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
 					this.editGeoService.setMapping(area, geoServiceArea);
 //					save(area, state);
-			}
+				}
 				if ("Luzon".equals(areaName)){
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
 					
@@ -3127,11 +3145,11 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 							"CENTRAL LUZON");
 					for (String areaValue : list){
 						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
-		}
+					}
 					
 					this.editGeoService.setMapping(area, geoServiceArea);
 //					save(area, state);
-	}
+				}
 				if ("Mindanao".equals(areaName)){
 					GeoServiceArea geoServiceArea = new GeoServiceArea();
 					
@@ -3182,10 +3200,10 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 					String message = "Unknown distribution locality class (named area level): %s. Create new level instead.";
 					message = String.format(message, levelString);
 					fireWarningEvent(message, next, 6);
-		}
+				}
 				level = getNamedAreaLevel(state, levelUuid, levelString,
 						levelString, levelString, null);
-	}
+			}
 		} catch (UndefinedTransformerMethodException e) {
 			throw new RuntimeException(e);
 		}
@@ -3259,7 +3277,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 				if (feature != null && !feature.equals(Feature.DISTRIBUTION())) {
 					String message = "Distribution locality only allowed for feature of type 'distribution'";
 					fireWarningEvent(message, next, 4);
-	}
+				}
 				text += handleDistributionLocality(state, reader, next);
 			} else if (next.isCharacters()) {
 				if (!isTextMode) {
@@ -3375,7 +3393,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 		if (StringUtils.isNotBlank(text)) {
 			text = removeStartingMinus(text);
 			subHeadingMap.put(currentSubheading, text.trim());
-	}
+		}
 		return "";
 	}
 
@@ -3395,12 +3413,12 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 	private String replaceStart(String value, String replacementString) {
 		if (value.startsWith(replacementString) ){
 			value = value.substring(replacementString.length()).trim();
-					}
+		}
 		while (value.startsWith("-") || value.startsWith("\u2014") ){
 			value = value.substring("-".length()).trim();
-				}
+		}
 		return value;
-			}
+	}
 	
 	private String getXmlTag(XMLEvent event) {
 		String result;
@@ -3486,7 +3504,7 @@ public class MarkupDocumentImport  extends MarkupImportBase implements ICdmIO<Ma
 			uuid = state.getTransformer().getFeatureUuid(classValue);
 			if (uuid == null) {
 				// TODO
-				String message = "Uuid is not defined for %s";
+				String message = "Uuid is not defined for '%s'";
 				message = String.format(message, classValue);
 				fireWarningEvent(message, parentEvent, 8);
 			}

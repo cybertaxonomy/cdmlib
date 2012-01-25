@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,6 +35,11 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb){
 		String methodName = "get" + dbAttributeString;
 		return NewInstance(dbAttributeString, bmeb, methodName);
+	}
+	
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, Class<?> parameterTypes){
+		String methodName = "get" + dbAttributeString;
+		return new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
 	}
 	
 	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, String methodName){
@@ -97,6 +102,9 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		} catch (InvocationTargetException e) {
 			logger.error("InvocationTargetException: " + e.getLocalizedMessage());
 			return false;
+		} catch (Exception e) {
+			logger.error("Any Exception: " + e.getLocalizedMessage());
+			throw new RuntimeException(e);
 		}
 	}
 	

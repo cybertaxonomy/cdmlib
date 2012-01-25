@@ -58,20 +58,26 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		source = config.getSource();
 
 		logger.info("start make " + pluralString + " ...");
-		
+				
 		//queryStrings
-		String strIdQuery = getIdQuery();
+		String strIdQuery = getIdQuery(state);
 		
 		String strRecordQuery = getRecordQuery(config);
+		String strWhere = " WHERE (1=1) ";
+		if (state.getConfig().getAuthorTeamFilter() != null){
+			strWhere += " AND " + state.getConfig().getAuthorTeamFilter();
+			strWhere = strWhere.replaceFirst("authorTeamId", "authorTeamFk");
+		}
 		String strQuerySequence = 
 			" SELECT *  " +
-            " FROM AuthorTeamSequence " + 
+            " FROM AuthorTeamSequence " +
+				strWhere + 	
             " ORDER By authorTeamFk, Sequence ";
-		rsSequence = source.getResultSet(strQuerySequence) ;
 		
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{
 			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
+			rsSequence = source.getResultSet(strQuerySequence) ; //only here, to reduce deadlock/timeout probability
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
@@ -86,10 +92,16 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		return;
 	}
 	
-	protected String getIdQuery(){
+	@Override
+	protected String getIdQuery(BerlinModelImportState state){
+		String strWhere = " WHERE (1=1) ";
+		if (state.getConfig().getAuthorTeamFilter() != null){
+			strWhere += " AND " + state.getConfig().getAuthorTeamFilter();
+		}
 		String idQuery = 
 				" SELECT authorTeamId " +
                 " FROM AuthorTeam " + 
+                strWhere +
                 " ORDER BY authorTeamId ";
 		return idQuery;
 	}

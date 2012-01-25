@@ -162,6 +162,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidStaminodes = UUID.fromString("4c135e5d-805b-4591-b21f-bbc34e275ef6");
 	public static final UUID uuidFilaments = UUID.fromString("5d61bc65-4621-488a-8ea9-11f6e4cd2c66");
 
+	
 	//key
 	public static final UUID uuidPseudoStipules = UUID.fromString("a8e3002a-5a3a-4098-9439-90dff56deeed");
 	public static final UUID uuidWallOfFruitInside = UUID.fromString("c9424f3a-91fd-4696-8207-c07b2cdd5902");
@@ -208,8 +209,24 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidFlowerBearingStems = UUID.fromString("86ee899f-af71-4b51-aa1a-2666bab79cf0");
 	public static final UUID uuidFloweringBranchlets = UUID.fromString("e0364345-764c-4b39-943a-fad1eac0fe9e");
 	public static final UUID uuidWood = UUID.fromString("e44b3268-ca49-4400-90f7-98e17412fe92");
+	public static final UUID uuidGermination = UUID.fromString("747707f4-27f8-4f07-b7d1-8959f549212f");
+	public static final UUID uuidFoliage = UUID.fromString("5f0ddeb5-bc12-4097-9373-b4921a87f51f");
+	public static final UUID uuidCapsule = UUID.fromString("28177f44-cff5-4f9a-ba5e-ce48decd7691");
+	public static final UUID uuidBioGeography = UUID.fromString("257590ed-f9c7-4253-9918-2e8440435385");
+	public static final UUID uuidJuvenileParts = UUID.fromString("f4524744-920e-40c1-a37c-ba1a47044037");
+	public static final UUID uuidCrown = UUID.fromString("7a234ac5-d6f4-479c-ba63-cf486307f950");
+	public static final UUID uuidButtresses = UUID.fromString("bc79f058-cc3a-44bb-b800-7f24836d9175");
+	public static final UUID uuidRacemes = UUID.fromString("aac5b7e7-bac2-41fa-b79b-78cd2ad7b55f");
+	public static final UUID uuidSpikes = UUID.fromString("4bdf3464-a12d-4bfd-ab94-428e306ab62c");
+	public static final UUID uuidParasitism = UUID.fromString("22de1689-2d54-44e0-9ebb-72b8ca84a90d");
+	public static final UUID uuidBracteoles = UUID.fromString("3b17d38b-5df0-4767-919e-ee822dff4011");
+	public static final UUID uuidTesta = UUID.fromString("c72ef615-8c2b-4b1e-95d3-f3a282760c02");
+	public static final UUID uuidLatex = UUID.fromString("0fa07ab6-375f-4b18-8d90-8c38ecefa9c6");
+	public static final UUID uuidshoots = UUID.fromString("d88360a2-59cd-4cb5-91f9-e109ae873d5e");
+	public static final UUID uuidCostae = UUID.fromString("d88360a2-59cd-4cb5-91f9-e109ae873d5e");
 	
-
+	
+	
 	//PHYTOCHEMISTRY AND CHEMOTAXONOMY
 	public static final UUID uuidLeafPhenolics = UUID.fromString("4ae0580e-601e-4961-8220-b98876cb7fbf");
 	public static final UUID uuidAlkaloids = UUID.fromString("a727f4f4-b2c3-4cac-9edd-138201470396");
@@ -219,9 +236,75 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidStorageProductsOfSeeds = UUID.fromString("5e569333-a5b6-42f9-bc5d-e010bdfef89c");
 	
 	
-	
-	
+	//VOL 12
+	public static final UUID uuidCotyledons = UUID.fromString("f8087a67-ed2b-45fb-b447-3c677087fdba");
+	public static final UUID uuidGrowthForm = UUID.fromString("11b5c813-a85a-4dd6-bf42-0d5f1336710b");
+	public static final UUID uuidPinnaLobes = UUID.fromString("ec7c81af-1f5c-40d7-9c08-0610cf96cfb7");
+	public static final UUID uuidPinnules = UUID.fromString("89a49ee5-a3da-4a3b-a00e-8f6d90e90c1b");
+	public static final UUID uuidPinnatifidPinnules = UUID.fromString("a8acf6af-2a9f-4be8-ad08-19a0e87b43f0");
+//	public static final UUID uuidPinnaLobes = UUID.fromString("dccb5464-f871-44aa-aed1-cb76e50efa6c");
+	public static final UUID uuidSinusTeeth = UUID.fromString("5926f238-16a8-4343-a690-b958f1e9025e");
+	public static final UUID uuidHypanthium = UUID.fromString("aa0fd079-3bb1-4aa7-abb4-36fd0e8ecf63");
+	public static final UUID uuidPods = UUID.fromString("5d389a28-0ab7-461a-aaf8-466eff858f18");
+	public static final UUID uuidStipules = UUID.fromString("63338260-014b-49a2-9714-682a8c18652f");
 
+	
+	//Ser2 VOL 2
+	public static final UUID uuidGlands = UUID.fromString("28b5a141-3127-4a3e-8c4a-03a90fbe3e66");
+	public static final UUID uuidSori = UUID.fromString("6e35cd29-86c9-43df-a65d-037db4d4407b");
+	public static final UUID uuidVeins = UUID.fromString("7a6e2c58-504f-40fb-a97a-c928b1c519d8");
+	public static final UUID uuidIndusia = UUID.fromString("196e6a5b-8612-4d3e-946b-be93e5ef66f1");
+	public static final UUID uuidUpperSurfaces = UUID.fromString("90764e2b-419b-4687-93e4-832ae6fdb05e");
+	public static final UUID uuidLowerSurfaces = UUID.fromString("51646c3f-5404-4423-ac44-bf7b3b258fac");
+	public static final UUID uuidStipes = UUID.fromString("acf322bf-4d57-44d1-ae7b-e7525f63749c");
+	public static final UUID uuidLobes = UUID.fromString("6d5f4617-96a5-4435-ad37-3d05d3718eac");
+	public static final UUID uuidRachises = UUID.fromString("87365769-8257-447b-a918-51837a94487c");
+	public static final UUID uuidSporangia = UUID.fromString("922e2263-ee8a-4674-9d52-188ca6e14089");
+	public static final UUID uuidSpores = UUID.fromString("c8520d08-6ff3-43de-b027-e64289fa164a");
+	public static final UUID uuidPinnae = UUID.fromString("5554cc7c-441f-417b-9b68-2a7643d23837");
+	public static final UUID uuidBasalPinnae = UUID.fromString("ebe46c21-46f6-41b1-b269-672a08daca77");
+	public static final UUID uuidpinnaLobes = UUID.fromString("26ea1b16-d008-4c63-86e6-89091f193615");
+	public static final UUID uuidUpperPinnae = UUID.fromString("8563eac6-6286-4860-ac57-6cc23aa8b831");
+	
+	public static final UUID uuidCostules = UUID.fromString("f546e66f-a99f-4284-add3-459aff906c9f");
+	public static final UUID uuidAreoles = UUID.fromString("fbf7cfb9-28bd-4443-a791-9e7ebd3eb9b6");
+	public static final UUID uuidCaudex = UUID.fromString("486882de-435c-4119-94a5-213daced4c26");
+	public static final UUID uuidHairs = UUID.fromString("ea2a7cc7-44be-41cb-8688-c31b085d2aa7");
+	public static final UUID uuidSupraBasalPinnae = UUID.fromString("484f578e-6807-45d4-8a13-8a03b3ad1a60");
+	public static final UUID uuidFreePinnae = UUID.fromString("0b8254bc-cf2d-4f95-92b9-4cc3fe450f32");
+	public static final UUID uuidSecondPairOfPinnae = UUID.fromString("c25b67a8-b7b8-4caa-b112-85360d76aa26");
+	public static final UUID uuidMiddlePinnae = UUID.fromString("2d90013c-cbc3-4ff7-bc6c-88b616d407a7");
+	public static final UUID uuidFertilePinnae = UUID.fromString("4071035d-4a2e-4793-b6c8-178ad664c31d");
+	public static final UUID uuidBasalScales = UUID.fromString("35cc8192-b6c0-4ee0-aebe-dfd15f87014c");
+	public static final UUID uuidLamina = UUID.fromString("bac94906-ab83-4fa5-9670-f750a4cdd105");
+	public static final UUID uuidApicalLamina = UUID.fromString("e7dff187-8704-42f0-85d0-b3cbfa18cfd0");
+	public static final UUID uuidFronds = UUID.fromString("20306313-69aa-4cd7-86b7-82065ea90a07");
+	public static final UUID uuidBasalPinnules = UUID.fromString("b72cba24-f61f-4d26-b34b-09f61456a419");
+	public static final UUID uuidAcroscopicPinnules = UUID.fromString("c6799ad0-cc4a-4b61-98e2-b7330405a9d5");
+	public static final UUID uuidVascularStrands = UUID.fromString("15d7ae67-c220-45c1-8cfa-a52f520bbe45");
+	
+	
+	
+	
+//	88112486-2382-4b38-a51d-77f9ea0c1068
+//	8e1ca880-3c75-4dca-93b5-764dc49e25aa
+//	392ba780-4b5b-44cd-8579-181cca299121
+//	dab59461-0e4f-4ce4-b9a1-bfca1b3a7693
+//	f16f8c67-e076-468a-b33d-7827aa6870ba
+//	84c42682-0aa2-4233-9bc9-9dac871062f9
+//	270fcb8c-4d91-4e29-9395-67c795cd26a2
+//	50ce0cf2-ebda-476e-a25d-71e6cc1a6574
+//	41db2ce3-f423-4bcd-b841-8dad4dc7707d
+//	d57be670-f94a-48e6-9d7d-000cc4ba3529
+//	fb388867-7d6b-4dc5-834e-fc9681854fe0
+//	ed766c4f-fe6a-49c5-a177-04716e803b93
+//	b2da6418-282a-45ba-8120-41402b7efff1
+//	9183b975-3752-4990-9a04-801e22470e76
+//	288d758a-4cd1-4c49-82b3-5bcfb04cbdd3
+//	cb19bc05-bf95-4251-9688-079ecb940f73
+//	24afa6c4-2fc2-4f8b-8bd0-fb50a02fb83e
+//	56dd4e82-7bc2-405f-9ca2-3dcbaabb679d
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
 	 */
@@ -270,6 +353,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Petals")){return uuidPetals;
 		}else if (key.equalsIgnoreCase("Petal")){return uuidPetal;
 		}else if (key.equalsIgnoreCase("Disc")){return uuidDisc;
+		}else if (key.equalsIgnoreCase("Disk")){return uuidDisc;
 		}else if (key.equalsIgnoreCase("Stamens")){return uuidStamens;
 		}else if (key.equalsIgnoreCase("Fruits")){return uuidFruits;
 		}else if (key.equalsIgnoreCase("Indumentum")){return uuidIndumentum;
@@ -376,6 +460,23 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Morphology and anatomy")){return uuidMorphologyAndAnatomy;
 		}else if (key.equalsIgnoreCase("embryology")){return uuidEmbryology;
 		}else if (key.equalsIgnoreCase("cytology")){return uuidCytology;
+		}else if (key.equalsIgnoreCase("germination")){return uuidGermination;
+		}else if (key.equalsIgnoreCase("foliage")){return uuidFoliage;
+		}else if (key.equalsIgnoreCase("capsule")){return uuidCapsule;
+		}else if (key.equalsIgnoreCase("biogeography")){return uuidBioGeography;
+		}else if (key.equalsIgnoreCase("juvenile parts")){return uuidJuvenileParts;
+		}else if (key.equalsIgnoreCase("crown")){return uuidCrown;
+		}else if (key.equalsIgnoreCase("buttresses")){return uuidButtresses;
+		}else if (key.equalsIgnoreCase("racemes")){return uuidRacemes;
+		}else if (key.equalsIgnoreCase("spikes")){return uuidSpikes;
+		}else if (key.equalsIgnoreCase("parasitism")){return uuidParasitism;
+		}else if (key.equalsIgnoreCase("bracteoles")){return uuidBracteoles;
+		}else if (key.equalsIgnoreCase("testa")){return uuidTesta;
+		}else if (key.equalsIgnoreCase("latex")){return uuidLatex;
+		}else if (key.equalsIgnoreCase("shoots")){return uuidshoots;
+		
+		
+		
 		
 		}else if (key.equalsIgnoreCase("Leaf phenolics")){return uuidLeafPhenolics;
 		}else if (key.equalsIgnoreCase("Alkaloids")){return uuidAlkaloids;
@@ -383,6 +484,55 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Aluminium")){return uuidAluminium;
 		}else if (key.equalsIgnoreCase("Chemotaxonomy")){return uuidChemotaxonomy;
 		}else if (key.equalsIgnoreCase("Storage products of seeds")){return uuidStorageProductsOfSeeds;
+		
+		}else if (key.equalsIgnoreCase("cotyledons")){return uuidCotyledons;
+		}else if (key.equalsIgnoreCase("Growth form")){return uuidCotyledons;
+		}else if (key.equalsIgnoreCase("Hypanthium")){return uuidHypanthium;
+		}else if (key.equalsIgnoreCase("pods")){return uuidPods;
+		}else if (key.equalsIgnoreCase("stipules")){return uuidStipules;
+		
+		//2_2
+		}else if (key.equalsIgnoreCase("glands")){return uuidGlands;
+		}else if (key.equalsIgnoreCase("sori")){return uuidSori;
+		}else if (key.equalsIgnoreCase("veins")){return uuidVeins;
+		}else if (key.equalsIgnoreCase("indusia")){return uuidIndusia;
+		}else if (key.equalsIgnoreCase("upper surfaces")){return uuidUpperSurfaces;
+		}else if (key.equalsIgnoreCase("lower surfaces")){return uuidLowerSurfaces;
+		}else if (key.equalsIgnoreCase("stipes")){return uuidStipes;
+		}else if (key.equalsIgnoreCase("lobes")){return uuidLobes;
+		}else if (key.equalsIgnoreCase("rachises")){return uuidRachises;
+		}else if (key.equalsIgnoreCase("sporangia")){return uuidSporangia;
+		}else if (key.equalsIgnoreCase("spores")){return uuidSpores;
+		}else if (key.equalsIgnoreCase("pinnae")){return uuidPinnae;
+		}else if (key.equalsIgnoreCase("basal pinnae")){return uuidBasalPinnae;
+		}else if (key.equalsIgnoreCase("suprabasal pinnae")){return uuidSupraBasalPinnae;
+		}else if (key.equalsIgnoreCase("free pinnae")){return uuidFreePinnae;
+		}else if (key.equalsIgnoreCase("second pair of pinnae")){return uuidSecondPairOfPinnae;
+		}else if (key.equalsIgnoreCase("middle pinnae")){return uuidMiddlePinnae;
+		}else if (key.equalsIgnoreCase("fertile pinnae")){return uuidFertilePinnae;
+		}else if (key.equalsIgnoreCase("pinna-lobes")){return uuidPinnaLobes;
+		}else if (key.equalsIgnoreCase("upper pinnae")){return uuidUpperPinnae;
+		
+		
+		}else if (key.equalsIgnoreCase("sinus-teeth")){return uuidSinusTeeth;
+		
+		
+		}else if (key.equalsIgnoreCase("costules")){return uuidCostules;
+		}else if (key.equalsIgnoreCase("areoles")){return uuidAreoles;
+		}else if (key.equalsIgnoreCase("caudex")){return uuidCaudex;
+		}else if (key.equalsIgnoreCase("hairs")){return uuidHairs;
+		}else if (key.equalsIgnoreCase("basal scales")){return uuidBasalScales;
+		}else if (key.equalsIgnoreCase("lamina")){return uuidLamina;
+		}else if (key.equalsIgnoreCase("apical lamina")){return uuidApicalLamina;
+		}else if (key.equalsIgnoreCase("fronds")){return uuidFronds;
+		}else if (key.equalsIgnoreCase("pinnules")){return uuidPinnules;
+		
+		}else if (key.equalsIgnoreCase("basal pinnules")){return uuidBasalPinnules;
+		
+		}else if (key.equalsIgnoreCase("acroscopic pinnules")){return uuidAcroscopicPinnules;
+		}else if (key.equalsIgnoreCase("costae")){return uuidCostae;
+		}else if (key.equalsIgnoreCase("vascular strands")){return uuidVascularStrands;
+		
 		
 		
 		
@@ -423,7 +573,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}
 		
 	}
-		
+	
 	
 	
 	@Override
@@ -460,7 +610,7 @@ public class MarkupTransformer extends InputTransformerBase {
 			return null;
 		}
 	}
-		
+	
 	
 
 	/* (non-Javadoc)
@@ -492,7 +642,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		
 		}else{
 			return null;
-	}
+		}
 
 	}
 
@@ -511,7 +661,7 @@ public class MarkupTransformer extends InputTransformerBase {
 //		}else if (key.equalsIgnoreCase("New Ireland")){return uuidNewIreland;
 //		}else if (key.equalsIgnoreCase("Celebes")){return uuidSulawesi;
 		}else if (key.equalsIgnoreCase("Sumatra")){return uuidSumatra;
-	
+		
 //		}else if (key.equalsIgnoreCase("Bangka")){return uuidBangka;
 		}else if (key.equalsIgnoreCase("Sabah")){return uuidSabah;
 		}else if (key.equalsIgnoreCase("Bali")){return uuidBali;
@@ -524,12 +674,12 @@ public class MarkupTransformer extends InputTransformerBase {
 		//Sumatra (Aceh, Sumatera Barat, Sumatera Utara)
 		//Lesser Sunda Islands (Bali, Lombok, Flores, Timor)
 
-	
+		
 		//countries
 		}else if (key.equalsIgnoreCase("Philippines")){return uuidPhilippines;
-	
+		
 
-	
+		
 		}else{
 			return null;
 		}

@@ -21,6 +21,9 @@ import org.hsqldb.Types;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbSingleAttributeExportMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IDbExportMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IndexCounter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 

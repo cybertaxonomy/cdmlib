@@ -15,12 +15,13 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
+import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbExtensionMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.DbTimePeriodMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -55,9 +56,9 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 		return result;
 	}
 	
-	private BerlinModelExportMapping getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("AuthorId"));
 		mapping.addMapper(DbStringMapper.NewInstance("nomenclaturalTitle", "Abbrev"));
 		mapping.addMapper(DbStringMapper.NewInstance("firstname", "FirstName"));
@@ -89,7 +90,7 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 			Class<Person> clazz = Person.class;
 			List<AgentBase> persons = getAgentService().list(clazz, 100000000, 0, null, null);
 			
-			BerlinModelExportMapping mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
 			mapping.initialize(state);
 			
 			logger.info("save "+pluralString+" ...");

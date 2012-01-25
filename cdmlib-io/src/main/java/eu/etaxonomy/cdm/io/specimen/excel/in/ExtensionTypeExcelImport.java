@@ -46,7 +46,7 @@ public class ExtensionTypeExcelImport  extends ExcelImporterBase<SpecimenCdmExce
 	
 	@Override
 	protected void analyzeRecord(HashMap<String, String> record, SpecimenCdmExcelImportState state) {
-    	Set<String> keys = record.keySet();
+		Set<String> keys = record.keySet();
     	
     	NamedAreaLevellRow row = new NamedAreaLevellRow();
     	state.setNamedAreaLevelRow(row);

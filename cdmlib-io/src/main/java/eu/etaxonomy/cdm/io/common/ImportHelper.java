@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
@@ -72,22 +73,25 @@ public class ImportHelper {
 		return true;
 	}
 	
-	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, OVERWRITE);
+	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean blankToNull){
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, OVERWRITE, blankToNull);
 	}
 	
-	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean overwriteNull){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
-	}
+//	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean overwriteNull){
+//		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
+//	}
 		
 	public static boolean addBooleanValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE);
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE, false);
 	}
 
-	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull){
+	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull, boolean blankToNull){
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);
+			if (strValue != null && blankToNull && strValue.toString().trim().equals("") ){
+				strValue = null;
+			}
 			return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull, OBLIGATORY);
 		}catch (SQLException e) {
 			logger.error("SQLException: " +  e);
@@ -291,6 +295,9 @@ public class ImportHelper {
 		T result;
 		try {
 			methodName = getGetterMethodName(cdmAttrName, isBoolean);
+			if (cdmBase.isInstanceOf(NonViralName.class)){
+				cdmBase = cdmBase.deproxy(cdmBase, NonViralName.class);
+			}
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
 			result = (T)cdmMethod.invoke(cdmBase);
 			return result;

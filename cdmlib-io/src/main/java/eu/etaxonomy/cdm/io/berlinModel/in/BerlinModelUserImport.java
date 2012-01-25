@@ -101,7 +101,7 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 					
 					dbAttrName = "RealName";
 					cdmAttrName = "TitleCache";
-					success &= ImportHelper.addStringValue(rs, person, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, person, dbAttrName, cdmAttrName, false);
 	
 	
 					userMap.put(username, user);
@@ -125,7 +125,7 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		if (!success){
 			state.setUnsuccessfull();
-	}
+		}
 		return;
 	}
 	

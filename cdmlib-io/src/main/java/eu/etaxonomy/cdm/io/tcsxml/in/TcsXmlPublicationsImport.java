@@ -133,7 +133,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		logger.info("end make publications ...");
 		if (!success){
 			state.setUnsuccessfull();
-	}
+		}
 		return;
 	}
 	

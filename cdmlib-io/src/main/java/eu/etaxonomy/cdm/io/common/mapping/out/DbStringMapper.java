@@ -8,8 +8,9 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
@@ -23,6 +24,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
 	private static final Logger logger = Logger.getLogger(DbStringMapper.class);
+
+	private static final int MAX_PRECISION = -1;  //precision for datatype nvarchar(max) == clob (SQL Server 2008)
+	private boolean blankToNull = false;
 	
 	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString){
 		return new DbStringMapper(cdmAttributeString, dbAttributeString, null, true);
@@ -48,7 +52,7 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 	
-
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -56,11 +60,33 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = (String)super.getValue(cdmBase);
-		if (result != null && result.length() > getPrecision()){
-			logger.warn("Truncation (" + result.length() + "->" + getPrecision() + ") needed for Attribute " + getDestinationAttribute() + " in " +  cdmBase + "." );
-			result = result.substring(0, getPrecision());
+		if (isBlankToNull() && StringUtils.isBlank(result)){
+			result = null;
+		}
+		if (result != null){
+			if (result.length() > getPrecision() && getPrecision() != MAX_PRECISION){
+				logger.warn("Truncation (" + result.length() + "->" + getPrecision() + ") needed for Attribute " + getDestinationAttribute() + " in " +  cdmBase + "." );
+				result = result.substring(0, getPrecision());
+			}
 		}
 		return result;
+	}
+	
+
+	/**
+	 * If <code>true</code> all {@link DbStringMapper} map blank strings to <code>null</code>
+	 * @return
+	 */
+	public boolean isBlankToNull() {
+		return blankToNull;
+	}
+
+	/**
+	 * @see #isBlankToNull()
+	 * @param blankToNull
+	 */
+	public void setBlankToNull(boolean blankToNull) {
+		this.blankToNull = blankToNull;
 	}
 	
 	

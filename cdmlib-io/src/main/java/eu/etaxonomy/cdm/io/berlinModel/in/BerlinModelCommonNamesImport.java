@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelCommonNamesImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -80,8 +82,12 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	
 
 	@Override
-	protected String getIdQuery() {
-		String result = " SELECT CommonNameId FROM emCommonName ";
+	protected String getIdQuery(BerlinModelImportState state) {
+		String result = " SELECT CommonNameId FROM emCommonName WHERE (1=1) ";
+		if (StringUtils.isNotBlank(state.getConfig().getCommonNameFilter())){
+			result += " AND " + state.getConfig().getCommonNameFilter();
+		}
+		
 		return result;
 	}
 
@@ -123,6 +129,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			makeRegions(state);
 		} catch (Exception e) {
 			logger.error("Error when creating common name regions:" + e.getMessage());
+			e.printStackTrace();
 			state.setUnsuccessfull();
 		}
 		super.doInvoke(state);
@@ -145,7 +152,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			//get E+M - TDWG Mapping
 			Map<String, String> emTdwgMap = getEmTdwgMap(source);
 			//fill regionMap
-			fillRegionMap(source, sqlWhere, emTdwgMap);
+			fillRegionMap(state, sqlWhere, emTdwgMap);
 			
 			return;
 		} catch (NumberFormatException e) {
@@ -216,7 +223,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				TaxonBase taxonBase = null;
 				taxonBase  = taxonMap.get(String.valueOf(taxonId));
 				if (taxonBase == null){
-					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + " not imported");
+					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + "(" + commonNameId + ") not imported");
 					continue;
 				}else if (! taxonBase.isInstanceOf(Taxon.class)){
 					logger.warn("taxon (" + taxonId + ") is not accepted. Can't import common name " +  commonNameId);
@@ -272,7 +279,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				TaxonNameBase nameUsedInSource = taxonNameMap.get(String.valueOf(nameInSourceFk));
 				if (nameInSourceFk != null && nameUsedInSource == null){
-					logger.warn("Name used in source (" + nameInSourceFk + ") was not found");
+					logger.warn("Name used in source (" + nameInSourceFk + ") was not found for common name " + commonNameId);
 				}
 				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				for (CommonTaxonName commonTaxonName : commonTaxonNames){
@@ -321,7 +328,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 						Extension.NewInstance(reference, refLanguageIso639_2, refLanguageIsoExtensionType);
 					}
 				}else if (CdmUtils.isNotEmpty(refLanguage) || CdmUtils.isNotEmpty(refLanguageIso639_2)){
-					logger.warn("Reference is null (" + languageRefRefFk + ") but refLanguage (" + CdmUtils.Nz(refLanguage) + ") or iso639_2 (" + CdmUtils.Nz(refLanguageIso639_2) + ") was not null");
+					logger.warn("Reference is null (" + languageRefRefFk + ") but refLanguage (" + CdmUtils.Nz(refLanguage) + ") or iso639_2 (" + CdmUtils.Nz(refLanguageIso639_2) + ") was not null for common name ("+ commonNameId +")");
 				}
 				
 				//status
@@ -365,10 +372,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param taxon
 	 */
 	private boolean isFirstMisappliedName = true;
-	private Taxon getMisappliedName(Map<String, Reference> biblioRefMap, Map<String, Reference> nomRefMap, 
-			Object misNameRefFk, Taxon taxon) {
+	private Taxon getMisappliedName(Map<String, Reference> biblioRefMap, Map<String, Reference> nomRefMap, Object misNameRefFk, Taxon taxon) {
 		Taxon misappliedTaxon = null;
-		Reference misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
+		Reference<?> misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
 		misappliedTaxon = Taxon.NewInstance(taxon.getName(), misNameRef);
 		Set<String> includeProperty = new HashSet<String>();
 		try {
@@ -468,9 +474,12 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @return
 	 * @throws SQLException
 	 */
-	private void getRegionFks(BerlinModelImportState state, SortedSet<Integer> regionFks,
-			Source source) throws SQLException {
+	private void getRegionFks(BerlinModelImportState state, SortedSet<Integer> regionFks, Source source) throws SQLException {
 		String sql = " SELECT DISTINCT RegionFks FROM emCommonName";
+		if (state.getConfig().getCommonNameFilter() != null){
+			sql += " WHERE " + state.getConfig().getCommonNameFilter(); 
+		}
+		
 		ResultSet rs = source.getResultSet(sql);
 		while (rs.next()){
 			String strRegionFks = rs.getString("RegionFks"); 
@@ -491,13 +500,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
-	 * @param source
+	 * @param state
 	 * @param sqlWhere
 	 * @param emTdwgMap
 	 * @throws SQLException
 	 */
-	private void fillRegionMap(Source source, String sqlWhere,
+	private void fillRegionMap(BerlinModelImportState state, String sqlWhere,
 			Map<String, String> emTdwgMap) throws SQLException {
+		Source source = state.getConfig().getSource();
 		String sql;
 		ResultSet rs;
 		sql = " SELECT RegionId, Region FROM emLanguageRegion WHERE RegionId IN ("+ sqlWhere+ ") ";
@@ -507,7 +517,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			String region = rs.getString("Region");
 			String[] splitRegion = region.split("-");
 			if (splitRegion.length <= 1){
-				NamedArea newArea = NamedArea.NewInstance(region, region, null);
+				NamedArea newArea = getNamedArea(state, null, region, "Language region '" + region + "'", null, null, null);
 				getTermService().save(newArea);
 				regionMap.put(String.valueOf(regionId), newArea);
 				logger.warn("Found new area: " +  region);
@@ -515,7 +525,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String emCode = splitRegion[1].trim();
 				String tdwgCode = emTdwgMap.get(emCode);
 				if (StringUtils.isNotBlank(tdwgCode) ){
-					NamedArea tdwgArea = getNamedArea(tdwgCode);
+					NamedArea tdwgArea = getNamedArea(state, tdwgCode);
 					regionMap.put(String.valueOf(regionId), tdwgArea);
 				}else{
 					logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
@@ -526,21 +536,25 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * @param state 
 	 * @param tdwgCode
 	 */
-	private NamedArea getNamedArea(String tdwgCode) {
+	private NamedArea getNamedArea(BerlinModelImportState state, String tdwgCode) {
 		NamedArea area;
 		if (tdwgCode.equalsIgnoreCase("Ab")){
-			area = NamedArea.NewInstance("Azerbaijan (including Nakhichevan)", "Azerbaijan & Nakhichevan", "Ab");
+			area = getNamedArea(state, BerlinModelTransformer.uuidAzerbaijanNakhichevan, "Azerbaijan & Nakhichevan", "Azerbaijan (including Nakhichevan)",  "Ab", null, null);
 			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
-			area = NamedArea.NewInstance("The Russian Federation", "The Russian Federation", "Rf");
-			getTermService().save(area);
+			area = WaterbodyOrCountry.RUSSIANFEDERATION();
+//			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Uk")){
-			area = NamedArea.NewInstance("Ukraine (including Crimea)", "Ukraine & Crimea", "Uk");
+			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
 			getTermService().save(area);
 		}else{
 			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
+		}
+		if (area == null){
+			logger.warn("Area is null for " + tdwgCode);
 		}
 		return area;
 	}
@@ -613,7 +627,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 */
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
@@ -635,14 +649,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
 			cdmClass = TaxonNameBase.class;
 			idSet = nameIdSet;
-			Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, TaxonNameBase<?,?>> nameMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 
-			//name map
+			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
-			cdmClass = Taxon.class;
+			cdmClass = TaxonBase.class;
 			idSet = taxonIdSet;
-			Map<String, TaxonNameBase> taxonMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, TaxonBase<?>> taxonMap = (Map<String, TaxonBase<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
 
 			//nom reference map
@@ -656,7 +670,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, Reference<?>> biblioReferenceMap = (Map<String, Reference<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
 		} catch (SQLException e) {

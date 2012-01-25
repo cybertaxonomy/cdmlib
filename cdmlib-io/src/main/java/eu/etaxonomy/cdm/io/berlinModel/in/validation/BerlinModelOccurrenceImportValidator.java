@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
@@ -36,17 +37,17 @@ public class BerlinModelOccurrenceImportValidator implements IOValidator<BerlinM
 		BerlinModelImportConfigurator bmiConfig = state.getConfig();
 		result &= checkTaxonIsAccepted(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
-		logger.warn("Checking for Occurrence not yet fully implemented");
+		System.out.println("Checking for Occurrence not yet fully implemented");
 		return result;
 	}
 	
 	
 	//******************************** CHECK *************************************************
 		
-		private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator bmiConfig){
+		private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator config){
 			try {
 				boolean result = true;
-				Source source = bmiConfig.getSource();
+				Source source = config.getSource();
 				String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status, PTaxon.PTRefFk, Reference.RefCache " + 
 							" FROM emOccurrence INNER JOIN " +
 								" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk INNER JOIN " + 
@@ -54,17 +55,22 @@ public class BerlinModelOccurrenceImportValidator implements IOValidator<BerlinM
 				                " Status ON PTaxon.StatusFk = Status.StatusId LEFT OUTER JOIN " +
 				                " Reference ON PTaxon.PTRefFk = Reference.RefId " + 
 							" WHERE (PTaxon.StatusFk <> 1)  ";
+
+				if (StringUtils.isNotBlank(config.getOccurrenceFilter())){
+					strQuery += String.format(" AND (%s) ", config.getOccurrenceFilter()) ; 
+				}
+
 				
 				ResultSet resulSet = source.getResultSet(strQuery);
 				boolean firstRow = true;
 				while (resulSet.next()){
 					if (firstRow){
 						System.out.println("========================================================");
-						logger.warn("There are Occurrences for a taxon that is not accepted!");
+						System.out.println("There are Occurrences for a taxon that is not accepted!");
 						System.out.println("========================================================");
 					}
 					int occurrenceId = resulSet.getInt("OccurrenceId");
-					int statusFk = resulSet.getInt("StatusFk");
+//					int statusFk = resulSet.getInt("StatusFk");
 					String status = resulSet.getString("Status");
 					String fullNameCache = resulSet.getString("FullNameCache");
 					String ptRefFk = resulSet.getString("PTRefFk");

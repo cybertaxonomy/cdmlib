@@ -59,7 +59,7 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 			n = rs.getInt("n");
 			if (n > 0){
 				System.out.println("========================================================");
-				logger.warn("There are " + n + " RefDetails with a secondary source. Secondary sources are not supported yet");
+				System.out.println("There are " + n + " RefDetails with a secondary source. Secondary sources are not supported yet");
 				System.out.println("========================================================");
 				success = false;
 			}
@@ -87,7 +87,7 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 				n = rs.getInt("n");
 				if (n > 0){
 					System.out.println("========================================================");
-					logger.warn("There are " + n + " RefDetails with an idInSource. IdInSources are not supported yet");
+					System.out.println("There are " + n + " RefDetails with an idInSource. IdInSources are not supported yet");
 					System.out.println("========================================================");
 					success = false;
 				}
@@ -119,7 +119,7 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 			n = rs.getInt("n");
 			if (n > 0){
 				System.out.println("========================================================");
-				logger.warn("There are " + n + " RefDetails with a note. Notes for RefDetails are not imported!");
+				System.out.println("There are " + n + " RefDetails with a note. Notes for RefDetails are not imported!");
 				System.out.println("========================================================");
 				success = false;
 			}

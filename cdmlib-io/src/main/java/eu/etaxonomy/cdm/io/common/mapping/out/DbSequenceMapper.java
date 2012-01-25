@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
 

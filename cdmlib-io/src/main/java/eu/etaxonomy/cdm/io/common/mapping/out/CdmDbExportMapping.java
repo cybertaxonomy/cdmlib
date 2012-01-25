@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,12 +17,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
+import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
+import eu.etaxonomy.cdm.io.common.mapping.CdmMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -30,20 +33,20 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class BerlinModelExportMapping extends CdmIoMapping {
-	private static final Logger logger = Logger.getLogger(BerlinModelExportMapping.class);
+public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG extends DbExportConfiguratorBase<STATE>> extends CdmIoMapping {
+	private static final Logger logger = Logger.getLogger(CdmDbExportMapping.class);
 	
 	private PreparedStatement preparedStatement;
 	private String dbTableName;
 	private List<CollectionExportMapping> collectionMappingList = new ArrayList<CollectionExportMapping>();
 	
 
-	public BerlinModelExportMapping(String tableName){
+	public CdmDbExportMapping(String tableName){
 		this.dbTableName = tableName;
 	}
 	
-	public boolean initialize(BerlinModelExportState state) throws SQLException{
-		BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
+	public boolean initialize(STATE state) throws SQLException{
+		CONFIG bmeConfig = state.getConfig();
 		Source db = bmeConfig.getDestination();
 		
 		try {
@@ -53,7 +56,7 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 			this.preparedStatement = db.getConnection().prepareStatement(strPreparedStatement);
 			index = new IndexCounter(1);
 			
-			for (CdmAttributeMapperBase mapper : this.mapperList){
+			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					dbMapper.initialize(preparedStatement, index, state, dbTableName);
@@ -75,8 +78,11 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 	public boolean invoke(CdmBase cdmBase) throws SQLException{
 		try {
 			boolean result = true;
-			for (CdmAttributeMapperBase mapper : this.mapperList){
-				if (mapper instanceof IDbExportMapper){
+			for (CdmMapperBase mapper : this.mapperList){
+				if (mapper instanceof ObjectChangeMapper){
+					ObjectChangeMapper changeMapper = (ObjectChangeMapper)mapper;
+					cdmBase = changeMapper.getNewObject(cdmBase);
+				}else if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					try {
 						result &= dbMapper.invoke(cdmBase);
@@ -86,7 +92,7 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 						e.printStackTrace();
 						continue;
 					}
-				}else{
+				}else {
 					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
@@ -152,10 +158,10 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 		this.preparedStatement = preparedStatement;
 	}
 	
-	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
-		List<CdmAttributeMapperBase> list = this.mapperList;
-		return list;
-	}
+//	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
+//		List<CdmAttributeMapperBase> list = this.mapperList;
+//		return list;
+//	}
 	
 	
 }

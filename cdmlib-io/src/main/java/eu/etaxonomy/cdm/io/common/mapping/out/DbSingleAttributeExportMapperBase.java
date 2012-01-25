@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
+package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -101,7 +101,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 //					if (strValue.length() > 255){
 //						logger.debug("String to long (" + strValue.length() + ") for object " + cdmBase.toString() + ": " + value);
 //					}
-					if (strValue.length() > getPrecision()){
+					if (strValue.length() > getPrecision() && getPrecision() != -1 ){
 						logger.warn("The length of the string to save is longer than the database columns precision. String will be truncated: " + strValue);
 						if (getPrecision() >= 4) {
 							strValue = strValue.substring(0, getPrecision() - 4 )+" ...";

@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.common.mapping;
 
 import org.apache.log4j.Logger;
 
 /**
+ * The most general mapper class for all cdm mappers.
  * @author a.mueller
- * @created 01.07.2008
- * @version 1.0
+ * @created 12.01.2012
  */
-public abstract class CdmExportBase<CONFIG extends IExportConfigurator, STATE extends ExportStateBase> extends CdmIoBase<STATE> implements ICdmExport<CONFIG, STATE>{
+public abstract class CdmMapperBase {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(CdmExportBase.class);
-
+	private static final Logger logger = Logger.getLogger(CdmMapperBase.class);
+	
 }

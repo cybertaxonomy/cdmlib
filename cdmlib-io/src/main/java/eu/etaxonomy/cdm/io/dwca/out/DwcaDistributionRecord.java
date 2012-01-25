@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -101,23 +102,23 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		if (StringUtils.isNotBlank(locationIdString)){
-			print(locationIdString, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
+			print(locationIdString, writer, IS_NOT_FIRST, TermUri.DWC_LOCATION_ID);
 		}else{
-			print(locationId, writer, IS_NOT_FIRST, TermUris.DWC_LOCATION_ID);
+			print(locationId, writer, IS_NOT_FIRST, TermUri.DWC_LOCATION_ID);
 		}
-		print(locality, writer, IS_NOT_FIRST, TermUris.DWC_LOCALITY);
-		print(countryCode, writer, IS_NOT_FIRST, TermUris.DWC_COUNTRY_CODE);
-		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUris.DWC_LIFESTAGE);
-		print(getOccurrenceStatus(occurrenceStatus), writer, IS_NOT_FIRST, TermUris.DWC_OCCURRENCE_STATUS);
-		print(threadStatus, writer, IS_NOT_FIRST, TermUris.IUCN_THREAD_STATUS);
-		print(getEstablishmentMeans(establishmentMeans), writer, IS_NOT_FIRST, TermUris.DWC_ESTABLISHMENT_MEANS);
-		print(appendixCITES, writer, IS_NOT_FIRST, TermUris.GBIF_APPENDIX_CITES);
-		print(getTimePeriod(eventDate),writer, IS_NOT_FIRST, TermUris.DWC_EVENT_DATE);
-		print(getTimePeriodPart(seasonalDate, false),writer, IS_NOT_FIRST, TermUris.DWC_START_DAY_OF_YEAR);
+		print(locality, writer, IS_NOT_FIRST, TermUri.DWC_LOCALITY);
+		print(countryCode, writer, IS_NOT_FIRST, TermUri.DWC_COUNTRY_CODE);
+		print(getLifeStage(lifeStage), writer, IS_NOT_FIRST, TermUri.DWC_LIFESTAGE);
+		print(getOccurrenceStatus(occurrenceStatus), writer, IS_NOT_FIRST, TermUri.DWC_OCCURRENCE_STATUS);
+		print(threadStatus, writer, IS_NOT_FIRST, TermUri.IUCN_THREAD_STATUS);
+		print(getEstablishmentMeans(establishmentMeans), writer, IS_NOT_FIRST, TermUri.DWC_ESTABLISHMENT_MEANS);
+		print(appendixCITES, writer, IS_NOT_FIRST, TermUri.GBIF_APPENDIX_CITES);
+		print(getTimePeriod(eventDate),writer, IS_NOT_FIRST, TermUri.DWC_EVENT_DATE);
+		print(getTimePeriodPart(seasonalDate, false),writer, IS_NOT_FIRST, TermUri.DWC_START_DAY_OF_YEAR);
 		//TODO
-		print(getTimePeriodPart(seasonalDate, true),writer, IS_NOT_FIRST, TermUris.DWC_END_DAY_OF_YEAR);
-		print(source, writer, IS_NOT_FIRST, TermUris.DC_SOURCE);
-		print(occurrenceRemarks, writer, IS_NOT_FIRST, TermUris.DWC_OCCURRENCE_REMARKS);
+		print(getTimePeriodPart(seasonalDate, true),writer, IS_NOT_FIRST, TermUri.DWC_END_DAY_OF_YEAR);
+		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
+		print(occurrenceRemarks, writer, IS_NOT_FIRST, TermUri.DWC_OCCURRENCE_REMARKS);
 		writer.println();
 	}
 

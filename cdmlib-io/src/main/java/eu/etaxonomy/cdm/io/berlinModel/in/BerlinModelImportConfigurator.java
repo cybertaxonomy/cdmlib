@@ -65,7 +65,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
 
-	
+	private boolean useSingleClassification = false;
 	
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
@@ -83,7 +83,25 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private File mediaPath;
 	private int maximumNumberOfNameFacts;
 	private boolean isIgnore0AuthorTeam = false;
+
+	private boolean switchSpeciesGroup = false;
 	
+	//Data Filter
+
+	private String taxonTable = "PTaxon";
+	private String classificationQuery = null;
+	private String relTaxaIdQuery = null;
+	private String nameIdTable = null;
+	private String referenceIdTable = null;
+	private String authorTeamFilter = null;
+	private String authorFilter = null;
+	private String factFilter = null;
+	private String commonNameFilter = null;
+	private String occurrenceFilter = null;
+	private String occurrenceSourceFilter = null;
+	private String webMarkerFilter = null;
+	
+
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				BerlinModelGeneralImportValidator.class
@@ -459,6 +477,183 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setDoRelTaxa(boolean doRelTaxa) {
 		this.doRelTaxa = doRelTaxa;
 	}
+
+
+
+	public String getTaxonTable() {
+		return this.taxonTable ;
+	}
+
+	/**
+	 * @param taxonTable the taxonTable to set
+	 */
+	public void setTaxonTable(String taxonTable) {
+		this.taxonTable = taxonTable;
+	}
+
+
+
+	public String getClassificationQuery() {
+		return this.classificationQuery ;
+	}
+	
+	/**
+	 * @param classificationQuery the classificationQuery to set
+	 */
+	public void setClassificationQuery(String classificationQuery) {
+		this.classificationQuery = classificationQuery;
+	}
+
+	/**
+	 * @param relTaxaIdQuery the relTaxaIdQuery to set
+	 */
+	public void setRelTaxaIdQuery(String relTaxaIdQuery) {
+		this.relTaxaIdQuery = relTaxaIdQuery;
+	}
+
+	public String getRelTaxaIdQuery() {
+		return this.relTaxaIdQuery ;
+	}
+
+
+
+	/**
+	 * @return the nameIdTable
+	 */
+	public String getNameIdTable() {
+		return nameIdTable;
+	}
+
+
+
+	/**
+	 * @param nameIdTable the nameIdTable to set
+	 */
+	public void setNameIdTable(String nameIdTable) {
+		this.nameIdTable = nameIdTable;
+	}
+
+
+
+	public void setReferenceIdTable(String referenceIdTable) {
+		this.referenceIdTable = referenceIdTable;
+	}
+
+	public String getReferenceIdTable() {
+		return referenceIdTable;
+	}
+
+
+
+	public void setFactFilter(String factFilter) {
+		this.factFilter = factFilter;
+	}
+
+
+
+	public String getFactFilter() {
+		return factFilter;
+	}
+
+
+
+	public String getOccurrenceFilter() {
+		return occurrenceFilter;
+	}
+
+
+
+	public void setOccurrenceFilter(String occurrenceFilter) {
+		this.occurrenceFilter = occurrenceFilter;
+	}
+
+
+
+	public String getCommonNameFilter() {
+		return commonNameFilter;
+	}
+
+
+
+	public void setCommonNameFilter(String commonNameFilter) {
+		this.commonNameFilter = commonNameFilter;
+	}
+
+
+
+	public String getOccurrenceSourceFilter() {
+		return occurrenceSourceFilter;
+	}
+
+
+
+	public void setOccurrenceSourceFilter(String occurrenceSourceFilter) {
+		this.occurrenceSourceFilter = occurrenceSourceFilter;
+	}
+
+
+
+	public String getWebMarkerFilter() {
+		return webMarkerFilter;
+	}
+
+
+
+	public void setWebMarkerFilter(String webMarkerFilter) {
+		this.webMarkerFilter = webMarkerFilter;
+	}
+
+
+
+	public boolean isUseSingleClassification() {
+		return useSingleClassification;
+	}
+
+
+
+	public void setUseSingleClassification(boolean useSingleClassification) {
+		this.useSingleClassification = useSingleClassification;
+	}
+
+
+	public void setAuthorTeamFilter(String authorTeamFilter) {
+		this.authorTeamFilter = authorTeamFilter;
+	}
+
+	public String getAuthorTeamFilter() {
+		return authorTeamFilter;
+	}
+
+
+
+	public String getAuthorFilter() {
+		return authorFilter;
+	}
+
+
+
+	public void setAuthorFilter(String authorFilter) {
+		this.authorFilter = authorFilter;
+	}
+
+
+
+	public boolean isSwitchSpeciesGroup() {
+		return switchSpeciesGroup;
+	}
+
+
+
+	/**
+	 * If true, the rankId for speicesGroup is changed from 59 to 57 and
+	 * 59 is used for coll. species instead
+	 * @param switchSpeciesGroup
+	 */
+	public void setSwitchSpeciesGroup(boolean switchSpeciesGroup) {
+		this.switchSpeciesGroup = switchSpeciesGroup;
+	}
+
+
 
 
 

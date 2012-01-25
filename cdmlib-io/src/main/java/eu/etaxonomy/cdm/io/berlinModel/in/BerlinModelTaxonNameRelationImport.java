@@ -10,13 +10,13 @@
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_HAS_SAME_TYPE_AS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_ALTERNATIVE_NAME_FOR;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_BASIONYM_FOR;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_CONSERVED_TYPE_OF;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_VALIDATION_OF;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_VALIDATION_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_FEMALE_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_FIRST_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_HOMONYM_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_VALIDATION_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LECTOTYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_MALE_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
@@ -24,6 +24,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REPLACED_SYNONYM_FOR;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_SECOND_PARENT_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_VALIDATION_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
 
 import java.lang.reflect.Method;
@@ -34,6 +35,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -71,6 +73,22 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		super();
 	}
 
+	
+
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (StringUtils.isNotBlank(state.getConfig().getNameIdTable())){
+			String result = super.getIdQuery(state);
+			result += " WHERE nameFk1 IN (SELECT NameId FROM %s) OR ";
+			result += "       nameFk2 IN (SELECT NameId FROM %s)";
+			result = String.format(result, state.getConfig().getNameIdTable(),state.getConfig().getNameIdTable() );
+			return result;
+		}else{
+			return super.getIdQuery(state);
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
 	 */
@@ -132,9 +150,12 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				String rule = null;  
 				
 				if (nameFrom != null && nameTo != null){
-					success = handleNameRelationship(success, config, name1Id, name2Id,
-							relQualifierFk, notes, nameFrom, nameTo, citation,
-							microcitation, rule);
+					success = handleNameRelationship(success, config, name1Id, name2Id,	relQualifierFk, 
+							notes, nameFrom, nameTo, citation, microcitation, rule);
+					nameFrom.setTitleCache(null);
+					nameTo.setTitleCache(null);
+					nameFrom.getTitleCache();
+					nameTo.getTitleCache();
 					nameToSave.add(nameFrom);
 					
 					//TODO
@@ -143,10 +164,10 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				}else{
 					//TODO
 					if (nameFrom == null){
-						 logger.warn("from TaxonName for RelName (" + relNameId + ") does not exist in store");
+						 logger.warn("from TaxonName " + name1Id + "  for RelName (" + relNameId + " , type: " + relQualifierFk + ") does not exist in store. ToName is: " + (nameTo == null ? "" : nameTo.getTitleCache()));
 					}
 					if (nameTo == null){
-						logger.warn("to TaxonName for RelName (" + relNameId + ") does not exist in store");
+						logger.warn("to TaxonName " + name2Id + " for RelName (" + relNameId + " , type: " + relQualifierFk + ") does not exist in store. FromName is: "  + (nameFrom == null ? "" : nameFrom.getTitleCache()));
 					}
 					success = false;
 				}
@@ -223,6 +244,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 			
 		}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
 			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_IS_ALTERNATIVE_NAME_FOR){
+			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ALTERNATIVE_NAME(), citation, microcitation, rule) ;
 		}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
 			//HybridRelationships
 			if (! (nameTo instanceof NonViralName ) || ! (nameFrom instanceof NonViralName)){

@@ -127,11 +127,16 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 							}
 						
 						Specimen specimen = Specimen.NewInstance();
-						specimen.addDefinition(typePhrase, Language.DEFAULT());
-						if (typePhrase.length()> 255){
+						specimen.putDefinition(Language.DEFAULT(), typePhrase);
+						
+						if (typePhrase == null){
+							String message = "No type phrase available for type with typeDesignationId %s of taxon name %s";
+							message = String.format(message, typeDesignationId, taxonNameBase.getTitleCache());
+							logger.warn(message);
+						}else if (typePhrase.length()> 255){
 							typePhrase = typePhrase.substring(0, 255);
+							specimen.setTitleCache(typePhrase, true);
 						}
-						specimen.setTitleCache(typePhrase, true);
 						boolean addToAllNames = true;
 						String originalNameString = null;
 						SpecimenTypeDesignation type = taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
@@ -142,6 +147,9 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 
 					}catch (UnknownCdmTypeException e) {
 						logger.warn("TypeStatus '" + status + "' not yet implemented");
+						result = false;
+					}catch (Exception e) {
+						logger.warn("Unexpected exception occurred while processing type with typeDesignationId " + String.valueOf(typeDesignationId));
 						result = false;
 					}
 				}else{

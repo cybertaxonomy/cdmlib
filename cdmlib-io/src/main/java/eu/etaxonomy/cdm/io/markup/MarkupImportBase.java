@@ -75,7 +75,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 			getTermService().saveOrUpdate(typedCollection);
 		}
 		
-			}
+	}
 	
 	protected void save(CdmBase cdmBase, MarkupImportState state) {
 		if (state.isCheck()){
@@ -108,8 +108,8 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		Map<String, Attribute> result = new HashMap<String, Attribute>();
 		if (!event.isStartElement()){
 			fireWarningEvent("Event is not an startElement. Can't check attributes", makeLocationStr(event.getLocation()), 1, 1);
-		return result;
-	}
+			return result;
+		}
 		StartElement element = event.asStartElement(); 
 		Iterator<Attribute> attributes = element.getAttributes();
 		while (attributes.hasNext()){
@@ -138,7 +138,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 	protected void checkNoAttributes(XMLEvent event) {
 		String[] exceptions = new String[]{};
 		checkNoAttributes(event, 1, exceptions); 
-			}
+	}
 
 	/**
 	 * Throws an unexpected attributes event if the event has any attributes except those mentioned in "exceptions".
@@ -149,7 +149,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		if (! event.isStartElement()){
 			fireWarningEvent("Event is not an startElement. Can't check attributes", makeLocationStr(event.getLocation()), 1, 1);
 			return;
-			}
+		}
 		StartElement startElement = event.asStartElement();
 		Map<String, Attribute> attributes = getAttributes(startElement);
 		handleUnexpectedAttributes(startElement.getLocation(), attributes, stackDepth+1, exceptions);
@@ -175,7 +175,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 				return true;
 			}else{
 				return false;
-		}
+			}
 		}
 	}
 
@@ -248,7 +248,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 	protected void handleUnexpectedAttributes(Location location,Map<String, Attribute> attributes, String... exceptions) {
 		handleUnexpectedAttributes(location, attributes, 1, exceptions);
 	}
-			
+		
 	/**
 	 * see {@link #handleUnexpectedAttributes(Location, Map, String...)}
      *
@@ -383,10 +383,10 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		QName qName = event.asStartElement().getName();
 		if (! unhandledElements.empty()){
 			unhandledElements.push(qName);
-			}else{
+		}else{
 			fireUnexpectedStartElement(event.getLocation(), event.asStartElement(), 1);
 		}	
-			}
+	}
 
 	/**
 	 * Fires an unexpected element event if the event is not the last on the stack.
@@ -416,10 +416,10 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 			IIoEvent event = makeProblemEvent(endElement.getLocation(), message, 16, 1);
 			fire(event);
 		}
-	
+		
 	}
-			
-			
+	
+	
 	/**
 	 * Fires an unexpected element event if the unhandled element stack is empty.
 	 * @param event
@@ -436,7 +436,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		}else{
 			fireUnexpectedEvent(event, 1);
 		}	
-			}
+	}
 
 	/**
 	 * Fires an not yet implemented event and adds the element name to the unhandled elements stack.

@@ -54,8 +54,12 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
-		return " SELECT markerId FROM " + getTableName();
+	protected String getIdQuery(BerlinModelImportState state) {
+		String result = " SELECT markerId FROM " + getTableName();
+		if (state.getConfig().getWebMarkerFilter() != null){
+			result += " WHERE " +  state.getConfig().getWebMarkerFilter();
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)
