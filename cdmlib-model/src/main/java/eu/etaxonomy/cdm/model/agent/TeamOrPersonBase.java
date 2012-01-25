@@ -38,82 +38,82 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TeamOrPersonBase", propOrder = {
-	"nomenclaturalTitle"
+    "nomenclaturalTitle"
 })
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
-	private static final long serialVersionUID = 5216821307314001961L;
-	public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
+    private static final long serialVersionUID = 5216821307314001961L;
+    public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
-	@XmlElement(name="NomenclaturalTitle")
-	@Field(index=Index.TOKENIZED)
-	@NullOrNotEmpty
+    @XmlElement(name="NomenclaturalTitle")
+    @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
     @Size(max = 255)
-	protected String nomenclaturalTitle;
+    protected String nomenclaturalTitle;
 
-	@Transient
-	@XmlTransient
-	protected boolean isGeneratingTitleCache = false;
+    @Transient
+    @XmlTransient
+    protected boolean isGeneratingTitleCache = false;
 
-	/**
-	 * Returns the identification string (nomenclatural abbreviation) used in
-	 * nomenclature for this {@link Person person} or this {@link Team team}.
-	 *
-	 * @see  INomenclaturalAuthor#getNomenclaturalTitle()
-	 */
-	@Transient
-	public String getNomenclaturalTitle() {
-		String result = nomenclaturalTitle;
-		if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
-			result = getTitleCache();
-		}
-		return result;
-	}
+    /**
+     * Returns the identification string (nomenclatural abbreviation) used in
+     * nomenclature for this {@link Person person} or this {@link Team team}.
+     *
+     * @see  INomenclaturalAuthor#getNomenclaturalTitle()
+     */
+    @Transient
+    public String getNomenclaturalTitle() {
+        String result = nomenclaturalTitle;
+        if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
+            result = getTitleCache();
+        }
+        return result;
+    }
 
-	/**
-	 * @see     #getNomenclaturalTitle()
-	 */
-	public void setNomenclaturalTitle(String nomenclaturalTitle) {
-		this.nomenclaturalTitle = nomenclaturalTitle;
-	}
+    /**
+     * @see     #getNomenclaturalTitle()
+     */
+    public void setNomenclaturalTitle(String nomenclaturalTitle) {
+        this.nomenclaturalTitle = nomenclaturalTitle;
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-	 */
-	@Override
-	@Transient /*
-				TODO  is this still needed, can't we remove this ??
-				@Transient is an absolutely special case and thus leads to several
-				special implementations in order to harmonize this exception again
-				in other parts of the library:
-				 - eu.etaxonomy.cdm.remote.controller.AgentController.doGetTitleCache()
-				 - eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+     */
+    @Override
+    @Transient /*
+                TODO  is this still needed, can't we remove this ??
+                @Transient is an absolutely special case and thus leads to several
+                special implementations in order to harmonize this exception again
+                in other parts of the library:
+                 - eu.etaxonomy.cdm.remote.controller.AgentController.doGetTitleCache()
+                 - eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor
 
-				[a.kohlbecker May 2011]
-	 	*/
-	public String getTitleCache() {
-		isGeneratingTitleCache = true;
-		String result = super.getTitleCache();
-		result = replaceEmptyTitleByNomTitle(result);
-		isGeneratingTitleCache = false;
-		return result;
-	}
+                [a.kohlbecker May 2011]
+         */
+    public String getTitleCache() {
+        isGeneratingTitleCache = true;
+        String result = super.getTitleCache();
+        result = replaceEmptyTitleByNomTitle(result);
+        isGeneratingTitleCache = false;
+        return result;
+    }
 
-	/**
-	 * @param result
-	 * @return
-	 */
-	protected String replaceEmptyTitleByNomTitle(String result) {
-		if (CdmUtils.isEmpty(result)){
-			result = nomenclaturalTitle;
-		}
-		if (CdmUtils.isEmpty(result)){
-			result = super.getTitleCache();
-		}
-		return result;
-	}
+    /**
+     * @param result
+     * @return
+     */
+    protected String replaceEmptyTitleByNomTitle(String result) {
+        if (CdmUtils.isEmpty(result)){
+            result = nomenclaturalTitle;
+        }
+        if (CdmUtils.isEmpty(result)){
+            result = super.getTitleCache();
+        }
+        return result;
+    }
 
 
 }
