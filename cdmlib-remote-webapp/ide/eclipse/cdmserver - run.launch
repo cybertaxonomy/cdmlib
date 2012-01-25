@@ -10,18 +10,22 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="RunJettyRunWebAppClassPathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="runjettyrun.Bootstrap"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cdmlib-remote-webapp"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dlog4j.configDebug=false&#13;&#10;-Dcdm.datasource=cdm_production_flora_central_africa&#13;&#10;&#13;&#10;-Dorg.mortbay.jetty.webapp.parentLoaderPriority=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dlog4j.configDebug=false&#13;&#10;-Dcdm.datasource=cichorieae&#10;-Dorg.mortbay.jetty.webapp.parentLoaderPriority=true"/>
 <stringAttribute key="run_jetty_run.CONTEXT_ATTR" value="/"/>
+<booleanAttribute key="run_jetty_run.ENABLE_JNDI_ATTR" value="false"/>
 <booleanAttribute key="run_jetty_run.ENABLE_MAVEN_TEST_CLASSES_ATTR" value="true"/>
 <booleanAttribute key="run_jetty_run.ENABLE_NEED_CLIENT_AUTH_ATTR" value="false"/>
 <booleanAttribute key="run_jetty_run.ENABLE_PARENT_LOADER_PRIORITY_ATTR" value="true"/>
 <booleanAttribute key="run_jetty_run.ENABLE_SCANNER_ATTR" value="false"/>
+<booleanAttribute key="run_jetty_run.ENABLE_SCANNER_SCAN_WEBINF_ATTR" value="true"/>
 <booleanAttribute key="run_jetty_run.ENABLE_SSL_ATTR" value="false"/>
+<stringAttribute key="run_jetty_run.EXCLUDE_CLASSPATH_ATTR" value=""/>
 <stringAttribute key="run_jetty_run.KEYSTORE_ATTR" value=""/>
 <stringAttribute key="run_jetty_run.KEY_PWD_ATTR" value=""/>
 <stringAttribute key="run_jetty_run.PORT_ATTR" value="8080"/>
 <stringAttribute key="run_jetty_run.PWD_ATTR" value=""/>
 <stringAttribute key="run_jetty_run.SCANINTERVALSECONDS_ATTR" value=""/>
+<booleanAttribute key="run_jetty_run.SHOW_ADVANCE_ATTR" value="false"/>
 <stringAttribute key="run_jetty_run.SSL_PORT_ATTR" value=""/>
 <stringAttribute key="run_jetty_run.WEBAPPDIR_ATTR" value="src/main/webapp"/>
 </launchConfiguration>
