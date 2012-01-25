@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -35,8 +34,8 @@ public class DwcaZipToStreamConverterTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaZipToStreamConverterTest.class);
 	
-	URI uri;
-	DwcaZipToStreamConverter converter;
+	private URI uri;
+	private DwcaZipToStreamConverter converter;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -71,10 +70,10 @@ public class DwcaZipToStreamConverterTest {
 		try {
 			CsvStream coreStream = converter.getCoreStream();
 			Assert.assertNotNull("core stream should not be null", coreStream);
-			Map<String, String> next = coreStream.read();
+			CsvStreamItem next = coreStream.read();
 			Assert.assertNotNull("Entry should exist in core stream", next);
-			Assert.assertEquals("First entry should be id1", "1", next.get("id"));
-			Assert.assertEquals("First entries acceptedNameUsage should be ", "accNameUsageId1", next.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"));
+			Assert.assertEquals("First entry should be id1", "1", next.map.get("id"));
+			Assert.assertEquals("First entries acceptedNameUsage should be ", "accNameUsageId1", next.map.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"));
 			
 		} catch (IOException e) {
 			Assert.fail();
@@ -88,7 +87,7 @@ public class DwcaZipToStreamConverterTest {
 		try {
 			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
 			Assert.assertNotNull("Vernacular stream should not be null", vernacularStream);
-			Map<String, String> next = vernacularStream.read();
+			CsvStreamItem next = vernacularStream.read();
 			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
 		} catch (IOException e) {
 			Assert.fail();
@@ -105,10 +104,10 @@ public class DwcaZipToStreamConverterTest {
 	public void testCoreExtensionAttributes(){
 		try {
 			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
-			Map<String, String> next = vernacularStream.read();
+			CsvStreamItem next = vernacularStream.read();
 			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
-			Assert.assertEquals("First entry should be coreid1", "1", next.get("coreId"));
-			Assert.assertEquals("First entries language should be 'en' ", "en", next.get("http://purl.org/dc/terms/language"));
+			Assert.assertEquals("First entry should be coreid1", "1", next.map.get("coreId"));
+			Assert.assertEquals("First entries language should be 'en' ", "en", next.map.get("http://purl.org/dc/terms/language"));
 			
 		} catch (IOException e) {
 			Assert.fail();
