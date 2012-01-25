@@ -137,7 +137,7 @@ public class Extension extends VersionableEntity implements Cloneable {
 			return super.toString();
 		}
 	}
-	 
+	
 	
 //****************** CLONE ************************************************/
 	 

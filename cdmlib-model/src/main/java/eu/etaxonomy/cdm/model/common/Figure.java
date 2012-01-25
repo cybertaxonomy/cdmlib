@@ -47,7 +47,7 @@ public class Figure extends ReferencedMediaBase {
 		return new Figure();
 	}
 	
-	/**
+    /**
      * Factory method which creates a new figure, adds a reprsentation including mime type and suffix information
      * and adds to the later a representation part for a given uri and size
      * Returns <code>null</code> if uri is empty
