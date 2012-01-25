@@ -54,7 +54,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	
 	
 	protected abstract void doInvoke(TcsXmlImportState state);
-	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
@@ -228,7 +227,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			if (elAccordingToDetailed != null){
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
-				result = refFactory.newGeneric();
+				result = ReferenceFactory.newGeneric();
 				String title = elSimple.getTextNormalize();
 				result.setTitleCache(title, true);
 			}

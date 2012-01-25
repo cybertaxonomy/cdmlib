@@ -24,6 +24,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImpor
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
 cdmlib-io/src/test/resources/log4j.properties
 cdmlib-io/target
 cdmlib-model/.classpath

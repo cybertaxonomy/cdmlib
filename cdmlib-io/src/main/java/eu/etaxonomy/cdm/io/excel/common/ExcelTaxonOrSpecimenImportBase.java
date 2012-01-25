@@ -43,6 +43,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	
 	protected static final String RANK_COLUMN = "(?i)(Rank)";
 	protected static final String FULL_NAME_COLUMN = "(?i)(FullName)";
+	protected static final String TAXON_UUID_COLUMN = "(?i)(taxonUuid)";
 	protected static final String FAMILY_COLUMN = "(?i)(Family)";
 	protected static final String GENUS_COLUMN = "(?i)(Genus)";
 	protected static final String SPECIFIC_EPITHET_COLUMN = "(?i)(SpecificEpi(thet)?)";

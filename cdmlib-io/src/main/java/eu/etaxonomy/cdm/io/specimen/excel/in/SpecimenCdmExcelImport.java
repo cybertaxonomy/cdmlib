@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -81,6 +83,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	private static final String COLLECTION_DATE_COLUMN = "(?i)(CollectionDate)";
 	private static final String COLLECTION_DATE_END_COLUMN = "(?i)(CollectionDateEnd)";
 	private static final String COLLECTOR_COLUMN = "(?i)(Collector)";
+	private static final String COLLECTORS_COLUMN = "(?i)(Collectors)";
+	private static final String PRIMARY_COLLECTOR_COLUMN = "(?i)(PrimaryCollector)";
 	private static final String LONGITUDE_COLUMN = "(?i)(Longitude)";
 	private static final String LATITUDE_COLUMN = "(?i)(Latitude)";
 	private static final String REFERENCE_SYSTEM_COLUMN = "(?i)(ReferenceSystem)";
@@ -144,6 +148,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				row.setAltitudeMax(value);		
 		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
 			row.putCollector(keyValue.index, value);		
+		} else if(keyValue.key.matches(PRIMARY_COLLECTOR_COLUMN)) {
+			row.setPrimaryCollector(value);		
 		} else if(keyValue.key.matches(ECOLOGY_COLUMN)) {
 				row.setEcology(value);
 		} else if(keyValue.key.matches(PLANT_DESCRIPTION_COLUMN)) {
@@ -154,6 +160,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				row.setCollectingDate(value);		
 		} else if(keyValue.key.matches(COLLECTION_DATE_END_COLUMN)) {
 				row.setCollectingDateEnd(value);		
+		} else if(keyValue.key.matches(COLLECTORS_COLUMN)) {
+			row.setCollectors(value);	
 		} else if(keyValue.key.matches(COLLECTOR_COLUMN)) {
 			row.putCollector(keyValue.index, value);	
 		} else if(keyValue.key.matches(COLLECTORS_NUMBER_COLUMN)) {
@@ -193,6 +201,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			row.putDeterminationInfraSpeciesEpi(keyValue.index, value);			
 		} else if(keyValue.key.matches(RANK_COLUMN)) {
 			row.putDeterminationRank(keyValue.index, value);			
+		} else if(keyValue.key.matches(TAXON_UUID_COLUMN)) {
+			row.putDeterminationTaxonUuid(keyValue.index, value);			
 		} else if(keyValue.key.matches(FULL_NAME_COLUMN)) {
 			row.putDeterminationFullName(keyValue.index, value);			
 		} else if(keyValue.key.matches(DETERMINATION_AUTHOR_COLUMN)) {
@@ -244,8 +254,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		//basis of record
 		DerivedUnitType type = DerivedUnitType.valueOf2(row.getBasisOfRecord());
 		if (type == null){
-			String message = "%s is not a valid BasisOfRecord. 'Unknown' is used instead.";
-			message = String.format(message, row.getBasisOfRecord());
+			String message = "%s is not a valid BasisOfRecord. 'Unknown' is used instead in line %d.";
+			message = String.format(message, row.getBasisOfRecord(), state.getCurrentLine());
 			logger.warn(message);
 			type = DerivedUnitType.DerivedUnit;
 		}
@@ -264,6 +274,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 //		facade.setSex(row.get)
 		handleExactLocation(facade, row, state);
 		facade.setCollector(getOrMakeAgent(state, row.getCollectors()));
+		facade.setPrimaryCollector(getOrMakePrimaryCollector(facade, row.getPrimaryCollector(), state));
 		handleAbsoluteElevation(facade, row, state);
 		
 		
@@ -304,7 +315,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			int value = Integer.valueOf(altitude);
 			facade.setAbsoluteElevation(value);
 		} catch (NumberFormatException e) {
-			String message = "Absolute elevation / Altitude '%s' is not an integer number in line %d";
+			String message = "Absolute elevation / altitude '%s' is not an integer number in line %d";
 			message = String.format(message, row.getAltitude(), state.getCurrentLine());
 			logger.warn(message);
 			return;
@@ -374,9 +385,38 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 */
 	private void handleDeterminations(SpecimenCdmExcelImportState state,SpecimenRow row, DerivedUnitFacade facade) {
 		boolean isFirstDetermination = true;
+		DeterminationLight commonDetermination = row.getCommonDetermination();
+		Taxon commonTaxon = null;
+		TaxonNameBase<?,?> commonName = null;
+		
+		boolean hasCommonTaxonInfo = commonDetermination == null ? false : commonDetermination.hasTaxonInformation();
+		if (hasCommonTaxonInfo && commonDetermination != null){
+			TaxonBase<?> taxonBase = null;
+			if (StringUtils.isNotBlank(commonDetermination.taxonUuid)){
+				UUID taxonUuid = UUID.fromString(commonDetermination.taxonUuid);
+				taxonBase = getTaxonService().find(taxonUuid);
+				if (taxonBase == null){
+					String message = "Taxon for uuid %s not found in line %d.";
+					message = String.format(message, taxonUuid.toString(), state.getCurrentLine());
+					logger.warn(message);
+				}
+			}else{
+				taxonBase = findBestMatchingTaxon(state, commonDetermination, state.getConfig().isCreateTaxonIfNotExists());
+			}
+			commonTaxon = getAcceptedTaxon(taxonBase);
+			if (taxonBase != null){
+				commonName = taxonBase.getName();
+			}
+		}
+		
+		
 		for (DeterminationLight determinationLight : row.getDetermination()){
-			Taxon taxon = findBestMatchingTaxon(state, determinationLight, state.getConfig().isCreateTaxonIfNotExists());
-			TaxonNameBase<?,?> name = findBestMatchingName(state, determinationLight);
+			Taxon taxon;
+			if (! hasCommonTaxonInfo){
+				taxon = findBestMatchingTaxon(state, determinationLight, state.getConfig().isCreateTaxonIfNotExists());
+			}else{
+				taxon = commonTaxon;
+			}
 			if (taxon != null){
 				getTaxonService().saveOrUpdate(taxon);
 				if (state.getConfig().isMakeIndividualAssociations() && taxon != null){
@@ -402,8 +442,19 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 					facade.addDetermination(detEvent);
 				}
 			}
-			if (name != null){
-				if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
+			
+			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
+				TaxonNameBase<?,?> name;
+				
+				if (!hasCommonTaxonInfo){
+					name = findBestMatchingName(state, determinationLight);
+				}else{
+					if (commonName == null){
+						commonName = findBestMatchingName(state, commonDetermination);
+					}
+					name = commonName;
+				}
+				if (name != null){
 					facade.setStoredUnder(name);
 				}
 			}
@@ -556,8 +607,10 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 //		DeterminationModifier modifier = DeterminationModifier.NewInstance(term, label, labelAbbrev);
 //		determination.modifier;
 		//notes
-		Annotation annotation = Annotation.NewInstance(determination.notes, AnnotationType.EDITORIAL(), Language.DEFAULT());
-		event.addAnnotation(annotation);
+		if (StringUtils.isNotEmpty(determination.notes)){
+			Annotation annotation = Annotation.NewInstance(determination.notes, AnnotationType.EDITORIAL(), Language.DEFAULT());
+			event.addAnnotation(annotation);
+		}
 
 		return event;
 	}
@@ -575,6 +628,34 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}else{
 			return getOrMakeTeam(state, agents);
 		}
+	}
+	
+	private Person getOrMakePrimaryCollector(DerivedUnitFacade facade, String primaryCollector, SpecimenCdmExcelImportState state) {
+		if (StringUtils.isBlank(primaryCollector)){
+			return null;
+		}
+		AgentBase<?> collector = facade.getCollector();
+		List<Person> collectors = new ArrayList<Person>();
+		if (collector.isInstanceOf(Team.class) ){
+			Team team = CdmBase.deproxy(collector, Team.class);
+			collectors.addAll(team.getTeamMembers());
+		}else if (collector.isInstanceOf(Person.class)){
+			collectors.add(CdmBase.deproxy(collector, Person.class));
+		}else{
+			throw new IllegalStateException("Unknown subclass of agentbase: " + collector.getClass().getName() );
+		}
+		for (Person person :collectors){
+			if (primaryCollector.equalsIgnoreCase(person.getTitleCache())){
+				return person;
+			}
+			if (primaryCollector.equalsIgnoreCase(person.getNomenclaturalTitle())){
+				return person;
+			}
+		}
+		String message = "Primary Agent '%s' could not be determined in collector(s) in line %d";
+		message = String.format(message, primaryCollector, state.getCurrentLine());
+		logger.warn(message);
+		return null;
 	}
 
 	private Team getOrMakeTeam(SpecimenCdmExcelImportState state, List<String> agents) {

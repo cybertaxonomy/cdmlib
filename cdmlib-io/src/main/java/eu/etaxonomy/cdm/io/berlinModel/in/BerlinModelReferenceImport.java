@@ -27,6 +27,7 @@ import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
+import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
+import eu.etaxonomy.cdm.io.berlinModel.CdmUriMapper;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelReferenceImportValidator;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -54,6 +56,7 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMarkerMapper;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -83,8 +86,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	public static final String BIBLIO_REFERENCE_NAMESPACE = "BiblioReference";
 	
 	public static final UUID REF_DEPOSITED_AT_UUID = UUID.fromString("23ca88c7-ce73-41b2-8ca3-2cb22f013beb");
-	public static final UUID REF_SOURCE = UUID.fromString("d6432582-2216-4b08-b0db-76f6c1013141");
+	public static final UUID REF_SOURCE_UUID = UUID.fromString("d6432582-2216-4b08-b0db-76f6c1013141");
 	public static final UUID DATE_STRING_UUID = UUID.fromString("e4130eae-606e-4b0c-be4f-e93dc161be7d");
+	public static final UUID IS_PAPER_UUID = UUID.fromString("8a326129-d0d0-4f9d-bbdf-8d86b037c65e");
 	
 	
 	private int modCount = 1000;
@@ -115,11 +119,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		new CdmStringMapper("pageString", "pages"),
 		new CdmStringMapper("series", "series"),
 		new CdmStringMapper("issn", "issn"),
-		new CdmStringMapper("url", "uri"),
+		new CdmUriMapper("url", "uri"),
 		DbImportExtensionMapper.NewInstance("NomStandard", ExtensionType.NOMENCLATURAL_STANDARD()),
 		DbImportExtensionMapper.NewInstance("DateString", DATE_STRING_UUID, "Date String", "Date String", "dates"),
 		DbImportExtensionMapper.NewInstance("RefDepositedAt", REF_DEPOSITED_AT_UUID, "RefDepositedAt", "reference is deposited at", "at"),
-		DbImportExtensionMapper.NewInstance("RefSource", REF_SOURCE, "RefSource", "reference source", "source")
+		DbImportExtensionMapper.NewInstance("RefSource", REF_SOURCE_UUID, "RefSource", "reference source", "source"),
+		DbImportMarkerMapper.NewInstance("isPaper", IS_PAPER_UUID, "is paper", "is paper", "paper", false)
 	};
 
 	
@@ -134,7 +139,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	};
 	
 	protected static String[] unclearMappers = new String[]{
-			"isPaper", "exportDate", 
+			/*"isPaper",*/ "exportDate", 
 	};
 	
 	//TODO isPaper
@@ -435,11 +440,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			
 			//created, updated, notes
 			doCreatedUpdatedNotes(state, referenceBase, rs);						
-
-			//isPaper
-			if ((Boolean)valueMap.get("isPaper".toLowerCase())){
-				logger.warn("IsPaper is not yet implemented, but reference " +  refId + " is paper");
-			}
 			
 			//idInSource
 			String idInSource = (String)valueMap.get("IdInSource".toLowerCase());
@@ -892,9 +892,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 		if (mapper instanceof DbImportExtensionMapper){
 			result &= ((DbImportExtensionMapper)mapper).invoke(valueMap, cdmBase);
+		}else if (mapper instanceof DbImportMarkerMapper){
+			result &= ((DbImportMarkerMapper)mapper).invoke(valueMap, cdmBase);
 		}else{
 			String sourceAttribute = mapper.getSourceAttributeList().get(0).toLowerCase();
 			Object value = valueMap.get(sourceAttribute);
+			if (mapper instanceof CdmUriMapper && value != null){
+				value = URI.create(value.toString());
+			}
 			if (value != null){
 				String destinationAttribute = mapper.getDestinationAttribute();
 				if (! omitAttributes.contains(destinationAttribute)){

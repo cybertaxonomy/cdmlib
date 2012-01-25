@@ -104,31 +104,36 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		try {
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
-				
-				Object ptRefFkObj = rs.getObject("PTRefFk");
-				String ptRefFk= String.valueOf(ptRefFkObj);
-				Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
-				
-				rs.getString("RefCache");
-				String treeName = "Classification - No Name";
-				String refCache = rs.getString("RefCache");
-				if (CdmUtils.isNotEmpty(refCache)){
-					treeName = refCache;
+				try {
+					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
+					
+					Object ptRefFkObj = rs.getObject("PTRefFk");
+					String ptRefFk= String.valueOf(ptRefFkObj);
+					Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
+					
+					rs.getString("RefCache");
+					String treeName = "Classification - No Name";
+					String refCache = rs.getString("RefCache");
+					if (CdmUtils.isNotEmpty(refCache)){
+						treeName = refCache;
+					}
+					if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+						treeName = ref.getTitleCache();
+					}
+					Classification tree = Classification.NewInstance(treeName);
+					tree.setReference(ref);
+					if (i == 1 && state.getConfig().getClassificationUuid() != null){
+						tree.setUuid(state.getConfig().getClassificationUuid());
+					}
+					IdentifiableSource identifiableSource = IdentifiableSource.NewInstance(ptRefFk, TREE_NAMESPACE);
+					tree.addSource(identifiableSource);
+					
+					getClassificationService().save(tree);
+					state.putClassificationUuidInt((Integer)ptRefFkObj, tree);
+				} catch (Exception e) {
+					logger.error("Error in BerlinModleTaxonRelationImport.makeClassifications: " + e.getMessage());
+					e.printStackTrace();
 				}
-				if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
-					treeName = ref.getTitleCache();
-				}
-				Classification tree = Classification.NewInstance(treeName);
-				tree.setReference(ref);
-				if (i == 1 && state.getConfig().getClassificationUuid() != null){
-					tree.setUuid(state.getConfig().getClassificationUuid());
-				}
-				IdentifiableSource identifiableSource = IdentifiableSource.NewInstance(ptRefFk, TREE_NAMESPACE);
-				tree.addSource(identifiableSource);
-				
-				getClassificationService().save(tree);
-				state.putClassificationUuidInt((Integer)ptRefFkObj, tree);
 			}
 		} catch (SQLException e) {
 			logger.error("Error in BerlinModleTaxonRelationImport.makeClassifications: " + e.getMessage());
@@ -202,101 +207,106 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			while (rs.next()){
 				
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
-				
+					
 				int relPTaxonId = rs.getInt("RelPTaxonId");
-				int taxon1Id = rs.getInt("taxon1Id");
-				int taxon2Id = rs.getInt("taxon2Id");
-				Object relRefFkObj = rs.getObject("relRefFk");
-				int treeRefFk = rs.getInt("treeRefFk");
-				int relQualifierFk = rs.getInt("relQualifierFk");
-				String notes = rs.getString("notes");
-				boolean isConceptRelationship = rs.getBoolean("is_concept_relation");
-				
-				TaxonBase taxon1 = taxonMap.get(String.valueOf(taxon1Id));
-				TaxonBase taxon2 = taxonMap.get(String.valueOf(taxon2Id));
-				
-				String refFk = String.valueOf(relRefFkObj);
-				Reference citation = getReferenceOnlyFromMaps(biblioRefMap,	nomRefMap, refFk);
-				
-				String microcitation = null; //does not exist in RelPTaxon
-	
-				if (taxon2 != null && taxon1 != null){
-					if (!(taxon2 instanceof Taxon)){
-						logger.error("TaxonBase (ID = " + taxon2.getId()+ ", RIdentifier = " + taxon2Id + ") can't be casted to Taxon");
-						success = false;
-						continue;
-					}
-					AnnotatableEntity taxonRelationship = null;
-					Taxon toTaxon = (Taxon)taxon2;
-					if (isTaxonRelationship(relQualifierFk)){
-						if (!(taxon1 instanceof Taxon)){
-							logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+				try {
+					int taxon1Id = rs.getInt("taxon1Id");
+					int taxon2Id = rs.getInt("taxon2Id");
+					Object relRefFkObj = rs.getObject("relRefFk");
+					int treeRefFk = rs.getInt("treeRefFk");
+					int relQualifierFk = rs.getInt("relQualifierFk");
+					String notes = rs.getString("notes");
+					boolean isConceptRelationship = rs.getBoolean("is_concept_relation");
+					
+					TaxonBase taxon1 = taxonMap.get(String.valueOf(taxon1Id));
+					TaxonBase taxon2 = taxonMap.get(String.valueOf(taxon2Id));
+					
+					String refFk = String.valueOf(relRefFkObj);
+					Reference citation = getReferenceOnlyFromMaps(biblioRefMap,	nomRefMap, refFk);
+					
+					String microcitation = null; //does not exist in RelPTaxon
+
+					if (taxon2 != null && taxon1 != null){
+						if (!(taxon2 instanceof Taxon)){
+							logger.error("TaxonBase (ID = " + taxon2.getId()+ ", RIdentifier = " + taxon2Id + ") can't be casted to Taxon");
 							success = false;
 							continue;
 						}
-						Taxon fromTaxon = (Taxon)taxon1;
-						if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
-							taxonRelationship = makeTaxonomicallyIncluded(state, classificationMap, treeRefFk, fromTaxon, toTaxon, citation, microcitation);
-						}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
-							 taxonRelationship = toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
-						}
-					}else if (isSynonymRelationship(relQualifierFk)){
-						if (!(taxon1 instanceof Synonym)){
-							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Synonym");
-							success = false;
-							continue;
-						}
-						Synonym synonym = (Synonym)taxon1;
-						SynonymRelationship synRel = getSynRel(relQualifierFk, toTaxon, synonym, citation, microcitation);
-						taxonRelationship = synRel;
-						
-						if (relQualifierFk == TAX_REL_IS_SYNONYM_OF || 
-								relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
-								relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
-							addProParteAndPartial(synRel, synonym, config);
-						}else if (relQualifierFk == TAX_REL_IS_PROPARTE_SYN_OF ||
-								relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
-								relQualifierFk == TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF ){
-								synRel.setProParte(true);
-						}else if(relQualifierFk == TAX_REL_IS_PARTIAL_SYN_OF || 
-								relQualifierFk == TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF ||
-								relQualifierFk == TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF ){
-								synRel.setPartial(true);
-						}else{
-							success = false;
-							logger.warn("Proparte/Partial not yet implemented for TaxonRelationShipType " + relQualifierFk);
-						}
-					}else if (isConceptRelationship){
-						ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
-						try {
-							TaxonRelationshipType relType = BerlinModelTransformer.taxonRelId2TaxonRelType(relQualifierFk, isInverse);	
-							if (! (taxon1 instanceof Taxon)){
-								success = false;
+						AnnotatableEntity taxonRelationship = null;
+						Taxon toTaxon = (Taxon)taxon2;
+						if (isTaxonRelationship(relQualifierFk)){
+							if (!(taxon1 instanceof Taxon)){
 								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
-							}else{
-								Taxon fromTaxon = (Taxon)taxon1;
-								taxonRelationship = fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
+								success = false;
+								continue;
 							}
-						} catch (UnknownCdmTypeException e) {
-							//TODO other relationships
-							logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
+							Taxon fromTaxon = (Taxon)taxon1;
+							if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
+								taxonRelationship = makeTaxonomicallyIncluded(state, classificationMap, treeRefFk, fromTaxon, toTaxon, citation, microcitation);
+							}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
+								 taxonRelationship = toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
+							}
+						}else if (isSynonymRelationship(relQualifierFk)){
+							if (!(taxon1 instanceof Synonym)){
+								logger.warn("Validated: Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Synonym");
+								success = false;
+								continue;
+							}
+							Synonym synonym = (Synonym)taxon1;
+							SynonymRelationship synRel = getSynRel(relQualifierFk, toTaxon, synonym, citation, microcitation);
+							taxonRelationship = synRel;
+							
+							if (relQualifierFk == TAX_REL_IS_SYNONYM_OF || 
+									relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
+									relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
+								addProParteAndPartial(synRel, synonym, config);
+							}else if (relQualifierFk == TAX_REL_IS_PROPARTE_SYN_OF ||
+									relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
+									relQualifierFk == TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF ){
+									synRel.setProParte(true);
+							}else if(relQualifierFk == TAX_REL_IS_PARTIAL_SYN_OF || 
+									relQualifierFk == TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF ||
+									relQualifierFk == TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF ){
+									synRel.setPartial(true);
+							}else{
+								success = false;
+								logger.warn("Proparte/Partial not yet implemented for TaxonRelationShipType " + relQualifierFk);
+							}
+						}else if (isConceptRelationship){
+							ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
+							try {
+								TaxonRelationshipType relType = BerlinModelTransformer.taxonRelId2TaxonRelType(relQualifierFk, isInverse);	
+								if (! (taxon1 instanceof Taxon)){
+									success = false;
+									logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+								}else{
+									Taxon fromTaxon = (Taxon)taxon1;
+									taxonRelationship = fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
+								}
+							} catch (UnknownCdmTypeException e) {
+								//TODO other relationships
+								logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
+								success = false;
+							}
+						}else {
+							//TODO
+							logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
 							success = false;
 						}
-					}else {
+						
+						doNotes(taxonRelationship, notes);
+						taxaToSave.add(taxon2);
+						
 						//TODO
-						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
+						//etc.
+					}else{
+						//TODO
+						logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
 						success = false;
 					}
-					
-					doNotes(taxonRelationship, notes);
-					taxaToSave.add(taxon2);
-					
-					//TODO
-					//etc.
-				}else{
-					//TODO
-					logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
-					success = false;
+				} catch (Exception e) {
+					logger.error("Exception occurred when trying to handle taxon relationship " + relPTaxonId + ":" + e.getMessage());
+//					e.printStackTrace();
 				}
 			}
 		}catch(SQLException e){

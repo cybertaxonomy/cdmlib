@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.mail.MethodNotSupportedException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
@@ -74,23 +76,27 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 	private boolean checkRefDetailsWithIdInSource(BerlinModelImportState state) {
 		boolean success = true;
 		try {
-			
 			Source source = state.getConfig().getSource();
-			String strQuery = 
-				"SELECT count(*) AS n FROM RefDetail " + 
-				" WHERE (IdInSource IS NOT NULL) AND (RTRIM(LTRIM(IdInSource)) <> '')";
-			ResultSet rs = source.getResultSet(strQuery);
-			rs.next();
-			int n;
-			n = rs.getInt("n");
-			if (n > 0){
-				System.out.println("========================================================");
-				logger.warn("There are " + n + " RefDetails with an idInSource. IdInSources are not supported yet");
-				System.out.println("========================================================");
-				success = false;
+			if (source.checkColumnExists("RefDetail", "idInSource")){
+				String strQuery = 
+					"SELECT count(*) AS n FROM RefDetail " + 
+					" WHERE (IdInSource IS NOT NULL) AND (RTRIM(LTRIM(IdInSource)) <> '')";
+				ResultSet rs = source.getResultSet(strQuery);
+				rs.next();
+				int n;
+				n = rs.getInt("n");
+				if (n > 0){
+					System.out.println("========================================================");
+					logger.warn("There are " + n + " RefDetails with an idInSource. IdInSources are not supported yet");
+					System.out.println("========================================================");
+					success = false;
+				}
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (MethodNotSupportedException e) {
+			logger.debug("Source does not support checking existance of 'idInSource' column");
 		}
 		return success;
 	}

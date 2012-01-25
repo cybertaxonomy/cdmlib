@@ -138,8 +138,8 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @param config 
 	 * @return
 	 */
-	private Set<TypeDesignationBase<?>> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase, NonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
-		Set<TypeDesignationBase<?>> designations = nvn.getTypeDesignations();
+	private Set<TypeDesignationBase> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase, NonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
+		Set<TypeDesignationBase> designations = nvn.getTypeDesignations();
 		for (TypeDesignationBase<?> designation:designations){
 			DwcaTypesRecord record = new DwcaTypesRecord(metaRecord, config);
 			if (! this.recordExistsUuid(designation) && handleSpecimen(record, null, designation, taxonBase, config)){

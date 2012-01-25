@@ -154,7 +154,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		Integer id = taxonDataHolder.getId();
 		UUID cdmUuid = taxonDataHolder.getCdmUuid();
 			
-		TaxonBase taxonBase = null;
+		TaxonBase<?> taxonBase = null;
 		if (cdmUuid != null){
 			taxonBase = getTaxonService().find(cdmUuid);
 		}else{
@@ -226,17 +226,17 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 			Integer childId = taxonDataHolder.getId();
 			UUID cdmUuid = taxonDataHolder.getCdmUuid();
 			Taxon acceptedTaxon;
-			TaxonNameBase nameUsedInSource;
+			TaxonNameBase<?,?> nameUsedInSource;
 			
 			if (cdmUuid != null){
-				TaxonBase taxonBase = getTaxonService().find(cdmUuid);
+				TaxonBase<?> taxonBase = getTaxonService().find(cdmUuid);
 				acceptedTaxon = getAcceptedTaxon(taxonBase);
 				nameUsedInSource = taxonBase.getName();
 			}else{
 				//TODO error handling for class cast
 				Taxon parentTaxon = CdmBase.deproxy(state.getTaxonBase(parentId), Taxon.class);
 				if (CdmUtils.isNotEmpty(taxonNameStr)) {
-					TaxonBase taxonBase = state.getTaxonBase(childId);
+					TaxonBase<?> taxonBase = state.getTaxonBase(childId);
 					nameUsedInSource = taxonBase.getName();
 					nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 					if (validMarkers.contains(nameStatus)){
@@ -247,7 +247,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 							if (parentTaxon != null) {
 								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 								
-								Reference citation = state.getConfig().getSourceReference();
+								Reference<?> citation = state.getConfig().getSourceReference();
 								String microCitation = null;
 								Taxon childTaxon = taxon;
 								makeParent(state, parentTaxon, childTaxon, citation, microCitation);
@@ -539,10 +539,10 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	 * @param nc
 	 * @return
 	 */
-	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr, 
+	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr, 
 			String authorStr, String nameStatus, NomenclaturalCode nc) {
-		TaxonBase taxonBase;
-		NonViralName taxonNameBase = null;
+		TaxonBase<?> taxonBase;
+		NonViralName<?> taxonNameBase = null;
 		if (nc == NomenclaturalCode.ICVCN){
 			logger.warn("ICVCN not yet supported");
 			
@@ -565,7 +565,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		}
 
 		//Create the taxon
-		Reference sec = state.getConfig().getSourceReference();
+		Reference<?> sec = state.getConfig().getSourceReference();
 		// Create the status
 		nameStatus = CdmUtils.Nz(nameStatus).trim().toLowerCase();
 		if (validMarkers.contains(nameStatus)){
@@ -587,7 +587,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	//TODO implementation must be improved when matching of taxon names with existing names is implemented
 	//=> the assumption that the only description is the description added by this import
 	//is wrong then
-	private TaxonNameDescription getNameDescription(TaxonNameBase name) {
+	private TaxonNameDescription getNameDescription(TaxonNameBase<?,?> name) {
 		Set<TaxonNameDescription> descriptions = name.getDescriptions();
 		if (descriptions.size()>1){
 			throw new IllegalStateException("Implementation does not yet support names with multiple descriptions");
