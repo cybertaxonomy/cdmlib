@@ -16,9 +16,14 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 
 /**
+ *
+ * NOTE: As the indices for objects and pages are 0-based in {@link Pager} the
+ * <code>pageNumber</code> property of this class also follows this principle.
+ *
  * @author a.kohlbecker
  * @date 22.08.2011
  *
@@ -27,7 +32,9 @@ public class PagerParameters {
 
     private Integer pageSize;
 
-    private Integer pageNumber;
+    private Integer pageIndex;
+
+    public static final Integer DEFAULT_PAGESIZE = 20;
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
@@ -37,31 +44,39 @@ public class PagerParameters {
         return pageSize;
     }
 
-    public void setPageNumber(Integer pageNumber) {
-        this.pageNumber = pageNumber;
+    /**
+     * NOTE: As the indices for objects and pages are 0-based
+     * @param pageIndex
+     */
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
     }
 
-    public Integer getPageNumber() {
-        return pageNumber;
+    /**
+     * NOTE: As the indices for objects and pages are 0-based
+     * @return
+     */
+    public Integer getPageIndex() {
+        return pageIndex;
     }
 
-    public PagerParameters(Integer pageSize, Integer pageNumber) {
+    public PagerParameters(Integer pageSize, Integer pageIndex) {
         this.pageSize = pageSize;
-        this.pageNumber = pageNumber;
+        this.pageIndex = pageIndex;
     }
 
     public void normalizeAndValidate(HttpServletResponse response) throws IOException{
 
-        if(pageNumber == null){
-            pageNumber = 0;
+        if(pageIndex == null){
+            pageIndex = 0;
         }
         if(pageSize == null){
-            pageSize = 0;
+            pageSize = DEFAULT_PAGESIZE;
         }
-        if(pageNumber < 0){
-            HttpStatusMessage.fromString("The query parameter 'pageNumber' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
+        if(pageIndex < 0){
+            HttpStatusMessage.fromString("The query parameter 'pageIndex' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
-        if(pageSize < 0){
+        if(pageSize != null && pageSize < 0){
             HttpStatusMessage.fromString("The query parameter 'pageSize' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
     }

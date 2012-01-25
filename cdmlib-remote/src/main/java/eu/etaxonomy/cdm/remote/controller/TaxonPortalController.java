@@ -211,7 +211,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "$",
             "type.inverseRepresentations",
             "fromTaxon.sec",
-            "fromTaxon.name"
+            "fromTaxon.name",
+            "toTaxon.sec",
+            "toTaxon.name"
     });
 
     private static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
@@ -356,6 +358,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
             @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
+            @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             HttpServletRequest request,
@@ -369,11 +372,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         pagerParams.normalizeAndValidate(response);
 
         ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
-        config.setPageNumber(pagerParams.getPageNumber());
+        config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
         config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
         config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );
+        config.setDoMisappliedNames(doMisappliedNames != null ? doMisappliedNames : Boolean.FALSE);
         config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
         config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
         config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
@@ -532,13 +536,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         logger.info("doGetTaxonRelations()" + request.getServletPath());
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        List<TaxonRelationship> relations = new ArrayList<TaxonRelationship>();
-        List<TaxonRelationship> results = service.listToTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
-        relations.addAll(results);
-        results = service.listToTaxonRelationships(taxon, TaxonRelationshipType.INVALID_DESIGNATION_FOR(), null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
-        relations.addAll(results);
+        List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+        List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
 
-        return relations;
+        List<TaxonRelationship> allRelationships = new ArrayList<TaxonRelationship>(toRelationships.size() + fromRelationships.size());
+        allRelationships.addAll(toRelationships);
+        allRelationships.addAll(fromRelationships);
+
+        return allRelationships;
     }
 
     /**

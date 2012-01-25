@@ -72,7 +72,7 @@ public class PolytomousKeyListController extends BaseListController<PolytomousKe
 
 
 		TaxonBase taxon = taxonService.find(taxonUuid);
-        Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageNumber(), null);
+        Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null);
 		return pager;
 	}
 
