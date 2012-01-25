@@ -101,7 +101,26 @@ public interface ICdmDataSource {
      * Executes an update
      * @return return code
      */
-	public int executeUpdate (String sqlUpdate);
+	public int executeUpdate (String sqlUpdate) throws SQLException;
+	
+	/**
+	 * Starts a transaction for the given datasource.
+	 */
+	public void startTransaction();
+	
+	/**
+	 * Commits the transaction for the given datasource.
+	 * @return
+	 * @throws SQLException 
+	 */
+	public void commitTransaction() throws SQLException;
+	
+	/**
+	 * Rolls the connection back.
+	 * @throws SQLException 
+	 */
+	public void rollback() throws SQLException;
+
 
 	public NomenclaturalCode getNomenclaturalCode();
 
@@ -133,6 +152,7 @@ public interface ICdmDataSource {
 	 * 
 	 */
 	public void closeOpenConnections();
+
 	
 //
 //	public void setFilePath(String filePath);

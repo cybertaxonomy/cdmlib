@@ -67,6 +67,8 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 		UUID uuidLang;
 		String stepName;
 
+		// DO NOT COPY ; THIS IS INCOMPLETE
+		//FIXME vocabulary 
 		// native: formerly native
 		UUID uuidTerm = UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
 		UUID oldUuid = UUID.fromString("8ad9e9df-49cd-4b6a-880b-51ec4de4ce32");
@@ -78,6 +80,7 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 		SimpleSchemaUpdaterStep formerlyUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
 		list.add(formerlyUpdater);
 	
+		//FIXME vocabulary 
 		// introduced: formerly introduced
 		uuidTerm = UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
 		oldUuid = UUID.fromString("2522c527-e488-45d4-87df-a5a5ef0fdbbd");
@@ -113,7 +116,7 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_314_315.NewInstance();
 	}
 
 	/* (non-Javadoc)

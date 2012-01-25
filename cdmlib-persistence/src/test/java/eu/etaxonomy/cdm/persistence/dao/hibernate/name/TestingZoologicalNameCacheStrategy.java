@@ -16,46 +16,46 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 public class TestingZoologicalNameCacheStrategy implements
-		INonViralNameCacheStrategy<ZoologicalName> {
+        INonViralNameCacheStrategy<ZoologicalName> {
 
-	public String getAuthorshipCache(ZoologicalName nonViralName) {
-		return "test.zoological.authorshipCache"+ nonViralName.getId();
-	}
+    public String getAuthorshipCache(ZoologicalName nonViralName) {
+        return "test.zoological.authorshipCache"+ nonViralName.getId();
+    }
 
-	public String getLastEpithet(ZoologicalName taxonNameBase) {
-		return "test.zoological.lastEpithet"+ taxonNameBase.getId();
-	}
+    public String getLastEpithet(ZoologicalName taxonNameBase) {
+        return "test.zoological.lastEpithet"+ taxonNameBase.getId();
+    }
 
-	public String getNameCache(ZoologicalName taxonNameBase) {
-		return "test.zoological.nameCache"+ taxonNameBase.getId();
-	}
+    public String getNameCache(ZoologicalName taxonNameBase) {
+        return "test.zoological.nameCache"+ taxonNameBase.getId();
+    }
 
-	public String getFullTitleCache(ZoologicalName taxonNameBase) {
-		return "test.zoological.fullTitleCache"+ taxonNameBase.getId();
-	}
+    public String getFullTitleCache(ZoologicalName taxonNameBase) {
+        return "test.zoological.fullTitleCache"+ taxonNameBase.getId();
+    }
 
 
-	public String getTitleCache(ZoologicalName object) {
-		return "test.zoological.titleCache"+ object.getId();
-	}
+    public String getTitleCache(ZoologicalName object) {
+        return "test.zoological.titleCache"+ object.getId();
+    }
 
-	@Override
-	public List<TaggedText> getTaggedTitle(ZoologicalName taxonName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<TaggedText> getTaggedTitle(ZoologicalName taxonName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public List<TaggedText> getTaggedFullTitle(ZoologicalName taxonName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<TaggedText> getTaggedFullTitle(ZoologicalName taxonName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public List<TaggedText> getTaggedName(ZoologicalName taxonName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<TaggedText> getTaggedName(ZoologicalName taxonName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 
 }

@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnNameChanger extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
+public class ColumnNameChanger extends SchemaUpdaterStepBase<ColumnNameChanger> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnNameChanger.class);
 	
 	private String tableName;
@@ -59,6 +59,7 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase implements ISchemaU
 	}
 
 	private boolean changeColumnName(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		
@@ -83,9 +84,14 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase implements ISchemaU
 		updateQuery = updateQuery.replace("@oldColumnName", oldColumnName);
 		updateQuery = updateQuery.replace("@newColumnName", newColumnName);
 		updateQuery = updateQuery.replace("@definition", getDefinition());
-		datasource.executeUpdate(updateQuery);
+		try {
+			datasource.executeUpdate(updateQuery);
+		} catch (SQLException e) {
+			logger.error(e);
+			result = false;
+		}
 
-		return true;
+		return result;
 	}
 
 	private CharSequence getDefinition() {

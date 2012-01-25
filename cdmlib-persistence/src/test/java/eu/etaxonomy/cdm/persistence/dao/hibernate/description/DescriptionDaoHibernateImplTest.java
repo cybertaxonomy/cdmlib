@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import junit.framework.Assert;
+
 import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,12 +32,15 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.Scope;
+import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -339,5 +344,71 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		taxonDao.save(taxon);
 		
 	}
+	
+	//see #2592
+	@Test
+	public void testSaveScope(){
+		int n1 = this.descriptionDao.count();
+		Taxon taxon = Taxon.NewInstance(null, null);
+		TaxonDescription description = TaxonDescription.NewInstance(taxon);
+		this.taxonDao.save(taxon);
+		int n2 = this.descriptionDao.count();
+		Assert.assertEquals(1, n2-n1);
+		
+		Sex scope = Sex.FEMALE();
+		description.addScope(scope);
+		
+		this.descriptionDao.saveOrUpdate(description);
+		
+	}
+	
+	@Test
+	public void testListTaxonDescriptionWithMarker(){
+		Taxon taxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06"));
+		Set<Scope> scopes = null;
+		Set<NamedArea> geographicalScope = null;
+		Integer pageSize = null;
+		Integer pageNumber = null;
+		List<String> propertyPaths = null;
+		
+		//complete
+		MarkerType completeMarkerType = (MarkerType)this.definedTermDao.findByUuid(UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433")); //Marker "complete"
+		Assert.assertNotNull("MarkerType for 'complete' should exist", completeMarkerType);
+		Set<MarkerType> markerTypes = new HashSet<MarkerType>();
+		markerTypes.add(completeMarkerType);
+		int n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+		Assert.assertEquals("There should be 1 description marked 'complete'", 1, n1);
+		List<TaxonDescription> descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("There should be 1 description marked 'complete'", 1, descriptions.size());
+		
+		//doubtful
+		MarkerType isDoubtfulMarkerType = (MarkerType)this.definedTermDao.findByUuid(UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e")); //Marker "doubtful"
+		Assert.assertNotNull("MarkerType for 'doubtful' should exist", isDoubtfulMarkerType);
+		markerTypes = new HashSet<MarkerType>();  //reset
+		markerTypes.add(isDoubtfulMarkerType);
+		int n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+		Assert.assertEquals("There should be no description marked 'doubtful'", 0, n2);
+		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("There should be 0 description marked 'doubtful'", 0, descriptions.size());
+		
+		//imported = false
+		UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
+		MarkerType importedMarkerType = (MarkerType)this.definedTermDao.findByUuid(uuidImported); 
+		Assert.assertNotNull("MarkerType for 'imported' should exist", completeMarkerType);
+		markerTypes = new HashSet<MarkerType>();
+		markerTypes.add(importedMarkerType);
+		int n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
+		Assert.assertEquals("There should be no description marked 'imported' as true", 0, n3);
+		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("There should be no description marked 'imported' as true", 0, descriptions.size());
+		markerTypes = null;
+		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("There should be 1 description", 1, descriptions.size());
+		TaxonDescription desc = descriptions.iterator().next();
+		boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);
+		Assert.assertTrue("The only description should have a negative marker on 'imported'", hasMarkerImportedAsFalse);
+		
+	}
+	
 	
 }

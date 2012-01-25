@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
-import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_312_313;
+import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_314_315;
 
 /**
  * @author a.mueller
@@ -55,6 +55,7 @@ public class CdmUpdater {
 			result &= currentSchemaUpdater.invoke(datasource, monitor);
 			// the above apparently did not work while testing. Did not want to set the version in CdmMetaData yet
 //			result &= currentSchemaUpdater.invoke(currentSchemaUpdater.getTargetVersion(), datasource, monitor);
+			
 			result &= currentTermUpdater.invoke(datasource, monitor);
 		} catch (Exception e) {
 			result = false;
@@ -70,7 +71,7 @@ public class CdmUpdater {
 	}
 	
 	private ITermUpdater getCurrentTermUpdater() {
-		return TermUpdater_312_313.NewInstance();
+		return TermUpdater_314_315.NewInstance();
 	}
 
 	/**

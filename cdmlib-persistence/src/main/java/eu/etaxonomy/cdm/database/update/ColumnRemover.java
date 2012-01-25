@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnRemover extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
+public class ColumnRemover extends SchemaUpdaterStepBase<ColumnRemover> implements ISchemaUpdaterStep {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ColumnRemover.class);
 	
@@ -57,10 +57,16 @@ public class ColumnRemover extends SchemaUpdaterStepBase implements ISchemaUpdat
 	}
 
 	private boolean removeColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
-			datasource.executeUpdate(updateQuery);
-			return true;
+			try {
+				datasource.executeUpdate(updateQuery);
+			} catch (SQLException e) {
+				logger.error(e);
+				result = false;
+			}
+			return result;
 		} catch ( DatabaseTypeNotSupportedException e) {
 			return false;
 		}

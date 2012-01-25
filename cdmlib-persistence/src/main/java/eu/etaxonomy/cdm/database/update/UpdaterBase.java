@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
  * @date 16.11.2010
  *
  */
-public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater> implements IUpdater<U> {
+public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>> implements IUpdater<U> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	
@@ -32,7 +32,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	protected String startVersion;
 	protected String targetVersion;
 	
-	protected abstract void updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
+	protected abstract boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
 	
 	protected abstract String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
 	
@@ -137,14 +137,34 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			throw exeption;
 		}
 		
-		
-		for (T step : list){
-			result = handleSingleStep(datasource, monitor, result, step, false);
+		if (result == false){
+			return result;
 		}
-		// TODO schema version gets updated even if something went utterly wrong while executing the steps
-		// I don't think we want this to happen
-		updateVersion(datasource, monitor);
-		
+		datasource.startTransaction();
+		try {
+			for (T step : list){
+				result &= handleSingleStep(datasource, monitor, result, step, false);
+				if (result == false){
+					break;
+				}
+			}
+			// TODO schema version gets updated even if something went utterly wrong while executing the steps
+			// I don't think we want this to happen
+			if (result == true){
+				result &= updateVersion(datasource, monitor);
+			}else{
+				datasource.rollback();
+			}
+			
+		} catch (Exception e) {
+			logger.error("Error occurred while trying to run updater: " + this.getClass().getName());
+			result = false;
+		}
+		if (result == false){
+			datasource.commitTransaction();
+		}else{
+			datasource.rollback();
+		}
 		return result;
 	
 	}
@@ -164,8 +184,9 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				monitor.worked(1);
 //			}
 		} catch (Exception e) {
-			monitor.warning("Exception occurred while updating schema", e);
-			throw e;
+			monitor.warning("Monitor: Exception occurred while updating schema", e);
+			datasource.rollback();
+			result = false;
 		}
 		return result;
 	}

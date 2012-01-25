@@ -20,11 +20,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
+ * Creates a new term if a term with the same given uuid does not exist yet
  * @author a.mueller
  * @date 10.09.2010
  *
  */
-public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	
@@ -62,6 +63,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 
 	
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.monitor.IProgressMonitor)
+	 */
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
  		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
 		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
@@ -166,7 +170,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase implements ITermUpd
 	}
 
 
-	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Feature.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
 				" supportscategoricaldata = " + getBoolean(false, datasource) + ", " + 

@@ -36,11 +36,12 @@ public abstract class TermUpdaterBase extends UpdaterBase<ITermUpdaterStep, ITer
 	}
 	
 	@Override
-	protected void updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		int intSchemaVersion = 1;
 		String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
 		try {
-			datasource.executeUpdate(sqlUpdateSchemaVersion);
+			int n = datasource.executeUpdate(sqlUpdateSchemaVersion);
+			return n > 0;
 		} catch (Exception e) {
 			monitor.warning("Error when trying to set new schemaversion: ", e);
 			throw new SQLException(e);

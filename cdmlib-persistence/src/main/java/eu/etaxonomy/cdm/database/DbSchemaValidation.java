@@ -14,6 +14,7 @@ package eu.etaxonomy.cdm.database;
  *
  */
 public enum DbSchemaValidation {
+	NONE,
 	VALIDATE,
 	UPDATE,
 	CREATE,
@@ -22,6 +23,8 @@ public enum DbSchemaValidation {
 	@Override
 	public String toString(){
 		switch (this){
+			case NONE:
+				return "none"; //no effect
 			case VALIDATE:
 				return "validate";
 			case UPDATE:
