@@ -1745,6 +1745,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CommonServiceImpl.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DefaultQuantitativeDescriptionBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeleteResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeltaTextDataProcessor.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
