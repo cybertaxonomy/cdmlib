@@ -235,7 +235,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
     @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })  //a hybrid relation can be deleted automatically if the child is deleted. 
 	@Merge(MergeMode.RELATION)
 	@NotNull
 	private Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
@@ -1110,6 +1110,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    	#getHybridRelationships()
 	 * @see    	#getChildRelationships()
 	 * @see    	HybridRelationshipType
+	 * @deprecated use {@link #getHybridParentRelations()} instead. Will be removed in higher versions.
 	 */
 	@Transient
 	public Set<HybridRelationship> getParentRelationships() {
@@ -1134,20 +1135,21 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	/**
 	 * @see #getHybridChildRelations()
-	 * @return
+	 * @deprecated use {@link #getHybridChildRelations()} instead. Will be removed in higher versions.
 	 */
 	@Transient
+	@Deprecated
 	public Set<HybridRelationship> getChildRelationships() {
 		return this.getHybridChildRelations();
 	}
 
 	/**
 	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
-	 * of {@link #getHybridRelationships() hybrid relationships} of both non viral taxon names
-	 * involved in this hybrid relationship. One of both non viral taxon names
-	 * must be <i>this</i> botanical taxon name otherwise no addition will be carried
-	 * out. The {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo() child non viral taxon name}
-	 * must be a hybrid, which means that one of its four hybrid flags must be set.
+	 * of {@link #getHybridRelationships() hybrid relationships} of both non-viral names
+	 * involved in this hybrid relationship. One of both non-viral names
+	 * must be <i>this</i> non-viral name otherwise no addition will be carried
+	 * out. The {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo() child 
+	 * non viral taxon name} must be a hybrid, which means that one of its four hybrid flags must be set.
 	 * 
 	 * @param relationship  the hybrid relationship to be added
 	 * @see    				#isHybridFormula()

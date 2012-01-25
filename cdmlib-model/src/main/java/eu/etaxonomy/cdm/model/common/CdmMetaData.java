@@ -19,7 +19,7 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
  * @author a.mueller
@@ -79,7 +79,7 @@ public class CdmMetaData extends CdmBase{
 	 * 
 	 * The last number represents the date of change.
 	 */
-	private static final String termsVersion = "3.0.1.4.201105100000";
+	private static final String termsVersion = "3.0.1.5.201109280000";
 	
 	
 	public enum MetaDataPropertyName{

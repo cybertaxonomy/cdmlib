@@ -80,6 +80,10 @@ public class CoordinateConverterTest {
 		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SW");
 		Assert.assertTrue("Western must be longitude", conversionResults.isLongitude);
 		
+		conversionResults = coordinateConverter.tryConvert("35\u00B0 1'34.744SW");
+		Assert.assertTrue("Pattern with whitespace must be recognised", conversionResults.patternRecognised);
+		Assert.assertTrue("Pattern with whitespace must be recognised", conversionResults.conversionSuccessful);
+		
 		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
 		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
 		

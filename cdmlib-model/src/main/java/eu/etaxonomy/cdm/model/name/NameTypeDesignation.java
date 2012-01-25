@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> implements ITypeDesignation, Cloneable {
+	private static final long serialVersionUID = 8478663508862210879L;
 	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	
 	@XmlElement(name = "IsRejectedType")
@@ -154,6 +155,14 @@ public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignation
 	//********* METHODS **************************************/
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#removeType()
+	 */
+	@Override
+	public void removeType() {
+		this.typeName = null;	
+	}
+	
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
 	 * taxon name type in <i>this</i> taxon name type designation. The {@link Rank rank}
@@ -256,5 +265,6 @@ public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignation
 			e.printStackTrace();
 			return null;
 		}
-	}	
+	}
+
 }

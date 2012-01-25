@@ -10,9 +10,8 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.io.Serializable;
 import java.util.UUID;
-
-import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
@@ -23,7 +22,12 @@ import org.apache.log4j.Logger;
  */
 
 
-public class UuidAndTitleCache<T extends ICdmBase> {
+public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3446993458279371682L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger	.getLogger(UuidAndTitleCache.class);
 	

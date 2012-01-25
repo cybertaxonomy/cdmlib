@@ -27,7 +27,6 @@ import org.hibernate.search.annotations.Indexed;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * This class represents terms describing different types of absence

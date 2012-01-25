@@ -590,6 +590,18 @@ public class Point implements Cloneable, Serializable {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString(){
+		String result = "";
+		boolean includeEmptySeconds = true;
+		result += getLatitudeSexagesimal() == null ? "" : getLatitudeSexagesimal().toString(includeEmptySeconds);
+		result = CdmUtils.concat(", ", result, getLongitudeSexagesimal() == null ? "" : getLongitudeSexagesimal().toString(includeEmptySeconds));
+		return result;
+	}
+	
 	
 //*********** CLONE **********************************/	
 	

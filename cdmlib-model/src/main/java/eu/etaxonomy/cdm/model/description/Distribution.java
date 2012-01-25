@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,7 +28,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -57,167 +56,167 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class Distribution extends DescriptionElementBase implements Cloneable {
-	private static final long serialVersionUID = 8366462435651559730L;
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Distribution.class);
-	
-	@XmlElement(name = "NamedArea")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@NotNull(groups = Level2.class)
-	private NamedArea area;
-	
-	@XmlElement(name = "PresenceAbsenceStatus")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@NotNull(groups = Level2.class)
-	private PresenceAbsenceTermBase<?> status;
+    private static final long serialVersionUID = 8366462435651559730L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(Distribution.class);
 
-	
-	/**
-	 * Class constructor: creates a new empty distribution instance.
-	 * The corresponding {@link Feature feature} is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
-	 */
-	protected Distribution(){
-		super();
-	}
-	
-	
-	/**
-	 * Creates an empty distribution instance. The corresponding {@link Feature feature}
-	 * is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
-	 *
-	 * @see		#NewInstance(NamedArea, PresenceAbsenceTermBase)
-	 */
-	public static Distribution NewInstance(){
-		Distribution result = new Distribution();
-		result.setFeature(Feature.DISTRIBUTION());
-		return result;
-	}
+    @XmlElement(name = "NamedArea")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(groups = Level2.class)
+    private NamedArea area;
 
-	/**
-	 * Creates a distribution instance with the given {@link NamedArea named area} and {@link PresenceAbsenceTermBase status}.
-	 * The corresponding {@link Feature feature} is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
-	 *
-	 * @param	area	the named area for the new distribution 
-	 * @param	status	the presence or absence term for the new distribution
-	 * @see				#NewInstance()
-	 */
-	public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase<?> status){
-		Distribution result = NewInstance();
-		result.setArea(area);
-		result.setStatus(status);
-		return result;
-	}
-	
-	/** 
-	 * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
-	 * for all distribution instances and therefore it should not be changed.
-	 */
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)
-	 */
-	@Override
-	@Deprecated
-	public void setFeature(Feature feature) {
-		super.setFeature(feature);
-	}
-	
-	/** 
-	 * Returns the {@link NamedArea named area} <i>this</i> distribution applies to.
-	 */
-	public NamedArea getArea(){
-		return this.area;
-	}
-	/** 
-	 * @see	#getArea()
-	 */
-	public void setArea(NamedArea area){
-		this.area = area;
-	}
+    @XmlElement(name = "PresenceAbsenceStatus")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(groups = Level2.class)
+    private PresenceAbsenceTermBase<?> status;
 
-	/** 
-	 * Returns the {@link PresenceAbsenceTermBase presence or absence term} for <i>this</i> distribution.
-	 */
-	public PresenceAbsenceTermBase<?> getStatus(){
-		return this.status;
-	}
-	/** 
-	 * @see	#getStatus()
-	 */
-	public void setStatus(PresenceAbsenceTermBase<?> status){
-		this.status = status;
-	}
-	
-	/**
-	 * Special equal method for building an sorted distribution tree
-	 * @param dist
-	 * @return
-	 */
-	public boolean equalsForTree(Distribution dist){
-		boolean result = false;
-		//same area level and area label
-		if (this.getArea().getLabel().compareTo(dist.getArea().getLabel()) == 0 &&
-				this.getArea().getLevel().getLabel().compareTo(dist.getArea().getLevel().getLabel()) == 0){
-			result = true;
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Special function for building the sorted distribution tree. The function returns true 
-	 * if the sources of the two different objects are different
-	 * @param dist
-	 * @return
-	 */
-	public boolean isDifferentSources(Distribution dist){
-		boolean result = false;
-		if(this.getSources().equals(dist.getSources())){
-			result = true;
-		}
-		return result;
-	}
-	
+
+    /**
+     * Class constructor: creates a new empty distribution instance.
+     * The corresponding {@link Feature feature} is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
+     */
+    protected Distribution(){
+        super();
+    }
+
+
+    /**
+     * Creates an empty distribution instance. The corresponding {@link Feature feature}
+     * is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
+     *
+     * @see		#NewInstance(NamedArea, PresenceAbsenceTermBase)
+     */
+    public static Distribution NewInstance(){
+        Distribution result = new Distribution();
+        result.setFeature(Feature.DISTRIBUTION());
+        return result;
+    }
+
+    /**
+     * Creates a distribution instance with the given {@link NamedArea named area} and {@link PresenceAbsenceTermBase status}.
+     * The corresponding {@link Feature feature} is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
+     *
+     * @param	area	the named area for the new distribution
+     * @param	status	the presence or absence term for the new distribution
+     * @see				#NewInstance()
+     */
+    public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase<?> status){
+        Distribution result = NewInstance();
+        result.setArea(area);
+        result.setStatus(status);
+        return result;
+    }
+
+    /**
+     * @deprecated Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
+     * for all distribution instances and therefore it should not be changed.
+     */
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)
+     */
+    @Override
+    @Deprecated
+    public void setFeature(Feature feature) {
+        super.setFeature(feature);
+    }
+
+    /**
+     * Returns the {@link NamedArea named area} <i>this</i> distribution applies to.
+     */
+    public NamedArea getArea(){
+        return this.area;
+    }
+    /**
+     * @see	#getArea()
+     */
+    public void setArea(NamedArea area){
+        this.area = area;
+    }
+
+    /**
+     * Returns the {@link PresenceAbsenceTermBase presence or absence term} for <i>this</i> distribution.
+     */
+    public PresenceAbsenceTermBase<?> getStatus(){
+        return this.status;
+    }
+    /**
+     * @see	#getStatus()
+     */
+    public void setStatus(PresenceAbsenceTermBase<?> status){
+        this.status = status;
+    }
+
+    /**
+     * Special equal method for building an sorted distribution tree
+     * @param dist
+     * @return
+     */
+    public boolean equalsForTree(Distribution dist){
+        boolean result = false;
+        //same area level and area label
+        if (this.getArea().getLabel().compareTo(dist.getArea().getLabel()) == 0 &&
+                this.getArea().getLevel().getLabel().compareTo(dist.getArea().getLevel().getLabel()) == 0){
+            result = true;
+        }
+
+        return result;
+    }
+
+    /**
+     * Special function for building the sorted distribution tree. The function returns true
+     * if the sources of the two different objects are different
+     * @param dist
+     * @return
+     */
+    public boolean isDifferentSources(Distribution dist){
+        boolean result = false;
+        if(this.getSources().equals(dist.getSources())){
+            result = true;
+        }
+        return result;
+    }
+
 
 //*********************************** CLONE *****************************************/
 
-	/** 
-	 * Clones <i>this</i> distribution. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> distribution by
-	 * modifying only some of the attributes.
-	 * 
-	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone() {
+    /**
+     * Clones <i>this</i> distribution. This is a shortcut that enables to create
+     * a new instance that differs only slightly from <i>this</i> distribution by
+     * modifying only some of the attributes.
+     *
+     * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() {
 
-		try {
-			Distribution result = (Distribution)super.clone();
-			
-			return result;
-			//no changes to: area, status
-		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
-		}
-	}	
+        try {
+            Distribution result = (Distribution)super.clone();
 
-// ************************* to String ***************************************************/	
-	
-	/**
-	 * Implementation of the toString() function
-	 */
-	public String toString(){
-		String result = "null";
-		if (this.area != null){			
-			result = area.getLabel().toString();
-		}
-		return result;
-	}
+            return result;
+            //no changes to: area, status
+        } catch (CloneNotSupportedException e) {
+            logger.warn("Object does not implement cloneable");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+// ************************* to String ***************************************************/
+
+    /**
+     * Implementation of the toString() function
+     */
+    public String toString(){
+        String result = "null";
+        if (this.area != null){
+            result = area.getLabel().toString();
+        }
+        return result;
+    }
 
 }

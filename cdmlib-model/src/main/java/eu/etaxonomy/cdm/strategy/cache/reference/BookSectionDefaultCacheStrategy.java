@@ -61,15 +61,15 @@ public class BookSectionDefaultCacheStrategy <T extends Reference> extends NomRe
 	 */
 	@Override
 	public String getTokenizedNomenclaturalTitel(T bookSection) {
-		if (bookSection == null || bookSection.getInReference() == null){
+		if (bookSection == null /* || bookSection.getInReference() == null */){
 			return null;
 		}
 		Reference inBook = bookSection.getInReference();
 		String result;
 		//use booksection's publication date if it exists
-		if (bookSection.getDatePublished() != null && bookSection.getDatePublished().getStart() != null){
+		if ( (bookSection.getDatePublished() != null && bookSection.getDatePublished().getStart() != null) || inBook == null){
 			BookDefaultCacheStrategy<Reference> bookStrategy = BookDefaultCacheStrategy.NewInstance();
-			result =  bookStrategy.getNomRefTitleWithoutYearAndAuthor(inBook);
+			result =  inBook == null ? "" : bookStrategy.getNomRefTitleWithoutYearAndAuthor(inBook);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, bookSection);
 		}else{

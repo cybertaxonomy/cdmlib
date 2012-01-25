@@ -75,10 +75,9 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	@XmlElement(name = "TypifiedName")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-    // Need these references (bidirectional) to fill table TypeDesignationBase_TaxonNameBase
-	@ManyToMany(fetch = FetchType.LAZY /*, mappedBy="typeDesignations"*/)
-//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
-	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+    @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
+	@Cascade({CascadeType.SAVE_UPDATE})
+    private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
 	@XmlElement(name = "HomotypicalGroup")
 	@XmlIDREF
@@ -222,6 +221,19 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	protected void addTypifiedName(TaxonNameBase taxonName){
 		this.typifiedNames.add(taxonName);
 	}
+	
+	/**
+	 * @deprecated for bidirectional use only
+	 */
+	@Deprecated
+	protected void removeTypifiedName(TaxonNameBase taxonName){
+		this.typifiedNames.remove(taxonName);
+		if (taxonName.getTypeDesignations().contains(this)){
+			taxonName.removeTypeDesignation(this);
+		}
+	}
+	
+	public abstract void removeType();
 	
 //*********************** CLONE ********************************************************/
 	

@@ -42,6 +42,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -548,7 +549,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 		if (namedArea == null){
 			return null;
 		}
-		NamedArea area = (NamedArea) HibernateProxyHelper.deproxy(namedArea);
+		NamedArea area = CdmBase.deproxy(namedArea, NamedArea.class);
 		
 		StringBuilder title = new StringBuilder();
 		Representation representation = area.getPreferredRepresentation(language);
@@ -586,7 +587,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 			}
 		}
 		if (StringUtils.isBlank(areaString)){
-			areaString = definedTerm.getTitleCache();
+			areaString = definedTerm == null ? null : definedTerm.getTitleCache();
 		}
 		if (StringUtils.isBlank(areaString)){
 			areaString = "no title";

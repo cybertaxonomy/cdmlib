@@ -453,7 +453,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	@Override
 	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		NameRelationshipType result = super.readCsvLine(termClass, csvLine, terms);
-		String kindOfString = csvLine.get(9).trim();
+		String kindOfString = csvLine.get(10).trim();
 		if (CdmUtils.isNotEmpty(kindOfString)){
 			UUID uuidKindOf = UUID.fromString(kindOfString);
 			DefinedTermBase kindOf = terms.get(uuidKindOf);
