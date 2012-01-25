@@ -14,6 +14,10 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
+import junit.framework.Assert;
+
 
 
 
@@ -26,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -41,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  */
 public class DescriptionElementTest {
+@SuppressWarnings("unused")
 private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 
 	
@@ -66,7 +72,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		categorialData.addMedia(media);
 		
 		DescriptionElementSource source = DescriptionElementSource.NewInstance();
-		Reference citation = ReferenceFactory.newArticle();
+		Reference<?> citation = ReferenceFactory.newArticle();
 		citation.setTitle("Test");
 		source.setCitation(citation);
 		categorialData.addSource(source );
@@ -132,6 +138,38 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		TaxonInteraction clone = (TaxonInteraction)taxonInteraction.clone();
 		assertNotSame(clone.getDescriptions().get(Language.ENGLISH()), taxonInteraction.getDescriptions().get(Language.ENGLISH()));
 		assertTrue(clone.getDescription(Language.ENGLISH()).equals(taxonInteraction.getDescription(Language.ENGLISH())));
+	}
+	
+	@Test
+	public void testGetModifiersVocabulary(){
+		TaxonDescription desc = TaxonDescription.NewInstance();
+		CategoricalData data = CategoricalData.NewInstance();
+		desc.addElement(data);
+		StateData stateData = StateData.NewInstance();
+		data.addState(stateData);
+		
+		TermVocabulary<Modifier> plantPartVoc = TermVocabulary.NewInstance("plant parts", "plant parts", "parts", null);
+		Modifier leaf = Modifier.NewInstance("leaf", "leaf", null);
+		plantPartVoc.addTerm(leaf);
+		data.addModifier(leaf);
+		Modifier peduncle = Modifier.NewInstance("peduncle", "peduncle", null);
+		plantPartVoc.addTerm(peduncle);
+		data.addModifier(peduncle);
+		Modifier notExistingPart = Modifier.NewInstance("not existing part", "not existing part", null);
+		plantPartVoc.addTerm(notExistingPart);
+
+		TermVocabulary<Modifier> ethnicGroupVoc = TermVocabulary.NewInstance("An ethnic group", "ethnic group", null, null);
+		Modifier scots = Modifier.NewInstance("Scots ", "Scots", null);
+		ethnicGroupVoc.addTerm(scots);
+		data.addModifier(scots);
+
+		
+		List<Modifier> modifiers = data.getModifiers(plantPartVoc);
+		Assert.assertEquals("There should be 2 modifiers of type 'plant part'", 2, modifiers.size());
+		Assert.assertEquals("There should be 3 terms in the 'plant part' vocabulary", 3, plantPartVoc.size());
+		Assert.assertEquals("There should be 1 modifiers of type 'ethnic group'", 1, data.getModifiers(ethnicGroupVoc).size());
+		Assert.assertEquals("There should be 3 modifiers all together", 3, data.getModifiers().size());
+		
 	}
 	
 	

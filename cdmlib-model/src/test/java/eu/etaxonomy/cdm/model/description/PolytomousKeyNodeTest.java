@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,8 +14,8 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class PolytomousKeyNodeTest {
-	private static Logger logger = Logger
-			.getLogger(PolytomousKeyNodeTest.class);
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(PolytomousKeyNodeTest.class);
 
 	private PolytomousKey key1;
 	private Taxon taxon1;

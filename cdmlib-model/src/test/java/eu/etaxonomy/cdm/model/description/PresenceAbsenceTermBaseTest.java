@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.*;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -34,7 +32,7 @@ public class PresenceAbsenceTermBaseTest {
 
 	@Test
 	public void testGetPresenceTermByAbbreviation() {
-		String abbrev = "p";
+//		String abbrev = "p";
 //		PresenceAbsenceTermBase paTerm = PresenceTerm.getPresenceAbsenceTermByAbbreviation(abbrev);
 //		assertEquals(PresenceTerm.PRESENT(), paTerm);
 //		PresenceAbsenceTermBase paTermNotExist = PresenceTerm.getPresenceAbsenceTermByAbbreviation("slkjlsl�");
