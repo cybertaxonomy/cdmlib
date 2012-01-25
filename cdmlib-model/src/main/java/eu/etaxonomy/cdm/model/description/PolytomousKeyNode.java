@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -115,6 +116,10 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "PolytomousKey")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+//	@ManyToOne(fetch = FetchType.LAZY, optional=false)
+//	@JoinColumn(nullable=false)
+//	@NotNull
+//	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE /*, CascadeType.DELETE_ORPHAN */})
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKey key;
