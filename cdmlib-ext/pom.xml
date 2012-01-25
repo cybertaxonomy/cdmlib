@@ -21,11 +21,11 @@
   </scm>
 
   <dependencies>
-  	 <dependency>
+ 	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-services</artifactId>
   	</dependency>
-    <dependency>
+  	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-persistence</artifactId>
   		<type>test-jar</type>

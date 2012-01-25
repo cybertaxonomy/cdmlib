@@ -167,7 +167,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
 		presenceAbsenceColorMap = null;
 		String bbox="-20,0,120,70";
 		List<Language> languages = new ArrayList<Language>();
-				
+			
 		String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions, mapping, presenceAbsenceColorMap, 600, 300, bbox,backLayer, null, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
