@@ -85,6 +85,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		indexedClasses[6] = Fossil.class;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#countDerivationEvents(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
+	 */
+	@Override
 	public int countDerivationEvents(SpecimenOrObservationBase occurence) {
 		checkNotInPriorView("OccurrenceDaoHibernateImpl.countDerivationEvents(SpecimenOrObservationBase occurence)");
 		Query query = getSession().createQuery("select count(distinct derivationEvent) from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
@@ -93,6 +97,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#countDeterminations(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.taxon.TaxonBase)
+	 */
+	@Override
 	public int countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -123,6 +131,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#countMedia(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase)
+	 */
+	@Override
 	public int countMedia(SpecimenOrObservationBase occurence) {
 		checkNotInPriorView("OccurrenceDaoHibernateImpl.countMedia(SpecimenOrObservationBase occurence)");
 		Query query = getSession().createQuery("select count(media) from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
@@ -131,6 +143,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getDerivationEvents(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
+	@Override
 	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("OccurrenceDaoHibernateImpl.getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber)");
 		Query query = getSession().createQuery("select distinct derivationEvent from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
@@ -150,6 +166,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getDeterminations(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
+	@Override
 	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -196,6 +216,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getMedia(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
+	@Override
 	public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = getSession().createQuery("select media from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
@@ -215,6 +239,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return results;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase#rebuildIndex()
+	 */
 	@Override
 	public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
@@ -248,6 +275,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		fullTextSession.flushToIndexes();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#count(java.lang.Class, eu.etaxonomy.cdm.model.taxon.TaxonBase)
+	 */
+	@Override
 	public int count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
 
 		Criteria criteria = null;
@@ -262,6 +293,10 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return (Integer) criteria.uniqueResult();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#list(java.lang.Class, eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
 	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonBase determinedAs, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths) {
 		Criteria criteria = null;
 		if(clazz == null) {
@@ -288,6 +323,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return results; 
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getDerivedUnitBaseUuidAndTitleCache()
+	 */
 	@Override
 	public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache() {
 		List<UuidAndTitleCache<DerivedUnitBase>> list = new ArrayList<UuidAndTitleCache<DerivedUnitBase>>();
@@ -304,6 +342,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return list;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getFieldObservationUuidAndTitleCache()
+	 */
 	@Override
 	public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache() {
 		List<UuidAndTitleCache<FieldObservation>> list = new ArrayList<UuidAndTitleCache<FieldObservation>>();

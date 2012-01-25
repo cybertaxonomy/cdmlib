@@ -641,5 +641,5 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 		return null;
 	}
-		
+	
 }

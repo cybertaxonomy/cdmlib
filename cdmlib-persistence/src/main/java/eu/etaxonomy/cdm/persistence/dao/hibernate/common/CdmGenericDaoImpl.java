@@ -171,9 +171,6 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		return result;
 	}
 	
-	
-
-	
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		Set<CdmBase> result = new HashSet<CdmBase>();
 		try {
