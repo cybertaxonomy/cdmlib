@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO> {
+//	public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO<IoStateBase<CONFIG, IO>>> {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoStateBase.class);
 	

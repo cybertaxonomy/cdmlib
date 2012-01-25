@@ -17,13 +17,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
-import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.mapping.CdmMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -38,7 +34,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 	
 	private PreparedStatement preparedStatement;
 	private String dbTableName;
-	private List<CollectionExportMapping> collectionMappingList = new ArrayList<CollectionExportMapping>();
+	private List<CollectionExportMapping<STATE,CONFIG>> collectionMappingList = new ArrayList<CollectionExportMapping<STATE,CONFIG>>();
 	
 
 	public CdmDbExportMapping(String tableName){
@@ -64,7 +60,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
-			for (CollectionExportMapping collectionMapping : this.collectionMappingList ){
+			for (CollectionExportMapping<STATE,CONFIG> collectionMapping : this.collectionMappingList ){
 				collectionMapping.initialize(state);
 			}
 			return true;

@@ -55,7 +55,10 @@ public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE
 	@Override
 	public Object getDbId(CdmBase cdmBase, STATE state) {
 		CONFIG config = state.getConfig();
-		 IdType type = config.getIdType();
+		IdType type = config.getIdType();
+		if (cdmBase == null){
+			return null;
+		}
 		if (type == IdType.CDM_ID){
 			return cdmBase.getId();
 		}else if (type == IdType.CDM_ID_WITH_EXCEPTIONS){
@@ -76,6 +79,7 @@ public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE
 	}
 
 	protected Object getDbIdCdmWithExceptions(CdmBase cdmBase, STATE state) {
+		//default -> override
 		return cdmBase.getId();
 	}
 
