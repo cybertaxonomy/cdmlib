@@ -261,6 +261,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
+    @Ignore
     @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameWithMisappliedNames(){
 
