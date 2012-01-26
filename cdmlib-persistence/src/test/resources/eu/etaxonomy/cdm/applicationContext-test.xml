@@ -41,24 +41,22 @@
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <!--
             NOTE:
-            additional hibernate properites are found in
-            /cdmlib-persistence/src/test/resources/dbscripts/hibernate.properties
+            the database connection is configured in /cdmlib-persistence/src/test/resources/unitils.properties
         -->
         <property name="properties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLCorrectedDialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
-                <prop key="hibernate.search.default.indexBase">./target/test-classes</prop>
+                <prop key="hibernate.search.default.indexBase">./target/index</prop>
             </props>
         </property>
     </bean>
 
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-      <property name="create" value="false"/>
+      <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
+      <property name="create" value="true"/>
     </bean>
 
 </beans>
