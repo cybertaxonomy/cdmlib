@@ -266,23 +266,33 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         Classification classification = classificationDao.load(classificationUuid);
 
+        /* NOTE:
+         * The testdata contains 2 misapplied names, one is contained in the classification used in this test,
+         * the other one is not contained in any classification. This latter case is the more general situation.
+         * Misapplied names should be found regardless of whether they are contained in a classification or not.
+         */
+
         List<TaxonBase> results = taxonDao.getTaxaByName(true, false, false, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
 
-        results = taxonDao.getTaxaByName(true,false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+        results = taxonDao.getTaxaByName(true, false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
+        Assert.assertEquals("There should be 3 Taxa", 4, results.size());
 
         results = taxonDao.getTaxaByName(true, true, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+        Assert.assertEquals("There should be 3 Taxa", 4, results.size());
 
         results = taxonDao.getTaxaByName(true, true, true, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+        Assert.assertEquals("There should be 3 Taxa", 4, results.size());
 
         results = taxonDao.getTaxaByName(true, true, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 3 Taxa", 3, results.size());
-        
+        Assert.assertEquals("There should be 3 Taxa", 4, results.size());
+
         results = taxonDao.getTaxaByName(false, false, true, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+        Assert.assertEquals("There should be 1 Taxa", 2, results.size());
+
+        results = taxonDao.getTaxaByName(false, false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 2, results.size());
+
     }
 
     /**
