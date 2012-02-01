@@ -269,7 +269,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Classification classification = classificationDao.load(classificationUuid);
 
         /* NOTE:
-         * The testdata contains 2 misapplied names (1. nameCache = Aus, 2. nameCache = Rethera), one is contained in the classification used in this test,
+         * The testdata contains 3 misapplied names (1. nameCache = Aus, 2. nameCache = Rethera, 3. nameCache = Daphnis), two contained in the classification used in this test,
          * the other one is not contained in any classification. This latter case is the more general situation.
          * Misapplied names should be found regardless of whether they are contained in a classification or not.
          */
@@ -284,22 +284,26 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         //
         results = taxonDao.getTaxaByName(true, true, true, "A*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 12 Taxa",12, results.size());
+        
         //two accepted taxa in classification and 1 misapplied name with accepted name in classification
         results = taxonDao.getTaxaByName(true, true, true, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
+        
         //same as above because all taxa, synonyms and misapplied names starting with R are in the classification
         results = taxonDao.getTaxaByName(true, true, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
-        //find misapplied names with accepted taxon in the classification..
+        
+        //find misapplied names with accepted taxon in the classification, the accepted taxa of two misapplied names are in the classification
         results = taxonDao.getTaxaByName(false, false, true, "*", classification, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+        Assert.assertEquals("There should be 2 Taxa", 2, results.size());
+        
         //find misapplied names beginning with R
         results = taxonDao.getTaxaByName(false, false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
         
-        //find all two misapplied names 
+        //find all three misapplied names 
         results = taxonDao.getTaxaByName(false, false, true, "*", null, MatchMode.BEGINNING, null, null, null, null);
-        Assert.assertEquals("There should be 2 Taxa", 2, results.size());
+        Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
     }
 

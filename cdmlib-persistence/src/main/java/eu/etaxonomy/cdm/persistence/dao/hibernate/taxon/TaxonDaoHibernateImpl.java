@@ -617,11 +617,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     subTaxon.setParameter("classification", classification);
                     
                 }
-                if (doIncludeMisappliedNames && (classification != null || doAreaRestriction)){
-                	subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-                }
+                
 
             }
+            
             if(doSynonyms){
                 // find synonyms
                 subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
@@ -633,7 +632,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     subSynonym.setParameter("classification", classification);
                 }
             }
-            if (doIncludeMisappliedNames && !doTaxa){
+            if (doIncludeMisappliedNames ){
             	subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
             	subMisappliedNames.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
             	if(doAreaRestriction){
@@ -646,15 +645,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             List<Integer> taxa = new ArrayList<Integer>();
             List<Integer> synonyms = new ArrayList<Integer>();
-            if (doSynonyms && doTaxa){
-                taxa = subTaxon.list();
+            if (doSynonyms){
                 synonyms = subSynonym.list();
-            }else if(doTaxa ){
+            }
+            if(doTaxa){
                 taxa = subTaxon.list();
-            }else if (doSynonyms){
-                synonyms = subSynonym.list();
-            } else{
-            	taxa = subMisappliedNames.list();
+            }
+            if (doIncludeMisappliedNames){
+            	taxa.addAll(subMisappliedNames.list());
             }
 
             if (doTaxa && doSynonyms){
@@ -2258,9 +2256,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		        " join e.inDescription d" +
 		        " join d.taxon t" +
 		        (classification != null ? " join t.taxonNodes as tn " : " ");
+		   
+		   String 	doAreaRestrictionMisappliedNameSubSelect = "select %s.id from" +
+	        " Distribution e" +
+	        " join e.inDescription d" +
+	        " join d.taxon t";
 				
 		   String doTaxonSubSelect = "select %s.id from Taxon t " + (classification != null ? " join t.taxonNodes as tn " : " ");
-		   
+		   String doTaxonMisappliedNameSubSelect = "select %s.id from Taxon t ";
 				
 		   String doTaxonNameJoin =   " join t.name n ";
 				
@@ -2268,7 +2271,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			
 		   String doMisappliedNamesJoin = " left join t.relationsFromThisTaxon as rft" +
 		        " left join rft.relatedTo as rt" +
-		        " left join rt.taxonNodes as tn2" +
+		        (classification != null ? " left join rt.taxonNodes as tn2" : " ") +
 		        " left join rt.name as n2" +
 		        " left join rft.type as rtype";
 			
@@ -2288,54 +2291,73 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if(classification != null ){
 			if (!doIncludeMisappliedNames){
 				if(doAreaRestriction){
-					taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + " WHERE " + doAreaRestrictionWhere + " AND " + doClassificationWhere + " AND " + String.format(doSearchFieldWhere, "n");
-					synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + " WHERE " + doAreaRestrictionWhere + " AND " + doClassificationWhere + " AND " + String.format(doSearchFieldWhere, "sn");
+					taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "n");
+					synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "sn");
 				} else {
-					taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin + " WHERE " + doClassificationWhere + " AND " + String.format(doSearchFieldWhere, "n");
-					synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + " WHERE " + doClassificationWhere + " AND " + String.format(doSearchFieldWhere, "sn");
+					taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin + 
+					" WHERE " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "n");
+					synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + 
+					" WHERE " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "sn");
 				}
 			}else{ //misappliedNames included
 				if(doAreaRestriction){
-					if (!doTaxa){
-			
-						misappliedSelect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " + doAreaRestrictionWhere + " AND " + String.format(doSearchFieldWhere, "n") + " AND " + doClassificationForMisappliedNamesWhere + " AND "
-							+ doRelationshipTypeComparison;
-					}else{
-						taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " + doAreaRestrictionWhere + " AND "+ String.format(doSearchFieldWhere, "n") + " AND (("+ doClassificationWhere + 
-						") OR (" + doClassificationForMisappliedNamesWhere + " AND " + doRelationshipTypeComparison + "))";
-						
-						synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + " WHERE " + doAreaRestrictionWhere + " AND " + doClassificationWhere + " AND " +  String.format(doSearchFieldWhere, "sn");;
-		       	    }
+					misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + String.format(doSearchFieldWhere, "n") + 
+					" AND " + doClassificationForMisappliedNamesWhere + 
+					" AND " + doRelationshipTypeComparison;
+					
+					taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND "+ String.format(doSearchFieldWhere, "n") + " AND "+ doClassificationWhere;
+					
+					synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + doClassificationWhere + " AND " +  String.format(doSearchFieldWhere, "sn");;
+		       	   
 				} else {
-					if (!doTaxa ){
-						misappliedSelect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " + String.format(doSearchFieldWhere, "n") + " AND " + doClassificationForMisappliedNamesWhere + " AND " + doRelationshipTypeComparison;
-		    	
-					}else{
-						taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " +  String.format(doSearchFieldWhere, "n") + " AND ((" + doClassificationForMisappliedNamesWhere + " AND " + doRelationshipTypeComparison + ") OR ( " + doClassificationWhere + "))";
-		   
-						synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + " WHERE " + doClassificationWhere + " AND " +  String.format(doSearchFieldWhere, "sn");
-				    }
+					misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + 
+					" WHERE " + String.format(doSearchFieldWhere, "n") + 
+					" AND " + doClassificationForMisappliedNamesWhere + 
+					" AND " + doRelationshipTypeComparison;
+					
+					taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + 
+					" WHERE " +  String.format(doSearchFieldWhere, "n") + 
+					" AND "+ doClassificationWhere;
+					
+					synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + 
+					" WHERE " + doClassificationWhere + 
+					" AND " +  String.format(doSearchFieldWhere, "sn");
+				    
 				}
 			}
 		} else {
 			if(doAreaRestriction){
-				if (doIncludeMisappliedNames && !doTaxa){
-					misappliedSelect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " + doAreaRestrictionWhere +  " AND " +
-					 String.format(doSearchFieldWhere, "n")+ " AND " + doRelationshipTypeComparison;
-				} else{
-					taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + " WHERE " + doAreaRestrictionWhere +  " AND " +
-					 String.format(doSearchFieldWhere, "n");
-				}
-		
-				synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + " WHERE " +   doAreaRestrictionWhere +  " AND " +  String.format(doSearchFieldWhere, "sn");
+				misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + 
+				" WHERE " + doAreaRestrictionWhere +  
+				" AND " + String.format(doSearchFieldWhere, "n")+ 
+				" AND " + doRelationshipTypeComparison;
+				
+				taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + 
+				" WHERE " + doAreaRestrictionWhere +  
+				" AND " + String.format(doSearchFieldWhere, "n");
+					
+				synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + 
+				" WHERE " +   doAreaRestrictionWhere +  
+				" AND " +  String.format(doSearchFieldWhere, "sn");
 		
 		
 			} else {
-				if (doIncludeMisappliedNames && !doTaxa){
-					misappliedSelect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " +  String.format(doSearchFieldWhere, "n") + " AND " + doRelationshipTypeComparison;
-				} else{
-					taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "n");
-				}
+				misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " +  String.format(doSearchFieldWhere, "n") + " AND " + doRelationshipTypeComparison;
+				taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "n");
 				synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "sn");
 		   
 			}
