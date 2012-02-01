@@ -284,15 +284,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         //
         results = taxonDao.getTaxaByName(true, true, true, "A*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 12 Taxa",12, results.size());
-
+        //two accepted taxa in classification and 1 misapplied name with accepted name in classification
         results = taxonDao.getTaxaByName(true, true, true, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
-
+        //same as above because all taxa, synonyms and misapplied names starting with R are in the classification
         results = taxonDao.getTaxaByName(true, true, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
-        //find misapplied names beginning with R -> Rethera
-        results = taxonDao.getTaxaByName(false, false, true, "R*", classification, MatchMode.BEGINNING, null, null, null, null);
+        //find misapplied names with accepted taxon in the classification..
+        results = taxonDao.getTaxaByName(false, false, true, "*", classification, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+        //find misapplied names beginning with R
+        results = taxonDao.getTaxaByName(false, false, true, "R*", null, MatchMode.BEGINNING, null, null, null, null);
+        Assert.assertEquals("There should be 1 Taxa", 1, results.size());
+        
         //find all two misapplied names 
         results = taxonDao.getTaxaByName(false, false, true, "*", null, MatchMode.BEGINNING, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
