@@ -86,6 +86,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
 	@XmlElement(name = "ModifyingText")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
 
 //********************* FACTORY METHODS ************************\

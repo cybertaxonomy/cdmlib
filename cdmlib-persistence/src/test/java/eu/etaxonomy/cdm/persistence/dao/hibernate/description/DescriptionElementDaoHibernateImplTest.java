@@ -23,7 +23,13 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -37,6 +43,10 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	
 	@SpringBeanByType
 	IDescriptionElementDao descriptionElementDao;
+	
+	@SpringBeanByType
+	IDefinedTermDao termDao;
+	
 	
 	private UUID uuidSingleTextData = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
 	private UUID uuidDobuleTextData = UUID.fromString("50f6b799-3585-40a7-b69d-e7be77b2651a");
@@ -237,6 +247,31 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 	@Test
 	public void testSuggestQuery() {
 		logger.warn("Not yet implemented");
+	}
+	
+	@Test  //cascading for modifying text didn't work
+	@ExpectedDataSet
+	public void testSaveCategoricalData(){
+		UUID uuidDummyState = UUID.fromString("881b9c80-626d-47a6-b308-a63ee5f4178f");
+//		State state = State.NewInstance("TestState", "TestState", "TestState");
+//		termDao.saveOrUpdate(state);
+		State state = (State)termDao.findByUuid(uuidDummyState);
+		CategoricalData data = CategoricalData.NewInstance();
+		data.setUuid(UUID.fromString("5c3f2340-f675-4d50-af96-89a2a12993b8"));
+		data.setFeature(Feature.DESCRIPTION());
+		StateData stateData = StateData.NewInstance(state);
+		stateData.setUuid(UUID.fromString("04b9190d-d4ab-4c3a-8dec-8293dc820ddc"));
+		stateData.putModifyingText(Language.ENGLISH(), "test modifier");
+		LanguageString langString = stateData.getModifyingText().get(Language.ENGLISH());
+		langString.setUuid(UUID.fromString("53a91bd4-d758-47ec-a385-94799bdb9f32"));
+		data.addState(stateData);
+//		Modifier modifier = Modifier.NewInstance("my test modifier", "test", null);
+//		TODO still throws JDBC batch update exception, one reason may be that in hibernate_sequence nextVal for definedtermbase is "1"
+//		stateData.addModifier(modifier);
+		
+		descriptionElementDao.save(data);
+		
+//		commitAndStartNewTransaction(new String[]{"Hibernate_sequences","DescriptionElementBase","DescriptionElementBase_StateData","StateData_DefinedTermBase", "StateData", "StateData_LanguageString", "LanguageString"});
 	}
 
 }
