@@ -159,7 +159,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		Result result = new StreamResult(outputStream);
 		transformer.transform(source, result);
-		
+		 
 		return new String(outputStream.toByteArray());
     }	
 }
