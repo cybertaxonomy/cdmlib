@@ -337,7 +337,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 	protected void commitAndStartNewTransaction(final String[] tableNames) {
 		setComplete(); 
 		endTransaction();
-		printDataSet(System.out, tableNames);
+//		printDataSet(System.out, tableNames);
 		startNewTransaction();
 	}
 
