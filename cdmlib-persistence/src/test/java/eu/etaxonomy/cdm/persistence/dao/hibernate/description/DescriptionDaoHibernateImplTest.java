@@ -27,6 +27,8 @@ import junit.framework.Assert;
 import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.database.annotations.Transactional;
+import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -42,6 +44,7 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -49,9 +52,10 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
+public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	IDescriptionDao descriptionDao;
@@ -95,7 +99,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@Test
 	public void testCountByDistribution() {
-		printDataSet(System.err, TABLE_NAMES);
+//		printDataSet(System.err, TABLE_NAMES);
 		NamedArea northernAmerica = (NamedArea)definedTermDao.findByUuid(northernAmericaUuid);
 		NamedArea southernAmerica = (NamedArea)definedTermDao.findByUuid(southernAmericaUuid);
 		NamedArea antarctica = (NamedArea)definedTermDao.findByUuid(antarcticaUuid);
@@ -211,6 +215,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	public void testListDescriptionsWithTextAndFeatures() {
 		assert Feature.ECOLOGY() != null;
 		features.add(Feature.ECOLOGY());
+
 		List<DescriptionBase> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, features, null, null, null, null);
 
 		assertNotNull("listDescriptions should return a List",descriptions);
@@ -238,6 +243,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		propertyPaths.add("media");
 		propertyPaths.add("citation");
 		propertyPaths.add("feature");
+		propertyPaths.add("sources");
 
 		List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
 
@@ -257,7 +263,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 				defaultString.setText("blablub");
 			}
 		}
-		elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
+		elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null, propertyPaths);
 
 		DescriptionElementBase element34 = null;
 		for (DescriptionElementBase descElB: elements){
@@ -343,11 +349,22 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	//see #2234
 	@Test
 	public void testSaveClonedDescription() {
+
+		printDataSet(System.err, new String[]{"TAXONBASE"});
+
 		Taxon taxon = Taxon.NewInstance(null, null);
+		taxon.setTitleCache("##### created in testSaveClonedDescription()", true);
+		taxonDao.save(taxon);
+		commitAndStartNewTransaction(null);
+
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
-		this.descriptionDao.save(description);
-		TaxonDescription clonedDescription = (TaxonDescription)description.clone();
-		this.descriptionDao.save(clonedDescription);
+		this.descriptionDao.saveOrUpdate(description);
+//		TaxonDescription clonedDescription = (TaxonDescription)description.clone();
+//		this.descriptionDao.saveOrUpdate(clonedDescription);
+//		printDataSet(System.err, new String[]{"TAXONBASE"});
+
+		assertTrue(true);
+
 	}
 
 	//see #2592

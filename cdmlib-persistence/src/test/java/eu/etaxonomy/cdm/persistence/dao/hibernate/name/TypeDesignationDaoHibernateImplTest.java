@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -53,14 +53,14 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 
 	@SpringBeanByType
 	ITypeDesignationDao typeDesignationDao;
-	
+
 	@SpringBeanByType
 	ITaxonNameDao nameDao;
-	
+
 	@SpringBeanByType
 	IOccurrenceDao occurrenceDao;
 
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationHibernateImpl#TypeDesignationHibernateImpl()}.
 	 */
@@ -92,7 +92,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		TaxonNameBase singleName = names.iterator().next();
 		Assert.assertEquals("", UUID.fromString("61b1dcae-8aa6-478a-bcd6-080cf0eb6ad7"), singleName.getUuid());
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationHibernateImpl#saveOrUpdate(CdmBase)}.
 	 */
@@ -108,48 +108,47 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 				specTypeDesig = CdmBase.deproxy(typeDesignation,SpecimenTypeDesignation.class);
 			}
 		}
-		
+
 		TaxonNameBase newName = BotanicalName.NewInstance(Rank.SPECIES());
 		newName.setUuid(UUID.fromString("c16c3bc5-d3d0-4676-91a1-848ebf011e7c"));
 		newName.setTitleCache("Name used as typified name", true);
 		newName.addTypeDesignation(specTypeDesig, false);
-		
+
 		nameDao.saveOrUpdate(newName);
 //		typeDesignationDao.saveOrUpdate(specTypeDesig);
-		
-		this.setComplete();
-		this.endTransaction();
+
+		commitAndStartNewTransaction(null);
 		specTypeDesig = (SpecimenTypeDesignation)typeDesignationDao.load(specTypeDesig.getUuid());
 		Assert.assertNotNull("specimen type designation should exists in db", specTypeDesig);
 		specTypeDesig.getTypifiedNames().size();
 		Set<TaxonNameBase> typifiedNames = specTypeDesig.getTypifiedNames();
 		Assert.assertEquals("There should be 2 typified names for this type designation now", 2, typifiedNames.size());
-		
+
 //		printDataSet(System.out, new String[]{"TaxonNameBase","TaxonNameBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD",
 //				"TypeDesignationBase","TypeDesignationBase_AUD",
 //				"TaxonNameBase_TypeDesignationBase", "TaxonNameBase_TypeDesignationBase_AUD"
 //				});
-		
+
 	}
-	
+
 	@Test
 	@ExpectedDataSet
 	public void testSaveTypeDesignationsBidirectionalCascade() {
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("a1b8af89-b724-469b-b0ce-027c2199aadd"));
-		
+
 		TaxonNameBase name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setUuid(UUID.fromString("503d78dc-5d4c-4eb6-b682-0ab90fdee02c"));
 		name.setTitleCache("Name saved via cascade", true);
 		name.addTypeDesignation(desig1, false);
-		
+
 		typeDesignationDao.saveOrUpdate(desig1);
 	}
-	
+
 	@Test
 	@ExpectedDataSet
-	//Auditing didn't work for SpecimenTypeDesignations. See #2396	
+	//Auditing didn't work for SpecimenTypeDesignations. See #2396
 	public void testSaveTypeDesignationsWithAuditing() {
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("Name1", true);
@@ -157,22 +156,22 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("ceca086e-e8d3-444e-abfb-c47f76835130"));
-		
+
 		name1.addTypeDesignation(desig1, true);
-		
+
 		nameDao.saveOrUpdate(name1);
-		
+
 		this.setComplete();
 		this.endTransaction();
-	
-//		printDataSet(System.out, new String[]{"TaxonNameBase","TaxonNameBase_AUD",
+
+//		printDataSet(System.err, new String[]{"TaxonNameBase","TaxonNameBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD",
 //				"TypeDesignationBase","TypeDesignationBase_AUD",
-//				"TaxonNameBase_TypeDesignationBase","TaxonNameBase_TypeDesignationBase_AUD" 
+//				"TaxonNameBase_TypeDesignationBase","TaxonNameBase_TypeDesignationBase_AUD"
 //				});
-		
+
 	}
-	
+
 	@Test
 	@ExpectedDataSet
 	public void testSaveTypeDesignationsCascadeToSpecimen() {
@@ -183,22 +182,22 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("6df85e4c-49fe-4eb5-acde-cf6c0c9fc3c5"));
 		name1.addTypeDesignation(desig1, true);
-		
+
 		Specimen specimen = Specimen.NewInstance();
 		specimen.setUuid(UUID.fromString("f1a7c3b9-169c-4845-9b21-e77f863a8bce"));
 		specimen.setTitleCache("Specimen to cascade", true);
 		desig1.setTypeSpecimen(specimen);
-		
+
 		nameDao.saveOrUpdate(name1);
-		
+
 		this.setComplete();
 		this.endTransaction();
-		
+
 //		printDataSet(System.out, new String[]{"TaxonNameBase","TaxonNameBase_AUD","TypeDesignationBase","TypeDesignationBase_AUD",
 //				"TaxonNameBase_TypeDesignationBase","TaxonNameBase_TypeDesignationBase_AUD",
-//				"TaxonNameBase_TypeDesignationBase","SpecimenOrObservationBase","SpecimenOrObservationBase_AUD", 
+//				"TaxonNameBase_TypeDesignationBase","SpecimenOrObservationBase","SpecimenOrObservationBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD"});
-		
+
 	}
 
 	@Test
@@ -212,16 +211,16 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("c0e03472-b9f9-4886-b3bd-c1c70dd21a5f"));
 		name1.addTypeDesignation(desig1, true);
-		
+
 		Specimen specimen = Specimen.NewInstance();
 		specimen.setUuid(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"));
 		specimen.setTitleCache("Specimen to cascade", true);
 		desig1.setTypeSpecimen(specimen);
-		
+
 		occurrenceDao.saveOrUpdate(specimen);
 
 	}
-	
+
 	@Test
 //	@ExpectedDataSet
 	public void testRemoveTypeDesignationsFromName() {
@@ -237,54 +236,54 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		desig1.setUuid(UUID.fromString("fe9f7711-de4a-4789-8045-86b2cb5c4358"));
 		name1.addTypeDesignation(desig1, true);
 		name2.addTypeDesignation(desig1, true);
-		
+
 		SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();
 		desig2.setUuid(UUID.fromString("bf357711-e752-44e9-bd3d-aef0a0bb5b91"));
 		name1.addTypeDesignation(desig2, true);
-		
+
 		typeDesignationDao.saveOrUpdate(desig1);
 		typeDesignationDao.saveOrUpdate(desig2);
-		
+
 		this.setComplete();
 		this.endTransaction();
 		this.startNewTransaction();
-		
+
 		name1 = (BotanicalName)nameDao.load(name1.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name1 should have 2 type designations", 2, name1.getTypeDesignations().size());
-		
+
 		desig1 = (SpecimenTypeDesignation)typeDesignationDao.load(desig1.getUuid());
 		name1.removeTypeDesignation(desig1);
 		typeDesignationDao.saveOrUpdate(desig1);
-		
+
 		this.setComplete();
 		this.endTransaction();
 		this.startNewTransaction();
-		
+
 		name1 = (BotanicalName)nameDao.load(name1.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name1 should have 1 type designation", 1, name1.getTypeDesignations().size());
-		
+
 		desig2 = (SpecimenTypeDesignation)typeDesignationDao.load(desig2.getUuid());
 		Assert.assertNotNull(desig2);
 		name1.removeTypeDesignation(desig2);
 		typeDesignationDao.saveOrUpdate(desig2);
-		
+
 		this.setComplete();
 		this.endTransaction();
 		this.startNewTransaction();
-		
+
 		name1 = (BotanicalName)nameDao.load(name1.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name1 should have no type designations", 0, name1.getTypeDesignations().size());
-		
+
 		name2 = (BotanicalName)nameDao.load(name2.getUuid());
 		Assert.assertNotNull(name1);
 		Assert.assertEquals("Name2 should have 1 type designation", 1, name2.getTypeDesignations().size());
 		SpecimenTypeDesignation desig1New = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
 		desig1 = (SpecimenTypeDesignation)typeDesignationDao.load(desig1.getUuid());
 		Assert.assertSame("Desig1New should be same as desig1", desig1, desig1New);
-		
+
 		try{
 			typeDesignationDao.delete(desig1);
 			this.setComplete();
@@ -298,24 +297,24 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		Assert.assertNotNull(name1);
 		desig1 = (SpecimenTypeDesignation)typeDesignationDao.load(desig1.getUuid());
 		name2.removeTypeDesignation(desig1);
-		
+
 		typeDesignationDao.delete(desig1);  //now it can be deleted
-		
+
 		this.setComplete();
 		this.endTransaction();
 		this.startNewTransaction();
-		
+
 		desig2 = (SpecimenTypeDesignation)typeDesignationDao.load(desig2.getUuid());
 		typeDesignationDao.delete(desig2); //desig2 is already orphaned and therefore can be deleted
-		
+
 		this.setComplete();
 		this.endTransaction();
-		
-		
+
+
 //		printDataSet(System.out, new String[]{"TaxonNameBase","TaxonNameBase_AUD","TypeDesignationBase","TypeDesignationBase_AUD",
 //				"TaxonNameBase_TypeDesignationBase","TaxonNameBase_TypeDesignationBase_AUD",
-//				"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD", 
+//				"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD"});
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-	create table Address (
+  create table Address (
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -1665,7 +1665,7 @@
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
-       	featureTree_id integer not null,
+         featureTree_id integer not null,
         feature_id integer,
         parent_id integer,
         primary key (id, REV)
@@ -2000,11 +2000,11 @@
         unique (uuid, authority)
     );
 
-	create table hibernate_sequences (
-		sequence_name varchar(255),
-		next_val integer,
-		primary key (sequence_name)
-	);
+  create table hibernate_sequences (
+    sequence_name varchar(255),
+    next_val integer,
+    primary key (sequence_name)
+  );
 
     create table HomotypicalGroup (
         id integer not null,
@@ -2950,7 +2950,7 @@
     );
 
    create table PolytomousKey (
-       	id integer not null,
+         id integer not null,
         created timestamp,
         uuid varchar(36),
         updated timestamp,
@@ -2970,7 +2970,7 @@
     );
 
    create table PolytomousKey_AUD (
-       	id integer not null,
+         id integer not null,
         REV integer not null,
         revtype tinyint,
         created timestamp,
@@ -3184,32 +3184,31 @@
     );
 
     create table PolytomousKeyNode_LanguageString (
-		PolytomousKeyNode_id integer not null,
-		modifyingtext_id integer not null,
-		modifyingtext_mapkey_id integer not null,
-		primary key (PolytomousKeyNode_id, modifyingtext_mapkey_id),
-		unique (modifyingtext_id)
-	)
+    PolytomousKeyNode_id integer not null,
+    modifyingtext_id integer not null,
+    modifyingtext_mapkey_id integer not null,
+    primary key (PolytomousKeyNode_id, modifyingtext_mapkey_id),
+    unique (modifyingtext_id)
+  );
 
-	create table PolytomousKeyNode_LanguageString_AUD (
-		REV integer not null,
-		revtype tinyint,
-		PolytomousKeyNode_id integer not null,
-		modifyingtext_id integer not null,
-		modifyingtext_mapkey_id integer not null,
-		primary key (REV, PolytomousKeyNode_id, modifyingtext_id, modifyingtext_mapkey_id)
-	)
+  create table PolytomousKeyNode_LanguageString_AUD (
+    REV integer not null,
+    revtype tinyint,
+    PolytomousKeyNode_id integer not null,
+    modifyingtext_id integer not null,
+    modifyingtext_mapkey_id integer not null,
+    primary key (REV, PolytomousKeyNode_id, modifyingtext_id, modifyingtext_mapkey_id)
+  );
 
     create table PolytomousKeyNode_PolytomousKeyNode_AUD(
-    	id integer not null,
+      id integer not null,
         REV integer not null,
         revtype tinyint,
         parent_id integer,
         sortIndex integer
-    )
+    );
 
     create table Reference (
-        DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -3256,7 +3255,6 @@
     );
 
     create table Reference_AUD (
-        DTYPE varchar(31) not null,
         id integer not null,
         REV integer not null,
         revtype tinyint,
@@ -3763,7 +3761,7 @@
         lifestage_id integer,
         sex_id integer,
         exsiccatum varchar(255),
-    	primarycollector_id integer,
+      primarycollector_id integer,
         collection_id integer,
         derivedfrom_id integer,
         storedunder_id integer,

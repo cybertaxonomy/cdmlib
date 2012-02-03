@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
@@ -37,33 +37,35 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public abstract class VersionableDaoBase<T extends VersionableEntity> extends CdmEntityDaoBase<T> implements IVersionableDao<T> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableDaoBase.class);
-		
+
 	protected AuditReader getAuditReader() {
 		return AuditReaderFactory.get(getSession());
 	}
-	
+
 	public VersionableDaoBase(Class<T> type) {
 		super(type);
 	}
-	
+
 	 protected AuditEvent getAuditEventFromContext() {
 		AuditEventContext auditEventContext = AuditEventContextHolder.getContext();
-	  
+
 	   	AuditEvent auditEvent = auditEventContext.getAuditEvent();
 	   	if(auditEvent != null) {
+	   		logger.debug(" AuditEvent found, returning " + auditEvent);
 	  	    return auditEvent;
 	    } else {
+	    	logger.debug(" AuditEvent is NULL, returning AuditEvent.CURRENT_VIEW");
 	   		return AuditEvent.CURRENT_VIEW;
 	   	}
 	}
-	 
+
 	protected void checkNotInPriorView(String message) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(!auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			throw new OperationNotSupportedInPriorViewException(message);
 		}
-	}	 
-	
+	}
+
 	@Override
 	public T findByUuid(UUID uuid) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -73,16 +75,16 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			// TODO initialize bits
-			return (T)query.getSingleResult();			
+			return (T)query.getSingleResult();
 		}
 	}
-	
+
     @Override
 	protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
     	return super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
-    
+
 	@Override
 	public T load(UUID uuid) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -93,10 +95,10 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			T t = (T)query.getSingleResult();
 			defaultBeanInitializer.load(t);
-			return t;			
+			return t;
 		}
 	}
-	
+
 	@Override
 	public T load(UUID uuid, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -110,8 +112,8 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			return t;
 		}
 	}
-	
-	
+
+
 	@Override
 	public Boolean exists(UUID uuid) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -120,10 +122,10 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("uuid").eq(uuid));
-			return null != (T)query.getSingleResult();			
+			return null != (T)query.getSingleResult();
 		}
 	}
-	
+
 	@Override
 	public int count() {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -133,7 +135,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			return this.count(null);
 		}
 	}
-	
+
 	@Override
 	public int count(Class<? extends T> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -146,12 +148,12 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			} else {
 				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
 			}
-			
+
 			query.addProjection(AuditEntity.id().count("id"));
 			return ((Long)query.getSingleResult()).intValue();
 		}
 	}
-	
+
 	@Override
 	public List<T> list(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -161,7 +163,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			return this.list(null, limit, start);
 		}
 	}
-	
+
 	@Override
 	public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -171,7 +173,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			return this.list(type, limit, start, null,null);
 		}
 	}
-	
+
 	@Override
 	public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -179,26 +181,26 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			return super.list(clazz, limit, start, orderHints, propertyPaths);
 		} else {
 			AuditQuery query = null;
-			
+
 			if(clazz == null) {
 				query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			} else {
 				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
 			}
-			
+
 			addOrder(query,orderHints);
-			
+
 			if(limit != null) {
 		   	  query.setMaxResults(limit);
 			  query.setFirstResult(start);
 			}
-			
+
 			List<T> result = (List<T>)query.getResultList();
 			defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		}
-	}	
-	
+	}
+
 	protected void addOrder(AuditQuery query, List<OrderHint> orderHints) {
 		if(orderHints != null && !orderHints.isEmpty()) {
 		   for(OrderHint orderHint : orderHints) {
@@ -206,16 +208,16 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		   }
 		}
 	}
-	
+
 	public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
-		
+
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
 		query.add(AuditEntity.id().eq(t.getId()));
 		if(sort == null) {
 		  sort = AuditEventSort.BACKWARDS;
 		}
-		
+
 		if(sort.equals(AuditEventSort.BACKWARDS)) {
             if(!auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		  	  query.add(AuditEntity.revisionNumber().lt(auditEvent.getRevisionNumber()));
@@ -227,7 +229,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
   		    }
   		    query.addOrder(AuditEntity.revisionNumber().asc());
      	}
-		
+
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
@@ -236,46 +238,46 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		    	query.setFirstResult(0);
 		    }
 		}
-        
+
         /**
          * At the moment we need to transform the data manually
          */
         List<Object[]> objs = (List<Object[]>)query.getResultList();
         List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
-        
+
         for(Object[] obj : objs) {
         	records.add(new AuditEventRecordImpl<T>(obj));
         }
-        
+
         for(AuditEventRecord<T> record : records) {
         	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
         }
 		return records;
 	}
-	
+
 	public int countAuditEvents(T t, AuditEventSort sort) {
 		AuditEvent auditEvent = getAuditEventFromContext();
-		
+
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
 		query.add(AuditEntity.id().eq(t.getId()));
-		
+
 		if(!auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			if(sort == null) {
 				sort = AuditEventSort.BACKWARDS;
 			}
-			
+
 			if(sort.equals(AuditEventSort.BACKWARDS)) {
 				query.add(AuditEntity.revisionNumber().lt(auditEvent.getRevisionNumber()));
 			} else {
 				query.add(AuditEntity.revisionNumber().gt(auditEvent.getRevisionNumber()));
 			}
 		}
-		
+
 		query.addProjection(AuditEntity.revisionNumber().count());
-		
+
 		return ((Long)query.getSingleResult()).intValue();
 	}
-	
+
 	public AuditEventRecord<T> getNextAuditEvent(T t) {
 		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.FORWARDS, null);
 		if(auditEvents.isEmpty()) {
@@ -284,7 +286,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		    return auditEvents.get(0);
 		}
 	}
-	
+
 	public AuditEventRecord<T> getPreviousAuditEvent(T t) {
 		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.BACKWARDS, null);
 		if(auditEvents.isEmpty()) {
@@ -296,25 +298,25 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 
 	public int countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
 		AuditQuery query = null;
-		
+
 		if(clazz == null) {
 		   query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
 		} else {
 		   query = getAuditReader().createQuery().forRevisionsOfEntity(clazz, false, true);
 		}
-		
+
 		if(from != null) {
 			query.add(AuditEntity.revisionNumber().ge(from.getRevisionNumber()));
-		} 
-		
+		}
+
 		if(to != null && !to.equals(AuditEvent.CURRENT_VIEW)) {
 			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
-		} 
-		
+		}
+
 		addCriteria(query,criteria);
-		
+
 		query.addProjection(AuditEntity.revisionNumber().count());
-		
+
 		return ((Long)query.getSingleResult()).intValue();
 	}
 
@@ -328,29 +330,29 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 
 	public List<AuditEventRecord<T>> getAuditEvents(Class<? extends T> clazz,AuditEvent from, AuditEvent to, List<AuditCriterion> criteria,	Integer pageSize, Integer pageNumber, AuditEventSort sort,	List<String> propertyPaths) {
         AuditQuery query = null;
-		
+
 		if(clazz == null) {
 		   query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
 		} else {
 		   query = getAuditReader().createQuery().forRevisionsOfEntity(clazz, false, true);
 		}
-		
+
 		if(from != null) {
 			query.add(AuditEntity.revisionNumber().ge(from.getRevisionNumber()));
-		} 
-		
+		}
+
 		if(to != null && !to.equals(AuditEvent.CURRENT_VIEW)) {
 			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
-		} 
-		
+		}
+
 		if(sort.equals(AuditEventSort.BACKWARDS)) {
 		    query.addOrder(AuditEntity.revisionNumber().desc());
      	} else {
   		    query.addOrder(AuditEntity.revisionNumber().asc());
      	}
-		
+
 		addCriteria(query,criteria);
-		
+
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);
 		    if(pageNumber != null) {
@@ -359,35 +361,35 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		    	query.setFirstResult(0);
 		    }
 		}
-		
+
 		/**
          * At the moment we need to transform the data manually
          */
         List<Object[]> objs = (List<Object[]>)query.getResultList();
         List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
-        
+
         for(Object[] obj : objs) {
         	records.add(new AuditEventRecordImpl<T>(obj));
         }
-        
+
         for(AuditEventRecord<T> record : records) {
         	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
         }
 		return records;
 	}
-	
+
 	@Override
 	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
     	return super.countByParam(clazz, param, queryString, matchmode, criterion);
 	}
-	
+
 	@Override
 	public int count(T example, Set<String> includeProperties) {
 		this.checkNotInPriorView("count(T example, Set<String> includeProperties)");
 		return super.count(example, includeProperties);
 	}
-	
+
 	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		this.checkNotInPriorView("list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {");
 		return super.list(example, includeProperties, limit, start, orderHints, propertyPaths);

@@ -50,8 +50,28 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
+                <!--
+                	hsqldb v. <1.9 has a bug
+	                (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
+		        	due to which it is not possible to use batch updates, so we need to disable hibernate batching when using
+			        hsqldb in the app context:
+			    -->
+                <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
         </property>
+    </bean>
+
+    <bean id="tableGeneratorGlobalOverride" class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
+            <property name="properties">
+	            <props>
+					<!--
+						globally overriding id generation settings
+						see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
+					-->
+					<prop key="optimizer">none</prop>
+					<prop key="initial_value">1000</prop>
+            	</props>
+          </property>
     </bean>
 
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">

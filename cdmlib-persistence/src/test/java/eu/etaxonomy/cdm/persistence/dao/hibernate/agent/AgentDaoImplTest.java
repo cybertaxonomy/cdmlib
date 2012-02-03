@@ -162,8 +162,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 	public void testDelete() throws Exception {
 		Person person = (Person)agentDao.findByUuid(personUuid);
 		agentDao.delete(person);
-		setComplete();
-        endTransaction();
+		commitAndStartNewTransaction(null);
 	}
 
 	@Test
