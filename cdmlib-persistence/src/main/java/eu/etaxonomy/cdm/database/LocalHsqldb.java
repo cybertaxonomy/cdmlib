@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,9 +32,9 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
 public class LocalHsqldb extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalHsqldb.class);
-	
+
 	private String sep = System.getProperty("file.separator");
-	
+
 	/** url without database name */
 	protected String pureUrl = "jdbc:hsqldb:hsql://localhost/";
 	/** database name */
@@ -49,10 +49,10 @@ public class LocalHsqldb extends BasicDataSource {
 	protected boolean isSilent = true;
 	/** default driver class name */
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.hsqldb.jdbcDriver";
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 */
 	public LocalHsqldb() {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
@@ -105,11 +105,11 @@ public class LocalHsqldb extends BasicDataSource {
 			this.startHsqldbServer();
 		}
 	}
-	
+
 	public void destroy(){
 		this.stopHsqldbServer();
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see org.springframework.jdbc.datasource.BasicDataSource#getUrl()
@@ -160,12 +160,12 @@ public class LocalHsqldb extends BasicDataSource {
 			setComposedUrl();
 		}
 	}
-	
+
 	private void setComposedUrl(){
 		setUrl(getPureUrl() + getDbName());
 	}
-	
-	//checks if hsqldb-server is started, if not it will be started	
+
+	//checks if hsqldb-server is started, if not it will be started
 	private void startHsqldbServer(){
 		try {
 			Driver driver = DriverManager.getDriver(getUrl());
@@ -180,7 +180,7 @@ public class LocalHsqldb extends BasicDataSource {
 		} catch (SQLException e) {
 			try {
 				//server is probably not runing on the url (or login is wrong !!)
-				logger.info("Start HsqldbServer"); 
+				logger.info("Start HsqldbServer");
 				hsqldbServer = new Server();
 				hsqldbServer.setSilent(this.isSilent);
 				if (logger.isDebugEnabled()){
@@ -201,8 +201,8 @@ public class LocalHsqldb extends BasicDataSource {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * stops the Hsqldb Server
 	 */
@@ -212,11 +212,11 @@ public class LocalHsqldb extends BasicDataSource {
 			hsqldbServer.stop();
 		}
 	}
-	
+
 	private static final String getDefaultPath(){
 		try {
 			File path = CdmApplicationUtils.getWritableResourceDir();
-			String subPath = File.separator + "hsqlDb" + File.separator + "LocalHsqldb"; 
+			String subPath = File.separator + "hsqlDb" + File.separator + "LocalHsqldb";
 			return  path + subPath;
 		} catch (IOException e) {
 			logger.error(e);
@@ -271,7 +271,7 @@ public class LocalHsqldb extends BasicDataSource {
 		}
 		this.isSilent = isSilent;
 	}
-	
-	
+
+
 
 }
