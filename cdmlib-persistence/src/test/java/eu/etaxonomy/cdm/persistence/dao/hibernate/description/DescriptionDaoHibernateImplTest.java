@@ -350,7 +350,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 	@Test
 	public void testSaveClonedDescription() {
 
-		printDataSet(System.err, new String[]{"TAXONBASE"});
+//		printDataSet(System.err, new String[]{"TAXONBASE"});
 
 		Taxon taxon = Taxon.NewInstance(null, null);
 		taxon.setTitleCache("##### created in testSaveClonedDescription()", true);

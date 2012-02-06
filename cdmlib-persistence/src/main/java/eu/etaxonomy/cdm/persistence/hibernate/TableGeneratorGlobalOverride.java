@@ -9,14 +9,18 @@ class TableGeneratorGlobalOverride {
 
 	public TableGeneratorGlobalOverride(){}
 
-	public static final ThreadLocal<Properties> threadLocalProperties = new ThreadLocal<Properties>();
+//	public static final ThreadLocal<Properties> threadLocalProperties = new ThreadLocal<Properties>();
+
+	public static Properties properties;
 
 	public static Properties getProperties() {
-		return threadLocalProperties.get();
+//		return threadLocalProperties.get();
+		return TableGeneratorGlobalOverride.properties;
 	}
 
 	public void setProperties(Properties properties) {
-		threadLocalProperties.set(properties);
+//		threadLocalProperties.set(properties);
+		TableGeneratorGlobalOverride.properties = properties;
 	}
 
 }

@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -150,10 +151,15 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@ExpectedDataSet
 	//Auditing didn't work for SpecimenTypeDesignations. See #2396
 	public void testSaveTypeDesignationsWithAuditing() {
+
+
+		// creating new Typedesignation for a new Name:
+
+		//  1. new TaxonName with UUID 8564287e-9654-4b8b-a38c-0ccdd9e885db
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("Name1", true);
 		name1.setUuid(UUID.fromString("8564287e-9654-4b8b-a38c-0ccdd9e885db"));
-
+		//   2. new TypeDesignation with uuid ceca086e-e8d3-444e-abfb-c47f76835130
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		desig1.setUuid(UUID.fromString("ceca086e-e8d3-444e-abfb-c47f76835130"));
 
@@ -161,8 +167,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 
 		nameDao.saveOrUpdate(name1);
 
-		this.setComplete();
-		this.endTransaction();
+		commitAndStartNewTransaction(null);
 
 //		printDataSet(System.err, new String[]{"TaxonNameBase","TaxonNameBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD",

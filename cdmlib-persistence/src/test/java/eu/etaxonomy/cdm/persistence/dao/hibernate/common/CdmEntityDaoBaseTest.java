@@ -128,7 +128,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
 	public void testSaveOrUpdateNewObjectWithAuthentication() {
-		printDataSet(System.err, new String[]{"TAXONBASE", "HIBERNATE_SEQUENCES"});
+//		printDataSet(System.err, new String[]{"TAXONBASE", "HIBERNATE_SEQUENCES"});
 		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
 		assert user != null : "User cannot be null";
 		setAuthentication(user);
