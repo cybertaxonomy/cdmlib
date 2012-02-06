@@ -255,26 +255,6 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
-                    <!--
-                    <systemProperties>
-                        <property>
-                            <name>hibernate.connection.driver_class</name>
-                            <value>${hibernate.connection.driver_class}</value>
-                        </property>
-                        <property>
-                            <name>hibernate.connection.url</name>
-                            <value>${hibernate.connection.url}</value>
-                        </property>
-                        <property>
-                            <name>hibernate.connection.username</name>
-                            <value>${hibernate.connection.username}</value>
-                        </property>
-                        <property>
-                            <name>hibernate.connection.password</name>
-                            <value>${hibernate.connection.password}</value>
-                        </property>
-                    </systemProperties>
-                    -->
                 </configuration>
             </plugin>
             <plugin>
