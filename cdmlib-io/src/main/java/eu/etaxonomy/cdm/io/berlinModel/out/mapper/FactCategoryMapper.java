@@ -10,16 +10,14 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
@@ -31,7 +29,6 @@ import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
