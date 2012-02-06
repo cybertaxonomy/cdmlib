@@ -167,7 +167,7 @@
         <class>eu.etaxonomy.cdm.model.view.AuditEvent</class>
         <class>eu.etaxonomy.cdm.model.common</class>
         <exclude-unlisted-classes />
-        <properties>
+        <!-- <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:cdm"/>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
@@ -175,6 +175,6 @@
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
-        </properties>
+        </properties> -->
     </persistence-unit>
 </persistence>

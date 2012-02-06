@@ -23,7 +23,8 @@
     <properties>
         <spring.version>3.0.4.RELEASE</spring.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <unitils.version>3.2</unitils.version>
+        <unitils.version>3.3</unitils.version>
+        <hsqldb.version>1.8.0.10</hsqldb.version><!-- 1.8.0.10, 1.9.0-rc6 (manualy build only for debugging) -->
     </properties>
     <scm>
         <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
@@ -254,6 +255,7 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <!--
                     <systemProperties>
                         <property>
                             <name>hibernate.connection.driver_class</name>
@@ -272,6 +274,7 @@
                             <value>${hibernate.connection.password}</value>
                         </property>
                     </systemProperties>
+                    -->
                 </configuration>
             </plugin>
             <plugin>
@@ -579,12 +582,6 @@
     </distributionManagement>
     <!-- **** DEPENDENCIES **** -->
 <dependencies>
-  <!-- is this still needed????
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils</artifactId>
-        </dependency>
-      -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -706,12 +703,12 @@
         <version>0.3.0</version>
         <scope>test</scope>
       </dependency>
-            <dependency>
+      <dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils-core</artifactId>
         <version>${unitils.version}</version>
-                <scope>test</scope>
-            </dependency>
+        <!-- <scope>test</scope> unscoped since we need this dependency at compile time in persistence for H2DbSupport.java -->
+      </dependency>
       <dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils-database</artifactId>
@@ -1279,7 +1276,7 @@
             <dependency>
                 <groupId>hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
-                <version>1.8.0.7</version>
+                <version>${hsqldb.version}</version>
             </dependency>
             <!--for sqlserver2008 and sqlserver2005-->
             <dependency>
@@ -1341,6 +1338,11 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>4.0.0.CR1</version>
             </dependency>
+            <dependency>
+              <groupId>p6spy</groupId>
+              <artifactId>p6spy</artifactId>
+              <version>1.3</version>
+          </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

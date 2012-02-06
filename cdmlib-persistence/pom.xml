@@ -40,7 +40,7 @@
           <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.4</version>
+            <version>${hsqldb.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -72,7 +72,7 @@
           <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.4</version>
+            <version>${hsqldb.version}</version>
           </dependency>
           <dependency>
           <groupId>mysql</groupId>
@@ -201,7 +201,7 @@
     <dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils-core</artifactId>
-        <scope>test</scope>
+        <!-- <scope>test</scope> unscoped since we need this dependency at compile time for H2DbSupport.java -->
     </dependency>
     <dependency>
       <groupId>org.unitils</groupId>
