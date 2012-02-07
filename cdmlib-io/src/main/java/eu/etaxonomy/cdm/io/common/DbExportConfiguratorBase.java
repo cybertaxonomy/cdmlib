@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -21,7 +22,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> extends ExportConfiguratorBase<Source> implements IExportConfigurator<STATE>{
+public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> extends ExportConfiguratorBase<Source, STATE> implements IExportConfigurator<STATE>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DbExportConfiguratorBase.class);
 	
@@ -34,6 +35,10 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> ex
 	}
 	
 	private IdType idType = IdType.CDM_ID;
+
+	public DbExportConfiguratorBase(IExportTransformer transformer) {
+		super(transformer);
+	}
 	
 
 	/**

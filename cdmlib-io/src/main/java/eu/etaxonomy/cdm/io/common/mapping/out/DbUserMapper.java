@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.User;
  * @version 1.0
  */
 public class DbUserMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbUserMapper.class);
 	
 	public static DbUserMapper NewInstance(String cdmAttributeString, String dbAttributeString){

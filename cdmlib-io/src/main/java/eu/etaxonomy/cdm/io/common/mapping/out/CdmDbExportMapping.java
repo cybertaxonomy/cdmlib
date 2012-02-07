@@ -42,8 +42,8 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 	}
 	
 	public boolean initialize(STATE state) throws SQLException{
-		CONFIG bmeConfig = state.getConfig();
-		Source db = bmeConfig.getDestination();
+		CONFIG config = state.getConfig();
+		Source db = config.getDestination();
 		
 		try {
 			IndexCounter index;
@@ -57,7 +57,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					dbMapper.initialize(preparedStatement, index, state, dbTableName);
 				}else{
-					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
+					logger.warn("mapper "+mapper.toString() + "," + mapper.getClass().getName() +" is not of type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
 			for (CollectionExportMapping<STATE,CONFIG> collectionMapping : this.collectionMappingList ){

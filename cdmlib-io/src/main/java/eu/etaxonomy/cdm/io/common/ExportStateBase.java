@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+
 /**
  * @author a.mueller
  * @created 11.05.2009
@@ -24,6 +26,10 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase> ext
 	
 	protected ExportStateBase(CONFIG config){
 		this.config = config;
+	}
+	
+	public IExportTransformer getTransformer(){
+		return this.config.getTransformer();
 	}
 	
 }

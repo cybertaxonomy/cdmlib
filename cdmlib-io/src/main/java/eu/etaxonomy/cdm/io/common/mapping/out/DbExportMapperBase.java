@@ -47,6 +47,14 @@ public class DbExportMapperBase<STATE extends DbExportStateBase<?>>  /*implement
 		this.state = state;
 		this.tableName = tableName;
 	}
+	
+
+	public void initializeNull(PreparedStatement stmt, STATE state, String tableName) {
+		this.preparedStatement = stmt;
+		this.index = -1;
+		this.state = state;
+		this.tableName = tableName;
+	}
 
 
 	/**

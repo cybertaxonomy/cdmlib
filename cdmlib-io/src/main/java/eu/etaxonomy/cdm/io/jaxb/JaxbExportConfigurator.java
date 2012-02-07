@@ -9,18 +9,21 @@
 
 package eu.etaxonomy.cdm.io.jaxb;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.babadshanjan
  * @created 03.09.2008
  */
-public class JaxbExportConfigurator extends ExportConfiguratorBase implements IExportConfigurator<JaxbExportState> {
+public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExportState> implements IExportConfigurator<JaxbExportState> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbExportConfigurator.class);
 
 	private int maxRows = 0;
@@ -47,7 +50,9 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private boolean doTypeDesignations = true;
 	private boolean doClassificationData = true;
 	
-	
+	//TODO
+	private static IExportTransformer defaultTransformer = null;
+		
 	
 	
 	/* (non-Javadoc)
@@ -182,8 +187,8 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	};
 
 	
-	public static JaxbExportConfigurator NewInstance(ICdmDataSource source, String url) {
-		return new JaxbExportConfigurator(source, url);
+	public static JaxbExportConfigurator NewInstance(ICdmDataSource source, URI uri) {
+		return new JaxbExportConfigurator(source, uri);
 	}
 	
 	
@@ -191,9 +196,9 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	 * @param url
 	 * @param destination
 	 */
-	private JaxbExportConfigurator(ICdmDataSource source, String url) {
-		super();
-		setDestination(url);
+	private JaxbExportConfigurator(ICdmDataSource source, URI uri) {
+		super(defaultTransformer);
+		setDestination(uri);
 		setSource(source);
 	}
 	
@@ -201,16 +206,16 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public String getDestination() {
-		return (String)super.getDestination();
+	public URI getDestination() {
+		return super.getDestination();
 	}
 
 	
 	/**
 	 * @param file
 	 */
-	public void setDestination(String fileName) {
-		super.setDestination(fileName);
+	public void setDestination(URI uri) {
+		super.setDestination(uri);
 	}
 	
 
@@ -221,7 +226,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 		if (this.getDestination() == null) {
 			return null;
 		} else {
-			return (String)this.getDestination();
+			return this.getDestination().toString();
 		}
 	}
 

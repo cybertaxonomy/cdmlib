@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportStateBase<?>> extends CdmSingleAttributeMapperBase implements IDbExportMapper<STATE>  {
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeExportMapperBase.class);
 	
-	private DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();
+	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();
 	private Integer precision = null;
 	protected boolean obligatory = true;
 	

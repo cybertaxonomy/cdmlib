@@ -49,18 +49,18 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 //		return result;
 //	}
 
-	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Class<?> clazz, String methodName, Class parameterTypes){
-		DbImportMethodMapper result = new DbImportMethodMapper(clazz, null, methodName, parameterTypes);
+	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Class<?> clazz, String methodName, Class parameterTypes){
+		DbImportMethodMapper<?,T> result = new DbImportMethodMapper<VersionableEntity,T>(clazz, null, methodName, parameterTypes);
 		return result;
 	}
 	
-	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
-		DbImportMethodMapper result = new DbImportMethodMapper(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
+	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?> parameterType1, Class<?> parameterType2){
+		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
 		return result;
 	}
 	
-	public static <T extends DbImportStateBase> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
-		DbImportMethodMapper result = new DbImportMethodMapper(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
+	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
+		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity,T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
 		return result;
 	}
 	
@@ -125,7 +125,7 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 	 * @return
 	 */
 	protected IInputTransformer getTransformer(){
-		return getState().getConfig().getTransformer();
+		return getState().getTransformer();
 	}
 	
 }

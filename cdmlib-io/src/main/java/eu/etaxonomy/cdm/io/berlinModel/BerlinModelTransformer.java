@@ -735,5 +735,4 @@ public final class BerlinModelTransformer {
 		
 	}
 	
-	
 }

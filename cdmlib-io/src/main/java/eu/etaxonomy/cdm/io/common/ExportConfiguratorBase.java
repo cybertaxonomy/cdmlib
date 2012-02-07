@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends IoConfiguratorBase {
+public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE extends ExportStateBase> extends IoConfiguratorBase implements IExportConfigurator<STATE>{
 
 	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
@@ -29,14 +29,29 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	protected IDatabase sourceReference;
 	protected Class<ICdmIO>[] ioClassList;
 
+	/**
+	 * The transformer class to be used for Input
+	 */
+	private IExportTransformer transformer;
 	
-	public ExportConfiguratorBase(){
+	public ExportConfiguratorBase(IExportTransformer transformer){
 		super();
 		//setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
+		this.setTransformer(transformer);
 	}
 	
 	abstract protected void makeIoClassList();
+	
+
+	public IExportTransformer getTransformer() {
+		return transformer;
+	}
+
+	public void setTransformer(IExportTransformer transformer) {
+		this.transformer = transformer;
+	}
+	
 	
 	public ICdmDataSource getSource() {
 		return source;
@@ -169,5 +184,5 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 			return (String)this.getSource().getName();
 		}
 	}
-	
+
 }

@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.io.common;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 
 /**
@@ -51,6 +52,11 @@ public interface IExportConfigurator<STATE extends ExportStateBase> extends IIoC
 	 * @return 
 	 */
 	public STATE getNewState();
+	
+
+	public IExportTransformer getTransformer();
+
+	public void setTransformer(IExportTransformer transformer);
 	
 	
 }

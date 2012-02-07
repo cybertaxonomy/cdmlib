@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
@@ -22,7 +23,6 @@ import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
  * @version 1.0
  */
 public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<PilotOutputExportState> {
-	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PilotOutputExportConfigurator.class);
 
@@ -45,7 +45,9 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
 
-	
+	//TODO
+	private static IExportTransformer defaultTransformer = null;
+
 	
 	public static PilotOutputExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
 		return new PilotOutputExportConfigurator(source, destinationFolder + File.separator + url);
@@ -202,7 +204,7 @@ public class PilotOutputExportConfigurator extends XmlExportConfiguratorBase<Pil
 	 * @param destination
 	 */
 	private PilotOutputExportConfigurator(ICdmDataSource source, String url) {
-		super(new File(url), source);
+		super(new File(url), source, defaultTransformer);
 //		setDestination(url);
 //		setSource(source);
 	}
