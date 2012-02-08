@@ -1,4 +1,4 @@
-	create table Address (
+  create table Address (
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -64,7 +64,7 @@
         lifespan_start varchar(255),
         prefix varchar(255),
         suffix varchar(255),
-        protectednomenclaturaltitlecache bit,
+        protectednomenclaturaltitlecache bit not null,
         createdby_id integer,
         updatedby_id integer,
         ispartof_id integer,
@@ -398,8 +398,8 @@
         primary key (CDM_VIEW_id, superviews_id),
         unique (superviews_id)
     );
-    
-    
+
+
     create table Classification (
         id integer not null,
         created timestamp,
@@ -1665,7 +1665,7 @@
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
-       	featureTree_id integer not null,
+         featureTree_id integer not null,
         feature_id integer,
         parent_id integer,
         primary key (id, REV)
@@ -1999,12 +1999,12 @@
         primary key (id),
         unique (uuid, authority)
     );
-	
-	create table hibernate_sequences (
-		sequence_name varchar(255),
-		next_val integer,
-		primary key (sequence_name)
-	);
+
+  create table hibernate_sequences (
+    sequence_name varchar(255),
+    next_val integer,
+    primary key (sequence_name)
+  );
 
     create table HomotypicalGroup (
         id integer not null,
@@ -2181,7 +2181,7 @@
         person_id integer,
         primary key (id, REV)
     );
-           
+
     create table KeyStatement (
         id integer not null,
         created timestamp,
@@ -2192,7 +2192,7 @@
         primary key (id),
         unique (uuid)
     );
-    
+
     create table KeyStatement_AUD (
         id integer not null,
         REV integer not null,
@@ -2204,7 +2204,7 @@
         updatedby_id integer,
         primary key (id, REV)
       );
-      
+
      create table KeyStatement_LanguageString (
         keyStatement_id integer not null,
         label_id integer not null,
@@ -2950,7 +2950,7 @@
     );
 
    create table PolytomousKey (
-       	id integer not null,
+         id integer not null,
         created timestamp,
         uuid varchar(36),
         updated timestamp,
@@ -2970,7 +2970,7 @@
     );
 
    create table PolytomousKey_AUD (
-       	id integer not null,
+         id integer not null,
         REV integer not null,
         revtype tinyint,
         created timestamp,
@@ -3065,7 +3065,7 @@
         revtype tinyint,
         primary key (REV, PolytomousKey_id, geographicalscope_id)
     );
-    
+
     create table PolytomousKey_OriginalSourceBase (
         PolytomousKey_id integer not null,
         sources_id integer not null,
@@ -3124,7 +3124,7 @@
         revtype tinyint,
         primary key (REV, polytomousKey_id, taxon_id)
     );
-    
+
     create table PolytomousKey_TaxonBase (
         polytomousKey_id integer not null,
         coveredtaxa_id integer not null,
@@ -3138,8 +3138,8 @@
         revtype tinyint,
         primary key (REV, polytomousKey_id, coveredtaxa_id)
     );
-    
-        
+
+
     create table PolytomousKeyNode (
         id integer not null,
         created timestamp,
@@ -3182,34 +3182,33 @@
         othernode_id integer,
         primary key (id, REV)
     );
-    
+
     create table PolytomousKeyNode_LanguageString (
-		PolytomousKeyNode_id integer not null,
-		modifyingtext_id integer not null,
-		modifyingtext_mapkey_id integer not null,
-		primary key (PolytomousKeyNode_id, modifyingtext_mapkey_id),
-		unique (modifyingtext_id)
-	)
-	
-	create table PolytomousKeyNode_LanguageString_AUD (
-		REV integer not null,
-		revtype tinyint,
-		PolytomousKeyNode_id integer not null,
-		modifyingtext_id integer not null,
-		modifyingtext_mapkey_id integer not null,
-		primary key (REV, PolytomousKeyNode_id, modifyingtext_id, modifyingtext_mapkey_id)
-	)
-    
+    PolytomousKeyNode_id integer not null,
+    modifyingtext_id integer not null,
+    modifyingtext_mapkey_id integer not null,
+    primary key (PolytomousKeyNode_id, modifyingtext_mapkey_id),
+    unique (modifyingtext_id)
+  );
+
+  create table PolytomousKeyNode_LanguageString_AUD (
+    REV integer not null,
+    revtype tinyint,
+    PolytomousKeyNode_id integer not null,
+    modifyingtext_id integer not null,
+    modifyingtext_mapkey_id integer not null,
+    primary key (REV, PolytomousKeyNode_id, modifyingtext_id, modifyingtext_mapkey_id)
+  );
+
     create table PolytomousKeyNode_PolytomousKeyNode_AUD(
-    	id integer not null,
+      id integer not null,
         REV integer not null,
         revtype tinyint,
-        parent_id integer, 
+        parent_id integer,
         sortIndex integer
-    )
+    );
 
     create table Reference (
-        DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -3256,7 +3255,6 @@
     );
 
     create table Reference_AUD (
-        DTYPE varchar(31) not null,
         id integer not null,
         REV integer not null,
         revtype tinyint,
@@ -3761,9 +3759,9 @@
         createdby_id integer,
         updatedby_id integer,
         lifestage_id integer,
-        sex_id integer,    
+        sex_id integer,
         exsiccatum varchar(255),
-    	primarycollector_id integer,
+      primarycollector_id integer,
         collection_id integer,
         derivedfrom_id integer,
         storedunder_id integer,
@@ -3772,7 +3770,7 @@
         primary key (id),
         unique (uuid)
     );
-    
+
 
     create table SpecimenOrObservationBase_AUD (
         DTYPE varchar(31) not null,
@@ -5033,4143 +5031,4143 @@
         primary key (REV, WorkingSet_id, coveredtaxa_id)
     );
 
-    alter table Address 
-        add constraint FK1ED033D44FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Address
+        add constraint FK1ED033D44FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Address 
-        add constraint FK1ED033D4132A2FE8 
-        foreign key (location_referencesystem_id) 
+    alter table Address
+        add constraint FK1ED033D4132A2FE8
+        foreign key (location_referencesystem_id)
         references DefinedTermBase;
 
-    alter table Address 
-        add constraint FK1ED033D42687715A 
-        foreign key (country_id) 
+    alter table Address
+        add constraint FK1ED033D42687715A
+        foreign key (country_id)
         references DefinedTermBase;
 
-    alter table Address 
-        add constraint FK1ED033D4BC5DA539 
-        foreign key (updatedby_id) 
+    alter table Address
+        add constraint FK1ED033D4BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Address_AUD 
-        add constraint FK115657A534869AAE 
-        foreign key (REV) 
+    alter table Address_AUD
+        add constraint FK115657A534869AAE
+        foreign key (REV)
         references AuditEvent;
 
     create index agentTitleCacheIndex on AgentBase (titleCache);
 
-    alter table AgentBase 
-        add constraint FK1205D3564FF2DB2C 
-        foreign key (createdby_id) 
+    alter table AgentBase
+        add constraint FK1205D3564FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table AgentBase 
-        add constraint FK1205D356A830578 
-        foreign key (ispartof_id) 
+    alter table AgentBase
+        add constraint FK1205D356A830578
+        foreign key (ispartof_id)
         references AgentBase;
 
-    alter table AgentBase 
-        add constraint FK1205D356BC5DA539 
-        foreign key (updatedby_id) 
+    alter table AgentBase
+        add constraint FK1205D356BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table AgentBase_AUD 
-        add constraint FK29CC662734869AAE 
-        foreign key (REV) 
+    alter table AgentBase_AUD
+        add constraint FK29CC662734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Address 
-        add constraint FK1EDFF7EB86EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Address
+        add constraint FK1EDFF7EB86EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Address 
-        add constraint FK1EDFF7EB50751EC5 
-        foreign key (contact_addresses_id) 
+    alter table AgentBase_Address
+        add constraint FK1EDFF7EB50751EC5
+        foreign key (contact_addresses_id)
         references Address;
 
-    alter table AgentBase_Address_AUD 
-        add constraint FK3D28383C34869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Address_AUD
+        add constraint FK3D28383C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_AgentBase 
-        add constraint FK4D34EDAD1C0E9907 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_AgentBase
+        add constraint FK4D34EDAD1C0E9907
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_AgentBase 
-        add constraint FK4D34EDADE9E535F9 
-        foreign key (teammembers_id) 
+    alter table AgentBase_AgentBase
+        add constraint FK4D34EDADE9E535F9
+        foreign key (teammembers_id)
         references AgentBase;
 
-    alter table AgentBase_AgentBase_AUD 
-        add constraint FKA8A87CFE34869AAE 
-        foreign key (REV) 
+    alter table AgentBase_AgentBase_AUD
+        add constraint FKA8A87CFE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Annotation 
-        add constraint FK44D5F7D886EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Annotation
+        add constraint FK44D5F7D886EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Annotation 
-        add constraint FK44D5F7D81E403E0B 
-        foreign key (annotations_id) 
+    alter table AgentBase_Annotation
+        add constraint FK44D5F7D81E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table AgentBase_Annotation_AUD 
-        add constraint FK771279A934869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Annotation_AUD
+        add constraint FK771279A934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Credit 
-        add constraint FK2636742286EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Credit
+        add constraint FK2636742286EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Credit 
-        add constraint FK2636742232D1B9F 
-        foreign key (credits_id) 
+    alter table AgentBase_Credit
+        add constraint FK2636742232D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table AgentBase_Credit_AUD 
-        add constraint FK7FE7C0F334869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Credit_AUD
+        add constraint FK7FE7C0F334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_DefinedTermBase 
-        add constraint FK6665C77D8D9AB196 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_DefinedTermBase
+        add constraint FK6665C77D8D9AB196
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_DefinedTermBase 
-        add constraint FK6665C77D9A161BED 
-        foreign key (types_id) 
+    alter table AgentBase_DefinedTermBase
+        add constraint FK6665C77D9A161BED
+        foreign key (types_id)
         references DefinedTermBase;
 
-    alter table AgentBase_DefinedTermBase_AUD 
-        add constraint FKA737EECE34869AAE 
-        foreign key (REV) 
+    alter table AgentBase_DefinedTermBase_AUD
+        add constraint FKA737EECE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Extension 
-        add constraint FK8E1E567686EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Extension
+        add constraint FK8E1E567686EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Extension 
-        add constraint FK8E1E5676927DE9DF 
-        foreign key (extensions_id) 
+    alter table AgentBase_Extension
+        add constraint FK8E1E5676927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table AgentBase_Extension_AUD 
-        add constraint FK11AE594734869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Extension_AUD
+        add constraint FK11AE594734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Marker 
-        add constraint FK365D5D63777265A1 
-        foreign key (markers_id) 
+    alter table AgentBase_Marker
+        add constraint FK365D5D63777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table AgentBase_Marker 
-        add constraint FK365D5D6386EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Marker
+        add constraint FK365D5D6386EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Marker_AUD 
-        add constraint FKE40621B434869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Marker_AUD
+        add constraint FKE40621B434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Media 
-        add constraint FKE8FC5D9B86EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Media
+        add constraint FKE8FC5D9B86EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Media 
-        add constraint FKE8FC5D9BC2C29593 
-        foreign key (media_id) 
+    alter table AgentBase_Media
+        add constraint FKE8FC5D9BC2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table AgentBase_Media_AUD 
-        add constraint FK323A45EC34869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Media_AUD
+        add constraint FK323A45EC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_OriginalSourceBase 
-        add constraint FKB482C5E686EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_OriginalSourceBase
+        add constraint FKB482C5E686EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_OriginalSourceBase 
-        add constraint FKB482C5E63A6735D9 
-        foreign key (sources_id) 
+    alter table AgentBase_OriginalSourceBase
+        add constraint FKB482C5E63A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table AgentBase_OriginalSourceBase_AUD 
-        add constraint FK886D90B734869AAE 
-        foreign key (REV) 
+    alter table AgentBase_OriginalSourceBase_AUD
+        add constraint FK886D90B734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_Rights 
-        add constraint FK3F514B0086EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_Rights
+        add constraint FK3F514B0086EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_Rights 
-        add constraint FK3F514B00C13F7B21 
-        foreign key (rights_id) 
+    alter table AgentBase_Rights
+        add constraint FK3F514B00C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table AgentBase_Rights_AUD 
-        add constraint FK4FDFF8D134869AAE 
-        foreign key (REV) 
+    alter table AgentBase_Rights_AUD
+        add constraint FK4FDFF8D134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_contact_emailaddresses 
-        add constraint FK4BD2B08E86EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_contact_emailaddresses
+        add constraint FK4BD2B08E86EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_contact_emailaddresses_AUD 
-        add constraint FKCAF7E75F34869AAE 
-        foreign key (REV) 
+    alter table AgentBase_contact_emailaddresses_AUD
+        add constraint FKCAF7E75F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_contact_faxnumbers 
-        add constraint FK52E1AD9586EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_contact_faxnumbers
+        add constraint FK52E1AD9586EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_contact_faxnumbers_AUD 
-        add constraint FK88A308E634869AAE 
-        foreign key (REV) 
+    alter table AgentBase_contact_faxnumbers_AUD
+        add constraint FK88A308E634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_contact_phonenumbers 
-        add constraint FKC171CC2486EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_contact_phonenumbers
+        add constraint FKC171CC2486EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_contact_phonenumbers_AUD 
-        add constraint FKDDD347F534869AAE 
-        foreign key (REV) 
+    alter table AgentBase_contact_phonenumbers_AUD
+        add constraint FKDDD347F534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table AgentBase_contact_urls 
-        add constraint FK9A9643EC86EFC5D4 
-        foreign key (AgentBase_id) 
+    alter table AgentBase_contact_urls
+        add constraint FK9A9643EC86EFC5D4
+        foreign key (AgentBase_id)
         references AgentBase;
 
-    alter table AgentBase_contact_urls_AUD 
-        add constraint FK1CE69BBD34869AAE 
-        foreign key (REV) 
+    alter table AgentBase_contact_urls_AUD
+        add constraint FK1CE69BBD34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Annotation 
-        add constraint FK1A21C74F4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Annotation
+        add constraint FK1A21C74F4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Annotation 
-        add constraint FK1A21C74FE7692740 
-        foreign key (commentator_id) 
+    alter table Annotation
+        add constraint FK1A21C74FE7692740
+        foreign key (commentator_id)
         references AgentBase;
 
-    alter table Annotation 
-        add constraint FK1A21C74FDF299D00 
-        foreign key (annotationtype_id) 
+    alter table Annotation
+        add constraint FK1A21C74FDF299D00
+        foreign key (annotationtype_id)
         references DefinedTermBase;
 
-    alter table Annotation 
-        add constraint FK1A21C74FE8D36B00 
-        foreign key (language_id) 
+    alter table Annotation
+        add constraint FK1A21C74FE8D36B00
+        foreign key (language_id)
         references DefinedTermBase;
 
-    alter table Annotation 
-        add constraint FK1A21C74FBC5DA539 
-        foreign key (updatedby_id) 
+    alter table Annotation
+        add constraint FK1A21C74FBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Annotation_AUD 
-        add constraint FK1A6BB5A034869AAE 
-        foreign key (REV) 
+    alter table Annotation_AUD
+        add constraint FK1A6BB5A034869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Annotation_Annotation 
-        add constraint FKC99DFE3F994CCE20 
-        foreign key (Annotation_id) 
+    alter table Annotation_Annotation
+        add constraint FKC99DFE3F994CCE20
+        foreign key (Annotation_id)
         references Annotation;
 
-    alter table Annotation_Annotation 
-        add constraint FKC99DFE3F1E403E0B 
-        foreign key (annotations_id) 
+    alter table Annotation_Annotation
+        add constraint FKC99DFE3F1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Annotation_Annotation_AUD 
-        add constraint FKB212F49034869AAE 
-        foreign key (REV) 
+    alter table Annotation_Annotation_AUD
+        add constraint FKB212F49034869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Annotation_Marker 
-        add constraint FKB17EAF4A777265A1 
-        foreign key (markers_id) 
+    alter table Annotation_Marker
+        add constraint FKB17EAF4A777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Annotation_Marker 
-        add constraint FKB17EAF4A994CCE20 
-        foreign key (Annotation_id) 
+    alter table Annotation_Marker
+        add constraint FKB17EAF4A994CCE20
+        foreign key (Annotation_id)
         references Annotation;
 
-    alter table Annotation_Marker_AUD 
-        add constraint FK68CE281B34869AAE 
-        foreign key (REV) 
+    alter table Annotation_Marker_AUD
+        add constraint FK68CE281B34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table CDM_VIEW 
-        add constraint FKC5DE8EF84FF2DB2C 
-        foreign key (createdby_id) 
+    alter table CDM_VIEW
+        add constraint FKC5DE8EF84FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table CDM_VIEW 
-        add constraint FKC5DE8EF8765B124B 
-        foreign key (reference_id) 
+    alter table CDM_VIEW
+        add constraint FKC5DE8EF8765B124B
+        foreign key (reference_id)
         references Reference;
 
-    alter table CDM_VIEW_CDM_VIEW 
-        add constraint FK230A885F7208BB38 
-        foreign key (superviews_id) 
+    alter table CDM_VIEW_CDM_VIEW
+        add constraint FK230A885F7208BB38
+        foreign key (superviews_id)
         references CDM_VIEW;
 
-    alter table CDM_VIEW_CDM_VIEW 
-        add constraint FK230A885FC00D1213 
-        foreign key (CDM_VIEW_id) 
+    alter table CDM_VIEW_CDM_VIEW
+        add constraint FK230A885FC00D1213
+        foreign key (CDM_VIEW_id)
         references CDM_VIEW;
 
     create index collectionTitleCacheIndex on Collection (titleCache);
 
-    alter table Collection 
-        add constraint FKF078ABE4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Collection
+        add constraint FKF078ABE4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Collection 
-        add constraint FKF078ABE16B9CA77 
-        foreign key (institute_id) 
+    alter table Collection
+        add constraint FKF078ABE16B9CA77
+        foreign key (institute_id)
         references AgentBase;
 
-    alter table Collection 
-        add constraint FKF078ABECEB38EFF 
-        foreign key (supercollection_id) 
+    alter table Collection
+        add constraint FKF078ABECEB38EFF
+        foreign key (supercollection_id)
         references Collection;
 
-    alter table Collection 
-        add constraint FKF078ABEBC5DA539 
-        foreign key (updatedby_id) 
+    alter table Collection
+        add constraint FKF078ABEBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Collection_AUD 
-        add constraint FKD6D4298F34869AAE 
-        foreign key (REV) 
+    alter table Collection_AUD
+        add constraint FKD6D4298F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_Annotation 
-        add constraint FKEA970F70EB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_Annotation
+        add constraint FKEA970F70EB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_Annotation 
-        add constraint FKEA970F701E403E0B 
-        foreign key (annotations_id) 
+    alter table Collection_Annotation
+        add constraint FKEA970F701E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Collection_Annotation_AUD 
-        add constraint FKA0CE054134869AAE 
-        foreign key (REV) 
+    alter table Collection_Annotation_AUD
+        add constraint FKA0CE054134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_Credit 
-        add constraint FKE0A317BAEB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_Credit
+        add constraint FKE0A317BAEB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_Credit 
-        add constraint FKE0A317BA32D1B9F 
-        foreign key (credits_id) 
+    alter table Collection_Credit
+        add constraint FKE0A317BA32D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table Collection_Credit_AUD 
-        add constraint FK25A8D88B34869AAE 
-        foreign key (REV) 
+    alter table Collection_Credit_AUD
+        add constraint FK25A8D88B34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_Extension 
-        add constraint FKF68FEBDEEB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_Extension
+        add constraint FKF68FEBDEEB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_Extension 
-        add constraint FKF68FEBDE927DE9DF 
-        foreign key (extensions_id) 
+    alter table Collection_Extension
+        add constraint FKF68FEBDE927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table Collection_Extension_AUD 
-        add constraint FK1306FAAF34869AAE 
-        foreign key (REV) 
+    alter table Collection_Extension_AUD
+        add constraint FK1306FAAF34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_Marker 
-        add constraint FKF0CA00FBEB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_Marker
+        add constraint FKF0CA00FBEB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_Marker 
-        add constraint FKF0CA00FB777265A1 
-        foreign key (markers_id) 
+    alter table Collection_Marker
+        add constraint FKF0CA00FB777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Collection_Marker_AUD 
-        add constraint FK89C7394C34869AAE 
-        foreign key (REV) 
+    alter table Collection_Marker_AUD
+        add constraint FK89C7394C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_Media 
-        add constraint FK7320E703EB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_Media
+        add constraint FK7320E703EB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_Media 
-        add constraint FK7320E703C2C29593 
-        foreign key (media_id) 
+    alter table Collection_Media
+        add constraint FK7320E703C2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table Collection_Media_AUD 
-        add constraint FK9AABDB5434869AAE 
-        foreign key (REV) 
+    alter table Collection_Media_AUD
+        add constraint FK9AABDB5434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_OriginalSourceBase 
-        add constraint FK37DEC57EEB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_OriginalSourceBase
+        add constraint FK37DEC57EEB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_OriginalSourceBase 
-        add constraint FK37DEC57E3A6735D9 
-        foreign key (sources_id) 
+    alter table Collection_OriginalSourceBase
+        add constraint FK37DEC57E3A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table Collection_OriginalSourceBase_AUD 
-        add constraint FKF810044F34869AAE 
-        foreign key (REV) 
+    alter table Collection_OriginalSourceBase_AUD
+        add constraint FKF810044F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Collection_Rights 
-        add constraint FKF9BDEE98EB62BE9A 
-        foreign key (Collection_id) 
+    alter table Collection_Rights
+        add constraint FKF9BDEE98EB62BE9A
+        foreign key (Collection_id)
         references Collection;
 
-    alter table Collection_Rights 
-        add constraint FKF9BDEE98C13F7B21 
-        foreign key (rights_id) 
+    alter table Collection_Rights
+        add constraint FKF9BDEE98C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table Collection_Rights_AUD 
-        add constraint FKF5A1106934869AAE 
-        foreign key (REV) 
+    alter table Collection_Rights_AUD
+        add constraint FKF5A1106934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Credit 
-        add constraint FK78CA97194FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Credit
+        add constraint FK78CA97194FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Credit 
-        add constraint FK78CA9719F7976FC5 
-        foreign key (agent_id) 
+    alter table Credit
+        add constraint FK78CA9719F7976FC5
+        foreign key (agent_id)
         references AgentBase;
 
-    alter table Credit 
-        add constraint FK78CA9719E8D36B00 
-        foreign key (language_id) 
+    alter table Credit
+        add constraint FK78CA9719E8D36B00
+        foreign key (language_id)
         references DefinedTermBase;
 
-    alter table Credit 
-        add constraint FK78CA9719BC5DA539 
-        foreign key (updatedby_id) 
+    alter table Credit
+        add constraint FK78CA9719BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Credit_AUD 
-        add constraint FK5533906A34869AAE 
-        foreign key (REV) 
+    alter table Credit_AUD
+        add constraint FK5533906A34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Credit_Annotation 
-        add constraint FKE8DA4C354CF694E0 
-        foreign key (Credit_id) 
+    alter table Credit_Annotation
+        add constraint FKE8DA4C354CF694E0
+        foreign key (Credit_id)
         references Credit;
 
-    alter table Credit_Annotation 
-        add constraint FKE8DA4C351E403E0B 
-        foreign key (annotations_id) 
+    alter table Credit_Annotation
+        add constraint FKE8DA4C351E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Credit_Annotation_AUD 
-        add constraint FK1DEB578634869AAE 
-        foreign key (REV) 
+    alter table Credit_Annotation_AUD
+        add constraint FK1DEB578634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Credit_Marker 
-        add constraint FK10CC6840777265A1 
-        foreign key (markers_id) 
+    alter table Credit_Marker
+        add constraint FK10CC6840777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Credit_Marker 
-        add constraint FK10CC68404CF694E0 
-        foreign key (Credit_id) 
+    alter table Credit_Marker
+        add constraint FK10CC68404CF694E0
+        foreign key (Credit_id)
         references Credit;
 
-    alter table Credit_Marker_AUD 
-        add constraint FK880A761134869AAE 
-        foreign key (REV) 
+    alter table Credit_Marker_AUD
+        add constraint FK880A761134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A664FF2DB2C 
-        foreign key (createdby_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A664FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A66D040DBF0 
-        foreign key (partof_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A66D040DBF0
+        foreign key (partof_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A66CC0240B6 
-        foreign key (shape_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A66CC0240B6
+        foreign key (shape_id)
         references Media;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A6647AF954C 
-        foreign key (vocabulary_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A6647AF954C
+        foreign key (vocabulary_id)
         references TermVocabulary;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A6624AF3F70 
-        foreign key (level_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A6624AF3F70
+        foreign key (level_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A6688206484 
-        foreign key (type_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A6688206484
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A6636C6F6F6 
-        foreign key (pointapproximation_referencesystem_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A6636C6F6F6
+        foreign key (pointapproximation_referencesystem_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A663B0DA0EF 
-        foreign key (kindof_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A663B0DA0EF
+        foreign key (kindof_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase 
-        add constraint FK2E340A66BC5DA539 
-        foreign key (updatedby_id) 
+    alter table DefinedTermBase
+        add constraint FK2E340A66BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table DefinedTermBase_AUD 
-        add constraint FK86E8953734869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_AUD
+        add constraint FK86E8953734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Annotation 
-        add constraint FK589B6C8C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Annotation
+        add constraint FK589B6C8C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Annotation 
-        add constraint FK589B6C81E403E0B 
-        foreign key (annotations_id) 
+    alter table DefinedTermBase_Annotation
+        add constraint FK589B6C81E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table DefinedTermBase_Annotation_AUD 
-        add constraint FK28ED409934869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Annotation_AUD
+        add constraint FK28ED409934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Continent 
-        add constraint FK45F60AFB3927C853 
-        foreign key (continents_id) 
+    alter table DefinedTermBase_Continent
+        add constraint FK45F60AFB3927C853
+        foreign key (continents_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Continent 
-        add constraint FK45F60AFBE8CE10AA 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Continent
+        add constraint FK45F60AFBE8CE10AA
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Continent_AUD 
-        add constraint FKF5DE434C34869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Continent_AUD
+        add constraint FKF5DE434C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Credit 
-        add constraint FK78FF2B12C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Credit
+        add constraint FK78FF2B12C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Credit 
-        add constraint FK78FF2B1232D1B9F 
-        foreign key (credits_id) 
+    alter table DefinedTermBase_Credit
+        add constraint FK78FF2B1232D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table DefinedTermBase_Credit_AUD 
-        add constraint FK409B7FE334869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Credit_AUD
+        add constraint FK409B7FE334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Extension 
-        add constraint FK397EF986927DE9DF 
-        foreign key (extensions_id) 
+    alter table DefinedTermBase_Extension
+        add constraint FK397EF986927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table DefinedTermBase_Extension 
-        add constraint FK397EF986C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Extension
+        add constraint FK397EF986C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Extension_AUD 
-        add constraint FK6E6F45734869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Extension_AUD
+        add constraint FK6E6F45734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Marker 
-        add constraint FK89261453777265A1 
-        foreign key (markers_id) 
+    alter table DefinedTermBase_Marker
+        add constraint FK89261453777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table DefinedTermBase_Marker 
-        add constraint FK89261453C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Marker
+        add constraint FK89261453C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Marker_AUD 
-        add constraint FKA4B9E0A434869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Marker_AUD
+        add constraint FKA4B9E0A434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_MeasurementUnit 
-        add constraint FKE9D17767D0BDAE9B 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_MeasurementUnit
+        add constraint FKE9D17767D0BDAE9B
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_MeasurementUnit 
-        add constraint FKE9D17767F3BB39BD 
-        foreign key (recommendedmeasurementunits_id) 
+    alter table DefinedTermBase_MeasurementUnit
+        add constraint FKE9D17767F3BB39BD
+        foreign key (recommendedmeasurementunits_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_MeasurementUnit_AUD 
-        add constraint FK2C1599B834869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_MeasurementUnit_AUD
+        add constraint FK2C1599B834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Media 
-        add constraint FK6FC908ABC0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Media
+        add constraint FK6FC908ABC0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Media 
-        add constraint FK6FC908ABC2C29593 
-        foreign key (media_id) 
+    alter table DefinedTermBase_Media
+        add constraint FK6FC908ABC2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table DefinedTermBase_Media_AUD 
-        add constraint FKDD9AE8FC34869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Media_AUD
+        add constraint FKDD9AE8FC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_OriginalSourceBase 
-        add constraint FKDCC094D6C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_OriginalSourceBase
+        add constraint FKDCC094D6C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_OriginalSourceBase 
-        add constraint FKDCC094D63A6735D9 
-        foreign key (sources_id) 
+    alter table DefinedTermBase_OriginalSourceBase
+        add constraint FKDCC094D63A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table DefinedTermBase_OriginalSourceBase_AUD 
-        add constraint FKAE4A67A734869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_OriginalSourceBase_AUD
+        add constraint FKAE4A67A734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_RecommendedModifierEnumeration 
-        add constraint FKA72FB5AED0BDAE9B 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_RecommendedModifierEnumeration
+        add constraint FKA72FB5AED0BDAE9B
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_RecommendedModifierEnumeration 
-        add constraint FKA72FB5AE5255EAFD 
-        foreign key (recommendedmodifierenumeration_id) 
+    alter table DefinedTermBase_RecommendedModifierEnumeration
+        add constraint FKA72FB5AE5255EAFD
+        foreign key (recommendedmodifierenumeration_id)
         references TermVocabulary;
 
-    alter table DefinedTermBase_RecommendedModifierEnumeration_AUD 
-        add constraint FK780D5C7F34869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_RecommendedModifierEnumeration_AUD
+        add constraint FK780D5C7F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Representation 
-        add constraint FKAAC8AFE6B31C4747 
-        foreign key (representations_id) 
+    alter table DefinedTermBase_Representation
+        add constraint FKAAC8AFE6B31C4747
+        foreign key (representations_id)
         references Representation;
 
-    alter table DefinedTermBase_Representation 
-        add constraint FKAAC8AFE6C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Representation
+        add constraint FKAAC8AFE6C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Representation_AUD 
-        add constraint FKB5AE7AB734869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Representation_AUD
+        add constraint FKB5AE7AB734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_Rights 
-        add constraint FK921A01F0C0DB4934 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_Rights
+        add constraint FK921A01F0C0DB4934
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_Rights 
-        add constraint FK921A01F0C13F7B21 
-        foreign key (rights_id) 
+    alter table DefinedTermBase_Rights
+        add constraint FK921A01F0C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table DefinedTermBase_Rights_AUD 
-        add constraint FK1093B7C134869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_Rights_AUD
+        add constraint FK1093B7C134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_StatisticalMeasure 
-        add constraint FK6FF15DFCD0BDAE9B 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_StatisticalMeasure
+        add constraint FK6FF15DFCD0BDAE9B
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_StatisticalMeasure 
-        add constraint FK6FF15DFCC9CD5B57 
-        foreign key (recommendedstatisticalmeasures_id) 
+    alter table DefinedTermBase_StatisticalMeasure
+        add constraint FK6FF15DFCC9CD5B57
+        foreign key (recommendedstatisticalmeasures_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_StatisticalMeasure_AUD 
-        add constraint FK3C062DCD34869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_StatisticalMeasure_AUD
+        add constraint FK3C062DCD34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_SupportedCategoricalEnumeration 
-        add constraint FK2170B25CD0BDAE9B 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_SupportedCategoricalEnumeration
+        add constraint FK2170B25CD0BDAE9B
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_SupportedCategoricalEnumeration 
-        add constraint FK2170B25C5AF2C74 
-        foreign key (supportedcategoricalenumerations_id) 
+    alter table DefinedTermBase_SupportedCategoricalEnumeration
+        add constraint FK2170B25C5AF2C74
+        foreign key (supportedcategoricalenumerations_id)
         references TermVocabulary;
 
-    alter table DefinedTermBase_SupportedCategoricalEnumeration_AUD 
-        add constraint FKBB04522D34869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_SupportedCategoricalEnumeration_AUD
+        add constraint FKBB04522D34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DefinedTermBase_WaterbodyOrCountry 
-        add constraint FKCAF43931603B036 
-        foreign key (waterbodiesorcountries_id) 
+    alter table DefinedTermBase_WaterbodyOrCountry
+        add constraint FKCAF43931603B036
+        foreign key (waterbodiesorcountries_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_WaterbodyOrCountry 
-        add constraint FKCAF4393CE5C0F9E 
-        foreign key (DefinedTermBase_id) 
+    alter table DefinedTermBase_WaterbodyOrCountry
+        add constraint FKCAF4393CE5C0F9E
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table DefinedTermBase_WaterbodyOrCountry_AUD 
-        add constraint FKD5996FE434869AAE 
-        foreign key (REV) 
+    alter table DefinedTermBase_WaterbodyOrCountry_AUD
+        add constraint FKD5996FE434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DerivationEvent 
-        add constraint FK426BC034FF2DB2C 
-        foreign key (createdby_id) 
+    alter table DerivationEvent
+        add constraint FK426BC034FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table DerivationEvent 
-        add constraint FK426BC033DA462D5 
-        foreign key (actor_id) 
+    alter table DerivationEvent
+        add constraint FK426BC033DA462D5
+        foreign key (actor_id)
         references AgentBase;
 
-    alter table DerivationEvent 
-        add constraint FK426BC038524B89D 
-        foreign key (type_id) 
+    alter table DerivationEvent
+        add constraint FK426BC038524B89D
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table DerivationEvent 
-        add constraint FK426BC03BC5DA539 
-        foreign key (updatedby_id) 
+    alter table DerivationEvent
+        add constraint FK426BC03BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table DerivationEvent_AUD 
-        add constraint FKDABF305434869AAE 
-        foreign key (REV) 
+    alter table DerivationEvent_AUD
+        add constraint FKDABF305434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DerivationEvent_Annotation 
-        add constraint FKEFA0D10B4AAB411A 
-        foreign key (DerivationEvent_id) 
+    alter table DerivationEvent_Annotation
+        add constraint FKEFA0D10B4AAB411A
+        foreign key (DerivationEvent_id)
         references DerivationEvent;
 
-    alter table DerivationEvent_Annotation 
-        add constraint FKEFA0D10B1E403E0B 
-        foreign key (annotations_id) 
+    alter table DerivationEvent_Annotation
+        add constraint FKEFA0D10B1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table DerivationEvent_Annotation_AUD 
-        add constraint FKA197815C34869AAE 
-        foreign key (REV) 
+    alter table DerivationEvent_Annotation_AUD
+        add constraint FKA197815C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DerivationEvent_Marker 
-        add constraint FKE412C816777265A1 
-        foreign key (markers_id) 
+    alter table DerivationEvent_Marker
+        add constraint FKE412C816777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table DerivationEvent_Marker 
-        add constraint FKE412C8164AAB411A 
-        foreign key (DerivationEvent_id) 
+    alter table DerivationEvent_Marker
+        add constraint FKE412C8164AAB411A
+        foreign key (DerivationEvent_id)
         references DerivationEvent;
 
-    alter table DerivationEvent_Marker_AUD 
-        add constraint FK8ED0FAE734869AAE 
-        foreign key (REV) 
+    alter table DerivationEvent_Marker_AUD
+        add constraint FK8ED0FAE734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase 
-        add constraint FKFF4D58CD4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table DescriptionBase
+        add constraint FKFF4D58CD4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table DescriptionBase 
-        add constraint FKFF4D58CDDE9A3DE3 
-        foreign key (taxon_id) 
+    alter table DescriptionBase
+        add constraint FKFF4D58CDDE9A3DE3
+        foreign key (taxon_id)
         references TaxonBase;
 
-    alter table DescriptionBase 
-        add constraint FKFF4D58CDDA93512F 
-        foreign key (taxonname_id) 
+    alter table DescriptionBase
+        add constraint FKFF4D58CDDA93512F
+        foreign key (taxonname_id)
         references TaxonNameBase;
 
-    alter table DescriptionBase 
-        add constraint FKFF4D58CDBC5DA539 
-        foreign key (updatedby_id) 
+    alter table DescriptionBase
+        add constraint FKFF4D58CDBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table DescriptionBase_AUD 
-        add constraint FK7456581E34869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_AUD
+        add constraint FK7456581E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Annotation 
-        add constraint FKF3AD3201F1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Annotation
+        add constraint FKF3AD3201F1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Annotation 
-        add constraint FKF3AD32011E403E0B 
-        foreign key (annotations_id) 
+    alter table DescriptionBase_Annotation
+        add constraint FKF3AD32011E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table DescriptionBase_Annotation_AUD 
-        add constraint FK15FE775234869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Annotation_AUD
+        add constraint FK15FE775234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Credit 
-        add constraint FK510B2ACBF1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Credit
+        add constraint FK510B2ACBF1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Credit 
-        add constraint FK510B2ACB32D1B9F 
-        foreign key (credits_id) 
+    alter table DescriptionBase_Credit
+        add constraint FK510B2ACB32D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table DescriptionBase_Credit_AUD 
-        add constraint FK2EBEFB1C34869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Credit_AUD
+        add constraint FK2EBEFB1C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Extension 
-        add constraint FKD5D2B32DF1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Extension
+        add constraint FKD5D2B32DF1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Extension 
-        add constraint FKD5D2B32D927DE9DF 
-        foreign key (extensions_id) 
+    alter table DescriptionBase_Extension
+        add constraint FKD5D2B32D927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table DescriptionBase_Extension_AUD 
-        add constraint FK79E7827E34869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Extension_AUD
+        add constraint FK79E7827E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Feature 
-        add constraint FK58ACF564F1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Feature
+        add constraint FK58ACF564F1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Feature 
-        add constraint FK58ACF5649AE62C6 
-        foreign key (descriptivesystem_id) 
+    alter table DescriptionBase_Feature
+        add constraint FK58ACF5649AE62C6
+        foreign key (descriptivesystem_id)
         references DefinedTermBase;
 
-    alter table DescriptionBase_Feature_AUD 
-        add constraint FKA4D7D13534869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Feature_AUD
+        add constraint FKA4D7D13534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_GeoScope 
-        add constraint FK3ADD7CD586D04E74 
-        foreign key (geoscopes_id) 
+    alter table DescriptionBase_GeoScope
+        add constraint FK3ADD7CD586D04E74
+        foreign key (geoscopes_id)
         references DefinedTermBase;
 
-    alter table DescriptionBase_GeoScope 
-        add constraint FK3ADD7CD5D86445CE 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_GeoScope
+        add constraint FK3ADD7CD5D86445CE
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_GeoScope_AUD 
-        add constraint FK63A5382634869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_GeoScope_AUD
+        add constraint FK63A5382634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Marker 
-        add constraint FK6132140C777265A1 
-        foreign key (markers_id) 
+    alter table DescriptionBase_Marker
+        add constraint FK6132140C777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table DescriptionBase_Marker 
-        add constraint FK6132140CF1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Marker
+        add constraint FK6132140CF1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Marker_AUD 
-        add constraint FK92DD5BDD34869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Marker_AUD
+        add constraint FK92DD5BDD34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_OriginalSourceBase 
-        add constraint FKDC75C70FF1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_OriginalSourceBase
+        add constraint FKDC75C70FF1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_OriginalSourceBase 
-        add constraint FKDC75C70F3A6735D9 
-        foreign key (sources_id) 
+    alter table DescriptionBase_OriginalSourceBase
+        add constraint FKDC75C70F3A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table DescriptionBase_OriginalSourceBase_AUD 
-        add constraint FK8F39D56034869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_OriginalSourceBase_AUD
+        add constraint FK8F39D56034869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Reference 
-        add constraint FKC330D639F1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Reference
+        add constraint FKC330D639F1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Reference 
-        add constraint FKC330D63945AB7BBA 
-        foreign key (descriptionsources_id) 
+    alter table DescriptionBase_Reference
+        add constraint FKC330D63945AB7BBA
+        foreign key (descriptionsources_id)
         references Reference;
 
-    alter table DescriptionBase_Reference_AUD 
-        add constraint FK76253F8A34869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Reference_AUD
+        add constraint FK76253F8A34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Rights 
-        add constraint FK6A2601A9F1DDBFAB 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Rights
+        add constraint FK6A2601A9F1DDBFAB
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Rights 
-        add constraint FK6A2601A9C13F7B21 
-        foreign key (rights_id) 
+    alter table DescriptionBase_Rights
+        add constraint FK6A2601A9C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table DescriptionBase_Rights_AUD 
-        add constraint FKFEB732FA34869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Rights_AUD
+        add constraint FKFEB732FA34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_Scope 
-        add constraint FKB9257C42951A5D40 
-        foreign key (scopes_id) 
+    alter table DescriptionBase_Scope
+        add constraint FKB9257C42951A5D40
+        foreign key (scopes_id)
         references DefinedTermBase;
 
-    alter table DescriptionBase_Scope 
-        add constraint FKB9257C42D86445CE 
-        foreign key (DescriptionBase_id) 
+    alter table DescriptionBase_Scope
+        add constraint FKB9257C42D86445CE
+        foreign key (DescriptionBase_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_Scope_AUD 
-        add constraint FK75D5B91334869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_Scope_AUD
+        add constraint FK75D5B91334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionBase_SpecimenOrObservationBase 
-        add constraint FKDE29CD8033B8A841 
-        foreign key (descriptions_id) 
+    alter table DescriptionBase_SpecimenOrObservationBase
+        add constraint FKDE29CD8033B8A841
+        foreign key (descriptions_id)
         references DescriptionBase;
 
-    alter table DescriptionBase_SpecimenOrObservationBase 
-        add constraint FKDE29CD805C9E3461 
-        foreign key (describedspecimenorobservations_id) 
+    alter table DescriptionBase_SpecimenOrObservationBase
+        add constraint FKDE29CD805C9E3461
+        foreign key (describedspecimenorobservations_id)
         references SpecimenOrObservationBase;
 
-    alter table DescriptionBase_SpecimenOrObservationBase_AUD 
-        add constraint FKF1B33B5134869AAE 
-        foreign key (REV) 
+    alter table DescriptionBase_SpecimenOrObservationBase_AUD
+        add constraint FKF1B33B5134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76711C3C3FF7 
-        foreign key (area_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76711C3C3FF7
+        foreign key (area_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76714FF2DB2C 
-        foreign key (createdby_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76714FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76716D0D7A56 
-        foreign key (format_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76716D0D7A56
+        foreign key (format_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76714220AFEB 
-        foreign key (feature_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76714220AFEB
+        foreign key (feature_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76719108D9B 
-        foreign key (taxon2_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76719108D9B
+        foreign key (taxon2_id)
         references TaxonBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76715E9914B8 
-        foreign key (status_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76715E9914B8
+        foreign key (status_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE767110A80E07 
-        foreign key (unit_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE767110A80E07
+        foreign key (unit_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE76716561D9B1 
-        foreign key (associatedspecimenorobservation_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE76716561D9B1
+        foreign key (associatedspecimenorobservation_id)
         references SpecimenOrObservationBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE767134AF0E81 
-        foreign key (indescription_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE767134AF0E81
+        foreign key (indescription_id)
         references DescriptionBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE7671E8D36B00 
-        foreign key (language_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE7671E8D36B00
+        foreign key (language_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase 
-        add constraint FK38FE7671BC5DA539 
-        foreign key (updatedby_id) 
+    alter table DescriptionElementBase
+        add constraint FK38FE7671BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table DescriptionElementBase_AUD 
-        add constraint FKF3803C234869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_AUD
+        add constraint FKF3803C234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_Annotation 
-        add constraint FK7EE5E5DD3B8BB609 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_Annotation
+        add constraint FK7EE5E5DD3B8BB609
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_Annotation 
-        add constraint FK7EE5E5DD1E403E0B 
-        foreign key (annotations_id) 
+    alter table DescriptionElementBase_Annotation
+        add constraint FK7EE5E5DD1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table DescriptionElementBase_Annotation_AUD 
-        add constraint FK2BC1DD2E34869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_Annotation_AUD
+        add constraint FK2BC1DD2E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_LanguageString 
-        add constraint FKC753F137C086B46F 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_LanguageString
+        add constraint FKC753F137C086B46F
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_LanguageString 
-        add constraint FKC753F137ACF5F60B 
-        foreign key (multilanguagetext_id) 
+    alter table DescriptionElementBase_LanguageString
+        add constraint FKC753F137ACF5F60B
+        foreign key (multilanguagetext_id)
         references LanguageString;
 
-    alter table DescriptionElementBase_LanguageString 
-        add constraint FKC753F137C6D55834 
-        foreign key (multilanguagetext_mapkey_id) 
+    alter table DescriptionElementBase_LanguageString
+        add constraint FKC753F137C6D55834
+        foreign key (multilanguagetext_mapkey_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase_LanguageString_AUD 
-        add constraint FK2D26AB8834869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_LanguageString_AUD
+        add constraint FK2D26AB8834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_Marker 
-        add constraint FK1CB715E8777265A1 
-        foreign key (markers_id) 
+    alter table DescriptionElementBase_Marker
+        add constraint FK1CB715E8777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table DescriptionElementBase_Marker 
-        add constraint FK1CB715E83B8BB609 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_Marker
+        add constraint FK1CB715E83B8BB609
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_Marker_AUD 
-        add constraint FK1E160FB934869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_Marker_AUD
+        add constraint FK1E160FB934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_Media 
-        add constraint FK21F700763B8BB609 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_Media
+        add constraint FK21F700763B8BB609
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_Media 
-        add constraint FK21F70076C2C29593 
-        foreign key (media_id) 
+    alter table DescriptionElementBase_Media
+        add constraint FK21F70076C2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table DescriptionElementBase_Media_AUD 
-        add constraint FK5522034734869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_Media_AUD
+        add constraint FK5522034734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_Modifier 
-        add constraint FK97E0D1053B8BB609 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_Modifier
+        add constraint FK97E0D1053B8BB609
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_Modifier 
-        add constraint FK97E0D105E0960EC4 
-        foreign key (modifiers_id) 
+    alter table DescriptionElementBase_Modifier
+        add constraint FK97E0D105E0960EC4
+        foreign key (modifiers_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase_Modifier_AUD 
-        add constraint FK2982F45634869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_Modifier_AUD
+        add constraint FK2982F45634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_ModifyingText 
-        add constraint FK522D90C73B8BB609 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_ModifyingText
+        add constraint FK522D90C73B8BB609
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_ModifyingText 
-        add constraint FK522D90C7F05D08D4 
-        foreign key (modifyingtext_id) 
+    alter table DescriptionElementBase_ModifyingText
+        add constraint FK522D90C7F05D08D4
+        foreign key (modifyingtext_id)
         references LanguageString;
 
-    alter table DescriptionElementBase_ModifyingText 
-        add constraint FK522D90C79682414B 
-        foreign key (modifyingtext_mapkey_id) 
+    alter table DescriptionElementBase_ModifyingText
+        add constraint FK522D90C79682414B
+        foreign key (modifyingtext_mapkey_id)
         references DefinedTermBase;
 
-    alter table DescriptionElementBase_ModifyingText_AUD 
-        add constraint FK6C06031834869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_ModifyingText_AUD
+        add constraint FK6C06031834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_OriginalSourceBase 
-        add constraint FKF41ADEEB3B8BB609 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_OriginalSourceBase
+        add constraint FKF41ADEEB3B8BB609
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_OriginalSourceBase 
-        add constraint FKF41ADEEB53DD72E3 
-        foreign key (sources_id) 
+    alter table DescriptionElementBase_OriginalSourceBase
+        add constraint FKF41ADEEB53DD72E3
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table DescriptionElementBase_OriginalSourceBase_AUD 
-        add constraint FK9C979F3C34869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_OriginalSourceBase_AUD
+        add constraint FK9C979F3C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_StateData 
-        add constraint FK592D6F6D15153604 
-        foreign key (states_id) 
+    alter table DescriptionElementBase_StateData
+        add constraint FK592D6F6D15153604
+        foreign key (states_id)
         references StateData;
 
-    alter table DescriptionElementBase_StateData 
-        add constraint FK592D6F6D987CC6A4 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_StateData
+        add constraint FK592D6F6D987CC6A4
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_StateData_AUD 
-        add constraint FK1D0A1EBE34869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_StateData_AUD
+        add constraint FK1D0A1EBE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DescriptionElementBase_StatisticalMeasurementValue 
-        add constraint FK8AF511C28F213219 
-        foreign key (DescriptionElementBase_id) 
+    alter table DescriptionElementBase_StatisticalMeasurementValue
+        add constraint FK8AF511C28F213219
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table DescriptionElementBase_StatisticalMeasurementValue 
-        add constraint FK8AF511C2D883945E 
-        foreign key (statisticalvalues_id) 
+    alter table DescriptionElementBase_StatisticalMeasurementValue
+        add constraint FK8AF511C2D883945E
+        foreign key (statisticalvalues_id)
         references StatisticalMeasurementValue;
 
-    alter table DescriptionElementBase_StatisticalMeasurementValue_AUD 
-        add constraint FK2DE8E9334869AAE 
-        foreign key (REV) 
+    alter table DescriptionElementBase_StatisticalMeasurementValue_AUD
+        add constraint FK2DE8E9334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DeterminationEvent 
-        add constraint FK1DB24974FF2DB2C 
-        foreign key (createdby_id) 
+    alter table DeterminationEvent
+        add constraint FK1DB24974FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table DeterminationEvent 
-        add constraint FK1DB24973DA462D5 
-        foreign key (actor_id) 
+    alter table DeterminationEvent
+        add constraint FK1DB24973DA462D5
+        foreign key (actor_id)
         references AgentBase;
 
-    alter table DeterminationEvent 
-        add constraint FK1DB2497DE9A3E39 
-        foreign key (taxon_id) 
+    alter table DeterminationEvent
+        add constraint FK1DB2497DE9A3E39
+        foreign key (taxon_id)
         references TaxonBase;
 
-    alter table DeterminationEvent 
-        add constraint FK1DB24974B251DAD 
-        foreign key (identifiedunit_id) 
+    alter table DeterminationEvent
+        add constraint FK1DB24974B251DAD
+        foreign key (identifiedunit_id)
         references SpecimenOrObservationBase;
 
-    alter table DeterminationEvent 
-        add constraint FK1DB2497378D1BD 
-        foreign key (modifier_id) 
+    alter table DeterminationEvent
+        add constraint FK1DB2497378D1BD
+        foreign key (modifier_id)
         references DefinedTermBase;
 
-    alter table DeterminationEvent 
-        add constraint FK1DB2497BC5DA539 
-        foreign key (updatedby_id) 
+    alter table DeterminationEvent
+        add constraint FK1DB2497BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table DeterminationEvent_AUD 
-        add constraint FKA0252EE834869AAE 
-        foreign key (REV) 
+    alter table DeterminationEvent_AUD
+        add constraint FKA0252EE834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DeterminationEvent_Annotation 
-        add constraint FKB74F03F76BE0BFDA 
-        foreign key (DeterminationEvent_id) 
+    alter table DeterminationEvent_Annotation
+        add constraint FKB74F03F76BE0BFDA
+        foreign key (DeterminationEvent_id)
         references DeterminationEvent;
 
-    alter table DeterminationEvent_Annotation 
-        add constraint FKB74F03F71E403E0B 
-        foreign key (annotations_id) 
+    alter table DeterminationEvent_Annotation
+        add constraint FKB74F03F71E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table DeterminationEvent_Annotation_AUD 
-        add constraint FKAFDA5E4834869AAE 
-        foreign key (REV) 
+    alter table DeterminationEvent_Annotation_AUD
+        add constraint FKAFDA5E4834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DeterminationEvent_Marker 
-        add constraint FK5C475102777265A1 
-        foreign key (markers_id) 
+    alter table DeterminationEvent_Marker
+        add constraint FK5C475102777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table DeterminationEvent_Marker 
-        add constraint FK5C4751026BE0BFDA 
-        foreign key (DeterminationEvent_id) 
+    alter table DeterminationEvent_Marker
+        add constraint FK5C4751026BE0BFDA
+        foreign key (DeterminationEvent_id)
         references DeterminationEvent;
 
-    alter table DeterminationEvent_Marker_AUD 
-        add constraint FK567F2DD334869AAE 
-        foreign key (REV) 
+    alter table DeterminationEvent_Marker_AUD
+        add constraint FK567F2DD334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table DeterminationEvent_Reference 
-        add constraint FK8FB1ED833EF09CD5 
-        foreign key (setofreferences_id) 
+    alter table DeterminationEvent_Reference
+        add constraint FK8FB1ED833EF09CD5
+        foreign key (setofreferences_id)
         references Reference;
 
-    alter table DeterminationEvent_Reference 
-        add constraint FK8FB1ED836BE0BFDA 
-        foreign key (DeterminationEvent_id) 
+    alter table DeterminationEvent_Reference
+        add constraint FK8FB1ED836BE0BFDA
+        foreign key (DeterminationEvent_id)
         references DeterminationEvent;
 
-    alter table DeterminationEvent_Reference_AUD 
-        add constraint FK6255A1D434869AAE 
-        foreign key (REV) 
+    alter table DeterminationEvent_Reference_AUD
+        add constraint FK6255A1D434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Extension 
-        add constraint FK52EF3C1F4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Extension
+        add constraint FK52EF3C1F4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Extension 
-        add constraint FK52EF3C1FAD392BD3 
-        foreign key (type_id) 
+    alter table Extension
+        add constraint FK52EF3C1FAD392BD3
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table Extension 
-        add constraint FK52EF3C1FBC5DA539 
-        foreign key (updatedby_id) 
+    alter table Extension
+        add constraint FK52EF3C1FBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Extension_AUD 
-        add constraint FK92D2427034869AAE 
-        foreign key (REV) 
+    alter table Extension_AUD
+        add constraint FK92D2427034869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureNode 
-        add constraint FK4CEED9F84FF2DB2C 
-        foreign key (createdby_id) 
+    alter table FeatureNode
+        add constraint FK4CEED9F84FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table FeatureNode 
-        add constraint FK4CEED9F8E0AD2C03 
-        foreign key (parent_id) 
+    alter table FeatureNode
+        add constraint FK4CEED9F8E0AD2C03
+        foreign key (parent_id)
         references FeatureNode;
 
-    alter table FeatureNode 
-        add constraint FK4CEED9F8DE9A3E39 
-        foreign key (featureTree_id) 
+    alter table FeatureNode
+        add constraint FK4CEED9F8DE9A3E39
+        foreign key (featureTree_id)
         references FeatureTree;
 
-    alter table FeatureNode 
-        add constraint FK4CEED9F84220AFEB 
-        foreign key (feature_id) 
+    alter table FeatureNode
+        add constraint FK4CEED9F84220AFEB
+        foreign key (feature_id)
         references DefinedTermBase;
 
-    alter table FeatureNode 
-        add constraint FK4CEED9F8BC5DA539 
-        foreign key (updatedby_id) 
+    alter table FeatureNode
+        add constraint FK4CEED9F8BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table FeatureNode_AUD 
-        add constraint FK25AD4BC934869AAE 
-        foreign key (REV) 
+    alter table FeatureNode_AUD
+        add constraint FK25AD4BC934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureNode_DefinedTermBase_InapplicableIf 
-        add constraint FK56833D011128E63B 
-        foreign key (inapplicableif_id) 
+    alter table FeatureNode_DefinedTermBase_InapplicableIf
+        add constraint FK56833D011128E63B
+        foreign key (inapplicableif_id)
         references DefinedTermBase;
 
-    alter table FeatureNode_DefinedTermBase_InapplicableIf 
-        add constraint FK56833D0152FCC4B 
-        foreign key (FeatureNode_id) 
+    alter table FeatureNode_DefinedTermBase_InapplicableIf
+        add constraint FK56833D0152FCC4B
+        foreign key (FeatureNode_id)
         references FeatureNode;
 
-    alter table FeatureNode_DefinedTermBase_InapplicableIf_AUD 
-        add constraint FKB8D7025234869AAE 
-        foreign key (REV) 
+    alter table FeatureNode_DefinedTermBase_InapplicableIf_AUD
+        add constraint FKB8D7025234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureNode_DefinedTermBase_OnlyApplicable 
-        add constraint FK6AE876AB57FA94D4 
-        foreign key (onlyapplicableif_id) 
+    alter table FeatureNode_DefinedTermBase_OnlyApplicable
+        add constraint FK6AE876AB57FA94D4
+        foreign key (onlyapplicableif_id)
         references DefinedTermBase;
 
-    alter table FeatureNode_DefinedTermBase_OnlyApplicable 
-        add constraint FK6AE876AB52FCC4B 
-        foreign key (FeatureNode_id) 
+    alter table FeatureNode_DefinedTermBase_OnlyApplicable
+        add constraint FK6AE876AB52FCC4B
+        foreign key (FeatureNode_id)
         references FeatureNode;
 
-    alter table FeatureNode_DefinedTermBase_OnlyApplicable_AUD 
-        add constraint FK3F5356FC34869AAE 
-        foreign key (REV) 
+    alter table FeatureNode_DefinedTermBase_OnlyApplicable_AUD
+        add constraint FK3F5356FC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree 
-        add constraint FK4CF19F944FF2DB2C 
-        foreign key (createdby_id) 
+    alter table FeatureTree
+        add constraint FK4CF19F944FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table FeatureTree 
-        add constraint FK4CF19F94B7892921 
-        foreign key (root_id) 
+    alter table FeatureTree
+        add constraint FK4CF19F94B7892921
+        foreign key (root_id)
         references FeatureNode;
 
-    alter table FeatureTree 
-        add constraint FK4CF19F94BC5DA539 
-        foreign key (updatedby_id) 
+    alter table FeatureTree
+        add constraint FK4CF19F94BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table FeatureTree_AUD 
-        add constraint FK355BE36534869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_AUD
+        add constraint FK355BE36534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_Annotation 
-        add constraint FK5D8B8DA47C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_Annotation
+        add constraint FK5D8B8DA47C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_Annotation 
-        add constraint FK5D8B8DA1E403E0B 
-        foreign key (annotations_id) 
+    alter table FeatureTree_Annotation
+        add constraint FK5D8B8DA1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table FeatureTree_Annotation_AUD 
-        add constraint FK86E8E9AB34869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_Annotation_AUD
+        add constraint FK86E8E9AB34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_Credit 
-        add constraint FK7536062432D1B9F 
-        foreign key (credits_id) 
+    alter table FeatureTree_Credit
+        add constraint FK7536062432D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table FeatureTree_Credit 
-        add constraint FK7536062447C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_Credit
+        add constraint FK7536062447C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_Credit_AUD 
-        add constraint FK40EA81F534869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_Credit_AUD
+        add constraint FK40EA81F534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_Extension 
-        add constraint FKAD1E6D34927DE9DF 
-        foreign key (extensions_id) 
+    alter table FeatureTree_Extension
+        add constraint FKAD1E6D34927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table FeatureTree_Extension 
-        add constraint FKAD1E6D3447C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_Extension
+        add constraint FKAD1E6D3447C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_Extension_AUD 
-        add constraint FKF128E10534869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_Extension_AUD
+        add constraint FKF128E10534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_Marker 
-        add constraint FK855CEF65777265A1 
-        foreign key (markers_id) 
+    alter table FeatureTree_Marker
+        add constraint FK855CEF65777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table FeatureTree_Marker 
-        add constraint FK855CEF6547C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_Marker
+        add constraint FK855CEF6547C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_Marker_AUD 
-        add constraint FKA508E2B634869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_Marker_AUD
+        add constraint FKA508E2B634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_OriginalSourceBase 
-        add constraint FK13BD64E847C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_OriginalSourceBase
+        add constraint FK13BD64E847C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_OriginalSourceBase 
-        add constraint FK13BD64E83A6735D9 
-        foreign key (sources_id) 
+    alter table FeatureTree_OriginalSourceBase
+        add constraint FK13BD64E83A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table FeatureTree_OriginalSourceBase_AUD 
-        add constraint FK7B5CDEB934869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_OriginalSourceBase_AUD
+        add constraint FK7B5CDEB934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_Representation 
-        add constraint FK8C458F8B31C4747 
-        foreign key (representations_id) 
+    alter table FeatureTree_Representation
+        add constraint FK8C458F8B31C4747
+        foreign key (representations_id)
         references Representation;
 
-    alter table FeatureTree_Representation 
-        add constraint FK8C458F847C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_Representation
+        add constraint FK8C458F847C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_Representation_AUD 
-        add constraint FKECAB4AC934869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_Representation_AUD
+        add constraint FKECAB4AC934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_Rights 
-        add constraint FK8E50DD0247C496CB 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_Rights
+        add constraint FK8E50DD0247C496CB
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_Rights 
-        add constraint FK8E50DD02C13F7B21 
-        foreign key (rights_id) 
+    alter table FeatureTree_Rights
+        add constraint FK8E50DD02C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table FeatureTree_Rights_AUD 
-        add constraint FK10E2B9D334869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_Rights_AUD
+        add constraint FK10E2B9D334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table FeatureTree_TaxonBase 
-        add constraint FKEC78E5B0ED57882F 
-        foreign key (FeatureTree_id) 
+    alter table FeatureTree_TaxonBase
+        add constraint FKEC78E5B0ED57882F
+        foreign key (FeatureTree_id)
         references FeatureTree;
 
-    alter table FeatureTree_TaxonBase 
-        add constraint FKEC78E5B07C3D0017 
-        foreign key (coveredtaxa_id) 
+    alter table FeatureTree_TaxonBase
+        add constraint FKEC78E5B07C3D0017
+        foreign key (coveredtaxa_id)
         references TaxonBase;
 
-    alter table FeatureTree_TaxonBase_AUD 
-        add constraint FK955ABB8134869AAE 
-        foreign key (REV) 
+    alter table FeatureTree_TaxonBase_AUD
+        add constraint FK955ABB8134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table GatheringEvent 
-        add constraint FK6F1286F38B455EC6 
-        foreign key (locality_id) 
+    alter table GatheringEvent
+        add constraint FK6F1286F38B455EC6
+        foreign key (locality_id)
         references LanguageString;
 
-    alter table GatheringEvent 
-        add constraint FK6F1286F34FF2DB2C 
-        foreign key (createdby_id) 
+    alter table GatheringEvent
+        add constraint FK6F1286F34FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table GatheringEvent 
-        add constraint FK6F1286F33DA462D5 
-        foreign key (actor_id) 
+    alter table GatheringEvent
+        add constraint FK6F1286F33DA462D5
+        foreign key (actor_id)
         references AgentBase;
 
-    alter table GatheringEvent 
-        add constraint FK6F1286F3F55AFD89 
-        foreign key (exactlocation_referencesystem_id) 
+    alter table GatheringEvent
+        add constraint FK6F1286F3F55AFD89
+        foreign key (exactlocation_referencesystem_id)
         references DefinedTermBase;
 
-    alter table GatheringEvent 
-        add constraint FK6F1286F3BC5DA539 
-        foreign key (updatedby_id) 
+    alter table GatheringEvent
+        add constraint FK6F1286F3BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table GatheringEvent_AUD 
-        add constraint FK3EC034434869AAE 
-        foreign key (REV) 
+    alter table GatheringEvent_AUD
+        add constraint FK3EC034434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table GatheringEvent_Annotation 
-        add constraint FK76DDD01BF95F225A 
-        foreign key (GatheringEvent_id) 
+    alter table GatheringEvent_Annotation
+        add constraint FK76DDD01BF95F225A
+        foreign key (GatheringEvent_id)
         references GatheringEvent;
 
-    alter table GatheringEvent_Annotation 
-        add constraint FK76DDD01B1E403E0B 
-        foreign key (annotations_id) 
+    alter table GatheringEvent_Annotation
+        add constraint FK76DDD01B1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table GatheringEvent_Annotation_AUD 
-        add constraint FK351E786C34869AAE 
-        foreign key (REV) 
+    alter table GatheringEvent_Annotation_AUD
+        add constraint FK351E786C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table GatheringEvent_DefinedTermBase 
-        add constraint FK69D9A11A7C34B6D6 
-        foreign key (collectingareas_id) 
+    alter table GatheringEvent_DefinedTermBase
+        add constraint FK69D9A11A7C34B6D6
+        foreign key (collectingareas_id)
         references DefinedTermBase;
 
-    alter table GatheringEvent_DefinedTermBase 
-        add constraint FK69D9A11AF95F225A 
-        foreign key (GatheringEvent_id) 
+    alter table GatheringEvent_DefinedTermBase
+        add constraint FK69D9A11AF95F225A
+        foreign key (GatheringEvent_id)
         references GatheringEvent;
 
-    alter table GatheringEvent_DefinedTermBase_AUD 
-        add constraint FKB3BBB1EB34869AAE 
-        foreign key (REV) 
+    alter table GatheringEvent_DefinedTermBase_AUD
+        add constraint FKB3BBB1EB34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table GatheringEvent_Marker 
-        add constraint FK7B49CF26777265A1 
-        foreign key (markers_id) 
+    alter table GatheringEvent_Marker
+        add constraint FK7B49CF26777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table GatheringEvent_Marker 
-        add constraint FK7B49CF26F95F225A 
-        foreign key (GatheringEvent_id) 
+    alter table GatheringEvent_Marker
+        add constraint FK7B49CF26F95F225A
+        foreign key (GatheringEvent_id)
         references GatheringEvent;
 
-    alter table GatheringEvent_Marker_AUD 
-        add constraint FK160DF9F734869AAE 
-        foreign key (REV) 
+    alter table GatheringEvent_Marker_AUD
+        add constraint FK160DF9F734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table GenBankAccession 
-        add constraint FK86C1DBF84FF2DB2C 
-        foreign key (createdby_id) 
+    alter table GenBankAccession
+        add constraint FK86C1DBF84FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table GenBankAccession 
-        add constraint FK86C1DBF8BC5DA539 
-        foreign key (updatedby_id) 
+    alter table GenBankAccession
+        add constraint FK86C1DBF8BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table GenBankAccession_AUD 
-        add constraint FK5A2F4DC934869AAE 
-        foreign key (REV) 
+    alter table GenBankAccession_AUD
+        add constraint FK5A2F4DC934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table GrantedAuthorityImpl 
-        add constraint FKB05CF9284FF2DB2C 
-        foreign key (createdby_id) 
+    alter table GrantedAuthorityImpl
+        add constraint FKB05CF9284FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table HomotypicalGroup 
-        add constraint FK7DECCC184FF2DB2C 
-        foreign key (createdby_id) 
+    alter table HomotypicalGroup
+        add constraint FK7DECCC184FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table HomotypicalGroup 
-        add constraint FK7DECCC18BC5DA539 
-        foreign key (updatedby_id) 
+    alter table HomotypicalGroup
+        add constraint FK7DECCC18BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table HomotypicalGroup_AUD 
-        add constraint FKE4252DE934869AAE 
-        foreign key (REV) 
+    alter table HomotypicalGroup_AUD
+        add constraint FKE4252DE934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table HomotypicalGroup_Annotation 
-        add constraint FK7A0351D6BFEAE500 
-        foreign key (HomotypicalGroup_id) 
+    alter table HomotypicalGroup_Annotation
+        add constraint FK7A0351D6BFEAE500
+        foreign key (HomotypicalGroup_id)
         references HomotypicalGroup;
 
-    alter table HomotypicalGroup_Annotation 
-        add constraint FK7A0351D61E403E0B 
-        foreign key (annotations_id) 
+    alter table HomotypicalGroup_Annotation
+        add constraint FK7A0351D61E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table HomotypicalGroup_Annotation_AUD 
-        add constraint FK41E6A4A734869AAE 
-        foreign key (REV) 
+    alter table HomotypicalGroup_Annotation_AUD
+        add constraint FK41E6A4A734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table HomotypicalGroup_Marker 
-        add constraint FK97D36661777265A1 
-        foreign key (markers_id) 
+    alter table HomotypicalGroup_Marker
+        add constraint FK97D36661777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table HomotypicalGroup_Marker 
-        add constraint FK97D36661BFEAE500 
-        foreign key (HomotypicalGroup_id) 
+    alter table HomotypicalGroup_Marker
+        add constraint FK97D36661BFEAE500
+        foreign key (HomotypicalGroup_id)
         references HomotypicalGroup;
 
-    alter table HomotypicalGroup_Marker_AUD 
-        add constraint FK19337BB234869AAE 
-        foreign key (REV) 
+    alter table HomotypicalGroup_Marker_AUD
+        add constraint FK19337BB234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table HybridRelationship 
-        add constraint FK9033CE744FF2DB2C 
-        foreign key (createdby_id) 
+    alter table HybridRelationship
+        add constraint FK9033CE744FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table HybridRelationship 
-        add constraint FK9033CE749803512F 
-        foreign key (citation_id) 
+    alter table HybridRelationship
+        add constraint FK9033CE749803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table HybridRelationship 
-        add constraint FK9033CE749DD57A93 
-        foreign key (relatedfrom_id) 
+    alter table HybridRelationship
+        add constraint FK9033CE749DD57A93
+        foreign key (relatedfrom_id)
         references TaxonNameBase;
 
-    alter table HybridRelationship 
-        add constraint FK9033CE7455F241D4 
-        foreign key (type_id) 
+    alter table HybridRelationship
+        add constraint FK9033CE7455F241D4
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table HybridRelationship 
-        add constraint FK9033CE74AF4F9F62 
-        foreign key (relatedto_id) 
+    alter table HybridRelationship
+        add constraint FK9033CE74AF4F9F62
+        foreign key (relatedto_id)
         references TaxonNameBase;
 
-    alter table HybridRelationship 
-        add constraint FK9033CE74BC5DA539 
-        foreign key (updatedby_id) 
+    alter table HybridRelationship
+        add constraint FK9033CE74BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table HybridRelationship_AUD 
-        add constraint FK9C2BA24534869AAE 
-        foreign key (REV) 
+    alter table HybridRelationship_AUD
+        add constraint FK9C2BA24534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table HybridRelationship_Annotation 
-        add constraint FK2C7E7DFA59832240 
-        foreign key (HybridRelationship_id) 
+    alter table HybridRelationship_Annotation
+        add constraint FK2C7E7DFA59832240
+        foreign key (HybridRelationship_id)
         references HybridRelationship;
 
-    alter table HybridRelationship_Annotation 
-        add constraint FK2C7E7DFA1E403E0B 
-        foreign key (annotations_id) 
+    alter table HybridRelationship_Annotation
+        add constraint FK2C7E7DFA1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table HybridRelationship_Annotation_AUD 
-        add constraint FKACE71ECB34869AAE 
-        foreign key (REV) 
+    alter table HybridRelationship_Annotation_AUD
+        add constraint FKACE71ECB34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table HybridRelationship_Marker 
-        add constraint FKCEF24485777265A1 
-        foreign key (markers_id) 
+    alter table HybridRelationship_Marker
+        add constraint FKCEF24485777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table HybridRelationship_Marker 
-        add constraint FKCEF2448559832240 
-        foreign key (HybridRelationship_id) 
+    alter table HybridRelationship_Marker
+        add constraint FKCEF2448559832240
+        foreign key (HybridRelationship_id)
         references HybridRelationship;
 
-    alter table HybridRelationship_Marker_AUD 
-        add constraint FKCBAEA7D634869AAE 
-        foreign key (REV) 
+    alter table HybridRelationship_Marker_AUD
+        add constraint FKCBAEA7D634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table IndividualAssociation_LanguageString 
-        add constraint FKB5C75EC028459272 
-        foreign key (description_mapkey_id) 
+    alter table IndividualAssociation_LanguageString
+        add constraint FKB5C75EC028459272
+        foreign key (description_mapkey_id)
         references DefinedTermBase;
 
-    alter table IndividualAssociation_LanguageString 
-        add constraint FKB5C75EC084FF3EDF 
-        foreign key (DescriptionElementBase_id) 
+    alter table IndividualAssociation_LanguageString
+        add constraint FKB5C75EC084FF3EDF
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table IndividualAssociation_LanguageString 
-        add constraint FKB5C75EC02BEBA58D 
-        foreign key (description_id) 
+    alter table IndividualAssociation_LanguageString
+        add constraint FKB5C75EC02BEBA58D
+        foreign key (description_id)
         references LanguageString;
 
-    alter table IndividualAssociation_LanguageString_AUD 
-        add constraint FKB1A62C9134869AAE 
-        foreign key (REV) 
+    alter table IndividualAssociation_LanguageString_AUD
+        add constraint FKB1A62C9134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table InstitutionalMembership 
-        add constraint FK3C8E1FF94FF2DB2C 
-        foreign key (createdby_id) 
+    alter table InstitutionalMembership
+        add constraint FK3C8E1FF94FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table InstitutionalMembership 
-        add constraint FK3C8E1FF9AAC1B820 
-        foreign key (person_id) 
+    alter table InstitutionalMembership
+        add constraint FK3C8E1FF9AAC1B820
+        foreign key (person_id)
         references AgentBase;
 
-    alter table InstitutionalMembership 
-        add constraint FK3C8E1FF916B9CA77 
-        foreign key (institute_id) 
+    alter table InstitutionalMembership
+        add constraint FK3C8E1FF916B9CA77
+        foreign key (institute_id)
         references AgentBase;
 
-    alter table InstitutionalMembership 
-        add constraint FK3C8E1FF9BC5DA539 
-        foreign key (updatedby_id) 
+    alter table InstitutionalMembership
+        add constraint FK3C8E1FF9BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table InstitutionalMembership_AUD 
-        add constraint FK847A94A34869AAE 
-        foreign key (REV) 
+    alter table InstitutionalMembership_AUD
+        add constraint FK847A94A34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table LSIDAuthority 
-        add constraint FK759DB8814FF2DB2C 
-        foreign key (createdby_id) 
+    alter table LSIDAuthority
+        add constraint FK759DB8814FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table LSIDAuthority_namespaces 
-        add constraint FKB04948F64FFCFD94 
-        foreign key (LSIDAuthority_id) 
+    alter table LSIDAuthority_namespaces
+        add constraint FKB04948F64FFCFD94
+        foreign key (LSIDAuthority_id)
         references LSIDAuthority;
 
-    alter table LanguageString 
-        add constraint FKB5FDC9A94FF2DB2C 
-        foreign key (createdby_id) 
+    alter table LanguageString
+        add constraint FKB5FDC9A94FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table LanguageString 
-        add constraint FKB5FDC9A9E8D36B00 
-        foreign key (language_id) 
+    alter table LanguageString
+        add constraint FKB5FDC9A9E8D36B00
+        foreign key (language_id)
         references DefinedTermBase;
 
-    alter table LanguageString 
-        add constraint FKB5FDC9A9BC5DA539 
-        foreign key (updatedby_id) 
+    alter table LanguageString
+        add constraint FKB5FDC9A9BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table LanguageString_AUD 
-        add constraint FK896AFAFA34869AAE 
-        foreign key (REV) 
+    alter table LanguageString_AUD
+        add constraint FK896AFAFA34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table LanguageString_Annotation 
-        add constraint FK8400DFA537998500 
-        foreign key (LanguageString_id) 
+    alter table LanguageString_Annotation
+        add constraint FK8400DFA537998500
+        foreign key (LanguageString_id)
         references LanguageString;
 
-    alter table LanguageString_Annotation 
-        add constraint FK8400DFA51E403E0B 
-        foreign key (annotations_id) 
+    alter table LanguageString_Annotation
+        add constraint FK8400DFA51E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table LanguageString_Annotation_AUD 
-        add constraint FKD3BAB2F634869AAE 
-        foreign key (REV) 
+    alter table LanguageString_Annotation_AUD
+        add constraint FKD3BAB2F634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table LanguageString_Marker 
-        add constraint FK8DA633B0777265A1 
-        foreign key (markers_id) 
+    alter table LanguageString_Marker
+        add constraint FK8DA633B0777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table LanguageString_Marker 
-        add constraint FK8DA633B037998500 
-        foreign key (LanguageString_id) 
+    alter table LanguageString_Marker
+        add constraint FK8DA633B037998500
+        foreign key (LanguageString_id)
         references LanguageString;
 
-    alter table LanguageString_Marker_AUD 
-        add constraint FK2331098134869AAE 
-        foreign key (REV) 
+    alter table LanguageString_Marker_AUD
+        add constraint FK2331098134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Locus 
-        add constraint FK462F1BE4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Locus
+        add constraint FK462F1BE4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Locus 
-        add constraint FK462F1BEBC5DA539 
-        foreign key (updatedby_id) 
+    alter table Locus
+        add constraint FK462F1BEBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Locus_AUD 
-        add constraint FK5224108F34869AAE 
-        foreign key (REV) 
+    alter table Locus_AUD
+        add constraint FK5224108F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Marker 
-        add constraint FK88F1805A4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Marker
+        add constraint FK88F1805A4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Marker 
-        add constraint FK88F1805AD64DC020 
-        foreign key (markertype_id) 
+    alter table Marker
+        add constraint FK88F1805AD64DC020
+        foreign key (markertype_id)
         references DefinedTermBase;
 
-    alter table Marker 
-        add constraint FK88F1805ABC5DA539 
-        foreign key (updatedby_id) 
+    alter table Marker
+        add constraint FK88F1805ABC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Marker_AUD 
-        add constraint FKB951F12B34869AAE 
-        foreign key (REV) 
+    alter table Marker_AUD
+        add constraint FKB951F12B34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media 
-        add constraint FK46C7FC44FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Media
+        add constraint FK46C7FC44FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Media 
-        add constraint FK46C7FC49803512F 
-        foreign key (citation_id) 
+    alter table Media
+        add constraint FK46C7FC49803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table Media 
-        add constraint FK46C7FC4C2445443 
-        foreign key (artist_id) 
+    alter table Media
+        add constraint FK46C7FC4C2445443
+        foreign key (artist_id)
         references AgentBase;
 
-    alter table Media 
-        add constraint FK46C7FC4BC5DA539 
-        foreign key (updatedby_id) 
+    alter table Media
+        add constraint FK46C7FC4BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table MediaKey_NamedArea 
-        add constraint FK31E7D4023FF8E7B2 
-        foreign key (geographicalscope_id) 
+    alter table MediaKey_NamedArea
+        add constraint FK31E7D4023FF8E7B2
+        foreign key (geographicalscope_id)
         references DefinedTermBase;
 
-    alter table MediaKey_NamedArea 
-        add constraint FK31E7D402BE59D760 
-        foreign key (Media_id) 
+    alter table MediaKey_NamedArea
+        add constraint FK31E7D402BE59D760
+        foreign key (Media_id)
         references Media;
 
-    alter table MediaKey_NamedArea_AUD 
-        add constraint FK922630D334869AAE 
-        foreign key (REV) 
+    alter table MediaKey_NamedArea_AUD
+        add constraint FK922630D334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MediaKey_Scope 
-        add constraint FKBFFEE8F0BE59D760 
-        foreign key (Media_id) 
+    alter table MediaKey_Scope
+        add constraint FKBFFEE8F0BE59D760
+        foreign key (Media_id)
         references Media;
 
-    alter table MediaKey_Scope 
-        add constraint FKBFFEE8F0546985E4 
-        foreign key (scoperestrictions_id) 
+    alter table MediaKey_Scope
+        add constraint FKBFFEE8F0546985E4
+        foreign key (scoperestrictions_id)
         references DefinedTermBase;
 
-    alter table MediaKey_Scope_AUD 
-        add constraint FK63AD1EC134869AAE 
-        foreign key (REV) 
+    alter table MediaKey_Scope_AUD
+        add constraint FK63AD1EC134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MediaKey_Taxon 
-        add constraint FKC00C3966815C793 
-        foreign key (mediaKey_id) 
+    alter table MediaKey_Taxon
+        add constraint FKC00C3966815C793
+        foreign key (mediaKey_id)
         references Media;
 
-    alter table MediaKey_Taxon 
-        add constraint FKC00C3966DE9A3DE3 
-        foreign key (taxon_id) 
+    alter table MediaKey_Taxon
+        add constraint FKC00C3966DE9A3DE3
+        foreign key (taxon_id)
         references TaxonBase;
 
-    alter table MediaKey_Taxon_AUD 
-        add constraint FK311443734869AAE 
-        foreign key (REV) 
+    alter table MediaKey_Taxon_AUD
+        add constraint FK311443734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MediaRepresentation 
-        add constraint FK1966BDB14FF2DB2C 
-        foreign key (createdby_id) 
+    alter table MediaRepresentation
+        add constraint FK1966BDB14FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table MediaRepresentation 
-        add constraint FK1966BDB1C2C29593 
-        foreign key (media_id) 
+    alter table MediaRepresentation
+        add constraint FK1966BDB1C2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table MediaRepresentation 
-        add constraint FK1966BDB1BC5DA539 
-        foreign key (updatedby_id) 
+    alter table MediaRepresentation
+        add constraint FK1966BDB1BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table MediaRepresentationPart 
-        add constraint FK67A455444FF2DB2C 
-        foreign key (createdby_id) 
+    alter table MediaRepresentationPart
+        add constraint FK67A455444FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table MediaRepresentationPart 
-        add constraint FK67A45544E3818E37 
-        foreign key (representation_id) 
+    alter table MediaRepresentationPart
+        add constraint FK67A45544E3818E37
+        foreign key (representation_id)
         references MediaRepresentation;
 
-    alter table MediaRepresentationPart 
-        add constraint FK67A45544BC5DA539 
-        foreign key (updatedby_id) 
+    alter table MediaRepresentationPart
+        add constraint FK67A45544BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table MediaRepresentationPart_AUD 
-        add constraint FKA75C411534869AAE 
-        foreign key (REV) 
+    alter table MediaRepresentationPart_AUD
+        add constraint FKA75C411534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MediaRepresentation_AUD 
-        add constraint FK67AAAB0234869AAE 
-        foreign key (REV) 
+    alter table MediaRepresentation_AUD
+        add constraint FK67AAAB0234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MediaRepresentation_MediaRepresentationPart_AUD 
-        add constraint FK3544378734869AAE 
-        foreign key (REV) 
+    alter table MediaRepresentation_MediaRepresentationPart_AUD
+        add constraint FK3544378734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_AUD 
-        add constraint FKF70B2B9534869AAE 
-        foreign key (REV) 
+    alter table Media_AUD
+        add constraint FKF70B2B9534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Annotation 
-        add constraint FKA020DAAAC2C29593 
-        foreign key (Media_id) 
+    alter table Media_Annotation
+        add constraint FKA020DAAAC2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Annotation 
-        add constraint FKA020DAAA1E403E0B 
-        foreign key (annotations_id) 
+    alter table Media_Annotation
+        add constraint FKA020DAAA1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Media_Annotation_AUD 
-        add constraint FK99ABA37B34869AAE 
-        foreign key (REV) 
+    alter table Media_Annotation_AUD
+        add constraint FK99ABA37B34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Credit 
-        add constraint FKC1F78FF432D1B9F 
-        foreign key (credits_id) 
+    alter table Media_Credit
+        add constraint FKC1F78FF432D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table Media_Credit 
-        add constraint FKC1F78FF4C2C29593 
-        foreign key (Media_id) 
+    alter table Media_Credit
+        add constraint FKC1F78FF4C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Credit_AUD 
-        add constraint FKDB32A3C534869AAE 
-        foreign key (REV) 
+    alter table Media_Credit_AUD
+        add constraint FKDB32A3C534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Description 
-        add constraint FK368283E128459272 
-        foreign key (description_mapkey_id) 
+    alter table Media_Description
+        add constraint FK368283E128459272
+        foreign key (description_mapkey_id)
         references DefinedTermBase;
 
-    alter table Media_Description 
-        add constraint FK368283E12BEBA58D 
-        foreign key (description_id) 
+    alter table Media_Description
+        add constraint FK368283E12BEBA58D
+        foreign key (description_id)
         references LanguageString;
 
-    alter table Media_Description 
-        add constraint FK368283E1C2C29593 
-        foreign key (Media_id) 
+    alter table Media_Description
+        add constraint FK368283E1C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Description_AUD 
-        add constraint FK6817D93234869AAE 
-        foreign key (REV) 
+    alter table Media_Description_AUD
+        add constraint FK6817D93234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Extension 
-        add constraint FKDB62D164927DE9DF 
-        foreign key (extensions_id) 
+    alter table Media_Extension
+        add constraint FKDB62D164927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table Media_Extension 
-        add constraint FKDB62D164C2C29593 
-        foreign key (Media_id) 
+    alter table Media_Extension
+        add constraint FKDB62D164C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Extension_AUD 
-        add constraint FKE13FAD3534869AAE 
-        foreign key (REV) 
+    alter table Media_Extension_AUD
+        add constraint FKE13FAD3534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_LanguageString 
-        add constraint FK353DB784A0A6EDCE 
-        foreign key (title_mapkey_id) 
+    alter table Media_LanguageString
+        add constraint FK353DB784A0A6EDCE
+        foreign key (title_mapkey_id)
         references DefinedTermBase;
 
-    alter table Media_LanguageString 
-        add constraint FK353DB784C2C29593 
-        foreign key (Media_id) 
+    alter table Media_LanguageString
+        add constraint FK353DB784C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_LanguageString 
-        add constraint FK353DB784A1CA19B1 
-        foreign key (title_id) 
+    alter table Media_LanguageString
+        add constraint FK353DB784A1CA19B1
+        foreign key (title_id)
         references LanguageString;
 
-    alter table Media_LanguageString_AUD 
-        add constraint FK68FA835534869AAE 
-        foreign key (REV) 
+    alter table Media_LanguageString_AUD
+        add constraint FK68FA835534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Marker 
-        add constraint FKD21E7935777265A1 
-        foreign key (markers_id) 
+    alter table Media_Marker
+        add constraint FKD21E7935777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Media_Marker 
-        add constraint FKD21E7935C2C29593 
-        foreign key (Media_id) 
+    alter table Media_Marker
+        add constraint FKD21E7935C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Marker_AUD 
-        add constraint FK3F51048634869AAE 
-        foreign key (REV) 
+    alter table Media_Marker_AUD
+        add constraint FK3F51048634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_OriginalSourceBase 
-        add constraint FK2FEEB6B8C2C29593 
-        foreign key (Media_id) 
+    alter table Media_OriginalSourceBase
+        add constraint FK2FEEB6B8C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_OriginalSourceBase 
-        add constraint FK2FEEB6B83A6735D9 
-        foreign key (sources_id) 
+    alter table Media_OriginalSourceBase
+        add constraint FK2FEEB6B83A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table Media_OriginalSourceBase_AUD 
-        add constraint FK97F0C88934869AAE 
-        foreign key (REV) 
+    alter table Media_OriginalSourceBase_AUD
+        add constraint FK97F0C88934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Representation 
-        add constraint FK1B8712C8BE59D760 
-        foreign key (Media_id) 
+    alter table Media_Representation
+        add constraint FK1B8712C8BE59D760
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Representation 
-        add constraint FK1B8712C88F6CABE6 
-        foreign key (keyrepresentations_id) 
+    alter table Media_Representation
+        add constraint FK1B8712C88F6CABE6
+        foreign key (keyrepresentations_id)
         references Representation;
 
-    alter table Media_Representation_AUD 
-        add constraint FK8DC9C9934869AAE 
-        foreign key (REV) 
+    alter table Media_Representation_AUD
+        add constraint FK8DC9C9934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Rights 
-        add constraint FKDB1266D2C13F7B21 
-        foreign key (rights_id) 
+    alter table Media_Rights
+        add constraint FKDB1266D2C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table Media_Rights 
-        add constraint FKDB1266D2C2C29593 
-        foreign key (Media_id) 
+    alter table Media_Rights
+        add constraint FKDB1266D2C2C29593
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Rights_AUD 
-        add constraint FKAB2ADBA334869AAE 
-        foreign key (REV) 
+    alter table Media_Rights_AUD
+        add constraint FKAB2ADBA334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_Sequence 
-        add constraint FK61D09FCF29B4761 
-        foreign key (usedsequences_id) 
+    alter table Media_Sequence
+        add constraint FK61D09FCF29B4761
+        foreign key (usedsequences_id)
         references Sequence;
 
-    alter table Media_Sequence 
-        add constraint FK61D09FC3282B64 
-        foreign key (Media_id) 
+    alter table Media_Sequence
+        add constraint FK61D09FC3282B64
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_Sequence_AUD 
-        add constraint FK3C7BD9CD34869AAE 
-        foreign key (REV) 
+    alter table Media_Sequence_AUD
+        add constraint FK3C7BD9CD34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Media_TaxonBase 
-        add constraint FK1ABD49E0BE59D760 
-        foreign key (Media_id) 
+    alter table Media_TaxonBase
+        add constraint FK1ABD49E0BE59D760
+        foreign key (Media_id)
         references Media;
 
-    alter table Media_TaxonBase 
-        add constraint FK1ABD49E07C3D0017 
-        foreign key (coveredtaxa_id) 
+    alter table Media_TaxonBase
+        add constraint FK1ABD49E07C3D0017
+        foreign key (coveredtaxa_id)
         references TaxonBase;
 
-    alter table Media_TaxonBase_AUD 
-        add constraint FK857187B134869AAE 
-        foreign key (REV) 
+    alter table Media_TaxonBase_AUD
+        add constraint FK857187B134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MultiAccessKey_NamedArea 
-        add constraint FK1F5A74893FF8E7B2 
-        foreign key (geographicalscope_id) 
+    alter table MultiAccessKey_NamedArea
+        add constraint FK1F5A74893FF8E7B2
+        foreign key (geographicalscope_id)
         references DefinedTermBase;
 
-    alter table MultiAccessKey_NamedArea 
-        add constraint FK1F5A7489B4555A9A 
-        foreign key (WorkingSet_id) 
+    alter table MultiAccessKey_NamedArea
+        add constraint FK1F5A7489B4555A9A
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table MultiAccessKey_NamedArea_AUD 
-        add constraint FK4CB735DA34869AAE 
-        foreign key (REV) 
+    alter table MultiAccessKey_NamedArea_AUD
+        add constraint FK4CB735DA34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MultiAccessKey_Scope 
-        add constraint FKCC6CE4F7546985E4 
-        foreign key (scoperestrictions_id) 
+    alter table MultiAccessKey_Scope
+        add constraint FKCC6CE4F7546985E4
+        foreign key (scoperestrictions_id)
         references DefinedTermBase;
 
-    alter table MultiAccessKey_Scope 
-        add constraint FKCC6CE4F7B4555A9A 
-        foreign key (WorkingSet_id) 
+    alter table MultiAccessKey_Scope
+        add constraint FKCC6CE4F7B4555A9A
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table MultiAccessKey_Scope_AUD 
-        add constraint FK511FBF4834869AAE 
-        foreign key (REV) 
+    alter table MultiAccessKey_Scope_AUD
+        add constraint FK511FBF4834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table MultiAccessKey_Taxon 
-        add constraint FKCC7A356DB64A7AD3 
-        foreign key (multiAccessKey_id) 
+    alter table MultiAccessKey_Taxon
+        add constraint FKCC7A356DB64A7AD3
+        foreign key (multiAccessKey_id)
         references WorkingSet;
 
-    alter table MultiAccessKey_Taxon 
-        add constraint FKCC7A356DDE9A3DE3 
-        foreign key (taxon_id) 
+    alter table MultiAccessKey_Taxon
+        add constraint FKCC7A356DDE9A3DE3
+        foreign key (taxon_id)
         references TaxonBase;
 
-    alter table MultiAccessKey_Taxon_AUD 
-        add constraint FKF083E4BE34869AAE 
-        foreign key (REV) 
+    alter table MultiAccessKey_Taxon_AUD
+        add constraint FKF083E4BE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table NameRelationship 
-        add constraint FK5E510834FF2DB2C 
-        foreign key (createdby_id) 
+    alter table NameRelationship
+        add constraint FK5E510834FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table NameRelationship 
-        add constraint FK5E510839803512F 
-        foreign key (citation_id) 
+    alter table NameRelationship
+        add constraint FK5E510839803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table NameRelationship 
-        add constraint FK5E5108316CDFF85 
-        foreign key (relatedfrom_id) 
+    alter table NameRelationship
+        add constraint FK5E5108316CDFF85
+        foreign key (relatedfrom_id)
         references TaxonNameBase;
 
-    alter table NameRelationship 
-        add constraint FK5E51083AF619DE3 
-        foreign key (type_id) 
+    alter table NameRelationship
+        add constraint FK5E51083AF619DE3
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table NameRelationship 
-        add constraint FK5E5108328482454 
-        foreign key (relatedto_id) 
+    alter table NameRelationship
+        add constraint FK5E5108328482454
+        foreign key (relatedto_id)
         references TaxonNameBase;
 
-    alter table NameRelationship 
-        add constraint FK5E51083BC5DA539 
-        foreign key (updatedby_id) 
+    alter table NameRelationship
+        add constraint FK5E51083BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table NameRelationship_AUD 
-        add constraint FK743F44D434869AAE 
-        foreign key (REV) 
+    alter table NameRelationship_AUD
+        add constraint FK743F44D434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table NameRelationship_Annotation 
-        add constraint FK2E38AC8B7B4CB560 
-        foreign key (NameRelationship_id) 
+    alter table NameRelationship_Annotation
+        add constraint FK2E38AC8B7B4CB560
+        foreign key (NameRelationship_id)
         references NameRelationship;
 
-    alter table NameRelationship_Annotation 
-        add constraint FK2E38AC8B1E403E0B 
-        foreign key (annotations_id) 
+    alter table NameRelationship_Annotation
+        add constraint FK2E38AC8B1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table NameRelationship_Annotation_AUD 
-        add constraint FKD1D59CDC34869AAE 
-        foreign key (REV) 
+    alter table NameRelationship_Annotation_AUD
+        add constraint FKD1D59CDC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table NameRelationship_Marker 
-        add constraint FKE3E46396777265A1 
-        foreign key (markers_id) 
+    alter table NameRelationship_Marker
+        add constraint FKE3E46396777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table NameRelationship_Marker 
-        add constraint FKE3E463967B4CB560 
-        foreign key (NameRelationship_id) 
+    alter table NameRelationship_Marker
+        add constraint FKE3E463967B4CB560
+        foreign key (NameRelationship_id)
         references NameRelationship;
 
-    alter table NameRelationship_Marker_AUD 
-        add constraint FKCD68D66734869AAE 
-        foreign key (REV) 
+    alter table NameRelationship_Marker_AUD
+        add constraint FKCD68D66734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table NomenclaturalStatus 
-        add constraint FK1FFEC88B4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table NomenclaturalStatus
+        add constraint FK1FFEC88B4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table NomenclaturalStatus 
-        add constraint FK1FFEC88B9803512F 
-        foreign key (citation_id) 
+    alter table NomenclaturalStatus
+        add constraint FK1FFEC88B9803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table NomenclaturalStatus 
-        add constraint FK1FFEC88B7029BD9F 
-        foreign key (type_id) 
+    alter table NomenclaturalStatus
+        add constraint FK1FFEC88B7029BD9F
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table NomenclaturalStatus 
-        add constraint FK1FFEC88BBC5DA539 
-        foreign key (updatedby_id) 
+    alter table NomenclaturalStatus
+        add constraint FK1FFEC88BBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table NomenclaturalStatus_AUD 
-        add constraint FKFB2DB8DC34869AAE 
-        foreign key (REV) 
+    alter table NomenclaturalStatus_AUD
+        add constraint FKFB2DB8DC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table NomenclaturalStatus_Annotation 
-        add constraint FKE6E91F838D2CB1D4 
-        foreign key (NomenclaturalStatus_id) 
+    alter table NomenclaturalStatus_Annotation
+        add constraint FKE6E91F838D2CB1D4
+        foreign key (NomenclaturalStatus_id)
         references NomenclaturalStatus;
 
-    alter table NomenclaturalStatus_Annotation 
-        add constraint FKE6E91F831E403E0B 
-        foreign key (annotations_id) 
+    alter table NomenclaturalStatus_Annotation
+        add constraint FKE6E91F831E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table NomenclaturalStatus_Annotation_AUD 
-        add constraint FK6A3D3D434869AAE 
-        foreign key (REV) 
+    alter table NomenclaturalStatus_Annotation_AUD
+        add constraint FK6A3D3D434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table NomenclaturalStatus_Marker 
-        add constraint FK2F5128E777265A1 
-        foreign key (markers_id) 
+    alter table NomenclaturalStatus_Marker
+        add constraint FK2F5128E777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table NomenclaturalStatus_Marker 
-        add constraint FK2F5128E8D2CB1D4 
-        foreign key (NomenclaturalStatus_id) 
+    alter table NomenclaturalStatus_Marker
+        add constraint FK2F5128E8D2CB1D4
+        foreign key (NomenclaturalStatus_id)
         references NomenclaturalStatus;
 
-    alter table NomenclaturalStatus_Marker_AUD 
-        add constraint FK8619495F34869AAE 
-        foreign key (REV) 
+    alter table NomenclaturalStatus_Marker_AUD
+        add constraint FK8619495F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table OriginalSourceBase 
-        add constraint FK505F2E5D4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table OriginalSourceBase
+        add constraint FK505F2E5D4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table OriginalSourceBase 
-        add constraint FK505F2E5D966B96B2 
-        foreign key (nameusedinsource_id) 
+    alter table OriginalSourceBase
+        add constraint FK505F2E5D966B96B2
+        foreign key (nameusedinsource_id)
         references TaxonNameBase;
 
-    alter table OriginalSourceBase 
-        add constraint FK505F2E5D9803512F 
-        foreign key (citation_id) 
+    alter table OriginalSourceBase
+        add constraint FK505F2E5D9803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table OriginalSourceBase 
-        add constraint FK505F2E5DBC5DA539 
-        foreign key (updatedby_id) 
+    alter table OriginalSourceBase
+        add constraint FK505F2E5DBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table OriginalSourceBase_AUD 
-        add constraint FK9662E5AE34869AAE 
-        foreign key (REV) 
+    alter table OriginalSourceBase_AUD
+        add constraint FK9662E5AE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table OriginalSourceBase_Annotation 
-        add constraint FK20814271B029DDA0 
-        foreign key (OriginalSourceBase_id) 
+    alter table OriginalSourceBase_Annotation
+        add constraint FK20814271B029DDA0
+        foreign key (OriginalSourceBase_id)
         references OriginalSourceBase;
 
-    alter table OriginalSourceBase_Annotation 
-        add constraint FK208142711E403E0B 
-        foreign key (annotations_id) 
+    alter table OriginalSourceBase_Annotation
+        add constraint FK208142711E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table OriginalSourceBase_Annotation_AUD 
-        add constraint FKA074CFC234869AAE 
-        foreign key (REV) 
+    alter table OriginalSourceBase_Annotation_AUD
+        add constraint FKA074CFC234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table OriginalSourceBase_Marker 
-        add constraint FKB3FFDC7C777265A1 
-        foreign key (markers_id) 
+    alter table OriginalSourceBase_Marker
+        add constraint FKB3FFDC7C777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table OriginalSourceBase_Marker 
-        add constraint FKB3FFDC7CB029DDA0 
-        foreign key (OriginalSourceBase_id) 
+    alter table OriginalSourceBase_Marker
+        add constraint FKB3FFDC7CB029DDA0
+        foreign key (OriginalSourceBase_id)
         references OriginalSourceBase;
 
-    alter table OriginalSourceBase_Marker_AUD 
-        add constraint FKBFB16C4D34869AAE 
-        foreign key (REV) 
+    alter table OriginalSourceBase_Marker_AUD
+        add constraint FKBFB16C4D34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table PermissionGroup 
-        add constraint FK629941D04FF2DB2C 
-        foreign key (createdby_id) 
+    alter table PermissionGroup
+        add constraint FK629941D04FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table PermissionGroup_GrantedAuthorityImpl 
-        add constraint FK5311437CA0971A3 
-        foreign key (PermissionGroup_id) 
+    alter table PermissionGroup_GrantedAuthorityImpl
+        add constraint FK5311437CA0971A3
+        foreign key (PermissionGroup_id)
         references PermissionGroup;
 
-    alter table PermissionGroup_GrantedAuthorityImpl 
-        add constraint FK53114371857F6C2 
-        foreign key (grantedauthorities_id) 
+    alter table PermissionGroup_GrantedAuthorityImpl
+        add constraint FK53114371857F6C2
+        foreign key (grantedauthorities_id)
         references GrantedAuthorityImpl;
 
-    alter table PolytomousKeyNode_LanguageString 
-        add constraint FK5574E12EF05D08D4 
-        foreign key (modifyingtext_id) 
+    alter table PolytomousKeyNode_LanguageString
+        add constraint FK5574E12EF05D08D4
+        foreign key (modifyingtext_id)
         references LanguageString;
 
-    alter table PolytomousKeyNode_LanguageString 
-        add constraint FK5574E12EF135C42B 
-        foreign key (PolytomousKeyNode_id) 
+    alter table PolytomousKeyNode_LanguageString
+        add constraint FK5574E12EF135C42B
+        foreign key (PolytomousKeyNode_id)
         references PolytomousKeyNode;
 
-    alter table PolytomousKeyNode_LanguageString 
-        add constraint FK5574E12E9682414B 
-        foreign key (modifyingtext_mapkey_id) 
+    alter table PolytomousKeyNode_LanguageString
+        add constraint FK5574E12E9682414B
+        foreign key (modifyingtext_mapkey_id)
         references DefinedTermBase;
 
 
-    alter table PolytomousKey_NamedArea 
-        add constraint FK1C727CFF3FF8E7B2 
-        foreign key (geographicalscope_id) 
+    alter table PolytomousKey_NamedArea
+        add constraint FK1C727CFF3FF8E7B2
+        foreign key (geographicalscope_id)
         references DefinedTermBase;
 
-    alter table PolytomousKey_NamedArea 
-        add constraint FK1C727CFFED57882F 
-        foreign key (PolytomousKey_id) 
+    alter table PolytomousKey_NamedArea
+        add constraint FK1C727CFFED57882F
+        foreign key (PolytomousKey_id)
         references PolytomousKey;
 
-    alter table PolytomousKey_NamedArea_AUD 
-        add constraint FK750A135034869AAE 
-        foreign key (REV) 
+    alter table PolytomousKey_NamedArea_AUD
+        add constraint FK750A135034869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table PolytomousKey_Scope 
-        add constraint FK8D97986DED57882F 
-        foreign key (PolytomousKey_id) 
+    alter table PolytomousKey_Scope
+        add constraint FK8D97986DED57882F
+        foreign key (PolytomousKey_id)
         references PolytomousKey;
 
-    alter table PolytomousKey_Scope 
-        add constraint FK8D97986D546985E4 
-        foreign key (scoperestrictions_id) 
+    alter table PolytomousKey_Scope
+        add constraint FK8D97986D546985E4
+        foreign key (scoperestrictions_id)
         references DefinedTermBase;
 
-    alter table PolytomousKey_Scope_AUD 
-        add constraint FK4E37C7BE34869AAE 
-        foreign key (REV) 
+    alter table PolytomousKey_Scope_AUD
+        add constraint FK4E37C7BE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table PolytomousKey_Taxon 
-        add constraint FK8DA4E8E389D9775 
-        foreign key (polytomousKey_id) 
+    alter table PolytomousKey_Taxon
+        add constraint FK8DA4E8E389D9775
+        foreign key (polytomousKey_id)
         references PolytomousKey;
 
-    alter table PolytomousKey_Taxon 
-        add constraint FK8DA4E8E3DE9A3DE3 
-        foreign key (taxon_id) 
+    alter table PolytomousKey_Taxon
+        add constraint FK8DA4E8E3DE9A3DE3
+        foreign key (taxon_id)
         references TaxonBase;
 
-    alter table PolytomousKey_Taxon_AUD 
-        add constraint FKED9BED3434869AAE 
-        foreign key (REV) 
+    alter table PolytomousKey_Taxon_AUD
+        add constraint FKED9BED3434869AAE
+        foreign key (REV)
         references AuditEvent;
 
     create index ReferenceTitleCacheIndex on Reference (titleCache);
 
-    alter table Reference 
-        add constraint FK404D5F2B4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Reference
+        add constraint FK404D5F2B4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Reference 
-        add constraint FK404D5F2B403E17F4 
-        foreign key (institution_id) 
+    alter table Reference
+        add constraint FK404D5F2B403E17F4
+        foreign key (institution_id)
         references AgentBase;
 
-    alter table Reference 
-        add constraint FK404D5F2B969F8FF0 
-        foreign key (inreference_id) 
+    alter table Reference
+        add constraint FK404D5F2B969F8FF0
+        foreign key (inreference_id)
         references Reference;
 
-    alter table Reference 
-        add constraint FK404D5F2BAEC3B8B8 
-        foreign key (school_id) 
+    alter table Reference
+        add constraint FK404D5F2BAEC3B8B8
+        foreign key (school_id)
         references AgentBase;
 
-    alter table Reference 
-        add constraint FK404D5F2B697665E 
-        foreign key (authorteam_id) 
+    alter table Reference
+        add constraint FK404D5F2B697665E
+        foreign key (authorteam_id)
         references AgentBase;
 
-    alter table Reference 
-        add constraint FK404D5F2BBC5DA539 
-        foreign key (updatedby_id) 
+    alter table Reference
+        add constraint FK404D5F2BBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Reference_AUD 
-        add constraint FK8F0FFF7C34869AAE 
-        foreign key (REV) 
+    alter table Reference_AUD
+        add constraint FK8F0FFF7C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_Annotation 
-        add constraint FKFC824E3765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_Annotation
+        add constraint FKFC824E3765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_Annotation 
-        add constraint FKFC824E31E403E0B 
-        foreign key (annotations_id) 
+    alter table Reference_Annotation
+        add constraint FKFC824E31E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Reference_Annotation_AUD 
-        add constraint FKF3C1293434869AAE 
-        foreign key (REV) 
+    alter table Reference_Annotation_AUD
+        add constraint FKF3C1293434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_Credit 
-        add constraint FK5BC6DEAD32D1B9F 
-        foreign key (credits_id) 
+    alter table Reference_Credit
+        add constraint FK5BC6DEAD32D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table Reference_Credit 
-        add constraint FK5BC6DEAD765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_Credit
+        add constraint FK5BC6DEAD765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_Credit_AUD 
-        add constraint FK4AD9EDFE34869AAE 
-        foreign key (REV) 
+    alter table Reference_Credit_AUD
+        add constraint FK4AD9EDFE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_Extension 
-        add constraint FKDEFCDC0B927DE9DF 
-        foreign key (extensions_id) 
+    alter table Reference_Extension
+        add constraint FKDEFCDC0B927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table Reference_Extension 
-        add constraint FKDEFCDC0B765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_Extension
+        add constraint FKDEFCDC0B765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_Extension_AUD 
-        add constraint FK1DF60C5C34869AAE 
-        foreign key (REV) 
+    alter table Reference_Extension_AUD
+        add constraint FK1DF60C5C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_Marker 
-        add constraint FK6BEDC7EE777265A1 
-        foreign key (markers_id) 
+    alter table Reference_Marker
+        add constraint FK6BEDC7EE777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Reference_Marker 
-        add constraint FK6BEDC7EE765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_Marker
+        add constraint FK6BEDC7EE765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_Marker_AUD 
-        add constraint FKAEF84EBF34869AAE 
-        foreign key (REV) 
+    alter table Reference_Marker_AUD
+        add constraint FKAEF84EBF34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_Media 
-        add constraint FKBBEF5B0765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_Media
+        add constraint FKBBEF5B0765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_Media 
-        add constraint FKBBEF5B0C2C29593 
-        foreign key (media_id) 
+    alter table Reference_Media
+        add constraint FKBBEF5B0C2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table Reference_Media_AUD 
-        add constraint FK8318CB8134869AAE 
-        foreign key (REV) 
+    alter table Reference_Media_AUD
+        add constraint FK8318CB8134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_OriginalSourceBase 
-        add constraint FKD3E8B7F1765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_OriginalSourceBase
+        add constraint FKD3E8B7F1765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_OriginalSourceBase 
-        add constraint FKD3E8B7F13A6735D9 
-        foreign key (sources_id) 
+    alter table Reference_OriginalSourceBase
+        add constraint FKD3E8B7F13A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table Reference_OriginalSourceBase_AUD 
-        add constraint FKC025854234869AAE 
-        foreign key (REV) 
+    alter table Reference_OriginalSourceBase_AUD
+        add constraint FKC025854234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Reference_Rights 
-        add constraint FK74E1B58BC13F7B21 
-        foreign key (rights_id) 
+    alter table Reference_Rights
+        add constraint FK74E1B58BC13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table Reference_Rights 
-        add constraint FK74E1B58B765B124B 
-        foreign key (Reference_id) 
+    alter table Reference_Rights
+        add constraint FK74E1B58B765B124B
+        foreign key (Reference_id)
         references Reference;
 
-    alter table Reference_Rights_AUD 
-        add constraint FK1AD225DC34869AAE 
-        foreign key (REV) 
+    alter table Reference_Rights_AUD
+        add constraint FK1AD225DC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table RelationshipTermBase_inverseRepresentation 
-        add constraint FK98592F33ECEEF4AF 
-        foreign key (DefinedTermBase_id) 
+    alter table RelationshipTermBase_inverseRepresentation
+        add constraint FK98592F33ECEEF4AF
+        foreign key (DefinedTermBase_id)
         references DefinedTermBase;
 
-    alter table RelationshipTermBase_inverseRepresentation 
-        add constraint FK98592F33473FB677 
-        foreign key (inverserepresentations_id) 
+    alter table RelationshipTermBase_inverseRepresentation
+        add constraint FK98592F33473FB677
+        foreign key (inverserepresentations_id)
         references Representation;
 
-    alter table RelationshipTermBase_inverseRepresentation_AUD 
-        add constraint FK5D248B8434869AAE 
-        foreign key (REV) 
+    alter table RelationshipTermBase_inverseRepresentation_AUD
+        add constraint FK5D248B8434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Representation 
-        add constraint FK9C4724ED4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Representation
+        add constraint FK9C4724ED4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Representation 
-        add constraint FK9C4724EDE8D36B00 
-        foreign key (language_id) 
+    alter table Representation
+        add constraint FK9C4724EDE8D36B00
+        foreign key (language_id)
         references DefinedTermBase;
 
-    alter table Representation 
-        add constraint FK9C4724EDBC5DA539 
-        foreign key (updatedby_id) 
+    alter table Representation
+        add constraint FK9C4724EDBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Representation_AUD 
-        add constraint FK294D143E34869AAE 
-        foreign key (REV) 
+    alter table Representation_AUD
+        add constraint FK294D143E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Representation_Annotation 
-        add constraint FK371091E147E8AE60 
-        foreign key (Representation_id) 
+    alter table Representation_Annotation
+        add constraint FK371091E147E8AE60
+        foreign key (Representation_id)
         references Representation;
 
-    alter table Representation_Annotation 
-        add constraint FK371091E11E403E0B 
-        foreign key (annotations_id) 
+    alter table Representation_Annotation
+        add constraint FK371091E11E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Representation_Annotation_AUD 
-        add constraint FK36EEE73234869AAE 
-        foreign key (REV) 
+    alter table Representation_Annotation_AUD
+        add constraint FK36EEE73234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Representation_Marker 
-        add constraint FK560063EC777265A1 
-        foreign key (markers_id) 
+    alter table Representation_Marker
+        add constraint FK560063EC777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Representation_Marker 
-        add constraint FK560063EC47E8AE60 
-        foreign key (Representation_id) 
+    alter table Representation_Marker
+        add constraint FK560063EC47E8AE60
+        foreign key (Representation_id)
         references Representation;
 
-    alter table Representation_Marker_AUD 
-        add constraint FKD640BBBD34869AAE 
-        foreign key (REV) 
+    alter table Representation_Marker_AUD
+        add constraint FKD640BBBD34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Rights 
-        add constraint FK91E56DF74FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Rights
+        add constraint FK91E56DF74FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Rights 
-        add constraint FK91E56DF7F7976FC5 
-        foreign key (agent_id) 
+    alter table Rights
+        add constraint FK91E56DF7F7976FC5
+        foreign key (agent_id)
         references AgentBase;
 
-    alter table Rights 
-        add constraint FK91E56DF7E6D2886A 
-        foreign key (type_id) 
+    alter table Rights
+        add constraint FK91E56DF7E6D2886A
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table Rights 
-        add constraint FK91E56DF7E8D36B00 
-        foreign key (language_id) 
+    alter table Rights
+        add constraint FK91E56DF7E8D36B00
+        foreign key (language_id)
         references DefinedTermBase;
 
-    alter table Rights 
-        add constraint FK91E56DF7BC5DA539 
-        foreign key (updatedby_id) 
+    alter table Rights
+        add constraint FK91E56DF7BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Rights_AUD 
-        add constraint FK252BC84834869AAE 
-        foreign key (REV) 
+    alter table Rights_AUD
+        add constraint FK252BC84834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Rights_Annotation 
-        add constraint FK27CB1E97C13F7B21 
-        foreign key (Rights_id) 
+    alter table Rights_Annotation
+        add constraint FK27CB1E97C13F7B21
+        foreign key (Rights_id)
         references Rights;
 
-    alter table Rights_Annotation 
-        add constraint FK27CB1E971E403E0B 
-        foreign key (annotations_id) 
+    alter table Rights_Annotation
+        add constraint FK27CB1E971E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Rights_Annotation_AUD 
-        add constraint FKF98828E834869AAE 
-        foreign key (REV) 
+    alter table Rights_Annotation_AUD
+        add constraint FKF98828E834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Rights_Marker 
-        add constraint FKB739BBA2777265A1 
-        foreign key (markers_id) 
+    alter table Rights_Marker
+        add constraint FKB739BBA2777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Rights_Marker 
-        add constraint FKB739BBA2C13F7B21 
-        foreign key (Rights_id) 
+    alter table Rights_Marker
+        add constraint FKB739BBA2C13F7B21
+        foreign key (Rights_id)
         references Rights;
 
-    alter table Rights_Marker_AUD 
-        add constraint FKC6FB487334869AAE 
-        foreign key (REV) 
+    alter table Rights_Marker_AUD
+        add constraint FKC6FB487334869AAE
+        foreign key (REV)
         references AuditEvent;
 
     create index sequenceTitleCacheIndex on Sequence (titleCache);
 
-    alter table Sequence 
-        add constraint FK544ADBE14FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Sequence
+        add constraint FK544ADBE14FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Sequence 
-        add constraint FK544ADBE1B982A103 
-        foreign key (publishedin_id) 
+    alter table Sequence
+        add constraint FK544ADBE1B982A103
+        foreign key (publishedin_id)
         references Reference;
 
-    alter table Sequence 
-        add constraint FK544ADBE12DBE1F1F 
-        foreign key (locus_id) 
+    alter table Sequence
+        add constraint FK544ADBE12DBE1F1F
+        foreign key (locus_id)
         references Locus;
 
-    alter table Sequence 
-        add constraint FK544ADBE1BC5DA539 
-        foreign key (updatedby_id) 
+    alter table Sequence
+        add constraint FK544ADBE1BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Sequence_AUD 
-        add constraint FK39F4313234869AAE 
-        foreign key (REV) 
+    alter table Sequence_AUD
+        add constraint FK39F4313234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Annotation 
-        add constraint FK1010BA6DD57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Annotation
+        add constraint FK1010BA6DD57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Annotation 
-        add constraint FK1010BA6D1E403E0B 
-        foreign key (annotations_id) 
+    alter table Sequence_Annotation
+        add constraint FK1010BA6D1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Sequence_Annotation_AUD 
-        add constraint FKCB4FE9BE34869AAE 
-        foreign key (REV) 
+    alter table Sequence_Annotation_AUD
+        add constraint FKCB4FE9BE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Credit 
-        add constraint FK2CFBC93732D1B9F 
-        foreign key (credits_id) 
+    alter table Sequence_Credit
+        add constraint FK2CFBC93732D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table Sequence_Credit 
-        add constraint FK2CFBC937D57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Credit
+        add constraint FK2CFBC937D57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Credit_AUD 
-        add constraint FK4B22838834869AAE 
-        foreign key (REV) 
+    alter table Sequence_Credit_AUD
+        add constraint FK4B22838834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Extension 
-        add constraint FK7BE66D41927DE9DF 
-        foreign key (extensions_id) 
+    alter table Sequence_Extension
+        add constraint FK7BE66D41927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table Sequence_Extension 
-        add constraint FK7BE66D41D57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Extension
+        add constraint FK7BE66D41D57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Extension_AUD 
-        add constraint FK1CA8129234869AAE 
-        foreign key (REV) 
+    alter table Sequence_Extension_AUD
+        add constraint FK1CA8129234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_GenBankAccession 
-        add constraint FK8F698096D57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_GenBankAccession
+        add constraint FK8F698096D57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_GenBankAccession 
-        add constraint FK8F69809615C4EF35 
-        foreign key (genbankaccession_id) 
+    alter table Sequence_GenBankAccession
+        add constraint FK8F69809615C4EF35
+        foreign key (genbankaccession_id)
         references GenBankAccession;
 
-    alter table Sequence_GenBankAccession_AUD 
-        add constraint FKC717736734869AAE 
-        foreign key (REV) 
+    alter table Sequence_GenBankAccession_AUD
+        add constraint FKC717736734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Marker 
-        add constraint FK3D22B278777265A1 
-        foreign key (markers_id) 
+    alter table Sequence_Marker
+        add constraint FK3D22B278777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Sequence_Marker 
-        add constraint FK3D22B278D57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Marker
+        add constraint FK3D22B278D57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Marker_AUD 
-        add constraint FKAF40E44934869AAE 
-        foreign key (REV) 
+    alter table Sequence_Marker_AUD
+        add constraint FKAF40E44934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Media 
-        add constraint FK8E5D91E666ACA7EC 
-        foreign key (chromatograms_id) 
+    alter table Sequence_Media
+        add constraint FK8E5D91E666ACA7EC
+        foreign key (chromatograms_id)
         references Media;
 
-    alter table Sequence_Media 
-        add constraint FK8E5D91E6D57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Media
+        add constraint FK8E5D91E6D57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Media_AUD 
-        add constraint FK20025CB734869AAE 
-        foreign key (REV) 
+    alter table Sequence_Media_AUD
+        add constraint FK20025CB734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_OriginalSourceBase 
-        add constraint FKCDB0237BD57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_OriginalSourceBase
+        add constraint FKCDB0237BD57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_OriginalSourceBase 
-        add constraint FKCDB0237B3A6735D9 
-        foreign key (sources_id) 
+    alter table Sequence_OriginalSourceBase
+        add constraint FKCDB0237B3A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table Sequence_OriginalSourceBase_AUD 
-        add constraint FK69D81BCC34869AAE 
-        foreign key (REV) 
+    alter table Sequence_OriginalSourceBase_AUD
+        add constraint FK69D81BCC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Reference 
-        add constraint FK6944904D7291F8A 
-        foreign key (citations_id) 
+    alter table Sequence_Reference
+        add constraint FK6944904D7291F8A
+        foreign key (citations_id)
         references Reference;
 
-    alter table Sequence_Reference 
-        add constraint FK6944904DD57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Reference
+        add constraint FK6944904DD57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Reference_AUD 
-        add constraint FK18E5CF9E34869AAE 
-        foreign key (REV) 
+    alter table Sequence_Reference_AUD
+        add constraint FK18E5CF9E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Sequence_Rights 
-        add constraint FK4616A015C13F7B21 
-        foreign key (rights_id) 
+    alter table Sequence_Rights
+        add constraint FK4616A015C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table Sequence_Rights 
-        add constraint FK4616A015D57FFDD5 
-        foreign key (Sequence_id) 
+    alter table Sequence_Rights
+        add constraint FK4616A015D57FFDD5
+        foreign key (Sequence_id)
         references Sequence;
 
-    alter table Sequence_Rights_AUD 
-        add constraint FK1B1ABB6634869AAE 
-        foreign key (REV) 
+    alter table Sequence_Rights_AUD
+        add constraint FK1B1ABB6634869AAE
+        foreign key (REV)
         references AuditEvent;
 
     create index specimenOrObservationBaseTitleCacheIndex on SpecimenOrObservationBase (titleCache);
 
-    
-    alter table SpecimenOrObservationBase 
-        add constraint FK11CB3232F75F225E 
-        foreign key (primarycollector_id) 
+
+    alter table SpecimenOrObservationBase
+        add constraint FK11CB3232F75F225E
+        foreign key (primarycollector_id)
         references AgentBase;
-    
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA32727CC340C5 
-        foreign key (storedunder_id) 
+
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA32727CC340C5
+        foreign key (storedunder_id)
         references TaxonNameBase;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA32728C750E27 
-        foreign key (lifestage_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA32728C750E27
+        foreign key (lifestage_id)
         references DefinedTermBase;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA32724FF2DB2C 
-        foreign key (createdby_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA32724FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA3272EB62BE9A 
-        foreign key (collection_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA3272EB62BE9A
+        foreign key (collection_id)
         references Collection;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA3272E17C9A6B 
-        foreign key (sex_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA3272E17C9A6B
+        foreign key (sex_id)
         references DefinedTermBase;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA3272C8505DB 
-        foreign key (preservation_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA3272C8505DB
+        foreign key (preservation_id)
         references DefinedTermBase;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA32724AAB411A 
-        foreign key (derivedfrom_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA32724AAB411A
+        foreign key (derivedfrom_id)
         references DerivationEvent;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA3272F95F225A 
-        foreign key (gatheringevent_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA3272F95F225A
+        foreign key (gatheringevent_id)
         references GatheringEvent;
 
-    alter table SpecimenOrObservationBase 
-        add constraint FK21CA3272BC5DA539 
-        foreign key (updatedby_id) 
+    alter table SpecimenOrObservationBase
+        add constraint FK21CA3272BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table SpecimenOrObservationBase_AUD 
-        add constraint FKF3D3D74334869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_AUD
+        add constraint FKF3D3D74334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Annotation 
-        add constraint FK365E4F3C3B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Annotation
+        add constraint FK365E4F3C3B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Annotation 
-        add constraint FK365E4F3C1E403E0B 
-        foreign key (annotations_id) 
+    alter table SpecimenOrObservationBase_Annotation
+        add constraint FK365E4F3C1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table SpecimenOrObservationBase_Annotation_AUD 
-        add constraint FK34187F0D34869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Annotation_AUD
+        add constraint FK34187F0D34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Credit 
-        add constraint FK7E3A1D8632D1B9F 
-        foreign key (credits_id) 
+    alter table SpecimenOrObservationBase_Credit
+        add constraint FK7E3A1D8632D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table SpecimenOrObservationBase_Credit 
-        add constraint FK7E3A1D863B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Credit
+        add constraint FK7E3A1D863B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Credit_AUD 
-        add constraint FK7170185734869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Credit_AUD
+        add constraint FK7170185734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_DerivationEvent 
-        add constraint FK20132036BD59A1AD 
-        foreign key (derivationevents_id) 
+    alter table SpecimenOrObservationBase_DerivationEvent
+        add constraint FK20132036BD59A1AD
+        foreign key (derivationevents_id)
         references DerivationEvent;
 
-    alter table SpecimenOrObservationBase_DerivationEvent 
-        add constraint FK2013203654C216AA 
-        foreign key (originals_id) 
+    alter table SpecimenOrObservationBase_DerivationEvent
+        add constraint FK2013203654C216AA
+        foreign key (originals_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_DerivationEvent_AUD 
-        add constraint FKA4A8430734869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_DerivationEvent_AUD
+        add constraint FKA4A8430734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Extension 
-        add constraint FKE03B8292927DE9DF 
-        foreign key (extensions_id) 
+    alter table SpecimenOrObservationBase_Extension
+        add constraint FKE03B8292927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table SpecimenOrObservationBase_Extension 
-        add constraint FKE03B82923B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Extension
+        add constraint FKE03B82923B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Extension_AUD 
-        add constraint FK7AE0176334869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Extension_AUD
+        add constraint FK7AE0176334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_LanguageString 
-        add constraint FKCFAA931628459272 
-        foreign key (definition_mapkey_id) 
+    alter table SpecimenOrObservationBase_LanguageString
+        add constraint FKCFAA931628459272
+        foreign key (definition_mapkey_id)
         references DefinedTermBase;
 
-    alter table SpecimenOrObservationBase_LanguageString 
-        add constraint FKCFAA93162BEBA58D 
-        foreign key (definition_id) 
+    alter table SpecimenOrObservationBase_LanguageString
+        add constraint FKCFAA93162BEBA58D
+        foreign key (definition_id)
         references LanguageString;
 
-    alter table SpecimenOrObservationBase_LanguageString 
-        add constraint FKCFAA93163B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_LanguageString
+        add constraint FKCFAA93163B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_LanguageString_AUD 
-        add constraint FK38B45E734869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_LanguageString_AUD
+        add constraint FK38B45E734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Marker 
-        add constraint FK8E6106C7777265A1 
-        foreign key (markers_id) 
+    alter table SpecimenOrObservationBase_Marker
+        add constraint FK8E6106C7777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table SpecimenOrObservationBase_Marker 
-        add constraint FK8E6106C73B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Marker
+        add constraint FK8E6106C73B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Marker_AUD 
-        add constraint FKD58E791834869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Marker_AUD
+        add constraint FKD58E791834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Media 
-        add constraint FK4EEBF7B7C2C29593 
-        foreign key (media_id) 
+    alter table SpecimenOrObservationBase_Media
+        add constraint FK4EEBF7B7C2C29593
+        foreign key (media_id)
         references Media;
 
-    alter table SpecimenOrObservationBase_Media 
-        add constraint FK4EEBF7B73B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Media
+        add constraint FK4EEBF7B73B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Media_AUD 
-        add constraint FK8457720834869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Media_AUD
+        add constraint FK8457720834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_OriginalSourceBase 
-        add constraint FKCA7F794A3B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_OriginalSourceBase
+        add constraint FKCA7F794A3B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_OriginalSourceBase 
-        add constraint FKCA7F794A3A6735D9 
-        foreign key (sources_id) 
+    alter table SpecimenOrObservationBase_OriginalSourceBase
+        add constraint FKCA7F794A3A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table SpecimenOrObservationBase_OriginalSourceBase_AUD 
-        add constraint FK2059F21B34869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_OriginalSourceBase_AUD
+        add constraint FK2059F21B34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Rights 
-        add constraint FK9754F464C13F7B21 
-        foreign key (rights_id) 
+    alter table SpecimenOrObservationBase_Rights
+        add constraint FK9754F464C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table SpecimenOrObservationBase_Rights 
-        add constraint FK9754F4643B8A5ABA 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Rights
+        add constraint FK9754F4643B8A5ABA
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Rights_AUD 
-        add constraint FK4168503534869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Rights_AUD
+        add constraint FK4168503534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SpecimenOrObservationBase_Sequence 
-        add constraint FKBBF27B0E35B10F24 
-        foreign key (sequences_id) 
+    alter table SpecimenOrObservationBase_Sequence
+        add constraint FKBBF27B0E35B10F24
+        foreign key (sequences_id)
         references Sequence;
 
-    alter table SpecimenOrObservationBase_Sequence 
-        add constraint FKBBF27B0E7EE2770E 
-        foreign key (SpecimenOrObservationBase_id) 
+    alter table SpecimenOrObservationBase_Sequence
+        add constraint FKBBF27B0E7EE2770E
+        foreign key (SpecimenOrObservationBase_id)
         references SpecimenOrObservationBase;
 
-    alter table SpecimenOrObservationBase_Sequence_AUD 
-        add constraint FK392E71DF34869AAE 
-        foreign key (REV) 
+    alter table SpecimenOrObservationBase_Sequence_AUD
+        add constraint FK392E71DF34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table StateData 
-        add constraint FKFB1697BB4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table StateData
+        add constraint FKFB1697BB4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table StateData 
-        add constraint FKFB1697BB682A4E4B 
-        foreign key (state_id) 
+    alter table StateData
+        add constraint FKFB1697BB682A4E4B
+        foreign key (state_id)
         references DefinedTermBase;
 
-    alter table StateData 
-        add constraint FKFB1697BBBC5DA539 
-        foreign key (updatedby_id) 
+    alter table StateData
+        add constraint FKFB1697BBBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table StateData_AUD 
-        add constraint FKDA6A700C34869AAE 
-        foreign key (REV) 
+    alter table StateData_AUD
+        add constraint FKDA6A700C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table StateData_DefinedTermBase 
-        add constraint FK107321E28E7BF9AB 
-        foreign key (StateData_id) 
+    alter table StateData_DefinedTermBase
+        add constraint FK107321E28E7BF9AB
+        foreign key (StateData_id)
         references StateData;
 
-    alter table StateData_DefinedTermBase 
-        add constraint FK107321E2E0960EC4 
-        foreign key (modifiers_id) 
+    alter table StateData_DefinedTermBase
+        add constraint FK107321E2E0960EC4
+        foreign key (modifiers_id)
         references DefinedTermBase;
 
-    alter table StateData_DefinedTermBase_AUD 
-        add constraint FK7C978EB334869AAE 
-        foreign key (REV) 
+    alter table StateData_DefinedTermBase_AUD
+        add constraint FK7C978EB334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table StateData_LanguageString 
-        add constraint FK93FFD2AD8E7BF9AB 
-        foreign key (StateData_id) 
+    alter table StateData_LanguageString
+        add constraint FK93FFD2AD8E7BF9AB
+        foreign key (StateData_id)
         references StateData;
 
-    alter table StateData_LanguageString 
-        add constraint FK93FFD2ADF05D08D4 
-        foreign key (modifyingtext_id) 
+    alter table StateData_LanguageString
+        add constraint FK93FFD2ADF05D08D4
+        foreign key (modifyingtext_id)
         references LanguageString;
 
-    alter table StateData_LanguageString 
-        add constraint FK93FFD2AD9682414B 
-        foreign key (modifyingtext_mapkey_id) 
+    alter table StateData_LanguageString
+        add constraint FK93FFD2AD9682414B
+        foreign key (modifyingtext_mapkey_id)
         references DefinedTermBase;
 
-    alter table StateData_LanguageString_AUD 
-        add constraint FK1578E1FE34869AAE 
-        foreign key (REV) 
+    alter table StateData_LanguageString_AUD
+        add constraint FK1578E1FE34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table StatisticalMeasurementValue 
-        add constraint FK2DCE02904FF2DB2C 
-        foreign key (createdby_id) 
+    alter table StatisticalMeasurementValue
+        add constraint FK2DCE02904FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table StatisticalMeasurementValue 
-        add constraint FK2DCE02904C428112 
-        foreign key (type_id) 
+    alter table StatisticalMeasurementValue
+        add constraint FK2DCE02904C428112
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table StatisticalMeasurementValue 
-        add constraint FK2DCE0290BC5DA539 
-        foreign key (updatedby_id) 
+    alter table StatisticalMeasurementValue
+        add constraint FK2DCE0290BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table StatisticalMeasurementValue_AUD 
-        add constraint FKBB16686134869AAE 
-        foreign key (REV) 
+    alter table StatisticalMeasurementValue_AUD
+        add constraint FKBB16686134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table StatisticalMeasurementValue_DefinedTermBase 
-        add constraint FK686C42B7E0960EC4 
-        foreign key (modifiers_id) 
+    alter table StatisticalMeasurementValue_DefinedTermBase
+        add constraint FK686C42B7E0960EC4
+        foreign key (modifiers_id)
         references DefinedTermBase;
 
-    alter table StatisticalMeasurementValue_DefinedTermBase 
-        add constraint FK686C42B75C9F4F2B 
-        foreign key (StatisticalMeasurementValue_id) 
+    alter table StatisticalMeasurementValue_DefinedTermBase
+        add constraint FK686C42B75C9F4F2B
+        foreign key (StatisticalMeasurementValue_id)
         references StatisticalMeasurementValue;
 
-    alter table StatisticalMeasurementValue_DefinedTermBase_AUD 
-        add constraint FKFEBA3D0834869AAE 
-        foreign key (REV) 
+    alter table StatisticalMeasurementValue_DefinedTermBase_AUD
+        add constraint FKFEBA3D0834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SynonymRelationship 
-        add constraint FKF483ADB34FF2DB2C 
-        foreign key (createdby_id) 
+    alter table SynonymRelationship
+        add constraint FKF483ADB34FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table SynonymRelationship 
-        add constraint FKF483ADB39803512F 
-        foreign key (citation_id) 
+    alter table SynonymRelationship
+        add constraint FKF483ADB39803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table SynonymRelationship 
-        add constraint FKF483ADB34BAC703F 
-        foreign key (relatedfrom_id) 
+    alter table SynonymRelationship
+        add constraint FKF483ADB34BAC703F
+        foreign key (relatedfrom_id)
         references TaxonBase;
 
-    alter table SynonymRelationship 
-        add constraint FKF483ADB380924EEC 
-        foreign key (type_id) 
+    alter table SynonymRelationship
+        add constraint FKF483ADB380924EEC
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table SynonymRelationship 
-        add constraint FKF483ADB3F8991B9D 
-        foreign key (relatedto_id) 
+    alter table SynonymRelationship
+        add constraint FKF483ADB3F8991B9D
+        foreign key (relatedto_id)
         references TaxonBase;
 
-    alter table SynonymRelationship 
-        add constraint FKF483ADB3BC5DA539 
-        foreign key (updatedby_id) 
+    alter table SynonymRelationship
+        add constraint FKF483ADB3BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table SynonymRelationship_AUD 
-        add constraint FK8AEBCA0434869AAE 
-        foreign key (REV) 
+    alter table SynonymRelationship_AUD
+        add constraint FK8AEBCA0434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SynonymRelationship_Annotation 
-        add constraint FKF494F15B260A8379 
-        foreign key (SynonymRelationship_id) 
+    alter table SynonymRelationship_Annotation
+        add constraint FKF494F15B260A8379
+        foreign key (SynonymRelationship_id)
         references SynonymRelationship;
 
-    alter table SynonymRelationship_Annotation 
-        add constraint FKF494F15B1E403E0B 
-        foreign key (annotations_id) 
+    alter table SynonymRelationship_Annotation
+        add constraint FKF494F15B1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table SynonymRelationship_Annotation_AUD 
-        add constraint FKD3E2F9AC34869AAE 
-        foreign key (REV) 
+    alter table SynonymRelationship_Annotation_AUD
+        add constraint FKD3E2F9AC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table SynonymRelationship_Marker 
-        add constraint FK7A439066777265A1 
-        foreign key (markers_id) 
+    alter table SynonymRelationship_Marker
+        add constraint FK7A439066777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table SynonymRelationship_Marker 
-        add constraint FK7A439066260A8379 
-        foreign key (SynonymRelationship_id) 
+    alter table SynonymRelationship_Marker
+        add constraint FK7A439066260A8379
+        foreign key (SynonymRelationship_id)
         references SynonymRelationship;
 
-    alter table SynonymRelationship_Marker_AUD 
-        add constraint FK93C51B3734869AAE 
-        foreign key (REV) 
+    alter table SynonymRelationship_Marker_AUD
+        add constraint FK93C51B3734869AAE
+        foreign key (REV)
         references AuditEvent;
 
     create index taxonBaseTitleCacheIndex on TaxonBase (titleCache);
 
-    alter table TaxonBase 
-        add constraint FK9249B49B4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table TaxonBase
+        add constraint FK9249B49B4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table TaxonBase 
-        add constraint FK9249B49B5E4A2F85 
-        foreign key (sec_id) 
+    alter table TaxonBase
+        add constraint FK9249B49B5E4A2F85
+        foreign key (sec_id)
         references Reference;
 
-    alter table TaxonBase 
-        add constraint FK9249B49B7C7B5AED 
-        foreign key (taxonomicparentcache_id) 
+    alter table TaxonBase
+        add constraint FK9249B49B7C7B5AED
+        foreign key (taxonomicparentcache_id)
         references TaxonBase;
 
-    alter table TaxonBase 
-        add constraint FK9249B49BDA93512F 
-        foreign key (name_id) 
+    alter table TaxonBase
+        add constraint FK9249B49BDA93512F
+        foreign key (name_id)
         references TaxonNameBase;
 
-    alter table TaxonBase 
-        add constraint FK9249B49BBC5DA539 
-        foreign key (updatedby_id) 
+    alter table TaxonBase
+        add constraint FK9249B49BBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table TaxonBase_AUD 
-        add constraint FK37041CEC34869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_AUD
+        add constraint FK37041CEC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonBase_Annotation 
-        add constraint FK41ED09739C9D39 
-        foreign key (TaxonBase_id) 
+    alter table TaxonBase_Annotation
+        add constraint FK41ED09739C9D39
+        foreign key (TaxonBase_id)
         references TaxonBase;
 
-    alter table TaxonBase_Annotation 
-        add constraint FK41ED09731E403E0B 
-        foreign key (annotations_id) 
+    alter table TaxonBase_Annotation
+        add constraint FK41ED09731E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table TaxonBase_Annotation_AUD 
-        add constraint FK8C145C434869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_Annotation_AUD
+        add constraint FK8C145C434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonBase_Credit 
-        add constraint FK4CB48B3D9C9D39 
-        foreign key (TaxonBase_id) 
+    alter table TaxonBase_Credit
+        add constraint FK4CB48B3D9C9D39
+        foreign key (TaxonBase_id)
         references TaxonBase;
 
-    alter table TaxonBase_Credit 
-        add constraint FK4CB48B3D32D1B9F 
-        foreign key (credits_id) 
+    alter table TaxonBase_Credit
+        add constraint FK4CB48B3D32D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table TaxonBase_Credit_AUD 
-        add constraint FK7CFED28E34869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_Credit_AUD
+        add constraint FK7CFED28E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonBase_Extension 
-        add constraint FKF961257B927DE9DF 
-        foreign key (extensions_id) 
+    alter table TaxonBase_Extension
+        add constraint FKF961257B927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table TaxonBase_Extension 
-        add constraint FKF961257B9C9D39 
-        foreign key (TaxonBase_id) 
+    alter table TaxonBase_Extension
+        add constraint FKF961257B9C9D39
+        foreign key (TaxonBase_id)
         references TaxonBase;
 
-    alter table TaxonBase_Extension_AUD 
-        add constraint FK71381DCC34869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_Extension_AUD
+        add constraint FK71381DCC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonBase_Marker 
-        add constraint FK5CDB747E777265A1 
-        foreign key (markers_id) 
+    alter table TaxonBase_Marker
+        add constraint FK5CDB747E777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table TaxonBase_Marker 
-        add constraint FK5CDB747E9C9D39 
-        foreign key (TaxonBase_id) 
+    alter table TaxonBase_Marker
+        add constraint FK5CDB747E9C9D39
+        foreign key (TaxonBase_id)
         references TaxonBase;
 
-    alter table TaxonBase_Marker_AUD 
-        add constraint FKE11D334F34869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_Marker_AUD
+        add constraint FKE11D334F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonBase_OriginalSourceBase 
-        add constraint FKFB680C819C9D39 
-        foreign key (TaxonBase_id) 
+    alter table TaxonBase_OriginalSourceBase
+        add constraint FKFB680C819C9D39
+        foreign key (TaxonBase_id)
         references TaxonBase;
 
-    alter table TaxonBase_OriginalSourceBase 
-        add constraint FKFB680C813A6735D9 
-        foreign key (sources_id) 
+    alter table TaxonBase_OriginalSourceBase
+        add constraint FKFB680C813A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table TaxonBase_OriginalSourceBase_AUD 
-        add constraint FKB7C811D234869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_OriginalSourceBase_AUD
+        add constraint FKB7C811D234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonBase_Rights 
-        add constraint FK65CF621B9C9D39 
-        foreign key (TaxonBase_id) 
+    alter table TaxonBase_Rights
+        add constraint FK65CF621B9C9D39
+        foreign key (TaxonBase_id)
         references TaxonBase;
 
-    alter table TaxonBase_Rights 
-        add constraint FK65CF621BC13F7B21 
-        foreign key (rights_id) 
+    alter table TaxonBase_Rights
+        add constraint FK65CF621BC13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table TaxonBase_Rights_AUD 
-        add constraint FK4CF70A6C34869AAE 
-        foreign key (REV) 
+    alter table TaxonBase_Rights_AUD
+        add constraint FK4CF70A6C34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonInteraction_LanguageString 
-        add constraint FK579A1DC028459272 
-        foreign key (description_mapkey_id) 
+    alter table TaxonInteraction_LanguageString
+        add constraint FK579A1DC028459272
+        foreign key (description_mapkey_id)
         references DefinedTermBase;
 
-    alter table TaxonInteraction_LanguageString 
-        add constraint FK579A1DC086C86FE0 
-        foreign key (DescriptionElementBase_id) 
+    alter table TaxonInteraction_LanguageString
+        add constraint FK579A1DC086C86FE0
+        foreign key (DescriptionElementBase_id)
         references DescriptionElementBase;
 
-    alter table TaxonInteraction_LanguageString 
-        add constraint FK579A1DC02BEBA58D 
-        foreign key (description_id) 
+    alter table TaxonInteraction_LanguageString
+        add constraint FK579A1DC02BEBA58D
+        foreign key (description_id)
         references LanguageString;
 
-    alter table TaxonInteraction_LanguageString_AUD 
-        add constraint FK9E016B9134869AAE 
-        foreign key (REV) 
+    alter table TaxonInteraction_LanguageString_AUD
+        add constraint FK9E016B9134869AAE
+        foreign key (REV)
         references AuditEvent;
 
     create index taxonNameBaseTitleCacheIndex on TaxonNameBase (titleCache);
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C64FF2DB2C 
-        foreign key (createdby_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C64FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C662AD57A2 
-        foreign key (excombinationauthorteam_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C662AD57A2
+        foreign key (excombinationauthorteam_id)
         references AgentBase;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C6BFEAE500 
-        foreign key (homotypicalgroup_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C6BFEAE500
+        foreign key (homotypicalgroup_id)
         references HomotypicalGroup;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C6D7BE55A0 
-        foreign key (rank_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C6D7BE55A0
+        foreign key (rank_id)
         references DefinedTermBase;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C67F90DF03 
-        foreign key (exbasionymauthorteam_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C67F90DF03
+        foreign key (exbasionymauthorteam_id)
         references AgentBase;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C62B4FEDD6 
-        foreign key (basionymauthorteam_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C62B4FEDD6
+        foreign key (basionymauthorteam_id)
         references AgentBase;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C64AC9C024 
-        foreign key (nomenclaturalreference_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C64AC9C024
+        foreign key (nomenclaturalreference_id)
         references Reference;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C6B14B73EF 
-        foreign key (combinationauthorteam_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C6B14B73EF
+        foreign key (combinationauthorteam_id)
         references AgentBase;
 
-    alter table TaxonNameBase 
-        add constraint FKB4870C6BC5DA539 
-        foreign key (updatedby_id) 
+    alter table TaxonNameBase
+        add constraint FKB4870C6BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table TaxonNameBase_AUD 
-        add constraint FK5CA2CB9734869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_AUD
+        add constraint FK5CA2CB9734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_Annotation 
-        add constraint FK9E7794688C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_Annotation
+        add constraint FK9E7794688C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_Annotation 
-        add constraint FK9E7794681E403E0B 
-        foreign key (annotations_id) 
+    alter table TaxonNameBase_Annotation
+        add constraint FK9E7794681E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table TaxonNameBase_Annotation_AUD 
-        add constraint FKB6734E3934869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_Annotation_AUD
+        add constraint FKB6734E3934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_Credit 
-        add constraint FK29BCD8B28C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_Credit
+        add constraint FK29BCD8B28C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_Credit 
-        add constraint FK29BCD8B232D1B9F 
-        foreign key (credits_id) 
+    alter table TaxonNameBase_Credit
+        add constraint FK29BCD8B232D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table TaxonNameBase_Credit_AUD 
-        add constraint FKD9895D8334869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_Credit_AUD
+        add constraint FKD9895D8334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_Extension 
-        add constraint FKC28EE7E68C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_Extension
+        add constraint FKC28EE7E68C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_Extension 
-        add constraint FKC28EE7E6927DE9DF 
-        foreign key (extensions_id) 
+    alter table TaxonNameBase_Extension
+        add constraint FKC28EE7E6927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table TaxonNameBase_Extension_AUD 
-        add constraint FK8F98B2B734869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_Extension_AUD
+        add constraint FK8F98B2B734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_Marker 
-        add constraint FK39E3C1F3777265A1 
-        foreign key (markers_id) 
+    alter table TaxonNameBase_Marker
+        add constraint FK39E3C1F3777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table TaxonNameBase_Marker 
-        add constraint FK39E3C1F38C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_Marker
+        add constraint FK39E3C1F38C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_Marker_AUD 
-        add constraint FK3DA7BE4434869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_Marker_AUD
+        add constraint FK3DA7BE4434869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_NomenclaturalStatus 
-        add constraint FK560BA7928C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_NomenclaturalStatus
+        add constraint FK560BA7928C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_NomenclaturalStatus 
-        add constraint FK560BA7926615E90D 
-        foreign key (status_id) 
+    alter table TaxonNameBase_NomenclaturalStatus
+        add constraint FK560BA7926615E90D
+        foreign key (status_id)
         references NomenclaturalStatus;
 
-    alter table TaxonNameBase_NomenclaturalStatus_AUD 
-        add constraint FK9215BC6334869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_NomenclaturalStatus_AUD
+        add constraint FK9215BC6334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_OriginalSourceBase 
-        add constraint FKF746D2768C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_OriginalSourceBase
+        add constraint FKF746D2768C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_OriginalSourceBase 
-        add constraint FKF746D2763A6735D9 
-        foreign key (sources_id) 
+    alter table TaxonNameBase_OriginalSourceBase
+        add constraint FKF746D2763A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table TaxonNameBase_OriginalSourceBase_AUD 
-        add constraint FK7A38D54734869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_OriginalSourceBase_AUD
+        add constraint FK7A38D54734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_Rights 
-        add constraint FK42D7AF908C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_Rights
+        add constraint FK42D7AF908C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_Rights 
-        add constraint FK42D7AF90C13F7B21 
-        foreign key (rights_id) 
+    alter table TaxonNameBase_Rights
+        add constraint FK42D7AF90C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table TaxonNameBase_Rights_AUD 
-        add constraint FKA981956134869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_Rights_AUD
+        add constraint FKA981956134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNameBase_TypeDesignationBase 
-        add constraint FKC0D6BBB58C85CF94 
-        foreign key (TaxonNameBase_id) 
+    alter table TaxonNameBase_TypeDesignationBase
+        add constraint FKC0D6BBB58C85CF94
+        foreign key (TaxonNameBase_id)
         references TaxonNameBase;
 
-    alter table TaxonNameBase_TypeDesignationBase 
-        add constraint FKC0D6BBB5C7DF530C 
-        foreign key (typedesignations_id) 
+    alter table TaxonNameBase_TypeDesignationBase
+        add constraint FKC0D6BBB5C7DF530C
+        foreign key (typedesignations_id)
         references TypeDesignationBase;
 
-    alter table TaxonNameBase_TypeDesignationBase_AUD 
-        add constraint FKBB24070634869AAE 
-        foreign key (REV) 
+    alter table TaxonNameBase_TypeDesignationBase_AUD
+        add constraint FKBB24070634869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCC4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCC4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCC215EDF26 
-        foreign key (referenceforparentchildrelation_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCC215EDF26
+        foreign key (referenceforparentchildrelation_id)
         references Reference;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCC759FE399 
-        foreign key (classification_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCC759FE399
+        foreign key (classification_id)
         references Classification;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCCDE9A3E39 
-        foreign key (taxon_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCCDE9A3E39
+        foreign key (taxon_id)
         references TaxonBase;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCCCC05993E 
-        foreign key (synonymtobeused_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCCCC05993E
+        foreign key (synonymtobeused_id)
         references TaxonBase;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCC39DB2DFB 
-        foreign key (parent_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCC39DB2DFB
+        foreign key (parent_id)
         references TaxonNode;
 
-    alter table TaxonNode 
-        add constraint FK924F5BCCBC5DA539 
-        foreign key (updatedby_id) 
+    alter table TaxonNode
+        add constraint FK924F5BCCBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table TaxonNode_AUD 
-        add constraint FKE090C39D34869AAE 
-        foreign key (REV) 
+    alter table TaxonNode_AUD
+        add constraint FKE090C39D34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNode_Annotation 
-        add constraint FKD8A9A9A2927D8399 
-        foreign key (TaxonNode_id) 
+    alter table TaxonNode_Annotation
+        add constraint FKD8A9A9A2927D8399
+        foreign key (TaxonNode_id)
         references TaxonNode;
 
-    alter table TaxonNode_Annotation 
-        add constraint FKD8A9A9A21E403E0B 
-        foreign key (annotations_id) 
+    alter table TaxonNode_Annotation
+        add constraint FKD8A9A9A21E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table TaxonNode_Annotation_AUD 
-        add constraint FKB2C4367334869AAE 
-        foreign key (REV) 
+    alter table TaxonNode_Annotation_AUD
+        add constraint FKB2C4367334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonNode_Marker 
-        add constraint FK395842D777265A1 
-        foreign key (markers_id) 
+    alter table TaxonNode_Marker
+        add constraint FK395842D777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table TaxonNode_Marker 
-        add constraint FK395842D927D8399 
-        foreign key (TaxonNode_id) 
+    alter table TaxonNode_Marker
+        add constraint FK395842D927D8399
+        foreign key (TaxonNode_id)
         references TaxonNode;
 
-    alter table TaxonNode_Marker_AUD 
-        add constraint FK77D9D37E34869AAE 
-        foreign key (REV) 
+    alter table TaxonNode_Marker_AUD
+        add constraint FK77D9D37E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonRelationship 
-        add constraint FK7482BA024FF2DB2C 
-        foreign key (createdby_id) 
+    alter table TaxonRelationship
+        add constraint FK7482BA024FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table TaxonRelationship 
-        add constraint FK7482BA029803512F 
-        foreign key (citation_id) 
+    alter table TaxonRelationship
+        add constraint FK7482BA029803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table TaxonRelationship 
-        add constraint FK7482BA02E71EF6CE 
-        foreign key (relatedfrom_id) 
+    alter table TaxonRelationship
+        add constraint FK7482BA02E71EF6CE
+        foreign key (relatedfrom_id)
         references TaxonBase;
 
-    alter table TaxonRelationship 
-        add constraint FK7482BA02F11BD77B 
-        foreign key (type_id) 
+    alter table TaxonRelationship
+        add constraint FK7482BA02F11BD77B
+        foreign key (type_id)
         references DefinedTermBase;
 
-    alter table TaxonRelationship 
-        add constraint FK7482BA02F8991B9D 
-        foreign key (relatedto_id) 
+    alter table TaxonRelationship
+        add constraint FK7482BA02F8991B9D
+        foreign key (relatedto_id)
         references TaxonBase;
 
-    alter table TaxonRelationship 
-        add constraint FK7482BA02BC5DA539 
-        foreign key (updatedby_id) 
+    alter table TaxonRelationship
+        add constraint FK7482BA02BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table TaxonRelationship_AUD 
-        add constraint FKA0DE16D334869AAE 
-        foreign key (REV) 
+    alter table TaxonRelationship_AUD
+        add constraint FKA0DE16D334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonRelationship_Annotation 
-        add constraint FK82C86DAC2BD180D9 
-        foreign key (TaxonRelationship_id) 
+    alter table TaxonRelationship_Annotation
+        add constraint FK82C86DAC2BD180D9
+        foreign key (TaxonRelationship_id)
         references TaxonRelationship;
 
-    alter table TaxonRelationship_Annotation 
-        add constraint FK82C86DAC1E403E0B 
-        foreign key (annotations_id) 
+    alter table TaxonRelationship_Annotation
+        add constraint FK82C86DAC1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table TaxonRelationship_Annotation_AUD 
-        add constraint FKE86DE57D34869AAE 
-        foreign key (REV) 
+    alter table TaxonRelationship_Annotation_AUD
+        add constraint FKE86DE57D34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TaxonRelationship_Marker 
-        add constraint FK69FBDD37777265A1 
-        foreign key (markers_id) 
+    alter table TaxonRelationship_Marker
+        add constraint FK69FBDD37777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table TaxonRelationship_Marker 
-        add constraint FK69FBDD372BD180D9 
-        foreign key (TaxonRelationship_id) 
+    alter table TaxonRelationship_Marker
+        add constraint FK69FBDD372BD180D9
+        foreign key (TaxonRelationship_id)
         references TaxonRelationship;
 
-    alter table TaxonRelationship_Marker_AUD 
-        add constraint FK21F8978834869AAE 
-        foreign key (REV) 
+    alter table TaxonRelationship_Marker_AUD
+        add constraint FK21F8978834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification 
-        add constraint FKE332DBE04FF2DB2C 
-        foreign key (createdby_id) 
+    alter table Classification
+        add constraint FKE332DBE04FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table Classification 
-        add constraint FKE332DBE0765B124B 
-        foreign key (reference_id) 
+    alter table Classification
+        add constraint FKE332DBE0765B124B
+        foreign key (reference_id)
         references Reference;
 
-    alter table Classification 
-        add constraint FKE332DBE077E2F09E 
-        foreign key (name_id) 
+    alter table Classification
+        add constraint FKE332DBE077E2F09E
+        foreign key (name_id)
         references LanguageString;
 
-    alter table Classification 
-        add constraint FKE332DBE0BC5DA539 
-        foreign key (updatedby_id) 
+    alter table Classification
+        add constraint FKE332DBE0BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table Classification_AUD 
-        add constraint FK14CE19B134869AAE 
-        foreign key (REV) 
+    alter table Classification_AUD
+        add constraint FK14CE19B134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_Annotation 
-        add constraint FK9877150E759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_Annotation
+        add constraint FK9877150E759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_Annotation 
-        add constraint FK9877150E1E403E0B 
-        foreign key (annotations_id) 
+    alter table Classification_Annotation
+        add constraint FK9877150E1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table Classification_Annotation_AUD 
-        add constraint FKADD60BDF34869AAE 
-        foreign key (REV) 
+    alter table Classification_Annotation_AUD
+        add constraint FKADD60BDF34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_Credit 
-        add constraint FK21329C58759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_Credit
+        add constraint FK21329C58759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_Credit 
-        add constraint FK21329C5832D1B9F 
-        foreign key (credits_id) 
+    alter table Classification_Credit
+        add constraint FK21329C5832D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table Classification_Credit_AUD 
-        add constraint FKD388DE2934869AAE 
-        foreign key (REV) 
+    alter table Classification_Credit_AUD
+        add constraint FKD388DE2934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_Extension 
-        add constraint FKF3E9BA80759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_Extension
+        add constraint FKF3E9BA80759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_Extension 
-        add constraint FKF3E9BA80927DE9DF 
-        foreign key (extensions_id) 
+    alter table Classification_Extension
+        add constraint FKF3E9BA80927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table Classification_Extension_AUD 
-        add constraint FK1BB4A85134869AAE 
-        foreign key (REV) 
+    alter table Classification_Extension_AUD
+        add constraint FK1BB4A85134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_Marker 
-        add constraint FK31598599777265A1 
-        foreign key (markers_id) 
+    alter table Classification_Marker
+        add constraint FK31598599777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table Classification_Marker 
-        add constraint FK31598599759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_Marker
+        add constraint FK31598599759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_Marker_AUD 
-        add constraint FK37A73EEA34869AAE 
-        foreign key (REV) 
+    alter table Classification_Marker_AUD
+        add constraint FK37A73EEA34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_OriginalSourceBase 
-        add constraint FKDE264D1C759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_OriginalSourceBase
+        add constraint FKDE264D1C759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_OriginalSourceBase 
-        add constraint FKDE264D1C3A6735D9 
-        foreign key (sources_id) 
+    alter table Classification_OriginalSourceBase
+        add constraint FKDE264D1C3A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table Classification_OriginalSourceBase_AUD 
-        add constraint FK99EE8CED34869AAE 
-        foreign key (REV) 
+    alter table Classification_OriginalSourceBase_AUD
+        add constraint FK99EE8CED34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_Rights 
-        add constraint FK3A4D7336759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_Rights
+        add constraint FK3A4D7336759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_Rights 
-        add constraint FK3A4D7336C13F7B21 
-        foreign key (rights_id) 
+    alter table Classification_Rights
+        add constraint FK3A4D7336C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table Classification_Rights_AUD 
-        add constraint FKA381160734869AAE 
-        foreign key (REV) 
+    alter table Classification_Rights_AUD
+        add constraint FKA381160734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table Classification_TaxonNode 
-        add constraint FK3349DA2D759FE399 
-        foreign key (Classification_id) 
+    alter table Classification_TaxonNode
+        add constraint FK3349DA2D759FE399
+        foreign key (Classification_id)
         references Classification;
 
-    alter table Classification_TaxonNode 
-        add constraint FK3349DA2D18929176 
-        foreign key (rootnodes_id) 
+    alter table Classification_TaxonNode
+        add constraint FK3349DA2D18929176
+        foreign key (rootnodes_id)
         references TaxonNode;
 
-    alter table Classification_TaxonNode_AUD 
-        add constraint FK6973297E34869AAE 
-        foreign key (REV) 
+    alter table Classification_TaxonNode_AUD
+        add constraint FK6973297E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary 
-        add constraint FK487AA6924FF2DB2C 
-        foreign key (createdby_id) 
+    alter table TermVocabulary
+        add constraint FK487AA6924FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table TermVocabulary 
-        add constraint FK487AA692BC5DA539 
-        foreign key (updatedby_id) 
+    alter table TermVocabulary
+        add constraint FK487AA692BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table TermVocabulary_AUD 
-        add constraint FKA6ED3B6334869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_AUD
+        add constraint FKA6ED3B6334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_Annotation 
-        add constraint FK76D2071C258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_Annotation
+        add constraint FK76D2071C258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_Annotation 
-        add constraint FK76D2071C1E403E0B 
-        foreign key (annotations_id) 
+    alter table TermVocabulary_Annotation
+        add constraint FK76D2071C1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table TermVocabulary_Annotation_AUD 
-        add constraint FK222D46ED34869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_Annotation_AUD
+        add constraint FK222D46ED34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_Credit 
-        add constraint FK7604C566258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_Credit
+        add constraint FK7604C566258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_Credit 
-        add constraint FK7604C56632D1B9F 
-        foreign key (credits_id) 
+    alter table TermVocabulary_Credit
+        add constraint FK7604C56632D1B9F
+        foreign key (credits_id)
         references Credit;
 
-    alter table TermVocabulary_Credit_AUD 
-        add constraint FKB1E3D03734869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_Credit_AUD
+        add constraint FKB1E3D03734869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_Extension 
-        add constraint FKA8814EB2258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_Extension
+        add constraint FKA8814EB2258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_Extension 
-        add constraint FKA8814EB2927DE9DF 
-        foreign key (extensions_id) 
+    alter table TermVocabulary_Extension
+        add constraint FKA8814EB2927DE9DF
+        foreign key (extensions_id)
         references Extension;
 
-    alter table TermVocabulary_Extension_AUD 
-        add constraint FKD522D38334869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_Extension_AUD
+        add constraint FKD522D38334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_Marker 
-        add constraint FK862BAEA7777265A1 
-        foreign key (markers_id) 
+    alter table TermVocabulary_Marker
+        add constraint FK862BAEA7777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table TermVocabulary_Marker 
-        add constraint FK862BAEA7258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_Marker
+        add constraint FK862BAEA7258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_Marker_AUD 
-        add constraint FK160230F834869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_Marker_AUD
+        add constraint FK160230F834869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_OriginalSourceBase 
-        add constraint FK8F2D512A258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_OriginalSourceBase
+        add constraint FK8F2D512A258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_OriginalSourceBase 
-        add constraint FK8F2D512A3A6735D9 
-        foreign key (sources_id) 
+    alter table TermVocabulary_OriginalSourceBase
+        add constraint FK8F2D512A3A6735D9
+        foreign key (sources_id)
         references OriginalSourceBase;
 
-    alter table TermVocabulary_OriginalSourceBase_AUD 
-        add constraint FKA898D9FB34869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_OriginalSourceBase_AUD
+        add constraint FKA898D9FB34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_Representation 
-        add constraint FKA408B63A258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_Representation
+        add constraint FKA408B63A258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_Representation 
-        add constraint FKA408B63AB31C4747 
-        foreign key (representations_id) 
+    alter table TermVocabulary_Representation
+        add constraint FKA408B63AB31C4747
+        foreign key (representations_id)
         references Representation;
 
-    alter table TermVocabulary_Representation_AUD 
-        add constraint FK681B370B34869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_Representation_AUD
+        add constraint FK681B370B34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TermVocabulary_Rights 
-        add constraint FK8F1F9C44258E060 
-        foreign key (TermVocabulary_id) 
+    alter table TermVocabulary_Rights
+        add constraint FK8F1F9C44258E060
+        foreign key (TermVocabulary_id)
         references TermVocabulary;
 
-    alter table TermVocabulary_Rights 
-        add constraint FK8F1F9C44C13F7B21 
-        foreign key (rights_id) 
+    alter table TermVocabulary_Rights
+        add constraint FK8F1F9C44C13F7B21
+        foreign key (rights_id)
         references Rights;
 
-    alter table TermVocabulary_Rights_AUD 
-        add constraint FK81DC081534869AAE 
-        foreign key (REV) 
+    alter table TermVocabulary_Rights_AUD
+        add constraint FK81DC081534869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAE4FF2DB2C 
-        foreign key (createdby_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAE4FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAE9803512F 
-        foreign key (citation_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAE9803512F
+        foreign key (citation_id)
         references Reference;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAEBFEAE500 
-        foreign key (homotypicalgroup_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAEBFEAE500
+        foreign key (homotypicalgroup_id)
         references HomotypicalGroup;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAE94DB044A 
-        foreign key (typespecimen_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAE94DB044A
+        foreign key (typespecimen_id)
         references SpecimenOrObservationBase;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAE4CB0F315 
-        foreign key (typename_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAE4CB0F315
+        foreign key (typename_id)
         references TaxonNameBase;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAE9E3ED08 
-        foreign key (typestatus_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAE9E3ED08
+        foreign key (typestatus_id)
         references DefinedTermBase;
 
-    alter table TypeDesignationBase 
-        add constraint FK8AC9DCAEBC5DA539 
-        foreign key (updatedby_id) 
+    alter table TypeDesignationBase
+        add constraint FK8AC9DCAEBC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table TypeDesignationBase_AUD 
-        add constraint FK243C037F34869AAE 
-        foreign key (REV) 
+    alter table TypeDesignationBase_AUD
+        add constraint FK243C037F34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TypeDesignationBase_Annotation 
-        add constraint FK4D73278044E9E6D4 
-        foreign key (TypeDesignationBase_id) 
+    alter table TypeDesignationBase_Annotation
+        add constraint FK4D73278044E9E6D4
+        foreign key (TypeDesignationBase_id)
         references TypeDesignationBase;
 
-    alter table TypeDesignationBase_Annotation 
-        add constraint FK4D7327801E403E0B 
-        foreign key (annotations_id) 
+    alter table TypeDesignationBase_Annotation
+        add constraint FK4D7327801E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table TypeDesignationBase_Annotation_AUD 
-        add constraint FK88BF955134869AAE 
-        foreign key (REV) 
+    alter table TypeDesignationBase_Annotation_AUD
+        add constraint FK88BF955134869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table TypeDesignationBase_Marker 
-        add constraint FKB914A10B777265A1 
-        foreign key (markers_id) 
+    alter table TypeDesignationBase_Marker
+        add constraint FKB914A10B777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table TypeDesignationBase_Marker 
-        add constraint FKB914A10B44E9E6D4 
-        foreign key (TypeDesignationBase_id) 
+    alter table TypeDesignationBase_Marker
+        add constraint FKB914A10B44E9E6D4
+        foreign key (TypeDesignationBase_id)
         references TypeDesignationBase;
 
-    alter table TypeDesignationBase_Marker_AUD 
-        add constraint FKECA3515C34869AAE 
-        foreign key (REV) 
+    alter table TypeDesignationBase_Marker_AUD
+        add constraint FKECA3515C34869AAE
+        foreign key (REV)
         references AuditEvent;
- 
-    alter table UserAccount 
-        add constraint FKB3F13C24FF2DB2C 
-        foreign key (createdby_id) 
+
+    alter table UserAccount
+        add constraint FKB3F13C24FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table UserAccount 
-        add constraint FKB3F13C2AAC1B820 
-        foreign key (person_id) 
+    alter table UserAccount
+        add constraint FKB3F13C2AAC1B820
+        foreign key (person_id)
         references AgentBase;
 
-    alter table UserAccount_AUD 
-        add constraint FK6A57909334869AAE 
-        foreign key (REV) 
+    alter table UserAccount_AUD
+        add constraint FK6A57909334869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table UserAccount_GrantedAuthorityImpl 
-        add constraint FKFD724D855EA5DD89 
-        foreign key (UserAccount_id) 
+    alter table UserAccount_GrantedAuthorityImpl
+        add constraint FKFD724D855EA5DD89
+        foreign key (UserAccount_id)
         references UserAccount;
 
-    alter table UserAccount_GrantedAuthorityImpl 
-        add constraint FKFD724D851857F6C2 
-        foreign key (grantedauthorities_id) 
+    alter table UserAccount_GrantedAuthorityImpl
+        add constraint FKFD724D851857F6C2
+        foreign key (grantedauthorities_id)
         references GrantedAuthorityImpl;
 
-    alter table UserAccount_PermissionGroup 
-        add constraint FK812DE753887E3D12 
-        foreign key (members_id) 
+    alter table UserAccount_PermissionGroup
+        add constraint FK812DE753887E3D12
+        foreign key (members_id)
         references UserAccount;
 
-    alter table UserAccount_PermissionGroup 
-        add constraint FK812DE753DA9DCB5F 
-        foreign key (groups_id) 
+    alter table UserAccount_PermissionGroup
+        add constraint FK812DE753DA9DCB5F
+        foreign key (groups_id)
         references PermissionGroup;
 
-    alter table WorkingSet 
-        add constraint FK668D5B914FF2DB2C 
-        foreign key (createdby_id) 
+    alter table WorkingSet
+        add constraint FK668D5B914FF2DB2C
+        foreign key (createdby_id)
         references UserAccount;
 
-    alter table WorkingSet 
-        add constraint FK668D5B9123DB7F04 
-        foreign key (descriptivesystem_id) 
+    alter table WorkingSet
+        add constraint FK668D5B9123DB7F04
+        foreign key (descriptivesystem_id)
         references FeatureTree;
 
-    alter table WorkingSet 
-        add constraint FK668D5B91BC5DA539 
-        foreign key (updatedby_id) 
+    alter table WorkingSet
+        add constraint FK668D5B91BC5DA539
+        foreign key (updatedby_id)
         references UserAccount;
 
-    alter table WorkingSet_AUD 
-        add constraint FK628F58E234869AAE 
-        foreign key (REV) 
+    alter table WorkingSet_AUD
+        add constraint FK628F58E234869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table WorkingSet_Annotation 
-        add constraint FKCBBA8CBDBBD2C869 
-        foreign key (WorkingSet_id) 
+    alter table WorkingSet_Annotation
+        add constraint FKCBBA8CBDBBD2C869
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table WorkingSet_Annotation 
-        add constraint FKCBBA8CBD1E403E0B 
-        foreign key (annotations_id) 
+    alter table WorkingSet_Annotation
+        add constraint FKCBBA8CBD1E403E0B
+        foreign key (annotations_id)
         references Annotation;
 
-    alter table WorkingSet_Annotation_AUD 
-        add constraint FK1E28140E34869AAE 
-        foreign key (REV) 
+    alter table WorkingSet_Annotation_AUD
+        add constraint FK1E28140E34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table WorkingSet_DescriptionBase 
-        add constraint FK731CC81F33B8A841 
-        foreign key (descriptions_id) 
+    alter table WorkingSet_DescriptionBase
+        add constraint FK731CC81F33B8A841
+        foreign key (descriptions_id)
         references DescriptionBase;
 
-    alter table WorkingSet_DescriptionBase 
-        add constraint FK731CC81FBBD2C869 
-        foreign key (WorkingSet_id) 
+    alter table WorkingSet_DescriptionBase
+        add constraint FK731CC81FBBD2C869
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table WorkingSet_DescriptionBase_AUD 
-        add constraint FK8959CE7034869AAE 
-        foreign key (REV) 
+    alter table WorkingSet_DescriptionBase_AUD
+        add constraint FK8959CE7034869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table WorkingSet_Marker 
-        add constraint FK9CB22CC8777265A1 
-        foreign key (markers_id) 
+    alter table WorkingSet_Marker
+        add constraint FK9CB22CC8777265A1
+        foreign key (markers_id)
         references Marker;
 
-    alter table WorkingSet_Marker 
-        add constraint FK9CB22CC8BBD2C869 
-        foreign key (WorkingSet_id) 
+    alter table WorkingSet_Marker
+        add constraint FK9CB22CC8BBD2C869
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table WorkingSet_Marker_AUD 
-        add constraint FK6AEAB69934869AAE 
-        foreign key (REV) 
+    alter table WorkingSet_Marker_AUD
+        add constraint FK6AEAB69934869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table WorkingSet_Representation 
-        add constraint FKA003835BB31C4747 
-        foreign key (representations_id) 
+    alter table WorkingSet_Representation
+        add constraint FKA003835BB31C4747
+        foreign key (representations_id)
         references Representation;
 
-    alter table WorkingSet_Representation 
-        add constraint FKA003835BBBD2C869 
-        foreign key (WorkingSet_id) 
+    alter table WorkingSet_Representation
+        add constraint FKA003835BBBD2C869
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table WorkingSet_Representation_AUD 
-        add constraint FK21B88BAC34869AAE 
-        foreign key (REV) 
+    alter table WorkingSet_Representation_AUD
+        add constraint FK21B88BAC34869AAE
+        foreign key (REV)
         references AuditEvent;
 
-    alter table WorkingSet_TaxonBase 
-        add constraint FK34EB896DB4555A9A 
-        foreign key (WorkingSet_id) 
+    alter table WorkingSet_TaxonBase
+        add constraint FK34EB896DB4555A9A
+        foreign key (WorkingSet_id)
         references WorkingSet;
 
-    alter table WorkingSet_TaxonBase 
-        add constraint FK34EB896D7C3D0017 
-        foreign key (coveredtaxa_id) 
+    alter table WorkingSet_TaxonBase
+        add constraint FK34EB896D7C3D0017
+        foreign key (coveredtaxa_id)
         references TaxonBase;
 
-    alter table WorkingSet_TaxonBase_AUD 
-        add constraint FK582B38BE34869AAE 
-        foreign key (REV) 
+    alter table WorkingSet_TaxonBase_AUD
+        add constraint FK582B38BE34869AAE
+        foreign key (REV)
         references AuditEvent;

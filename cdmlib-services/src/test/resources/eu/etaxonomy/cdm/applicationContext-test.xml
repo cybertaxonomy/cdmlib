@@ -1,47 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
     <context:property-override location="classpath:override.properties"/>
 
- 	<context:component-scan base-package="eu/etaxonomy/cdm/api"/>
-    
-    <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <property name="mappingLocations">
-            <set>
-                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml</value>
-            </set>
-        </property>
-    </bean>
-    
     <!-- enable the configuration of transactional behavior based on annotations -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>      
-  
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
-    
-    <bean id="hibernateProperties" 
+
+    <!--
+        exclude PersistentTermInitializer as we want to use the TestingTermInitializer instead
+    <context:component-scan base-package="eu/etaxonomy/cdm">
+      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
+    </context:component-scan>
+
+    <bean id="termInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
+        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
+        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
+    </bean>
+    -->
+
+    <!--
+        import services.xml *ONLY AFTER* we did the component scan while excluding the PersistentTermInitializer above !!!!
+     -->
+    <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/>
+
+    <bean id="hibernateProperties"
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLCorrectedDialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
-                <!-- TODO trying to use a managed session context -->
-                <prop key="hibernate.current_session_context_class">managed</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
-                <prop key="hibernate.search.default.indexBase">./target/test-classes</prop>
+                <!-- TODO trying to use a managed session context
+                <prop key="hibernate.current_session_context_class">managed</prop>
+                -->
+                <prop key="hibernate.search.default.indexBase">./target/index</prop>
+                <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
+                    due to which it is not possible to use batch updates, so we need to disable
+                    hibernate batching when using hsqldb in the app context: -->
+                <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
         </property>
-    </bean> 
-    
+    </bean>
+
+    <bean id="tableGeneratorGlobalOverride"
+        class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
+        <property name="properties">
+            <props>
+                <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
+                <prop key="optimizer">none</prop>
+                <prop key="initial_value">1000</prop>
+            </props>
+        </property>
+    </bean>
+
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <property name="providers">
             <list>
@@ -50,17 +71,30 @@
             </list>
         </property>
     </bean>
-    
+
+    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
+      <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
+      <property name="create" value="true"/>
+    </bean>
+
+    <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="mappingLocations">
+            <set>
+                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml</value>
+            </set>
+        </property>
+    </bean>
+
     <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
         <property name="userDetailsService" ref="userService"/>
         <property name="saltSource" ref="saltSource"/>
         <property name="passwordEncoder" ref="passwordEncoder"/>
     </bean>
-    
+
     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
-    
+
     <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
         <property name="userPropertyToUse" value="getUsername"/>
     </bean>
-    
+
 </beans>

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,6 +20,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.database.annotations.Transactional;
+import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -44,7 +46,7 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	private ITermService service;
-	
+
 	@SpringBeanByType
 	private IVocabularyService vocabularyService;
 
@@ -53,12 +55,12 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUri(java.lang.String)}.
 	 */
-	@Ignore //second part of test throws unexpected exception & also first part fails since language(406) 
+	@Ignore //second part of test throws unexpected exception & also first part fails since language(406)
 	//is also not found here
 	@Test
 	@DataSet
 	public void testGetTermByUri() {
-		String uriStr = "http://any.uri.com"; 
+		String uriStr = "http://any.uri.com";
 		URI uri = URI.create(uriStr);
 		DefinedTermBase<?> term = service.getByUri(uri);
 		assertNotNull(term);
@@ -66,7 +68,7 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 //		TermVocabulary<?> voc = term.getVocabulary();
 //		service.saveOrUpdate(term);
 //		List<MarkerType> list = service.listByTermClass(MarkerType.class, null, null, null, null);
-		
+
 		//NULL
 		//FIXME throws object not found exception. Wants to load term.voc(11).representation(496).language(124) which does not exist
 		//I do not understand where the vocabulary data comes from (checked persistence TermsDataSet-with_auditing_info.xml) but somehow this does not apply
@@ -80,9 +82,10 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUuid(java.util.UUID)}.
 	 */
 	@Test
+	@DataSet
 	public void testGetTermByUuid() {
 		// Rank.Domain
-		String strUUID = "ffca6ec8-8b88-417b-a6a0-f7c992aac19b"; 
+		String strUUID = "ffca6ec8-8b88-417b-a6a0-f7c992aac19b";
 		UUID uuid = UUID.fromString(strUUID);
 		DefinedTermBase<?> term = service.find(uuid);
 		assertNotNull(term);
@@ -100,29 +103,32 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	 */
 //	@Ignore
 	@Test
+	@DataSet
 	public void testGetVocabularyUUID() {
 		//Rank
-		String rankVocabularyUuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b"; 
+		String rankVocabularyUuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
 		UUID rankUuid = UUID.fromString(rankVocabularyUuid);
 		TermVocabulary<Rank> voc = vocabularyService.find(rankUuid);
 		assertNotNull(voc);
 		assertEquals(66, voc.getTerms().size());
 		//Null
-		String nullVocabularyUuid = "00000000-26e3-4e83-b47b-ca74eed40b1b"; 
+		String nullVocabularyUuid = "00000000-26e3-4e83-b47b-ca74eed40b1b";
 		UUID nullUuid = UUID.fromString(nullVocabularyUuid);
 		TermVocabulary<Rank> nullVoc = vocabularyService.find(nullUuid);
 		assertNull(nullVoc);
 	}
 
-	
+
 	@Test
+	@DataSet
 	public void testGetAreaByTdwgAbbreviation(){
 		String tdwgAbbreviation = "GER-OO";
 		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);
 		assertEquals(tdwgAbbreviation, germany.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel());
 	}
-	
+
 	@Test
+	@DataSet
 	public void testListTerms() {
 		Pager<SpecimenTypeDesignationStatus> results = (Pager)service.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
 		assertNotNull("Results should not be null",results);
