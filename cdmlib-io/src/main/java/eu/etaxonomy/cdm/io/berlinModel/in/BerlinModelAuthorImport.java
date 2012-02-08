@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +40,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  */
 @Component
 public class BerlinModelAuthorImport extends BerlinModelImportBase {
+	private static final boolean BLANK_TO_NULL = true;
+
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorImport.class);
 
 	public static final String NAMESPACE = "Author";
@@ -51,6 +54,17 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		super();
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
+	 */
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		String result = " SELECT authorId FROM " + getTableName();
+		if (StringUtils.isNotBlank(state.getConfig().getAuthorFilter())){
+			result += " WHERE " +  state.getConfig().getAuthorFilter(); 
+		} 
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
@@ -90,15 +104,15 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					
 					dbAttrName = "Abbrev";
 					cdmAttrName = "nomenclaturalTitle";
-					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 
 					dbAttrName = "FirstName";
 					cdmAttrName = "firstname";
-					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "LastName";
 					cdmAttrName = "lastname";
-					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, author, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					String dates = rs.getString("dates");
 					if (dates != null){

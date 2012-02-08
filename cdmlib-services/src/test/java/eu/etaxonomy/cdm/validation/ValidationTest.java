@@ -75,13 +75,10 @@ public class ValidationTest extends CdmIntegrationTest {
 	
 	@Before
 	public void setUp() {
-		/*DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		validator = validatorFactory.getValidator();*/
 		
-		Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
-		name = BotanicalName.NewInstance(speciesRank);
+		
+		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
+		name = BotanicalName.NewInstance(Rank.SPECIES());
 	}
 	
 	

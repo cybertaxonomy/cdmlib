@@ -68,7 +68,40 @@ public enum TagEnum {
 	/**
 	 *  The hybrid sign. 
 	 */
-	hybridSign,
+	hybridSign
+	;
 	
 	
+	public boolean isName(){
+		return this == name;
+	}
+	public boolean isRank(){
+		return this == rank;
+	}
+	public boolean isAuthors(){
+		return this == authors;
+	}
+	public boolean isAppendedPhrase(){
+		return this == appendedPhrase;
+	}
+	public boolean isReference(){
+		return this == reference;
+	}
+	public boolean isYear(){
+		return this == year;
+	}
+	public boolean isFullName(){
+		return this == fullName;
+	}
+
+	public boolean isNomStatus(){
+		return this == nomStatus;
+	}
+	public boolean isSeparator(){
+		return this == separator;
+	}
+	public boolean isHybridSign(){
+		return this == hybridSign;
+	}
+
 }

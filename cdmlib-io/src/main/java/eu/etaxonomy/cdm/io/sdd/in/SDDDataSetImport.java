@@ -416,12 +416,12 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 			if (StringUtils.isNotBlank(ref)) {
 				if (ve instanceof TaxonDescription) {
 					TaxonDescription td = (TaxonDescription) ve;
-					if (td.getDescriptionSources().size() > 0) {
-						this.associateImageWithCdmBase(ref,(Reference) td.getDescriptionSources().toArray()[0]);
+					if (td.getSources().size() > 0) {
+						this.associateImageWithCdmBase(ref, td.getSources().iterator().next().getCitation());
 					} else {
-						Reference descriptionSource = ReferenceFactory.newGeneric();
+						Reference<?> descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
-						td.addDescriptionSource(descriptionSource);
+						td.addSource(null, null, descriptionSource, null);
 						this.associateImageWithCdmBase(ref,descriptionSource);
 					}
 				} else {
@@ -645,7 +645,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					location.setAnnotationType(annotationType);
 					(publication).addAnnotation(location);
 				}
-				td.addDescriptionSource(publication);
+				td.addSource(null, null, publication, null);
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");

@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.mail.MethodNotSupportedException;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -90,8 +92,14 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
-		return " SELECT RIdentifier FROM PTaxon ";
+	protected String getIdQuery(BerlinModelImportState state) {
+		String sqlSelect = " SELECT RIdentifier";
+		String taxonTable = state.getConfig().getTaxonTable();
+		String sqlFrom = String.format(" FROM %s ", taxonTable);
+		String sqlWhere = "";
+		
+		String sql = sqlSelect + " " + sqlFrom + " " + sqlWhere ;
+		return sql;
 	}
 
 
@@ -101,13 +109,29 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
-		String strRecordQuery = 
-			" SELECT * " + 
-			" FROM PTaxon " +
-			" WHERE ( RIdentifier IN (" + ID_LIST_TOKEN + ") )";
+		String sqlSelect = " SELECT pt.*  ";
+		String sqlFrom = " FROM PTaxon pt "; 
+		if (isEuroMed(config) ){
+			sqlFrom = " FROM PTaxon AS pt INNER JOIN v_cdm_exp_taxaAll AS em ON pt.RIdentifier = em.RIdentifier ";
+			sqlSelect += " , em.MA ";
+		}
+		
+		
+		String sqlWhere = " WHERE ( pt.RIdentifier IN (" + ID_LIST_TOKEN + ") )";
+		
+		String strRecordQuery =sqlSelect + " " + sqlFrom + " " + sqlWhere ;
+//			" SELECT * " + 
+//			" FROM PTaxon " + state.getConfig().getTaxonTable();
+//			" WHERE ( RIdentifier IN (" + ID_LIST_TOKEN + ") )";
 		return strRecordQuery;
 	}
 	
+	private boolean isEuroMed(BerlinModelImportConfigurator config) {
+		return config.getTaxonTable().trim().equals("v_cdm_exp_taxaAll");
+	}
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
@@ -122,6 +146,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	 */
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true ;
+		
 		BerlinModelImportConfigurator config = state.getConfig();
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		Map<String, TaxonNameBase> taxonNameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
@@ -130,6 +155,8 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		
 		ResultSet rs = partitioner.getResultSet();
 		try{
+			boolean publishFlagExists = state.getConfig().getSource().checkColumnExists("PTaxon", "PublishFlag");
+			boolean isEuroMed = isEuroMed(state.getConfig());
 			while (rs.next()){
 
 			//	if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("PTaxa handled: " + (i-1));}
@@ -201,7 +228,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 						taxonBase.setDoubtful(true);
 					}else if(doubtful.equals("i")){
 						taxonBase.setDoubtful(false);
-						logger.warn("Doubtful = i (inactivated) does not exist in CDM. Doubtful set to false");
+						logger.warn("Doubtful = i (inactivated) does not exist in CDM. Doubtful set to false. RIdentifier: " + taxonId);
 					}
 					
 					//detail
@@ -227,10 +254,14 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 						taxonBase.setUseNameCache(true);
 					}
 					//publisheFlag
-					boolean publishFlagExists = state.getConfig().getSource().checkColumnExists("PTaxon", "PublishFlag");
 					if (publishFlagExists){
 						Boolean publishFlag = rs.getBoolean("PublishFlag");
-						if (config.getTaxonPublishMarker().doMark(publishFlag)){
+						Boolean misapplied = false;
+						if (isEuroMed){
+							misapplied = rs.getBoolean("MA");
+						}
+						
+						if (config.getTaxonPublishMarker().doMark(publishFlag) && ! misapplied){
 							taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
 						}
 					}
@@ -247,6 +278,9 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 			}
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
+			return false;
+		} catch (MethodNotSupportedException e) {
+			logger.error("MethodNotSupportedException:" +  e);
 			return false;
 		}
 	

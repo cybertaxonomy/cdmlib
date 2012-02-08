@@ -24,6 +24,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -59,7 +60,7 @@ public abstract class DwcaRecordBase {
 //	protected static final String SEP = ",";
 	
 	protected Map<String, URI> knownFields = new HashMap<String, URI>();
-	protected Set<TermUris> knownTermFields = new HashSet<TermUris>();
+	protected Set<TermUri> knownTermFields = new HashSet<TermUri>();
 	
 	public abstract void write(PrintWriter writer);
 	protected abstract void registerKnownFields();
@@ -95,7 +96,7 @@ public abstract class DwcaRecordBase {
 		return uuid;
 	}
 
-	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		printNotes(notes, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, String fieldKey) {
@@ -104,16 +105,16 @@ public abstract class DwcaRecordBase {
 		print(value, writer, addSeparator, fieldKey);
 	}
 	
-//	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+//	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 //		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
 //	}
-	protected void print(DwcaId dwcaId, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(DwcaId dwcaId, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(dwcaId == null ? null : dwcaId.getId(), writer, addSeparator, fieldKey);
 	}
-	protected void print(UUID uuid, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(UUID uuid, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(uuid == null ? null : uuid.toString(), writer, addSeparator, fieldKey);
 	}
-	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(agent, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, String fieldKey) {
@@ -121,34 +122,34 @@ public abstract class DwcaRecordBase {
 	}
 
 	
-	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(language, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void print(Language language, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(language == null ? null : getLanguage(language), writer, addSeparator, fieldKey);
 	}
-	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(lsid, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator, fieldKey);
 	}
 	
-	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(rights, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		String rightsString = getRights(rights);
 		print(rightsString, writer, addSeparator, fieldKey);
 	}
-	protected void print(URI uri, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(URI uri, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(uri, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void print(URI uri, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(uri == null ? null : String.valueOf(uri), writer, addSeparator, fieldKey);
 	}
 	
-	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUris latitudeKey, TermUris longitudeKey) {
+	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUri latitudeKey, TermUri longitudeKey) {
 		print(point, writer, addSeparator, latitudeKey.getUriString(), longitudeKey.getUriString());
 	}
 	
@@ -164,14 +165,14 @@ public abstract class DwcaRecordBase {
 			print(longitude, writer, addSeparator, longitudeKey);
 		}
 	}
-	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(boolValue, writer, addSeparator, fieldKey.getUriString());
 	}	
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator, fieldKey);
 	}
 
-	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(intValue, writer, addSeparator, fieldKey.getUriString());
 	}
 	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
@@ -185,11 +186,11 @@ public abstract class DwcaRecordBase {
 		print(uuid == null ? null : String.valueOf(uuid), writer, addSeparator, fieldKey);
 	}
 
-	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey) {
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(value, writer, addSeparator, fieldKey, null);
 	}
 
-	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUris fieldKey, String defaultValue) {
+	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUri fieldKey, String defaultValue) {
 		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
 	}
 	
@@ -424,7 +425,7 @@ public abstract class DwcaRecordBase {
 		this.knownFields.put(string, new URI(uri));
 	}
 	
-	protected void addKnownField(TermUris term) throws URISyntaxException {
+	protected void addKnownField(TermUri term) throws URISyntaxException {
 		this.knownTermFields.add(term);
 	}
 }

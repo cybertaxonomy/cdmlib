@@ -28,7 +28,7 @@ public class BerlinModelTypesImportValidator implements IOValidator<BerlinModelI
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for Types not yet implemented");
+		System.out.println("Checking for Types not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

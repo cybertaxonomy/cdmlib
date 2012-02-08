@@ -18,8 +18,8 @@ ConstraintValidator<ReferenceCheck, Reference>{
 		boolean isValid = true;
 		
 		isValid &= validIsbn(value, constraintValidatorContext); 
-		if (value.getType() == ReferenceType.Journal ) {
-			isValid = false;
+		if (value.getType() == ReferenceType.Journal && value.getDatePublished() != null) {
+			isValid &= false;
 			constraintValidatorContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveDatePublished.message}");
 		}
 		

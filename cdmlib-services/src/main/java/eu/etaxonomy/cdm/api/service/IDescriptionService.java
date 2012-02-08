@@ -175,9 +175,25 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return a Pager containing TaxonDescription instances
 	 * 
 	 * FIXME candidate for harmonization - rename to pageTaxonDescriptions
+	 * 
+	 * @see #pageMarkedTaxonDescriptions(Taxon, Set, Set, Set, Integer, Integer, List)
 	 */
 	public Pager<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-	
+
+	/**
+	 * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
+	 * 
+	 * @param taxon The taxon which the description refers to (can be null for all TaxonDescription instances)
+	 * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
+	 * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
+	 * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager containing TaxonDescription instances
+	 */
+	public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
 	/**
 	 * @see {@link #getTaxonDescriptions(Taxon, Set, Set, Integer, Integer, List)}
 	 * 
@@ -190,6 +206,22 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return
 	 */
 	public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	
+	
+
+	/**
+	 * @see {@link #pageMarkedTaxonDescriptions(Taxon, Set, Set, Set, Integer, Integer, List)}
+	 * 
+	 * @param taxon
+	 * @param scopes
+	 * @param geographicalScope
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths); 
+
 	
 	/**
 	 * Returns a List of TaxonNameDescription instances, optionally filtered by the name which they refer to
@@ -284,4 +316,5 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * 	old description
 	 */
 	public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
+	
 }

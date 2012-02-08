@@ -26,6 +26,7 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -1174,6 +1176,23 @@ public class NonViralNameParserImplTest {
 	@Test
 	public final void testParseCultivar() {
 		logger.warn("Not yet implemented"); // TODO
+	}
+	
+//	@Ignore // please add this test once #2750 is fixed
+	@Test
+	public final void testNomenclaturalStatus() {
+		BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
+		name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
+		
+		BotanicalName name2 = BotanicalName.NewInstance(Rank.FAMILY());
+		
+		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
+		
+		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
+		
+		Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
+		
+		
 	}
 
 }

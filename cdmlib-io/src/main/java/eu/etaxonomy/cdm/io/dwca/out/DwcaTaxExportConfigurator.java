@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 
 /**
@@ -65,6 +66,9 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	private String setSeparator = ";";
 	
+	//TODO
+	private static IExportTransformer defaultTransformer = null;
+	
 	
 	public static DwcaTaxExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
 		return new DwcaTaxExportConfigurator(source, destinationFolder, emlRecord);
@@ -97,7 +101,7 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 	 * @param destination
 	 */
 	private DwcaTaxExportConfigurator(ICdmDataSource source, File destination, DwcaEmlRecord emlRecord) {
-		super(destination, source);
+		super(destination, source, defaultTransformer);
 		this.emlRecord = emlRecord;
 	}
 	

@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -136,4 +137,14 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 	 * @return
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * Delete the given term according to the given delete configuration. 
+	 * In case a problem occurrs while deleting the term the result will reflect this
+	 * via its status.
+	 * @param term the term to delete
+	 * @param config the configurator
+	 * @return DeleteResult which holds the status of the deletion.
+	 */
+	public DeleteResult delete(DefinedTermBase term, TermDeletionConfigurator config);
 }

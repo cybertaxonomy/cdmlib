@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  * @created 05.08.2008
  * @version 1.0
  */
-public abstract class CdmAttributeMapperBase {
+public abstract class CdmAttributeMapperBase extends CdmMapperBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmAttributeMapperBase.class);
 	

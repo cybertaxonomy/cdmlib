@@ -66,7 +66,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	@PreAuthorize("hasPermission(#transientObject, 'DELETE')")
 	public UUID delete(T persistentObject) {
 		return dao.delete(persistentObject);
 	}
@@ -150,20 +149,16 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 
 	@Transactional(readOnly = false)
-	//TODO: Tests fail because nobody is authenticated, fix it!!!
-	//@PreAuthorize("hasPermission(#transientObject, 'CREATE')" )
 	public UUID save(T newInstance) {
 		return dao.save(newInstance);
 	}
 
 	@Transactional(readOnly = false)
-//	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
 	public UUID saveOrUpdate(T transientObject) {
 		return dao.saveOrUpdate(transientObject);
 	}
 	
 	@Transactional(readOnly = false)
-//	@PreAuthorize("hasPermission(#transientInstances, 'UPDATE')")
 	public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
 		return dao.saveOrUpdateAll(transientInstances);
 	}
@@ -179,7 +174,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	protected abstract void setDao(DAO dao);
 	
 	@Transactional(readOnly = false)
-	@PreAuthorize("hasPermission(#transientObject, 'UPDATE')")
 	public UUID update(T transientObject) {
 		return dao.update(transientObject);
 	}

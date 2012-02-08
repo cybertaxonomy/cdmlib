@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.0.9-SNAPSHOT</version>
+	<version>3.0.10-SNAPSHOT</version>
     <name>CDM Library</name>
     <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
     <url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -22,6 +22,7 @@
     </modules>
     <properties>
         <spring.version>3.0.4.RELEASE</spring.version>
+		<hibernate.version>3.4.0-SNAPSHOT</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <unitils.version>3.3</unitils.version>
         <hsqldb.version>1.8.0.10</hsqldb.version><!-- 1.8.0.10, 1.9.0-rc6 (manualy build only for debugging) -->
@@ -1054,20 +1055,20 @@
                 <artifactId>persistence-api</artifactId>
                 <version>1.0</version>
             </dependency>
-            <dependency>
+			<dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-annotations</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-commons-annotations</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -1077,12 +1078,12 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-envers</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>javassist</groupId>
@@ -1097,17 +1098,17 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-parent</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+				<version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-c3p0</artifactId>
-                <version>3.4.0-SNAPSHOT</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>

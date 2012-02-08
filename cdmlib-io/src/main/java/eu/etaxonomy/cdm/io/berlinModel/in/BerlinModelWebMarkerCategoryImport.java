@@ -12,10 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelWebMarkerCategoryImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
@@ -79,7 +81,8 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 					if (markerType == null){
 						String markerDescription = rs.getString("MarkerDescription");
 						String markerCategory = rs.getString("MarkerCategory");
-						markerType = MarkerType.NewInstance(markerDescription, markerDescription, markerCategory);
+						UUID uuid = BerlinModelTransformer.getWebMarkerUuid(markerCategoryId);
+						markerType = getMarkerType(state, uuid, markerDescription, markerCategory, null);
 						getTermService().saveOrUpdate(markerType);
 					}
 					state.putDefinedTermToMap(dbTableName, markerCategoryId, markerType);

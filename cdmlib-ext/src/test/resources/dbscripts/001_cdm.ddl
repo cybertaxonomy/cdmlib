@@ -1652,6 +1652,7 @@
         featureTree_id integer not null,
         feature_id integer,
         parent_id integer,
+        sortindex integer,
         primary key (id),
         unique (uuid)
     );
@@ -1668,6 +1669,7 @@
        	featureTree_id integer not null,
         feature_id integer,
         parent_id integer,
+        sortindex integer,
         primary key (id, REV)
     );
 
@@ -3990,8 +3992,7 @@
     create table StateData_DefinedTermBase (
         StateData_id integer not null,
         modifiers_id integer not null,
-        primary key (StateData_id, modifiers_id),
-        unique (modifiers_id)
+        primary key (StateData_id, modifiers_id)
     );
 
     create table StateData_DefinedTermBase_AUD (

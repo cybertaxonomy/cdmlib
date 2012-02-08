@@ -53,6 +53,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
+	private static final boolean BLANK_TO_NULL = true;
+
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameImport.class);
 
 	public static final String NAMESPACE = "TaxonName";
@@ -68,6 +70,20 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		super();
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		if (state.getConfig().getNameIdTable()==null ){
+			return super.getIdQuery(state);
+		}else{
+			return "SELECT nameId FROM " + state.getConfig().getNameIdTable() + ""; 
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery()
 	 */
@@ -101,6 +117,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	}
 
 
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
@@ -132,7 +149,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				
 				try {
 					boolean useUnknownRank = true;
-					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
+					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
 					if (rank.getId() == 0){
 						getTermService().save(rank);
 					}
@@ -161,29 +178,29 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						dbAttrName = "genus";
 					}
 					cdmAttrName = "genusOrUninomial";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "genusSubdivisionEpi";
 					cdmAttrName = "infraGenericEpithet";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "speciesEpi";
 					cdmAttrName = "specificEpithet";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 	
 					dbAttrName = "infraSpeciesEpi";
 					cdmAttrName = "infraSpecificEpithet";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					dbAttrName = "unnamedNamePhrase";
 					cdmAttrName = "appendedPhrase";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 					
 					//Details
 					dbAttrName = "details";
 					cdmAttrName = "nomenclaturalMicroReference";
-					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName, BLANK_TO_NULL);
 	
 					//nomRef
 					success &= makeNomenclaturalReference(config, taxonNameBase, nameId, rs, partitioner);
@@ -204,7 +221,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					}
 					
 					//created, notes
-					success &= doIdCreatedUpdatedNotes(state, taxonNameBase, rs, nameId, NAMESPACE);
+					boolean excludeUpdated = true;
+					success &= doIdCreatedUpdatedNotes(state, taxonNameBase, rs, nameId, NAMESPACE, excludeUpdated);
 	
 					//NonViralName
 					if (taxonNameBase instanceof NonViralName){

@@ -181,6 +181,8 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	 }
 
 	 @Test
+	 // NOTE: if this test is failing see
+	 //       http://dev.e-taxonomy.eu/trac/changeset/13291/trunk/cdmlib/cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd
 	 public void testListInitialization() {
 		 AuditEventContextHolder.getContext().setAuditEvent(auditEvent);
 		 List<OrderHint> orderHints = new ArrayList<OrderHint>();

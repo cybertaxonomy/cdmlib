@@ -10,20 +10,21 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-
-
-import java.util.*;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * Marker types similar to dynamically defined attributes. These  content types
@@ -48,6 +49,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final UUID uuidPublish = UUID.fromString("0522c2b3-b21c-400c-80fc-a251c3501dbc");
 	private static final UUID uuidInBibliography = UUID.fromString("2cdb492e-3b8b-4784-8c26-25159835231d");
 	private static final UUID uuidEndemic = UUID.fromString("efe95ade-8a6c-4a0e-800e-437c8b50c45e");
+	private static final UUID uuidModifiable = UUID.fromString("c21bc83f-c8ae-4126-adee-10dfe817e96a");
 	
 	protected static Map<UUID, MarkerType> termMap = null;		
 
@@ -149,6 +151,10 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 	public static final MarkerType ENDEMIC(){
 		return getTermByUuid(uuidEndemic);
+	}
+	
+	public static final MarkerType MODIFIABLE(){
+		return getTermByUuid(uuidModifiable);
 	}
 	
 	@Override

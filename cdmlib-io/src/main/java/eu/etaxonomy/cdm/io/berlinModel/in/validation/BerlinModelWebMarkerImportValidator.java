@@ -28,7 +28,7 @@ public class BerlinModelWebMarkerImportValidator implements IOValidator<BerlinMo
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for web marker not yet implemented");
+		System.out.println("Checking for web marker not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

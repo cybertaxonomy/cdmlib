@@ -161,6 +161,22 @@ public class HomotypicalGroupTest {
 		Assert.assertEquals(null, name4.getBasionym());
 
 	}
+	/*
+	@Test
+	public void testClone(){
+		group1 = HomotypicalGroup.NewInstance();
+		
+		group1.addTypifiedName(name1);
+		group1.addTypifiedName(name2);
+		group1.setGroupBasionym(name1);
+		HomotypicalGroup clone =(HomotypicalGroup)group1.clone();
+		
+		Assert.assertEquals(clone.getTypifiedNames().size(), group1.getTypifiedNames().size());
+		TaxonNameBase cloneBasionym = clone.getBasionyms().iterator().next();
+		TaxonNameBase group1Basionym = group1.getBasionyms().iterator().next();
+		Assert.assertNotSame(cloneBasionym, group1Basionym);
+	}
+	*/
 	
 	
 	

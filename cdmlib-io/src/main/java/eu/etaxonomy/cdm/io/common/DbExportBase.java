@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -22,21 +23,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 17.02.2010
  *
  */
-public abstract class DbExportBase<CONFIG extends IExportConfigurator, STATE extends ExportStateBase> extends CdmExportBase<CONFIG, STATE> {
+public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE>, STATE extends ExportStateBase<CONFIG>> extends CdmExportBase<CONFIG, STATE> {
 	private static Logger logger = Logger.getLogger(DbExportBase.class);
 
-//	protected abstract boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state);
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
-//	protected boolean doInvoke(BerlinModelExportConfigurator config, 
-//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-//		BerlinModelExportState state = ((BerlinModelExportConfigurator)config).getState();
-//		state.setConfig((BerlinModelExportConfigurator)config);
-//		return doInvoke(state);
-//	}
-	
 	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
 		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
@@ -62,4 +51,38 @@ public abstract class DbExportBase<CONFIG extends IExportConfigurator, STATE ext
 	protected void doCount(int count, int modCount, String pluralString){
 		if ((count % modCount ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
 	}
+
+	@Override
+	public Object getDbId(CdmBase cdmBase, STATE state) {
+		CONFIG config = state.getConfig();
+		IdType type = config.getIdType();
+		if (cdmBase == null){
+			return null;
+		}
+		if (type == IdType.CDM_ID){
+			return cdmBase.getId();
+		}else if (type == IdType.CDM_ID_WITH_EXCEPTIONS){
+				return getDbIdCdmWithExceptions(cdmBase, state);
+		}else if(type == IdType.MAX_ID){
+			//TODO
+			logger.warn("MAX_ID not yet implemented");
+			return cdmBase.getId();
+		}else if(type == IdType.ORIGINAL_SOURCE_ID){
+			//TODO
+			logger.warn("ORIGINAL_SOURCE_ID not yet implemented");
+			return cdmBase.getId();
+		}else{
+			logger.warn("Unknown idType: " + type);
+			return cdmBase.getId();
+		}
+
+	}
+
+	protected Object getDbIdCdmWithExceptions(CdmBase cdmBase, STATE state) {
+		//default -> override
+		return cdmBase.getId();
+	}
+
+	
+	
 }

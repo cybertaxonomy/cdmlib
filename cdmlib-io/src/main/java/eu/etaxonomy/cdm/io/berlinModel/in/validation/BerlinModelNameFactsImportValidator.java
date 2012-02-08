@@ -28,7 +28,7 @@ public class BerlinModelNameFactsImportValidator implements IOValidator<BerlinMo
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for NameFacts not yet implemented");
+		System.out.println("Checking for NameFacts not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

@@ -12,12 +12,10 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionElementBase>,ISearchableDao<DescriptionElementBase> {
 	

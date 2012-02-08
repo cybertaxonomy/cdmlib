@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -95,17 +96,17 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	
 	public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
-		print(identifier, writer, IS_NOT_FIRST, TermUris.DC_IDENTIFIER);
-		print(title, writer, IS_NOT_FIRST, TermUris.DC_TITLE);
-		print(description, writer, IS_NOT_FIRST, TermUris.DC_DESCRIPTION);
-		print(spatial, writer, IS_NOT_FIRST, TermUris.DC_SPATIAL);
-		print(coordinates, writer, IS_NOT_FIRST, TermUris.GEO_WGS84_LATITUDE, TermUris.GEO_WGS84_LONGITUDE);
-		print(license, writer, IS_NOT_FIRST, TermUris.DC_LICENSE);
-		print(getDate(created), writer, IS_NOT_FIRST, TermUris.DC_CREATED);
-		print(creator, writer, IS_NOT_FIRST, TermUris.DC_CREATOR);
-		print(contributor, writer, IS_NOT_FIRST, TermUris.DC_CONTRIBUTOR);
-		print(publisher, writer, IS_NOT_FIRST, TermUris.DC_PUBLISHER);
-		print(audience, writer, IS_NOT_FIRST, TermUris.DC_AUDIENCE);
+		print(identifier, writer, IS_NOT_FIRST, TermUri.DC_IDENTIFIER);
+		print(title, writer, IS_NOT_FIRST, TermUri.DC_TITLE);
+		print(description, writer, IS_NOT_FIRST, TermUri.DC_DESCRIPTION);
+		print(spatial, writer, IS_NOT_FIRST, TermUri.DC_SPATIAL);
+		print(coordinates, writer, IS_NOT_FIRST, TermUri.GEO_WGS84_LATITUDE, TermUri.GEO_WGS84_LONGITUDE);
+		print(license, writer, IS_NOT_FIRST, TermUri.DC_LICENSE);
+		print(getDate(created), writer, IS_NOT_FIRST, TermUri.DC_CREATED);
+		print(creator, writer, IS_NOT_FIRST, TermUri.DC_CREATOR);
+		print(contributor, writer, IS_NOT_FIRST, TermUri.DC_CONTRIBUTOR);
+		print(publisher, writer, IS_NOT_FIRST, TermUri.DC_PUBLISHER);
+		print(audience, writer, IS_NOT_FIRST, TermUri.DC_AUDIENCE);
 
 		writer.println();
 	}

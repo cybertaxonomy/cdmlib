@@ -36,6 +36,9 @@ import org.apache.log4j.Logger;
  *
  */
 public class CdmUtils {
+    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
+
+
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
 
 
@@ -44,8 +47,9 @@ public class CdmUtils {
     //folder seperator
     static String folderSeperator;
 
-
+    //TODO refactor to: public static File getUserHomeDir()
     public static String getHomeDir() throws IOException{
+        //TODO why do we need System.getenv("USERPROFILE")? System.getProperty("user.home") is fully sufficient!!
         String homeDirString = System.getenv("USERPROFILE") != null ? System.getenv("USERPROFILE") : System.getProperty("user.home");
 
         if( ! new File(homeDirString).canWrite()){
@@ -54,6 +58,13 @@ public class CdmUtils {
 
         return homeDirString;
     }
+
+    public static File getCdmHomeDir() {
+        return new File(System.getProperty("user.home")+File.separator+CDM_FOLDER_NAME+File.separator);
+    }
+
+
+
 
     /**
      * Returns the an InputStream for a read-only source

@@ -14,7 +14,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -26,6 +25,11 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *
  */
 public class TermDefaultCacheStrategy<T extends TermBase> extends StrategyBase implements IIdentifiableEntityCacheStrategy<T> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7687293307791110547L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermDefaultCacheStrategy.class);
 	

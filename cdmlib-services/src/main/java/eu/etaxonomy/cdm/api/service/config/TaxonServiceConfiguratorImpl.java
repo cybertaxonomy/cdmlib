@@ -37,12 +37,14 @@ public class TaxonServiceConfiguratorImpl<T extends TaxonBase<?>> extends Identi
 	private boolean doSynonyms = false;
 	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
+	private boolean doMisappliedNames = false;
 	private Classification classification = null;
 	private List<String> taxonPropertyPath;
 	private List<String> synonymPropertyPath;
 	private List<String> taxonNamePropertyPath;
 	private List<String> commonNamePropertyPath;
 	private Set<NamedArea> namedAreas;
+	
 	
 	/**
 	 * @return the taxonNamePropertyPath
@@ -155,6 +157,16 @@ public class TaxonServiceConfiguratorImpl<T extends TaxonBase<?>> extends Identi
 	@Override
 	public void setSynonymPropertyPath(List<String> synonymPropertyPath){
 		this.synonymPropertyPath = synonymPropertyPath;
+	}
+
+	@Override
+	public boolean isDoMisappliedNames() {
+		return this.doMisappliedNames;
+	}
+
+	@Override
+	public void setDoMisappliedNames(boolean doMisappliedNames) {
+				this.doMisappliedNames = doMisappliedNames;
 	}
 	
 }

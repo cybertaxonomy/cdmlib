@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -150,6 +151,23 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		return;
 	}
 		
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	 */
+	@Override
+	protected String getIdQuery(BerlinModelImportState state) {
+		String result = super.getIdQuery(state);
+		if (StringUtils.isNotBlank(state.getConfig().getFactFilter())){
+			result += " WHERE " + state.getConfig().getFactFilter();
+		}else{
+			result = super.getIdQuery(state);
+		}
+		return result;
+	}
+
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
@@ -520,6 +538,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoFacts();
 	}
+
 
 
 }

@@ -146,21 +146,43 @@ public class ExcelUtils {
 			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR){
 				return "-error-";
 			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA){
-				String strValue = cell.getStringCellValue();
-				if ("".equals(strValue)){
-					strValue = getNumericCellValue(cell);
+				try {
+					String strValue = cell.getStringCellValue();
+					if ("".equals(strValue)){
+						strValue = getNumericCellValue(cell);
+					}
+					return strValue;
+				} catch (Exception e) {
+					String message = "Formula cell (%s) can't be transformed to string";
+					message = String.format(message, getExcelCellString(cell));
+					throw new RuntimeException(message, e);
 				}
-				return strValue;
 			}else{
 				return cell.toString();
 			}
 		} catch (Exception e) {
-			String message = "Error occurred while reading HSSFCell. Use toString() instead";
+			String message = "Error occurred while reading Excel cell '%s' . Use toString() instead. Error: %s";
+			message = String.format(message,getExcelCellString(cell) ,e.getLocalizedMessage());
 			logger.warn(message);
 			return cell.toString();
 		}
 	}
 
+	public static String getExcelCellString(HSSFCell cell){
+		String result = "%s%s";
+		result = String.format(result, getExcelColString(cell.getColumnIndex()), cell.getRowIndex());
+		return result;
+	}
+	
+	private static String getExcelColString(int colNr){
+		int first = colNr / 26;
+		int second = colNr % 26;
+//		char a = Integer.valueOf(first).shortValue();
+		String firstStr = String.valueOf((first > 0 ? (char)(first +64) :""));
+		String secondStr = String.valueOf((char)(second + 64));
+		return firstStr +  secondStr;
+	}
+	
 
 	/**
 	 * Returns the numeric cell value. In case the cell is formatted as

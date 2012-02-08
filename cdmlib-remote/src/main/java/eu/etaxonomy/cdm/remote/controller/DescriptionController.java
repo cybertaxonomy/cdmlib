@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -39,7 +41,10 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
@@ -121,6 +126,28 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
+    }
+
+    @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
+    public Pager<DescriptionElementBase> doFindDescriptionElements(
+            @RequestParam(value = "query", required = true) String queryString,
+            @RequestParam(value = "type", required = false) Class type,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException {
+
+        logger.info("doFindDescriptionElements : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        Pager<DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
+
+        return pager;
     }
 
     /*

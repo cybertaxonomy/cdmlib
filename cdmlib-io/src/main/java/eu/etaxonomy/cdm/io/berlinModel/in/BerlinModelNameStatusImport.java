@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -58,8 +59,13 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
 	 */
 	@Override
-	protected String getIdQuery() {
-		return " SELECT RIdentifier FROM " + getTableName();
+	protected String getIdQuery(BerlinModelImportState state) {
+		String result =  " SELECT RIdentifier FROM " + getTableName();
+		
+		if (StringUtils.isNotEmpty(state.getConfig().getNameIdTable())){
+			result += " WHERE nameFk IN (SELECT NameId FROM " + state.getConfig().getNameIdTable() + ")";
+		}
+		return result;
 	}
 
 
@@ -119,8 +125,22 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 				if (taxonName != null ){
 					try{
 						NomenclaturalStatus nomStatus = BerlinModelTransformer.nomStatusFkToNomStatus(nomStatusFk, nomStatusLabel);
-						if (nomStatus.getType().getId() == 0){
-							getTermService().save(nomStatus.getType());
+						if (nomStatus == null){
+							String message = "Nomenclatural status could not be defined for %s ; %s";
+							message = String.format(message, nomStatusFk, nomStatusLabel);
+							logger.warn(message);
+							success = false;
+							continue;
+						}else{
+							if (nomStatus.getType() == null){
+								String message = "Nomenclatural status type could not be defined for %s ; %s";
+								message = String.format(message, nomStatusFk, nomStatusLabel);
+								logger.warn(message);
+								success = false;
+								continue;
+							}else if(nomStatus.getType().getId() == 0){
+								getTermService().save(nomStatus.getType());
+							}
 						}
 						
 						//reference
@@ -129,7 +149,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 						//Details
 						dbAttrName = "details";
 						cdmAttrName = "citationMicroReference";
-						success &= ImportHelper.addStringValue(rs, nomStatus, dbAttrName, cdmAttrName);
+						success &= ImportHelper.addStringValue(rs, nomStatus, dbAttrName, cdmAttrName, true);
 						
 						//doubtful
 						if (doubtful){

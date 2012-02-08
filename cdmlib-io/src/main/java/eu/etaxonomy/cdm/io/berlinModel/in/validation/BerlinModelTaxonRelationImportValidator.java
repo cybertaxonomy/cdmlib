@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
@@ -43,6 +44,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 	private boolean checkInActivatedStatus(BerlinModelImportState state){
 		try {
 			boolean result = true;
+			BerlinModelImportConfigurator config = state.getConfig();
 			Source source = state.getConfig().getSource();
 			String strSQL = 
 				" SELECT RelPTaxon.RelPTaxonId, RelPTaxon.RelQualifierFk, FromName.FullNameCache AS FromName, RelPTaxon.PTNameFk1 AS FromNameID, "  +
@@ -54,7 +56,12 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
     				" INNER JOIN Name AS FromName ON FromTaxon.PTNameFk = FromName.NameId " + 
     				" INNER JOIN Status ON FromTaxon.StatusFk = Status.StatusId AND FromTaxon.StatusFk = Status.StatusId " + 
     				" INNER JOIN Status AS ToStatus ON ToTaxon.StatusFk = ToStatus.StatusId AND ToTaxon.StatusFk = ToStatus.StatusId " +
-				" WHERE (RelPTaxon.RelQualifierFk = - 99)";
+				" WHERE (RelPTaxon.RelQualifierFk = - 99) ";
+			
+			if (StringUtils.isNotBlank(config.getRelTaxaIdQuery())){
+				strSQL += String.format(" AND (RelPTaxon.RelPTaxonId IN " +
+                        " ( %s ) )" , config.getRelTaxaIdQuery()) ; 
+			}
 			
 			ResultSet rs = source.getResultSet(strSQL);
 			boolean firstRow = true;
@@ -63,7 +70,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 				i++;
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are TaxonRelationships with status 'inactivated'(-99)!");
+					System.out.println("There are TaxonRelationships with status 'inactivated'(-99)!");
 					System.out.println("========================================================");
 				}
 				
@@ -102,18 +109,24 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 	private boolean checkRelPTaxonWithNotes(BerlinModelImportState state) {
 		boolean success = true;
 		try {
-			
-			Source source = state.getConfig().getSource();
+			BerlinModelImportConfigurator config = state.getConfig();
+			Source source = config.getSource();
 			String strQuery = 
 				"SELECT count(*) AS n FROM RelPTaxon " + 
-				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(Notes)) <> '')";
+				" WHERE (Notes IS NOT NULL) AND (RTRIM(LTRIM(Notes)) <> '') ";
+			
+			if (StringUtils.isNotBlank(config.getRelTaxaIdQuery())){
+				strQuery += String.format(" AND (RelPTaxon.RelPTaxonId IN " +
+                        " ( %s ) ) " , config.getRelTaxaIdQuery()) ; 
+			}
+			
 			ResultSet rs = source.getResultSet(strQuery);
 			rs.next();
 			int n;
 			n = rs.getInt("n");
 			if (n > 0){
 				System.out.println("========================================================");
-				logger.warn("There are " + n + " RelPTaxa with a note. Notes for RelPTaxa are not imported!");
+				System.out.println("There are " + n + " RelPTaxa with a note. Notes for RelPTaxa are not imported!");
 				System.out.println("========================================================");
 				success = false;
 				
@@ -131,15 +144,22 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 	private boolean checkSynonymRelationsWithAcceptedTaxa(BerlinModelImportState state) {
 		boolean success = true;
 		try {
+			BerlinModelImportConfigurator config = state.getConfig();
 			
-			Source source = state.getConfig().getSource();
+			Source source = config.getSource();
 			String strQuery = 
 				"SELECT RelPTaxon.RelPTaxonId, RelPTQualifier, PTaxon.RIdentifier, Name.FullNameCache fromName, PTaxon.PTRefFk, Name.NameId as fromNameId, AcceptedName.FullNameCache acceptedName" +
 				" FROM RelPTaxon INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " +
 					" INNER JOIN RelPTQualifier ON RelPTaxon.RelQualifierFk = RelPTQualifier.RelPTQualifierId " +
 					" LEFT OUTER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
 					" LEFT OUTER JOIN Name AS AcceptedName ON RelPTaxon.PTNameFk2 = AcceptedName.NameId " +
-				" WHERE (PTaxon.StatusFk = 1) AND (RelPTaxon.RelQualifierFk IN (2, 4, 5, 6, 7))";
+				" WHERE (PTaxon.StatusFk = 1) AND (RelPTaxon.RelQualifierFk IN (2, 4, 5, 6, 7)) ";
+			
+			if (StringUtils.isNotBlank(config.getRelTaxaIdQuery())){
+				strQuery += String.format(" AND (RelPTaxon.RelPTaxonId IN " +
+                        " ( %s ) )" , config.getRelTaxaIdQuery()) ; 
+			}
+			
 			ResultSet rs = source.getResultSet(strQuery);
 			boolean firstRow = true;
 			int i = 0;
@@ -147,7 +167,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 				i++;
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are accepted taxa being synonyms in a synonym relationship!");
+					System.out.println("There are accepted taxa being synonyms in a synonym relationship!");
 					System.out.println("========================================================");
 				}
 
@@ -157,15 +177,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 				String fromName = rs.getString("fromName");
 				int fromRefFk = rs.getInt("PTRefFk");
 				int fromNameId = rs.getInt("fromNameId");
-//				String fromStatus = rs.getString("FromStatus");
-				
-				
 				String toName = rs.getString("acceptedName");
-//				int toNameId = rs.getInt("ToNameId");
-//				String toStatus = rs.getString("ToStatus");
-//				String doubtfulFrom = String.valueOf(rs.getObject("doubtfulFrom"));
-//				String doubtfulTo = String.valueOf(rs.getObject("doubtfulTo"));
-				
 				
 				System.out.println("RelPTaxonId:" + relPTaxonId + 
 						"\n TaxonRIdentifier: " + fromIdentifier + "\n name: " + fromName + "\n nameId: " + fromNameId + "\n RefFk: " + fromRefFk + "\n RelType: " + relType  

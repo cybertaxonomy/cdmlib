@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -98,21 +99,20 @@ public class SDDDocumentBuilder {
 	private SDDDataSet cdmSource;
 
 	private final Map<Person, String> agents = new HashMap<Person, String>();
-	private final Map<TaxonNameBase, String> taxonNames = new HashMap<TaxonNameBase, String>();
+	private final Map<TaxonNameBase<?,?>, String> taxonNames = new HashMap<TaxonNameBase<?,?>, String>();
 	private final Map<Feature, String> characters = new HashMap<Feature, String>();
 	private final Map<FeatureNode, String> featureNodes = new HashMap<FeatureNode, String>();
 	private final Map<Feature, String> descriptiveConcepts = new HashMap<Feature, String>();
 	private final Map<TaxonDescription, String> codedDescriptions = new HashMap<TaxonDescription, String>();
 	private final Map<Media, String> medias = new HashMap<Media, String>();
 	private final Map<State, String> states = new HashMap<State, String>();
-	private final Map<Reference, String> articles = new HashMap<Reference, String>();
+	private final Map<Reference<?>, String> articles = new HashMap<Reference<?>, String>();
 	private final Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
 	private final Map<Modifier, String> modifiers = new HashMap<Modifier, String>();
 	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
 	private final Map<NamedArea, String> namedAreas = new HashMap<NamedArea, String>();
 	private final Map<Specimen, String> specimens = new HashMap<Specimen, String>();
-	private final ReferenceFactory refFactory = ReferenceFactory.newInstance();
-
+	
 	private final Map<VersionableEntity, String> features = new HashMap<VersionableEntity, String>();
 	private int agentsCount = 0;
 	private int articlesCount = 0;
@@ -269,7 +269,7 @@ public class SDDDocumentBuilder {
 
 		List<Reference> references = cdmSource.getReferences();
 		Iterator<Reference> iterator = references.iterator();
-		IDatabase d = refFactory.newDatabase();
+		IDatabase d = ReferenceFactory.newDatabase();
 		while (iterator.hasNext()) {
 			Reference reference = iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
@@ -295,9 +295,9 @@ public class SDDDocumentBuilder {
 		List<Reference> references = cdmSource.getReferences();
 		Iterator<Reference> iterator = references.iterator();
 		boolean database = false;
-		IDatabase d = refFactory.newDatabase();
+		IDatabase d = ReferenceFactory.newDatabase();
 		while ((iterator.hasNext()) && (!database)) {
-			Reference reference = iterator.next();
+			Reference<?> reference = iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
 				d = reference;
 			}
@@ -354,7 +354,7 @@ public class SDDDocumentBuilder {
 		buildLabel(representation, reference.getTitleCache());
 
 		Set<Annotation> annotations = ((Reference) reference).getAnnotations();
-		Iterator iterator = annotations.iterator();
+		Iterator<Annotation> iterator = annotations.iterator();
 		String detailText = null;
 		if (iterator.hasNext()) {
 			Annotation annotation = (Annotation) iterator.next();
@@ -830,10 +830,11 @@ public class SDDDocumentBuilder {
 			}
 		}
 
-		Set<Reference> descriptionSources = taxonDescription
-				.getDescriptionSources();
-		for (Iterator<Reference> rb = descriptionSources.iterator(); rb
-				.hasNext();) {
+		Set<Reference> descriptionSources = new HashSet<Reference>();
+		for (IdentifiableSource source : taxonDescription.getSources()){
+			descriptionSources.add(source.getCitation());
+		}
+		for (Iterator<Reference> rb = descriptionSources.iterator(); rb.hasNext();) {
 			Reference descriptionSource = rb.next();
 			if (descriptionSource.getType().equals(ReferenceType.Article)) {
 
@@ -841,18 +842,14 @@ public class SDDDocumentBuilder {
 				articlesCount = buildReference(descriptionSource, articles,
 						REF, citation, "p", articlesCount);
 
-				Set<Annotation> annotations = descriptionSource
-						.getAnnotations();
-				for (Iterator<Annotation> a = annotations.iterator(); a
-						.hasNext();) {
+				Set<Annotation> annotations = descriptionSource.getAnnotations();
+				for (Iterator<Annotation> a = annotations.iterator(); a.hasNext();) {
 					Annotation annotation = a.next();
-					AnnotationType annotationType = annotation
-							.getAnnotationType();
+					AnnotationType annotationType = annotation.getAnnotationType();
 					if (annotationType != null) {
 						String type = annotationType.getLabel();
 						if (type.equals("location")) {
-							citation.setAttribute("location",
-									annotation.getText());
+							citation.setAttribute("location",annotation.getText());
 						}
 					}
 				}
@@ -1369,7 +1366,7 @@ public class SDDDocumentBuilder {
 			for (int i = 0; i < cdmSource.getReferences().size(); i++) {
 				ElementImpl elPublication = new ElementImpl(document,
 						"Publication");
-				Reference publication = cdmSource.getReferences().get(i);
+				Reference<?> publication = cdmSource.getReferences().get(i);
 				Set<Annotation> annotations = publication.getAnnotations();
 				for (Iterator<Annotation> a = annotations.iterator(); a
 						.hasNext();) {

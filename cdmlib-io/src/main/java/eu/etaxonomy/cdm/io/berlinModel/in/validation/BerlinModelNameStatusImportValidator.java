@@ -28,7 +28,7 @@ public class BerlinModelNameStatusImportValidator implements IOValidator<BerlinM
 	 */
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		logger.warn("Checking for NomenclaturalStatus not yet implemented");
+		System.out.println("Checking for NomenclaturalStatus not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		

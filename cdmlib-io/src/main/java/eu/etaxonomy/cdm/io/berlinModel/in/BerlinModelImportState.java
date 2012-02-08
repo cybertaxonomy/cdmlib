@@ -32,6 +32,8 @@ public class BerlinModelImportState extends DbImportStateBase<BerlinModelImportC
 	Map<String, DefinedTermBase> dbCdmDefTermMap = new HashMap<String, DefinedTermBase>();
 	
 	Map<String, User> usernameMap = new HashMap<String, User>();
+	
+	private boolean isReferenceSecondPath = false;
 
 	
 	/* (non-Javadoc)
@@ -68,6 +70,15 @@ public class BerlinModelImportState extends DbImportStateBase<BerlinModelImportC
 	public void putUser(String username, User user){
 		usernameMap.put(username, user);
 	}
+
+	public boolean isReferenceSecondPath() {
+		return isReferenceSecondPath;
+	}
+
+	public void setReferenceSecondPath(boolean isReferenceSecondPath) {
+		this.isReferenceSecondPath = isReferenceSecondPath;
+	}
+
 
 
     

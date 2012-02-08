@@ -12,20 +12,25 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelExportConfigurator extends DbExportConfiguratorBase implements IExportConfigurator{
+public class BerlinModelExportConfigurator extends DbExportConfiguratorBase<BerlinModelExportState> implements IExportConfigurator<BerlinModelExportState>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 
+//	TODO
+	private static IExportTransformer defaultTransformer = null;
+	
+	
 	//ID for the isHomotypic relationship in RelName, if not exist null
 	private Integer isHomotypicId = null;
 
@@ -72,7 +77,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	 * @param destination
 	 */
 	private BerlinModelExportConfigurator(Source destination, ICdmDataSource cdmSource) {
-	   super();
+	   super(defaultTransformer);
 	   setSource(cdmSource);
 	   setDestination(destination);
 //	   setState((BerlinModelExportState)getNewState());
@@ -95,7 +100,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public ExportStateBase getNewState() {
+	public BerlinModelExportState getNewState() {
 		return new BerlinModelExportState(this);
 	}
 	

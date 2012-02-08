@@ -14,13 +14,14 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> extends ExportConfiguratorBase<File> implements IExportConfigurator<STATE>{
+public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> extends ExportConfiguratorBase<File, STATE> implements IExportConfigurator<STATE>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(XmlExportConfiguratorBase.class);
 
@@ -40,8 +41,8 @@ public abstract class XmlExportConfiguratorBase<STATE extends XmlExportState> ex
 	 * @param sourceReference
 	 * @param destination
 	 */
-	protected XmlExportConfiguratorBase(File destination, ICdmDataSource cdmSource) {
-	   super();
+	protected XmlExportConfiguratorBase(File destination, ICdmDataSource cdmSource, IExportTransformer transformer) {
+	   super(transformer);
 	   setSource(cdmSource);
 	   setDestination(destination);
 //	   setState(new XmlExportState<XmlExportConfigurator>());
