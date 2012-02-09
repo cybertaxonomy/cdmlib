@@ -180,9 +180,14 @@ public final class BerlinModelTransformer {
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
-	public static UUID uuidRelNameCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
+	public static UUID uuidNomStatusNomOrthCons = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 	
 	static NomenclaturalStatusType nomStatusCombIned;
+	static NomenclaturalStatusType nomStatusSpNovIned;
+	static NomenclaturalStatusType nomStatusNomOrthCons;
+	
 	public static NomenclaturalStatusType nomStatusTypeAbbrev2NewNomStatusType(String nomStatus){
 		NomenclaturalStatusType result = null;
 		if (nomStatus == null){
@@ -192,10 +197,28 @@ public final class BerlinModelTransformer {
 				nomStatusCombIned = new NomenclaturalStatusType();
 				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
 				nomStatusCombIned.addRepresentation(representation);
-				nomStatusCombIned.setUuid(uuidRelNameCombIned);
+				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusCombIned);
 			}
 			result = nomStatusCombIned;
+		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
+			if (nomStatusSpNovIned == null){
+				nomStatusSpNovIned = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN());
+				nomStatusSpNovIned.addRepresentation(representation);
+				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
+			}
+			result = nomStatusSpNovIned;
+		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
+			if (nomStatusNomOrthCons == null){
+				nomStatusNomOrthCons = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN());
+				nomStatusNomOrthCons.addRepresentation(representation);
+				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusNomOrthCons);
+			}
+			result = nomStatusNomOrthCons;
 		}
 		return result;
 	}
