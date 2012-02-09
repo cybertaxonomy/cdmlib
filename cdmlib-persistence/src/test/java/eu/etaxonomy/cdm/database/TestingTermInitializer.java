@@ -63,37 +63,45 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 
     @Override
 	public void doInitialize(){
-		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		IDatabaseConnection connection = null;
 
-		try {
-			connection = getConnection();
-			IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
+		logger.info("TestingTermInitializer initialize start ...");
+		if (isOmit()){
+			logger.info("TestingTermInitializer.omit == true, returning without initializing terms");
+			return;
+		} else {
+			TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+			IDatabaseConnection connection = null;
 
-			DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
-		} catch (Exception e) {
-			logger.error(e);
-			for(StackTraceElement ste : e.getStackTrace()) {
-				logger.error(ste);
-			}
-		} finally {
 			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
+				connection = getConnection();
+				IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
+
+				DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+			} catch (Exception e) {
+				logger.error(e);
+				for(StackTraceElement ste : e.getStackTrace()) {
+					logger.error(ste);
+				}
+			} finally {
+				try {
+					connection.close();
+				} catch (SQLException sqle) {
+					logger.error(sqle);
+				}
 			}
-		}
 
-		transactionManager.commit(txStatus);
+			transactionManager.commit(txStatus);
 
-		txStatus = transactionManager.getTransaction(txDefinition);
-		for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
-			Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
-			UUID vocabularyUuid = vocabularyType.getUuid();
-			secondPass(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>());
+			txStatus = transactionManager.getTransaction(txDefinition);
+			for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
+				Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
+				UUID vocabularyUuid = vocabularyType.getUuid();
+				secondPass(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>());
+			}
+			transactionManager.commit(txStatus);
+			//txStatus = transactionManager.getTransaction(txDefinition);
 		}
-		transactionManager.commit(txStatus);
-		//txStatus = transactionManager.getTransaction(txDefinition);
+		logger.info("TestingTermInitializer initialize end ...");
 	}
 
 	protected IDatabaseConnection getConnection() throws SQLException {
