@@ -10,27 +10,31 @@
 
     <context:property-override location="classpath:override.properties"/>
 
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/service">
+    </context:component-scan>
+
+    <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/>
+
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
 
     <!--
-        exclude PersistentTermInitializer as we want to use the TestingTermInitializer instead
-    <context:component-scan base-package="eu/etaxonomy/cdm">
-      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
-    </context:component-scan>
-
-    <bean id="termInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
-        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
-    </bean>
-    -->
-
-    <!--
-        import services.xml *ONLY AFTER* we did the component scan while excluding the PersistentTermInitializer above !!!!
+        use TestingTermInitializer
      -->
-    <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/>
+    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
+        <!--
+            TermsDataSet-with_auditing_info.cdmlib-services.xml has different IDs than TermsDataSet-with_auditing_info.xml
+            which is used in persistence !!
+        -->
+        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml"/>
+        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
+        <property name="omit" value="false"/>
+    </bean>
+    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+        <property name="omit" value="true"/>
+    </bean>
 
     <bean id="hibernateProperties"
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">

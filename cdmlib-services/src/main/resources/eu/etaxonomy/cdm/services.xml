@@ -19,8 +19,6 @@
 
     <!-- also find the implementation of ITaxonNodeComparator -->
     <!--context:component-scan base-package="eu/etaxonomy/cdm/model/taxon"/-->
-
     <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator">
-
     </bean>
 </beans>

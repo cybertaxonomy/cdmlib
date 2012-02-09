@@ -10,6 +10,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +22,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,27 +50,27 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 
     @SpringBeanByType
     IClassificationService service;
-    
+
     @SpringBeanByType
     ITaxonNodeService taxonNodeService;
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
     		"childNodes",
     		"childNodes.taxon",
     		"childNodes.taxon.name",
-			"taxon.sec", 
+			"taxon.sec",
 			"taxon.name.*"
 			});
-    
+
     private Comparator<? super TaxonNode> taxonNodeComparator;
-	
+
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#setTaxonNodeComparator(eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator)}.
      */
     @Test
     public final void testSetTaxonNodeComparator() {
-    	
-    	
+
+
 //		fail("Not yet implemented");
     }
 
@@ -86,16 +90,21 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 //		fail("Not yet implemented");
     }
 
-   
+
     @Test
     @DataSet
     public final void testTaxonNodeByNameComparator() {
     	taxonNodeComparator = new TaxonNodeByNameComparator();
     	Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
-    	
-    	
+
+    	try {
+			printDataSet(new FileOutputStream(new File("testTaxonNodeByNameComparator-dump.xml")), new String[] {"DefinedTermBase"});
+		} catch (FileNotFoundException e) {
+			/* IGNORE */
+		}
+
 		//List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.GENUS(), NODE_INIT_STRATEGY);
-		
+
 		List<TaxonNode> taxonNodes = service.getAllNodes();
 		for (TaxonNode node: taxonNodes){
 			taxonNodeService.load(node.getUuid(), NODE_INIT_STRATEGY);
@@ -104,20 +113,33 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 		int index = taxonNodes.indexOf(nodeGenus);
 		taxonNodes.remove(index);
 		Collections.sort(taxonNodes, taxonNodeComparator);
-		
+
+		/**
+		 * expected order is:
+		 *  Acacia subg. Aculeiferum Pedley
+         *  Acacia sect. Botrycephalae Yuji Sasaki
+         *  Acacia subg. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki
+         *  Acacia cuspidifolia Maslin
+         *  Acacia mearnsii Benth
+		 */
+
+		logger.setLevel(Level.DEBUG);
+		if(logger.isDebugEnabled()){
+			logger.debug("-------------");
+			for (TaxonNode node: taxonNodes){
+				logger.debug(node.getTaxon().getName().getTitleCache() );
+	    		/*for (TaxonNode child : node.getChildNodes()){
+	    			logger.debug(child.getTaxon().getName().getTitleCache());
+	    		}*/
+	    	}
+		}
+
 		Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(0).getTaxon().getName().getTitleCache());
-		
-		System.err.println();
-		for (TaxonNode node: taxonNodes){
-    		System.err.println(node.getTaxon().getName().getTitleCache() );
-    		/*for (TaxonNode child : node.getChildNodes()){
-    			System.err.println(child.getTaxon().getName().getTitleCache());
-    		}*/
-    	}
+
 		/*
 		((TaxonNodeByNameComparator)taxonNodeComparator).setSortInfraGenericFirst(false);
 		Collections.sort(taxonNodes, taxonNodeComparator);
-		
+
 		Assert.assertEquals("Acacia cuspidifolia Maslin", taxonNodes.get(0).getTaxon().getName().getTitleCache());
 		System.err.println();
 		for (TaxonNode node: taxonNodes){
@@ -127,10 +149,10 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     		}
     	}*/
 //		fail("Not yet implemented");
-    
+
     }
-    
-    
+
+
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}.
      */
@@ -139,10 +161,10 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     @Ignore
     public final void testloadRankSpecificRootNodes(){
     	Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
-    	
+
 		List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), NODE_INIT_STRATEGY);
 		Assert.assertEquals(2, taxonNodes.size());
-		
+
     }
 
     /**

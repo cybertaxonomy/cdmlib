@@ -56,9 +56,14 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUri(java.lang.String)}.
 	 */
 	@Ignore //second part of test throws unexpected exception & also first part fails since language(406)
-	//is also not found here
+	//is also not found here, for an explanation see comment below
 	@Test
-	@DataSet
+	/* @DataSet
+	 * WARNING:
+	 *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
+	 *    and thus will cause unitils to empty the according tables, thus all terms etc will be deleted for the
+	 *    following tests, thus it might be a good idea moving this test to the end
+	 */
 	public void testGetTermByUri() {
 		String uriStr = "http://any.uri.com";
 		URI uri = URI.create(uriStr);
@@ -82,7 +87,11 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUuid(java.util.UUID)}.
 	 */
 	@Test
-	@DataSet
+	/* @DataSet
+	 * WARNING:
+	 *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
+	 *    and thus will cause unitils empty the according tables
+	 */
 	public void testGetTermByUuid() {
 		// Rank.Domain
 		String strUUID = "ffca6ec8-8b88-417b-a6a0-f7c992aac19b";
@@ -103,7 +112,11 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	 */
 //	@Ignore
 	@Test
-	@DataSet
+	/* @DataSet
+	 * WARNING:
+	 *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
+	 *    and thus will cause unitils empty the according tables
+	 */
 	public void testGetVocabularyUUID() {
 		//Rank
 		String rankVocabularyUuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
@@ -120,7 +133,11 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 
 
 	@Test
-	@DataSet
+	/* @DataSet
+	 * WARNING:
+	 *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
+	 *    and thus will cause unitils empty the according tables
+	 */
 	public void testGetAreaByTdwgAbbreviation(){
 		String tdwgAbbreviation = "GER-OO";
 		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);
@@ -128,7 +145,11 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	}
 
 	@Test
-	@DataSet
+	/* @DataSet
+	 * WARNING:
+	 *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
+	 *    and thus will cause unitils empty the according tables
+	 */
 	public void testListTerms() {
 		Pager<SpecimenTypeDesignationStatus> results = (Pager)service.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
 		assertNotNull("Results should not be null",results);

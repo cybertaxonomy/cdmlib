@@ -150,7 +150,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 * @return the <code>UUID</code> of the loaded vocabulary as found in CSV file
 	 */
 	public UUID firstPass(VocabularyEnum vocabularyType, Map<UUID, DefinedTermBase> persistedTerms) {
-		logger.info("Loading terms for " + vocabularyType.getClazz().getSimpleName());
+		logger.info("Loading terms for '" + vocabularyType.name() + "': " + vocabularyType.getClazz().getName());
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 
 		for(DefinedTermBase d : persistedTerms.values()) {
