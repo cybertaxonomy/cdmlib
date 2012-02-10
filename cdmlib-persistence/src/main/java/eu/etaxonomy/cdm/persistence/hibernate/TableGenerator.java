@@ -3,12 +3,15 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.SessionFactory;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.SessionImplementor;
+import org.hibernate.id.IdentifierGeneratorHelper;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
@@ -59,7 +62,7 @@ import eu.etaxonomy.cdm.database.PersistentTermInitializer;
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
 
-	private static final Logger logger = Logger.getLogger(PersistentTermInitializer.class);
+	private static final Logger logger = Logger.getLogger(TableGenerator.class);
 
 	/**
 	 * {@inheritDoc}
@@ -74,16 +77,17 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 		super.configure(type, params, dialect);
 	}
 
-
-
-
-
 //	/**
 //	 * {@inheritDoc}
 //	 */
 //	@Override
 //	public synchronized Serializable generate(final SessionImplementor session, Object obj) {
+//
 //		Serializable nextId =  super.generate(session, obj);
+//		logger.debug("next id for " + obj.getClass().getSimpleName() + ":" + obj + " =" + nextId );
+//		return nextId;
+//
+//		/*
 //		if(nextId instanceof Number){
 //			long nextIdL = ((Number)nextId).longValue();
 //			int nextIdOffset = 1000;
@@ -93,6 +97,7 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 //			logger.error("identifier expected to be a Number, cannot apply offset");
 //			return nextId;
 //		}
+//		*/
 //	}
 
 }

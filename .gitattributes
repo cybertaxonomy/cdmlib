@@ -1936,6 +1936,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTestNo
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonServices.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_s1.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/NeededForCorrectTermLoadingTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text

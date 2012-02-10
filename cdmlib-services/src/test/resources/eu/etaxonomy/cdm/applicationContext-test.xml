@@ -60,7 +60,9 @@
         class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
         <property name="properties">
             <props>
-                <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
+                <!--
+                    globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
+                 -->
                 <prop key="optimizer">none</prop>
                 <prop key="initial_value">1000</prop>
             </props>
