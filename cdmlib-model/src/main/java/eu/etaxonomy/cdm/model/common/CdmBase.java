@@ -88,6 +88,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	@XmlTransient
 	@Id
 //	@GeneratedValue(generator = "system-increment")
+//	@GeneratedValue(generator = "enhanced-table")
 	@GeneratedValue(generator = "custom-enhanced-table")
 	@GenericGenerator(name = "custom-enhanced-table", strategy="eu.etaxonomy.cdm.persistence.hibernate.TableGenerator")
 	@DocumentId
