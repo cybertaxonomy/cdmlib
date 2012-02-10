@@ -51,7 +51,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev){
 		Language language = null;
 		AnnotationType annotationType = null;
-		return new DbImportAnnotationMapper(dbAttributeString, uuid, label, text, labelAbbrev, language, annotationType);
+		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 */
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev, Language language){
 		AnnotationType annotationType = null;
-		return new DbImportAnnotationMapper(dbAttributeString, uuid, label, text, labelAbbrev, language, annotationType);
+		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
 	}
 	
 	/**
@@ -85,19 +85,15 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 * @return
 	 */
 	public static DbImportAnnotationMapper NewInstance(String dbAttributeString, AnnotationType annotationType, Language language){
-		String label = null;
-		String text = null;
-		String labelAbbrev = null;
-		UUID uuid = null;
-		return new DbImportAnnotationMapper(dbAttributeString, uuid, label, text, labelAbbrev, language, annotationType);
+//		String label = null;
+//		String text = null;
+//		String labelAbbrev = null;
+//		UUID uuid = null;
+		return new DbImportAnnotationMapper(dbAttributeString, language, annotationType);
 	}
 
 	
 	private AnnotationType annotationType;
-	private String label;
-	private String text;
-	private String labelAbbrev;
-	private UUID uuid;
 	private Language language;
 
 	/**
@@ -107,12 +103,8 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 * @param text
 	 * @param labelAbbrev
 	 */
-	private DbImportAnnotationMapper(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev, Language language, AnnotationType annotationType) {
+	private DbImportAnnotationMapper(String dbAttributeString, Language language, AnnotationType annotationType) {
 		super(dbAttributeString, dbAttributeString);
-		this.uuid = uuid;
-		this.label = label;
-		this.text = text;
-		this.labelAbbrev = labelAbbrev;
 		this.language = language;
 		this.annotationType = annotationType;
 	}
