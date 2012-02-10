@@ -334,15 +334,19 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 
 	}
 
-	private void handlePublication(MarkupImportState state,
-			XMLEventReader reader, XMLEvent currentEvent, String elName)
-			throws XMLStreamException {
+	private void handlePublication(MarkupImportState state, XMLEventReader reader, XMLEvent currentEvent, 
+			String elName) throws XMLStreamException {
 
 		// attributes
 		StartElement element = currentEvent.asStartElement();
 		Map<String, Attribute> attributes = getAttributes(element);
-		handleUnexpectedAttributes(element.getLocation(), attributes,
-				"noNamespaceSchemaLocation");
+		String lang = getAndRemoveAttributeValue(attributes, "lang");
+		if (lang != null){
+			Language language = getTermService().getLanguageByIso(lang);
+			state.setDefaultLanguage(language);
+		}
+		
+		handleUnexpectedAttributes(element.getLocation(), attributes, "noNamespaceSchemaLocation");
 
 		while (reader.hasNext()) {
 			XMLEvent event = readNoWhitespace(reader);
@@ -390,8 +394,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		throw new IllegalStateException("Publication has no ending element");
 	}
 
-	private void handleMetaData(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent) throws XMLStreamException {
+	private void handleMetaData(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		while (reader.hasNext()) {
@@ -1829,8 +1832,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		return result;
 	}
 
-	private TypeInfo makeSpecimenTypeTypeInfo(String originalString,
-			XMLEvent event) {
+	private TypeInfo makeSpecimenTypeTypeInfo(String originalString, XMLEvent event) {
 		TypeInfo result = new TypeInfo();
 		String[] split = originalString.split("\\s+");
 		for (String str : split) {
