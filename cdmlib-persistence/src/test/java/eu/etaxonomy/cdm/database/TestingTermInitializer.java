@@ -23,11 +23,13 @@ import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.test.integration.HsqldbDataTypeFactory;
@@ -110,7 +112,8 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 			connection = new DatabaseConnection(dataSource.getConnection());
 
 			DatabaseConfig config = connection.getConfig();
-			config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,new HsqldbDataTypeFactory());
+			//FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
+			config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,new H2DataTypeFactory());
 		} catch (Exception e) {
 			logger.error(e);
 		}

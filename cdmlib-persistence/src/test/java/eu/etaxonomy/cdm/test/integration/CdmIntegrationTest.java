@@ -30,6 +30,7 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -64,8 +65,9 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
 			DatabaseConfig config = connection.getConfig();
 
+			//FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
 			config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-					new HsqldbDataTypeFactory());
+					new H2DataTypeFactory());
 		} catch (Exception e) {
 			logger.error(e);
 		}
