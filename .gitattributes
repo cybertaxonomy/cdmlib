@@ -263,11 +263,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbExtensionMapper
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbImageMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbIntegerAnnotationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbIntegerExtensionMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbLanguageMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbMarkerMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbNullMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbObjectMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSequenceMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSingleAttributeExportMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSingleSourceMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbTextDataMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbTimePeriodMapper.java -text
