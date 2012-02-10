@@ -32,7 +32,7 @@ public class ExportTransformerBase implements IExportTransformer {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByFeature(eu.etaxonomy.cdm.model.description.Feature)
 	 */
 	@Override
-	public Feature getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {
+	public Object getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByFeature is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
@@ -49,7 +49,7 @@ public class ExportTransformerBase implements IExportTransformer {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByLanguage(eu.etaxonomy.cdm.model.common.Language)
 	 */
 	@Override
-	public Language getKeyByLanguage(Language language) throws UndefinedTransformerMethodException {
+	public Object getKeyByLanguage(Language language) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByLanguage is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
@@ -67,10 +67,15 @@ public class ExportTransformerBase implements IExportTransformer {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByExtensionType(eu.etaxonomy.cdm.model.common.ExtensionType)
 	 */
 	@Override
-	public ExtensionType getKeyByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
+	public Object getKeyByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByExtensionType is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
+	}	@Override
+	public String getCacheByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
+		String warning = "getCacheByExtensionType is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByPresenceAbsenceTerm(eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase)

@@ -36,6 +36,7 @@ public interface IExportTransformer {
 	
 	//Extension Type
 	public Object getKeyByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException;
+	public String getCacheByExtensionType(ExtensionType language) throws UndefinedTransformerMethodException;
 	
 	//Presence Term
 	public Object getKeyByPresenceAbsenceTerm(PresenceAbsenceTermBase term) throws UndefinedTransformerMethodException;
