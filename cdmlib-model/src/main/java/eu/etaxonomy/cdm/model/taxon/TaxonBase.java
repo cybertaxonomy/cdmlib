@@ -195,9 +195,9 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @see #getName
 	 */
 	public void setName(TaxonNameBase name) {
-		if (this.name != null){
+		/*if (this.name != null){
 			this.name.getTaxonBases().remove(this);
-		}
+		}*/
 		if(name != null) {
 			name.getTaxonBases().add(this);
 		}

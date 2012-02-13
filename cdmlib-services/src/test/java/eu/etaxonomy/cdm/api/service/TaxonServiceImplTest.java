@@ -63,7 +63,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public final void testGetTaxonByUuid() {
-        Taxon expectedTaxon = Taxon.NewInstance(null, null);
+        Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         UUID uuid = service.save(expectedTaxon);
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
@@ -74,7 +74,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public final void testSaveTaxon() {
-        Taxon expectedTaxon = Taxon.NewInstance(null, null);
+        Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         UUID uuid = service.save(expectedTaxon);
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
@@ -82,7 +82,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testSaveOrUpdateTaxon() {
-        Taxon expectedTaxon = Taxon.NewInstance(null, null);
+        Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         UUID uuid = service.save(expectedTaxon);
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
@@ -99,7 +99,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public final void testRemoveTaxon() {
-        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+    	Rank rank = Rank.SPECIES();
+        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(rank), null);
         UUID uuid = service.save(taxon);
         service.delete(taxon);
         TaxonBase<?> actualTaxon = service.find(uuid);
@@ -511,7 +512,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         nSynonyms = service.count(Synonym.class);
         Assert.assertEquals("There should be 1 synonym left in the database", 1, nSynonyms);
         nNames = nameService.count(TaxonNameBase.class);
-        Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
+        Assert.assertEquals("There should be 4 names left in the database", 4, nNames);
         int nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
     }
@@ -559,7 +560,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         nSynonyms = service.count(Synonym.class);
         Assert.assertEquals("There should be 1 synonym left in the database", 1, nSynonyms);
         nNames = nameService.count(TaxonNameBase.class);
-        Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
+        Assert.assertEquals("There should be 4 names left in the database", 4, nNames);
         nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
 

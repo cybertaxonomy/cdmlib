@@ -12,7 +12,7 @@
 	</parent>
 	
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>cdmlib-remote</artifactId>
+  <artifactId>cdmlib-remote-webapp</artifactId>
   <properties>
     <!--  
       custom property to hold the patch version number     

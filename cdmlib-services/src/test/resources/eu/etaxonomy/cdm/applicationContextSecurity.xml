@@ -41,7 +41,7 @@
 	    </property>
  		<property name="entityInterceptor">
     		<bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmSecurityHibernateInterceptor"/>
-  		</property>
+  		</property> 
 	    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
 	    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
 	    <property name="dataSource" ref="dataSource"/>
@@ -116,6 +116,10 @@
      
      <bean id="taxonNodeService" class="eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl">
      </bean>
+     
+     <bean id="taxonNodeComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator">
+     </bean>
+     
     
     <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
     

@@ -31,6 +31,7 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -126,6 +127,10 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	protected SynonymRelationship(Synonym synonym, Taxon taxon, SynonymRelationshipType type, Reference citation, String citationMicroReference) {
 		super(synonym, taxon, type, citation, citationMicroReference);
 		if (type != null && type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF()) && taxon != null && taxon.getName() != null && synonym != null && synonym != null){
+			HomotypicalGroup group = taxon.getName().getHomotypicalGroup();
+			if (group == null){
+				taxon.getName().setHomotypicalGroup(HomotypicalGroup.NewInstance());
+			}
 			taxon.getName().getHomotypicalGroup().addTypifiedName(synonym.getName());
 		}
 	}
