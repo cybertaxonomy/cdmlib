@@ -11,13 +11,16 @@
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -32,6 +35,7 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CO
 	private IdMapper parentMapper;
 	private DbSequenceMapper sequenceMapper;
 	private String collectionAttributeName;
+	private List<DbSimpleFilterMapper> filterMapper = new ArrayList<DbSimpleFilterMapper>() ;
 	
 	public static CollectionExportMapping NewInstance(String tableName, String collectionAttributeName, IdMapper parentMapper){
 		return new CollectionExportMapping(tableName, collectionAttributeName, parentMapper, null);
@@ -48,6 +52,16 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CO
 	}
 
 	
+	@Override
+	public void addMapper(CdmAttributeMapperBase mapper) {
+		if (mapper instanceof DbSimpleFilterMapper){
+			DbSimpleFilterMapper filterMapper = (DbSimpleFilterMapper)mapper;
+			this.filterMapper.add(filterMapper);
+		}else{
+			super.addMapper(mapper);
+		}
+	}
+
 	private CollectionExportMapping(String tableName, String collectionAttributeName, IdMapper parentMapper, DbSequenceMapper sequenceMapper){
 		super(tableName);
 		this.parentMapper = parentMapper;
@@ -70,6 +84,9 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CO
 				if (collectionObject == null){
 					logger.warn("Collection object was null");
 					result = false;
+					continue;
+				}
+				if (isFiltered(collectionObject)){
 					continue;
 				}
 				for (CdmMapperBase mapper : this.mapperList){
@@ -102,9 +119,19 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CO
 		}
 	}
 	
-	private Collection getCollection(CdmBase cdmBase){
+	private boolean isFiltered(CdmBase cdmBase) throws SQLException {
+		for (DbSimpleFilterMapper filterMapper : this.filterMapper){
+			boolean result = filterMapper.doInvoke(cdmBase);
+			if (result == true){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Collection<CdmBase> getCollection(CdmBase cdmBase){
 		Object result = ImportHelper.getValue(cdmBase, collectionAttributeName, false, true);
-		return (Collection)result;
+		return (Collection<CdmBase>)result;
 	}
 	
 	

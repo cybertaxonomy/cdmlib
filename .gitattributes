@@ -257,6 +257,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbConstantMapper.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbDateMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbDescriptionElementTaxonMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbDistributionStatusMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbExportIgnoreMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbExportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbExportNotYetImplementedMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbExtensionMapper.java -text
@@ -264,10 +265,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbImageMapper.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbIntegerAnnotationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbIntegerExtensionMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbLanguageMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbLastActionMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbMarkerMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbNullMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbObjectMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbOriginalNameMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSequenceMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSimpleFilterMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSingleAttributeExportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbSingleSourceMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/DbStringMapper.java -text

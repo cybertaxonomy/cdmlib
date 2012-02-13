@@ -17,6 +17,7 @@ import org.hsqldb.Types;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
@@ -27,16 +28,23 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbObjectMapper.class);
 	
+	boolean isCache;
+	
 	public static DbObjectMapper NewInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null);
+		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, false);
+	}
+	
+	public static DbObjectMapper NewInstance(String cdmAttributeString, String dbAttributeString, boolean isCache){
+		return new DbObjectMapper(cdmAttributeString, dbAttributeString, null, isCache);
 	}
 	
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	protected DbObjectMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue) {
+	protected DbObjectMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue, boolean isCache) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
+		this.isCache = isCache;
 	}
 	
 	
@@ -46,13 +54,24 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		CdmBase value = (CdmBase)super.getValue(cdmBase);
+		Object result;
 		if (value == null){
 			return null;
 		}
 		if (! Hibernate.isInitialized(value)){
 			Hibernate.initialize(value);
 		}
-		Object result = getId(value);
+		if (isCache){
+			if (value.isInstanceOf(IdentifiableEntity.class)){
+				IdentifiableEntity<?> identEntity = CdmBase.deproxy(value, IdentifiableEntity.class);
+				result = identEntity.getTitleCache();
+			}else{
+				result = value.toString();
+			}
+		}else{
+			result = getId(value);
+		}
+		
 //		getState().getConfig().getCdmAppController().commitTransaction(tx);
 		return result;
 	}
@@ -74,7 +93,11 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	 */
 	@Override
 	protected int getSqlType() {
-		return Types.INTEGER;
+		if (isCache){
+			return Types.VARCHAR;
+		}else{
+			return Types.INTEGER;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -82,7 +105,11 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	 */
 	@Override
 	public Class<?> getTypeClass() {
-		return CdmBase.class;
+		if (isCache){
+			return String.class;
+		}else{
+			return CdmBase.class;
+		}
 	}
 
 	
