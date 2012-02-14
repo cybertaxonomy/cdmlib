@@ -62,6 +62,16 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
      */
     public String getFullTitleCache(T taxonNameBase);
 
+
+	/**
+	 * Returns the full title cache tagged by html tags according to tag rules.
+	 * @param nonViralName
+	 * @param htmlTagRules
+	 * @return
+	 */
+	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
+
+    
     /**
      * Returns the name cache as a string.
      * @param taxonNameBase

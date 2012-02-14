@@ -191,6 +191,20 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		    return result;
 		}
     }
+    
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
+	 */
+	@Override
+	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
+		List<TaggedText> tags = getTaggedFullTitle(nonViralName);
+	    if (tags == null){
+	    	return null;
+	    }else{
+	    	String result = createString(tags, htmlTagRules);
+	    	return result;
+	    }
+	}
 
 
 	/* (non-Javadoc)
@@ -198,13 +212,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      */
     @Override
     public String getFullTitleCache(T nonViralName) {
-        List<TaggedText> tags = getTaggedFullTitle(nonViralName);
-        if (tags == null){
-            return null;
-        }else{
-            String result = createString(tags);
-            return result;
-        }
+    	return getFullTitleCache(nonViralName, null);
     }
 
 
@@ -899,5 +907,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
             return taxonNameBase.getInfraSpecificEpithet();
         }
     }
+
 
 }
