@@ -45,9 +45,9 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
      */
     public abstract String getTitleCache(T name);
 
-    /**
-     * 
-     * @see 
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
      */
     public abstract String getTitleCache(T name, HTMLTagRules rules);
 

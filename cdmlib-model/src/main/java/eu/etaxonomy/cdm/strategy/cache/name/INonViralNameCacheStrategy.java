@@ -46,14 +46,5 @@ public interface INonViralNameCacheStrategy<T extends NonViralName> extends INam
 	 * @return
 	 */
 	public String getAuthorshipCache(T nonViralName);
-
-	/**
-	 * Returns the title cache tagged by html tags according to tag rules.
-	 * @param nonViralName
-	 * @param htmlTagRules
-	 * @return
-	 */
-	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
-
 	
 }

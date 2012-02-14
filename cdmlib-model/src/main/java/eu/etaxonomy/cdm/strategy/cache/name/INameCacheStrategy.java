@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -67,4 +68,14 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
      * @return
      */
     public String getNameCache(T taxonNameBase);
+    
+
+	/**
+	 * Returns the title cache tagged by html tags according to tag rules.
+	 * @param nonViralName
+	 * @param htmlTagRules
+	 * @return
+	 */
+	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
+
 }
