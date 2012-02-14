@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -33,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -55,7 +59,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IReferenceService referenceService;
-
+    
+    @SpringBeanByType
+    private IClassificationService classificationService;
+    
+   
 /****************** TESTS *****************************/
 
     /**
@@ -724,5 +732,36 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 1 name relationship and no synonym relationship in the database", 1, nRelations);
 
     }
+    
+    @Test
+    @DataSet("TaxonServiceImplTest.testInferredSynonyms.xml")
+   
+    public void testCreateInferredSynonymy(){
+    	
+    	UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
+        Classification tree = classificationService.find(classificationUuid);
+        UUID taxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
+        TaxonBase taxonBase =  service.find(taxonUuid);
+        List <TaxonBase> synonyms = service.list(Synonym.class, null, null, null, null);
+        assertEquals("Number of synonyms should be 2",2,synonyms.size());
+        Taxon taxon = (Taxon)taxonBase;
+        //synonyms = taxonDao.getAllSynonyms(null, null);
+        //assertEquals("Number of synonyms should be 2",2,synonyms.size());
+        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
+        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        	System.err.println(inferredSynonyms.size());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ");
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
+        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        System.err.println(inferredSynonyms.get(0).getTitleCache());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ");
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
+        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ");
+
+        //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
+    }
+    
+    
 
 }

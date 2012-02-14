@@ -11,8 +11,11 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -23,7 +26,9 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -33,6 +38,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -40,11 +46,13 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
@@ -458,22 +466,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
-    /**
-     * returns a list of inferred synonyms concerning the taxon with synonymrelationshiptype type
-     * @param tree
-     * @param taxon
-     * @param type
-     * @return
-     */
-    public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type);
-    /**
-     * returns a list of all inferred synonyms (inferred epithet, inferred genus and potential combination) concerning the taxon
-     * @param tree
-     * @param taxon
-     * @return
-     */
-    public List<Synonym> createAllInferredSynonyms(Classification tree, Taxon taxon);
-
+    
     public int countAllRelationships();
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
@@ -538,5 +531,24 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
     public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator);
+    
+    /**
+     * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
+     * @param taxon
+     * @param tree
+     * @return list of inferred synonyms
+     */
+    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type);
+    
+    /**
+     * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
+     * @param taxon
+     * @param tree
+     * @return list of inferred synonyms
+     */
+    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
+
+       
+
 
 }
