@@ -61,9 +61,7 @@ public class ZooNameNoMarkerCacheStrategy extends ZooNameDefaultCacheStrategy {
 	protected void addInfraGenericPart(NonViralName<ZoologicalName> name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
 		//add epitheton
 		if (StringUtils.isNotBlank(infraGenEpi)){
-			tags.add(TaggedText.NewOpeningBracketInstance());
-	        tags.add(new TaggedText(TagEnum.name, infraGenEpi));
-			tags.add(TaggedText.NewClosingBracketInstance());
+	        tags.add(new TaggedText(TagEnum.name, "(" + infraGenEpi + ")"));
         }
 	}
 
