@@ -177,19 +177,23 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
     public String getTitleCache(T nonViralName) {
     	return getTitleCache(nonViralName, null);
     }
-    
-    @Override
-    public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
-    	List<TaggedText> tags = getTaggedTitle(nonViralName);
-        if (tags == null){
-            return null;
-        }else{
-            String result = createString(tags, htmlTagRules);
-            return result;
-        }
-    }
 
     /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.NonViralName, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
+     */
+    @Override
+	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
+    	List<TaggedText> tags = getTaggedTitle(nonViralName);
+		if (tags == null){
+			return null;
+		}else{
+			String result = createString(tags, htmlTagRules);
+		    return result;
+		}
+    }
+
+
+	/* (non-Javadoc)
      * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
      */
     @Override
