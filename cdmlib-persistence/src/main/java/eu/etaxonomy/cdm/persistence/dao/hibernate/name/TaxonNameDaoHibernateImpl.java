@@ -620,7 +620,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		if (uuid != null) {
 			criteria.add(Restrictions.eq("uuid", uuid));
 		} else {
-			logger.error("UUID is NULL");
+			logger.warn("UUID is NULL");
 			return null;
 		}
 		
@@ -635,9 +635,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 				logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 		} else if (results.size() > 1) {
-			logger.warn("Multiple results for UUID: " + uuid);
+			logger.error("Multiple results for UUID: " + uuid);
 		} else if (results.size() == 0) {
-			logger.warn("No results for UUID: " + uuid);
+			logger.info("No results for UUID: " + uuid);
 		}
 		return null;
 	}
