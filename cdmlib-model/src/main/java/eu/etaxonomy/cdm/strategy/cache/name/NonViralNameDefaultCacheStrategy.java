@@ -211,7 +211,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 
     /**
-     * Creates a string from tagged text.
+     * Creates a string from tagged text by concatenating all tags. If do seperator tag is defined
+     * tags are seperated by simple whitespace.
      * @param tags
      * @return
      */
