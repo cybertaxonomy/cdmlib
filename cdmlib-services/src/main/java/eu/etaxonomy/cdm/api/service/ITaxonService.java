@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +23,10 @@ import org.apache.lucene.queryParser.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -203,6 +206,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
+	/**
+	 * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
+	 * @param syn the synonym
+	 * @param taxon
+	 * @return
+	 */
+	public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
+	
+    /**
+     * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
+     * @param taxon
+     * @param config
+     * @throws ReferencedObjectUndeletableException
+     */
+	public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
