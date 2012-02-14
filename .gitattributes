@@ -871,6 +871,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INonViralNameCac
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/NameCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/ZooNameDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/ZooNameNoMarkerCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/occurrence/CollectionDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ArticleDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/BookDefaultCacheStrategy.java -text

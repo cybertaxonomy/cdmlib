@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class ZoologicalNameCacheStrategyTest {
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 	
-	private ZooNameDefaultCacheStrategy<ZoologicalName> strategy;
+	private ZooNameDefaultCacheStrategy strategy;
 	private ZoologicalName familyName;
 	private ZoologicalName genusName;
 	private ZoologicalName subGenusName;

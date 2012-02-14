@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -51,7 +50,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * @param <T>
  */
 public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends NameCacheStrategyBase<T> implements INonViralNameCacheStrategy<T> {
-    private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
+	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
+	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
 
@@ -599,9 +599,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<T> nonViralName){
         Rank rank = nonViralName.getRank();
-        if (rank.isSpeciesAggregate()){
+        if (rank != null && rank.isSpeciesAggregate()){
             return getSpeciesAggregateTaggedCache(nonViralName);
         }
 
@@ -609,25 +609,42 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
 
         //marker
-        String infraGenericMarker = "'unhandled infrageneric rank'";
+        String infraGenericMarker;
         if (rank != null){
             try {
                 infraGenericMarker = rank.getInfraGenericMarker();
             } catch (UnknownCdmTypeException e) {
                 infraGenericMarker = "'unhandled infrageneric rank'";
             }
+        }else{
+        	infraGenericMarker = "'undefined infrageneric rank'";
         }
-        tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
-
-
         String infraGenEpi = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim().replace("null", "");
-        if (StringUtils.isNotBlank(infraGenEpi)){
-            tags.add(new TaggedText(TagEnum.name, infraGenEpi));
-        }
+        
+        addInfraGenericPart(nonViralName, tags, infraGenericMarker, infraGenEpi);
 
         addAppendedTaggedPhrase(tags, nonViralName);
         return tags;
     }
+
+
+	/**
+	 * Default implementation for the infrageneric part of a name. 
+	 * This is usually the infrageneric marker and the infrageneric epitheton. But may be implemented differently e.g. for zoological
+	 * names the infrageneric epitheton may be surrounded by brackets and the marker left out.
+	 * @param nonViralName
+	 * @param tags
+	 * @param infraGenericMarker
+	 */
+	protected void addInfraGenericPart(NonViralName<T> name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
+		//add marker
+		tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
+
+		//add epitheton
+		if (StringUtils.isNotBlank(infraGenEpi)){
+            tags.add(new TaggedText(TagEnum.name, infraGenEpi));
+        }
+	}
 
     /**
      * Returns the tag list for a species aggregate (or similar) taxon.<BR>
@@ -677,12 +694,12 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(T nonViralName){
         return getInfraSpeciesTaggedNameCache(nonViralName, true);
     }
 
     /**
-     * Creates the tag list for an infraspecific taxon. In include is true the result will contain
+     * Creates the tag list for an infraspecific taxon. If include is true the result will contain
      * the infraspecific marker (e.g. "var.")
      * @param nonViralName
      * @param includeMarker

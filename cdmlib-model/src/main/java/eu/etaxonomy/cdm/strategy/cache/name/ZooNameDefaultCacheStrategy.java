@@ -16,14 +16,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
+public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrategy<ZoologicalName> implements  INonViralNameCacheStrategy<ZoologicalName> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameDefaultCacheStrategy.class);
-	
+	private static final long serialVersionUID = 6640953957903705560L;
+
 	final static UUID uuid = UUID.fromString("950c4236-8156-4675-b866-785df33bc4d9");
 
 	protected String AuthorYearSeperator = ", ";
@@ -45,7 +45,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	/**
 	 * Constructor
 	 */
-	private ZooNameDefaultCacheStrategy(){
+	protected ZooNameDefaultCacheStrategy(){
 		super();
 	}
 
@@ -68,7 +68,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy#getNonCacheAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)
 	 */
 	@Override
-	protected String getNonCacheAuthorshipCache(T nonViralName) {
+	protected String getNonCacheAuthorshipCache(ZoologicalName nonViralName) {
 		if (nonViralName == null){
 			return null;
 		}
@@ -100,7 +100,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	
 
 	@Override
-	protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName nonViralName){
+	protected List<TaggedText> getInfraSpeciesTaggedNameCache(ZoologicalName nonViralName){
 		boolean includeMarker = ! (nonViralName.isAutonym());
 		return getInfraSpeciesTaggedNameCache(nonViralName, includeMarker);
 	}

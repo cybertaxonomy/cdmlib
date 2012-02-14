@@ -28,6 +28,16 @@ public class TaggedText {
 	private String text;
 	private TagEnum type;
 	
+	
+	public static TaggedText NewOpeningBracketInstance(TagEnum type){
+		return new TaggedText(type, " (");
+	}
+
+	public static TaggedText NewClosingBracketInstance(TagEnum type){
+		return new TaggedText(type, ") ");
+	}
+
+	
 	public String getText() {
 		return text;
 	}
