@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -38,11 +37,13 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -51,17 +52,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
@@ -347,7 +345,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
      * restricting the search by a set of Areas.
      */
-    @SuppressWarnings("unchecked")
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameAndArea() {
@@ -1042,32 +1039,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    @Test
-    @DataSet("TaxonNodeDaoHibernateImplTest.xml")
-    @Ignore
-    public void testCreateInferredSynonymy(){
-        Classification tree = this.classificationDao.findById(1);
-        Taxon taxon = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-        List <Synonym> synonyms = taxonDao.getAllSynonyms(null, null);
-        assertEquals("Number of synonyms should be 2",2,synonyms.size());
-
-        //synonyms = taxonDao.getAllSynonyms(null, null);
-        //assertEquals("Number of synonyms should be 2",2,synonyms.size());
-        List<Synonym> inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        System.err.println(inferredSynonyms.get(0).getTitleCache());
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ???");
-        inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        System.err.println(inferredSynonyms.get(0).getTitleCache());
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ???");
-        inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ???");
-
-        //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
-    }
-
-
-
+   
+//    @Test
+//    public void testDeploy(){
+//    	TaxonBase taxonBase = taxonDao.findByUuid(UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a"));
+//    	
+//    	Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
+//    }
+    
+    
+    
 }
