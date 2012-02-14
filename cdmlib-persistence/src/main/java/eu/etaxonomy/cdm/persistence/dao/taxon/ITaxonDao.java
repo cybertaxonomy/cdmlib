@@ -403,21 +403,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     //public List<Synonym> insertAllInferredSynonymy(Classification tree);
 
-    /**
-     * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
-     * @param taxon
-     * @param tree
-     * @return list of inferred synonyms
-     */
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
-    /**
-     * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
-     * @param taxon
-     * @param tree
-     * @return list of inferred synonyms
-     */
-    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type);
-
+    
+    
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
     public String getPhylumName(TaxonNameBase name);
 
@@ -460,6 +447,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
+    
+    public List<String> taxaByNameNotInDB(List<String> taxonNames);
 
 
 }
