@@ -29,14 +29,17 @@ public class TaggedText {
 	private TagEnum type;
 	
 	
-	public static TaggedText NewOpeningBracketInstance(TagEnum type){
-		return new TaggedText(type, " (");
+	public static TaggedText NewOpeningBracketInstance(){
+		return new TaggedText(TagEnum.separator, " (");
 	}
 
-	public static TaggedText NewClosingBracketInstance(TagEnum type){
-		return new TaggedText(type, ") ");
+	public static TaggedText NewClosingBracketInstance(){
+		return new TaggedText(TagEnum.separator, ") ");
 	}
-
+	
+	public static TaggedText NewWhitespaceInstance(){
+		return new TaggedText(TagEnum.separator, " ");
+	}
 	
 	public String getText() {
 		return text;

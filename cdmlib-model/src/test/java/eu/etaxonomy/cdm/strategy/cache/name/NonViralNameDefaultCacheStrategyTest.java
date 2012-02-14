@@ -31,6 +31,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -536,6 +538,21 @@ public class NonViralNameDefaultCacheStrategyTest {
         Assert.assertEquals("Fourth tag should be 'beta'", "beta", taggedName.get(3).getText());
         //to be continued
 
+    }
+    
+    @Test
+    public void testTitleCacheHtmlTagged(){
+    	HTMLTagRules rules = new HTMLTagRules().addRule(TagEnum.name, "i");
+    	Assert.assertEquals("<i>Abies alba</i>", strategy.getTitleCache(speciesName, rules));
+    	rules.addRule(TagEnum.name, "b");
+    	Assert.assertEquals("<b><i>Abies alba</i></b>", strategy.getTitleCache(speciesName, rules));
+    	speciesName.setCombinationAuthorTeam(author);
+    	Assert.assertEquals("<b><i>Abies alba</i></b> L.", strategy.getTitleCache(speciesName, rules));
+    	rules.addRule(TagEnum.authors, "i");
+    	Assert.assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
+    	rules = new HTMLTagRules().addRule(TagEnum.name, "i").addRule(TagEnum.name, "b").addRule(TagEnum.authors, "b");
+    	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
+    	
     }
 
 

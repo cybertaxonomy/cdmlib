@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -171,11 +175,16 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      */
     @Override
     public String getTitleCache(T nonViralName) {
-        List<TaggedText> tags = getTaggedTitle(nonViralName);
+    	return getTitleCache(nonViralName, null);
+    }
+    
+    @Override
+    public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
+    	List<TaggedText> tags = getTaggedTitle(nonViralName);
         if (tags == null){
             return null;
         }else{
-            String result = createString(tags);
+            String result = createString(tags, htmlTagRules);
             return result;
         }
     }
@@ -222,15 +231,107 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         boolean isSeparator;
         boolean wasSeparator = true;  //true for start tag
         for (TaggedText tag: tags){
-            isSeparator = tag.getType().equals(TagEnum.separator);
+            isSeparator = tag.getType().isSeparator();
             if (! wasSeparator && ! isSeparator ){
                 result.append(" ");
             }
             result.append(tag.getText());
             wasSeparator = isSeparator;
         }
-        return result.toString();
+        return result.toString().trim();
     }
+    
+    protected static String createString(List<TaggedText> tags, HTMLTagRules htmlRules) {
+        if (htmlRules == null){
+        	return createString(tags);
+        }
+        //add whitespace separators
+        int index = 0;
+        boolean wasSeparator = true;
+        while (index < tags.size()){
+        	
+        	if (! tags.get(index).isSeparator()){
+            	if (wasSeparator == false){
+                	tags.add(index++, TaggedText.NewWhitespaceInstance());
+                }else{
+                	wasSeparator = false;
+                }
+        	}else{
+        		wasSeparator = true;
+        	}
+        	index++;
+        }
+    	
+    	//create String
+        StringBuffer result = new StringBuffer();
+
+        Stack<String> htmlStack = new Stack<String>();
+        for (int i = 0;  i < tags.size(); i++  ){
+        	TaggedText tag = tags.get(i);
+        	TagEnum thisType = tag.getType();
+        	TagEnum lastType = (i == 0? null : tags.get(i - 1).getType());
+        	TagEnum nextType = (i + 1 >= tags.size() ? null : tags.get(i + 1).getType());
+        	
+            boolean isSeparator = tag.getType().isSeparator();
+//            boolean lastEqual = tag.getType().equals(lastType);
+//            boolean nextEqual = tag.getType().equals(nextType);
+//            boolean bothEqual = lastEqual && nextEqual;
+            
+            //compute list of rules (tags)
+            SortedSet<String> separatorRules;
+            if (isSeparator){
+            	separatorRules = getCommonRules(htmlRules.getRule(lastType), htmlRules.getRule(nextType));
+            }else{
+            	separatorRules = htmlRules.getRule(thisType);
+            }
+            
+            //Close all tags not used anymore and remove all common tags from list of rules
+            for (int j = 0 ;  j < htmlStack.size() ; j++){
+            	String html = htmlStack.get(j);
+            	if (! separatorRules.contains(html)){
+            		closeHtml(result, htmlStack, j);
+            		break;
+            	}else{
+            		separatorRules.remove(html);
+            	}
+            }
+            
+            //open all tags not yet existing
+            if (! isSeparator){
+	            for (String rule : separatorRules){
+	            	htmlStack.add(rule);
+	        		result.append("<" +  rule + ">");
+	            }
+            }
+            
+            //add whitespace
+            if (lastType != null && ! lastType.isSeparator() && ! isSeparator && nextType != null){
+                result.append(" ");
+            }
+            result.append(tag.getText());
+        }
+        closeHtml(result, htmlStack, 0);
+        return result.toString();
+	}
+
+
+	private static void closeHtml(StringBuffer result, Stack<String> htmlStack, int index) {
+		while (htmlStack.size() > index){
+			String closeHtml = htmlStack.pop();
+			result.append("</" +  closeHtml + ">");
+		}
+	}
+    
+    private static SortedSet<String> getCommonRules(SortedSet<String> rules1,SortedSet<String> rules2) {
+		SortedSet<String> result = new TreeSet<String>();
+		for (String str : rules1){
+			if (rules2.contains(str)){
+				result.add(str);
+			}
+		}
+    	return result;
+	}
+
 
 // ******************* Authorship ******************************/
 

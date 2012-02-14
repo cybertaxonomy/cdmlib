@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
@@ -56,6 +57,12 @@ public class TestingZoologicalNameCacheStrategy implements
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public String getTitleCache(ZoologicalName nonViralName, HTMLTagRules htmlTagRules) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 }

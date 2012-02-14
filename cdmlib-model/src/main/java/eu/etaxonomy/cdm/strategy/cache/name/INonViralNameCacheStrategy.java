@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 
 /**
  * A name cache rendering strategy for all TaxonNameBase subclasses.
@@ -46,4 +47,13 @@ public interface INonViralNameCacheStrategy<T extends NonViralName> extends INam
 	 */
 	public String getAuthorshipCache(T nonViralName);
 
+	/**
+	 * Returns the title cache tagged by html tags according to tag rules.
+	 * @param nonViralName
+	 * @param htmlTagRules
+	 * @return
+	 */
+	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules);
+
+	
 }

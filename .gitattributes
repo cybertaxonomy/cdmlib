@@ -851,6 +851,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluator.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/UserPermissionEvaluator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/HTMLTagRules.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/TagEnum.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/TaggedText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/INomenclaturalAuthorCacheStrategy.java -text
@@ -1052,6 +1053,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/description/TaxonDesc
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/media/MediaDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZooNameNoMarkerCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/ArticleDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/BookDefaultCacheStrategyTest.java -text
