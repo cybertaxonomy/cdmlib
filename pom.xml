@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>3.0.10-SNAPSHOT</version>
+	<version>3.0.9-SNAPSHOT</version>
 	<name>CDM Library</name>
 	<description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -575,7 +575,6 @@
 			<name>Edit Maven Repository</name>
 			<url>scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
 			<layout>default</layout>
-      <uniqueVersion>false</uniqueVersion>
 		</repository>
 	</distributionManagement>
 	<!-- **** DEPENDENCIES **** -->
