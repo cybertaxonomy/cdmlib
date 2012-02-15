@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 
 /**
  * A name cache rendering strategy for all TaxonNameBase subclasses.
