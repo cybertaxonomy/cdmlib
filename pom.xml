@@ -575,6 +575,7 @@
 			<name>Edit Maven Repository</name>
 			<url>scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
 			<layout>default</layout>
+      <uniqueVersion>false</uniqueVersion>
 		</repository>
 	</distributionManagement>
 	<!-- **** DEPENDENCIES **** -->
