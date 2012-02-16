@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Set;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
@@ -26,6 +25,7 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.render.Renderer;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.transform.JDOMSource;
@@ -62,7 +62,6 @@ public class PdfOutputModule extends PublishOutputModuleBase {
 				
 			FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 			 // configure foUserAgent as desired
-		
 		
 			// Setup output
 			String filePath = getFilePath(exportFolder);

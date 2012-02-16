@@ -4,9 +4,7 @@
 package eu.etaxonomy.cdm.print.out.odf;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;

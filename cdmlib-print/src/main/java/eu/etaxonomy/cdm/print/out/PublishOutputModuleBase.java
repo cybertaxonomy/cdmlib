@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.imageio.stream.FileImageInputStream;
-
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 
