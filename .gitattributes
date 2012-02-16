@@ -1467,7 +1467,6 @@ cdmlib-persistence/src/test/resources/log4j.properties -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-print/build.properties -text
 cdmlib-print/pom.xml -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/AbstractXmlEntityFactory.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IXMLElements.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IXMLEntityFactory.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/LocalXMLEntityFactory.java -text
@@ -1477,8 +1476,9 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/RemoteXMLEntityFactory.java -t
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/Transformator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XMLHarvester.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XMLHelper.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/AbstractPublishOutputModule.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XmlEntityFactoryBase.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/IPublishOutputModule.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/PublishOutputModuleBase.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/DocumentCreator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/IStyleNames.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModule.java -text

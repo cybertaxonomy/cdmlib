@@ -31,7 +31,7 @@ import org.jdom.Document;
 import org.jdom.transform.JDOMSource;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * This output module will create a <a href="http://www.adobe.com/products/acrobat/adobepdf.html">PDF</a> document 
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
  * @created Jul 20, 2010
  * @version 1.0
  */
-public class PdfOutputModule extends AbstractPublishOutputModule {
+public class PdfOutputModule extends PublishOutputModuleBase {
 	private static final Logger logger = Logger
 			.getLogger(PdfOutputModule.class);
 	

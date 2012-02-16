@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.remote.view.JsonView.Type;
  * @version 1.0
  */
 @Component
-public class LocalXMLEntityFactory extends AbstractXmlEntityFactory {
+public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 	private static final Logger logger = Logger
 			.getLogger(LocalXMLEntityFactory.class);
 

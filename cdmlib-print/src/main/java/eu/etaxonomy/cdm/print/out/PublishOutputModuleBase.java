@@ -39,9 +39,9 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
  * @created Apr 20, 2010
  * @version 1.0
  */
-public abstract class AbstractPublishOutputModule implements IPublishOutputModule {
+public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 	private static final Logger logger = Logger
-			.getLogger(AbstractPublishOutputModule.class);
+			.getLogger(PublishOutputModuleBase.class);
 	
 	/**
 	 * The date format used by {@link #generateFilenameWithDate(String, String)}
@@ -124,7 +124,7 @@ public abstract class AbstractPublishOutputModule implements IPublishOutputModul
 		
 		String l = File.separator;
 		
-		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");		
+		URL shippedStylesheetsResource = PublishOutputModuleBase.class.getResource("/stylesheets/pdf/");		
 		File shippedStylesheetsDir = new File(shippedStylesheetsResource.getFile());
 		locationList.add(shippedStylesheetsDir);
 		

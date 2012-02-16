@@ -18,14 +18,14 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * @author n.hoffmann
  * @created Aug 4, 2010
  * @version 1.0
  */
-public class TaxPubOutputModule extends AbstractPublishOutputModule {
+public class TaxPubOutputModule extends PublishOutputModuleBase {
 	private static final Logger logger = Logger
 			.getLogger(TaxPubOutputModule.class);
 

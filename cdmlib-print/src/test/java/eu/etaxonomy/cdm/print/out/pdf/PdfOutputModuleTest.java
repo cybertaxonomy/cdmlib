@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 
 /**
@@ -53,7 +53,7 @@ public class PdfOutputModuleTest {
 	public void testGetStylesheetByLocation() throws IOException, URISyntaxException{
 		PdfOutputModule outputModule = new PdfOutputModule();
 
-		URL shippedStylesheetsResource = AbstractPublishOutputModule.class.getResource("/stylesheets/pdf/");
+		URL shippedStylesheetsResource = PublishOutputModuleBase.class.getResource("/stylesheets/pdf/");
 		File shippedStylesheetsDir = new File(shippedStylesheetsResource.toURI());
 
 		List<File> stylesheets = outputModule.getStylesheetsByLocation(shippedStylesheetsDir);
