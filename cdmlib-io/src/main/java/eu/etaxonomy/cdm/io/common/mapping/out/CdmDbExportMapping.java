@@ -98,7 +98,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 				result &= collectionMapping.invoke(cdmBase);
 			}
 			return result;
-		} catch(SQLException e){
+		} catch(Exception e){
 			e.printStackTrace();
 			logger.error(e.getMessage() + ": " + cdmBase.toString());
 			return false;

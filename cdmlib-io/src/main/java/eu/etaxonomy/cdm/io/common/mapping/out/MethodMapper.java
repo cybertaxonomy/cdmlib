@@ -32,19 +32,19 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	private Method method;
 	private Class<?>[] parameterTypes;
 	
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase){
 		String methodName = "get" + dbAttributeString;
-		return NewInstance(dbAttributeString, bmeb, methodName);
+		return NewInstance(dbAttributeString, exportBase, methodName);
 	}
 	
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, Class<?> parameterTypes){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase, Class<?> parameterTypes){
 		String methodName = "get" + dbAttributeString;
-		return new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
+		return new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 	}
 	
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, String methodName){
-		Class<?> parameterTypes = bmeb.getStandardMethodParameter();
-		MethodMapper result = new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase, String methodName){
+		Class<?> parameterTypes = exportBase.getStandardMethodParameter();
+		MethodMapper result = new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 		return result;
 	}
 
