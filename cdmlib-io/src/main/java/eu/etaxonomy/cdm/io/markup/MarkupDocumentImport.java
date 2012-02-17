@@ -63,9 +63,11 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -92,6 +94,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -1522,7 +1525,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 
 	private String handleInLineGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit.FieldObservation);
-		handleGathering(state, reader, parentEvent, null, facade);
+		handleGathering(state, reader, parentEvent, facade);
 		FieldObservation fieldObservation = facade.innerFieldObservation();
 		String result = "<cdm:specimen uuid='%s'>%s</specimen>";
 		result = String.format(result, fieldObservation.getUuid(), fieldObservation.getTitleCache());
@@ -1775,7 +1778,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				} else if (isStartingElement(next, TYPE_STATUS)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, GATHERING)) {
-					handleGathering(state, reader, next, homotypicalGroup, facade);
+					handleGathering(state, reader, next, facade);
 				} else if (isStartingElement(next, ORIGINAL_DETERMINATION)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
@@ -1860,7 +1863,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	}
 
 	
-	private void handleGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, HomotypicalGroup homotypicalGroup, DerivedUnitFacade facade) throws XMLStreamException {
+	private void handleGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent , DerivedUnitFacade facade) throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 		boolean hasCollector = false;
 		boolean hasFieldNum = false;
@@ -2790,20 +2793,105 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	 */
 	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature, 
 				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next) throws XMLStreamException {
+		//for specimen only
+		if (feature.equals(Feature.SPECIMEN()) || feature.equals(Feature.MATERIALS_EXAMINED())){
+			
+			List<DescriptionElementBase> specimens = handleMaterialsExamined(state, reader, next);
+			for (DescriptionElementBase specimen : specimens){
+				taxonDescription.addElement(specimen);
+				lastDescriptionElement = specimen;
+			}
+			return lastDescriptionElement;
+		}
+		
+		//others
 		Map<String, String> subheadingMap = handleString(state, reader, next, feature);
 		for (String subheading : subheadingMap.keySet()) {
 			Feature subheadingFeature = feature;
 			if (StringUtils.isNotBlank(subheading) && subheadingMap.size() > 1) {
 				subheadingFeature = makeFeature(subheading, state, next);
 			}
-			TextData textData = TextData.NewInstance(subheadingFeature);
-			textData.putText(Language.DEFAULT(), subheadingMap.get(subheading));
-			taxonDescription.addElement(textData);
-			// TODO how to handle figures when these data are split in
-			// subheadings
-			lastDescriptionElement = textData;
+			if (feature.equals(Feature.COMMON_NAME())){
+				List<DescriptionElementBase> commonNames = makeVernacular(state, subheading, subheadingMap.get(subheading));
+				for (DescriptionElementBase commonName : commonNames){
+					taxonDescription.addElement(commonName);
+					lastDescriptionElement = commonName;
+				}
+			}else {
+				TextData textData = TextData.NewInstance(subheadingFeature);
+				textData.putText(Language.DEFAULT(), subheadingMap.get(subheading));
+				taxonDescription.addElement(textData);
+				lastDescriptionElement = textData;
+				// TODO how to handle figures when these data are split in
+				// subheadings
+			}
 		}
 		return lastDescriptionElement;
+	}
+
+	private List<DescriptionElementBase> makeVernacular(MarkupImportState state, String subheading, String commonNameString) throws XMLStreamException {
+		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+		String[] splits = commonNameString.split(",");
+		for (String split : splits){
+			split = split.trim();
+			if (! split.matches(".*\\(.*\\)\\.?")){
+				fireWarningEvent("Common name string '"+split+"' does not match given pattern", state.getReader().peek(), 4);
+			}
+			
+			String name = split.replaceAll("\\(.*\\)", "").replace(".", "").trim();
+			String languageStr = split.replaceFirst(".*\\(", "").replaceAll("\\)\\.?", "").trim();
+			
+			Language language = null;
+			if (StringUtils.isNotBlank(languageStr)){
+				try {
+					UUID langUuid = state.getTransformer().getLanguageUuid(languageStr);
+					language = getLanguage(state, langUuid, languageStr, languageStr, null);
+					if (language == null){
+						logger.warn("Language " + languageStr + " not recognized by transformer");
+					}
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			NamedArea area = null;
+			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(name, language, area);
+			result.add(commonTaxonName);
+		}
+		
+		return result;
+	}
+	
+	private List<DescriptionElementBase>  handleMaterialsExamined(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (result.isEmpty()){
+					fireWarningEvent("Materials examined created empty Individual Associations list", parentEvent, 4);
+				}
+				return result;
+			} else if (isStartingElement(next, SUB_HEADING)) {
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, BR)) {
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, GATHERING)) {
+				DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit.DerivedUnit);
+				handleGathering(state, reader, next, facade);
+				SpecimenOrObservationBase<?> specimen;
+				if (facade.innerDerivedUnit() != null){
+					specimen = facade.innerDerivedUnit();
+				}else{
+					specimen = facade.innerFieldObservation();
+				}
+				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
+				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
+				result.add(individualsAssociation);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<String> has no closing tag");
+		
 	}
 
 	/**

@@ -161,11 +161,13 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
 	public Reference getSourceReference() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (sourceReference == null){
-			sourceReference =  refFactory.newDatabase();
+			sourceReference =  ReferenceFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
+			}
+			if (getSourceRefUuid() != null){
+				sourceReference.setUuid(getSourceRefUuid());
 			}
 		}
 		return sourceReference;
@@ -652,6 +654,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setSwitchSpeciesGroup(boolean switchSpeciesGroup) {
 		this.switchSpeciesGroup = switchSpeciesGroup;
 	}
+
+
+
 
 
 
