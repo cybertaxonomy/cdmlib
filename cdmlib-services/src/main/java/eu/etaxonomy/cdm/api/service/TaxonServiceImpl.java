@@ -41,6 +41,8 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -59,6 +61,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -1147,8 +1150,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             HibernateProxyHelper.deproxy(syn);
 
                             // Determine the idInSource
-                            String idInSource = getIdInSource(syn);
-
+                            String idInSourceSyn = getIdInSource(syn);
+                            String idInSourceTaxon =  getIdInSource(taxon);
                             // Determine the sourceReference
                             Reference sourceReference = syn.getSec();
 
@@ -1191,7 +1194,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             // Set the sourceReference
                             inferredEpithet.setSec(sourceReference);
 
-                            // Add the original source
+                            /* Add the original source
                             if (idInSource != null) {
                                 IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredEpithetOf", syn.getSec(), null);
 
@@ -1201,9 +1204,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                     originalSource.setCitation(citation);
                                     inferredEpithet.addSource(originalSource);
                                 }
-                            }
-
-                            taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
+                            }*/
+                            String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
+                           
+                            IdentifiableSource originalSource;
+                    		originalSource = IdentifiableSource.NewInstance(taxonId, "Inferred epithet from TAX_ID:", sourceReference, null);
+                    		
+                    		inferredEpithet.addSource(originalSource);
+                            
+                    		originalSource = IdentifiableSource.NewInstance(taxonId, "Inferred epithet from TAX_ID:", sourceReference, null);
+                     		
+                    		inferredSynName.addSource(originalSource);
+                            
+        					
+                            
+                            taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_EPITHET_OF());
                             inferredSynonyms.add(inferredEpithet);
                             inferredSynName.generateTitle();
                             zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
@@ -1242,8 +1257,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             HibernateProxyHelper.deproxy(syn);
 
                             // Determine the idInSource
-                            String idInSource = getIdInSource(syn);
-
+                            String idInSourceSyn = getIdInSource(syn);
+                            String idInSourceTaxon = getIdInSource(taxon);
                             // Determine the sourceReference
                             Reference sourceReference = syn.getSec();
 
@@ -1255,7 +1270,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             }*/
                            
                             inferredSynName = ZoologicalName.NewInstance(rankOfTaxon);
-                            //TODO:differ between parent is genusa and taxon is species, parent is subgenus and taxon is species, parent is species and taxon is subspecies and parent is genus and taxon is subgenus...
+                            //TODO:differ between parent is genus and taxon is species, parent is subgenus and taxon is species, parent is species and taxon is subspecies and parent is genus and taxon is subgenus...
 
 
                             inferredSynName.setGenusOrUninomial(genusOfTaxon);
@@ -1280,18 +1295,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             inferredGenus.setSec(sourceReference);
 
                             // Add the original source
-                            if (idInSource != null) {
-                                IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredGenusOf", syn.getSec(), null);
-
-                                // Add the citation
-                                Reference citation = getCitation(syn);
-                                if (citation != null) {
-                                    originalSource.setCitation(citation);
-                                    inferredGenus.addSource(originalSource);
-                                }
+                            if (idInSourceSyn != null && idInSourceTaxon != null) {
+                                IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, "Inferred genus from TAX_ID: ", sourceReference, null);
+                                inferredGenus.addSource(originalSource);
+                                
+                                originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, "Inferred genus from TAX_ID: ", sourceReference, null);
+                                inferredSynName.addSource(originalSource);
+                                
                             }
 
-                            taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_EPITHET_OF());
+                            taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_GENUS_OF());
                             inferredSynonyms.add(inferredGenus);
                             inferredSynName.generateTitle();
                             zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
@@ -1404,23 +1417,31 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                                
                                 // Determine the idInSource
-                                String idInSourceTaxon = getIdInSource(syn);
-
+                                String idInSourceSyn= getIdInSource(syn);
                                 
-                                if (idInSourceTaxon != null) {
-                                    IdentifiableSource originalSourceTaxon = IdentifiableSource.NewInstance(idInSourceTaxon, "PotentialCombinationOf", sourceReference, null);
-                                    if (sourceReference != null) {
-                                        originalSourceTaxon.setCitation(sourceReference);
-                                        potentialCombination.addSource(originalSourceTaxon);
-                                    }
+                                if (idInSourceParent != null && idInSourceSyn != null) {
+                                    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, "Potential combination from TAX_ID: ", sourceReference, null);
+                                    inferredGenus.addSource(originalSource);
+                                    
+                                    originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, "Potential combination from TAX_ID: ", sourceReference, null);
+                                    inferredSynName.addSource(originalSource);
+                                    
                                 }
-                                if (idInSourceParent != null){
-                                	IdentifiableSource originalSourceParent = IdentifiableSource.NewInstance(idInSourceParent, "PotentialCombinationOf", sourceReference, null);
-	                                if (sourceReference != null) {
-	                                    originalSourceParent.setCitation(sourceReference);
-	                                    potentialCombination.addSource(originalSourceParent);
-	                                }
-                            	}
+                                
+//                                if (idInSourceTaxon != null) {
+//                                    IdentifiableSource originalSourceTaxon = IdentifiableSource.NewInstance(idInSourceTaxon, "PotentialCombinationOf", sourceReference, null);
+//                                    if (sourceReference != null) {
+//                                        originalSourceTaxon.setCitation(sourceReference);
+//                                        potentialCombination.addSource(originalSourceTaxon);
+//                                    }
+//                                }
+//                                if (idInSourceParent != null){
+//                                	IdentifiableSource originalSourceParent = IdentifiableSource.NewInstance(idInSourceParent, "PotentialCombinationOf", sourceReference, null);
+//	                                if (sourceReference != null) {
+//	                                    originalSourceParent.setCitation(sourceReference);
+//	                                    potentialCombination.addSource(originalSourceParent);
+//	                                }
+//                            	}
                             
                                     // Add the citation
                                     
@@ -1487,9 +1508,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * Returns the idInSource for a given Synonym.
      * @param syn
      */
-    private String getIdInSource(Synonym syn) {
+    private String getIdInSource(TaxonBase taxonBase) {
         String idInSource = null;
-        Set<IdentifiableSource> sources = syn.getSources();
+        Set<IdentifiableSource> sources = taxonBase.getSources();
         if (sources.size() == 1) {
             IdentifiableSource source = sources.iterator().next();
             if (source != null) {
