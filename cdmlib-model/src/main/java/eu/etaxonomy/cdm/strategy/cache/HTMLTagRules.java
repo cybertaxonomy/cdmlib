@@ -27,6 +27,7 @@ public class HTMLTagRules {
 		private String htmlTag;
 //		public TagEnum getType(){return this.type;}
 //		public String getString(){return this.htmlTag;}
+		@Override public String toString(){return type.name() + "-><" + htmlTag + ">";}
 	}
 	
 	
@@ -56,5 +57,16 @@ public class HTMLTagRules {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString(){
+		String result = "HTMLTagRules[";
+		for (TagRule rule : rules){
+			result += rule.toString() + ";";
+		}
+		result = result.substring(0, result.length() -1) + "]";
+		return result;
+	}
+	
 	
 }
