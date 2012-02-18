@@ -38,6 +38,8 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -293,13 +295,17 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					if (misappliedTaxonId != null){
 						misappliedName = taxonMap.get(String.valueOf(misappliedTaxonId));
 					}else{
-						TaxonNameBase taxonName = taxonNameMap.get(String.valueOf(ptNameFk));
-						Reference sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
+						TaxonNameBase<?,?> taxonName = taxonNameMap.get(String.valueOf(ptNameFk));
+						Reference<?> sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
 						if (taxonName == null || sec == null){
 							logger.info("Taxon name or misapplied name reference is null for common name " + commonNameId);
 						}else{
 							misappliedName = Taxon.NewInstance(taxonName, sec);
+							MarkerType misCommonNameMarker = getMarkerType(state, BerlinModelTransformer.uuidMisappliedCommonName,"Misapplied Common Name in Berlin Model", "Misapplied taxon was automatically created by Berlin Model import for a common name with a misapplied name reference", "MCN");
+							Marker marker = Marker.NewInstance(misCommonNameMarker, true);
+							misappliedName.addMarker(marker);
 							taxaToSave.add(misappliedName);
+							logger.info("New misapplied name for misapplied reference common name was added");
 						}
 					}
 					if (misappliedName != null){
