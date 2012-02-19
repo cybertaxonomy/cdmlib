@@ -93,7 +93,14 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
-    private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+
+	public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
+
+	public static final String INFERRED_EPITHET_NAMESPACE = "Inferred epithet";
+
+	public static final String INFERRED_GENUS_NAMESPACE = "Inferred genus";
+
 
     @Autowired
     private ITaxonNameDao nameDao;
@@ -1093,9 +1100,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<Synonym>();
 
         HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
-        UUID uuid;
-
-        uuid= taxon.getName().getUuid();
+        
+        UUID uuid= taxon.getName().getUuid();
         ZoologicalName taxonName = getZoologicalName(uuid, zooHashMap);
         String epithetOfTaxon = null;
         String infragenericEpithetOfTaxon = null;
@@ -1120,7 +1126,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 TaxonNode parent = (TaxonNode)node.getParent();
                 parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
                 TaxonNameBase parentName =  parent.getTaxon().getName();
-                ZoologicalName zooParentName = (ZoologicalName)HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
+                ZoologicalName zooParentName = HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
                 Taxon parentTaxon = (Taxon)HibernateProxyHelper.deproxy(parent.getTaxon());
                 Rank rankOfTaxon = taxonName.getRank();
                 
@@ -1208,11 +1214,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
                            
                             IdentifiableSource originalSource;
-                    		originalSource = IdentifiableSource.NewInstance(taxonId, "Inferred epithet from TAX_ID:", sourceReference, null);
+                    		originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
                     		
                     		inferredEpithet.addSource(originalSource);
                             
-                    		originalSource = IdentifiableSource.NewInstance(taxonId, "Inferred epithet from TAX_ID:", sourceReference, null);
+                    		originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
                      		
                     		inferredSynName.addSource(originalSource);
                             
@@ -1296,10 +1302,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                             // Add the original source
                             if (idInSourceSyn != null && idInSourceTaxon != null) {
-                                IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, "Inferred genus from TAX_ID: ", sourceReference, null);
+                                IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
                                 inferredGenus.addSource(originalSource);
                                 
-                                originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, "Inferred genus from TAX_ID: ", sourceReference, null);
+                                originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
                                 inferredSynName.addSource(originalSource);
                                 
                             }
@@ -1420,10 +1426,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 String idInSourceSyn= getIdInSource(syn);
                                 
                                 if (idInSourceParent != null && idInSourceSyn != null) {
-                                    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, "Potential combination from TAX_ID: ", sourceReference, null);
+                                    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
                                     inferredGenus.addSource(originalSource);
                                     
-                                    originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, "Potential combination from TAX_ID: ", sourceReference, null);
+                                    originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
                                     inferredSynName.addSource(originalSource);
                                     
                                 }
