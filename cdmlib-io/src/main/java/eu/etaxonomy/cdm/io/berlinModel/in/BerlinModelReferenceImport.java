@@ -449,10 +449,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					
 					if (inRefFk != null){
 						Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
-						Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
+						Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedBiblioReferences, relatedNomReferences, String.valueOf(refId));
 						
-						Reference<?> nomInReference = relatedNomReferences.get("inRefFk");
-						Reference<?> biblioInReference = relatedBiblioReferences.get("inRefFk");
+						Reference<?> nomInReference = relatedNomReferences.get(String.valueOf(inRefFk));
+						Reference<?> biblioInReference = relatedBiblioReferences.get(String.valueOf(inRefFk));
 						boolean inRefExists = false;
 						if (thisNomRef != null){
 							Reference<?> inRef = (nomInReference != null)? nomInReference : biblioInReference;
