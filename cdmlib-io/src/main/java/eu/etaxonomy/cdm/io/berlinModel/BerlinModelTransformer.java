@@ -49,6 +49,11 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
 	
+	//ranks
+	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
+	public static UUID uuidRankProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+	public static UUID uuidRankRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+	
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
 	
@@ -394,7 +399,6 @@ public final class BerlinModelTransformer {
 	}
 	
 	
-	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
 	static Rank collSpeciesRank;
 	/**
 	 * @param i

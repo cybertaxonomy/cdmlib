@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -150,8 +151,14 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				try {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
+					
+					if (rank.equals(Rank.UNKNOWN_RANK())){
+						rank = handleProlesAndRace(state, rs);
+					}
+					
 					if (rank.getId() == 0){
 						getTermService().save(rank);
+						logger.warn("Rank did not yet exist: " +  rank.getTitleCache());
 					}
 					
 					TaxonNameBase taxonNameBase;
@@ -285,6 +292,22 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		getNameService().save(namesToSave);
 		return success;
 	}
+
+
+	private Rank handleProlesAndRace(BerlinModelImportState state, ResultSet rs) throws SQLException {
+		Rank result;
+		String rankAbbrev = rs.getString("RankAbbrev");
+		String rankStr = rs.getString("Rank");
+		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
+			result = getRank(state, BerlinModelTransformer.uuidRankProles, "Rank Proles", "Rank Proles", "prol.", Rank.SPECIES().getVocabulary());
+		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
+			result = getRank(state, BerlinModelTransformer.uuidRankRace, "Race", "Rank Race", "race", Rank.SPECIES().getVocabulary());
+		}else{
+			result = Rank.UNKNOWN_RANK();
+		}
+		return result;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)

@@ -84,6 +84,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
+	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
 	
 	
 	private static final String UuidOnly = "UUIDOnly";
@@ -283,7 +284,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				refSystem = ReferenceSystem.NewInstance(text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for named areas", "User Defined Reference System", null, null, isOrdered, refSystem);
+					voc = getVocabulary(uuidUserDefinedReferenceSystemVocabulary, "User defined vocabulary for reference systems", "User Defined Reference System", null, null, isOrdered, refSystem);
 				}
 				voc.addTerm(refSystem);
 				refSystem.setUuid(uuid);
@@ -293,6 +294,31 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return refSystem;
 		
+	}
+
+	
+	
+	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,TermVocabulary<Rank> voc){
+		if (uuid == null){
+			uuid = UUID.randomUUID();
+		}
+		Rank rank = state.getRank(uuid);
+		if (rank == null){
+			rank = (Rank)getTermService().find(uuid);
+			if (rank == null){
+				rank = new Rank(text, label, labelAbbrev);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
+				}
+				voc.addTerm(rank);
+				rank.setUuid(uuid);
+				getTermService().save(rank);
+			}
+			state.putRank(rank);
+		}
+		return rank;
+
 	}
 	
 	/**
