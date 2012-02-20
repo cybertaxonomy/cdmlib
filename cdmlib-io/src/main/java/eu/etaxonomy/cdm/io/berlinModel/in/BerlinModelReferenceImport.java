@@ -330,7 +330,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
-			logger.info("end make references with no in-references ... " + getSuccessString(success));
+			logger.info("end make references without in-references ... " + getSuccessString(success));
 			state.setReferenceSecondPath(true);
 
 //			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
@@ -420,6 +420,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 
 
+	/**
+	 * Adds the inReference to the according references.
+	 * @param partitioner
+	 * @param state
+	 * @return
+	 */
 	private boolean doPartitionSecondPath(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
 
@@ -439,35 +445,36 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round -" );}
 				
 					Integer refId = rs.getInt("refId");
+					Integer inRefFk = rs.getInt("inRefFk");
 					
-					Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
-					Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
-					
-					Reference<?> inReference = relatedNomReferences.get("inRefFk");
-					if (thisNomRef != null){
-						thisNomRef.setInReference(inReference);
-						nomRefToSave.put(refId, thisNomRef);
+					if (inRefFk != null){
+						Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
+						Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
+						
+						Reference<?> nomInReference = relatedNomReferences.get("inRefFk");
+						Reference<?> biblioInReference = relatedBiblioReferences.get("inRefFk");
+						boolean inRefExists = false;
+						if (thisNomRef != null){
+							Reference<?> inRef = (nomInReference != null)? nomInReference : biblioInReference;
+							thisNomRef.setInReference(inRef);
+							nomRefToSave.put(refId, thisNomRef);
+							//remember that an in reference exists
+							inRefExists |= (inRef != null);
+						}
+						if (thisBiblioRef != null){
+							Reference<?> inRef = (biblioInReference != null)? biblioInReference : nomInReference;
+							thisBiblioRef.setInReference(inRef);
+							biblioRefToSave.put(refId, thisBiblioRef);
+							//remember that an in reference exists
+							inRefExists |= (inRef != null);
+						}
+						if (inRefExists == false){
+							logger.warn("No in reference was saved though an 'inRefFk' is available. RefId " + refId);
+						}
 					}
-					if (thisBiblioRef != null){
-						thisBiblioRef.setInReference(inReference);
-						biblioRefToSave.put(refId, thisBiblioRef);
-					}
 					
-					
-//					success &= makeSingleReferenceRecord(rs, state, partitioner, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences, refCounter);
 				} // end resultSet
-								
-				//for the concept reference a fixed uuid may be needed -> change uuid
-				Integer sourceSecId = (Integer) state.getConfig().getSourceSecId();
-				Reference<?> sec = biblioRefToSave.get(sourceSecId);
-				if (sec == null){
-					sec = nomRefToSave.get(sourceSecId);	
-				}
-				if (sec != null){
-					sec.setUuid(state.getConfig().getSecUuid());
-					logger.info("SecUuid changed to: " + state.getConfig().getSecUuid());
-				}
-				
+
 				//save and store in map
 				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
 				getReferenceService().save(nomRefToSave.values());
