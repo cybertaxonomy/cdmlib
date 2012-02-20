@@ -1367,6 +1367,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailI
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_2.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_3.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/CleanSweepInsertLoadStrategy.java -text
 cdmlib-persistence/src/test/resources/META-INF/persistence.xml -text
 cdmlib-persistence/src/test/resources/dbscripts/001-cdm.h2.sql -text
 cdmlib-persistence/src/test/resources/dbscripts/001_cdm.hsqldb.ddl -text
@@ -1377,6 +1378,8 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testPe
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testWithConfigurableNameCacheStrategyGenerators.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/ClearDBDataSet.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
@@ -1982,6 +1985,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSess
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
+cdmlib-services/src/test/resources/spy.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
 /pom.xml -text
 src/changes/changes.xml -text

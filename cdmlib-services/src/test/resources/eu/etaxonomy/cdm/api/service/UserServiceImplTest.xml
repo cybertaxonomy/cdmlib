@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="dataset.xsd">
+<dataset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../service/dataset.xsd">
   <PERMISSIONGROUP ID="1" NAME="CopyEditors" UUID="8a423129-6d88-41cc-a1da-96bca45f5838"/>
   <PERMISSIONGROUP ID="2" NAME="Editors" UUID="db5f3578-e689-43da-b1f0-e72f81c1fd79"/>
   <PERMISSIONGROUP_GRANTEDAUTHORITYIMPL PERMISSIONGROUP_ID="1" GRANTEDAUTHORITIES_ID="2"/>

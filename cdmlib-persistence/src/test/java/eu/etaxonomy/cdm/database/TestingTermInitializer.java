@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.database;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,12 +25,15 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.TransactionStatus;
+import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
+import org.unitils.dbunit.util.MultiSchemaDataSet;
 
 import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -75,10 +81,26 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 			IDatabaseConnection connection = null;
 
 			try {
-				connection = getConnection();
-				IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
 
+				connection = getConnection();
+
+//				MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
+//		    	MultiSchemaDataSet multiSchemaDataset = dataSetFactory.createDataSet(termsDataSet.getFile());
+//
+//		    	if(multiSchemaDataset != null){
+//			       	for (String name : multiSchemaDataset.getSchemaNames()) {
+//			    		IDataSet clearDataSet = multiSchemaDataset.getDataSetForSchema(name);
+//			    		DatabaseOperation.CLEAN_INSERT.execute(connection, clearDataSet);
+//			    	}
+//		    	}
+
+				IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
+//				ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
+//				for(int rowId = 0; rowId < definedTermBase.getRowCount(); rowId++) {
+//					System.err.println(rowId + " : " + definedTermBase.getValue(rowId, "CREATEDBY_ID"));
+//				}
 				DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+
 			} catch (Exception e) {
 				logger.error(e);
 				for(StackTraceElement ste : e.getStackTrace()) {
@@ -95,6 +117,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 			transactionManager.commit(txStatus);
 
 			txStatus = transactionManager.getTransaction(txDefinition);
+
 			for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
 				Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
 				UUID vocabularyUuid = vocabularyType.getUuid();

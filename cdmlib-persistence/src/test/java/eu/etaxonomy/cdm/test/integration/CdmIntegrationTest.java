@@ -10,10 +10,16 @@
 package eu.etaxonomy.cdm.test.integration;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 import javax.xml.transform.Result;
@@ -24,22 +30,34 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITableIterator;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
+import org.dbunit.operation.DeleteAllOperation;
+import org.dbunit.operation.DeleteOperation;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
+import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
+import org.unitils.dbunit.util.MultiSchemaDataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.agent.AgentDaoImpl;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -51,6 +69,19 @@ import org.unitils.spring.annotation.SpringBeanByType;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 	protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
+
+//	@SpringBeanByType
+//	private IAgentDao agentDao;
+//
+//	@Before
+//	public void debugExistingUsers(){
+//		StringBuilder agentstr = new StringBuilder();
+//		for(AgentBase agent : agentDao.list(null, null)) {
+//			agentstr.append(agent.getId()).append(", ");
+//		}
+//		System.err.println("####" +  agentstr);
+//	}
+
 
 	@TestDataSource
 	protected DataSource dataSource;
@@ -99,6 +130,43 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {
+			try {
+				connection.close();
+			} catch (SQLException sqle) {
+				logger.error(sqle);
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param out
+	 * @param formatString can be null, otherwise a format string like eg. "&lt; %1$s /&gt;" see also {@link String#format(String, Object...)}
+	 */
+	public void printTableNames(OutputStream out, String formatString) {
+		IDatabaseConnection connection = null;
+		OutputStreamWriter writer = new OutputStreamWriter(out);
+
+		try {
+			connection = getConnection();
+			IDataSet actualDataSet = connection.createDataSet();
+			ITableIterator tableIterator = actualDataSet.iterator();
+			String tableName = null;
+			while(tableIterator.next()){
+				tableName = tableIterator.getTable().getTableMetaData().getTableName();
+				if(formatString != null){
+					tableName = String.format(formatString, tableName);
+				}
+				writer.append(tableName).append("\n");
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException ioe) {
+				logger.error(ioe);
+			}
 			try {
 				connection.close();
 			} catch (SQLException sqle) {
@@ -182,6 +250,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 	}
 
 
+	@Deprecated // no longer used and for sure not needed at all
 	protected void loadDataSet(InputStream dataset) {
 		txDefinition.setName("CdmIntergartionTest.loadDataSet");
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
