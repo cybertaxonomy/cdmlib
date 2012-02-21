@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 /**
  * @author a.mueller
@@ -112,6 +113,22 @@ public class ExportTransformerBase implements IExportTransformer {
 		String warning = "getCacheByNamedArea is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-
 	
+	@Override
+	public String getCacheByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException {
+		String warning = "getCacheByNomStatus is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
+	
+	@Override
+	public Object getKeyByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException {
+		String warning = "getKeyByNomStatus is not yet implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	@Override
+	public String getQualityStatusCacheByKey(Integer qualityStatusFk) throws UndefinedTransformerMethodException {
+		String warning = "getQualityStatusCacheByKey is not yet implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
 }

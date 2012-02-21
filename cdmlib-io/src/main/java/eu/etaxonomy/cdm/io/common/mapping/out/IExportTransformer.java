@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 
 /**
@@ -46,5 +47,12 @@ public interface IExportTransformer {
 	public Object getKeyByNamedArea(NamedArea area) throws UndefinedTransformerMethodException;	
 	public String getCacheByNamedArea(NamedArea area) throws UndefinedTransformerMethodException;	
 
+	//Nomenclatural status
+	public Object getKeyByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException;
+	public String getCacheByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException;
+	
+	//Quality status,only needed for PESI export -> TODO refactor
+	public String getQualityStatusCacheByKey(Integer qualityStatusFk) throws UndefinedTransformerMethodException;
+	
 
 }
