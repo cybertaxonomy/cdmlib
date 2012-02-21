@@ -68,13 +68,13 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
     	super.doExecute(dbUnitDatabaseConnection, dataSet);
 
     	// DEBUGGING the resulting database
-		try {
-			OutputStream out;
-			out = new FileOutputStream("CleanSweepInsertLoadStrategy-debug.xml");
-			printDataSet(dbUnitDatabaseConnection, out, (String[]) null);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			OutputStream out;
+//			out = new FileOutputStream("CleanSweepInsertLoadStrategy-debug.xml");
+//			printDataSet(dbUnitDatabaseConnection, out, (String[]) null);
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
     }
 
     private void printDataSet(DbUnitDatabaseConnection dbUnitDatabaseConnection, OutputStream out, String ... tableNames) {
