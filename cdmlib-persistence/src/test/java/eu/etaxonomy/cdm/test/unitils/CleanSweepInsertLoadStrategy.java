@@ -1,13 +1,19 @@
 package eu.etaxonomy.cdm.test.unitils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
 import org.unitils.dbunit.datasetloadstrategy.impl.CleanInsertLoadStrategy;
@@ -60,7 +66,37 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
     	}
 
     	super.doExecute(dbUnitDatabaseConnection, dataSet);
+
+    	// DEBUGGING the resulting database
+		try {
+			OutputStream out;
+			out = new FileOutputStream("CleanSweepInsertLoadStrategy-debug.xml");
+			printDataSet(dbUnitDatabaseConnection, out, (String[]) null);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
     }
+
+    private void printDataSet(DbUnitDatabaseConnection dbUnitDatabaseConnection, OutputStream out, String ... tableNames) {
+
+		try {
+			IDataSet actualDataSet;
+			if(tableNames == null){
+				actualDataSet = dbUnitDatabaseConnection.createDataSet();
+			} else {
+				actualDataSet = dbUnitDatabaseConnection.createDataSet(tableNames);
+			}
+			FlatXmlDataSet.write(actualDataSet, out);
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			try {
+				dbUnitDatabaseConnection.close();
+			} catch (SQLException sqle) {
+				logger.error(sqle);
+			}
+		}
+	}
 
 
 }

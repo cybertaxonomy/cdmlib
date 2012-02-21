@@ -126,11 +126,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //    }
 
 
-    @Test
+//    @Test
     public final void testPrintDataSet() {
 //
 //        printDataSet(System.out);
-        printDataSet(System.err, new String[] {"TAXONNODE", "AgentBase"});
+//        printDataSet(System.err, new String[] {"TAXONNODE", "AgentBase"});
 //    	printTableNames(System.err, "<%1$s />");
 //        System.exit(0);
 
@@ -309,7 +309,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //test heterotypic synonym with no other synonym in homotypic group
         //+ keep reference
-      printDataSet(System.err, new String[]{"TaxonBase"});
+
+//        printDataSet(System.err, new String[]{"TaxonBase"});
+
         newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn5);
         Assert.assertNotNull("Synonym should exist", heterotypicSynonym);
@@ -331,7 +333,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 //        printDataSet(System.err, new String[]{"AgentBase", "TaxonBase"});
 //
-      printDataSet(System.err, new String[]{"TaxonBase"});
+//      printDataSet(System.err, new String[]{"TaxonBase"});
 
       heterotypicSynonym = (Synonym)service.load(uuidSyn5);
 
@@ -612,7 +614,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
                 "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
-        printDataSet(System.err, new String[]{"TaxonNode"});
+//        printDataSet(System.err, new String[]{"TaxonNode"});
 
 
         int nSynonyms = service.count(Synonym.class);

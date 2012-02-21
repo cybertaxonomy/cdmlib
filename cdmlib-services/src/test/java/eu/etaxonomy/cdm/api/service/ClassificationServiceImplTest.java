@@ -95,11 +95,11 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     	taxonNodeComparator = new TaxonNodeByNameComparator();
     	Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
-    	try {
-			printDataSet(new FileOutputStream(new File("testTaxonNodeByNameComparator-dump.xml")), new String[] {"DefinedTermBase"});
-		} catch (FileNotFoundException e) {
-			/* IGNORE */
-		}
+//    	try {
+//			printDataSet(new FileOutputStream(new File("testTaxonNodeByNameComparator-dump.xml")), new String[] {"DefinedTermBase"});
+//		} catch (FileNotFoundException e) {
+//			/* IGNORE */
+//		}
 
 		//List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.GENUS(), NODE_INIT_STRATEGY);
 

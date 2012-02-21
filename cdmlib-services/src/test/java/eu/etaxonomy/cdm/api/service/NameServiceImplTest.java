@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
+import java.io.FileOutputStream;
 import java.util.Set;
 import java.util.UUID;
 
@@ -720,7 +721,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	@DataSet
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDeleteTypeDesignation() {
 		final String[] tableNames = new String[]{
 				"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase",

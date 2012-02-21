@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeTest;
 import eu.etaxonomy.cdm.api.service.ClassificationServiceImplTest;
 import eu.etaxonomy.cdm.api.service.DescriptionServiceImplTest;
 import eu.etaxonomy.cdm.api.service.IdentifiableServiceBaseTest;
+import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
 import eu.etaxonomy.cdm.api.service.NaturalLanguageGeneratorTest;
 import eu.etaxonomy.cdm.api.service.TaxonNodeServiceImplTest;
 import eu.etaxonomy.cdm.api.service.TaxonServiceImplBusinessTest;
@@ -38,12 +39,9 @@ import eu.etaxonomy.cdm.validation.ValidationTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 		{
-			TaxonNodeServiceImplTest.class,
-			/*
-			 * TaxonNodeServiceImplTest let the TaxonServiceImplTest and other following tests fail with:
-			 * org.hibernate.ObjectNotFoundException: No row with the given identifier exists: [eu.etaxonomy.cdm.model.common.User#1059]
-			 */
-			TaxonServiceImplTest.class
+			DerivedUnitFacadeTest.class,
+
+			NameServiceImplTest.class
 		}
 	)
 public class TestsShouldNotFailInSuite_s2 {

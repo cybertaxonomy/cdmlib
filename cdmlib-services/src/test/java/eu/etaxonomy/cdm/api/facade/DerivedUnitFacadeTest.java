@@ -309,7 +309,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	@DataSet
-	@Ignore // TODO generally works causes has id problems with following tests when running in suite
+//	@Ignore // TODO generally works causes has id problems with following tests when running in suite
 	public void testGetDerivedUnitImageGalleryBooleanPersisted() {
 		UUID specimenUUID = UUID
 				.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
