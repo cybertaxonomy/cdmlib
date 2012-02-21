@@ -82,6 +82,7 @@ cdmlib-services/.classpath
 cdmlib-services/.project
 cdmlib-services/.settings
 cdmlib-services/.umlproject
+cdmlib-services/CleanSweepInsertLoadStrategy-debug.xml
 cdmlib-services/bin
 cdmlib-services/cdmlib-services.uml
 cdmlib-services/src/main/resources/log4j.properties

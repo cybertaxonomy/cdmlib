@@ -1976,6 +1976,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthori
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.testGetMetadata-result.rdf -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-testSecurity.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml -text
