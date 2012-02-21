@@ -114,7 +114,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
                 " WHERE name.nameId IN ("+ID_LIST_TOKEN+") ";
 					//strQuery += " AND RefDetail.PreliminaryFlag = 1 ";
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
-		return strRecordQuery;
+		return strRecordQuery +  "";
 	}
 
 
@@ -152,8 +152,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
 					
-					if (rank.equals(Rank.UNKNOWN_RANK())){
-						rank = handleProlesAndRace(state, rs);
+					if (rank == null || rank.equals(Rank.UNKNOWN_RANK()) || rank.equals(Rank.INFRASPECIFICTAXON())){
+						rank = handleProlesAndRace(state, rs, rank);
 					}
 					
 					if (rank.getId() == 0){
@@ -294,16 +294,17 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	}
 
 
-	private Rank handleProlesAndRace(BerlinModelImportState state, ResultSet rs) throws SQLException {
+	private Rank handleProlesAndRace(BerlinModelImportState state, ResultSet rs, Rank rank) throws SQLException {
 		Rank result;
 		String rankAbbrev = rs.getString("RankAbbrev");
 		String rankStr = rs.getString("Rank");
 		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
-			result = getRank(state, BerlinModelTransformer.uuidRankProles, "Rank Proles", "Rank Proles", "prol.", Rank.SPECIES().getVocabulary());
+			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, Rank.SPECIES().getVocabulary());
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
-			result = getRank(state, BerlinModelTransformer.uuidRankRace, "Race", "Rank Race", "race", Rank.SPECIES().getVocabulary());
+			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, Rank.SPECIES().getVocabulary());
 		}else{
-			result = Rank.UNKNOWN_RANK();
+			result = rank;
+			logger.warn("Unhandled rank: " + rankAbbrev);
 		}
 		return result;
 	}

@@ -123,7 +123,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			//for each reference
             while (rs.next()){
                 
-                if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
+            	if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
                 
                 int occurrenceId = rs.getInt("OccurrenceId");
                 int newTaxonId = rs.getInt("taxonId");
@@ -132,30 +132,36 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
                 
                 try {
-                    //status
-                     PresenceAbsenceTermBase<?> status = null;
-                     String alternativeStatusString = null;
-                     if (emStatusId != null){
-                    	status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
-                     }else{
-                    	 String[] stringArray = new String[]{rs.getString("Native"), rs.getString("Introduced"), rs.getString("Cultivated")};
-                    	 alternativeStatusString = CdmUtils.concat(",", stringArray);
-                     }
+                	//status
+                	PresenceAbsenceTermBase<?> status = null;
+                	String alternativeStatusString = null;
+					if (emStatusId != null){
+						status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
+					}else{
+						String[] stringArray = new String[]{rs.getString("Native"), rs.getString("Introduced"), rs.getString("Cultivated")};
+						alternativeStatusString = CdmUtils.concat(",", stringArray);
+					}
                      
-                     //Create area list
-                     List<NamedArea> areas = new ArrayList<NamedArea>();
-                     if (tdwgCodeString != null){
-                           String[] tdwgCodes = tdwgCodeString.split(";");
-                           for (String tdwgCode : tdwgCodes){
-                                 NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
-                            	 if (area == null){
-                            		 area = getOtherAreas(state, emCodeString, tdwgCodeString);
-                            	 }
-                                 if (area != null){
-                                       areas.add(area);
-                                 }
-                           }
+					//Create area list
+					List<NamedArea> areas = new ArrayList<NamedArea>();
+					if (tdwgCodeString != null){
+					
+						String[] tdwgCodes = new String[]{tdwgCodeString};
+						if (state.getConfig().isSplitTdwgCodes()){
+							tdwgCodes = tdwgCodeString.split(";");
+						}
+						
+						for (String tdwgCode : tdwgCodes){
+							NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
+				        	if (area == null){
+				        		area = getOtherAreas(state, emCodeString, tdwgCodeString);
+				        	}
+				        	if (area != null){
+				        		areas.add(area);
+				        	}
+				    	}
                      }
+					
                      Reference<?> sourceRef = state.getConfig().getSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
@@ -236,6 +242,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			return WaterbodyOrCountry.AZERBAIJANREPUBLICOF();
 		}else if("TCS-AB;TCS-AD;TCS-GR".equals(tdwg)){
 			return WaterbodyOrCountry.GEORGIA();
+		
+		
 		}else if("Cc".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidCaucasia, "Caucasia (Ab + Ar + Gg + Rf(CS))", "Euro+Med area 'Caucasia (Ab + Ar + Gg + Rf(CS))'", "Cc", null, null);
 		}
@@ -252,6 +260,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		}else if("SM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidSerbiaMontenegro, "Serbia & Montenegro", "Euro+Med area 'Serbia & Montenegro'", "SM", NamedAreaType.ADMINISTRATION_AREA(), null);
+		}else if("Yu(K)".equals(em)){
+			return TdwgArea.getAreaByTdwgAbbreviation("YUG-KO");
 		
 		
 		//see #2769
