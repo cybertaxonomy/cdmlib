@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
@@ -58,7 +59,6 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
 
-	private int modCount = 10000;
 	private static final String pluralString = "Taxa";
 	private String dbTableName = "PTaxon";
 	
@@ -112,8 +112,10 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		String sqlSelect = " SELECT pt.*  ";
 		String sqlFrom = " FROM PTaxon pt "; 
 		if (isEuroMed(config) ){
-			sqlFrom = " FROM PTaxon AS pt INNER JOIN v_cdm_exp_taxaAll AS em ON pt.RIdentifier = em.RIdentifier ";
-			sqlSelect += " , em.MA ";
+			sqlFrom = " FROM PTaxon AS pt " + 
+							" INNER JOIN v_cdm_exp_taxaAll AS em ON pt.RIdentifier = em.RIdentifier " +
+							" LEFT OUTER JOIN Reference r ON pt.LastScrutinyFk = r.RefId ";
+			sqlSelect += " , em.MA, r.RefCache as LastScrutiny ";
 		}
 		
 		
@@ -264,6 +266,13 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 						if (config.getTaxonPublishMarker().doMark(publishFlag) && ! misapplied){
 							taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
 						}
+					}
+					
+					//
+					if (resultSetHasColumn(rs,"LastScrutiny")){
+						String lastScrutiny = rs.getString("LastScrutinyFk");
+						ExtensionType extensionTypeLastScrutiny = getExtensionType(state, BerlinModelTransformer.uuidSpeciesExpert, "Species Expert", "Species Expert", "Species Expert");
+						taxonBase.addExtension(lastScrutiny, extensionTypeLastScrutiny);
 					}
 					
 					//Notes

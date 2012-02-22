@@ -84,6 +84,8 @@ public final class BerlinModelTransformer {
 	//Marker Types
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
 	
+	//Extension Types
+	public static final UUID uuidSpeciesExpert = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
 	
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
