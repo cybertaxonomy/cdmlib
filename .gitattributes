@@ -561,6 +561,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/termCodeCreator.xls -text
+cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
