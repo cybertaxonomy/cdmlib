@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
@@ -77,6 +79,17 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 "root.children.feature.representations",
                 "root.children.children.feature.representations",
             });
+    
+    
+    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "elements.$",
+            "elements.sources.citation.authorTeam",
+            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.multilanguageText",
+            "elements.media.representations.parts",
+            "elements.media.title",
+    });
 
     @InitBinder
     @Override
@@ -127,6 +140,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
     }
+    
+
 
     @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
     public Pager<DescriptionElementBase> doFindDescriptionElements(
@@ -207,8 +222,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 
         return mv;
     }
-
-
+    
     @RequestMapping(value = "/description/{uuid}/hasStructuredData", method = RequestMethod.GET)
     public ModelAndView doHasStructuredData(
             @PathVariable("uuid") UUID uuid,
