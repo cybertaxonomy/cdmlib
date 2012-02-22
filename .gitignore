@@ -46,6 +46,7 @@ cdmlib-persistence/.project
 cdmlib-persistence/.settings
 cdmlib-persistence/.umlproject
 cdmlib-persistence/002_cdm.dll
+cdmlib-persistence/NewDataSet.xml
 cdmlib-persistence/bin
 cdmlib-persistence/cdmlib-persistence.uml
 cdmlib-persistence/out.xml
