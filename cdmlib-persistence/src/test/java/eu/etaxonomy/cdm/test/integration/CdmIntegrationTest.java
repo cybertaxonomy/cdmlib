@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.test.integration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,11 +34,13 @@ import org.apache.log4j.Logger;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITableIterator;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.XmlDataSetWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.dbunit.operation.DeleteAllOperation;
@@ -51,6 +54,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
 import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
 import org.unitils.dbunit.util.MultiSchemaDataSet;
+import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -58,6 +62,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.agent.AgentDaoImpl;
+import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -96,7 +101,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
 			DatabaseConfig config = connection.getConfig();
 
-			//FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
+			// FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName
+			//       & database.dialect to find configured DataTypeFactory
 			config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
 					new H2DataTypeFactory());
 		} catch (Exception e) {
@@ -106,8 +112,12 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 	}
 
 	/**
-	 * Prints the data set to an output stream, using dbunit's
-	 * {@link org.dbunit.dataset.xml.FlatXmlDataSet}.
+	 * Prints the data set to an output stream, using the
+	 * {@link FlatFullXmlWriter}.
+	 * <p>
+	 * <h2>NOTE: for compatibility with unitils 3.x you may
+	 * want to use the {@link #printDataSetWithNull(OutputStream)}
+	 * method instead.</h2>
 	 * <p>
 	 * Remember, if you've just called save() or
 	 * update(), the data isn't written to the database until the
@@ -118,7 +128,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 	 * {@link CdmTransactionalIntegrationTest}.
 	 *
 	 * @param out The OutputStream to write to.
-	 * @see org.dbunit.dataset.xml.FlatXmlDataSet
+	 * @see FlatFullXmlWriter
 	 */
 	public void printDataSet(OutputStream out) {
 		IDatabaseConnection connection = null;
@@ -129,6 +139,47 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 			FlatXmlDataSet.write(actualDataSet, out);
 		} catch (Exception e) {
 			logger.error(e);
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException sqle) {
+				logger.error(sqle);
+			}
+		}
+	}
+
+	/**
+	 * Prints the data set to an output stream, using the
+	 * {@link FlatFullXmlWriter}.
+	 * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
+	 * inserts '[null]' place holders for null values but skipping them.
+	 * This was necessary to make this xml database export compatible to the
+	 * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+	 * <p>
+	 * Remember, if you've just called save() or
+	 * update(), the data isn't written to the database until the
+	 * transaction is committed, and that isn't until after the
+	 * method exits. Consequently, if you want to test writing to
+	 * the database, either use the {@literal @ExpectedDataSet}
+	 * annotation (that executes after the test is run), or use
+	 * {@link CdmTransactionalIntegrationTest}.
+	 *
+	 * @param out The OutputStream to write to.
+	 * @see FlatFullXmlWriter
+	 */
+	public void printDataSetWithNull(OutputStream out) {
+		IDatabaseConnection connection = null;
+
+		try {
+			connection = getConnection();
+
+//			IDataSet dataSet = connection.createDataSet();
+			DatabaseDataSet dataSet = new DatabaseDataSet(connection, false);
+
+			FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
+			writer.write(dataSet);
+		} catch (Exception e) {
+			logger.error("Error on writing dataset:", e);
 		} finally {
 			try {
 				connection.close();
