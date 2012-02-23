@@ -118,7 +118,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
         		" emLanguageReference.ReferenceId = emCommonName.LanguageRefFk LEFT OUTER JOIN " +
         		" emLanguage AS languageCommonName ON emCommonName.LanguageFk = languageCommonName.LanguageId ON " + 
         		" emLanguageRegion.RegionId = emCommonName.RegionFks LEFT OUTER JOIN " +
-        		" PTaxon as misappliedTaxon ON emCommonName.PTNameFk = misappliedTaxon.PTNameFk AND emCommonName.MisNameRefFk = misappliedTaxon.PTRefFk " + 
+        		" PTaxon as misappliedTaxon ON emCommonName.NameInSourceFk = misappliedTaxon.PTNameFk AND emCommonName.MisNameRefFk = misappliedTaxon.PTRefFk " + 
 			" WHERE emCommonName.CommonNameId IN (" + ID_LIST_TOKEN + ")";
 		return recordQuery;
 	}
@@ -222,8 +222,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//taxon
 				Taxon taxon = null;
-				TaxonBase taxonBase = null;
-				taxonBase  = taxonMap.get(String.valueOf(taxonId));
+				TaxonBase taxonBase  = taxonMap.get(String.valueOf(taxonId));
 				if (taxonBase == null){
 					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + "(" + commonNameId + ") not imported");
 					continue;
@@ -274,7 +273,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					}
 				}
 				
-						
 				Reference reference = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(languageRefRefFk));
 				String microCitation = null;
 				String originalNameString = null;
@@ -288,29 +286,36 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					commonTaxonName.addSource(source);
 				}
 				
+				
 				//MisNameRef
 				if (misNameRefFk != null){
 					//Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
-					Taxon misappliedName = null;
+					Taxon misappliedNameTaxon = null;
 					if (misappliedTaxonId != null){
-						misappliedName = taxonMap.get(String.valueOf(misappliedTaxonId));
+						misappliedNameTaxon = taxonMap.get(String.valueOf(misappliedTaxonId));
 					}else{
-						TaxonNameBase<?,?> taxonName = taxonNameMap.get(String.valueOf(ptNameFk));
+						
 						Reference<?> sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
-						if (taxonName == null || sec == null){
-							logger.info("Taxon name or misapplied name reference is null for common name " + commonNameId);
+						if (nameUsedInSource == null || sec == null){
+							logger.warn("Taxon name or misapplied name reference is null for common name " + commonNameId);
 						}else{
-							misappliedName = Taxon.NewInstance(taxonName, sec);
+							misappliedNameTaxon = Taxon.NewInstance(nameUsedInSource, sec);
 							MarkerType misCommonNameMarker = getMarkerType(state, BerlinModelTransformer.uuidMisappliedCommonName,"Misapplied Common Name in Berlin Model", "Misapplied taxon was automatically created by Berlin Model import for a common name with a misapplied name reference", "MCN");
 							Marker marker = Marker.NewInstance(misCommonNameMarker, true);
-							misappliedName.addMarker(marker);
-							taxaToSave.add(misappliedName);
-							logger.info("New misapplied name for misapplied reference common name was added");
+							misappliedNameTaxon.addMarker(marker);
+							taxaToSave.add(misappliedNameTaxon);
+							logger.warn("Misapplied name taxon could not be found in database but misapplied name reference exists for common name. " +
+									"New misapplied name for misapplied reference common name was added. CommonNameId: " + commonNameId);
 						}
 					}
-					if (misappliedName != null){
-						taxon.addMisappliedName(misappliedName, config.getSourceReference(), null);
-						TaxonDescription misappliedNameDescription = getDescription(misappliedName);
+					if (misappliedNameTaxon != null){
+						
+						if (! taxon.getMisappliedNames().contains(misappliedNameTaxon)){
+							taxon.addMisappliedName(misappliedNameTaxon, config.getSourceReference(), null);
+							logger.warn("Misapplied name for common name was not found related to the accepted taxon. Created new relationship. CommonNameId: " + commonNameId);
+						}
+						
+						TaxonDescription misappliedNameDescription = getDescription(misappliedNameTaxon);
 						for (CommonTaxonName commonTaxonName : commonTaxonNames){
 							CommonTaxonName commonNameClone = (CommonTaxonName)commonTaxonName.clone();
 							misappliedNameDescription.addElement(commonNameClone);
