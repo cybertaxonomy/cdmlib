@@ -85,8 +85,9 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	 * @see #isBlankToNull()
 	 * @param blankToNull
 	 */
-	public void setBlankToNull(boolean blankToNull) {
+	public DbStringMapper setBlankToNull(boolean blankToNull) {
 		this.blankToNull = blankToNull;
+		return this;
 	}
 	
 	
