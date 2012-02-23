@@ -57,8 +57,6 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	
 	public static final String NAMESPACE = "Taxon";
 
-	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
-
 	private static final String pluralString = "Taxa";
 	private String dbTableName = "PTaxon";
 	
@@ -236,13 +234,13 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 					//detail
 					String detail = rs.getString("Detail");
 					if (CdmUtils.isNotEmpty(detail)){
-						ExtensionType detailExtensionType = getExtensionType(state, DETAIL_EXT_UUID, "micro reference","micro reference","micro ref.");
+						ExtensionType detailExtensionType = getExtensionType(state, BerlinModelTransformer.DETAIL_EXT_UUID, "micro reference","micro reference","micro ref.");
 						Extension.NewInstance(taxonBase, detail, detailExtensionType);
 					}
 					//idInSource
 					String idInSource = rs.getString("IdInSource");
 					if (CdmUtils.isNotEmpty(idInSource)){
-						ExtensionType detailExtensionType = getExtensionType(state, ID_IN_SOURCE_EXT_UUID, "Berlin Model IdInSource","Berlin Model IdInSource","BM source id");
+						ExtensionType detailExtensionType = getExtensionType(state, BerlinModelTransformer.ID_IN_SOURCE_EXT_UUID, "Berlin Model IdInSource","Berlin Model IdInSource","BM source id");
 						Extension.NewInstance(taxonBase, idInSource, detailExtensionType);
 					}
 					//namePhrase
@@ -270,7 +268,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 					
 					//
 					if (resultSetHasColumn(rs,"LastScrutiny")){
-						String lastScrutiny = rs.getString("LastScrutinyFk");
+						String lastScrutiny = rs.getString("LastScrutiny");
 						ExtensionType extensionTypeLastScrutiny = getExtensionType(state, BerlinModelTransformer.uuidSpeciesExpert, "Species Expert", "Species Expert", "Species Expert");
 						taxonBase.addExtension(lastScrutiny, extensionTypeLastScrutiny);
 					}

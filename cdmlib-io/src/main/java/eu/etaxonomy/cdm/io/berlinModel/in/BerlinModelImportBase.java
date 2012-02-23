@@ -47,8 +47,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImportConfigurator, BerlinModelImportState> implements ICdmIO<BerlinModelImportState>, IPartitionedIO<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelImportBase.class);
 	
-	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
-	
 	public BerlinModelImportBase() {
 		super();
 	}
