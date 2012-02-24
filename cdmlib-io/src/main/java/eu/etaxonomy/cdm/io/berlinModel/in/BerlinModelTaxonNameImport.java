@@ -147,6 +147,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				String strCultivarGroupName = rs.getString("CultivarGroupName");
 				String strCultivarName = rs.getString("CultivarName");
+				String nameCache = rs.getString("NameCache");
+				String fullNameCache = rs.getString("FullNameCache");
 				
 				try {
 					boolean useUnknownRank = true;
@@ -265,11 +267,11 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					Boolean preliminaryFlag = rs.getBoolean("PreliminaryFlag");
 					if (preliminaryFlag == true){
 						//Computes all caches and sets 
+						taxonNameBase.setTitleCache(fullNameCache, true);
 						taxonNameBase.setFullTitleCache(taxonNameBase.getFullTitleCache(), true);
-						taxonNameBase.setTitleCache(taxonNameBase.getTitleCache(), true);
 						if (taxonNameBase instanceof NonViralName){
 							NonViralName nvn = (NonViralName)taxonNameBase;
-							nvn.setNameCache(nvn.getNameCache(), true);
+							nvn.setNameCache(nameCache, true);
 							nvn.setAuthorshipCache(nvn.getAuthorshipCache(), true);
 						}
 					}
@@ -302,6 +304,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, Rank.SPECIES().getVocabulary());
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
 			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, Rank.SPECIES().getVocabulary());
+//		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "taxon")){
+//			result = getRank(state, BerlinModelTransformer.uuidRankTaxon, rankStr, "Rank [taxon]", rankAbbrev, Rank.SPECIES().getVocabulary());
 		}else{
 			result = rank;
 			logger.warn("Unhandled rank: " + rankAbbrev);
