@@ -16,7 +16,6 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -24,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
+public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbLastActionMapper.class);
 	

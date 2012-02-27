@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 17.02.2010
  *
  */
-public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE>, STATE extends ExportStateBase<CONFIG>> extends CdmExportBase<CONFIG, STATE> {
+public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM>, STATE extends ExportStateBase<CONFIG, TRANSFORM>, TRANSFORM extends IExportTransformer> extends CdmExportBase<CONFIG, STATE, TRANSFORM> {
 	private static Logger logger = Logger.getLogger(DbExportBase.class);
 
 	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){

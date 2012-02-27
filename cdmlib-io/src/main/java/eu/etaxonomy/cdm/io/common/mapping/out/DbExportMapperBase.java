@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbExportMapperBase<STATE extends DbExportStateBase<?>>  /*implements IDbExportMapper */{
+public class DbExportMapperBase<STATE extends DbExportStateBase<?, IExportTransformer>>  /*implements IDbExportMapper */{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbExportMapperBase.class);
 

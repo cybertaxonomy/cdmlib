@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 25.02.2010
  * @version 1.0
  */
-public class DbExportIgnoreMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> {
+public class DbExportIgnoreMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 	private static final Logger logger = Logger.getLogger(DbExportIgnoreMapper.class);
 	
 	public static DbExportIgnoreMapper NewInstance(String dbAttributeToIgnore){

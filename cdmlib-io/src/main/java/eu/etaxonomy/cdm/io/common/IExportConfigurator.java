@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @created 16.11.2008
  * @version 1.0
  */
-public interface IExportConfigurator<STATE extends ExportStateBase> extends IIoConfigurator {
+public interface IExportConfigurator<STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends IIoConfigurator {
 
 	public static enum CHECK{
 		CHECK_ONLY,
@@ -54,9 +54,9 @@ public interface IExportConfigurator<STATE extends ExportStateBase> extends IIoC
 	public STATE getNewState();
 	
 
-	public IExportTransformer getTransformer();
+	public TRANSFORM getTransformer();
 
-	public void setTransformer(IExportTransformer transformer);
+	public void setTransformer(TRANSFORM transformer);
 	
 	
 }

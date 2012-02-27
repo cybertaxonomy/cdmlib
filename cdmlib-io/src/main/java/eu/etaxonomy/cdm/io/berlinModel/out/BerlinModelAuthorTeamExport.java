@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CollectionExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbBooleanMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -57,9 +58,9 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 		return result;
 	}
 	
-	public CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	public CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("AuthorTeamId"));
 		mapping.addMapper(MethodMapper.NewInstance("AuthorTeamCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("FullAuthorTeamCache", this));
@@ -93,7 +94,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 			Class<Team> clazz = Team.class;
 			List<? extends AgentBase> list = getAgentService().list(clazz, 100000000, 0,null,null);
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			
 			logger.info("save "+pluralString+" ...");

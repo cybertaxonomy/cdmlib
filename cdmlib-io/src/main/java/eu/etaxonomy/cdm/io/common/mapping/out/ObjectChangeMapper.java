@@ -28,10 +28,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExportMapper<DbExportStateBase<?>> {
+public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	private static final Logger logger = Logger.getLogger(ObjectChangeMapper.class);
 
-	private DbExportStateBase<?> state;  //for possible later use
+	private DbExportStateBase<?, IExportTransformer> state;  //for possible later use
 	
 	private String cdmAttribute;
 	
@@ -61,7 +61,7 @@ public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExp
 	
 	
 	@Override
-	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase<?> state, String tableName) {
+	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase<?, IExportTransformer> state, String tableName) {
 		this.state = state;
 	}
 

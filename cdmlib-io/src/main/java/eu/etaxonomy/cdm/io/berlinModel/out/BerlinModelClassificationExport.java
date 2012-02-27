@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbConstantMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -62,9 +63,9 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 		return result;
 	}
 	
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 //		mapping.addMapper(IdMapper.NewInstance("RelPTaxonId"));  //is Identity column
 		
 		mapping.addMapper(MethodMapper.NewInstance("PTNameFk1", this.getClass(), "getPTNameFk1", standardMethodParameter, DbExportStateBase.class));
@@ -96,7 +97,7 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 			
 			List<Classification> list = getClassificationService().list(null,10000000,0,null,null);
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;
@@ -150,26 +151,26 @@ public class BerlinModelClassificationExport extends BerlinModelExportBase<Relat
 	//called by MethodMapper
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk1(TaxonNode node, DbExportStateBase<?> state){
+	private static Integer getPTNameFk1(TaxonNode node, DbExportStateBase<?, IExportTransformer> state){
 		return getObjectFk(node, state, true, true);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk1(TaxonNode node, DbExportStateBase<?> state){
+	private static Integer getPTRefFk1(TaxonNode node, DbExportStateBase<?, IExportTransformer> state){
 		return getObjectFk(node, state, false, true);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk2(TaxonNode node, DbExportStateBase<?> state){
+	private static Integer getPTNameFk2(TaxonNode node, DbExportStateBase<?, IExportTransformer> state){
 		return getObjectFk(node, state, true, false);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk2(TaxonNode node, DbExportStateBase<?> state){
+	private static Integer getPTRefFk2(TaxonNode node, DbExportStateBase<?, IExportTransformer> state){
 		return getObjectFk(node, state, false, false);
 	}
 
-	private static Integer getObjectFk(TaxonNode node, DbExportStateBase<?> state, boolean isName, boolean isFrom){
+	private static Integer getObjectFk(TaxonNode node, DbExportStateBase<?, IExportTransformer> state, boolean isName, boolean isFrom){
 		TaxonNode treeNode = (isFrom) ? node :  node.getParent();
 		if (treeNode != null){
 			Taxon taxon = treeNode.getTaxon();

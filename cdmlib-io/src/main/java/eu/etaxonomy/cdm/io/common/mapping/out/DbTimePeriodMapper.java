@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
+public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbTimePeriodMapper.class);
 	

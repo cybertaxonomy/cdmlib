@@ -24,7 +24,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.sdd.out.SDDDataSet;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @versoin 1.0
  */
 @Component("pilotOutputExporter")
-public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState> implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
+public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer> implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 

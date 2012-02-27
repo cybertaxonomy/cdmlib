@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG extends DbExportConfiguratorBase<STATE>> extends CdmDbExportMapping<STATE, CONFIG> {
+public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM>, TRANSFORM extends IExportTransformer> extends CdmDbExportMapping<STATE, CONFIG, TRANSFORM> {
 	private static final Logger logger = Logger.getLogger(CollectionExportMapping.class);
 	
 	private IdMapper parentMapper;
@@ -95,7 +95,7 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG>, CO
 					}else if (mapper == this.sequenceMapper){
 						this.sequenceMapper.invoke(null);
 					}else if (mapper instanceof IDbExportMapper){
-						IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
+						IDbExportMapper<DbExportStateBase<?, TRANSFORM>, TRANSFORM> dbMapper = (IDbExportMapper)mapper;
 						try {
 							result &= dbMapper.invoke(collectionObject);
 						} catch (Exception e) {

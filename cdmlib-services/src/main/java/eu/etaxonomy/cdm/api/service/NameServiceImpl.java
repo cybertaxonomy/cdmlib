@@ -330,7 +330,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     @Deprecated
     public List<RelationshipBase> getAllRelationships(int limit, int start){
-        return dao.getRelationships(limit, start);
+        return dao.getAllRelationships(limit, start);
     }
 
     /**

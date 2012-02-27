@@ -20,7 +20,6 @@ import org.hsqldb.Types;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -32,7 +31,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
  * @created 06.02.2012
  * @version 1.0
  */
-public class DbImageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>>{
+public class DbImageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImageMapper.class);
 	

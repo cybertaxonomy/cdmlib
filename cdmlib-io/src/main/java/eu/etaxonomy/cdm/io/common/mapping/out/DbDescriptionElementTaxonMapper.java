@@ -15,13 +15,10 @@ import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -30,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>>{
+public class DbDescriptionElementTaxonMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbDescriptionElementTaxonMapper.class);
 	

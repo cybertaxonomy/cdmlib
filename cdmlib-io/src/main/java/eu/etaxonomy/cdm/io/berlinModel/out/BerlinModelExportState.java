@@ -13,13 +13,14 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class BerlinModelExportState extends DbExportStateBase<BerlinModelExportConfigurator>{
+public class BerlinModelExportState extends DbExportStateBase<BerlinModelExportConfigurator, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelExportState.class);
 

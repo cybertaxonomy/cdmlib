@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @author a.babadshanjan
  * @created 03.09.2008
  */
-public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExportState> implements IExportConfigurator<JaxbExportState> {
+public class JaxbExportConfigurator extends ExportConfiguratorBase<URI,JaxbExportState, IExportTransformer> implements IExportConfigurator<JaxbExportState, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbExportConfigurator.class);
 

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE extends ExportStateBase> extends IoConfiguratorBase implements IExportConfigurator<STATE>{
+public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends IoConfiguratorBase implements IExportConfigurator<STATE, TRANSFORM>{
 
 	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
@@ -32,9 +32,9 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	/**
 	 * The transformer class to be used for Input
 	 */
-	private IExportTransformer transformer;
+	private TRANSFORM transformer;
 	
-	public ExportConfiguratorBase(IExportTransformer transformer){
+	public ExportConfiguratorBase(TRANSFORM transformer){
 		super();
 		//setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
@@ -44,11 +44,11 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	abstract protected void makeIoClassList();
 	
 
-	public IExportTransformer getTransformer() {
+	public TRANSFORM getTransformer() {
 		return transformer;
 	}
 
-	public void setTransformer(IExportTransformer transformer) {
+	public void setTransformer(TRANSFORM transformer) {
 		this.transformer = transformer;
 	}
 	
