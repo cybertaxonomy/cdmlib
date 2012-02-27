@@ -28,9 +28,9 @@ import org.jdom.input.SAXBuilder;
  * @created Jul 16, 2010
  * @version 1.0
  */
-public abstract class AbstractXmlEntityFactory implements IXMLEntityFactory {
+public abstract class XmlEntityFactoryBase implements IXMLEntityFactory {
 	private static final Logger logger = Logger
-			.getLogger(AbstractXmlEntityFactory.class);
+			.getLogger(XmlEntityFactoryBase.class);
 
 	/**
 	 * A list of XML element names that are used to store collections

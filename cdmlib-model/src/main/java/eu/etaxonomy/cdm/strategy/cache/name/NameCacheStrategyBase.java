@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -44,11 +45,22 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
      */
     public abstract String getTitleCache(T name);
 
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
+     */
+    public abstract String getTitleCache(T name, HTMLTagRules rules);
+
+    
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
      */
     public abstract String getFullTitleCache(T name);
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
+     */
+    public abstract String getFullTitleCache(T name, HTMLTagRules rules);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getTaggedTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)

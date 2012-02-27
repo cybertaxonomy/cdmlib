@@ -4,9 +4,7 @@
 package eu.etaxonomy.cdm.print.out.odf;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -15,7 +13,7 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.print.Transformator;
-import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * This output module will transform the given document into <a href="http://www.oasis-open.org/committees/office/">ODF</a> format for further editing in 
@@ -25,7 +23,7 @@ import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
  * @created Apr 20, 2010
  * @version 1.0
  */
-public class OdfOutputModule extends AbstractPublishOutputModule {
+public class OdfOutputModule extends PublishOutputModuleBase {
 	private static final Logger logger = Logger
 		.getLogger(OdfOutputModule.class);
 	

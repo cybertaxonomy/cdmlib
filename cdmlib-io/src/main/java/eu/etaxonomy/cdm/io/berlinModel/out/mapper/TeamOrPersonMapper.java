@@ -43,7 +43,7 @@ public class TeamOrPersonMapper extends DbObjectMapper {
 	
 	
 	protected TeamOrPersonMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue) {
-		super(cdmAttributeString, dbAttributeString, defaultValue);
+		super(cdmAttributeString, dbAttributeString, defaultValue, false);
 		
 	}
 	

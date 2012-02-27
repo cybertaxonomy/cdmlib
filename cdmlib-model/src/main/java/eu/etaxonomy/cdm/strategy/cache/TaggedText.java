@@ -28,6 +28,11 @@ public class TaggedText {
 	private String text;
 	private TagEnum type;
 	
+	
+	public static TaggedText NewWhitespaceInstance(){
+		return new TaggedText(TagEnum.separator, " ");
+	}
+	
 	public String getText() {
 		return text;
 	}

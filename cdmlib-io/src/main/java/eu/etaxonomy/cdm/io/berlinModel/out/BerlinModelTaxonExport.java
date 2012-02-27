@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
@@ -76,12 +74,12 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("appendedPhrase", "NamePhrase"));
 		
 		//detail
-		ExtensionType detailExtensionType = (ExtensionType)getTermService().find(BerlinModelTaxonImport.DETAIL_EXT_UUID);
+		ExtensionType detailExtensionType = (ExtensionType)getTermService().find(BerlinModelTransformer.DETAIL_EXT_UUID);
 		if (detailExtensionType != null){
 			mapping.addMapper(DbExtensionMapper.NewInstance(detailExtensionType, "Detail"));
 		}
 		//idInSource
-		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(BerlinModelImportBase.ID_IN_SOURCE_EXT_UUID);
+		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(BerlinModelTransformer.ID_IN_SOURCE_EXT_UUID);
 		if (idInSourceExtensionType != null){
 			mapping.addMapper(DbIntegerExtensionMapper.NewInstance(idInSourceExtensionType, "IdInSource"));
 		}

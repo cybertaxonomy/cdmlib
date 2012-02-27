@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +23,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -51,7 +54,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * @param <T>
  */
 public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends NameCacheStrategyBase<T> implements INonViralNameCacheStrategy<T> {
-    private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
+	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
+	private static final long serialVersionUID = -6577757501563212669L;
 
     final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
 
@@ -171,27 +175,44 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      */
     @Override
     public String getTitleCache(T nonViralName) {
-        List<TaggedText> tags = getTaggedTitle(nonViralName);
-        if (tags == null){
-            return null;
-        }else{
-            String result = createString(tags);
-            return result;
-        }
+    	return getTitleCache(nonViralName, null);
     }
 
     /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.NonViralName, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
+     */
+    @Override
+	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
+    	List<TaggedText> tags = getTaggedTitle(nonViralName);
+		if (tags == null){
+			return null;
+		}else{
+			String result = createString(tags, htmlTagRules);
+		    return result;
+		}
+    }
+    
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
+	 */
+	@Override
+	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
+		List<TaggedText> tags = getTaggedFullTitle(nonViralName);
+	    if (tags == null){
+	    	return null;
+	    }else{
+	    	String result = createString(tags, htmlTagRules);
+	    	return result;
+	    }
+	}
+
+
+	/* (non-Javadoc)
      * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
      */
     @Override
     public String getFullTitleCache(T nonViralName) {
-        List<TaggedText> tags = getTaggedFullTitle(nonViralName);
-        if (tags == null){
-            return null;
-        }else{
-            String result = createString(tags);
-            return result;
-        }
+    	return getFullTitleCache(nonViralName, null);
     }
 
 
@@ -211,7 +232,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 
     /**
-     * Creates a string from tagged text.
+     * Creates a string from tagged text by concatenating all tags. If do seperator tag is defined
+     * tags are seperated by simple whitespace.
      * @param tags
      * @return
      */
@@ -221,15 +243,107 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         boolean isSeparator;
         boolean wasSeparator = true;  //true for start tag
         for (TaggedText tag: tags){
-            isSeparator = tag.getType().equals(TagEnum.separator);
+            isSeparator = tag.getType().isSeparator();
             if (! wasSeparator && ! isSeparator ){
                 result.append(" ");
             }
             result.append(tag.getText());
             wasSeparator = isSeparator;
         }
-        return result.toString();
+        return result.toString().trim();
     }
+    
+    protected static String createString(List<TaggedText> tags, HTMLTagRules htmlRules) {
+        if (htmlRules == null){
+        	return createString(tags);
+        }
+        //add whitespace separators
+        int index = 0;
+        boolean wasSeparator = true;
+        while (index < tags.size()){
+        	
+        	if (! tags.get(index).isSeparator()){
+            	if (wasSeparator == false){
+                	tags.add(index++, TaggedText.NewWhitespaceInstance());
+                }else{
+                	wasSeparator = false;
+                }
+        	}else{
+        		wasSeparator = true;
+        	}
+        	index++;
+        }
+    	
+    	//create String
+        StringBuffer result = new StringBuffer();
+
+        Stack<String> htmlStack = new Stack<String>();
+        for (int i = 0;  i < tags.size(); i++  ){
+        	TaggedText tag = tags.get(i);
+        	TagEnum thisType = tag.getType();
+        	TagEnum lastType = (i == 0? null : tags.get(i - 1).getType());
+        	TagEnum nextType = (i + 1 >= tags.size() ? null : tags.get(i + 1).getType());
+        	
+            boolean isSeparator = tag.getType().isSeparator();
+//            boolean lastEqual = tag.getType().equals(lastType);
+//            boolean nextEqual = tag.getType().equals(nextType);
+//            boolean bothEqual = lastEqual && nextEqual;
+            
+            //compute list of rules (tags)
+            SortedSet<String> separatorRules;
+            if (isSeparator){
+            	separatorRules = getCommonRules(htmlRules.getRule(lastType), htmlRules.getRule(nextType));
+            }else{
+            	separatorRules = htmlRules.getRule(thisType);
+            }
+            
+            //Close all tags not used anymore and remove all common tags from list of rules
+            for (int j = 0 ;  j < htmlStack.size() ; j++){
+            	String html = htmlStack.get(j);
+            	if (! separatorRules.contains(html)){
+            		closeHtml(result, htmlStack, j);
+            		break;
+            	}else{
+            		separatorRules.remove(html);
+            	}
+            }
+            
+            //open all tags not yet existing
+            if (! isSeparator){
+	            for (String rule : separatorRules){
+	            	htmlStack.add(rule);
+	        		result.append("<" +  rule + ">");
+	            }
+            }
+            
+            //add whitespace
+            if (lastType != null && ! lastType.isSeparator() && ! isSeparator && nextType != null){
+                result.append(" ");
+            }
+            result.append(tag.getText());
+        }
+        closeHtml(result, htmlStack, 0);
+        return result.toString();
+	}
+
+
+	private static void closeHtml(StringBuffer result, Stack<String> htmlStack, int index) {
+		while (htmlStack.size() > index){
+			String closeHtml = htmlStack.pop();
+			result.append("</" +  closeHtml + ">");
+		}
+	}
+    
+    private static SortedSet<String> getCommonRules(SortedSet<String> rules1,SortedSet<String> rules2) {
+		SortedSet<String> result = new TreeSet<String>();
+		for (String str : rules1){
+			if (rules2.contains(str)){
+				result.add(str);
+			}
+		}
+    	return result;
+	}
+
 
 // ******************* Authorship ******************************/
 
@@ -598,9 +712,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getInfraGenusTaggedNameCache(NonViralName<T> nonViralName){
         Rank rank = nonViralName.getRank();
-        if (rank.isSpeciesAggregate()){
+        if (rank != null && rank.isSpeciesAggregate()){
             return getSpeciesAggregateTaggedCache(nonViralName);
         }
 
@@ -608,25 +722,42 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
 
         //marker
-        String infraGenericMarker = "'unhandled infrageneric rank'";
+        String infraGenericMarker;
         if (rank != null){
             try {
                 infraGenericMarker = rank.getInfraGenericMarker();
             } catch (UnknownCdmTypeException e) {
                 infraGenericMarker = "'unhandled infrageneric rank'";
             }
+        }else{
+        	infraGenericMarker = "'undefined infrageneric rank'";
         }
-        tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
-
-
         String infraGenEpi = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim().replace("null", "");
-        if (StringUtils.isNotBlank(infraGenEpi)){
-            tags.add(new TaggedText(TagEnum.name, infraGenEpi));
-        }
+        
+        addInfraGenericPart(nonViralName, tags, infraGenericMarker, infraGenEpi);
 
         addAppendedTaggedPhrase(tags, nonViralName);
         return tags;
     }
+
+
+	/**
+	 * Default implementation for the infrageneric part of a name. 
+	 * This is usually the infrageneric marker and the infrageneric epitheton. But may be implemented differently e.g. for zoological
+	 * names the infrageneric epitheton may be surrounded by brackets and the marker left out.
+	 * @param nonViralName
+	 * @param tags
+	 * @param infraGenericMarker
+	 */
+	protected void addInfraGenericPart(NonViralName<T> name, List<TaggedText> tags, String infraGenericMarker, String infraGenEpi) {
+		//add marker
+		tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
+
+		//add epitheton
+		if (StringUtils.isNotBlank(infraGenEpi)){
+            tags.add(new TaggedText(TagEnum.name, infraGenEpi));
+        }
+	}
 
     /**
      * Returns the tag list for a species aggregate (or similar) taxon.<BR>
@@ -676,12 +807,12 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(NonViralName<?> nonViralName){
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(T nonViralName){
         return getInfraSpeciesTaggedNameCache(nonViralName, true);
     }
 
     /**
-     * Creates the tag list for an infraspecific taxon. In include is true the result will contain
+     * Creates the tag list for an infraspecific taxon. If include is true the result will contain
      * the infraspecific marker (e.g. "var.")
      * @param nonViralName
      * @param includeMarker
@@ -776,5 +907,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
             return taxonNameBase.getInfraSpecificEpithet();
         }
     }
+
 
 }

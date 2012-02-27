@@ -41,7 +41,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDef
 	 * Factory method
 	 * @return
 	 */
-	public static GenericDefaultCacheStrategy NewInstance(){
+	public static GenericDefaultCacheStrategy<Reference> NewInstance(){
 		return new GenericDefaultCacheStrategy();
 	}
 	

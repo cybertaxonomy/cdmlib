@@ -67,6 +67,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	private boolean useSingleClassification = false;
 	
+	//occurrences
+	private boolean isSplitTdwgCodes = true;
+	
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
 
@@ -100,7 +103,6 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String occurrenceFilter = null;
 	private String occurrenceSourceFilter = null;
 	private String webMarkerFilter = null;
-	
 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -161,11 +163,13 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
 	public Reference getSourceReference() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (sourceReference == null){
-			sourceReference =  refFactory.newDatabase();
+			sourceReference =  ReferenceFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
+			}
+			if (getSourceRefUuid() != null){
+				sourceReference.setUuid(getSourceRefUuid());
 			}
 		}
 		return sourceReference;
@@ -652,6 +656,20 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setSwitchSpeciesGroup(boolean switchSpeciesGroup) {
 		this.switchSpeciesGroup = switchSpeciesGroup;
 	}
+
+
+
+	public boolean isSplitTdwgCodes() {
+		return isSplitTdwgCodes;
+	}
+	
+	
+	public void setSplitTdwgCodes(boolean isSplitTdwgCodes) {
+		this.isSplitTdwgCodes = isSplitTdwgCodes;
+	}
+
+
+
 
 
 

@@ -14,14 +14,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * Simple output module that writes the harvested xml data to disk without further processing. 
@@ -30,7 +29,7 @@ import eu.etaxonomy.cdm.print.out.AbstractPublishOutputModule;
  * @created Apr 8, 2010
  * @version 1.0
  */
-public class XMLOutputModule extends AbstractPublishOutputModule{
+public class XMLOutputModule extends PublishOutputModuleBase{
 	private static final Logger logger = Logger
 			.getLogger(XMLOutputModule.class);
 

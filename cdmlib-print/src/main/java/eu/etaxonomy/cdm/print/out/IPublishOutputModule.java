@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 /**
  * Performs the publish process defined by the implementing class. Clients should consider extending <code>AbstractPublishOutputModule</code>
  * 
- * @see {@link AbstractPublishOutputModule}
+ * @see {@link PublishOutputModuleBase}
  * @author n.hoffmann
  * @created Apr 8, 2010
  * @version 1.0

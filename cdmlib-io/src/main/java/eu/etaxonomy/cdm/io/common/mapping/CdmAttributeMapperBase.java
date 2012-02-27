@@ -34,7 +34,6 @@ public abstract class CdmAttributeMapperBase extends CdmMapperBase{
 	public abstract List<String> getDestinationAttributeList();
 	
 	public String toString(){
-		String[] a;
 		String sourceAtt = CdmUtils.concat(",", getSourceAttributeList().toArray(new String[1]));
 		String destAtt = CdmUtils.concat(",", getDestinationAttributeList().toArray(new String[1]));
 		return this.getClass().getSimpleName() +"[" + sourceAtt + "->" + destAtt + "]";

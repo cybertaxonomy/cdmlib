@@ -32,23 +32,23 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	private Method method;
 	private Class<?>[] parameterTypes;
 	
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase){
 		String methodName = "get" + dbAttributeString;
-		return NewInstance(dbAttributeString, bmeb, methodName);
+		return NewInstance(dbAttributeString, exportBase, methodName);
 	}
 	
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, Class<?> parameterTypes){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase, Class<?>... parameterTypes){
 		String methodName = "get" + dbAttributeString;
-		return new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
+		return new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 	}
 	
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, String methodName){
-		Class<?> parameterTypes = bmeb.getStandardMethodParameter();
-		MethodMapper result = new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase, String methodName){
+		Class<?> parameterTypes = exportBase.getStandardMethodParameter();
+		MethodMapper result = new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 		return result;
 	}
 
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class parameterTypes){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class<?>... parameterTypes){
 		MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
 		return result;
 	}
@@ -97,13 +97,13 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 			}
 			
 		} catch (IllegalAccessException e) {
-			logger.error("IllegalAccessException: " + e.getLocalizedMessage());
+			logger.error("IllegalAccessException: " + e.getMessage() + " when invoking MethodMapper " +  this.toString());
 			return false;
 		} catch (InvocationTargetException e) {
-			logger.error("InvocationTargetException: " + e.getLocalizedMessage());
+			logger.error("InvocationTargetException: " + e.getMessage() + " when invoking MethodMapper " +  this.toString());
 			return false;
 		} catch (Exception e) {
-			logger.error("Any Exception: " + e.getLocalizedMessage());
+			logger.error("Any Exception: " + e.getMessage() + " when invoking MethodMapper " +  this.toString());
 			throw new RuntimeException(e);
 		}
 	}

@@ -165,108 +165,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return null;  //not needed
 	}
 
-
-//	@Override
-//	protected void doInvoke_old(BerlinModelImportState state){
-//		logger.info("start make " + getPluralString() + " ...");
-//
-//		boolean success = true;
-//		initializeMappers(state);
-//		BerlinModelImportConfigurator config = state.getConfig();
-//		Source source = config.getSource();
-//
-//		String strSelectId = " SELECT Reference.RefId as refId ";
-//		String strSelectFull = 
-//			" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
-//			" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk, " +
-//			" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk, RefSource.RefSource " ;
-//		String strFrom =  " FROM Reference AS InInReference " +
-//		    	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
-//		    	" RIGHT OUTER JOIN %s ON InReference.RefId = Reference.InRefFk " + 
-//		    	" LEFT OUTER JOIN RefSource ON Reference.RefSourceFk = RefSource.RefSourceId " +
-//		    	" WHERE (1=1) ";
-//		String strWherePartitioned = " AND (Reference.refId IN ("+ ID_LIST_TOKEN + ") ) "; 
-//		
-//		String referenceTable = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
-//		referenceTable = referenceTable.isEmpty() ? " Reference"  : referenceTable + " as Reference ";
-//		String strIdFrom = String.format(strFrom, referenceTable );
-//		
-//		
-//		//test max number of recursions
-//		String strQueryTestMaxRecursion = strSelectId + strIdFrom +  
-//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
-//		ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTestMaxRecursion);
-//		try {
-//			if (testMaxRecursionResultSet.next() == true){
-//				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
-//				state.setUnsuccessfull();
-//				return;
-//			}
-//		} catch (SQLException e1) {
-//			e1.printStackTrace();
-//			logger.error("There are references with more then 2 in-reference recursion. Maximum number of allowed recursions is 2. Records will not be stored.");
-//			success = false;
-//		}
-//
-//		String strSelectIdBase = strSelectId + strIdFrom;
-//		
-//		String referenceFilter = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
-//		if (! referenceFilter.isEmpty()){
-//			referenceFilter = " AND " + referenceFilter + " ";
-//		}
-//		referenceFilter = "";  //don't use it for now
-//		
-//		String strIdQueryNoInRef = strSelectIdBase + 
-//			" AND (Reference.InRefFk is NULL) " +  referenceFilter;
-//		String strIdQuery1InRef = strSelectIdBase + 
-//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) "  +  referenceFilter;
-//		String strIdQuery2InRefs = strSelectIdBase + 
-//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) "  +  referenceFilter;
-//
-//		if (config.getDoReferences() == CONCEPT_REFERENCES){
-//			strIdQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) " + referenceFilter;
-//		}
-//
-//		String strRecordQuery = strSelectFull + String.format(strFrom, " Reference ") + strWherePartitioned;
-//		
-//		int recordsPerTransaction = config.getRecordsPerTransaction();
-//		try{
-//			//NoInRefs
-//			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQueryNoInRef, strRecordQuery, recordsPerTransaction);
-//			while (partitioner.nextPartition()){
-//				partitioner.doPartition(this, state);
-//			}
-//			logger.info("end make references with no in-references ... " + getSuccessString(success));
-//
-//			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
-//
-//				//1InRef
-//				partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery1InRef, strRecordQuery, recordsPerTransaction);
-//				while (partitioner.nextPartition()){
-//					partitioner.doPartition(this, state);
-//				}
-//				logger.info("end make references with no 1 in-reference ... " + getSuccessString(success));
-//	
-//				//2InRefs
-//				partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery2InRefs, strRecordQuery, recordsPerTransaction);
-//				while (partitioner.nextPartition()){
-//					partitioner.doPartition(this, state);
-//				}
-//				logger.info("end make references with no 2 in-reference ... " + getSuccessString(success));
-//			}
-//
-//		} catch (SQLException e) {
-//			logger.error("SQLException:" +  e);
-//			state.setUnsuccessfull();
-//			return;
-//		}
-//		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
-//		if (! success){
-//			state.setUnsuccessfull();
-//		}
-//		return;
-//	}
-
 	@Override
 	protected void doInvoke(BerlinModelImportState state){
 		logger.info("start make " + getPluralString() + " ...");
@@ -289,23 +187,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		referenceTable = referenceTable.isEmpty() ? " Reference"  : referenceTable + " as Reference ";
 		String strIdFrom = String.format(strFrom, referenceTable );
 		
-		
-		//test max number of recursions
-//		String strQueryTestMaxRecursion = strSelectId + strIdFrom +  
-//			" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
-//		ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTestMaxRecursion);
-//		try {
-//			if (testMaxRecursionResultSet.next() == true){
-//				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
-//				state.setUnsuccessfull();
-//				return;
-//			}
-//		} catch (SQLException e1) {
-//			e1.printStackTrace();
-//			logger.error("There are references with more then 2 in-reference recursion. Maximum number of allowed recursions is 2. Records will not be stored.");
-//			success = false;
-//		}
-
 		String strSelectIdBase = strSelectId + strIdFrom;
 		
 		String referenceFilter = CdmUtils.Nz(state.getConfig().getReferenceIdTable());
@@ -330,7 +211,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
-			logger.info("end make references with no in-references ... " + getSuccessString(success));
+			logger.info("end make references without in-references ... " + getSuccessString(success));
 			state.setReferenceSecondPath(true);
 
 //			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
@@ -420,6 +301,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 
 
+	/**
+	 * Adds the inReference to the according references.
+	 * @param partitioner
+	 * @param state
+	 * @return
+	 */
 	private boolean doPartitionSecondPath(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
 
@@ -439,35 +326,36 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round -" );}
 				
 					Integer refId = rs.getInt("refId");
+					Integer inRefFk = rs.getInt("inRefFk");
 					
-					Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
-					Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
-					
-					Reference<?> inReference = relatedNomReferences.get("inRefFk");
-					if (thisNomRef != null){
-						thisNomRef.setInReference(inReference);
-						nomRefToSave.put(refId, thisNomRef);
+					if (inRefFk != null){
+						Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
+						Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedBiblioReferences, relatedNomReferences, String.valueOf(refId));
+						
+						Reference<?> nomInReference = relatedNomReferences.get(String.valueOf(inRefFk));
+						Reference<?> biblioInReference = relatedBiblioReferences.get(String.valueOf(inRefFk));
+						boolean inRefExists = false;
+						if (thisNomRef != null){
+							Reference<?> inRef = (nomInReference != null)? nomInReference : biblioInReference;
+							thisNomRef.setInReference(inRef);
+							nomRefToSave.put(refId, thisNomRef);
+							//remember that an in reference exists
+							inRefExists |= (inRef != null);
+						}
+						if (thisBiblioRef != null){
+							Reference<?> inRef = (biblioInReference != null)? nomInReference : biblioInReference ;
+							thisBiblioRef.setInReference(inRef);
+							biblioRefToSave.put(refId, thisBiblioRef);
+							//remember that an in reference exists
+							inRefExists |= (inRef != null);
+						}
+						if (inRefExists == false){
+							logger.warn("No in reference was saved though an 'inRefFk' is available. RefId " + refId);
+						}
 					}
-					if (thisBiblioRef != null){
-						thisBiblioRef.setInReference(inReference);
-						biblioRefToSave.put(refId, thisBiblioRef);
-					}
 					
-					
-//					success &= makeSingleReferenceRecord(rs, state, partitioner, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences, refCounter);
 				} // end resultSet
-								
-				//for the concept reference a fixed uuid may be needed -> change uuid
-				Integer sourceSecId = (Integer) state.getConfig().getSourceSecId();
-				Reference<?> sec = biblioRefToSave.get(sourceSecId);
-				if (sec == null){
-					sec = nomRefToSave.get(sourceSecId);	
-				}
-				if (sec != null){
-					sec.setUuid(state.getConfig().getSecUuid());
-					logger.info("SecUuid changed to: " + state.getConfig().getSecUuid());
-				}
-				
+
 				//save and store in map
 				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
 				getReferenceService().save(nomRefToSave.values());

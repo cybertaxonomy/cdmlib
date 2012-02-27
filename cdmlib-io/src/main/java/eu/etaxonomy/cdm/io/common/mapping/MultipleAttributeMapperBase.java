@@ -58,7 +58,7 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	public List<String> getDestinationAttributeList() {
 		List<String> result = new ArrayList<String>();
 		for (SINGLE_MAPPER singleMapper : singleMappers){
-			result.add(singleMapper.getDestinationAttribute());
+			result.addAll(singleMapper.getDestinationAttributeList());
 		}
 		return result;
 	}
@@ -80,7 +80,7 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	public List<String> getSourceAttributeList() {
 		List<String> result = new ArrayList<String>();
 		for (SINGLE_MAPPER singleMapper : singleMappers){
-			result.add(singleMapper.getSourceAttribute());
+			result.addAll(singleMapper.getSourceAttributeList());
 		}
 		return result;
 	}

@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -113,7 +114,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
                 " WHERE name.nameId IN ("+ID_LIST_TOKEN+") ";
 					//strQuery += " AND RefDetail.PreliminaryFlag = 1 ";
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
-		return strRecordQuery;
+		return strRecordQuery +  "";
 	}
 
 
@@ -146,12 +147,20 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				String strCultivarGroupName = rs.getString("CultivarGroupName");
 				String strCultivarName = rs.getString("CultivarName");
+				String nameCache = rs.getString("NameCache");
+				String fullNameCache = rs.getString("FullNameCache");
 				
 				try {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
+					
+					if (rank == null || rank.equals(Rank.UNKNOWN_RANK()) || rank.equals(Rank.INFRASPECIFICTAXON())){
+						rank = handleProlesAndRace(state, rs, rank);
+					}
+					
 					if (rank.getId() == 0){
 						getTermService().save(rank);
+						logger.warn("Rank did not yet exist: " +  rank.getTitleCache());
 					}
 					
 					TaxonNameBase taxonNameBase;
@@ -258,11 +267,11 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					Boolean preliminaryFlag = rs.getBoolean("PreliminaryFlag");
 					if (preliminaryFlag == true){
 						//Computes all caches and sets 
+						taxonNameBase.setTitleCache(fullNameCache, true);
 						taxonNameBase.setFullTitleCache(taxonNameBase.getFullTitleCache(), true);
-						taxonNameBase.setTitleCache(taxonNameBase.getTitleCache(), true);
 						if (taxonNameBase instanceof NonViralName){
 							NonViralName nvn = (NonViralName)taxonNameBase;
-							nvn.setNameCache(nvn.getNameCache(), true);
+							nvn.setNameCache(nameCache, true);
 							nvn.setAuthorshipCache(nvn.getAuthorshipCache(), true);
 						}
 					}
@@ -285,6 +294,25 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		getNameService().save(namesToSave);
 		return success;
 	}
+
+
+	private Rank handleProlesAndRace(BerlinModelImportState state, ResultSet rs, Rank rank) throws SQLException {
+		Rank result;
+		String rankAbbrev = rs.getString("RankAbbrev");
+		String rankStr = rs.getString("Rank");
+		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
+			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, Rank.SPECIES().getVocabulary());
+		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
+			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, Rank.SPECIES().getVocabulary());
+//		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "taxon")){
+//			result = getRank(state, BerlinModelTransformer.uuidRankTaxon, rankStr, "Rank [taxon]", rankAbbrev, Rank.SPECIES().getVocabulary());
+		}else{
+			result = rank;
+			logger.warn("Unhandled rank: " + rankAbbrev);
+		}
+		return result;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)

@@ -49,6 +49,11 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
 	
+	//ranks
+	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
+	public static UUID uuidRankProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+	public static UUID uuidRankRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+	
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
 	
@@ -69,14 +74,21 @@ public final class BerlinModelTransformer {
 	public static UUID uuidEastAegeanIslands = UUID.fromString("1c429593-c493-46e6-971a-0d70be690da8");
 	public static UUID uuidTurkishEastAegeanIslands = UUID.fromString("ba35dba3-ac70-41ae-81c2-2070943f44f2");
 	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
-	public static UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
-	public static UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
+	public static final UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
+	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
 	
 	//language areas
-	public static UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
-	public static UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
+	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
+	public static final UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
 	
+	//Marker Types
+	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
 	
+	//Extension Types
+	public static final UUID uuidSpeciesExpert = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
+	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
+	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
+
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;
@@ -180,9 +192,14 @@ public final class BerlinModelTransformer {
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
-	public static UUID uuidRelNameCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
+	public static UUID uuidNomStatusNomOrthCons = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 	
 	static NomenclaturalStatusType nomStatusCombIned;
+	static NomenclaturalStatusType nomStatusSpNovIned;
+	static NomenclaturalStatusType nomStatusNomOrthCons;
+	
 	public static NomenclaturalStatusType nomStatusTypeAbbrev2NewNomStatusType(String nomStatus){
 		NomenclaturalStatusType result = null;
 		if (nomStatus == null){
@@ -192,10 +209,28 @@ public final class BerlinModelTransformer {
 				nomStatusCombIned = new NomenclaturalStatusType();
 				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
 				nomStatusCombIned.addRepresentation(representation);
-				nomStatusCombIned.setUuid(uuidRelNameCombIned);
+				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusCombIned);
 			}
 			result = nomStatusCombIned;
+		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
+			if (nomStatusSpNovIned == null){
+				nomStatusSpNovIned = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN());
+				nomStatusSpNovIned.addRepresentation(representation);
+				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
+			}
+			result = nomStatusSpNovIned;
+		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
+			if (nomStatusNomOrthCons == null){
+				nomStatusNomOrthCons = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN());
+				nomStatusNomOrthCons.addRepresentation(representation);
+				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusNomOrthCons);
+			}
+			result = nomStatusNomOrthCons;
 		}
 		return result;
 	}
@@ -368,7 +403,6 @@ public final class BerlinModelTransformer {
 	}
 	
 	
-	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
 	static Rank collSpeciesRank;
 	/**
 	 * @param i

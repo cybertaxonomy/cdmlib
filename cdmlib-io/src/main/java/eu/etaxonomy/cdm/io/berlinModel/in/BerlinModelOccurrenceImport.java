@@ -123,7 +123,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			//for each reference
             while (rs.next()){
                 
-                if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
+            	if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
                 
                 int occurrenceId = rs.getInt("OccurrenceId");
                 int newTaxonId = rs.getInt("taxonId");
@@ -132,30 +132,36 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
                 
                 try {
-                    //status
-                     PresenceAbsenceTermBase<?> status = null;
-                     String alternativeStatusString = null;
-                     if (emStatusId != null){
-                    	status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
-                     }else{
-                    	 String[] stringArray = new String[]{rs.getString("Native"), rs.getString("Introduced"), rs.getString("Cultivated")};
-                    	 alternativeStatusString = CdmUtils.concat(",", stringArray);
-                     }
+                	//status
+                	PresenceAbsenceTermBase<?> status = null;
+                	String alternativeStatusString = null;
+					if (emStatusId != null){
+						status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
+					}else{
+						String[] stringArray = new String[]{rs.getString("Native"), rs.getString("Introduced"), rs.getString("Cultivated")};
+						alternativeStatusString = CdmUtils.concat(",", stringArray);
+					}
                      
-                     //Create area list
-                     List<NamedArea> areas = new ArrayList<NamedArea>();
-                     if (tdwgCodeString != null){
-                           String[] tdwgCodes = tdwgCodeString.split(";");
-                           for (String tdwgCode : tdwgCodes){
-                                 NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
-                            	 if (area == null){
-                            		 area = getOtherAreas(state, emCodeString, tdwgCodeString);
-                            	 }
-                                 if (area != null){
-                                       areas.add(area);
-                                 }
-                           }
+					//Create area list
+					List<NamedArea> areas = new ArrayList<NamedArea>();
+					if (tdwgCodeString != null){
+					
+						String[] tdwgCodes = new String[]{tdwgCodeString};
+						if (state.getConfig().isSplitTdwgCodes()){
+							tdwgCodes = tdwgCodeString.split(";");
+						}
+						
+						for (String tdwgCode : tdwgCodes){
+							NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
+				        	if (area == null){
+				        		area = getOtherAreas(state, emCodeString, tdwgCodeString);
+				        	}
+				        	if (area != null){
+				        		areas.add(area);
+				        	}
+				    	}
                      }
+					
                      Reference<?> sourceRef = state.getConfig().getSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
@@ -229,46 +235,38 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}else if("Rf".equals(em)){
 			return WaterbodyOrCountry.RUSSIANFEDERATION();
 		
-		//Cichorieae
-		}else if("KRY-OO + UKR-UK".equals(tdwg)){
+		}else if("KRY-OO;UKR-UK".equals(tdwg)){
 			return WaterbodyOrCountry.UKRAINE();
-		}else if("TCS-AZ + TCS-NA".equals(tdwg)){
+		
+		}else if("TCS-AZ;TCS-NA".equals(tdwg)){
 			return WaterbodyOrCountry.AZERBAIJANREPUBLICOF();
-		}else if("TCS-AB + TCS-AD + TCS-GR".equals(tdwg)){
+		}else if("TCS-AB;TCS-AD;TCS-GR".equals(tdwg)){
 			return WaterbodyOrCountry.GEORGIA();
+		
+		
+		}else if("Cc".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidCaucasia, "Caucasia (Ab + Ar + Gg + Rf(CS))", "Euro+Med area 'Caucasia (Ab + Ar + Gg + Rf(CS))'", "Cc", null, null);
 		}
+		
 		//E+M
 		else if("EUR".equals(em)){
 			return TdwgArea.getAreaByTdwgAbbreviation("1");
 		}else if("14".equals(em)){
 			return TdwgArea.getAreaByTdwgAbbreviation("14");
 		}else if("21".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("21");
+			return TdwgArea.getAreaByTdwgAbbreviation("21");  // Macaronesia
 		}else if("33".equals(em)){
 			return TdwgArea.getAreaByTdwgAbbreviation("33");
 		
-		//TODO Azores, Canary Is. 
-		
-		}else if("Ir".equals(em)){
-			return WaterbodyOrCountry.ISRAELSTATEOF();
-		}else if("Md(D)".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidDesertas, "Desertas", "Euro+Med area 'Desertas'", "Md(D)", null, null);
-		}else if("Md(M)".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidMadeira, "Madeira", "Euro+Med area 'Madeira'", "Md(M)", null, null);
-		}else if("Md(P)".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidPortoSanto, "Porto Santo", "Euro+Med area 'Porto Santo'", "Md(P)", null, null);
-		}else if("Rf(E)".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidEasternEuropeanRussia, "Eastern European Russia", "Euro+Med area 'Eastern European Russia'", "Rf(E)", null, null);
 		}else if("SM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidSerbiaMontenegro, "Serbia & Montenegro", "Euro+Med area 'Serbia & Montenegro'", "SM", NamedAreaType.ADMINISTRATION_AREA(), null);
-		}else if("LS".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidLebanonSyria, "Lebanon-Syria", "Euro+Med area 'Lebanon-Syria'", "LS", null, null);
+		}else if("Yu(K)".equals(em)){
+			return TdwgArea.getAreaByTdwgAbbreviation("YUG-KO");
+		
+		
+		//see #2769
 		}else if("Rs".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidUssr, "Former USSR", "Euro+Med area 'Former USSR'", "Rs", NamedAreaType.ADMINISTRATION_AREA(), null);
-		}else if("Si".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidSicilyMalta, "Sicily with Malta", "Euro+Med area 'Sicily with Malta'", "Si", null, null);
-		}else if("Az(L)".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidFlores, "Flores", "Euro+Med area 'Flores'", "Az(L)", null, null);
 		}else if("Rs(N)".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidRussiaNorthern, "Russia Northern", "Euro+Med area 'Russia Northern'", "Rs(N)", null, null);
 		}else if("Rs(B)".equals(em)){
@@ -279,18 +277,28 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			return getNamedArea(state, BerlinModelTransformer.uuidRussiaSouthWest, "Russia Southwest", "Euro+Med area 'Russia Southwest'", "Rs(W)", null, null);
 		}else if("Rs(E)".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidRussiaSouthEast, "Russia Southeast", "Euro+Med area 'Russia Southeast'", "Rs(E)", null, null);
+			
+		//see #2770
 		}else if("AE".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidEastAegeanIslands, "East Aegean Islands", "Euro+Med area 'East Aegean Islands'", "AE", null, null);
 		}else if("AE(T)".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidTurkishEastAegeanIslands, "Turkish East Aegean Islands", "Euro+Med area 'Turkish East Aegean Islands'", "AE(T)", null, null);
-		}else if("Bt".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidBalticStates, "Baltic states (Estonia, Latvia, Lithuania) and Kaliningrad region", "Euro+Med area 'Baltic states (Estonia, Latvia, Lithuania) and Kaliningrad region'", "Bt", null, null);
-		}
-		else if("Tu".equals(em)){
+		}else if("Tu".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidTurkey, "Turkey", "Euro+Med area 'Turkey' (without AE(T))", "Tu", null, null);
-		}else if("Cc".equals(em)){
-			return getNamedArea(state, BerlinModelTransformer.uuidCaucasia, "Caucasia (Ab + Ar + Gg + Rf(CS))", "Euro+Med area 'Caucasia (Ab + Ar + Gg + Rf(CS))'", "Cc", null, null);
+		
+		//TODO Azores, Canary Is. 
+		}else if("Md(D)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidDesertas, "Desertas", "Euro+Med area 'Desertas'", "Md(D)", null, null);
+		}else if("Md(M)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidMadeira, "Madeira", "Euro+Med area 'Madeira'", "Md(M)", null, null);
+		}else if("Md(P)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidPortoSanto, "Porto Santo", "Euro+Med area 'Porto Santo'", "Md(P)", null, null);
+		
+		}else if("Az(L)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidFlores, "Flores", "Euro+Med area 'Flores'", "Az(L)", null, null);
+
 		}
+		logger.warn("Area " + em + " could not be found for occurrence import");
 		
 		return null;
 	}

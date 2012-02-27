@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
  * @created Apr 6, 2010
  * @version 1.0
  */
-public class RemoteXMLEntityFactory extends AbstractXmlEntityFactory{
+public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	private static final Logger logger = Logger
 			.getLogger(RemoteXMLEntityFactory.class);
 	

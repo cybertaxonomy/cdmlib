@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 /**
  * @author a.mueller
@@ -32,7 +33,7 @@ public class ExportTransformerBase implements IExportTransformer {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByFeature(eu.etaxonomy.cdm.model.description.Feature)
 	 */
 	@Override
-	public Feature getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {
+	public Object getKeyByFeature(Feature feature) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByFeature is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
@@ -49,7 +50,7 @@ public class ExportTransformerBase implements IExportTransformer {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByLanguage(eu.etaxonomy.cdm.model.common.Language)
 	 */
 	@Override
-	public Language getKeyByLanguage(Language language) throws UndefinedTransformerMethodException {
+	public Object getKeyByLanguage(Language language) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByLanguage is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
@@ -67,10 +68,15 @@ public class ExportTransformerBase implements IExportTransformer {
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByExtensionType(eu.etaxonomy.cdm.model.common.ExtensionType)
 	 */
 	@Override
-	public ExtensionType getKeyByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
+	public Object getKeyByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
 		String warning = "getKeyByExtensionType is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
+	}	@Override
+	public String getCacheByExtensionType(ExtensionType extensionType) throws UndefinedTransformerMethodException {
+		String warning = "getCacheByExtensionType is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer#getKeyByPresenceAbsenceTerm(eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase)
@@ -107,6 +113,22 @@ public class ExportTransformerBase implements IExportTransformer {
 		String warning = "getCacheByNamedArea is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
-
 	
+	@Override
+	public String getCacheByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException {
+		String warning = "getCacheByNomStatus is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	
+	
+	@Override
+	public Object getKeyByNomStatus(NomenclaturalStatusType status) throws UndefinedTransformerMethodException {
+		String warning = "getKeyByNomStatus is not yet implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+	@Override
+	public String getQualityStatusCacheByKey(Integer qualityStatusFk) throws UndefinedTransformerMethodException {
+		String warning = "getQualityStatusCacheByKey is not yet implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
 }

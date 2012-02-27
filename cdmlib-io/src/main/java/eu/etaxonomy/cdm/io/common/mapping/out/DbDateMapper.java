@@ -14,9 +14,6 @@ import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-
 /**
  * @author a.mueller
  * @created 12.05.2009

@@ -134,6 +134,31 @@ public class Rank extends OrderedTermBase<Rank> {
 
 	protected static Map<UUID, Rank> termMap = null;		
 
+//*********************** Factory methods ********************************************/	
+
+	/** 
+	 * Creates a new empty rank.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
+	private static Rank NewInstance(){
+		return new Rank();
+	}
+	
+	/** 
+	 * Creates an additional rank with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new rank to be created 
+	 * @param	label  		 the string identifying the new rank to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new rank to be created
+	 * @see 				 #NewInstance()
+	 */
+	private static Rank NewInstance(String term, String label, String labelAbbrev){
+		return new Rank(term, label, labelAbbrev);
+	}
 	
 // ********************* CONSTRUCTORS ************************************+/	
 	/** 
@@ -159,29 +184,6 @@ public class Rank extends OrderedTermBase<Rank> {
 		super(term, label, labelAbbrev);
 	}
 
-	/** 
-	 * Creates a new empty rank.
-	 * 
-	 * @see #NewInstance(String, String, String)
-	 */
-	private static Rank NewInstance(){
-		return new Rank();
-	}
-	
-	/** 
-	 * Creates an additional rank with a description (in the {@link Language#DEFAULT() default language}),
-	 * a label and a label abbreviation.
-	 * 
-	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new rank to be created 
-	 * @param	label  		 the string identifying the new rank to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new rank to be created
-	 * @see 				 #NewInstance()
-	 */
-	private static Rank NewInstance(String term, String label, String labelAbbrev){
-		return new Rank(term, label, labelAbbrev);
-	}
 
 //********* METHODS **************************************/
 	

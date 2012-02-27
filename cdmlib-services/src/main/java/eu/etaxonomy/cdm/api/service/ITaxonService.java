@@ -19,8 +19,10 @@ import org.apache.lucene.queryParser.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -195,6 +197,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
+	/**
+	 * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
+	 * @param syn the synonym
+	 * @param taxon
+	 * @return
+	 */
+	public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
+	
+    /**
+     * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
+     * @param taxon
+     * @param config
+     * @throws ReferencedObjectUndeletableException
+     */
+	public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -458,22 +475,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
-    /**
-     * returns a list of inferred synonyms concerning the taxon with synonymrelationshiptype type
-     * @param tree
-     * @param taxon
-     * @param type
-     * @return
-     */
-    public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type);
-    /**
-     * returns a list of all inferred synonyms (inferred epithet, inferred genus and potential combination) concerning the taxon
-     * @param tree
-     * @param taxon
-     * @return
-     */
-    public List<Synonym> createAllInferredSynonyms(Classification tree, Taxon taxon);
-
+    
     public int countAllRelationships();
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
@@ -538,5 +540,25 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
     public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator);
+    
+    /**
+     * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
+     * @param taxon
+     * @param tree
+     * @return list of inferred synonyms
+     */
+    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type);
+    
+    /**
+     * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
+     * @param taxon
+     * @param tree
+     * @param iDatabase 
+     * @return list of inferred synonyms
+     */
+    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
+
+       
+
 
 }

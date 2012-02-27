@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
@@ -22,13 +23,16 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.dbunit.DatabaseUnitException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.datasetfactory.DataSetFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -39,11 +43,13 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -62,6 +68,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IReferenceService referenceService;
+
+    @SpringBeanByType
+    private IClassificationService classificationService;
 
 
 /****************** TESTS *****************************/
@@ -769,5 +778,149 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 1 name relationship and no synonym relationship in the database", 1, nRelations);
 
     }
+
+    @Test
+    @DataSet("TaxonServiceImplTest.testInferredSynonyms.xml")
+    
+    public void testCreateInferredSynonymy(){
+
+    	UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
+        Classification tree = classificationService.find(classificationUuid);
+        UUID taxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
+        TaxonBase taxonBase =  service.find(taxonUuid);
+        List <TaxonBase> synonyms = service.list(Synonym.class, null, null, null, null);
+        assertEquals("Number of synonyms should be 2",2,synonyms.size());
+        Taxon taxon = (Taxon)taxonBase;
+        //synonyms = taxonDao.getAllSynonyms(null, null);
+        //assertEquals("Number of synonyms should be 2",2,synonyms.size());
+        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
+        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        	System.err.println(inferredSynonyms.size());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ");
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
+        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        System.err.println(inferredSynonyms.get(0).getTitleCache());
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ");
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
+        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ");
+        //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
+    }
+
+	@Test
+	@DataSet("TaxonServiceImplTest.testDeleteTaxonConfig.xml")
+	@Ignore  //not fully working yet
+	public final void testDeleteTaxonConfig(){
+		final String[]tableNames = {
+				"Classification", "Classification_AUD",
+				"TaxonBase","TaxonBase_AUD",
+				"TaxonNode","TaxonNode_AUD",
+				"TaxonNameBase","TaxonNameBase_AUD",
+				"SynonymRelationship","SynonymRelationship_AUD",
+				"TaxonRelationship", "TaxonRelationship_AUD",
+				"TaxonDescription", "TaxonDescription_AUD",
+				"HomotypicalGroup","HomotypicalGroup_AUD",
+				"PolytomousKey","PolytomousKey_AUD",
+				"PolytomousKeyNode","PolytomousKeyNode_AUD",
+				"Media","Media_AUD",
+				"WorkingSet","WorkingSet_AUD",
+				"DescriptionElementBase","DescriptionElementBase_AUD"};
+
+		UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
+		UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
+		UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
+
+		int nTaxa = service.count(Taxon.class);
+		Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
+		Taxon parent = (Taxon)service.find(uuidParent);
+		Assert.assertNotNull("Parent taxon should exist", parent);
+		Taxon child1 = (Taxon)service.find(uuidChild1);
+		Assert.assertNotNull("Child taxon should exist", child1);
+
+
+		try {
+//			commitAndStartNewTransaction(tableNames);
+			service.deleteTaxon(child1, new TaxonDeletionConfigurator());
+			Assert.fail("Delete should throw an error as long as name is used in classification.");
+		} catch (ReferencedObjectUndeletableException e) {
+			if (e.getMessage().contains("Taxon can't be deleted as it is used in a classification node")){
+				//ok
+				commitAndStartNewTransaction(tableNames);
+			}else{
+				Assert.fail("Unexpected error occurred when trying to delete taxon: " + e.getMessage());
+			}
+		}
+
+		nTaxa = service.count(Taxon.class);
+		Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
+		child1 = (Taxon)service.find(uuidChild1);
+		Assert.assertNotNull("Child taxon should exist", child1);
+		Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
+
+		TaxonNode node = child1.getTaxonNodes().iterator().next();
+		node.getParent().deleteChildNode(node);
+		service.save(node.getTaxon());
+		commitAndStartNewTransaction(tableNames);
+
+		child1 = (Taxon)service.find(uuidChild1);
+		try {
+			service.deleteTaxon(child1, new TaxonDeletionConfigurator());
+		} catch (ReferencedObjectUndeletableException e) {
+			Assert.fail("Delete should not throw an exception anymore");
+		}
+
+
+//		nNames = nameService.count(TaxonNameBase.class);
+//		Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
+//		int nRelations = service.countAllRelationships();
+//		Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
+	}
+
+
+//	@Test
+//	public final void testDeleteTaxonCreateData(){
+//		final String[]tableNames = {"TaxonBase","TaxonBase_AUD",
+//				"TaxonNode","TaxonNode_AUD",
+//				"TaxonNameBase","TaxonNameBase_AUD",
+//				"SynonymRelationship","SynonymRelationship_AUD",
+//				"TaxonRelationship", "TaxonRelationship_AUD",
+//				"TaxonDescription", "TaxonDescription_AUD",
+//				"HomotypicalGroup","HomotypicalGroup_AUD",
+//				"PolytomousKey","PolytomousKey_AUD",
+//				"PolytomousKeyNode","PolytomousKeyNode_AUD",
+//				"Media","Media_AUD",
+//				"WorkingSet","WorkingSet_AUD",
+//				"DescriptionElementBase","DescriptionElementBase_AUD",
+//				"Classification","Classification_AUD"};
+//
+//
+//		BotanicalName taxonName1 = BotanicalName.NewInstance(Rank.GENUS());
+//		taxonName1.setTitleCache("parent",true);
+//		BotanicalName taxonName2 = BotanicalName.NewInstance(Rank.SPECIES());
+//		taxonName2.setTitleCache("child1",true);
+//		BotanicalName synonymName1 = BotanicalName.NewInstance(Rank.SPECIES());
+//		synonymName1.setTitleCache("Synonym1",true);
+//		BotanicalName sameAsName = BotanicalName.NewInstance(Rank.SPECIES());
+//		sameAsName.setTitleCache("sameAs",true);
+//
+//		Reference<?> sec = null;
+//		Taxon parent = Taxon.NewInstance(taxonName1, sec);
+//		Taxon child1 = Taxon.NewInstance(taxonName2, sec);
+//		Synonym synonym1 = Synonym.NewInstance(synonymName1, sec);
+//		Taxon sameAs = Taxon.NewInstance(sameAsName, sec);
+//
+//		child1.addSynonym(synonym1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+//		Classification classification1 = Classification.NewInstance("classification1");
+//		classification1.addParentChild(parent, child1, null, null);
+//
+//
+//		child1.addTaxonRelation(sameAs, TaxonRelationshipType.CONGRUENT_TO(), null, null);
+//
+//		service.save(child1);
+//
+//		this.commitAndStartNewTransaction(tableNames);
+//
+//	}
+
 
 }

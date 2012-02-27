@@ -358,7 +358,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
      * restricting the search by a set of Areas.
      */
-    @SuppressWarnings("unchecked")
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameAndArea() {
@@ -1055,31 +1054,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    @Test
-    @DataSet("TaxonNodeDaoHibernateImplTest.xml")
-    @Ignore
-    public void testCreateInferredSynonymy(){
-        Classification tree = this.classificationDao.findById(1);
-        Taxon taxon = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-        List <Synonym> synonyms = taxonDao.getAllSynonyms(null, null);
-        assertEquals("Number of synonyms should be 2",2,synonyms.size());
 
-        //synonyms = taxonDao.getAllSynonyms(null, null);
-        //assertEquals("Number of synonyms should be 2",2,synonyms.size());
-        List<Synonym> inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        System.err.println(inferredSynonyms.get(0).getTitleCache());
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ???");
-        inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        System.err.println(inferredSynonyms.get(0).getTitleCache());
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ???");
-        inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ???");
-
-        //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
-    }
+//    @Test
+//    public void testDeploy(){
+//    	TaxonBase taxonBase = taxonDao.findByUuid(UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a"));
+//    	
+//    	Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
+//    }
 
 
 
