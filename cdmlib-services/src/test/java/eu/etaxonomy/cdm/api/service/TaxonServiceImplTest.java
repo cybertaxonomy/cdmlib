@@ -643,7 +643,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         int nRelations = service.countAllRelationships();
         //may change with better implementation of countAllRelationships (see #2653)
         Assert.assertEquals("There should be 0 taxon relationships left in the database", 0, nRelations);
-        nRelations = nameService.getAllRelationships(1000, 1000).size();
+        nRelations = nameService.getAllRelationships(1000, 0).size();
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
         
         
@@ -735,7 +735,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 4 names left in the database", 4, nNames);
         nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be no taxon or synonym relationship in the database", 0, nRelations);
-        nRelations = nameService.getAllRelationships(1000,1000).size();
+        nRelations = nameService.getAllRelationships(1000,0).size();
         Assert.assertEquals("There should be 1 name relationship in the database", 1, nRelations);
 
     }
