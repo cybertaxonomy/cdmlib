@@ -5,13 +5,15 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -26,30 +28,39 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class TestingTermInitializerTest extends CdmIntegrationTest {
-	
+
     private UUID taxonomicallyIncludedInUuid;
-	
+
     @Before
 	public void setUp() {
     	taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
     }
-	
+
+//    @Test
+	public void testPrintDataSet() {
+		try {
+			printDataSetWithNull(new FileOutputStream("NewDataSet.xml"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Test
-	public void testInit() {		
+	public void testInit() {
 		assertNotNull("TermInitializer should have initialized Language.DEFAULT",Language.DEFAULT());
 		assertEquals("Language.DEFAULT should equal Language.ENGLISH",Language.DEFAULT(),Language.ENGLISH());
 	}
-	
+
 	@Test
 	public void testMarkerTypeIds() {
 		assertEquals("We expect MarkerType.TO_BE_CHECKED to have an id of 893",893,MarkerType.TO_BE_CHECKED().getId());
 	}
-	
+
 	@Test
 	public void testFeatureIds() {
 		assertEquals("We expect Feature.ECOLOGY to have an id of 922",922,Feature.ECOLOGY().getId());
 	}
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType#TAXONOMICALLY_INCLUDED_IN()}.
 	 */
@@ -59,7 +70,7 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
 		assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
 		assertNotNull("SynonymRelationshipType.INFERREDEPITHET should be loaded" + SynonymRelationshipType.INFERRED_EPITHET_OF());
 	}
-	
+
 	@Test
 	public void testUnlazyStatusTerms() {
 			assertNotNull("NomenclaturalStatusType.SUPERFLUOUS should exist",NomenclaturalStatusType.SUPERFLUOUS());

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,15 +31,15 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 public class CdmDataSource extends CdmDataSourceBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
-	
+
 	private DatabaseTypeEnum dbType;
 	private String server;
-	private String database; 
+	private String database;
 	private int port = -1;
 	private String username;
 	private String password;
 	private NomenclaturalCode nomenclaturalCode;
-	
+
 	private String filePath;
 	private H2Mode mode;
 
@@ -51,7 +51,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean formatSql = false;
 	private boolean registerSearchListener = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
-	
+
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password){
 		return new CdmDataSource(dbType, server, database, -1, username, password, null, null, null);
 	}
@@ -59,24 +59,24 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password){
 		return new CdmDataSource(dbType, server, database, port, username, password, null, null, null);
 	}
-	
+
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password , NomenclaturalCode code){
 		return new CdmDataSource(dbType, server, database, -1, username, password, null, null, code);
 	}
-	
+
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password , NomenclaturalCode code){
 		return new CdmDataSource(dbType, server, database, port, username, password, null, null, code);
 	}
 
-	
+
 	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password ){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null, null);
 	}
-	
+
 	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password , NomenclaturalCode code){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null, code);
 	}
-	
+
 	static public CdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password, NomenclaturalCode code){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null, code);
 	}
@@ -88,25 +88,25 @@ public class CdmDataSource extends CdmDataSourceBase {
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password, NomenclaturalCode code){
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, code);
 	}
-	
+
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password /*, NomenclaturalCode code*/){
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, null);
 	}
 
-	
-	/** in work 
+
+	/** in work
 	 * @param code TODO*/
 	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password){
 		return NewH2EmbeddedInstance(database, username, password, null,  null);
 	}
-	
-	/** in work 
+
+	/** in work
 	 * @param code TODO*/
 	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, NomenclaturalCode code){
 		return NewH2EmbeddedInstance(database, username, password, null, code);
 	}
-	
-	/** in work 
+
+	/** in work
 	 * @param code TODO*/
 	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, String filePath, NomenclaturalCode code){
 		//FIXME in work
@@ -127,7 +127,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return dataSource;
 	}
 
-	
+
 	/**
 	 * @param server
 	 * @param database
@@ -147,8 +147,8 @@ public class CdmDataSource extends CdmDataSourceBase {
 		this.mode = mode;
 		this.nomenclaturalCode = code;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getName()
 	 * A CdmDataSource does not have a name representation therefor the database name is returned
@@ -156,7 +156,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public String getName() {
 		return database;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getDatasourceBean()
 	 */
@@ -171,11 +171,11 @@ public class CdmDataSource extends CdmDataSourceBase {
 		if (! CdmUtils.Nz(destroyMethodName).trim().equals("") ){
 			bd.setInitMethodName(destroyMethodName);
 		}
-		
+
 		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
 		Properties persistentProperties = getDatasourceProperties();
-		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
+		Enumeration<String> keys = (Enumeration)persistentProperties.keys();
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
 			props.addPropertyValue(key, persistentProperties.getProperty(key));
@@ -184,10 +184,10 @@ public class CdmDataSource extends CdmDataSourceBase {
 		bd.setPropertyValues(props);
 		return bd;
 	}
-	
+
 	/**
-	 * Returns the list of properties that are defined in the datasource    
-	 * @return 
+	 * Returns the list of properties that are defined in the datasource
+	 * @return
 	 */
 	private Properties getDatasourceProperties(){
 		Properties result = new Properties();
@@ -198,7 +198,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		result.put("password", password);
 		return result;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL)
@@ -210,7 +210,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
 		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)
 	 */
@@ -231,7 +231,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		if(registerSearchListener == null){
 			registerSearchListener = this.registerSearchListener;
 		}
-		
+
 		DatabaseTypeEnum dbtype = dbType;
 		AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
 		MutablePropertyValues hibernateProps = new MutablePropertyValues();
@@ -272,7 +272,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public DatabaseTypeEnum getDatabaseType() {
 		return dbType;
 	}
-	
+
 	public String getFilePath() {
 		return filePath;
 	}
@@ -310,6 +310,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public NomenclaturalCode getNomenclaturalCode() {
 		return nomenclaturalCode;
 	}
-	
+
 }
 

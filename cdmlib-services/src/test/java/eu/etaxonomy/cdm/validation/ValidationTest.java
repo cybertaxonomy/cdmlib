@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.validation;
 
@@ -51,41 +51,42 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
- * NOTE: In this test, the words "valid" and "invalid", loaded though 
+ * NOTE: In this test, the words "valid" and "invalid", loaded though
  * these terms are when applied to taxonomic names, only mean "passes the
  * rules of this validator" or not and should not be confused with the strict
  * nomenclatural and taxonomic sense of these words.
- * 
+ *
  * @author ben.clark
  *
  */
 @SuppressWarnings("unused")
-public class ValidationTest extends CdmIntegrationTest {
+public class ValidationTest extends CdmTransactionalIntegrationTest {
 	private static final Logger logger = Logger.getLogger(ValidationTest.class);
-	
+
 	@SpringBeanByType
 	private Validator validator;
-	
+
 	@SpringBeanByType
 	private ITermService termService;
 
 	private BotanicalName name;
-	
+
 	@Before
 	public void setUp() {
-		
-		
+
+
 		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 	}
-	
-	
+
+
 /****************** TESTS *****************************/
-	
+
 	/**
-	 * Test validation factory initialization and autowiring 
+	 * Test validation factory initialization and autowiring
 	 * into an instance of javax.valdation.Validator
 	 */
 	@Test
@@ -103,7 +104,7 @@ public class ValidationTest extends CdmIntegrationTest {
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name);
         assertTrue("There should be no constraint violations as this name is valid at the default level",constraintViolations.isEmpty());
 	}
-	
+
 	/**
 	 * Test validation at the "default" level with an invalid name
 	 */
@@ -114,7 +115,7 @@ public class ValidationTest extends CdmIntegrationTest {
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name);
         assertFalse("There should be a constraint violation as this name is invalid at the default level",constraintViolations.isEmpty());
 	}
-	
+
 	/**
 	 * Test validation at level2 with a valid name
 	 */
@@ -127,11 +128,11 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setAuthorshipCache("L.");
 		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
-		
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default and at the second level",constraintViolations.isEmpty());
 	}
-	
+
 	/**
 	 * Test validation at level2 with an invalid name
 	 */
@@ -140,15 +141,15 @@ public class ValidationTest extends CdmIntegrationTest {
 	public final void testLevel2ValidationWithInValidName() {
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
-		
-		
+
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
-       
+
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, but invalid at the second level",constraintViolations.isEmpty());
 	}
-	
+
 	/**
 	 * Test validation at level3 with a valid name
 	 */
@@ -161,11 +162,11 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setAuthorshipCache("L.");
 		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
-		
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
+
+        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class, Level3.class);
         assertTrue("There should not be a constraint violation as this name is valid at all levels",constraintViolations.isEmpty());
 	}
-	
+
 	/**
 	 * Test validation at the level3 with an invalid name
 	 */
@@ -180,11 +181,11 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setFullTitleCache("Abies alba Mill.");
 		name.setNomenclaturalReference(null);
 		//name.setNomenclaturalMicroReference(" ");
-		
+
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default and second level",constraintViolations.isEmpty());
         constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
         assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level",constraintViolations.isEmpty());
-        
+
 	}
 }

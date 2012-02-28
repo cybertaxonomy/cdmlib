@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.database;
 
@@ -35,16 +35,16 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 @Ignore
 @SpringApplicationContext("classpath:eu/etaxonomy/cdm/applicationContext-testPersistentDataSource.xml")
 public class PersistentTermInitializerTest extends CdmIntegrationTest {
-	
+
 	@SpringBeanByType
 	private PersistentTermInitializer persistentTermInitializer;
-	
+
 	@Test
 	public void testInit() {
 		assertNotNull("TermInitializer should exist",persistentTermInitializer);
 	}
 
-	
+
 	@Test
 	@DataSet("TermsDataSet.xml")
 	public void testFirstPass() {
@@ -64,23 +64,23 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		assertNotNull("TermInitializer should have initialized Language.DEFAULT",Language.DEFAULT());
 		assertEquals("Language.DEFAULT should equal Language.ENGLISH",Language.DEFAULT(),Language.ENGLISH());
 		TermVocabulary<Language> voc = Language.DEFAULT().getVocabulary();
-		assertNotNull("language for language vocabulary representation was null but must be default language", voc.getRepresentation(Language.DEFAULT()));	
+		assertNotNull("language for language vocabulary representation was null but must be default language", voc.getRepresentation(Language.DEFAULT()));
 	}
-	
+
 	@Ignore //please commit only with ignore
 	@Test
 	public void testPrintData() {
 		printDataSet(System.out);
 	}
-	
+
 	@Test
 	public void testGetRepresentations() {
 		assertNotNull("Rank.SPECIES() should not be null", Rank.SPECIES());
 		assertFalse("Rank.SPECIES().getRepresentations() should not be empty",Rank.SPECIES().getRepresentations().isEmpty());
 		assertEquals("Rank.SPECIES().getLabel() should return \"Species\"","Species",Rank.SPECIES().getLabel());
-		
-	}
-	
 
-	
+	}
+
+
+
 }

@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.test.suite;
 
@@ -23,25 +23,27 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
 
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( 
-		{ 	
+@Suite.SuiteClasses(
+		{
 			//database
-			CdmDataSourceTest.class,
-			DatabaseEnumTest.class,			
+//			CdmDataSourceTest.class,
+//			DatabaseEnumTest.class,
+
 			//dao.common
-			CdmEntityDaoBaseTest.class,
-			DaoBaseTest.class,
+//			CdmEntityDaoBaseTest.class,
+//			DaoBaseTest.class,
 			DefinedTermDaoImplTest.class,
 			IdentifiableDaoBaseTest.class,
+
 			//dao.Taxon
-			TaxonDaoHibernateImplTest.class
+//			TaxonDaoHibernateImplTest.class
 		}
 	)
 public class CdmTestSuite {
 	@SuppressWarnings("unused")
 	private static final  Logger logger = Logger.getLogger(CdmTestSuite.class);
 
-	// the class remains completely empty, 
+	// the class remains completely empty,
 	// being used only as a holder for the above annotations
 
 	//console test  //TODO test
@@ -49,7 +51,7 @@ public class CdmTestSuite {
 		org.junit.runner.JUnitCore.runClasses(
 				//database
 				CdmDataSourceTest.class,
-				DatabaseEnumTest.class,			
+				DatabaseEnumTest.class,
 				//dao.common
 				CdmEntityDaoBaseTest.class,
 				DaoBaseTest.class,

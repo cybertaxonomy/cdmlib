@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,12 +28,12 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 	@SpringBeanByType
 	PolytomousKeyDaoImpl polytomousKeyDao;
 
-	
+
 	@Before
 	public void setUp() {
-		
+
 	}
-	
+
 	@Test
 	@DataSet("PolytomousKeyDaoHibernateImplTest.xml")
 //	@ExpectedDataSet  //for some reason this result in an infinite waiting of the connection pool
@@ -43,7 +43,7 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 		PolytomousKeyNode root = existingKey.getRoot();
 		Assert.assertNotNull("Root should not be null",root);
 		Assert.assertEquals(2, root.childCount());
-		
+
 		//new key
 		PolytomousKey newKey = PolytomousKey.NewInstance();
 		PolytomousKeyNode newRoot = newKey.getRoot();
@@ -57,39 +57,40 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrati
 		PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance();
 		child3.addStatementText("Statement3", null);
 		child3.addStatementText("Statement3German", Language.GERMAN());
-		
+
 		newRoot.addChild(child1);
 		newRoot.addChild(child3);
 		newRoot.addChild(child2, 1);
-		
+
 		UUID newKeyUuid = polytomousKeyDao.save(newKey);
-		
+
 		//doesn't make sense as long as there is no new session
 		PolytomousKey newKeyFromDb = polytomousKeyDao.findByUuid(newKeyUuid);
 //		List<PolytomousKeyNode> children = newKeyFromDb.getRoot().getChildren();
 //		Assert.assertEquals(child1.getUuid(), children.get(0).getUuid());
 //		Assert.assertNotSame(child1.getUuid(), children.get(0).getUuid());
-		
+
 //		printDataSet(System.out, new String[]{"PolytomousKeyNode", "KeyStatement", "KeyStatement_LanguageString", "LanguageString"});
 		System.out.println("End test1");
 	}
-	
+
 	@Test
 	public void testDeletePolyotomousKey(){
 		UUID uuid = UUID.fromString("bab66772-2c83-428a-bb6d-655d12ac6097");
 		PolytomousKey existingKey = polytomousKeyDao.findByUuid(uuid);
 		Assert.assertNotNull("",existingKey);
-		
+
 		polytomousKeyDao.delete(existingKey);
-		
-		setComplete(); endTransaction();
+
+		commitAndStartNewTransaction(null);
+
 		try {if (true){printDataSet(System.out, new String[]{"POLYTOMOUSKEY", "POLYTOMOUSKEYNODE"});}
-		} catch(Exception e) { logger.warn(e);} 
-		
+		} catch(Exception e) { logger.warn(e);}
+
 		PolytomousKey nonExistingKey = polytomousKeyDao.findByUuid(uuid);
-		Assert.assertNull("", nonExistingKey);		
+		Assert.assertNull("", nonExistingKey);
 	}
-	
+
 	@Test
 	public void testNothing(){
 		//maybe deleted once testSavePolytomousKey() works correctly

@@ -12,9 +12,11 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.AbstractStringComparator;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -28,7 +30,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 @Component
 public class TaxonNodeByNameComparator extends AbstractStringComparator implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
 
+	private static final String HYBRID_SIGN = "\u00D7";
 
+	private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
 
     private boolean ignoreHybridSign = true;
     private boolean sortInfraGenericFirst = true;
@@ -39,62 +43,19 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
     @SuppressWarnings("unchecked")
     public int compare(TaxonNode o1, TaxonNode o2) {
 
-        String titleCache1 = null;
-        String titleCache2 = null;
-        TaxonNameBase name1 = o1.getTaxon().getName();
-        TaxonNameBase name2 = o2.getTaxon().getName();
-        
-              
-        if(o1.getTaxon() != null && o1.getTaxon().getName() != null ){
-        	       	
-            if (o1.getTaxon().getName() instanceof NonViralName){
-            	NonViralName nonViralName = (NonViralName)name1;
-                if (name1.isInfraSpecific()){
-                    if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
-                        titleCache1 = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
-                    }
-                }
-                if (name1.isInfraGeneric()){
-                	titleCache1 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
-                }
-                if (nonViralName.getRank().isSpeciesAggregate()){
-                	titleCache1 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
-                }
-
-            }
-            if (titleCache1 == null){
-                titleCache1 = name1.getTitleCache();
-            }
-        }
-        if(o2.getTaxon() != null && o2.getTaxon().getName() != null){
-            if (o2.getTaxon().getName() instanceof NonViralName){
-            	NonViralName nonViralName = (NonViralName)name2;
-                if (nonViralName.isInfraSpecific()){
-                    if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
-                        titleCache2 = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
-                    }
-                }
-                if (nonViralName.isInfraGeneric()){
-                	titleCache2 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
-                }
-                if (nonViralName.getRank().isSpeciesAggregate()){
-                	titleCache2 = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
-                }
-
-            }
-            if (titleCache2 == null){
-                titleCache2 = name2.getTitleCache();
-            }
-        }
+        String titleCache1 = createSortableTitleCache(o1);
+        String titleCache2 = createSortableTitleCache(o2);
 
         if(isIgnoreHybridSign()) {
-            titleCache1 = titleCache1.replace("\u00D7", "");
-            titleCache2 = titleCache2.replace("\u00D7", "");
+        	logger.trace("ignoring Hybrid Signs: " + HYBRID_SIGN);
+            titleCache1 = titleCache1.replace(HYBRID_SIGN, "");
+            titleCache2 = titleCache2.replace(HYBRID_SIGN, "");
         }
 
         titleCache1 = applySubstitutionRules(titleCache1);
         titleCache2 = applySubstitutionRules(titleCache2);
 
+        // 1
         StringTokenizer s2 = new StringTokenizer(titleCache1, "\"");
         if (s2.countTokens()>0){
             titleCache1 = "";
@@ -102,6 +63,8 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
         while(s2.hasMoreTokens()){
             titleCache1 += s2.nextToken();
         }
+
+        // 2
         s2 = new StringTokenizer(titleCache2, "\"");
         if (s2.countTokens()>0){
             titleCache2 = "";
@@ -110,9 +73,43 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
         while(s2.hasMoreTokens()){
             titleCache2 += s2.nextToken();
         }
-        
+
         return titleCache1.compareTo(titleCache2);
     }
+
+
+	private String createSortableTitleCache(TaxonNode taxonNode) {
+
+		String titleCache = null;
+		TaxonNameBase name = taxonNode.getTaxon().getName();
+        if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
+            if (taxonNode.getTaxon().getName() instanceof NonViralName){
+            	logger.trace(name + " isNonViralName");
+            	NonViralName nonViralName = (NonViralName)name;
+                if (name.isInfraSpecific()){
+                	logger.trace(name + " isInfraSpecific");
+                    if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
+                        titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
+                    }
+                }
+                if (name.isInfraGeneric()){
+                	logger.trace(name + " isInfraGeneric");
+                	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
+                }
+                if (nonViralName.getRank().isSpeciesAggregate()){
+                	logger.trace(name + " isSpeciesAggregate");
+                	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
+                }
+
+            }
+            if (titleCache == null){
+            	logger.trace("titleCache still null, using name.getTitleCache()");
+                titleCache = name.getTitleCache();
+            }
+        }
+        logger.trace("SortableTitleCache: " + titleCache);
+		return titleCache;
+	}
 
 
     public boolean isIgnoreHybridSign() {

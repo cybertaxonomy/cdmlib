@@ -2,46 +2,46 @@
 <!DOCTYPE hibernate-configuration PUBLIC
  "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
  "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
- 
+
 <hibernate-configuration>
     <session-factory>
-    
+
       <property name="connection.release_mode">after_transaction</property>
-    
+
       <!-- Connection Pooling -->
       <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
-	    <!-- 
+	    <!--
           Configuring the C3P0ConnectionProvider
           ========================================
           see http://www.mchange.com/projects/c3p0/index.html#hibernate-specific
           and also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
-          
-          IMPORTANT: 
-          Because of the constraint (1) the org.hibernate.connection.C3P0ConnectionProvider are not be used 
-          for the cdm library because it requires the dataSource bean in some cases. 
-              
+
+          IMPORTANT:
+          Because of the constraint (1) the org.hibernate.connection.C3P0ConnectionProvider are not be used
+          for the cdm library because it requires the dataSource bean in some cases.
+
           (1)
-          Do NOT specify the dataSource in the sessionFactory for example in the 
+          Do NOT specify the dataSource in the sessionFactory for example in the
           org.springframework.orm.hibernate3.LocalSessionFactoryBean
           !!!==> If *dataSource* is set, this will override corresponding settings in Hibernate properties.!!!
-			  If this is set, the Hibernate settings should not define a connection provider to 
+			  If this is set, the Hibernate settings should not define a connection provider to
 		      avoid meaningless double configuration.
           (2)
           Hibernate uses the hibernate.c3p0.max_size property to determine if c3p0
           is begin used.  Therefore the max_size property MUST be set. - maybe not need in hibernate 3.4 +
-          
-          (3) If you are using Hibernate's C3P0ConnectionProvider you must set the following properties 
-          in your hibernate configuration, using hibernate-specific configuration keys. 
-          All other properties must be defined as usual in a c3p0.properties file. 
-          This is confusing, and will hopefully be simplified some time in the future, but for now... 
-                      
+
+          (3) If you are using Hibernate's C3P0ConnectionProvider you must set the following properties
+          in your hibernate configuration, using hibernate-specific configuration keys.
+          All other properties must be defined as usual in a c3p0.properties file.
+          This is confusing, and will hopefully be simplified some time in the future, but for now...
+
             hibernate.c3p0.acquire_increment
 			hibernate.c3p0.idle_test_period
 			hibernate.c3p0.timeout
 			hibernate.c3p0.max_size
 			hibernate.c3p0.max_statements
 			hibernate.c3p0.min_size
-			hibernate.c3p0.validate 
+			hibernate.c3p0.validate
       -->
       <mapping package="eu.etaxonomy.cdm.model.common"/>
       <!-- Annotation Package -->
@@ -195,8 +195,8 @@
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintedUnitBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintSeries"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Proceedings"/>
-      
-      
+
+
      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceIdentity"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Report"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.SectionBase"/>
@@ -216,7 +216,7 @@
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.View"/>
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
-      <!-- for filling caches -->	  
+      <!-- for filling caches -->
 	  <event type="save-update">
      		<listener class="eu.etaxonomy.cdm.persistence.hibernate.CacheStrategyGenerator"/>
      		<listener class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener"/>

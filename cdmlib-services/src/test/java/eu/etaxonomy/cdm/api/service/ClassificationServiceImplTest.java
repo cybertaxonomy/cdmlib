@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#setTaxonNodeComparator(eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator)}.
      */
-    @Test
+//    @Test
     public final void testSetTaxonNodeComparator() {
 
 
@@ -76,7 +77,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTaxonNodeByTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.UUID, java.util.List)}.
      */
-    @Test
+//    @Test
     public final void testLoadTaxonNodeByTaxon() {
 //		fail("Not yet implemented");
     }
@@ -96,14 +97,11 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
         taxonNodeComparator = new TaxonNodeByNameComparator();
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
-//        try {
-//            printDataSet(new FileOutputStream(new File("testTaxonNodeByNameComparator-dump.xml")), new String[] {"DefinedTermBase," +
-//                    "AUDITEVENT", "HIBERNATE_SEQUENCES", "DEFINEDTERMBASE", "DEFINEDTERMBASE_AUD", "DEFINEDTERMBASE_CONTINENT", "DEFINEDTERMBASE_REPRESENTATION",
-//                    "DEFINEDTERMBASE_REPRESENTATION_AUD", "RELATIONSHIPTERMBASE_INVERSEREPRESENTATION", "RELATIONSHIPTERMBASE_INVERSEREPRESENTATION_AUD",
-//                    "REPRESENTATION", "REPRESENTATION_AUD", "TERMVOCABULARY", "TERMVOCABULARY_AUD", "TERMVOCABULARY_REPRESENTATION", "TERMVOCABULARY_REPRESENTATION_AUD" });
-//        } catch (FileNotFoundException e) {
-//            /* IGNORE */
-//        }
+//    	try {
+//			printDataSet(new FileOutputStream(new File("testTaxonNodeByNameComparator-dump.xml")), new String[] {"DefinedTermBase"});
+//		} catch (FileNotFoundException e) {
+//			/* IGNORE */
+//		}
 
         //List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.GENUS(), NODE_INIT_STRATEGY);
 
@@ -116,15 +114,28 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
         taxonNodes.remove(index);
         Collections.sort(taxonNodes, taxonNodeComparator);
 
-        Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(0).getTaxon().getName().getTitleCache());
+		/**
+		 * expected order is:
+		 *  Acacia subg. Aculeiferum Pedley
+         *  Acacia sect. Botrycephalae Yuji Sasaki
+         *  Acacia subg. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki
+         *  Acacia cuspidifolia Maslin
+         *  Acacia mearnsii Benth
+		 */
 
-        System.err.println();
+		logger.setLevel(Level.DEBUG);
+		if(logger.isDebugEnabled()){
+			logger.debug("-------------");
         for (TaxonNode node: taxonNodes){
-            System.err.println(node.getTaxon().getName().getTitleCache() );
+				logger.debug(node.getTaxon().getName().getTitleCache() );
             /*for (TaxonNode child : node.getChildNodes()){
-                System.err.println(child.getTaxon().getName().getTitleCache());
+	    			logger.debug(child.getTaxon().getName().getTitleCache());
             }*/
         }
+		}
+
+		Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(0).getTaxon().getName().getTitleCache());
+
         /*
         ((TaxonNodeByNameComparator)taxonNodeComparator).setSortInfraGenericFirst(false);
         Collections.sort(taxonNodes, taxonNodeComparator);
@@ -159,7 +170,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTreeBranch(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}.
      */
-    @Test
+//    @Test
     public final void testLoadTreeBranch() {
 //		fail("Not yet implemented");
     }
@@ -167,7 +178,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTreeBranchToTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}.
      */
-    @Test
+//    @Test
     public final void testLoadTreeBranchToTaxon() {
 //		fail("Not yet implemented");
     }
@@ -175,7 +186,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadChildNodesOfTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List)}.
      */
-    @Test
+//    @Test
     public final void testLoadChildNodesOfTaxonNode() {
 //		fail("Not yet implemented");
     }
@@ -183,7 +194,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List)}.
      */
-    @Test
+//    @Test
     public final void testLoadChildNodesOfTaxon() {
 //		fail("Not yet implemented");
     }
@@ -191,7 +202,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getTaxonNodeByUuid(java.util.UUID)}.
      */
-    @Test
+//    @Test
     public final void testGetTaxonNodeByUuid() {
 //		fail("Not yet implemented");
     }
@@ -199,7 +210,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getTreeNodeByUuid(java.util.UUID)}.
      */
-    @Test
+//    @Test
     public final void testGetTreeNodeByUuid() {
 //		fail("Not yet implemented");
     }
@@ -207,7 +218,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#listClassifications(java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)}.
      */
-    @Test
+//    @Test
     public final void testListClassifications() {
 //		fail("Not yet implemented");
     }
@@ -215,7 +226,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getClassificationByUuid(java.util.UUID)}.
      */
-    @Test
+//    @Test
     public final void testGetClassificationByUuid() {
 //		fail("Not yet implemented");
     }
@@ -223,7 +234,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#removeTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)}.
      */
-    @Test
+//    @Test
     public final void testRemoveTaxonNode() {
 //		fail("Not yet implemented");
     }
@@ -231,7 +242,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#removeTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)}.
      */
-    @Test
+//    @Test
     public final void testRemoveTreeNode() {
 //		fail("Not yet implemented");
     }
@@ -239,7 +250,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)}.
      */
-    @Test
+//    @Test
     public final void testSaveTaxonNode() {
 //		fail("Not yet implemented");
     }
@@ -247,7 +258,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#saveTaxonNodeAll(java.util.Collection)}.
      */
-    @Test
+//    @Test
     public final void testSaveTaxonNodeAll() {
 //		fail("Not yet implemented");
     }
@@ -255,7 +266,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#saveTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)}.
      */
-    @Test
+//    @Test
     public final void testSaveTreeNode() {
 //		fail("Not yet implemented");
     }
@@ -263,7 +274,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(eu.etaxonomy.cdm.model.taxon.Classification)}.
      */
-    @Test
+//    @Test
     public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification() {
 //		fail("Not yet implemented");
     }
@@ -271,7 +282,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getUuidAndTitleCache()}.
      */
-    @Test
+//    @Test
     public final void testGetUuidAndTitleCache() {
 //		fail("Not yet implemented");
     }
@@ -279,7 +290,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List, int, int, int, java.lang.String[])}.
      */
-    @Test
+//    @Test
     public final void testGetAllMediaForChildNodesTaxonNodeListOfStringIntIntIntStringArray() {
 //		fail("Not yet implemented");
     }
@@ -287,7 +298,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List, int, int, int, java.lang.String[])}.
      */
-    @Test
+//    @Test
     public final void testGetAllMediaForChildNodesTaxonClassificationListOfStringIntIntIntStringArray() {
 //		fail("Not yet implemented");
     }
@@ -303,7 +314,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#generateTitleCache()}.
      */
-    @Test
+//    @Test
     public final void testGenerateTitleCache() {
 //		fail("Not yet implemented");
     }
