@@ -20,40 +20,40 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
-		{
-			//MethodCacheImplTest.class,
-			//GroupDaoHibernateImplTest.class,
-			//OccurrenceDaoHibernateImplTest.class,
-			CdmEntityDaoBaseTest.class,
-			/*
-			 * FIXME:
-			 * DescriptionDaoHibernateImplTest.class Fails with "java.sql.BatchUpdateException: failed batch" on rollback after test,
-			 * this can be circumvented by manually editing org/unitils/dbunit/DbUnitModule.java in order to disable batched statements:
-			 * LINE 461: config.setProperty(FEATURE_BATCHED_STATEMENTS, "false");
-			 *
-			 * This reveals other errors during org.unitils.database.DatabaseModule.rollbackTransaction()
-			 * of test method testSaveClonedDescription():
-			 *
-			 *  - in hsqldb:
-			 *      Caused by: java.sql.SQLException: Violation of unique constraint SYS_PK_1209:
-			 *      duplicate value(s) for column(s) ID in statement
-			 *      [insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, taxonomicchildrencount, taxonomicparentcache_id, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?)]
-			 *		at org.hsqldb.jdbc.Util.throwError(Util.java:58)
-			 *
-			 *  - in h2:
-			 * 		Caused by: org.h2.jdbc.JdbcSQLException: Unique index or primary key violation:
-			 *      PRIMARY_KEY_C0 ON PUBLIC.TAXONBASE(ID); SQL statement:
-			 * 		insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, taxonomicchildrencount, taxonomicparentcache_id, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?) [23001-115]
-			 *
-			 */
-			DescriptionDaoHibernateImplTest.class,
-			TaxonDaoHibernateImplTest.class
+        {
+            //MethodCacheImplTest.class,
+            //GroupDaoHibernateImplTest.class,
+            //OccurrenceDaoHibernateImplTest.class,
+            CdmEntityDaoBaseTest.class,
+            /*
+             * FIXME:
+             * DescriptionDaoHibernateImplTest.class Fails with "java.sql.BatchUpdateException: failed batch" on rollback after test,
+             * this can be circumvented by manually editing org/unitils/dbunit/DbUnitModule.java in order to disable batched statements:
+             * LINE 461: config.setProperty(FEATURE_BATCHED_STATEMENTS, "false");
+             *
+             * This reveals other errors during org.unitils.database.DatabaseModule.rollbackTransaction()
+             * of test method testSaveClonedDescription():
+             *
+             *  - in hsqldb:
+             *      Caused by: java.sql.SQLException: Violation of unique constraint SYS_PK_1209:
+             *      duplicate value(s) for column(s) ID in statement
+             *      [insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, taxonomicchildrencount, taxonomicparentcache_id, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?)]
+             *		at org.hsqldb.jdbc.Util.throwError(Util.java:58)
+             *
+             *  - in h2:
+             * 		Caused by: org.h2.jdbc.JdbcSQLException: Unique index or primary key violation:
+             *      PRIMARY_KEY_C0 ON PUBLIC.TAXONBASE(ID); SQL statement:
+             * 		insert into TaxonBase (created, createdby_id, uuid, updated, updatedby_id, lsid_authority, lsid_lsid, lsid_namespace, lsid_object, lsid_revision, protectedtitlecache, titleCache, appendedphrase, doubtful, name_id, sec_id, usenamecache, excluded, taxonstatusunknown, taxonomicchildrencount, taxonomicparentcache_id, unplaced, DTYPE, id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Taxon', ?) [23001-115]
+             *
+             */
+            DescriptionDaoHibernateImplTest.class,
+            TaxonDaoHibernateImplTest.class
 
-		}
-	)
+        }
+    )
 public class TestsShouldNotFailInSuite_3 {
 
-	// the class remains completely empty,
-	// being used only as a holder for the above annotations
+    // the class remains completely empty,
+    // being used only as a holder for the above annotations
 
 }

@@ -24,41 +24,41 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
-		{
-			//database
+        {
+            //database
 //			CdmDataSourceTest.class,
 //			DatabaseEnumTest.class,
 
-			//dao.common
+            //dao.common
 //			CdmEntityDaoBaseTest.class,
 //			DaoBaseTest.class,
-			DefinedTermDaoImplTest.class,
-			IdentifiableDaoBaseTest.class,
+            DefinedTermDaoImplTest.class,
+            IdentifiableDaoBaseTest.class
 
-			//dao.Taxon
+            //dao.Taxon
 //			TaxonDaoHibernateImplTest.class
-		}
-	)
+        }
+    )
 public class CdmTestSuite {
-	@SuppressWarnings("unused")
-	private static final  Logger logger = Logger.getLogger(CdmTestSuite.class);
+    @SuppressWarnings("unused")
+    private static final  Logger logger = Logger.getLogger(CdmTestSuite.class);
 
-	// the class remains completely empty,
-	// being used only as a holder for the above annotations
+    // the class remains completely empty,
+    // being used only as a holder for the above annotations
 
-	//console test  //TODO test
-	public static void consoleRun() {
-		org.junit.runner.JUnitCore.runClasses(
-				//database
-				CdmDataSourceTest.class,
-				DatabaseEnumTest.class,
-				//dao.common
-				CdmEntityDaoBaseTest.class,
-				DaoBaseTest.class,
-				DefinedTermDaoImplTest.class,
-				IdentifiableDaoBaseTest.class,
-				//dao.Taxon
-				TaxonDaoHibernateImplTest.class
-					);
-	}
+    //console test  //TODO test
+    public static void consoleRun() {
+        org.junit.runner.JUnitCore.runClasses(
+                //database
+                CdmDataSourceTest.class,
+                DatabaseEnumTest.class,
+                //dao.common
+                CdmEntityDaoBaseTest.class,
+                DaoBaseTest.class,
+                DefinedTermDaoImplTest.class,
+                IdentifiableDaoBaseTest.class,
+                //dao.Taxon
+                TaxonDaoHibernateImplTest.class
+                    );
+    }
 }

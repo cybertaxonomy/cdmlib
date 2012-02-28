@@ -24,23 +24,23 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
-		{
-			DefinedTermDaoImplTest.class,
-			IdentifiableDaoBaseTest.class,
-			/* FIXED:
-			 * eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException:
-			 *    IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)
-			 * 	  at eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase.checkNotInPriorView(VersionableDaoBase.java:63)
-			 *
-			 */
+        {
+            DefinedTermDaoImplTest.class,
+            IdentifiableDaoBaseTest.class
+            /* FIXED:
+             * eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException:
+             *    IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)
+             * 	  at eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase.checkNotInPriorView(VersionableDaoBase.java:63)
+             *
+             */
 
-		}
-	)
+        }
+    )
 public class TestsShouldNotFailInSuite_1 {
 
-	private static final  Logger logger = Logger.getLogger(TestsShouldNotFailInSuite_1.class);
+    private static final  Logger logger = Logger.getLogger(TestsShouldNotFailInSuite_1.class);
 
-	// the class remains completely empty,
-	// being used only as a holder for the above annotations
+    // the class remains completely empty,
+    // being used only as a holder for the above annotations
 
 }

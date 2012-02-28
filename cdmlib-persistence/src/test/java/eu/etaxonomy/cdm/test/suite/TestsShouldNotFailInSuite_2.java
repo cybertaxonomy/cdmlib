@@ -26,21 +26,21 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
-		{
-			AgentDaoImplTest.class,
-			TypeDesignationDaoHibernateImplTest.class,
-			/* TODO fails in TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations
-			 * with:
-			 * org.hibernate.HibernateException: No Hibernate Session bound to thread, and configuration does not allow creation of non-transactional one here
-			 * at org.springframework.orm.hibernate3.SpringSessionContext.currentSession(SpringSessionContext.java:63)
-			 */
-		}
-	)
+        {
+            AgentDaoImplTest.class,
+            TypeDesignationDaoHibernateImplTest.class
+            /* TODO fails in TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations
+             * with:
+             * org.hibernate.HibernateException: No Hibernate Session bound to thread, and configuration does not allow creation of non-transactional one here
+             * at org.springframework.orm.hibernate3.SpringSessionContext.currentSession(SpringSessionContext.java:63)
+             */
+        }
+    )
 public class TestsShouldNotFailInSuite_2 {
 
-	private static final  Logger logger = Logger.getLogger(TestsShouldNotFailInSuite_2.class);
+    private static final  Logger logger = Logger.getLogger(TestsShouldNotFailInSuite_2.class);
 
-	// the class remains completely empty,
-	// being used only as a holder for the above annotations
+    // the class remains completely empty,
+    // being used only as a holder for the above annotations
 
 }
