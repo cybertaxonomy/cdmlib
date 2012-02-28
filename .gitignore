@@ -88,6 +88,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/dataset.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 cdmlib-services/target
+cdmlib-services/testTaxonNodeByNameComparator-dump.xml
 /latestChanges.patch
 /target
 /testANTLR
