@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 
@@ -69,16 +70,25 @@ public interface IInputTransformer {
 
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException;
 
+	//Named area
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException;	
 
 	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException;
 
+	//named area level
 	public NamedAreaLevel getNamedAreaLevelByKey(String key) throws UndefinedTransformerMethodException;	
 
 	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException;
 	
+	//reference system
 	public UUID getReferenceSystemUuid(String key)  throws UndefinedTransformerMethodException;	
 
 	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException;
+
+	//rank
+	//Feature
+	public Rank getRankByKey(String key) throws UndefinedTransformerMethodException;
+	
+	public UUID getRankUuid(String key) throws UndefinedTransformerMethodException;
 
 }
