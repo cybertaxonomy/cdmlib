@@ -260,8 +260,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		}else if("SM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidSerbiaMontenegro, "Serbia & Montenegro", "Euro+Med area 'Serbia & Montenegro'", "SM", NamedAreaType.ADMINISTRATION_AREA(), null);
-		}else if("Yu(K)".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("YUG-KO");
+		}else if("Sr".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSerbia, "Serbia", "Euro+Med area 'Serbia' (including Kosovo and Vojvodina)", "Sr", NamedAreaType.ADMINISTRATION_AREA(), null);
 		
 		
 		//see #2769
