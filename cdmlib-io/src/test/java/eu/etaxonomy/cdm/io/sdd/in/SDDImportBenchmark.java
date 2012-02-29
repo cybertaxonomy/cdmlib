@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URISyntaxException;
@@ -18,7 +17,6 @@ import java.net.URL;
 import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
