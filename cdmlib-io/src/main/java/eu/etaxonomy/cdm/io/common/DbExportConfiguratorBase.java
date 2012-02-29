@@ -60,8 +60,8 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TR
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
 	 */
 	public String getDestinationNameString() {
-		if (getSource() != null){
-			return getSource().getDatabase();
+		if (getDestination() != null){
+			return getDestination().getDatabase();
 		}else{
 			return null;
 		}
