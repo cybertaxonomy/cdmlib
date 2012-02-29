@@ -609,6 +609,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				}
 			}
 		}
+		emTdwgMap.put("Ab / Ab(A)", "Ab");
+		emTdwgMap.put("Ga / Ga(F)", "FRA-FR");
+		emTdwgMap.put("It / It(I)", "ITA");
+		emTdwgMap.put("Uk / Uk(U)", "Uk");
+		emTdwgMap.put("Ar / Ar(A)", "TCS-AR");
 		return emTdwgMap;
 	}
 
