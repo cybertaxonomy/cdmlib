@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -85,23 +86,24 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 		
 		boolean needsComma = false;
 		//titelAbbrev
-		if (!"".equals(titelAbbrev)){
-			nomRefCache = titelAbbrev + blank; 
+		if (!"".equals(titelAbbrev) ){
+			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
+			nomRefCache = titelAbbrev + postfix; 
 		}
 		//edition
 		String editionPart = "";
-		if (CdmUtils.isNotEmpty(edition)){
+		if (StringUtils.isNotBlank(edition)){
 			editionPart = edition;
 			if (isNumeric(edition)){
 				editionPart = prefixEdition + blank + editionPart;
 			}
 			needsComma = true;
 		}
-		nomRefCache += editionPart;
+		nomRefCache = CdmUtils.concat(", ", nomRefCache, editionPart);
 		
 		//inSeries
 		String seriesPart = "";
-		if (CdmUtils.isNotEmpty(series)){
+		if (StringUtils.isNotBlank(series)){
 			seriesPart = series;
 			if (isNumeric(series)){
 				seriesPart = prefixSeries + blank + seriesPart;
@@ -116,7 +118,7 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 		
 		//volume Part
 		String volumePart = "";
-		if (CdmUtils.isNotEmpty(volume)){
+		if (StringUtils.isNotBlank(volume)){
 			volumePart = volume;
 			if (needsComma){
 				volumePart = comma + blank + volumePart;

@@ -61,13 +61,17 @@ public class BookDefaultCacheStrategyTest {
 		book1.setTitle("My book");
 		book1.setAuthorTeam(bookTeam1);
 		book1.setDatePublished(TimePeriod.NewInstance(1975));
-		
 		Assert.assertEquals("Unexpected title cache.", "Book Author, My book. 1975", book1.getTitleCache());
+		
+		book1.setTitleCache(null, false);
+		book1.setEdition("ed. 3");
+		Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3. 1975", book1.getTitleCache());
+		
 		TimePeriod newDatePublished = TimePeriod.parseString("1975 (after Aug.)");
 		book1.setDatePublished(newDatePublished);
 		book1.setTitleCache(null, false);
 		//TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
-		Assert.assertEquals("Unexpected title cache.", "Book Author, My book", book1.getTitleCache());
+		Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3", book1.getTitleCache());
 		
 		
 	}

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -59,7 +60,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		}
 		//TODO
 		String titelAbbrev = CdmUtils.Nz(genericReference.getTitle()).trim();
-		//String edition = CdmUtils.Nz(genericReference.getEdition());
+		String edition = CdmUtils.Nz(genericReference.getEdition());
 		//TODO
 		String series = CdmUtils.Nz(genericReference.getSeries()).trim(); //nomenclaturalReference.getSeries();
 		String volume = CdmUtils.Nz(genericReference.getVolume()).trim();
@@ -81,21 +82,20 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		
 		boolean needsComma = false;
 		//titelAbbrev
-		String titelAbbrevPart = "";
-		if (!"".equals(titelAbbrev)){
-			nomRefCache = titelAbbrev + blank; 
+		if (!"".equals(titelAbbrev) ){
+			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
+			nomRefCache = titelAbbrev + postfix; 
 		}
-		
-//		//edition
-//		String editionPart = "";
-//		if (!"".equals(edition)){
-//			editionPart = edition;
-//			if (isNumeric(edition)){
-//				editionPart = prefixEdition + blank + editionPart;
-//			}
-//			needsComma = true;
-//		}
-//		nomRefCache += editionPart;
+		//edition
+		String editionPart = "";
+		if (StringUtils.isNotBlank(edition)){
+			editionPart = edition;
+			if (isNumeric(edition)){
+				editionPart = prefixEdition + blank + editionPart;
+			}
+			needsComma = true;
+		}
+		nomRefCache = CdmUtils.concat(", ", nomRefCache, editionPart);
 		
 		//inSeries
 		String seriesPart = "";
