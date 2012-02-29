@@ -269,8 +269,10 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 					//
 					if (resultSetHasColumn(rs,"LastScrutiny")){
 						String lastScrutiny = rs.getString("LastScrutiny");
-						ExtensionType extensionTypeLastScrutiny = getExtensionType(state, BerlinModelTransformer.uuidSpeciesExpert, "Species Expert", "Species Expert", "Species Expert");
-						taxonBase.addExtension(lastScrutiny, extensionTypeLastScrutiny);
+						ExtensionType extensionTypeSpeciesExpert = getExtensionType(state, BerlinModelTransformer.uuidSpeciesExpertName, "Species Expert", "Species Expert", "Species Expert");
+						taxonBase.addExtension(lastScrutiny, extensionTypeSpeciesExpert);
+						ExtensionType extensionTypeExpert = getExtensionType(state, BerlinModelTransformer.uuidExpertName, "Expert", "Expert for a taxonomic group", "Expert");
+						taxonBase.addExtension(lastScrutiny, extensionTypeExpert);
 					}
 					
 					//Notes
