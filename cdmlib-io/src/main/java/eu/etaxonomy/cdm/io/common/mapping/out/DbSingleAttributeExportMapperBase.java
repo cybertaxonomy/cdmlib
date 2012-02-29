@@ -211,6 +211,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 			n = rs.getInt("result");
 			return n;
 		} catch (SQLException e) {
+			logger.error(e.getMessage() + ", selectPart: " + CdmUtils.Nz(selectPart) + ", table: " + CdmUtils.Nz(getTableName()) +", destination: " + CdmUtils.Nz(getDestinationAttribute()));
 			e.printStackTrace();
 			return -1;
 		}

@@ -10,6 +10,10 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
@@ -42,15 +46,18 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 	protected DbExtensionMapper(ExtensionType extensionType, String dbAttributeString) {
 		super("extensions", dbAttributeString, null);
 		this.extensionType  = extensionType;
-		
 	}
 	
-
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
+		if (extensionType == null){
+			return null;
+		}
 		String result = null;
 		if (cdmBase.isInstanceOf(IdentifiableEntity.class)){ 
 			IdentifiableEntity identifiableEntity = (IdentifiableEntity)cdmBase;
@@ -65,7 +72,7 @@ public class DbExtensionMapper extends DbSingleAttributeExportMapperBase<DbExpor
 		}else{
 			throw new ClassCastException("CdmBase for DbExtensionMapper must be of type IdentifiableEntity, but was " + cdmBase.getClass());
 		}
-		if (CdmUtils.isEmpty(result)){
+		if (StringUtils.isBlank(result)){
 			return null;
 		}
 		return result;
