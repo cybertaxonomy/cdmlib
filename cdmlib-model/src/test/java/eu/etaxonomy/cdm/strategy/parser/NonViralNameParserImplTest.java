@@ -867,7 +867,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(null, ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
 
 		//no volume, edition
-		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3: 455. 1987";
+		strNoVolume = "Abies alba Mill., Sp. Pl., ed. 3: 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
@@ -878,7 +878,7 @@ public class NonViralNameParserImplTest {
 		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3, 4(5): 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
-		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
+		assertEquals(strNoVolume.replace(" ed.", ", ed."), nameNoVolume.getFullTitleCache());
 		assertEquals("4(5)", ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
 		assertEquals("3", ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
 		
@@ -964,7 +964,7 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> nameBookSection2 = 
 			parser.parseReferencedName(strBookSection2, null, null);
 		assertFalse(nameBookSection2.hasProblem());
-		assertEquals(strBookSection2NoComma, nameBookSection2.getFullTitleCache());
+		assertEquals(strBookSection2NoComma.replace(" ed.", ", ed."), nameBookSection2.getFullTitleCache());
 		assertEquals(-1, nameBookSection2.getProblemStarts()); 
 		assertEquals(-1, nameBookSection2.getProblemEnds());
 		assertNull((nameBookSection2.getNomenclaturalReference()).getDatePublished().getStart());
@@ -975,7 +975,7 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> nameBookSection = 
 			parser.parseReferencedName(strBookSection, null, null);
 		assertFalse(nameBookSection.hasProblem());
-		assertEquals(strBookSection, nameBookSection.getFullTitleCache());
+		assertEquals(strBookSection.replace(" ed.", ", ed."), nameBookSection.getFullTitleCache());
 		assertEquals(-1, nameBookSection.getProblemStarts()); 
 		assertEquals(-1, nameBookSection.getProblemEnds());
 		assertNull(((IBookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished().getStart());
