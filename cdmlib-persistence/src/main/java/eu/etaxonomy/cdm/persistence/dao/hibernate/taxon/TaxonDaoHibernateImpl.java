@@ -962,7 +962,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 if (limit != null){
                     query.setMaxResults(limit);
                 }
-                result = query.list();
+                result.addAll(query.list());
         	}
             return result;
 
