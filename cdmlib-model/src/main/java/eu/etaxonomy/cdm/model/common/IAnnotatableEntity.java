@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author n.hoffmann
@@ -35,5 +36,9 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 	
 	
 	public void removeMarker(Marker marker);
+	
+	public boolean hasMarker(MarkerType type, boolean value);
+	
+	public boolean hasMarker(UUID uuidMarkerType, boolean value);
 	
 }
