@@ -554,13 +554,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		NamedArea area;
 		if (tdwgCode.equalsIgnoreCase("Ab")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidAzerbaijanNakhichevan, "Azerbaijan & Nakhichevan", "Azerbaijan (including Nakhichevan)",  "Ab", null, null);
-			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
 			area = WaterbodyOrCountry.RUSSIANFEDERATION();
 //			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Uk")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
-			getTermService().save(area);
 		}else{
 			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
 		}
