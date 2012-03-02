@@ -265,7 +265,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					
 	//				dbAttrName = "preliminaryFlag";
 					Boolean preliminaryFlag = rs.getBoolean("PreliminaryFlag");
-					if (preliminaryFlag == true){
+					Boolean hybridFormulaFlag = rs.getBoolean("HybridFormulaFlag");  //hybrid flag does not lead to cache update in Berlin Model
+					if (preliminaryFlag == true || hybridFormulaFlag == true){
 						//Computes all caches and sets 
 						taxonNameBase.setTitleCache(fullNameCache, true);
 						taxonNameBase.setFullTitleCache(taxonNameBase.getFullTitleCache(), true);
