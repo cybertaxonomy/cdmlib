@@ -10,12 +10,17 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -27,6 +32,7 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbLastActionMapper.class);
 	
+	public static final UUID uuidMarkerTypeHasNoLastAction = UUID.fromString("99652d5a-bc92-4251-b57d-0fec4d258ab7");
 	boolean isActionType;
 	
 	public static DbLastActionMapper NewInstance(String dbAttributeString, boolean isActionType){
@@ -50,15 +56,35 @@ public class DbLastActionMapper extends DbSingleAttributeExportMapperBase<DbExpo
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(VersionableEntity.class)){
-			VersionableEntity versionable = CdmBase.deproxy(cdmBase, VersionableEntity.class);
-			if (versionable.getUpdated() != null){
-				if (isActionType){
-					return "changed";
-				}else{
-					return versionable.getUpdated();
+			//exclude objects marked as 'hasNoM
+			if (cdmBase.isInstanceOf(AnnotatableEntity.class)){
+				IAnnotatableEntity annoEnti = cdmBase.deproxy(cdmBase, AnnotatableEntity.class);
+				if (annoEnti.hasMarker(uuidMarkerTypeHasNoLastAction, true)){
+					return null;
 				}
 			}
+			//return updated or created	
+			VersionableEntity versionable = CdmBase.deproxy(cdmBase, VersionableEntity.class);
+			if (versionable.getUpdated() != null){
+				return makeChanged(versionable);
+			}else{
+				return makeCreated(cdmBase);
+			}
+		}else{
+			//return created
+			return makeCreated(cdmBase);
 		}
+	}
+
+	private Object makeChanged(VersionableEntity versionable) {
+		if (isActionType){
+			return "changed";
+		}else{
+			return versionable.getUpdated();
+		}
+	}
+
+	private Object makeCreated(CdmBase cdmBase) {
 		if (isActionType){
 			return "created";
 		}else{
