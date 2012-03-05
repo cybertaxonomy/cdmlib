@@ -57,16 +57,40 @@ public final class BerlinModelTransformer {
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
 	
-	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
-	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
-	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
 	public static UUID uuidEasternEuropeanRussia = UUID.fromString("3f013375-0e0a-40c3-8a14-84c0535fab40");
 	public static UUID uuidSerbiaMontenegro = UUID.fromString("8926dbe6-863e-47a9-98a0-7dc9ed2c57f7");
 	public static UUID uuidSerbia = UUID.fromString("4ffed197-3d7e-4cd9-8984-e64b8dee9512");
 	public static UUID uuidLebanonSyria = UUID.fromString("0c45f250-99da-4b19-aa89-c3e56cfdf103");
 	public static UUID uuidUssr = UUID.fromString("a512e00a-45f3-4be5-82fa-bba8d675696f");
 	public static UUID uuidSicilyMalta = UUID.fromString("424d81ee-d272-4ae8-9600-0a334049cd72");
+	
+	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
+	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
+	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
+	//azores
 	public static UUID uuidFlores = UUID.fromString("ef0067c2-8bbb-4e37-8462-97b03f51ba43");
+	public static UUID uuidCorvo = UUID.fromString("b1e6117c-2be1-43a3-9233-227dd90bdee9");
+	public static UUID uuidFaial = UUID.fromString("14f6dcdb-6524-4700-b80c-66424952ef2b");
+	public static UUID uuidGraciosa = UUID.fromString("05f93a7b-d813-4833-864f-eedbba747133");
+	public static UUID uuidSaoJorge = UUID.fromString("578e0ecd-b5e3-4c87-8ecc-0fc4c7e217d9");
+	public static UUID uuidSaoMiguel = UUID.fromString("0e2f6ad8-7afb-4f01-b134-4f71991e877a");
+	public static UUID uuidPico = UUID.fromString("98cc566f-4110-43d5-830f-68436a009f49");
+	public static UUID uuidSantaMaria = UUID.fromString("bd5e5d4a-22b7-41aa-8e58-1d1d73a9954d");
+	public static UUID uuidTerceira = UUID.fromString("6fc257c0-a131-41f0-b6c3-51ef9c4fa962");
+	//Canyry islands
+	public static UUID uuidGranCanaria = UUID.fromString("a0240c35-0e05-4157-8321-67ba8e31fdb9");
+	public static UUID uuidFuerteventura = UUID.fromString("549ce2c1-6d49-4bf3-b75d-cf3f4b5a1398");
+	public static UUID uuidGomera = UUID.fromString("895fab09-7478-4210-b42a-423d23c6f85e");
+	public static UUID uuidHierro = UUID.fromString("d137b6a5-31bc-418c-9403-f042017dc04b");
+	public static UUID uuidLanzaroteWithGraciosa = UUID.fromString("c9b08dc1-f301-4d9d-b447-b8744602c776");
+	public static UUID uuidLaPalma = UUID.fromString("fdb3f2b2-f154-4f04-9f31-240a47a0e780");
+	public static UUID uuidTenerife = UUID.fromString("73658c7e-a568-465e-bd84-4554fc93ca56");
+	//Baleares
+	public static UUID uuidIbizaWithFormentera = UUID.fromString("1cda2a33-3469-49d5-8e77-cb5451110519");
+	public static UUID uuidMallorca = UUID.fromString("a10cba04-b4b5-4a4b-b69a-fcd4b3916fec");
+	public static UUID uuidMenorca = UUID.fromString("9f6ede48-27f8-4270-bf4e-c97eaa86aab7");
+	
+	//russia
 	public static UUID uuidRussiaNorthern = UUID.fromString("c23bc1c9-a775-4426-b883-07d4d7d47eed");
 	public static UUID uuidRussiaBaltic = UUID.fromString("579dad44-9439-4b19-8716-ab90d8f27944");
 	public static UUID uuidRussiaCentral = UUID.fromString("8bbc8c6a-2ef2-4024-ad51-66fe34c70092");
