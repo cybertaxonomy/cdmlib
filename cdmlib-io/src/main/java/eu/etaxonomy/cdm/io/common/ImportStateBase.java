@@ -296,6 +296,5 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		this.isCheck = isCheck;
 	}
 
-
 	
 }
