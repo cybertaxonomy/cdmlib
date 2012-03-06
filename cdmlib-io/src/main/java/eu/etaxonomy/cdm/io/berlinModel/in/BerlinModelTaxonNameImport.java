@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -302,9 +303,9 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		String rankAbbrev = rs.getString("RankAbbrev");
 		String rankStr = rs.getString("Rank");
 		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
-			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, Rank.SPECIES().getVocabulary());
+			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
-			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, Rank.SPECIES().getVocabulary());
+			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
 //		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "taxon")){
 //			result = getRank(state, BerlinModelTransformer.uuidRankTaxon, rankStr, "Rank [taxon]", rankAbbrev, Rank.SPECIES().getVocabulary());
 		}else{

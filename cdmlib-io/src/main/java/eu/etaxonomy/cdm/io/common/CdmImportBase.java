@@ -298,7 +298,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	
 	
-	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,TermVocabulary<Rank> voc){
+	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -308,10 +308,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (rank == null){
 				rank = new Rank(text, label, labelAbbrev);
 				if (voc == null){
-					boolean isOrdered = false;
-					voc = getVocabulary(uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
+					boolean isOrdered = true;
+					voc = (OrderedTermVocabulary)getVocabulary(uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
 				}
-				voc.addTerm(rank);
+				if (lowerRank == null){
+					voc.addTerm(rank);
+				}else{
+					voc.addTermAbove(rank, lowerRank);
+				}
 				rank.setUuid(uuid);
 				getTermService().save(rank);
 			}
