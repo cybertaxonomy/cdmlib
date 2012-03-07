@@ -35,7 +35,7 @@ public class DwcaZipToStreamConverterTest {
 	private static final Logger logger = Logger.getLogger(DwcaZipToStreamConverterTest.class);
 	
 	private URI uri;
-	private DwcaZipToStreamConverter converter;
+	private DwcaZipToStreamConverter<?> converter;
 	
 	/**
 	 * @throws java.lang.Exception
