@@ -30,10 +30,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportStateBase<?>> extends CdmSingleAttributeMapperBase implements IDbExportMapper<STATE>  {
+public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportStateBase<?, IExportTransformer>> extends CdmSingleAttributeMapperBase implements IDbExportMapper<STATE, IExportTransformer>  {
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeExportMapperBase.class);
 	
-	private DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();
+	protected DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();
 	private Integer precision = null;
 	protected boolean obligatory = true;
 	
@@ -211,6 +211,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 			n = rs.getInt("result");
 			return n;
 		} catch (SQLException e) {
+			logger.error(e.getMessage() + ", selectPart: " + CdmUtils.Nz(selectPart) + ", table: " + CdmUtils.Nz(getTableName()) +", destination: " + CdmUtils.Nz(getDestinationAttribute()));
 			e.printStackTrace();
 			return -1;
 		}

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.DbExportStateBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbExportMapperBase<STATE extends DbExportStateBase<?>>  /*implements IDbExportMapper */{
+public class DbExportMapperBase<STATE extends DbExportStateBase<?, IExportTransformer>>  /*implements IDbExportMapper */{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbExportMapperBase.class);
 
@@ -44,6 +44,14 @@ public class DbExportMapperBase<STATE extends DbExportStateBase<?>>  /*implement
 	public void initialize(PreparedStatement stmt, IndexCounter index, STATE state, String tableName) {
 		this.preparedStatement = stmt;
 		this.index = index.getIncreasing();
+		this.state = state;
+		this.tableName = tableName;
+	}
+	
+
+	public void initializeNull(PreparedStatement stmt, STATE state, String tableName) {
+		this.preparedStatement = stmt;
+		this.index = -1;
 		this.state = state;
 		this.tableName = tableName;
 	}

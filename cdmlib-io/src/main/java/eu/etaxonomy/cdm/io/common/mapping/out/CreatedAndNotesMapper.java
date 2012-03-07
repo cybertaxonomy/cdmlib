@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleAttributeExportMapperBase<DbExportStateBase<?>>> implements IDbExportMapper<DbExportStateBase<?>>{
+public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreatedAndNotesMapper.class);
 	
@@ -59,8 +59,8 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#initialize(java.sql.PreparedStatement, eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter, eu.etaxonomy.cdm.io.berlinModel.out.DbExportState)
 	 */
-	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase<?> state, String tableName) {
-		for (DbSingleAttributeExportMapperBase<DbExportStateBase<?>> mapper : singleMappers){
+	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase<?, IExportTransformer> state, String tableName) {
+		for (DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> mapper : singleMappers){
 			mapper.initialize(stmt, index, state, tableName);
 		}	
 	}
@@ -71,7 +71,7 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 	 */
 	public boolean invoke(CdmBase cdmBase) throws SQLException {
 		boolean result = true;
-		for (DbSingleAttributeExportMapperBase<DbExportStateBase<?>> mapper : singleMappers){
+		for (DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> mapper : singleMappers){
 			result &= mapper.invoke(cdmBase);
 		}
 		return result;
