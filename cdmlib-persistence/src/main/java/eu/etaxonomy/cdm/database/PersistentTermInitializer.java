@@ -59,6 +59,10 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		this.omit = omit;
 	}
 	
+	public boolean isOmit() {
+		return omit;
+	}
+	
 	@Autowired
 	public void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
 		this.vocabularyDao = vocabularyDao;

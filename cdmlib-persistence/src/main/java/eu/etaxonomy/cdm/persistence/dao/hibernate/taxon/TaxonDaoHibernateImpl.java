@@ -390,11 +390,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 namedAreasUuids.add(area.getUuid());
             }
 
-            String taxonSubselect = null;
-            String synonymSubselect = null;
-            String misappliedSelect = null;
+            
+            String [] subSelects = createHQLString(doTaxa, doSynonyms, doIncludeMisappliedNames, classification, areasExpanded, matchMode, searchField);
+            String taxonSubselect = subSelects[1];
+            String synonymSubselect = subSelects[2];
+            String misappliedSelect = subSelects[0];
+            
 
-            if(classification != null ){
+            /*if(classification != null ){
                 if (!doIncludeMisappliedNames){
                     if(doAreaRestriction){
 
@@ -553,46 +556,49 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             } else {
 
-                if(doAreaRestriction){
+            	if (!doIncludeMisappliedNames){
+                    if(doAreaRestriction){
+	                    taxonSubselect = "select t.id from " +
+	                        " Distribution e" +
+	                        " join e.inDescription d" +
+	                        " join d.taxon t" +
+	                        " join t.name n "+
+	                        " where" +
+	                        (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
+	                        " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+	
+	                    synonymSubselect = "select s.id from" +
+	                        " Distribution e" +
+	                        " join e.inDescription d" +
+	                        " join d.taxon t" + // the taxa
+	                        " join t.synonymRelations sr" +
+	                        " join sr.relatedFrom s" + // the synonyms
+	                        " join s.name sn"+
+	                        " where" +
+	                        (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
+	                        " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+	
+	                } else {
+	
+	                    taxonSubselect = "select t.id from " +
+	                        " Taxon t" +
+	                        " join t.name n "+
+	                        " where" +
+	                        " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+	
+	                    synonymSubselect = "select s.id from" +
+	                        " Taxon t" + // the taxa
+	                        " join t.synonymRelations sr" +
+	                        " join sr.relatedFrom s" + // the synonyms
+	                        " join s.name sn"+
+	                        " where" +
+	                        " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+	                }
+            	}else{
+            		
+            	}
 
-                    taxonSubselect = "select t.id from " +
-                        " Distribution e" +
-                        " join e.inDescription d" +
-                        " join d.taxon t" +
-                        " join t.name n "+
-                        " where" +
-                        (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-                        " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                    synonymSubselect = "select s.id from" +
-                        " Distribution e" +
-                        " join e.inDescription d" +
-                        " join d.taxon t" + // the taxa
-                        " join t.synonymRelations sr" +
-                        " join sr.relatedFrom s" + // the synonyms
-                        " join s.name sn"+
-                        " where" +
-                        (doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
-                        " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                } else {
-
-                    taxonSubselect = "select t.id from " +
-                        " Taxon t" +
-                        " join t.name n "+
-                        " where" +
-                        " n." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-
-                    synonymSubselect = "select s.id from" +
-                        " Taxon t" + // the taxa
-                        " join t.synonymRelations sr" +
-                        " join sr.relatedFrom s" + // the synonyms
-                        " join s.name sn"+
-                        " where" +
-                        " sn." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
-                }
-
-            }
+            }*/
 
             logger.debug("taxonSubselect: " + taxonSubselect != null ? taxonSubselect: "NULL");
             logger.debug("synonymSubselect: " + synonymSubselect != null ? synonymSubselect: "NULL");
@@ -609,12 +615,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
                 if(classification != null){
                     subTaxon.setParameter("classification", classification);
-                    if (doIncludeMisappliedNames){
-                    	subTaxon.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-                    }
+                    
                 }
+                
 
             }
+            
             if(doSynonyms){
                 // find synonyms
                 subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
@@ -626,7 +632,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                     subSynonym.setParameter("classification", classification);
                 }
             }
-            if (doIncludeMisappliedNames && !doTaxa){
+            if (doIncludeMisappliedNames ){
             	subMisappliedNames = getSession().createQuery(misappliedSelect).setParameter("queryString", hqlQueryString);
             	subMisappliedNames.setParameter("rType", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
             	if(doAreaRestriction){
@@ -639,15 +645,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             List<Integer> taxa = new ArrayList<Integer>();
             List<Integer> synonyms = new ArrayList<Integer>();
-            if (doSynonyms && doTaxa){
-                taxa = subTaxon.list();
+            if (doSynonyms){
                 synonyms = subSynonym.list();
-            }else if(doTaxa ){
+            }
+            if(doTaxa){
                 taxa = subTaxon.list();
-            }else if (doSynonyms){
-                synonyms = subSynonym.list();
-            } else{
-            	taxa = subMisappliedNames.list();
+            }
+            if (doIncludeMisappliedNames){
+            	taxa.addAll(subMisappliedNames.list());
             }
 
             if (doTaxa && doSynonyms){
@@ -931,12 +936,36 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         Class<? extends RelationshipBase> clazz = RelationshipBase.class;  //preliminary, see #2653
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(clazz);
-            criteria.setFirstResult(start);
-            if (limit != null){
-                criteria.setMaxResults(limit);
-            }
-            return (List<RelationshipBase>)criteria.list();
+        	// for some reason the HQL .class discriminator didn't work here so I created this preliminary
+        	// implementation for now. Should be cleaned in future.
+        	
+        	List<RelationshipBase> result = new ArrayList<RelationshipBase>();
+            
+        	int taxRelSize = countAllRelationships(TaxonRelationship.class);
+            
+        	if (taxRelSize > start){
+        		
+        		String hql = " FROM TaxonRelationship as rb ORDER BY rb.id ";
+        		Query query = getSession().createQuery(hql);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result = query.list();
+        	}
+        	limit = limit - result.size();
+        	if (limit > 0){
+        		String hql = " FROM SynonymRelationship as rb ORDER BY rb.id ";
+        		Query query = getSession().createQuery(hql);
+        		start = (taxRelSize > start) ? 0 : (start - taxRelSize);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result.addAll(query.list());
+        	}
+            return result;
+
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
             return (List<RelationshipBase>)query.getResultList();
@@ -1546,366 +1575,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
 
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree){
-        List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
+    
 
-        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF()));
-        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF()));
-        inferredSynonyms.addAll(createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF()));
+   
+    
 
-        return inferredSynonyms;
-    }
-
-
-    /**
-     * Returns an existing ZoologicalName or extends an internal hashmap if it does not exist.
-     * Very likely only useful for createInferredSynonyms().
-     * @param uuid
-     * @param zooHashMap
-     * @return
-     */
-    private ZoologicalName getZoologicalName(UUID uuid, HashMap <UUID, ZoologicalName> zooHashMap) {
-        ZoologicalName taxonName = this.taxonNameDao.findZoologicalNameByUUID(uuid);
-        if (taxonName == null) {
-            taxonName = zooHashMap.get(uuid);
-        }
-        return taxonName;
-    }
-
-    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type){
-        List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
-        List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<Synonym>();
-
-        HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
-        UUID uuid;
-
-        uuid= taxon.getName().getUuid();
-        ZoologicalName taxonName = getZoologicalName(uuid, zooHashMap);
-        String epithetOfTaxon = taxonName.getSpecificEpithet();
-        String genusOfTaxon = taxonName.getGenusOrUninomial();
-        Set<TaxonNode> nodes = taxon.getTaxonNodes();
-         List<String> taxonNames = new ArrayList<String>();
-
-        for (TaxonNode node: nodes){
-            HashMap<String, String> synonymsGenus = new HashMap<String, String>(); // Changed this to be able to store the idInSource to a genusName
-            List<String> synonymsEpithet = new ArrayList<String>();
-
-            if (node.getClassification().equals(tree)){
-                if (!node.isTopmostNode()){
-                TaxonNode parent = (TaxonNode)node.getParent();
-                parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
-                TaxonNameBase parentName = parent.getTaxon().getName();
-                parentName = (TaxonNameBase)HibernateProxyHelper.deproxy(parentName);
-
-                //create inferred synonyms for species, subspecies or subgenus
-                if (parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())){
-
-                    Synonym inferredEpithet;
-                    Synonym inferredGenus = null;
-                    Synonym potentialCombination;
-
-                    List<String> propertyPaths = new ArrayList<String>();
-                    propertyPaths.add("synonym");
-                    propertyPaths.add("synonym.name");
-                    List<OrderHint> orderHints = new ArrayList<OrderHint>();
-                    orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
-
-                    List<SynonymRelationship> synonymRelationshipsOfGenus = getSynonyms(parent.getTaxon(), SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
-                    List<SynonymRelationship> synonymRelationshipsOfTaxon= getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
-
-                    if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())){
-
-                        for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
-                            TaxonNameBase synName;
-                            ZoologicalName inferredSynName;
-                            Synonym syn = synonymRelationOfGenus.getSynonym();
-                            HibernateProxyHelper.deproxy(syn);
-
-                            // Determine the idInSource
-                            String idInSource = getIdInSource(syn);
-
-                            // Determine the sourceReference
-                            Reference sourceReference = syn.getSec();
-
-                            synName = syn.getName();
-                            ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
-                            String synGenusName = zooName.getGenusOrUninomial();
-                            if (synGenusName != null && !synonymsGenus.containsKey(synGenusName)){
-                                synonymsGenus.put(synGenusName, idInSource);
-                            }
-                            inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
-
-                            // DEBUG
-                            if (epithetOfTaxon == null) {
-                                logger.error("This specificEpithet is NULL");
-                            }
-
-                            inferredSynName.setSpecificEpithet(epithetOfTaxon);
-                            inferredSynName.setGenusOrUninomial(synGenusName);
-                            inferredEpithet = Synonym.NewInstance(inferredSynName, null);
-
-                            // Set the sourceReference
-                            inferredEpithet.setSec(sourceReference);
-
-                            // Add the original source
-                            if (idInSource != null) {
-                                IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredEpithetOf", syn.getSec(), null);
-
-                                // Add the citation
-                                Reference citation = getCitation(syn);
-                                if (citation != null) {
-                                    originalSource.setCitation(citation);
-                                    inferredEpithet.addSource(originalSource);
-                                }
-                            }
-
-                            taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
-                            inferredSynonyms.add(inferredEpithet);
-                            inferredSynName.generateTitle();
-                            zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
-                            taxonNames.add(inferredSynName.getNameCache());
-                        }
-
-                        if (!taxonNames.isEmpty()){
-                        List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
-                        ZoologicalName name;
-                        if (!synNotInCDM.isEmpty()){
-                            inferredSynonymsToBeRemoved.clear();
-
-                            for (Synonym syn :inferredSynonyms){
-                                name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
-                                if (!synNotInCDM.contains(name.getNameCache())){
-                                    inferredSynonymsToBeRemoved.add(syn);
-                                }
-                            }
-
-                            // Remove identified Synonyms from inferredSynonyms
-                            for (Synonym synonym : inferredSynonymsToBeRemoved) {
-                                inferredSynonyms.remove(synonym);
-                            }
-                        }
-                        }
-
-                    }else if (type.equals(SynonymRelationshipType.INFERRED_GENUS_OF())){
-
-
-                        for (SynonymRelationship synonymRelationOfTaxon:synonymRelationshipsOfTaxon){
-                            TaxonNameBase synName;
-                            ZoologicalName inferredSynName;
-
-                            Synonym syn = synonymRelationOfTaxon.getSynonym();
-                            synName =syn.getName();
-                            HibernateProxyHelper.deproxy(syn);
-
-                            // Determine the idInSource
-                            String idInSource = getIdInSource(syn);
-
-                            // Determine the sourceReference
-                            Reference sourceReference = syn.getSec();
-
-                            synName = syn.getName();
-                            ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
-                            String speciesEpithetName = zooName.getSpecificEpithet();
-                            if (synonymsEpithet != null && !synonymsEpithet.contains(speciesEpithetName)){
-                                synonymsEpithet.add(speciesEpithetName);
-                            }
-                            inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
-                            inferredSynName.setSpecificEpithet(speciesEpithetName);
-                            inferredSynName.setGenusOrUninomial(genusOfTaxon);
-                            inferredGenus = Synonym.NewInstance(inferredSynName, null);
-
-                            // Set the sourceReference
-                            inferredGenus.setSec(sourceReference);
-
-                            // Add the original source
-                            if (idInSource != null) {
-                                IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredGenusOf", syn.getSec(), null);
-
-                                // Add the citation
-                                Reference citation = getCitation(syn);
-                                if (citation != null) {
-                                    originalSource.setCitation(citation);
-                                    inferredGenus.addSource(originalSource);
-                                }
-                            }
-
-                            taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_EPITHET_OF());
-                            inferredSynonyms.add(inferredGenus);
-                            inferredSynName.generateTitle();
-                            zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
-                            taxonNames.add(inferredSynName.getNameCache());
-                        }
-
-                        if (!taxonNames.isEmpty()){
-                            List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
-                            ZoologicalName name;
-                            if (!synNotInCDM.isEmpty()){
-                                inferredSynonymsToBeRemoved.clear();
-
-                                for (Synonym syn :inferredSynonyms){
-                                    name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
-                                    if (!synNotInCDM.contains(name.getNameCache())){
-                                        inferredSynonymsToBeRemoved.add(syn);
-                                    }
-                                }
-
-                                // Remove identified Synonyms from inferredSynonyms
-                                for (Synonym synonym : inferredSynonymsToBeRemoved) {
-                                    inferredSynonyms.remove(synonym);
-                                }
-                            }
-                        }
-
-                    }else if (type.equals(SynonymRelationshipType.POTENTIAL_COMBINATION_OF())){
-
-                        Reference sourceReference = null; // TODO: Determination of sourceReference is redundant
-
-                        for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
-                            TaxonNameBase synName;
-                            Synonym syn = synonymRelationOfGenus.getSynonym();
-                            synName =syn.getName();
-
-                            HibernateProxyHelper.deproxy(syn);
-
-                            // Set the sourceReference
-                            sourceReference = syn.getSec();
-
-                            // Determine the idInSource
-                            String idInSource = getIdInSource(syn);
-
-                            ZoologicalName zooName = getZoologicalName(synName.getUuid(), zooHashMap);
-                            String synGenusName = zooName.getGenusOrUninomial();
-                            if (synGenusName != null && !synonymsGenus.containsKey(synGenusName)){
-                                synonymsGenus.put(synGenusName, idInSource);
-                            }
-                        }
-
-                        ZoologicalName inferredSynName;
-                        for (SynonymRelationship synonymRelationOfTaxon:synonymRelationshipsOfTaxon){
-
-                            Synonym syn = synonymRelationOfTaxon.getSynonym();
-                            HibernateProxyHelper.deproxy(syn);
-
-                            // Set sourceReference
-                            sourceReference = syn.getSec();
-
-                            ZoologicalName zooName = getZoologicalName(syn.getName().getUuid(), zooHashMap);
-                            String epithetName = zooName.getSpecificEpithet();
-                            if (epithetName != null && !synonymsEpithet.contains(epithetName)){
-                                synonymsEpithet.add(epithetName);
-                            }
-                        }
-                        for (String epithetName:synonymsEpithet){
-                            for (String genusName: synonymsGenus.keySet()){
-                                inferredSynName = ZoologicalName.NewInstance(Rank.SPECIES());
-                                inferredSynName.setSpecificEpithet(epithetName);
-                                inferredSynName.setGenusOrUninomial(genusName);
-                                potentialCombination = Synonym.NewInstance(inferredSynName, null);
-
-                                // Set the sourceReference
-                                potentialCombination.setSec(sourceReference);
-
-                                // Add the original source
-                                String idInSource = synonymsGenus.get(genusName);
-                                if (idInSource != null) {
-                                    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "PotentialCombinationOf", sourceReference, null);
-
-                                    // Add the citation
-                                    if (sourceReference != null) {
-                                        originalSource.setCitation(sourceReference);
-                                        potentialCombination.addSource(originalSource);
-                                    }
-                                }
-
-                                inferredSynonyms.add(potentialCombination);
-                                inferredSynName.generateTitle();
-                                zooHashMap.put(inferredSynName.getUuid(), inferredSynName);
-                                taxonNames.add(inferredSynName.getNameCache());
-                            }
-
-                            if (!taxonNames.isEmpty()){
-                                List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
-                                ZoologicalName name;
-                                if (!synNotInCDM.isEmpty()){
-                                    inferredSynonymsToBeRemoved.clear();
-
-                                    for (Synonym syn :inferredSynonyms){
-                                        try{
-                                            name = (ZoologicalName) syn.getName();
-                                        }catch (ClassCastException e){
-                                            name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
-                                        }
-                                        if (!synNotInCDM.contains(name.getNameCache())){
-                                            inferredSynonymsToBeRemoved.add(syn);
-                                        }
-                                    }
-
-                                    // Remove identified Synonyms from inferredSynonyms
-                                    for (Synonym synonym : inferredSynonymsToBeRemoved) {
-                                        inferredSynonyms.remove(synonym);
-                                    }
-                                }
-                            }
-                        }
-                    }else {
-                        logger.info("The synonymrelationship type is not defined.");
-                        return null;
-                    }
-                }
-            }
-            }
-            }
-
-
-        return inferredSynonyms;
-    }
-
-
-    /**
-     * Returns the idInSource for a given Synonym.
-     * @param syn
-     */
-    private String getIdInSource(Synonym syn) {
-        String idInSource = null;
-        Set<IdentifiableSource> sources = syn.getSources();
-        if (sources.size() == 1) {
-            IdentifiableSource source = sources.iterator().next();
-            if (source != null) {
-                idInSource  = source.getIdInSource();
-            }
-        } else if (sources.size() > 1) {
-            int count = 1;
-            idInSource = "";
-            for (IdentifiableSource source : sources) {
-                idInSource += source.getIdInSource();
-                if (count < sources.size()) {
-                    idInSource += "; ";
-                }
-                count++;
-            }
-        }
-
-        return idInSource;
-    }
-
-    /**
-     * Returns the citation for a given Synonym.
-     * @param syn
-     */
-    private Reference getCitation(Synonym syn) {
-        Reference citation = null;
-        Set<IdentifiableSource> sources = syn.getSources();
-        if (sources.size() == 1) {
-            IdentifiableSource source = sources.iterator().next();
-            if (source != null) {
-                citation = source.getCitation();
-            }
-        } else if (sources.size() > 1) {
-            logger.warn("This Synonym has more than one source: " + syn.getUuid() + " (" + syn.getTitleCache() +")");
-        }
-
-        return citation;
-    }
+    
 
 /*	private void xxx(List<SynonymRelationship> synonymRelationships, HashMap <UUID, ZoologicalName> zooHashMap, SynonymRelationshipType type, String addString){
 
@@ -1962,8 +1637,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
      */
     public int countAllRelationships() {
-        List<RelationshipBase> relationships = this.getAllRelationships(null, 0);
-        return relationships.size();
+    	return countAllRelationships(null);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
+     */
+    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
+    	if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
+    		throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
+    	}
+    	int size = 0;
+    	 
+        if (clazz == null || TaxonRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM TaxonRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        if (clazz == null || SynonymRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM SynonymRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        return size;
     }
 
 
@@ -2241,6 +1936,126 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return result;
     }
+    
+    
+    private String[] createHQLString(boolean doTaxa, boolean doSynonyms, boolean doIncludeMisappliedNames, Classification classification,  Set<NamedArea> areasExpanded, MatchMode matchMode, String searchField){
+    	
+		   boolean doAreaRestriction = areasExpanded.size() > 0;
+		   String 	doAreaRestrictionSubSelect = "select %s.id from" +
+		        " Distribution e" +
+		        " join e.inDescription d" +
+		        " join d.taxon t" +
+		        (classification != null ? " join t.taxonNodes as tn " : " ");
+		   
+		   String 	doAreaRestrictionMisappliedNameSubSelect = "select %s.id from" +
+	        " Distribution e" +
+	        " join e.inDescription d" +
+	        " join d.taxon t";
+				
+		   String doTaxonSubSelect = "select %s.id from Taxon t " + (classification != null ? " join t.taxonNodes as tn " : " ");
+		   String doTaxonMisappliedNameSubSelect = "select %s.id from Taxon t ";
+				
+		   String doTaxonNameJoin =   " join t.name n ";
+				
+		   String doSynonymNameJoin =  	" join t.synonymRelations sr join sr.relatedFrom s join s.name sn";
+			
+		   String doMisappliedNamesJoin = " left join t.relationsFromThisTaxon as rft" +
+		        " left join rft.relatedTo as rt" +
+		        (classification != null ? " left join rt.taxonNodes as tn2" : " ") +
+		        " left join rt.name as n2" +
+		        " left join rft.type as rtype";
+			
+		   String doClassificationWhere = " tn.classification = :classification";
+		   String doClassificationForMisappliedNamesWhere = " tn2 .classification = :classification";
+		
+		   String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
+		
+		   String doSearchFieldWhere = "%s." + searchField +  " " + matchMode.getMatchOperator() + " :queryString";
+		  
+		   String doRelationshipTypeComparison = " rtype = :rType ";
+		
+		String taxonSubselect = null;
+		String synonymSubselect = null;
+		String misappliedSelect = null;
+		   
+		if(classification != null ){
+			if (!doIncludeMisappliedNames){
+				if(doAreaRestriction){
+					taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "n");
+					synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "sn");
+				} else {
+					taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin + 
+					" WHERE " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "n");
+					synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + 
+					" WHERE " + doClassificationWhere + 
+					" AND " + String.format(doSearchFieldWhere, "sn");
+				}
+			}else{ //misappliedNames included
+				if(doAreaRestriction){
+					misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + String.format(doSearchFieldWhere, "n") + 
+					" AND " + doClassificationForMisappliedNamesWhere + 
+					" AND " + doRelationshipTypeComparison;
+					
+					taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND "+ String.format(doSearchFieldWhere, "n") + " AND "+ doClassificationWhere;
+					
+					synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + 
+					" WHERE " + doAreaRestrictionWhere + 
+					" AND " + doClassificationWhere + " AND " +  String.format(doSearchFieldWhere, "sn");;
+		       	   
+				} else {
+					misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + 
+					" WHERE " + String.format(doSearchFieldWhere, "n") + 
+					" AND " + doClassificationForMisappliedNamesWhere + 
+					" AND " + doRelationshipTypeComparison;
+					
+					taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + 
+					" WHERE " +  String.format(doSearchFieldWhere, "n") + 
+					" AND "+ doClassificationWhere;
+					
+					synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + 
+					" WHERE " + doClassificationWhere + 
+					" AND " +  String.format(doSearchFieldWhere, "sn");
+				    
+				}
+			}
+		} else {
+			if(doAreaRestriction){
+				misappliedSelect = String.format(doAreaRestrictionMisappliedNameSubSelect, "t") + doTaxonNameJoin + doMisappliedNamesJoin + 
+				" WHERE " + doAreaRestrictionWhere +  
+				" AND " + String.format(doSearchFieldWhere, "n")+ 
+				" AND " + doRelationshipTypeComparison;
+				
+				taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin + 
+				" WHERE " + doAreaRestrictionWhere +  
+				" AND " + String.format(doSearchFieldWhere, "n");
+					
+				synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin + 
+				" WHERE " +   doAreaRestrictionWhere +  
+				" AND " +  String.format(doSearchFieldWhere, "sn");
+		
+		
+			} else {
+				misappliedSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doMisappliedNamesJoin + " WHERE " +  String.format(doSearchFieldWhere, "n") + " AND " + doRelationshipTypeComparison;
+				taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "n");
+				synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin + " WHERE " +  String.format(doSearchFieldWhere, "sn");
+		   
+			}
+		}
+		String[] result = {misappliedSelect, taxonSubselect, synonymSubselect};
+		
+		return result;
+	}
 
 
 }

@@ -540,12 +540,39 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		return results;
 	}
 	
-	public List<RelationshipBase> getRelationships(Integer limit, Integer start) {
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    //FIXME only NameRelationships
-			Criteria criteria = getSession().createCriteria(RelationshipBase.class);
-		    return (List<RelationshipBase>)criteria.list();
+		    // for some reason the HQL .class discriminator didn't work here so I created this preliminary
+        	// implementation for now. Should be cleaned in future.
+        	
+        	List<RelationshipBase> result = new ArrayList<RelationshipBase>();
+            
+        	int nameRelSize = countAllRelationships(NameRelationship.class);
+        	if (nameRelSize > start){
+        		
+        		String hql = " FROM %s as rb ORDER BY rb.id ";
+        		hql = String.format(hql, NameRelationship.class.getSimpleName());
+        		Query query = getSession().createQuery(hql);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result = query.list();
+        	}
+        	limit = limit - result.size();
+        	if (limit > 0){
+        		String hql = " FROM HybridRelationship as rb ORDER BY rb.id ";
+        		hql = String.format(hql, HybridRelationship.class.getSimpleName());
+        		Query query = getSession().createQuery(hql);
+        		start = (nameRelSize > start) ? 0 : (start - nameRelSize);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result.addAll( query.list());
+        	}
+            return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
 			return (List<RelationshipBase>)query.getResultList();
@@ -553,6 +580,27 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 	}
 	
 	
+	/**
+     * TODO not yet in interface
+     * @param clazz
+     * @return
+     */
+    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
+    	if (clazz != null && ! NameRelationship.class.isAssignableFrom(clazz) && ! HybridRelationship.class.isAssignableFrom(clazz) ){
+    		throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
+    	}
+    	int size = 0;
+    	 
+        if (clazz == null || NameRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM NameRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        if (clazz == null || HybridRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM HybridRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        return size;
+    }
 	public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
 		//TODO improve performance
 		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
@@ -620,7 +668,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		if (uuid != null) {
 			criteria.add(Restrictions.eq("uuid", uuid));
 		} else {
-			logger.error("UUID is NULL");
+			logger.warn("UUID is NULL");
 			return null;
 		}
 		
@@ -635,9 +683,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 				logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
 			}
 		} else if (results.size() > 1) {
-			logger.warn("Multiple results for UUID: " + uuid);
+			logger.error("Multiple results for UUID: " + uuid);
 		} else if (results.size() == 0) {
-			logger.warn("No results for UUID: " + uuid);
+			logger.info("No results for UUID: " + uuid);
 		}
 		return null;
 	}

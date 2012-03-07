@@ -264,7 +264,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	public Integer countByName(String queryString, 
 			MatchMode matchmode, List<Criterion> criteria);
 	
-	public List<RelationshipBase> getRelationships(Integer limit, Integer start); 
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 	
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
 
