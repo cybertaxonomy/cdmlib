@@ -529,7 +529,10 @@ cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-io/src/test/resources/dbscripts/001_cdm.hsqldb.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/description.txt -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input-original.xls -text

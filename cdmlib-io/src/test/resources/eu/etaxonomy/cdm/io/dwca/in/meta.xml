@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<archive xmlns="http://rs.tdwg.org/dwc/text/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/text/ file:///C:/localCopy/Data/dwca/in/metaSchema.xsd">
+	<core encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="0" rowType="http://rs.tdwg.org/dwc/terms/Taxon">
+		<files>
+			<location>coreTax.txt</location>
+		</files>
+		<id index="0"/>
+		<field index="1" term="http://rs.tdwg.org/dwc/terms/scientificNameID"/>
+		<field index="2" term="http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"/>
+		<field index="3" term="http://rs.tdwg.org/dwc/terms/taxonConceptID"/>
+		<field index="4" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
+		<field index="5" term="http://rs.tdwg.org/dwc/terms/nomenclaturalCode"/>
+		<field index="6" term="http://rs.tdwg.org/dwc/terms/taxonRank"/>
+		<field index="7" term="http://rs.tdwg.org/dwc/terms/parentNameUsageID"/>
+	</core>
+	<extension encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="@" fieldsEnclosedBy="/" ignoreHeaderLines="1" rowType="http://rs.gbif.org/terms/1.0/VernacularName">
+		<files>
+			<location>vernacular.txt</location>
+		</files>
+		<coreid index="0"/>
+		<field index="1" term="http://rs.tdwg.org/dwc/terms/vernacularName"/>
+		<field index="2" term="http://purl.org/dc/terms/language"/>
+	</extension>
+	<extension encoding="UTF-8" linesTerminatedBy="\r\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.gbif.org/terms/1.0/Description">
+		<files>
+			<location>description.txt</location>
+		</files>
+		<coreid index="0"/>
+		<field index="1" term="http://purl.org/dc/terms/description"/>
+		<field index="2" term="http://purl.org/dc/terms/type"/>
+		<field index="3" term="http://purl.org/dc/terms/source"/>
+		<field index="4" term="http://purl.org/dc/terms/language"/>
+	</extension>
+</archive>
