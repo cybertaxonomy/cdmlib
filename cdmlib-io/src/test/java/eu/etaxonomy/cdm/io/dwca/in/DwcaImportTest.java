@@ -18,9 +18,11 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 
 /**
  * @author a.mueller
@@ -35,7 +37,13 @@ public class DwcaImportTest {
 	private DwcaImport dwcaImport;
 	private DwcaImportState state;
 	
-
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception{
+		DefaultTermInitializer initializer = new DefaultTermInitializer();
+		initializer.initialize();
+	}
+	
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
