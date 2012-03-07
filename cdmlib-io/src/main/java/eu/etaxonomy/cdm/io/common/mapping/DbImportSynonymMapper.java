@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -42,8 +44,8 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	
 //******************************** FACTORY METHOD ***************************************************/
 	
-	public static DbImportSynonymMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String relTypeAttribute){
-		return new DbImportSynonymMapper(dbFromAttribute, dbToAttribute, null, relatedObjectNamespace, relTypeAttribute);
+	public static DbImportSynonymMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String relTypeAttribute, boolean useTaxonRelationshipIfNeeded){
+		return new DbImportSynonymMapper(dbFromAttribute, dbToAttribute, null, relatedObjectNamespace, relTypeAttribute, useTaxonRelationshipIfNeeded);
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
@@ -54,6 +56,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	private String citationAttribute;
 	private String microCitationAttribute;
 	private String relationshipTypeAttribute;
+	private boolean useTaxonRelationship;
 	
 	
 //********************************* CONSTRUCTOR ****************************************/
@@ -61,7 +64,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	 * @param relatedObjectNamespace 
 	 * @param mappingImport
 	 */
-	protected DbImportSynonymMapper(String fromAttribute, String toAttribute, TaxonRelationshipType relType, String relatedObjectNamespace, String relTypeAttribute) {
+	protected DbImportSynonymMapper(String fromAttribute, String toAttribute, TaxonRelationshipType relType, String relatedObjectNamespace, String relTypeAttribute, boolean useTaxonRelationshipIfNeeded) {
 		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
@@ -72,6 +75,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 		if (relTypeAttribute != null){
 			logger.warn("Synonymrelationship type not yet implemented");
 		}
+		this.useTaxonRelationship = useTaxonRelationshipIfNeeded; 
 	}
 
 //************************************ METHODS *******************************************/
@@ -94,8 +98,11 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
 		String toId = String.valueOf(rs.getObject(toAttribute));
 		
-		//TODO cast
-		Reference citation = (Reference)getRelatedObject(rs, citationAttribute);
+		if (toId == null){
+			return fromObject;
+		}
+		
+		Reference citation = CdmBase.deproxy(getRelatedObject(rs, citationAttribute), Reference.class);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
@@ -107,7 +114,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Synonym synonym = checkSynonymType(fromObject, fromId);
+		checkSynonymType(fromObject, fromId);
 		
 		if (toObject == null){
 			String warning  = "The accepted taxon (" + toId + ") could not be found. Synonym not added to accepted taxon";
@@ -116,10 +123,18 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 		}
 		Taxon taxon = checkTaxonType(toObject, "Accepted taxon", toId);
 		
-		SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
 		
-		taxon.addSynonym(synonym, relType, citation, microCitation);
-		return synonym;
+		if (fromObject.isInstanceOf(Synonym.class)){
+			SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
+			Synonym synonym = CdmBase.deproxy(fromObject, Synonym.class);
+			taxon.addSynonym(synonym, relType, citation, microCitation);
+		}else if (fromObject.isInstanceOf(Taxon.class)){
+			TaxonRelationshipType type = TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS();
+			Taxon synonymTaxon = CdmBase.deproxy(fromObject, Taxon.class);
+			synonymTaxon.addTaxonRelation(taxon, type, citation, microCitation);
+			
+		}
+		return fromObject;
 	}
 	
 	/**
@@ -158,13 +173,17 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	 * Checks if cdmBase is of type Synonym 
 	 * @param fromObject
 	 */
-	private Synonym checkSynonymType(CdmBase cdmBase, String id) {
+	private TaxonBase checkSynonymType(CdmBase cdmBase, String id) {
 		if (! cdmBase.isInstanceOf(Synonym.class)){
 			String warning = "Synonym (" + id + ") is not of type Synonym but of type " + cdmBase.getClass().getSimpleName();
-			logger.warn(warning);
-			throw new IllegalArgumentException(warning);
+			if (! this.useTaxonRelationship){
+				logger.warn(warning);
+				throw new IllegalArgumentException(warning);
+			}else{
+				logger.info(warning);
+			}
 		}
-		return (cdmBase.deproxy(cdmBase, Synonym.class));
+		return (cdmBase.deproxy(cdmBase, TaxonBase.class));
 	}
 
 
