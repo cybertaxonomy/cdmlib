@@ -27,15 +27,14 @@ public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 
 	public TermUri term;
 	public Map<String, String> map;
-	CsvStream stream;
+	private CsvStream stream;
 	
 	/**
 	 * @param term
 	 * @param map
 	 * @param stream
 	 */
-	public CsvStreamItem(TermUri term, Map<String, String> map,
-			CsvStream stream) {
+	public CsvStreamItem(TermUri term, Map<String, String> map, CsvStream stream) {
 		super();
 		this.term = term;
 		this.map = map;
