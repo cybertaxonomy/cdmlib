@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<groupId>eu.etaxonomy</groupId>
-		<artifactId>cdmlib-parent</artifactId>
-		<version>3.0.9-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+    <groupId>eu.etaxonomy</groupId>
+    <artifactId>cdmlib-parent</artifactId>
+		<version>3.0.10-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 	
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-persistence</artifactId>
@@ -40,7 +40,7 @@
           <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.4</version> 
+           	<version>${hsqldb.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -63,8 +63,8 @@
                 <path refid="maven.compile.classpath" />
                 <path refid="maven.test.classpath" />
               </classpath>
-              <jpaconfiguration persistenceunit="cdm" /> 
-              <hbm2ddl drop="false" create="true" export="false" outputfilename="target/generated-sources/hibernate3/001_cdm.ddl" delimiter=";" format="true" />  
+              <jpaconfiguration persistenceunit="cdm" />
+              <hbm2ddl drop="false" create="true" export="false" outputfilename="target/generated-sources/hibernate3/001_cdm.ddl" delimiter=";" format="true" />
               </hibernatetool>
           </tasks>
         </configuration>
@@ -72,11 +72,11 @@
           <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.4</version>
+            <version>${hsqldb.version}</version>
           </dependency>
           <dependency>
   		    <groupId>mysql</groupId>
-  		    <artifactId>mysql-connector-java</artifactId>
+          <artifactId>mysql-connector-java</artifactId>
             <version>5.0.5</version>
           </dependency>
           <dependency>
@@ -121,15 +121,15 @@
   </build>
   <dependencies>
   	 <dependency>
-  		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-model</artifactId>
-  	</dependency>
-	<dependency>
-  		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-commons</artifactId>
-  	</dependency>
-  	<dependency>
-  	    <groupId>org.slf4j</groupId>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-model</artifactId>
+    </dependency>
+  <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-commons</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
     </dependency>
   	<dependency>
@@ -200,28 +200,75 @@
     </dependency>
     <dependency>
         <groupId>org.unitils</groupId>
-        <artifactId>unitils</artifactId>
+         <artifactId>unitils-core</artifactId>
+        <!-- <scope>test</scope> unscoped since we need this dependency at compile time for H2DbSupport.java -->
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-database</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbmaintainer</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-mock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-inject</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-spring</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
+      <scope>test</scope>
     </dependency>
   	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>org.springframework.beans</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>org.springframework.orm</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>org.springframework.jdbc</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>org.springframework.test</artifactId>
-  	</dependency>
+  	  <groupId>com.carrotsearch</groupId>
+      <artifactId>junit-benchmarks</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>org.springframework.test</artifactId>
+    </dependency>
     <dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>org.springframework.aop</artifactId>
@@ -279,7 +326,11 @@
 		<artifactId>h2</artifactId>
   	</dependency>
 	
-  	
-  </dependencies>
+	 <!--  SQL Debugging  -->
+    <dependency>
+        <groupId>p6spy</groupId>
+        <artifactId>p6spy</artifactId>
+    </dependency>
+   </dependencies>
   
 </project>
