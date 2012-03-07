@@ -188,7 +188,7 @@ public class BotanicNameCacheStrategyTest {
 	@Test
 	public final void testGetFullTitleCache() {
 		assertNull(speciesNameString, strategy.getFullTitleCache(null));
-		assertEquals("Abies alba app phrase, Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
+		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
 		
 //		assertNull(subSpeciesNameString, strategy.getFullTitleCache(null));
 //		assertEquals("Abies alba app phrase L. Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));

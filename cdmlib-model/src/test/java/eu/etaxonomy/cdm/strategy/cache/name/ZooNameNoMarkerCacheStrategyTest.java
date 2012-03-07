@@ -34,8 +34,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.mueller
  *
  */
-public class ZoologicalNameCacheStrategyTest {
-	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
+public class ZooNameNoMarkerCacheStrategyTest {
+	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
 	
 	private ZooNameDefaultCacheStrategy strategy;
 	private ZoologicalName familyName;
@@ -51,7 +51,8 @@ public class ZoologicalNameCacheStrategyTest {
 	private final String familyNameString = "Familia";
 	private final String genusNameString = "Genus";
 	private final String speciesNameString = "Abies alba";
-	private final String subSpeciesNameString = "Abies alba subsp. beta";
+	private final String subSpeciesNameString = "Abies alba beta";
+	private final String subSpeciesNameStringToParse = "Abies alba subsp. beta";
 
 	private final String authorString = "L.";
 	private final String exAuthorString = "Exaut.";
@@ -77,7 +78,7 @@ public class ZoologicalNameCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		strategy = ZooNameDefaultCacheStrategy.NewInstance();
+		strategy = ZooNameNoMarkerCacheStrategy.NewInstance();
 		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
 		
@@ -86,7 +87,8 @@ public class ZoologicalNameCacheStrategyTest {
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 		
 		speciesName = ZoologicalName.PARSED_NAME(speciesNameString);
-		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameString);
+		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameStringToParse);
+		subSpeciesName.setCacheStrategy(strategy);
 
 		author = Person.NewInstance();
 		author.setNomenclaturalTitle(authorString);
@@ -101,17 +103,6 @@ public class ZoologicalNameCacheStrategyTest {
 
 /********* TEST *******************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#NewInstance()}.
-	 */
-	@Test
-	public final void testNewInstance() {
-		assertNotNull(strategy);
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	public final void testGetNameCache() {
 		assertEquals(subSpeciesNameString, subSpeciesName.getNameCache());
@@ -131,8 +122,9 @@ public class ZoologicalNameCacheStrategyTest {
 		subSpeciesName.setPublicationYear(publicationYear);
 		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
 		
-		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
-		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString  + ", " + originalPublicationYear +")" +  " " + exAuthorString + " ex " + authorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
+		assertEquals("Abies alba beta", strategy.getNameCache(subSpeciesName));
+		
+		assertEquals("Abies alba beta" + " (" + exBasAuthorString + " ex " + basAuthorString  + ", " + originalPublicationYear +")" +  " " + exAuthorString + " ex " + authorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
 		
 		//Autonym, 
 		subSpeciesName.setInfraSpecificEpithet("alba");
@@ -144,8 +136,8 @@ public class ZoologicalNameCacheStrategyTest {
 		//assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
 		//assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 		//new we now assume that there are no autonyms in zoology (source: they do not exist in Fauna Europaea)
-		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
-		assertEquals("Abies alba subsp. alba (1860) L., 1928", strategy.getTitleCache(subSpeciesName));
+		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
+		assertEquals("Abies alba alba (1860) L., 1928", strategy.getTitleCache(subSpeciesName));
 		
 	}
 
@@ -173,11 +165,11 @@ public class ZoologicalNameCacheStrategyTest {
 		//cache
 		subSpeciesName.setAuthorshipCache(authorString);
 		assertEquals("AuthorshipCache must be updated", authorString, subSpeciesName.getAuthorshipCache());
-		assertEquals("TitleCache must be updated", "Abies alba subsp. beta " + authorString, subSpeciesName.getTitleCache());
+		assertEquals("TitleCache must be updated", "Abies alba beta " + authorString, subSpeciesName.getTitleCache());
 		subSpeciesName.setProtectedAuthorshipCache(false);
 		//TODO make this not needed
 		subSpeciesName.setTitleCache(null, false);
-		assertEquals("TitleCache must be updated", "Abies alba subsp. beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache());
+		assertEquals("TitleCache must be updated", "Abies alba beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache());
 		
 		assertNull("Authorship cache for null must return null", strategy.getAuthorshipCache(null));
 		
@@ -200,7 +192,7 @@ public class ZoologicalNameCacheStrategyTest {
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
 		
 		this.getValue(method, strategy, subGenusName);
-		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
+		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));
 	}
 
 	/**
@@ -208,6 +200,7 @@ public class ZoologicalNameCacheStrategyTest {
 	 */
 	@Test
 	public final void testGetSpeciesNameCache() {
+		//test correct overriding for ZooNameDefaultCacheStrategy
 		assertEquals(speciesNameString, strategy.getNameCache(speciesName));
 	}
 
@@ -216,7 +209,7 @@ public class ZoologicalNameCacheStrategyTest {
 	 */
 	@Test
 	public final void testGetInfraSpeciesNameCache() {
-		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
+		assertEquals("Abies alba beta", strategy.getNameCache(subSpeciesName));
 	}
 	
 
@@ -227,13 +220,9 @@ public class ZoologicalNameCacheStrategyTest {
 	public final void testAutonyms() {
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
-		//old
-//		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
-//		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
-		//new
 		//new: we now assume that there are no autonyms in zoology (source: they do not exist in Fauna Europaea)
-		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
-		assertEquals("Abies alba subsp. alba L.", strategy.getTitleCache(subSpeciesName));
+		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
+		assertEquals("Abies alba alba L.", strategy.getTitleCache(subSpeciesName));
 	}
 	
 	
