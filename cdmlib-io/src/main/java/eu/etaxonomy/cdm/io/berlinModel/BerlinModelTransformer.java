@@ -49,9 +49,73 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
 	
+	//ranks
+	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
+	public static UUID uuidRankProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+	public static UUID uuidRankRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+	
 	//named areas
 	public static UUID euroMedUuid = UUID.fromString("9fe09988-58c0-4c06-8474-f660a0c50014");
 	
+	public static UUID uuidEasternEuropeanRussia = UUID.fromString("3f013375-0e0a-40c3-8a14-84c0535fab40");
+	public static UUID uuidSerbiaMontenegro = UUID.fromString("8926dbe6-863e-47a9-98a0-7dc9ed2c57f7");
+	public static UUID uuidSerbia = UUID.fromString("4ffed197-3d7e-4cd9-8984-e64b8dee9512");
+	public static UUID uuidLebanonSyria = UUID.fromString("0c45f250-99da-4b19-aa89-c3e56cfdf103");
+	public static UUID uuidUssr = UUID.fromString("a512e00a-45f3-4be5-82fa-bba8d675696f");
+	public static UUID uuidSicilyMalta = UUID.fromString("424d81ee-d272-4ae8-9600-0a334049cd72");
+	
+	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
+	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
+	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
+	//azores
+	public static UUID uuidFlores = UUID.fromString("ef0067c2-8bbb-4e37-8462-97b03f51ba43");
+	public static UUID uuidCorvo = UUID.fromString("b1e6117c-2be1-43a3-9233-227dd90bdee9");
+	public static UUID uuidFaial = UUID.fromString("14f6dcdb-6524-4700-b80c-66424952ef2b");
+	public static UUID uuidGraciosa = UUID.fromString("05f93a7b-d813-4833-864f-eedbba747133");
+	public static UUID uuidSaoJorge = UUID.fromString("578e0ecd-b5e3-4c87-8ecc-0fc4c7e217d9");
+	public static UUID uuidSaoMiguel = UUID.fromString("0e2f6ad8-7afb-4f01-b134-4f71991e877a");
+	public static UUID uuidPico = UUID.fromString("98cc566f-4110-43d5-830f-68436a009f49");
+	public static UUID uuidSantaMaria = UUID.fromString("bd5e5d4a-22b7-41aa-8e58-1d1d73a9954d");
+	public static UUID uuidTerceira = UUID.fromString("6fc257c0-a131-41f0-b6c3-51ef9c4fa962");
+	//Canyry islands
+	public static UUID uuidGranCanaria = UUID.fromString("a0240c35-0e05-4157-8321-67ba8e31fdb9");
+	public static UUID uuidFuerteventura = UUID.fromString("549ce2c1-6d49-4bf3-b75d-cf3f4b5a1398");
+	public static UUID uuidGomera = UUID.fromString("895fab09-7478-4210-b42a-423d23c6f85e");
+	public static UUID uuidHierro = UUID.fromString("d137b6a5-31bc-418c-9403-f042017dc04b");
+	public static UUID uuidLanzaroteWithGraciosa = UUID.fromString("c9b08dc1-f301-4d9d-b447-b8744602c776");
+	public static UUID uuidLaPalma = UUID.fromString("fdb3f2b2-f154-4f04-9f31-240a47a0e780");
+	public static UUID uuidTenerife = UUID.fromString("73658c7e-a568-465e-bd84-4554fc93ca56");
+	//Baleares
+	public static UUID uuidIbizaWithFormentera = UUID.fromString("1cda2a33-3469-49d5-8e77-cb5451110519");
+	public static UUID uuidMallorca = UUID.fromString("a10cba04-b4b5-4a4b-b69a-fcd4b3916fec");
+	public static UUID uuidMenorca = UUID.fromString("9f6ede48-27f8-4270-bf4e-c97eaa86aab7");
+	
+	//russia
+	public static UUID uuidRussiaNorthern = UUID.fromString("c23bc1c9-a775-4426-b883-07d4d7d47eed");
+	public static UUID uuidRussiaBaltic = UUID.fromString("579dad44-9439-4b19-8716-ab90d8f27944");
+	public static UUID uuidRussiaCentral = UUID.fromString("8bbc8c6a-2ef2-4024-ad51-66fe34c70092");
+	public static UUID uuidRussiaSouthWest = UUID.fromString("daa5c207-5567-4690-8742-5e4d153b6a64");
+	public static UUID uuidRussiaSouthEast = UUID.fromString("e8516598-b529-489e-9ee8-63bbbd295c1b");
+	public static UUID uuidEastAegeanIslands = UUID.fromString("1c429593-c493-46e6-971a-0d70be690da8");
+	public static UUID uuidTurkishEastAegeanIslands = UUID.fromString("ba35dba3-ac70-41ae-81c2-2070943f44f2");
+	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
+	public static final UUID uuidTurkey = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
+	public static final UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
+	
+	//language areas
+	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
+	public static final UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
+	
+	//Marker Types
+	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
+	
+	//Extension Types
+	public static final UUID uuidSpeciesExpertName = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
+	public static final UUID uuidExpertName = UUID.fromString("24becb79-a90c-47d3-be35-efc87bb48fd3");
+	
+	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
+	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
+
 	public static UUID uuidDesertas = UUID.fromString("36f5e93e-34e8-45b5-a401-f0e0faad21cf");
 	public static UUID uuidMadeira = UUID.fromString("086e27ee-78ff-4236-aca9-9850850cd355");
 	public static UUID uuidPortoSanto = UUID.fromString("1f9ab6a0-a402-4dfe-8c5b-b1844eb4d8e5");
@@ -180,9 +244,14 @@ public final class BerlinModelTransformer {
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
-	public static UUID uuidRelNameCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
+	public static UUID uuidNomStatusNomOrthCons = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 	
 	static NomenclaturalStatusType nomStatusCombIned;
+	static NomenclaturalStatusType nomStatusSpNovIned;
+	static NomenclaturalStatusType nomStatusNomOrthCons;
+	
 	public static NomenclaturalStatusType nomStatusTypeAbbrev2NewNomStatusType(String nomStatus){
 		NomenclaturalStatusType result = null;
 		if (nomStatus == null){
@@ -192,10 +261,28 @@ public final class BerlinModelTransformer {
 				nomStatusCombIned = new NomenclaturalStatusType();
 				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
 				nomStatusCombIned.addRepresentation(representation);
-				nomStatusCombIned.setUuid(uuidRelNameCombIned);
+				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusCombIned);
 			}
 			result = nomStatusCombIned;
+		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
+			if (nomStatusSpNovIned == null){
+				nomStatusSpNovIned = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN());
+				nomStatusSpNovIned.addRepresentation(representation);
+				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
+			}
+			result = nomStatusSpNovIned;
+		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
+			if (nomStatusNomOrthCons == null){
+				nomStatusNomOrthCons = new NomenclaturalStatusType();
+				Representation representation = Representation.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN());
+				nomStatusNomOrthCons.addRepresentation(representation);
+				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);
+				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusNomOrthCons);
+			}
+			result = nomStatusNomOrthCons;
 		}
 		return result;
 	}
@@ -368,7 +455,6 @@ public final class BerlinModelTransformer {
 	}
 	
 	
-	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
 	static Rank collSpeciesRank;
 	/**
 	 * @param i

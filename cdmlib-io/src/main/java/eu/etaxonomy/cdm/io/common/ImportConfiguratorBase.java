@@ -73,6 +73,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	
 	private SOURCE source;
 	protected Reference sourceReference;
+	private UUID sourceRefUuid; 
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 	
@@ -399,6 +400,17 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	 */
 	public String getClassificationName() {
 		return classificationName;
+	}
+	
+
+	public UUID getSourceRefUuid() {
+		return sourceRefUuid;
+	}
+
+
+
+	public void setSourceRefUuid(UUID sourceRefUuid) {
+		this.sourceRefUuid = sourceRefUuid;
 	}
 
 

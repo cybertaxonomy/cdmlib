@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbMarkerMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -91,9 +92,9 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		}
 	}
 	
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("NameId"));
 		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("SupraGenericName", this));
@@ -164,7 +165,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 			logger.info("load "+pluralString+" ...");
 			List<TaxonNameBase> names = getObjectList();
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			logger.info("save "+pluralString+" ...");
 			int count = 0;

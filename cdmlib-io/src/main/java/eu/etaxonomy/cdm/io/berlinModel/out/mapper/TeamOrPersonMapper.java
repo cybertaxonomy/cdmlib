@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IndexCounter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class TeamOrPersonMapper extends DbObjectMapper {
 
-	CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> teamMapping;
+	CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> teamMapping;
 	PreparedStatement stmtInsertTeam;
 	PreparedStatement stmtInsertSequence;
 	PreparedStatement stmtMaxId;
@@ -43,7 +44,7 @@ public class TeamOrPersonMapper extends DbObjectMapper {
 	
 	
 	protected TeamOrPersonMapper(String cdmAttributeString, String dbAttributeString, Object defaultValue) {
-		super(cdmAttributeString, dbAttributeString, defaultValue);
+		super(cdmAttributeString, dbAttributeString, defaultValue, false);
 		
 	}
 	

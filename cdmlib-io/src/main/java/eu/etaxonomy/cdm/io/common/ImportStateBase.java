@@ -31,11 +31,12 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -69,6 +70,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	
 	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
+	private Map<UUID, Rank> rankMap = new HashMap<UUID, Rank>();
 	
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
@@ -222,6 +224,16 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putNamedAreaLevel(NamedAreaLevel namedAreaLevel){
 		namedAreaLevelMap.put(namedAreaLevel.getUuid(), namedAreaLevel);
 	}
+	
+	public Rank getRank(UUID uuid){
+		return rankMap.get(uuid);
+	}
+
+	
+	public void putRank(Rank rank){
+		rankMap.put(rank.getUuid(), rank);
+	}
+
 
 	
 	public Feature getFeature(UUID uuid){

@@ -57,16 +57,6 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 //************************************ METHODS *******************************************/
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
-		super.initialize(state, destinationClass);
-		//Todo remove initialize when this logging is not needed anymore
-		logger.warn("DbImportObjectCreationMapperBase still needs 'citation' implemented for OriginalSource"); //see addOriginalSource()
-	}
-	
-	
-	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public CREATE invoke(ResultSet rs, CREATE noObject) throws SQLException {
@@ -107,9 +97,9 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			Object id = rs.getObject(dbIdAttribute);
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;
-			//FIXME
-			Reference<?> citation = null;
-			//importMapperHelper.getState().getConfig()xxx;
+			
+			Reference<?> citation = getState().getTransactionalSourceReference();
+			
 			String microCitation = null;
 			if (cdmBase instanceof IdentifiableEntity){
 				source = IdentifiableSource.NewInstance(strId, idNamespace, citation, microCitation);
@@ -131,7 +121,7 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	 * @return
 	 */
 	protected IInputTransformer getTransformer(){
-		return getState().getConfig().getTransformer();
+		return getState().getTransformer();
 	}
 	
 }

@@ -12,18 +12,24 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
 //TODO make it CONFIG extends DBExportConfigurator
-public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase> extends IoStateBase<CONFIG, CdmExportBase> {
+public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?,?,TRANSFORM>, TRANSFORM extends IExportTransformer> extends IoStateBase<CONFIG, CdmExportBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportStateBase.class);
 	
 	protected ExportStateBase(CONFIG config){
 		this.config = config;
+	}
+	
+	public TRANSFORM getTransformer(){
+		return this.config.getTransformer();
 	}
 	
 }

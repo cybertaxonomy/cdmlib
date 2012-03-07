@@ -126,6 +126,8 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 			profiler.startTx();
 			TransactionStatus txStatus = getTransaction(partitionSize, partitionedIO);
 			
+			state.makeTransactionalSourceReference(partitionedIO.getReferenceService());
+			
 			profiler.startRs();
 			ResultSet rs = makePartitionResultSet();
 
@@ -141,6 +143,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 			
 			profiler.startDoCommit();
 			partitionedIO.commitTransaction(txStatus);
+			state.resetTransactionalSourceReference();
 			
 			profiler.end();
 			state.setRelatedObjects(null);

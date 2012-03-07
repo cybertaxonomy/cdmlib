@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -20,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  * <IExportConfigurator>
  */
-public abstract class BerlinModelExportBase<T extends CdmBase> extends DbExportBase<BerlinModelExportConfigurator, BerlinModelExportState> {
+public abstract class BerlinModelExportBase<T extends CdmBase> extends DbExportBase<BerlinModelExportConfigurator, BerlinModelExportState, IExportTransformer> {
 	private static final Logger logger = Logger.getLogger(BerlinModelExportBase.class);
 	
 	public BerlinModelExportBase() {

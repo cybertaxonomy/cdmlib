@@ -13,7 +13,11 @@ package eu.etaxonomy.cdm.io.common;
 import java.sql.ResultSet;
 import java.util.Map;
 
+import org.springframework.transaction.TransactionStatus;
+
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * This class represents all (import(?)) states used with an ResultSetPartitioner
@@ -40,5 +44,11 @@ public interface IPartitionedState {
 	 * @return
 	 */
 	public CdmBase getRelatedObject(Object namespace, String id);
+	
+	public Reference getTransactionalSourceReference();
+	
+	public void resetTransactionalSourceReference();
+	
+	public void makeTransactionalSourceReference(IReferenceService service);
 	
 }

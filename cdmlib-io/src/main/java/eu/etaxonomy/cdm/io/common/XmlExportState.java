@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class XmlExportState<CONFIG extends XmlExportConfiguratorBase> extends ExportStateBase<CONFIG> {
+public class XmlExportState<CONFIG extends XmlExportConfiguratorBase<?>> extends ExportStateBase<CONFIG, IExportTransformer> {
 	private static final Logger logger = Logger.getLogger(XmlExportState.class);
 
 	private Map<UUID, String> xmlIdMap = new HashMap<UUID, String>();

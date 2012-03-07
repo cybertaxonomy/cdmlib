@@ -27,6 +27,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml.edited
 cdmlib-io/src/test/resources/log4j.properties
 cdmlib-io/target
 cdmlib-model/.classpath

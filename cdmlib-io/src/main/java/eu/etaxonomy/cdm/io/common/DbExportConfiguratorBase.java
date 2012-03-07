@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
@@ -22,18 +22,23 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> extends ExportConfiguratorBase<Source> implements IExportConfigurator<STATE>{
+public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends ExportConfiguratorBase<Source, STATE, TRANSFORM> implements IExportConfigurator<STATE, TRANSFORM>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DbExportConfiguratorBase.class);
 	
 	
 	public enum IdType{
 		CDM_ID,
+		CDM_ID_WITH_EXCEPTIONS,
 		ORIGINAL_SOURCE_ID,
 		MAX_ID
 	}
 	
 	private IdType idType = IdType.CDM_ID;
+
+	public DbExportConfiguratorBase(TRANSFORM transformer) {
+		super(transformer);
+	}
 	
 
 	/**
@@ -55,8 +60,8 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> ex
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
 	 */
 	public String getDestinationNameString() {
-		if (getSource() != null){
-			return getSource().getDatabase();
+		if (getDestination() != null){
+			return getDestination().getDatabase();
 		}else{
 			return null;
 		}
@@ -88,8 +93,7 @@ public abstract class DbExportConfiguratorBase<STATE extends ExportStateBase> ex
 	public IDatabase getSourceReference() {
 		
 		if (sourceReference == null){
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			sourceReference =  refFactory.newDatabase();
+			sourceReference =  ReferenceFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}

@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbSingleAttributeExportMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IDbExportMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IndexCounter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 12.05.2009
  * @version 1.0
  */
-public class RefDetailMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState> implements IDbExportMapper<BerlinModelExportState>{
+public class RefDetailMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState> implements IDbExportMapper<BerlinModelExportState, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(RefDetailMapper.class);
 	
 	private String cdmRefAttributeString; 

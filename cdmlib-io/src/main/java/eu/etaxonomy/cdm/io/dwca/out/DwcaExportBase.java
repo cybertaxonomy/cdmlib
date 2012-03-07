@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 18.04.2011
  *
  */
-public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
+public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer> implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
 	private static final Logger logger = Logger.getLogger(DwcaExportBase.class);
 	
 	protected static final boolean IS_CORE = true;

@@ -498,6 +498,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TermTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TestCdmSchemaGenerator.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/URIEncoder.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/reference/EndnoteRecordsImportTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportBenchmark.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.java -text
@@ -509,10 +510,10 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImportTest.java -tex
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/test/function/TestDatabase.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
-cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
+cdmlib-io/src/test/resources/dbscripts/001-cdm.h2.sql -text
+cdmlib-io/src/test/resources/dbscripts/001_cdm.hsqldb.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/description.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
@@ -541,6 +542,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TaxonNameTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TaxonTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TermTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text

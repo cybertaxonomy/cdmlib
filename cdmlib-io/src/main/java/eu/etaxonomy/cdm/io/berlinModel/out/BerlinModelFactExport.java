@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbIntegerAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbMarkerMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -76,9 +77,9 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		return result;
 	}
 	
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("FactId"));
 		mapping.addMapper(MethodMapper.NewInstance("PTNameFk", this.getClass(), "getPTNameFk", TextData.class, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("PTRefFk", this.getClass(), "getPTRefFk", TextData.class, DbExportStateBase.class));
@@ -109,7 +110,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 			
 			List<DescriptionBase> list = getDescriptionService().list(null,1000000000, 0,null,null);
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			
 			this.source = state.getConfig().getDestination(); 
@@ -181,17 +182,17 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk(TextData textData, DbExportStateBase<?> state){
+	private static Integer getPTNameFk(TextData textData, DbExportStateBase<?, IExportTransformer> state){
 		return getObjectFk(textData, state, true);
 	}
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk(TextData textData, DbExportStateBase<?> state){
+	private static Integer getPTRefFk(TextData textData, DbExportStateBase<?, IExportTransformer> state){
 		return getObjectFk(textData, state, false);
 	}
 
-	private static Integer getObjectFk(TextData textData, DbExportStateBase<?> state, boolean isName){
+	private static Integer getObjectFk(TextData textData, DbExportStateBase<?, IExportTransformer> state, boolean isName){
 		DescriptionBase<?> desc = textData.getInDescription();
 		if (desc.isInstanceOf(TaxonDescription.class)){
 			TaxonDescription taxonDesc = (TaxonDescription)desc;

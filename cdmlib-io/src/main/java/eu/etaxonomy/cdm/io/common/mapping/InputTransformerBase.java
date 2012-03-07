@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
@@ -227,6 +228,18 @@ public class InputTransformerBase implements IInputTransformer {
 
 		String warning = "getReferenceSystemUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	@Override
+	public Rank getRankByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getRankByKey is not yet implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	@Override
+	public UUID getRankUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getRankUuid is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);	
 	}
 	
 	

@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
@@ -46,7 +47,10 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
 
-	
+
+	//TODO
+	private static IExportTransformer defaultTransformer = null;
+
 	
 	public static SDDExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
 		return new SDDExportConfigurator(source, destinationFolder + File.separator + url);
@@ -205,7 +209,7 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 	 * @param destination
 	 */
 	private SDDExportConfigurator(ICdmDataSource source, String url) {
-		super(new File(url), source);
+		super(new File(url), source, defaultTransformer);
 //		setDestination(url);
 //		setSource(source);
 	}

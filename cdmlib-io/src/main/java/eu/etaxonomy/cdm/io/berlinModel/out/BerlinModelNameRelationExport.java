@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -67,9 +68,9 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		return result;
 	}
 	
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("RelNameId"));
 
 		mapping.addMapper(DbObjectMapper.NewInstance("fromName", "NameFk1"));
@@ -95,7 +96,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 			
 			List<RelationshipBase> list = getNameService().getAllRelationships(100000000, 0);
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;
@@ -123,7 +124,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 	}
 
 	
-	private boolean makeIsHomotypicRelation(BerlinModelExportState state, CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping){
+	private boolean makeIsHomotypicRelation(BerlinModelExportState state, CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping){
 		boolean success = true ;
 		try{
 			Integer homotypicId = state.getConfig().getIsHomotypicId();
@@ -166,7 +167,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		}	
 	}
 	
-	private boolean invokeIsHomotypic(BerlinModelExportState state, CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping, TaxonNameBase fromName, TaxonNameBase toName, Reference refId, String microCitation) throws SQLException{
+	private boolean invokeIsHomotypic(BerlinModelExportState state, CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping, TaxonNameBase fromName, TaxonNameBase toName, Reference refId, String microCitation) throws SQLException{
 		try{
 			logger.info(fromName.getTitleCache() + "->" + toName.getTitleCache());
 			String maxQuery = " SELECT max(relNameId) as max FROM relName ";

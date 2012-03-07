@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 
@@ -41,4 +42,6 @@ public interface IPartitionedIO<STATE extends IPartitionedState> {
 	 * @return
 	 */
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs);
+
+	public IReferenceService getReferenceService();
 }

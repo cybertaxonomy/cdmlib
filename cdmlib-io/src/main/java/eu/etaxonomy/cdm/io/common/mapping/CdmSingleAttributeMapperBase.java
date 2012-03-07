@@ -60,7 +60,9 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	@Override
 	public Set<String>  getDestinationAttributes(){
 		Set<String>  result = new HashSet<String>();
-		result.add(destinationValue);
+		if(destinationValue != null){
+			result.add(destinationValue);
+		}
 		return result;
 	}
 	
@@ -75,7 +77,9 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	@Override
 	public List<String>  getDestinationAttributeList(){
 		List<String>  result = new ArrayList<String>();
-		result.add(destinationValue);
+		if(destinationValue != null){
+			result.add(destinationValue);
+		}
 		return result;
 	}
 	

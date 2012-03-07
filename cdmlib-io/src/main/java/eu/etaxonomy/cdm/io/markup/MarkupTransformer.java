@@ -50,6 +50,12 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidPhilippines  = UUID.fromString("9dee4b0d-d864-4b6f-bd41-39a1ea7c56c3");
 	
 	
+	//languages
+	public static final UUID uuidLanguageFang = UUID.fromString("6f811da1-c821-48bb-8891-c30b4228430e");
+	public static final UUID uuidLanguageOwimo = UUID.fromString("1764092c-7826-4b79-bacc-435a9af1320e");
+	public static final UUID uuidLanguageBatanga = UUID.fromString("ee277e78-1135-4823-b4ee-63c4b93f04a2");
+	
+	
 	
 	
 	//extension type uuids
@@ -318,6 +324,9 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("description")){return Feature.DESCRIPTION();
 		}else if (key.equalsIgnoreCase("distribution")){return Feature.DISTRIBUTION();
 		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.HABITAT_ECOLOGY();
+		}else if (key.equalsIgnoreCase("vernacular")){return Feature.COMMON_NAME();
+		}else if (key.equalsIgnoreCase("specimens")){return Feature.SPECIMEN();
+		}else if (key.equalsIgnoreCase("materials examined")){return Feature.MATERIALS_EXAMINED();
 		
 		}else if (key.equalsIgnoreCase("Vegetative Anatomy")){return Feature.ANATOMY();
 		
@@ -710,6 +719,18 @@ public class MarkupTransformer extends InputTransformerBase {
 		}
 	}
 	
+
+	@Override
+	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("fang")){return uuidLanguageFang;
+		}else if (key.equalsIgnoreCase("owimo")){return uuidLanguageOwimo;
+		}else if (key.equalsIgnoreCase("batanga")){return uuidLanguageBatanga;
+		
+		}else{
+			return null;
+		}
+	}
 	
 	
 	

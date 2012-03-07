@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
@@ -32,6 +33,11 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase {
 	
 	private boolean doAuthors;
 	private boolean doTaxonNames;
+	
+	//TODO
+	private static IExportTransformer defaultTransformer = null;
+
+
 	
 	public static TcsXmlExportConfigurator NewInstance(File destination, ICdmDataSource source){
 			return new TcsXmlExportConfigurator(destination, source);
@@ -53,7 +59,7 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase {
 	 * @param destination
 	 */
 	private TcsXmlExportConfigurator(File destination, ICdmDataSource cdmSource) {
-	   super(destination, cdmSource);
+	   super(destination, cdmSource, defaultTransformer);
 	}
 
 	

@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.io.jaxb;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,18 +25,17 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.babadshanjan
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @version 1.0
  */
 @Component
-public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExportState> implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
+public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer> implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
 
 	private static final Logger logger = Logger.getLogger(JaxbExport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
@@ -71,7 +72,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)state.getConfig();
 //		String dbname = jaxbExpConfig.getSource().getName();
-    	String fileName = jaxbExpConfig.getDestination();
+    	URI uri = jaxbExpConfig.getDestination();
 //		logger.info("Serializing DB " + dbname + " to file " + fileName);
 //		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
@@ -94,7 +95,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF8"), true);
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File(uri)), "UTF8"), true);
 			
 			/*SAXResult result = new SAXResult();
 			ContentHandler handler = new DefaultHandler();
@@ -107,7 +108,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			// TODO: Split into one file per data set member to see whether performance improves?
 
 			logger.info("XML file written");
-			logger.info("Filename is: " + fileName);
+			logger.info("Filename is: " + uri.toString());
 
 		} catch (Exception e) {
 			logger.error("Marshalling error");
