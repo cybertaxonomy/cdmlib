@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.strategy.cache;
 
+import org.apache.commons.lang.StringUtils;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  *
@@ -23,6 +25,11 @@ public class TaggedText {
 	
 	private String text;
 	private TagEnum type;
+	
+	
+	public static TaggedText NewWhitespaceInstance(){
+		return new TaggedText(TagEnum.separator, " ");
+	}
 	
 	public String getText() {
 		return text;
@@ -46,4 +53,51 @@ public class TaggedText {
 		this.type = type;
 	}
 	
+// *************************** DELEGATES ************************************/
+
+	public boolean isName() {
+		return type.isName();
+	}
+	public boolean isRank() {
+		return type.isRank();
+	}
+	public boolean isAuthors() {
+		return type.isAuthors();
+	}
+	public boolean isAppendedPhrase() {
+		return type.isAppendedPhrase();
+	}
+	public boolean isReference() {
+		return type.isReference();
+	}
+	public boolean isYear() {
+		return type.isYear();
+	}
+	public boolean isFullName() {
+		return type.isFullName();
+	}
+	public boolean isNomStatus() {
+		return type.isNomStatus();
+	}
+	public boolean isSeparator() {
+		return type.isSeparator();
+	}
+	public boolean isHybridSign() {
+		return type.isHybridSign();
+	}
+	
+	
+// ********************** toString() ***********************************************/	
+	
+	@Override
+	public String toString(){
+		String result = CdmUtils.concat(":", type.toString(), text);
+		if (StringUtils.isBlank(result)){
+			return super.toString();
+		}else{
+			return result;
+		}
+	}
+	
 }
+
