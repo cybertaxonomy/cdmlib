@@ -27,6 +27,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/SubProgressMonitor.
 cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
+cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/Test.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UriUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UuidGenerator.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
