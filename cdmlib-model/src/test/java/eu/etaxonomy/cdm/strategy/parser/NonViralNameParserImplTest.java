@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -865,7 +866,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(null, ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
 
 		//no volume, edition
-		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3: 455. 1987";
+		strNoVolume = "Abies alba Mill., Sp. Pl., ed. 3: 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
@@ -876,7 +877,7 @@ public class NonViralNameParserImplTest {
 		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3, 4(5): 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
-		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
+			assertEquals(strNoVolume.replace(" ed.", ", ed."), nameNoVolume.getFullTitleCache());
 		assertEquals("4(5)", ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
 		assertEquals("3", ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
 		
@@ -962,7 +963,7 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> nameBookSection2 = 
 			parser.parseReferencedName(strBookSection2, null, null);
 		assertFalse(nameBookSection2.hasProblem());
-		assertEquals(strBookSection2NoComma, nameBookSection2.getFullTitleCache());
+		assertEquals(strBookSection2NoComma.replace(" ed.", ", ed."), nameBookSection2.getFullTitleCache());
 		assertEquals(-1, nameBookSection2.getProblemStarts()); 
 		assertEquals(-1, nameBookSection2.getProblemEnds());
 		assertNull((nameBookSection2.getNomenclaturalReference()).getDatePublished().getStart());
@@ -973,7 +974,7 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> nameBookSection = 
 			parser.parseReferencedName(strBookSection, null, null);
 		assertFalse(nameBookSection.hasProblem());
-		assertEquals(strBookSection, nameBookSection.getFullTitleCache());
+		assertEquals(strBookSection.replace(" ed.", ", ed."), nameBookSection.getFullTitleCache());
 		assertEquals(-1, nameBookSection.getProblemStarts()); 
 		assertEquals(-1, nameBookSection.getProblemEnds());
 		assertNull(((IBookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished().getStart());
@@ -1174,6 +1175,21 @@ public class NonViralNameParserImplTest {
 	@Test
 	public final void testParseCultivar() {
 		logger.warn("Not yet implemented"); // TODO
+	}
+@Test
+	public final void testNomenclaturalStatus() {
+		BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY(), "Acanthopale", null, null, null, null, null, null, null);
+		name.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
+		
+		BotanicalName name2 = BotanicalName.NewInstance(Rank.FAMILY());
+		
+		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
+		
+		parser.parseReferencedName(name2, name.getFullTitleCache(),	name2.getRank(), true);
+		
+		Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
+		
+		
 	}
 
 }
