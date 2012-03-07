@@ -12,11 +12,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
-public class TestingBotanicalNameCacheStrategy implements
-        INonViralNameCacheStrategy<BotanicalName> {
+public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStrategy<BotanicalName> {
 
     public String getAuthorshipCache(BotanicalName nonViralName) {
         return "test.botanical.authorshipCache"+ nonViralName.getId();
@@ -55,5 +55,18 @@ public class TestingBotanicalNameCacheStrategy implements
         // TODO Auto-generated method stub
         return null;
     }
+
+	@Override
+	public String getTitleCache(BotanicalName nonViralName, HTMLTagRules htmlTagRules) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getFullTitleCache(BotanicalName nonViralName,
+			HTMLTagRules htmlTagRules) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -1354,6 +1354,9 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactio
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HSQLDialect.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HsqldbDataTypeFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_1.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_2.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_3.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/CleanSweepInsertLoadStrategy.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/FlatFullXmlWriter.java -text

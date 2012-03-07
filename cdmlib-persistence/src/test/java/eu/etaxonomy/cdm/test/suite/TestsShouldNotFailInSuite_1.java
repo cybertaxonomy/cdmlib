@@ -25,40 +25,22 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTes
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
         {
-            //database
-//			CdmDataSourceTest.class,
-//			DatabaseEnumTest.class,
-
-            //dao.common
-//			CdmEntityDaoBaseTest.class,
-//			DaoBaseTest.class,
             DefinedTermDaoImplTest.class,
             IdentifiableDaoBaseTest.class
+            /* FIXED:
+             * eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException:
+             *    IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)
+             * 	  at eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase.checkNotInPriorView(VersionableDaoBase.java:63)
+             *
+             */
 
-            //dao.Taxon
-//			TaxonDaoHibernateImplTest.class
         }
     )
-public class CdmTestSuite {
-    @SuppressWarnings("unused")
-    private static final  Logger logger = Logger.getLogger(CdmTestSuite.class);
+public class TestsShouldNotFailInSuite_1 {
+
+    private static final  Logger logger = Logger.getLogger(TestsShouldNotFailInSuite_1.class);
 
     // the class remains completely empty,
     // being used only as a holder for the above annotations
 
-    //console test  //TODO test
-    public static void consoleRun() {
-        org.junit.runner.JUnitCore.runClasses(
-                //database
-                CdmDataSourceTest.class,
-                DatabaseEnumTest.class,
-                //dao.common
-                CdmEntityDaoBaseTest.class,
-                DaoBaseTest.class,
-                DefinedTermDaoImplTest.class,
-                IdentifiableDaoBaseTest.class,
-                //dao.Taxon
-                TaxonDaoHibernateImplTest.class
-                    );
-    }
 }
