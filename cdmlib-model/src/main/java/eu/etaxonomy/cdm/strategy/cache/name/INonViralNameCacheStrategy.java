@@ -45,5 +45,5 @@ public interface INonViralNameCacheStrategy<T extends NonViralName> extends INam
 	 * @return
 	 */
 	public String getAuthorshipCache(T nonViralName);
-
+	
 }

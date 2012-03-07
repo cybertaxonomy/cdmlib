@@ -24,7 +24,8 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicNameDefaultCacheStrategy.class);
-	
+	private static final long serialVersionUID = 2679554971446197111L;
+
 	final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
 	
 	@Override
