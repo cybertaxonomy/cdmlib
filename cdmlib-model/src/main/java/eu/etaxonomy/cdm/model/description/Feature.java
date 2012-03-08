@@ -570,6 +570,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
 	private static final UUID uuidStatus = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
 	private static final UUID uuidSystematics = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
+	private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
 	
 	/** 
 	 * Creates and returns a new feature instance on the basis of a given string
@@ -862,6 +863,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	public static final Feature USES(){
 		return getTermByUuid(uuidUses);
+	}
+	
+	public static final Feature USERECORD(){
+		return getTermByUuid(uuidUseRecord);
 	}
 	 
 	
