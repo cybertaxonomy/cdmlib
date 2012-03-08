@@ -5,15 +5,11 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-2.5.xsd
-	http://www.springframework.org/schema/security 
-    http://www.springframework.org/schema/security/spring-security-3.0.4.xsd">
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
 
   <context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
-
-	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
 
@@ -57,6 +53,5 @@
     <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
         <property name="userPropertyToUse" value="getUsername"/>
     </bean>
-
 
 </beans>
