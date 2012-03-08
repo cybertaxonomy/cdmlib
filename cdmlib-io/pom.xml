@@ -51,10 +51,6 @@
       <artifactId>cdmlib-ext</artifactId>
     </dependency>
     <dependency>
-  		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-ext</artifactId>
-  	</dependency>
-  	<dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils-core</artifactId>
         <scope>test</scope>
