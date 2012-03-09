@@ -44,7 +44,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 
 	private static final String ID = "id";
 	// key for for case that no dataset information is supplied
-	private static final String NO_DATASET = "no_dataset_jli773oebhjklw";
+	public static final String NO_DATASET = "no_dataset_jli773oebhjklw";
 
 	
 	/**
@@ -269,23 +269,45 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 	}
 
 
-	private TaxonBase<?> getTaxonBase(CsvStreamItem csvTaxonRecord) {
+	private TaxonBase<?> getTaxonBase(CsvStreamItem item) {
 		TaxonNameBase<?,?> name = null;
 		Reference<?> sec = null;
 		TaxonBase<?> result;
-		String status = csvTaxonRecord.get(TermUri.DWC_TAXONOMIC_STATUS);
-		if (status != null){
-			if (status.matches("accepted|valid|misapplied")){
-				result = Taxon.NewInstance(name, sec);
-			}else if (status.matches(".*synonym|invalid")){
-				result = Synonym.NewInstance(name, sec);
+		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
+		String status = "";
+		if (taxStatus != null){
+			if (taxStatus.matches("accepted|valid|misapplied")){
+				status += "A";
+			}else if (taxStatus.matches(".*synonym|invalid")){
+				status += "S";
 			}else{
+				status += "?";
 				result = Taxon.NewUnknownStatusInstance(name, sec);
 			}
-			csvTaxonRecord.remove(TermUri.DWC_TAXONOMIC_STATUS);
+			item.remove(TermUri.DWC_TAXONOMIC_STATUS);
+		}
+		if (! CdmUtils.isBlank(item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID))){
+			// acceptedNameUsageId = id
+			if (getSourceId(item).equals(item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID))){
+				status += "A";
+			}else{
+				status += "A";
+			}
+		}
+		if (status.contains("A")){
+			result = Taxon.NewInstance(name, sec);
+			if (status.contains("S")){
+				String message = "Ambigous taxon status.";
+				fireWarningEvent(message, item, 6);
+			}
+		}else if (status.contains("S")){
+			result = Synonym.NewInstance(name, sec);
 		}else{
 			result = Taxon.NewUnknownStatusInstance(name, sec);
 		}
+			
+		
+		
 		//TODO handle acceptedNameUsage(ID), 
 		return result;
 	}

@@ -17,9 +17,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -191,7 +191,12 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 
 	private Classification getClassification(CsvStreamItem item) {
 		Set<Classification> result = new HashSet<Classification>();
-		result.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), item.get(TermUri.DWC_DATASET_ID), Classification.class));
+		String datasetKey = item.get(TermUri.DWC_DATASET_ID);
+		if (CdmUtils.areBlank(datasetKey,item.get(TermUri.DWC_DATASET_NAME))){
+			datasetKey = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+		}
+		
+		result.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
 		result.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
 		if (result.isEmpty()){
 			return null;
