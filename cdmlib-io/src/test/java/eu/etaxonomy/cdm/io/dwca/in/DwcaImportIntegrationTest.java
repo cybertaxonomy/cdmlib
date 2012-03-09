@@ -58,6 +58,18 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 	@Test
 	public void testInit() {
 		assertNotNull("import instance should not be null", defaultImport);
+		assertNotNull("configurator instance should not be null", configurator);
+	}
+	
+	@Test
+	public void testInvoke() {
+		boolean result = defaultImport.invoke(configurator);
+		Assert.assertTrue("Invoke should return true", result);
+		//to be continued
+		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
+                "SynonymRelationship","TaxonNode",
+                "HomotypicalGroup"};
+		commitAndStartNewTransaction(tableNames);
 	}
 
 }

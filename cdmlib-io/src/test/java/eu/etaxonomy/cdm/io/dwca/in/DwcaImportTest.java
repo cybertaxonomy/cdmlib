@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author a.mueller
@@ -39,8 +40,10 @@ public class DwcaImportTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
-		DefaultTermInitializer initializer = new DefaultTermInitializer();
-		initializer.initialize();
+		if (Rank.SPECIES() == null){
+			DefaultTermInitializer initializer = new DefaultTermInitializer();
+			initializer.initialize();
+		}
 	}
 	
 	

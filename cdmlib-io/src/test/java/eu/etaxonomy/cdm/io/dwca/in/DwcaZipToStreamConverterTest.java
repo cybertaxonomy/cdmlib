@@ -72,7 +72,7 @@ public class DwcaZipToStreamConverterTest {
 			Assert.assertNotNull("core stream should not be null", coreStream);
 			CsvStreamItem next = coreStream.read();
 			Assert.assertNotNull("Entry should exist in core stream", next);
-			Assert.assertEquals("First entry should be id1", "1", next.map.get("id"));
+			Assert.assertEquals("First entry should be id1", "1", next.get("id"));
 			Assert.assertEquals("First entries acceptedNameUsage should be ", "accNameUsageId1", next.map.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"));
 			
 		} catch (IOException e) {
@@ -106,7 +106,7 @@ public class DwcaZipToStreamConverterTest {
 			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
 			CsvStreamItem next = vernacularStream.read();
 			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
-			Assert.assertEquals("First entry should be coreid1", "1", next.map.get("coreId"));
+			Assert.assertEquals("First entry should be coreid1", "1", next.get("coreId"));
 			Assert.assertEquals("First entries language should be 'en' ", "en", next.map.get("http://purl.org/dc/terms/language"));
 			
 		} catch (IOException e) {
