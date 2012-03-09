@@ -282,7 +282,6 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 				status += "S";
 			}else{
 				status += "?";
-				result = Taxon.NewUnknownStatusInstance(name, sec);
 			}
 			item.remove(TermUri.DWC_TAXONOMIC_STATUS);
 		}
@@ -291,7 +290,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 			if (getSourceId(item).equals(item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID))){
 				status += "A";
 			}else{
-				status += "A";
+				status += "S";
 			}
 		}
 		if (status.contains("A")){
