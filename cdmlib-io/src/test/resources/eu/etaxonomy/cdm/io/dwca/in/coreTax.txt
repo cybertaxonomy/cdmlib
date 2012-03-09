@@ -1,4 +1,4 @@
-"1","nameId1","accNameUsageId1","conceptId1","Abies","ICBN","Genus",""
-"2","nameId2","accNameUsageId2","conceptId2","Abies alba","ICBN","Species","nameId1"
-"3","nameId3","accNameUsageId2","conceptId3","Pinus alba","ICBN","Species",
-"10","nameId10","accNameUsageId10","conceptId10","Abies alba var. pinus","ICBN","varietas","nameId2"
+"1","nameId1","1","conceptId1","Abies","ICBN","Genus",""
+"2","nameId2","2","conceptId2","Abies alba","ICBN","Species","nameId1"
+"3","nameId3","2","conceptId3","Pinus alba","ICBN","Species",
+"10","nameId10","10","conceptId10","Abies alba var. pinus","ICBN","varietas","nameId2"
