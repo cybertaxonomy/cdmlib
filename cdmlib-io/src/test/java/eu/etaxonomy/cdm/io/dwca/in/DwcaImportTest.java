@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author a.mueller
  * @date 23.11.2011
  */
+@Ignore //this test was only for the development start, now it needs to throw exceptions, can be deleted soon
 public class DwcaImportTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportTest.class);

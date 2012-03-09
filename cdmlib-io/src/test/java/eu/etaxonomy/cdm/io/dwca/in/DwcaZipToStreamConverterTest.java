@@ -73,7 +73,7 @@ public class DwcaZipToStreamConverterTest {
 			CsvStreamItem next = coreStream.read();
 			Assert.assertNotNull("Entry should exist in core stream", next);
 			Assert.assertEquals("First entry should be id1", "1", next.get("id"));
-			Assert.assertEquals("First entries acceptedNameUsage should be ", "accNameUsageId1", next.map.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"));
+			Assert.assertEquals("First entries acceptedNameUsage should be ", "1", next.map.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"));
 			
 		} catch (IOException e) {
 			Assert.fail();
