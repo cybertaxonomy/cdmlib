@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
+ * ListReader wraps a list to implement IReader.
  * @author a.mueller
  * @date 23.11.2011
  *

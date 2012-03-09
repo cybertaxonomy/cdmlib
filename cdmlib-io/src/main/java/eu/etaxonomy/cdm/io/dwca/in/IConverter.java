@@ -9,14 +9,23 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * Interface for all converters from some input to some output.
+ * Supports mapping of input to output and identifier identification.
+ * 
  * @author a.mueller
  * @date 23.11.2011
  *
  */
-public interface IConverter<IN extends IConverterInput, OUT extends IConverterOutput> {
+public interface IConverter<IN extends IConverterInput, OUT extends IConverterOutput, SOURCE_ID extends Object> {
 
-	public IReader<CdmBase> map(IN item); 
+	public IReader<MappedCdmBase> map(IN item); 
+	
+	/**
+	 * Returns the identifier (if any) of the input
+	 * @param item
+	 * @return
+	 */
+	public SOURCE_ID getSourceId(IN item);
 }

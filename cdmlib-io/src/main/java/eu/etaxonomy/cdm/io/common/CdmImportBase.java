@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -126,13 +127,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	protected Classification makeTree(STATE state, Reference reference){
-		Reference ref = CdmBase.deproxy(reference, Reference.class);
 		String treeName = "Classification (Import)";
-		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
-			treeName = ref.getTitleCache();
+		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){
+			treeName = reference.getTitleCache();
 		}
 		Classification tree = Classification.NewInstance(treeName);
-		tree.setReference(ref);
+		tree.setReference(reference);
 		
 
 		// use defined uuid for first tree
@@ -141,7 +141,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			tree.setUuid(config.getClassificationUuid());
 		}
 		getClassificationService().save(tree);
-		state.putTree(ref, tree);
+		state.putTree(reference, tree);
 		return tree;
 	}
 	

@@ -91,7 +91,7 @@ public class CsvStream implements IReader<CsvStreamItem>{
 					Extension extension = (Extension)archiveEntry;
 					resultMap.put("coreId", next[extension.getCoreid().getIndex()]);
 				}else{
-					throw new RuntimeException("Unhandled achiveEntry type");
+					throw new RuntimeException("Unhandled archiveEntry type");
 				}
 	
 				

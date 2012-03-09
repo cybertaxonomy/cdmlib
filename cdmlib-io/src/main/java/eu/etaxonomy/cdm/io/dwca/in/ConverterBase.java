@@ -57,7 +57,8 @@ public class ConverterBase<STATE extends IoStateBase> {
 		//for performance improvement one may read:
 		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
-
+		
+		logger.warn(message + "; " + dataLocation);  //TDOO preliminary until event system works on Converters
 		
 		fire(event);
 	}
@@ -75,7 +76,7 @@ public class ConverterBase<STATE extends IoStateBase> {
 	 * Returns the value for the given term in the item.
 	 */
 	protected String getValue(CsvStreamItem item, TermUri term) {
-		return item.map.get(term.getUriString());
+		return item.get(term.getUriString());
 	}
 	
 	/**

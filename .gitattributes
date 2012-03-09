@@ -303,8 +303,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifVernacularNameCsv2CdmCon
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterInput.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterOutput.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IImportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/InMemoryMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ListReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/MappedCdmBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Archive.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/ArchiveEntryBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Core.java -text

@@ -10,9 +10,20 @@
 
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping.CdmKey;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -24,6 +35,8 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 
 	boolean taxaCreated;
 	
+	private IImportMapping mapping = new InMemoryMapping();
+	
 	public DwcaImportState(DwcaImportConfigurator config) {
 		super(config);
 	}
@@ -34,6 +47,7 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 	 */
 	public boolean isTaxaCreated() {
 		return taxaCreated;
+		
 	}
 
 	/**
@@ -42,6 +56,40 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 	public void setTaxaCreated(boolean taxaCreated) {
 		this.taxaCreated = taxaCreated;
 	}
+	
+	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity<?> destinationObject){
+		mapping.putMapping(namespace, sourceKey, destinationObject);
+	}
+		
+	public void putMapping(String namespace, String sourceKey, IdentifiableEntity<?> destinationObject){
+		mapping.putMapping(namespace, sourceKey, destinationObject);
+	}
+	
+	
+	public List<IdentifiableEntity> get(String namespace, String sourceKey){
+		return get(namespace, sourceKey, null);
+	}
+	
+	public <CLASS extends IdentifiableEntity> List<CLASS> get(String namespace, String sourceKey,Class<CLASS> destinationClass){
+		List<CLASS> result = new ArrayList<CLASS>(); 
+		Set<CdmKey> keySet = mapping.get(namespace, sourceKey);
+		for (CdmKey<CLASS> key: keySet){
+			if (destinationClass == null || destinationClass.isAssignableFrom(key.clazz)){
+				IIdentifiableEntityService<CLASS> service = getCurrentIO().getServiceByClass(key.clazz);
+				CLASS entity = CdmBase.deproxy(service.find(key.id), key.clazz);
+				result.add(entity);
+			}
+		}
+		return result;
+	}
+
+	public boolean exists(String namespace, String sourceKey,Class<?> destinationClass){
+		return mapping.exists(namespace, sourceKey, destinationClass);
+	}
+
+	
+	
+	
 
 
 }
