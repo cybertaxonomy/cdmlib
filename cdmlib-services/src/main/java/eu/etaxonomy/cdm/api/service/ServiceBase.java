@@ -22,7 +22,6 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,10 +78,20 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	public List<T> find(Set<UUID> uuidSet) {
 		return dao.findByUuid(uuidSet);
 	}
-
+	
+	@Transactional(readOnly = true)
+	public List<T> findById(Set<Integer> idSet) {  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
+		return dao.findById(idSet);
+	}
+	
 	@Transactional(readOnly = true)
 	public T find(UUID uuid) {
 		return dao.findByUuid(uuid);
+	}
+	
+	@Transactional(readOnly = true)
+	public T find(int id) {
+		return dao.findById(id);
 	}
 	
 	@Transactional(readOnly = true)

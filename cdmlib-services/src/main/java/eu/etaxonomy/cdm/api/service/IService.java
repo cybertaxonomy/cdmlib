@@ -110,6 +110,16 @@ public interface IService<T extends ICdmBase>{
 	 */
 	public T find(UUID uuid);
 	
+	/**
+	 * Return a persisted entity that matches the database identifier
+	 * supplied as an argument, or null if the entity does not exist
+	 * 
+	 * @param id the database identifier of the entity required
+	 * @return an entity of type <T>, or null if the entity does not exist
+	 */
+	public T find(int id);
+	
+	
 	// FIXME should we expose this method?
 	public Session getSession();
 	
