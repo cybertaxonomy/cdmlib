@@ -12,6 +12,7 @@ import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -40,7 +41,9 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
   			CsvStream csvStream = stream.read();
 			while (csvStream.hasNext()){
 				CsvStreamItem item = csvStream.read();
+				TransactionStatus tx = startTransaction();
 				handleCsvStreamItem(state, item);
+				commitTransaction(tx);
 			}
 			finalizeStream(csvStream, state);
 		}
@@ -93,10 +96,12 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			//start preliminary for testing
 			IIdentifiableEntityService service;
 			try {
-				service = getServiceByClass(cdmBase.getClass());
-				if (service != null){
-					IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
-					service.save(entity);
+				if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
+					service = getServiceByClass(cdmBase.getClass());
+					if (service != null){
+						IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
+						service.saveOrUpdate(entity);
+					}
 				}
 			} catch (IllegalArgumentException e) {
 				fireWarningEvent(e.getMessage(), location, 12);

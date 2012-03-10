@@ -31,8 +31,6 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.IoStateBase;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
@@ -212,6 +210,29 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		
 	}
 
+//
+//	/**
+//	 * @return
+//	 * @throws IOException
+//	 */
+//	private InputStream makeInputStream(String name) throws IOException {
+//		
+//		ZipInputStream zin = new ZipInputStream(dwcaZip.toURL().openStream());
+//		ZipEntry ze = zin.getNextEntry();
+//		while (!ze.getName().equals(name)) {
+//		    zin.closeEntry(); // not sure whether this is necessary
+//		    ze = zin.getNextEntry();
+//		}
+//		
+//		CheckedInputStream cis = new CheckedInputStream(in, cksum)
+//		
+//		InputStream metaInputStream = zip.getInputStream(ze);
+//		return metaInputStream;
+//	
+//		InputStream metaInputStream = zip.getInputStream(metaEntry);
+//		return metaInputStream;
+//	}
+//	
 
 	/**
 	 * @return

@@ -104,5 +104,10 @@ public class Field {
     public void setIndex(byte value) {
         this.index = value;
     }
+    
+    @Override
+    public String toString(){
+    	return "[" + index + ";" + term + "]";
+    }
 
 }

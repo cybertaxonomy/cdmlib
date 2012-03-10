@@ -75,10 +75,10 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 		csvTaxonRecord.remove(ID);
 		
 		//rank
-		Rank rank = getRank(csvTaxonRecord);
+		NomenclaturalCode nomCode = getNomCode(csvTaxonRecord);
+		Rank rank = getRank(csvTaxonRecord, nomCode);
 
 		//name
-		NomenclaturalCode nomCode = getNomCode(csvTaxonRecord);
 		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank);
 		taxonBase.setName(name);
 		
@@ -234,18 +234,21 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 	}
 
 
-	private Rank getRank(CsvStreamItem csvTaxonRecord) {
+	private Rank getRank(CsvStreamItem csvTaxonRecord, NomenclaturalCode nomCode) {
 		boolean USE_UNKNOWN = true;
 		Rank rank = null;
 		String strRank = getValue(csvTaxonRecord,TermUri.DWC_TAXON_RANK);
 		String strVerbatimRank = getValue(csvTaxonRecord,TermUri.DWC_VERBATIM_TAXON_RANK);
 		if (strRank != null){
 			try {
-				rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+				rank = Rank.getRankByEnglishName(strRank, nomCode, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
-					String message = "Rank can not be defined for '%s'";
-					message = String.format(message, strRank);
-					fireWarningEvent(message, csvTaxonRecord, 4);
+					rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+					if (rank.equals(Rank.UNKNOWN_RANK())){
+						String message = "Rank can not be defined for '%s'";
+						message = String.format(message, strRank);
+						fireWarningEvent(message, csvTaxonRecord, 4);
+					}
 				}
 			} catch (UnknownCdmTypeException e) {
 				//should not happen as USE_UNKNOWN is used
@@ -275,11 +278,14 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 		String status = "";
+		boolean isMissaplied = false;
 		if (taxStatus != null){
-			if (taxStatus.matches("accepted|valid|misapplied")){
+			if (taxStatus.matches("accepted|valid")){
 				status += "A";
 			}else if (taxStatus.matches(".*synonym|invalid")){
 				status += "S";
+			}if (taxStatus.matches("misapplied")){
+				status += "M";
 			}else{
 				status += "?";
 			}
@@ -293,10 +299,11 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 				status += "S";
 			}
 		}
-		if (status.contains("A")){
+		if (status.contains("A") || status.contains("M")){
 			result = Taxon.NewInstance(name, sec);
-			if (status.contains("S")){
-				String message = "Ambigous taxon status.";
+			if (status.contains("S") && ! status.contains("M") ){
+				String message = "Ambigous taxon status (%s)";
+				message = String.format(message, status);
 				fireWarningEvent(message, item, 6);
 			}
 		}else if (status.contains("S")){
@@ -305,9 +312,6 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 			result = Taxon.NewUnknownStatusInstance(name, sec);
 		}
 			
-		
-		
-		//TODO handle acceptedNameUsage(ID), 
 		return result;
 	}
 	

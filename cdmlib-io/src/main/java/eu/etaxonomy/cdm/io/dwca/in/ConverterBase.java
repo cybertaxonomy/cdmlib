@@ -58,8 +58,6 @@ public class ConverterBase<STATE extends IoStateBase> {
 		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
 		
-		logger.warn(message + "; " + dataLocation);  //TDOO preliminary until event system works on Converters
-		
 		fire(event);
 	}
 	
@@ -67,6 +65,9 @@ public class ConverterBase<STATE extends IoStateBase> {
 		Set<IIoObserver> observers = state.getConfig().getObservers();
 		for (IIoObserver observer: observers){
 			observer.handleEvent(event);
+		}
+		if (observers.size() == 0){
+			logger.warn(event.getMessage() +  " (no observer for message!).");
 		}
 	}
 	
