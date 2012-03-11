@@ -148,7 +148,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 					Boolean preliminaryFlag = rs.getBoolean("PreliminaryFlag");
 					String authorTeamCache = rs.getString("AuthorTeamCache");
 					String fullAuthorTeamCache = rs.getString("FullAuthorTeamCache");
-					if (CdmUtils.isEmpty(fullAuthorTeamCache)){
+					if (CdmUtils.isBlank(fullAuthorTeamCache)){
 						fullAuthorTeamCache = authorTeamCache;
 					}
 					team.setTitleCache(fullAuthorTeamCache, preliminaryFlag);
@@ -176,7 +176,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		}
 			
 		//logger.info(i + " " + pluralString + " handled");
-		getAgentService().save((Collection)teamsToSave);
+		getAgentService().saveOrUpdate((Collection)teamsToSave);
 
 		return success;
 	}

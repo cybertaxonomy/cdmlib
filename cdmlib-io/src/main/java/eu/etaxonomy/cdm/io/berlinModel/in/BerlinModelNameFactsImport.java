@@ -117,7 +117,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 
 		ResultSet rs = partitioner.getResultSet();
 		
-		Reference<?> sourceRef = state.getConfig().getSourceReference();
+		Reference<?> sourceRef = state.getTransactionalSourceReference();
 		try {
 			int i = 0;
 			//for each reference

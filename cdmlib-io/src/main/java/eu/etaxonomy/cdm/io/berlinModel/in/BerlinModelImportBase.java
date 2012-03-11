@@ -112,7 +112,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, DescriptionElementBase descriptionElement, ResultSet rs, String id, String namespace) throws SQLException{
 		boolean success = true;
 		//id
-		success &= ImportHelper.setOriginalSource(descriptionElement, state.getConfig().getSourceReference(), id, namespace);
+		success &= ImportHelper.setOriginalSource(descriptionElement, state.getTransactionalSourceReference(), id, namespace);
 		//createdUpdateNotes
 		success &= doCreatedUpdatedNotes(state, descriptionElement, rs);
 		return success;
@@ -122,7 +122,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 				throws SQLException{
 		boolean success = true;
 		//id
-		success &= ImportHelper.setOriginalSource(identifiableEntity, state.getConfig().getSourceReference(), id, namespace);
+		success &= ImportHelper.setOriginalSource(identifiableEntity, state.getTransactionalSourceReference() , id, namespace);
 		//createdUpdateNotes
 		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs, excludeUpdated);
 		return success;

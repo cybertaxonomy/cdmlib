@@ -311,7 +311,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					if (misappliedNameTaxon != null){
 						
 						if (! taxon.getMisappliedNames().contains(misappliedNameTaxon)){
-							taxon.addMisappliedName(misappliedNameTaxon, config.getSourceReference(), null);
+							taxon.addMisappliedName(misappliedNameTaxon,state.getTransactionalSourceReference(), null);
 							logger.warn("Misapplied name for common name was not found related to the accepted taxon. Created new relationship. CommonNameId: " + commonNameId);
 						}
 						

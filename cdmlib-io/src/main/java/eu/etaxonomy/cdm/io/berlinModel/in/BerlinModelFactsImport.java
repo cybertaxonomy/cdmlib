@@ -198,7 +198,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 
 		ResultSet rs = partitioner.getResultSet();
 		
-			Reference<?> sourceRef = state.getConfig().getSourceReference();
+			Reference<?> sourceRef = state.getTransactionalSourceReference();
 			
 		try{
 			int i = 0;
@@ -461,7 +461,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 */
 	private TaxonDescription makeImage(BerlinModelImportState state, String fact, Media media, Set<TaxonDescription> descriptionSet, Taxon taxon) {
 		TaxonDescription taxonDescription = null;
-		Reference sourceRef = state.getConfig().getSourceReference();
+		Reference sourceRef = state.getTransactionalSourceReference();
 		Integer size = null; 
 		ImageInfo imageInfo = null;
 		URI uri;

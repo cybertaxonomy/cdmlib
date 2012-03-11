@@ -285,9 +285,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				
 				//save and store in map
 				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
-				getReferenceService().save(nomRefToSave.values());
+				getReferenceService().saveOrUpdate(nomRefToSave.values());
 				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
-				getReferenceService().save(biblioRefToSave.values());
+				getReferenceService().saveOrUpdate(biblioRefToSave.values());
 
 //			}//end resultSetList	
 
@@ -358,9 +358,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 				//save and store in map
 				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
-				getReferenceService().save(nomRefToSave.values());
+				getReferenceService().saveOrUpdate(nomRefToSave.values());
 				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
-				getReferenceService().save(biblioRefToSave.values());
+				getReferenceService().saveOrUpdate(biblioRefToSave.values());
 				
 //			}//end resultSetList	
 
@@ -556,7 +556,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 		boolean hasNomRef = false;
 		boolean hasBiblioRef = false;
-		Reference sourceReference = state.getConfig().getSourceReference();
+		Reference sourceReference = state.getTransactionalSourceReference();
 		
 		//is Nomenclatural Reference
 		if ( (CdmUtils.isNotEmpty(nomRefCache) && isPreliminary) || (CdmUtils.isNotEmpty(nomTitleAbbrev) && ! isPreliminary) ){

@@ -162,7 +162,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 				    	}
                      }
 					
-                     Reference<?> sourceRef = state.getConfig().getSourceReference();
+                     Reference<?> sourceRef = state.getTransactionalSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
                      if (areas.size()== 0){
