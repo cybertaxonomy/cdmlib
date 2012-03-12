@@ -214,7 +214,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String[] regionFkSplit = regionFks.split(",");
 				
 				//commonNameString
-				if (CdmUtils.isEmpty(commonNameString)){
+				if (CdmUtils.isBlank(commonNameString)){
 					String message = "CommonName is empty or null. Do not import record for taxon " + taxonId;
 					logger.warn(message);
 					continue;
@@ -273,11 +273,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					}
 				}
 				
-				Reference reference = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(languageRefRefFk));
+				Reference<?> reference = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(languageRefRefFk));
 				String microCitation = null;
 				String originalNameString = null;
 				
-				TaxonNameBase nameUsedInSource = taxonNameMap.get(String.valueOf(nameInSourceFk));
+				TaxonNameBase<?,?> nameUsedInSource = taxonNameMap.get(String.valueOf(nameInSourceFk));
 				if (nameInSourceFk != null && nameUsedInSource == null){
 					logger.warn("Name used in source (" + nameInSourceFk + ") was not found for common name " + commonNameId);
 				}
@@ -529,7 +529,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			String[] splitRegion = region.split("-");
 			if (splitRegion.length <= 1){
 				NamedArea newArea = getNamedArea(state, null, region, "Language region '" + region + "'", null, null, null);
-				getTermService().save(newArea);
+//				getTermService().save(newArea);
 				regionMap.put(String.valueOf(regionId), newArea);
 				logger.warn("Found new area: " +  region);
 			}else if (splitRegion.length == 2){

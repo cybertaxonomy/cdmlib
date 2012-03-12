@@ -188,7 +188,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                         	   Distribution duplicate = checkIsNoDuplicate(taxonDescription, distribution, duplicateMap , occurrenceId);
                                if (duplicate == null){
 	                        	   taxonDescription.addElement(distribution); 
-	                               distribution.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
+	                               distribution.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getTransactionalSourceReference(), null);
 	                        	   countDistributions++; 
 	                               if (taxonDescription != oldDescription){ 
 	                            	   taxaToSave.add(taxonDescription.getTaxon()); 
@@ -197,7 +197,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	                               	} 
                                }else{                          	  
                             	   countDuplicates++;
-                            	   duplicate.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
+                            	   duplicate.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getTransactionalSourceReference(), null);
                             	   logger.info("Distribution is duplicate");	                           }
 	                       	} else { 
 	                       		logger.warn("Distribution " + area.getLabel() + " ignored. OccurrenceId = " + occurrenceId);
