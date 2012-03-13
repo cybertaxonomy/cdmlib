@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -687,7 +688,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             logger.info("doGetDescriptions()" + request.getServletPath());
         }
         Set<MarkerType> markerTypes = new HashSet<MarkerType>(markerTypeService.listByTermClass(MarkerType.class, null, null, null, null));
-        MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
+        //MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
+        MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
         
         markerTypes.remove(useMarkerType);
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -700,27 +702,20 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         	TaxonDescription taxonDesc = (TaxonDescription) itr.next();
         	Pager<Marker> pMarkers = descriptionService.getMarkers(taxonDesc, null, null, null, null, null);
         	Pager<Marker> useMarkers = markerService.page(useMarkerType, null, null, null, null);
+        	List<DefinedTermBase> useMarkers2 = markerTypeService.list(MarkerType.class, null, null, null, null);
         	if(pMarkers.getCount() != 0) {
         		List<Marker> testMarkers = pMarkers.getRecords();
         		List<Marker> testUseMarkers = useMarkers.getRecords();
         		for (Marker marker: testMarkers) {
         			for (Marker useMaker: testUseMarkers){
-        				//if (marker.getMarkerType().equals(useMarkerType)) {#
         				if(marker.equals(useMaker)) {
         					itr.remove();
         				}
         			}
         		}
         	}
-        	
-        	
-        	
-        	/*if(taxonDesc.hasMarker(useMarkerType, true) ) {
-        		descriptions.remove(taxonDesc);
-        	}*/
         }
-        //}
-        return p.getRecords();
+      return p.getRecords();
     }
     
     @RequestMapping(value = "useDescriptions", method = RequestMethod.GET)
@@ -733,7 +728,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         //ModelAndView mv = new ModelAndView();
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         
-       MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059")); 
+       //MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
+        MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
+       
        //find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059")); 
        Set<MarkerType> markerTypes =  new HashSet<MarkerType>();
        markerTypes.add(useMarkerType);
