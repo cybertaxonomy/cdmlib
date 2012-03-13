@@ -250,7 +250,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						Taxon toTaxon = (Taxon)taxon2;
 						if (isTaxonRelationship(relQualifierFk)){
 							if (!(taxon1 instanceof Taxon)){
-								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") for TaxonRelation ("+relPTaxonId+") can't be casted to Taxon");
 								success = false;
 								continue;
 							}
