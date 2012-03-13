@@ -439,8 +439,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			}
 		} else if ("unknown".equals(languageString)){
 			language = Language.UNKNOWN_LANGUAGE();
-		} else if ("mallorquín".equalsIgnoreCase(languageString)){
-			language = getLanguage(state, BerlinModelTransformer.uuidLangMajorcan, "Majorcan", "Majorcan (original 'mallorquín')", null);
+		} else if ("mallorqu\u00EDn".equalsIgnoreCase(languageString)){
+			language = getLanguage(state, BerlinModelTransformer.uuidLangMajorcan, "Majorcan", "Majorcan (original 'mallorqu\u00EDn')", null);
 		}else{
 			logger.warn("language ISO 639_1 and ISO 639_2 were empty for " + languageString);
 			language = null;
@@ -653,19 +653,31 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
+		int pos = -1;
 		try{
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> nameIdSet = new HashSet<String>();
 			Set<String> referenceIdSet = new HashSet<String>();
 			while (rs.next()){
+				pos = 0;
 				handleForeignKey(rs, taxonIdSet, "taxonId");
+				pos = 1;
 				handleForeignKey(rs, taxonIdSet, "misappliedTaxonId");
+				pos = 2;
 				handleForeignKey(rs, referenceIdSet, "refId");
+				pos = 3;
 				handleForeignKey(rs, referenceIdSet, "languageRefRefFk");
+				pos = 4;
 				handleForeignKey(rs, nameIdSet, "NameInSourceFk");
+				pos = 5;
 				handleForeignKey(rs, nameIdSet, "PTNameFk");
+				pos = 6;
 				handleForeignKey(rs, referenceIdSet, "MisNameRefFk");
+				pos = -2;
+				
 			}
+			
+			pos = 7;
 			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
@@ -674,6 +686,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, TaxonNameBase<?,?>> nameMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 
+			pos = 8;
+			
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
 			cdmClass = TaxonBase.class;
@@ -681,6 +695,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, TaxonBase<?>> taxonMap = (Map<String, TaxonBase<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
 
+			pos = 9;
+			
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
@@ -688,6 +704,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
+			pos = 10;
+			
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
@@ -695,8 +713,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, Reference<?>> biblioReferenceMap = (Map<String, Reference<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
+			pos = 11;
+			
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("pos: " +pos, e);
 		} catch (NullPointerException nep){
 			logger.error("NullPointerException in getRelatedObjectsForPartition()");
 		}
