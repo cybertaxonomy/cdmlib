@@ -234,7 +234,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				}
 				
 				//Language
-				Language language = getAndHandleLanguage(iso6392Map, iso639_2, iso639_1, languageString, originalLanguageString);
+				Language language = getAndHandleLanguage(iso6392Map, iso639_2, iso639_1, languageString, originalLanguageString, state);
 				
 				//CommonTaxonName
 				List<CommonTaxonName> commonTaxonNames = new ArrayList<CommonTaxonName>();
@@ -292,7 +292,12 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					//Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
 					Taxon misappliedNameTaxon = null;
 					if (misappliedTaxonId != null){
-						misappliedNameTaxon = taxonMap.get(String.valueOf(misappliedTaxonId));
+						TaxonBase misTaxonBase =  taxonMap.get(String.valueOf(misappliedTaxonId));
+						if (misTaxonBase.isInstanceOf(Taxon.class)){
+							misappliedNameTaxon = CdmBase.deproxy(misTaxonBase, Taxon.class);
+						}else{
+							logger.warn("Misapplied name taxon is not of type Taxon but " + misTaxonBase.getClass().getSimpleName());
+						}
 					}else{
 						
 						Reference<?> sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
@@ -412,9 +417,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param iso639_2
 	 * @param languageString
 	 * @param originalLanguageString
+	 * @param state 
 	 * @return
 	 */
-	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString) {
+	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString, BerlinModelImportState state) {
 		Language language;
 		if (CdmUtils.isNotEmpty(iso639_2)|| CdmUtils.isNotEmpty(iso639_1)  ){
 			//TODO test performance, implement in state
@@ -433,6 +439,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			}
 		} else if ("unknown".equals(languageString)){
 			language = Language.UNKNOWN_LANGUAGE();
+		} else if ("mallorquín".equalsIgnoreCase(languageString)){
+			language = getLanguage(state, BerlinModelTransformer.uuidLangMajorcan, "Majorcan", "Majorcan (original 'mallorquín')", null);
 		}else{
 			logger.warn("language ISO 639_1 and ISO 639_2 were empty for " + languageString);
 			language = null;
@@ -462,7 +470,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param originalLanguageString
 	 */
 	private void addOriginalLanguage(Language language,	String originalLanguageString) {
-		if (CdmUtils.isEmpty(originalLanguageString)){
+		if (CdmUtils.isBlank(originalLanguageString)){
 			return;
 		}else if (language == null){
 			logger.warn("Language could not be defined, but originalLanguageString exists: " + originalLanguageString);
