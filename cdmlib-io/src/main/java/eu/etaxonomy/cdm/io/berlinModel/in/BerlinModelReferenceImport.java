@@ -341,6 +341,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 							nomRefToSave.put(refId, thisNomRef);
 							//remember that an in reference exists
 							inRefExists |= (inRef != null);
+							thisNomRef.setTitleCache(null);
+							thisNomRef.getTitleCache();
 						}
 						if (thisBiblioRef != null){
 							Reference<?> inRef = (biblioInReference != null)? nomInReference : biblioInReference ;
@@ -348,10 +350,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 							biblioRefToSave.put(refId, thisBiblioRef);
 							//remember that an in reference exists
 							inRefExists |= (inRef != null);
+							thisBiblioRef.setTitleCache(null);
+							thisBiblioRef.getTitleCache();
 						}
 						if (inRefExists == false){
 							logger.warn("No in reference was saved though an 'inRefFk' is available. RefId " + refId);
 						}
+						
 					}
 					
 				} // end resultSet
@@ -641,35 +646,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
 		
 		if (inRefFk != null){
-			if (inRefCategoryFk == REF_JOURNAL){
-				int inRefFkInt = (Integer)inRefFk;
-				if (true){
-					//changed for first/second path implementation, if this is successful the following code can be deleted
-				}else if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
-					Reference<?> inJournal = getReferenceFromMaps(inRefFkInt, nomRefToSave, relatedNomReferences);
-					if (inJournal == null){
-						inJournal = getReferenceFromMaps(inRefFkInt, biblioRefToSave, relatedBiblioReferences);
-						logger.info("inJournal (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
-						nomRefToSave.put(inRefFkInt, inJournal);
-					}
-					if (inJournal == null){
-						logger.warn("inJournal for " + inRefFkInt + " is null. "+
-							" InReference relation could not be set");
-					//}else if (Reference.class.isAssignableFrom(inJournal.getClass())){
-					}else if (inJournal.getType().equals(ReferenceType.Journal)){
-						article.setInJournal((IJournal)inJournal);
-					}else{
-						logger.warn("InJournal is not of type journal but of type " + inJournal.getType() +
-							" Inreference relation could not be set");
-					}
-				}else{
-					logger.error("Journal (refId = " + inRefFkInt + " ) for Article (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
-					//success = false;;
-				}
-			}else{
+			if (inRefCategoryFk != REF_JOURNAL){
 				logger.warn("Wrong inrefCategory for Article (refID = " + refId +"). Type must be 'Journal' but was not (RefCategoryFk=" + inRefCategoryFk + "))." +
-					" InReference was not added to Article! ");
+					" InReference was added anyway! ");
 			}
+		}else{
+			logger.warn ("Article has no inreference: " + refId);
 		}
 		makeStandardMapper(valueMap, (Reference)article); //url, pages, series, volume
 		return (Reference)article;
@@ -685,40 +667,18 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			//null -> error
 			logger.warn("Part-Of-Other-Title has no inRefCategoryFk! RefId = " + refId + ". ReferenceType set to Generic.");
 			result = makeUnknown(valueMap);
+		}else if (inRefFk == null){
+			logger.warn("Part-Of-Other-Title has in in reference: " + refId);
+			result = makeUnknown(valueMap);
 		}else if (inRefCategoryFk == REF_BOOK){
 			//BookSection
 			IBookSection bookSection = ReferenceFactory.newBookSection();
 			result = (Reference<?>)bookSection;
-			if (inRefFk != null && false){   //&& false added for first/second path implementation, following code can be deleted or moved if this is successful
-				int inRefFkInt = (Integer) inRefFk;
-				if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
-					Reference<?> inBook = getReferenceFromMaps(inRefFkInt, nomRefToSave, relatedNomReferences);
-					if (inBook == null){
-						inBook = getReferenceFromMaps(inRefFkInt, biblioRefToSave, relatedBiblioReferences);
-						logger.info("inBook (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
-						nomRefToSave.put(inRefFkInt, inBook);
-					}
-					if (inBook == null){
-						logger.warn("inBook for " + inRefFkInt + " is null. "+
-						" InReference relation could not be set");;
-					//}else if (Book.class.isAssignableFrom(inBook.getClass())){
-					}else if (inBook.getType().equals(ReferenceType.Book)){
-						bookSection.setInBook((IBook)inBook);
-						//TODO
-					}else{
-						logger.warn("InBook is not of type book but of type " + inBook.getClass().getSimpleName() +
-								" Inreference relation could not be set");
-					}
-				}else{
-					logger.error("Book (refId = " + inRefFkInt + ") for part_of_other_title (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
-					//success = false;
-				}
-			}
 		}else if (inRefCategoryFk == REF_ARTICLE){
 			//Article
 			//TODO 
-			logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
-					" This type is not implemented yet. Generic reference created instead") ;
+			logger.info("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
+					" There is no specific reference type for such in references yet. Generic reference created instead") ;
 			result = ReferenceFactory.newGeneric();
 		}else if (inRefCategoryFk == REF_JOURNAL){
 			//TODO 
