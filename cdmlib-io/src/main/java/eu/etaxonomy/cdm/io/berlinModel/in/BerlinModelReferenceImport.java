@@ -329,6 +329,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					Integer inRefFk = rs.getInt("inRefFk");
 					
 					if (inRefFk != null){
+						
 						Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
 						Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedBiblioReferences, relatedNomReferences, String.valueOf(refId));
 						
@@ -337,6 +338,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 						boolean inRefExists = false;
 						if (thisNomRef != null){
 							Reference<?> inRef = (nomInReference != null)? nomInReference : biblioInReference;
+							if (inRef == null){
+								logger.warn("No InRef found for nomRef: " + thisNomRef.getTitleCache() + "; RefId: " +  refId + "; inRefFK: " +  inRefFk);
+							}
 							thisNomRef.setInReference(inRef);
 							nomRefToSave.put(refId, thisNomRef);
 							//remember that an in reference exists
@@ -345,7 +349,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 							thisNomRef.getTitleCache();
 						}
 						if (thisBiblioRef != null){
-							Reference<?> inRef = (biblioInReference != null)? nomInReference : biblioInReference ;
+							Reference<?> inRef = (biblioInReference != null)? biblioInReference : nomInReference ;
+							if (inRef == null){
+								logger.warn("No InRef found for biblioRef: " + thisBiblioRef.getTitleCache() + "; RefId: " +  refId + "; inRefFK: " +  inRefFk);
+							}
 							thisBiblioRef.setInReference(inRef);
 							biblioRefToSave.put(refId, thisBiblioRef);
 							//remember that an in reference exists
