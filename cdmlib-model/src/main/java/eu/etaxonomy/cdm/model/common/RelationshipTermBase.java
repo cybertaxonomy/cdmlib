@@ -68,11 +68,11 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@XmlElement(name = "Symmetrical")
 	@Field(index=Index.UN_TOKENIZED)
 	@Column(name="symmetrical") //to be compatible with PostGreSQL 
-	private Boolean symmetric;
+	private boolean symmetric;
 	
 	@XmlElement(name = "Transitive")
 	@Field(index=Index.UN_TOKENIZED)
-	private Boolean transitive;
+	private boolean transitive;
 	
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")

@@ -37,7 +37,9 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.OptimisticLock;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -86,7 +88,9 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	@XmlTransient
 	@Id
 //	@GeneratedValue(generator = "system-increment")
-	@GeneratedValue(generator = "enhanced-table")
+	//@GeneratedValue(generator = "enhanced-table")
+	@GeneratedValue(generator = "custom-enhanced-table")
+	@GenericGenerator(name = "custom-enhanced-table", strategy="eu.etaxonomy.cdm.persistence.hibernate.TableGenerator")
 	@DocumentId
 	@Match(MatchMode.IGNORE)
 	@NotNull

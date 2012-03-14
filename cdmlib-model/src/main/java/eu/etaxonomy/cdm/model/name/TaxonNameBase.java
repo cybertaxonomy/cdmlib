@@ -321,7 +321,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
     @Transient
-    public List<Object> getTaggedName(){
+    public List<TaggedText> getTaggedName(){
         return getCacheStrategy().getTaggedTitle(this);
     }
 

@@ -9,6 +9,12 @@
 
 package eu.etaxonomy.cdm.strategy.parser;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -230,7 +236,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 //		makeProblemEmpty(nameToBeFilled);
 		
 		//make nomenclatural status and replace it by empty string 
-	    fullReferenceString = parseNomStatus(fullReferenceString, nameToBeFilled);
+	    fullReferenceString = parseNomStatus(fullReferenceString, nameToBeFilled, makeEmpty);
 	    nameToBeFilled.setProblemEnds(fullReferenceString.length());
 		
 	    //get full name reg
@@ -387,7 +393,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String 
 	 */ 
-	public String parseNomStatus(String fullString, NonViralName nameToBeFilled) {
+	public String parseNomStatus(String fullString, NonViralName<?> nameToBeFilled, boolean makeEmpty) {
+		Set<NomenclaturalStatusType> existingStatusTypeSet = new HashSet<NomenclaturalStatusType>(); 
+		Set<NomenclaturalStatusType> newStatusTypeSet = new HashSet<NomenclaturalStatusType>(); 
+		for (NomenclaturalStatus existingStatus : nameToBeFilled.getStatus()){
+			existingStatusTypeSet.add(existingStatus.getType());
+		}
+		
 		String statusString;
 		Pattern hasStatusPattern = Pattern.compile("(" + pNomStatusPhrase + ")"); 
 		Matcher hasStatusMatcher = hasStatusPattern.matcher(fullString);
@@ -401,14 +413,28 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			statusString = statusMatcher.group(0);
 			try {
 				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString);
-				NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
-				nameToBeFilled.addStatus(nomStatus);
-			    
+				if (! existingStatusTypeSet.contains(nomStatusType)){
+					NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
+					nameToBeFilled.addStatus(nomStatus);
+				}
+				newStatusTypeSet.add(nomStatusType);
 				fullString = fullString.replace(statusPhrase, "");
 			} catch (UnknownCdmTypeException e) {
 				//Do nothing
 			}
 		}
+		//remove not existing nom status
+		if (makeEmpty){
+			Set<NomenclaturalStatus> tmpStatus = new HashSet<NomenclaturalStatus>();
+			tmpStatus.addAll(nameToBeFilled.getStatus());
+			for (NomenclaturalStatus status : tmpStatus){
+				if (! newStatusTypeSet.contains(status.getType())){
+					nameToBeFilled.removeStatus(status);
+				}
+			}
+			
+		}
+		
 		return fullString;
 	}
 	
@@ -1329,7 +1355,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	
-	private void makeEmpty(NonViralName nameToBeFilled){
+	private void makeEmpty(NonViralName<?> nameToBeFilled){
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setFullTitleCache(null, false);
@@ -1372,8 +1398,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			ZoologicalName zoologicalName = (ZoologicalName)nameToBeFilled;
 			zoologicalName.setBreed(null);
 			zoologicalName.setOriginalPublicationYear(null);
-			
 		}
+		//nom status handled in nom status parser, otherwise we loose additional information like reference etc.
+//		Set<NomenclaturalStatus> status =new HashSet<NomenclaturalStatus>() ;
+//		status.addAll(nameToBeFilled.getStatus());
+//		for (NomenclaturalStatus st : status){
+//			nameToBeFilled.removeStatus(st);
+//		}
 	}
 	
 	
