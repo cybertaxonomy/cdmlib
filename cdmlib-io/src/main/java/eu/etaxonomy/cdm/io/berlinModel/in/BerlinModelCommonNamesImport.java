@@ -102,24 +102,21 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String recordQuery = "";
 		recordQuery = 
-			" SELECT emCommonName.CommonNameId, emCommonName.CommonName, PTaxon.RIdentifier AS taxonId, emCommonName.PTNameFk, emCommonName.RefFk AS refId, emCommonName.Status, " + 
-				" emCommonName.RegionFks, emCommonName.MisNameRefFk, emCommonName.NameInSourceFk , emCommonName.Created_When, emCommonName.Updated_When, emCommonName.Created_Who, emCommonName.Updated_Who, emCommonName.Note as Notes," + 
-        		" regionLanguage.Language AS regionLanguage, languageCommonName.Language, languageCommonName.LanguageOriginal, languageCommonName.ISO639_1, languageCommonName.ISO639_2, " + 
-        		" emLanguageRegion.Region, emLanguageReference.RefFk as languageRefRefFk, emLanguageReference.ReferenceShort, " + 
-        		" emLanguageReference.ReferenceLong, emLanguageReference.LanguageFk, languageReferenceLanguage.Language AS refLanguage, " +
-        		" languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2, regionLanguage.ISO639_2 AS regionLanguageIso, " +
-        		" misappliedTaxon.RIdentifier AS misappliedTaxonId " + 
-        	" FROM emLanguage as regionLanguage RIGHT OUTER JOIN " + 
-        		" emLanguageRegion ON regionLanguage.LanguageId = emLanguageRegion.LanguageFk RIGHT OUTER JOIN " +
-        		" emLanguage AS languageReferenceLanguage RIGHT OUTER JOIN " +
-        		" emLanguageReference ON languageReferenceLanguage.LanguageId = emLanguageReference.LanguageFk RIGHT OUTER JOIN " +
-        		" emCommonName INNER JOIN " +
-        		" PTaxon ON emCommonName.PTNameFk = PTaxon.PTNameFk AND emCommonName.PTRefFk = PTaxon.PTRefFk ON " + 
-        		" emLanguageReference.ReferenceId = emCommonName.LanguageRefFk LEFT OUTER JOIN " +
-        		" emLanguage AS languageCommonName ON emCommonName.LanguageFk = languageCommonName.LanguageId ON " + 
-        		" emLanguageRegion.RegionId = emCommonName.RegionFks LEFT OUTER JOIN " +
-        		" PTaxon as misappliedTaxon ON emCommonName.NameInSourceFk = misappliedTaxon.PTNameFk AND emCommonName.MisNameRefFk = misappliedTaxon.PTRefFk " + 
-			" WHERE emCommonName.CommonNameId IN (" + ID_LIST_TOKEN + ")";
+				" SELECT     cn.CommonNameId, cn.CommonName, PTaxon.RIdentifier AS taxonId, cn.PTNameFk, cn.RefFk AS refId, cn.Status, cn.RegionFks, cn.MisNameRefFk, " +
+					       "               cn.NameInSourceFk, cn.Created_When, cn.Updated_When, cn.Created_Who, cn.Updated_Who, cn.Note AS Notes, languageCommonName.Language, " +
+					       "               languageCommonName.LanguageOriginal, languageCommonName.ISO639_1, languageCommonName.ISO639_2,   " +
+					       "               emLanguageReference.RefFk AS languageRefRefFk, emLanguageReference.ReferenceShort, emLanguageReference.ReferenceLong,  " +
+					       "               emLanguageReference.LanguageFk, languageReferenceLanguage.Language AS refLanguage, languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2,  "+ 
+					       "               misappliedTaxon.RIdentifier AS misappliedTaxonId " +
+					" FROM         PTaxon AS misappliedTaxon RIGHT OUTER JOIN " +
+					    "                  emLanguage AS languageReferenceLanguage RIGHT OUTER JOIN " + 
+					               "       emLanguageReference ON languageReferenceLanguage.LanguageId = emLanguageReference.LanguageFk RIGHT OUTER JOIN " +
+					               "       emCommonName AS cn INNER JOIN " +
+					               "       PTaxon ON cn.PTNameFk = PTaxon.PTNameFk AND cn.PTRefFk = PTaxon.PTRefFk ON  " +
+					               "       emLanguageReference.ReferenceId = cn.LanguageRefFk LEFT OUTER JOIN " +
+					                "      emLanguage AS languageCommonName ON cn.LanguageFk = languageCommonName.LanguageId ON misappliedTaxon.PTNameFk = cn.NameInSourceFk AND  " +
+					                "      misappliedTaxon.PTRefFk = cn.MisNameRefFk " +
+			" WHERE cn.CommonNameId IN (" + ID_LIST_TOKEN + ")";
 		return recordQuery;
 	}
 	
@@ -209,7 +206,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				Object misappliedTaxonId = rs.getObject("misappliedTaxonId");
 				
 				//regions
-				String region = rs.getString("Region");
 				String regionFks  = rs.getString("RegionFks");
 				String[] regionFkSplit = regionFks.split(",");
 				
@@ -293,7 +289,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					Taxon misappliedNameTaxon = null;
 					if (misappliedTaxonId != null){
 						TaxonBase misTaxonBase =  taxonMap.get(String.valueOf(misappliedTaxonId));
-						if (misTaxonBase.isInstanceOf(Taxon.class)){
+						if (misTaxonBase == null){
+							logger.warn("MisappliedName not found for misappliedTaxonId " + misappliedTaxonId + "; commonNameId: " + commonNameId);
+						}else if (misTaxonBase.isInstanceOf(Taxon.class)){
 							misappliedNameTaxon = CdmBase.deproxy(misTaxonBase, Taxon.class);
 						}else{
 							logger.warn("Misapplied name taxon is not of type Taxon but " + misTaxonBase.getClass().getSimpleName());
@@ -439,7 +437,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			}
 		} else if ("unknown".equals(languageString)){
 			language = Language.UNKNOWN_LANGUAGE();
-		} else if ("mallorqu\u00EDn".equalsIgnoreCase(languageString)){
+		} else if ("Majorcan".equalsIgnoreCase(languageString)){
 			language = getLanguage(state, BerlinModelTransformer.uuidLangMajorcan, "Majorcan", "Majorcan (original 'mallorqu\u00EDn')", null);
 		}else{
 			logger.warn("language ISO 639_1 and ISO 639_2 were empty for " + languageString);
