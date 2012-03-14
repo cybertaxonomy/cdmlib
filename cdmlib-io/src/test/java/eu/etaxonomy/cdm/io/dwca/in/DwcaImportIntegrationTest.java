@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByName;
 
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
+import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -48,6 +49,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 		assertNotNull("URI for the test file '" + inputFile + "' does not exist", uri);
 		try {
 			configurator = DwcaImportConfigurator.NewInstance(url.toURI(), null);
+			configurator.addObserver(new LoggingIoObserver());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -58,6 +60,18 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 	@Test
 	public void testInit() {
 		assertNotNull("import instance should not be null", defaultImport);
+		assertNotNull("configurator instance should not be null", configurator);
+	}
+	
+	@Test
+	public void testInvoke() {
+		boolean result = defaultImport.invoke(configurator);
+		Assert.assertTrue("Invoke should return true", result);
+		//to be continued
+		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
+                "SynonymRelationship","TaxonNode",
+                "HomotypicalGroup"};
+		commitAndStartNewTransaction(tableNames);
 	}
 
 }

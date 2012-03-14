@@ -109,6 +109,11 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		String toId = String.valueOf(rs.getObject(toAttribute));
 		String alternativeToId = String.valueOf(rs.getObject(alternativeAttribute));
 
+		if (toId == null){
+			return fromObject;
+		}
+			
+		
 		Reference citation = (Reference)getRelatedObject(rs, citationAttribute, citationNamespace);
 		String microCitation = null;
 		if (citationAttribute != null){

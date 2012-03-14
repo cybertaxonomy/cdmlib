@@ -936,12 +936,36 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         Class<? extends RelationshipBase> clazz = RelationshipBase.class;  //preliminary, see #2653
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(clazz);
-            criteria.setFirstResult(start);
-            if (limit != null){
-                criteria.setMaxResults(limit);
-            }
-            return (List<RelationshipBase>)criteria.list();
+        	// for some reason the HQL .class discriminator didn't work here so I created this preliminary
+        	// implementation for now. Should be cleaned in future.
+        	
+        	List<RelationshipBase> result = new ArrayList<RelationshipBase>();
+            
+        	int taxRelSize = countAllRelationships(TaxonRelationship.class);
+            
+        	if (taxRelSize > start){
+        		
+        		String hql = " FROM TaxonRelationship as rb ORDER BY rb.id ";
+        		Query query = getSession().createQuery(hql);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result = query.list();
+        	}
+        	limit = limit - result.size();
+        	if (limit > 0){
+        		String hql = " FROM SynonymRelationship as rb ORDER BY rb.id ";
+        		Query query = getSession().createQuery(hql);
+        		start = (taxRelSize > start) ? 0 : (start - taxRelSize);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result.addAll(query.list());
+        	}
+            return result;
+
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
             return (List<RelationshipBase>)query.getResultList();
@@ -1613,8 +1637,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
      */
     public int countAllRelationships() {
-        List<RelationshipBase> relationships = this.getAllRelationships(null, 0);
-        return relationships.size();
+    	return countAllRelationships(null);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
+     */
+    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
+    	if (clazz != null && ! TaxonRelationship.class.isAssignableFrom(clazz) && ! SynonymRelationship.class.isAssignableFrom(clazz) ){
+    		throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
+    	}
+    	int size = 0;
+    	 
+        if (clazz == null || TaxonRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM TaxonRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        if (clazz == null || SynonymRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM SynonymRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        return size;
     }
 
 

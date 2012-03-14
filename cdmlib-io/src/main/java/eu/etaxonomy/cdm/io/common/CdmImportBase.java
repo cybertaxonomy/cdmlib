@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -126,13 +127,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	protected Classification makeTree(STATE state, Reference reference){
-		Reference ref = CdmBase.deproxy(reference, Reference.class);
 		String treeName = "Classification (Import)";
-		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
-			treeName = ref.getTitleCache();
+		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){
+			treeName = reference.getTitleCache();
 		}
 		Classification tree = Classification.NewInstance(treeName);
-		tree.setReference(ref);
+		tree.setReference(reference);
 		
 
 		// use defined uuid for first tree
@@ -141,7 +141,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			tree.setUuid(config.getClassificationUuid());
 		}
 		getClassificationService().save(tree);
-		state.putTree(ref, tree);
+		state.putTree(reference, tree);
 		return tree;
 	}
 	
@@ -298,7 +298,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	
 	
-	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,TermVocabulary<Rank> voc){
+	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -308,10 +308,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (rank == null){
 				rank = new Rank(text, label, labelAbbrev);
 				if (voc == null){
-					boolean isOrdered = false;
-					voc = getVocabulary(uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
+					boolean isOrdered = true;
+					voc = (OrderedTermVocabulary)getVocabulary(uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);
 				}
-				voc.addTerm(rank);
+				if (lowerRank == null){
+					voc.addTerm(rank);
+				}else{
+					voc.addTermAbove(rank, lowerRank);
+				}
 				rank.setUuid(uuid);
 				getTermService().save(rank);
 			}

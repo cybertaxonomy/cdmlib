@@ -350,7 +350,7 @@ public class CdmUtils {
      * @param string
      * @return
      */
-    static public boolean isEmpty(String string){
+    static public boolean isBlank(String string){
         if (string == null){
             return true;
         }
@@ -358,6 +358,26 @@ public class CdmUtils {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * @see #isBlank(String)
+     * @deprecated use {@link #isBlank(String)} instead
+     * @param string
+     * @return
+     */
+    @Deprecated
+    static public boolean isEmpty(String string){
+    	return isBlank(string);
+    }
+    
+    static public boolean areBlank(String ... strings){
+        for (String string : strings){
+        	if (! isBlank(string)){
+        		return false;
+        	}
+        }
+        return true;
     }
 
     /**

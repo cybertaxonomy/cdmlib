@@ -56,12 +56,13 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 
 
     /**
-     * Returns the full title cache as a string.
+     * Returns the full title cache as a string. The full title cache contains
+     * the name cache, followed by the nomencl. reference, followed by the 
+     * nomencl. status
      * @param taxonNameBase
      * @return
      */
     public String getFullTitleCache(T taxonNameBase);
-
 
 	/**
 	 * Returns the full title cache tagged by html tags according to tag rules.

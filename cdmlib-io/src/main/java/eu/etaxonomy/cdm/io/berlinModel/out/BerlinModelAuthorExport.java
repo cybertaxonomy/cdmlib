@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbStringMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbTimePeriodMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -56,9 +57,9 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 		return result;
 	}
 	
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 		mapping.addMapper(IdMapper.NewInstance("AuthorId"));
 		mapping.addMapper(DbStringMapper.NewInstance("nomenclaturalTitle", "Abbrev"));
 		mapping.addMapper(DbStringMapper.NewInstance("firstname", "FirstName"));
@@ -90,7 +91,7 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 			Class<Person> clazz = Person.class;
 			List<AgentBase> persons = getAgentService().list(clazz, 100000000, 0, null, null);
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			
 			logger.info("save "+pluralString+" ...");

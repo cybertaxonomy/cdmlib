@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
@@ -57,13 +58,13 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 /**
  * The base class for all CDM domain classes implementing UUIDs and bean property change event firing.
  * It provides a globally unique UUID and keeps track of creation date and person.
- * The UUID is the same for different versions (see {@link VersionableEntity}) of a CDM object, so a locally unique id exists in addition 
+ * The UUID is the same for different versions (see {@link VersionableEntity}) of a CDM object, so a locally unique id exists in addition
  * that allows to safely access and store several objects (=version) with the same UUID.
- * 
- * This class together with the {@link eu.etaxonomy.cdm.aspectj.PropertyChangeAspect} 
+ *
+ * This class together with the {@link eu.etaxonomy.cdm.aspectj.PropertyChangeAspect}
  * will fire bean change events to all registered listeners. Listener registration and event firing
  * is done with the help of the {@link PropertyChangeSupport} class.
- * 
+ *
  * @author m.doering
  *
  */
@@ -77,22 +78,23 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	private static final long serialVersionUID = -3053225700018294809L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBase.class);
-	
+
 	@Transient
 	@XmlTransient
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-	
+
 	//@XmlAttribute(name = "id", required = true)
 	@XmlTransient
 	@Id
 //	@GeneratedValue(generator = "system-increment")
-	@GeneratedValue(generator = "enhanced-table")
+//	@GeneratedValue(generator = "enhanced-table")
+	@GeneratedValue(generator = "custom-enhanced-table")
 	@DocumentId
 	@Match(MatchMode.IGNORE)
 	@NotNull
 	@Min(0)
 	private int id;
-    
+
 	@XmlAttribute(required = true)
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @Type(type="uuidUserType")
@@ -102,7 +104,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	@Match(MatchMode.IGNORE)
 	@NotNull
 	protected UUID uuid;
-	
+
 	@XmlElement (name = "Created", type= String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Type(type="dateTimeUserType")
@@ -111,7 +113,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	@Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	@FieldBridge(impl = DateTimeBridge.class)
 	private DateTime created;
-	
+
 	@XmlElement (name = "CreatedBy")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -127,7 +129,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 		this.uuid = UUID.randomUUID();
 		this.created = new DateTime().withMillisOfSecond(0);
 	}
-	
+
 	/**
 	 * see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
 	 * @param listener
@@ -149,14 +151,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
-	
+
 	/**
 	 * @see PropertyChangeSupport#addPropertyChangeListener(String, PropertyChangeListener)
 	 */
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
-	
+
 	public boolean hasListeners(String propertyName) {
 		return propertyChangeSupport.hasListeners(propertyName);
 	}
@@ -182,7 +184,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
-	 */	
+	 */
 	public UUID getUuid() {
 		return uuid;
 	}
@@ -192,7 +194,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
 	 */
@@ -205,7 +207,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
 	 */
@@ -237,7 +239,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
-	
+
 // ************************** Hibernate proxies *******************/
 	/**
 	 * These methods are present due to HHH-1517 - that in a one-to-many
@@ -258,19 +260,19 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	 public static <T extends CdmBase> T deproxy(Object object, Class<T> clazz) throws ClassCastException {
 		 return HibernateProxyHelper.deproxy(object, clazz);
 	 }
-	        
+
 	 public boolean isInstanceOf(Class<? extends CdmBase> clazz) throws ClassCastException {
 	     return HibernateProxyHelper.isInstanceOf(this, clazz);
 	 }
 
-// ************* Object overrides *************************/ 
-	
+// ************* Object overrides *************************/
+
 	/**
 	 * Is true if UUID is the same for the passed Object and this one.
 	 * @see java.lang.Object#equals(java.lang.Object)
-	 * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities} 
+	 * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities}
 	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
-	 * for more information about equals and hashcode. 
+	 * for more information about equals and hashcode.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -292,23 +294,23 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 		return true;
 	}
 
-	
+
 	/** Overrides {@link java.lang.Object#hashCode()}
-	 *  See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities} 
+	 *  See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities}
 	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
-	 * for more information about equals and hashcode. 
+	 * for more information about equals and hashcode.
 	 */
 	@Override
 	public int hashCode() {
 		   int hashCode = 7;
 		   if(this.getUuid() != null) {
 			   //this unfortunately leads to errors when loading maps via hibernate
-			   //as hibernate computes hash values for CdmBase objects used as key at 
-			   // a time when the uuid is not yet loaded from the database. Therefore 
+			   //as hibernate computes hash values for CdmBase objects used as key at
+			   // a time when the uuid is not yet loaded from the database. Therefore
 			   //the hash values later change and give wrong results when retrieving
 			   //data from the map (map.get(key) returns null, though there is an entry
 			   //for key in the map.
-			   //see further comments in #2114 
+			   //see further comments in #2114
 		       int result = 29 * hashCode + this.getUuid().hashCode();
 //		       int shresult = 29 * hashCode + Integer.valueOf(this.getId()).hashCode();
 			   return result;
@@ -320,10 +322,10 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	/**
 	 * Overrides {@link java.lang.Object#toString()}.
 	 * This returns an String that identifies the object well without beeing necessarily unique.
-	 * Specification: This method should never call other object' methods so it can be well used for debugging 
+	 * Specification: This method should never call other object' methods so it can be well used for debugging
 	 * without problems like lazy loading, unreal states etc.
-	 * Note: If overriding this method's javadoc always copy or link the above requirement. 
-	 * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object. 
+	 * Note: If overriding this method's javadoc always copy or link the above requirement.
+	 * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object.
 	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
 	 * @see java.lang.Object#toString()
 	 */
@@ -331,9 +333,9 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	public String toString() {
 		return this.getClass().getSimpleName()+"#"+this.getId()+"<"+this.getUuid()+">";
 	}
-	
+
 // **************** invoke methods **************************/
-	
+
 	protected void invokeSetMethod(Method method, Object object){
 		try {
 			method.invoke(object, this);
@@ -342,19 +344,19 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 			//TODO handle exceptioin;
 		}
 	}
-	
+
 	protected void invokeSetMethodWithNull(Method method, Object object){
 		try {
-			Object[] nul = new Object[]{null}; 
+			Object[] nul = new Object[]{null};
 			method.invoke(object, nul);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//TODO handle exceptioin;
 		}
 	}
-	
+
 //********************** CLONE *****************************************/
-	
+
 	protected void clone(CdmBase clone){
 		clone.setCreatedBy(createdBy);
 		clone.setId(id);
@@ -364,7 +366,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 		//clone.setUuid(getUuid());
 
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
@@ -372,15 +374,15 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 	public Object clone() throws CloneNotSupportedException{
 		CdmBase result = (CdmBase)super.clone();
 		result.propertyChangeSupport=new PropertyChangeSupport(result);
-		
+
 		//TODO ?
 		result.setId(0);
 		result.setUuid(UUID.randomUUID());
 		result.setCreated(new DateTime());
 		result.setCreatedBy(null);
-		
+
 		//no changes to: -
 		return result;
 	}
-	
+
 }

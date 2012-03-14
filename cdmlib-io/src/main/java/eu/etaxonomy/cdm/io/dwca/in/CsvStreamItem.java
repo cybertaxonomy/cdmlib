@@ -27,21 +27,43 @@ public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 
 	public TermUri term;
 	public Map<String, String> map;
-	CsvStream stream;
+	private CsvStream stream;
 	
 	/**
 	 * @param term
 	 * @param map
 	 * @param stream
 	 */
-	public CsvStreamItem(TermUri term, Map<String, String> map,
-			CsvStream stream) {
+	public CsvStreamItem(TermUri term, Map<String, String> map, CsvStream stream) {
 		super();
 		this.term = term;
 		this.map = map;
 		this.stream = stream;
 	}
 
+	public String get(String mapKey){
+		return this.map.get(mapKey);
+	}
+
+	public String get(TermUri termUri){
+		return this.map.get(termUri.getUriString());
+	}
+	
+	public void remove(TermUri termUri){
+		this.map.remove(termUri.getUriString());
+	}
+	
+
+	public void remove(String string) {
+		this.map.remove(string);
+	}
+
+	
+	/**
+	 * Returns the location in the stream origin. For event messaging and maybe in future also
+	 * for state analysis.
+	 * @return
+	 */
 	public String getLocation() {
 		return CdmUtils.concat("/", stream.getFilesLocation() ,String.valueOf(stream.getLine()));
 	}

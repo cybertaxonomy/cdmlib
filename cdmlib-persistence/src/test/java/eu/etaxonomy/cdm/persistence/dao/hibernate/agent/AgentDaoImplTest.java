@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.agent;
 
@@ -21,7 +21,9 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -37,15 +39,19 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
+
 public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
-	
+
+	private static final String[] TABLE_NAMES = new String[] {"AGENTBASE", "AGENTBASE_AUD", "AGENTBASE_AGENTBASE", "AGENTBASE_AGENTBASE_AUD", "INSTITUTIONALMEMBERSHIP", "INSTITUTIONALMEMBERSHIP_AUD"};
+
+
 	@SpringBeanByType
 	private IAgentDao agentDao;
-	
+
 	private UUID uuid;
 	private UUID personUuid;
 	private AuditEvent previousAuditEvent;
-	
+
 	@Before
 	public void setUp() {
 		uuid = UUID.fromString("924fa059-1b83-45f8-bc3a-e754d2757364");
@@ -55,28 +61,28 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		previousAuditEvent.setUuid(UUID.fromString("a680fab4-365e-4765-b49e-768f2ee30cda"));
 		AuditEventContextHolder.clearContext(); // By default we're in the current view (i.e. view == null)
 	}
-	
+
 	@After
 	public void tearDown() {
 		AuditEventContextHolder.clearContext();
 	}
-	
+
 	@Test
 	@DataSet
 	public void testCountMembers() {
 		Team team = (Team)agentDao.findByUuid(uuid);
 		assert team != null : "team must exist";
-		
+
 		int numberOfMembers = agentDao.countMembers(team);
 		assertEquals("countMembers should return 5",5,numberOfMembers);
 	}
-	
+
 	@Test
 	@DataSet
 	public void testGetMembers() {
 		Team team = (Team)agentDao.findByUuid(uuid);
 		assert team != null : "team must exist";
-		
+
 		List<Person> members = agentDao.getMembers(team, null, null);
 		assertNotNull("getMembers should return a List", members);
 		assertFalse("getMembers should not be empty",members.isEmpty());
@@ -89,29 +95,29 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		Person id1Member = members.get(2);
 		assertEquals("The member with id = 1 must be the third (sortindex = 2)", 1, id1Member.getId());
 	}
-	
+
 	@Test
 	@DataSet
 	public void testCountInstitutionalMemberships() {
 		Person person = (Person)agentDao.findByUuid(personUuid);
 		assert person != null : "person must exist";
-		
+
 		int numberOfInstitutionalMemberships = agentDao.countInstitutionalMemberships(person);
 		assertEquals("countInstitutionalMemberships should return 3",3,numberOfInstitutionalMemberships);
 	}
-	
+
 	@Test
 	@DataSet
 	public void testGetInstitutionalMemberships() {
 		Person person = (Person)agentDao.findByUuid(personUuid);
 		assert person != null : "person must exist";
-		
+
 		List<InstitutionalMembership> memberships = agentDao.getInstitutionalMemberships(person, null, null);
 		assertNotNull("getInstitutionalMemberships should return a List", memberships);
 		assertFalse("getInstitutionalMemberships should not be empty",memberships.isEmpty());
 		assertEquals("getInstitutionalMemberships should return 3 institutional membership instances",3,memberships.size());
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testSave.xml")
 	@ExpectedDataSet
@@ -122,7 +128,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		setComplete();
 		endTransaction();
 	}
-	
+
 	@Test
 	@DataSet
 	@ExpectedDataSet
@@ -134,14 +140,14 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		setComplete();
 		endTransaction();
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testFind.xml")
 	public void testFindInCurrentView() {
 		Person person = (Person)agentDao.findByUuid(personUuid);
-		Assert.assertEquals("The person's firstname should be \'Benjamin\' in the current view",person.getFirstname(),"Benjamin");
+		Assert.assertEquals("The person's firstname should be \'Benjamin\' in the current view", "Benjamin", person.getFirstname());
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testFind.xml")
 	public void testFindInPreviousView() {
@@ -149,49 +155,48 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		Person person = (Person)agentDao.findByUuid(personUuid);
 		Assert.assertEquals("The person's firstname should be \'Ben\' in the previous view",person.getFirstname(),"Ben");
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testFind.xml")
 	@ExpectedDataSet
 	public void testDelete() throws Exception {
 		Person person = (Person)agentDao.findByUuid(personUuid);
 		agentDao.delete(person);
-		setComplete();
-        endTransaction();
+		commitAndStartNewTransaction(null);
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testExists() {
-		Assert.assertFalse("Person with the uuid " + personUuid.toString() +  "should not exist in the current view",agentDao.exists(personUuid));		
+		Assert.assertFalse("Person with the uuid " + personUuid.toString() +  "should not exist in the current view",agentDao.exists(personUuid));
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testExistsInPreviousView() {
 		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-		Assert.assertTrue("Person with the uuid " + personUuid.toString() +  "should exist in the previous view",agentDao.exists(uuid));		
+		Assert.assertTrue("Person with the uuid " + personUuid.toString() +  "should exist in the previous view",agentDao.exists(uuid));
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testCount() {
 		Assert.assertEquals("There should be eight agents in the current view",8, agentDao.count());
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testCountInPreviousView() {
 		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
 		Assert.assertEquals("There should be nine agents in the previous view",9, agentDao.count());
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testCountAuditEvents() {
 		Assert.assertEquals("There should be eleven AuditEvents",11, agentDao.countAuditEvents(null, null, null, null));
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testList() {
@@ -199,7 +204,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertNotNull("list() should return a list",result);
 		Assert.assertEquals("list() should return eight agents in the current view", result.size(),8);
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testListInPreviousView() {
@@ -208,7 +213,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertNotNull("list() should return a list",result);
 		Assert.assertEquals("list() should return nine agents in the current view",result.size(),9);
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testSortingListInPreviousView() {
@@ -221,20 +226,20 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertEquals(result.get(0).getTitleCache(), "B.R. Clark");
 		Assert.assertEquals(result.get(8).getTitleCache(), "University of Oxford");
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testCountPeople() {
 		Assert.assertEquals("There should be four agents in the current view",4, agentDao.count(Person.class));
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testCountPeopleInPreviousView() {
 		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
 		Assert.assertEquals("There should be five agents in the previous view",5, agentDao.count(Person.class));
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testListPeople() {
@@ -242,7 +247,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertNotNull("list() should return a list",result);
 		Assert.assertEquals("list() should return four agents in the current view", result.size(),4);
 	}
-	
+
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testListPeopleInPreviousView() {

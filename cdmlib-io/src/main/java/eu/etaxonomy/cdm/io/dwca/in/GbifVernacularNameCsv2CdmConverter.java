@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifVernacularNameCsv2CdmConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>>{
+public class GbifVernacularNameCsv2CdmConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>, String>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifVernacularNameCsv2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
@@ -38,8 +38,8 @@ public class GbifVernacularNameCsv2CdmConverter extends ConverterBase<DwcaImport
 	}
 
 
-	public IReader<CdmBase> map(CsvStreamItem item ){
-		List<CdmBase> resultList = new ArrayList<CdmBase>(); 
+	public IReader<MappedCdmBase> map(CsvStreamItem item ){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
 		Reference<?> sourceReference = null;
@@ -47,15 +47,23 @@ public class GbifVernacularNameCsv2CdmConverter extends ConverterBase<DwcaImport
 		
 		Taxon taxon = getTaxon(csv);
 		if (taxon != null){
-			resultList.add(taxon);
+			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
+			resultList.add(mcb);
 		}else{
 			String message = "Taxon is null";
 			fireWarningEvent(message, item, 12);
 		}
 		String message = "Not yet implemented";
 		fireWarningEvent(message, item, 12);
-		return new ListReader<CdmBase>(resultList);
+		return new ListReader<MappedCdmBase>(resultList);
 		
+	}
+	
+	
+	@Override
+	public String getSourceId(CsvStreamItem item) {
+		String id = item.get(CORE_ID);
+		return id;
 	}
 	
 	private Taxon getTaxon(Map<String, String> csv) {

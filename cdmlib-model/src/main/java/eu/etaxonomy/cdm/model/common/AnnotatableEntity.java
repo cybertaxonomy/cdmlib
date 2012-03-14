@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
@@ -86,8 +87,12 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	}
 	
 	public boolean hasMarker(MarkerType type, boolean value){
+		return hasMarker(type.getUuid(), value);
+	}
+	
+	public boolean hasMarker(UUID uuidMarkerType, boolean value){
 		for (Marker marker: getMarkers()){
-			if (marker.getMarkerType().equals(type)){
+			if (marker.getMarkerType().getUuid().equals(uuidMarkerType)){
 				if (marker.getFlag() == value){
 					return true;
 				}

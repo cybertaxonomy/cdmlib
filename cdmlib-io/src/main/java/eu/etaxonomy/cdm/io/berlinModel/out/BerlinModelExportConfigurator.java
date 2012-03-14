@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelExportConfigurator extends DbExportConfiguratorBase<BerlinModelExportState> implements IExportConfigurator<BerlinModelExportState>{
+public class BerlinModelExportConfigurator extends DbExportConfiguratorBase<BerlinModelExportState, IExportTransformer> implements IExportConfigurator<BerlinModelExportState, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 

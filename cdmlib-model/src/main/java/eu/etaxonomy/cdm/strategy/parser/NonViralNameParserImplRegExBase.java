@@ -49,7 +49,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
     
     //Words used in an epethiton for a TaxonName
-    protected static String nonCapitalEpiWord = "[a-z\u00EF\\-]+";
+    protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\\-]+";   //a-z + diaeresis for ieo
     protected static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
      
     

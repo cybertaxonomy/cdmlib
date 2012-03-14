@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
@@ -36,19 +36,19 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  */
 @DataSet
 public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
-	
+
 	@SpringBeanByType
-	private  TaxonDaoHibernateImpl identifiableDao;	
-	
+	private  TaxonDaoHibernateImpl identifiableDao;
+
 	private UUID uuid;
-	
+
 	@Before
 	public void setUp() {
 		uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 	}
 
 /************ TESTS ********************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase#IdentifiableDaoBase(java.lang.Class)}.
 	 */
@@ -67,21 +67,21 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		assertEquals("findByTitle should return one entity", 1, results.size());
 		assertEquals("findByTitle should return an entity with uuid " + uuid,uuid, results.get(0).getUuid());
 	}
-	
+
 	@Test
 	public void testCountByTitle() {
 		int result = identifiableDao.countByTitle("%");
 		assertNotNull("findByTitle should return an integer",result);
 		assertEquals("findByTitle should return 2", 2, result);
-		
+
 		result = identifiableDao.countByTitle("%", MatchMode.LIKE, null);
 		assertNotNull("findByTitle should return an integer",result);
 		assertEquals("findByTitle should return 2", 2, result);
-		
+
 		result = identifiableDao.countByTitle("Lorem");
 		assertNotNull("findByTitle should return an integer",result);
 		assertEquals("findByTitle should return 1", 1, result);
-		
+
 		result = identifiableDao.countByTitle("Lorem", MatchMode.LIKE, null);
 		assertNotNull("findByTitle should return an integer",result);
 		assertEquals("findByTitle should return 1", 1, result);
@@ -90,22 +90,22 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 	public void testGetRights() {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
-		
+
 		List<Rights> rights = identifiableDao.getRights(taxon, null, null, null);
-		
+
 		assertNotNull("getRights should return a List",rights);
 		assertFalse("the list should not be empty",rights.isEmpty());
 		assertEquals("getRights should return 2 Rights instances",2,rights.size());
 	}
-	
+
 	@Test
 	public void testGetCredits() {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
 		taxon.getCredits();
-		
+
 		List<Credit> credits = identifiableDao.getCredits(taxon, null, null);
-		
+
 		assertNotNull("getCredits should return a List",credits);
 		assertFalse("the list should not be empty",credits.isEmpty());
 		assertEquals("getCredits should return 3 Credit instances",3,credits.size());
@@ -116,7 +116,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
 		List<Credit> credits = taxon.getCredits();
-		
+
 		assertNotNull("getCredits should return a List",credits);
 		assertFalse("the list should not be empty",credits.isEmpty());
 		assertEquals("getCredits should return 3 Credit instances",3,credits.size());
@@ -125,12 +125,12 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		assertEquals("My third credit", credits.get(2).getText());
 	}
 
-	
+
 	@Test
 	public void testSources() throws Exception {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
-		
+
 		List<IdentifiableSource> sources = identifiableDao.getSources(taxon, null, null,null);
 
 		assertNotNull("getSources should return a List", sources);
@@ -144,19 +144,19 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		TaxonBase result = identifiableDao.find(lsid);
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void testGetByLsidWithVersionCurrent() throws Exception {
 		LSID lsid = new LSID("urn:lsid:example.org:namespace:1:2");
 		TaxonBase result = identifiableDao.find(lsid);
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	public void testGetByLsidWithVersionPast() throws Exception {
 		LSID lsid = new LSID("urn:lsid:example.org:namespace:1:1");
 		TaxonBase result = identifiableDao.find(lsid);
 		assertNotNull(result);
 	}
-	
+
 }

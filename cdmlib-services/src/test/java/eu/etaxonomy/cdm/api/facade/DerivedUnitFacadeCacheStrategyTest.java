@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -38,16 +38,17 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  * @date 03.06.2010
  *
  */
-public class DerivedUnitFacadeCacheStrategyTest {
+public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
-	
+
 	Specimen specimen;
 	DerivationEvent derivationEvent;
 	FieldObservation fieldObservation;
@@ -64,45 +65,46 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	TimePeriod gatheringPeriod = TimePeriod.parseString("03.05.2005");
 	String ecology = "sand dunes";
 	String plantDescription = "flowers blue";
-	
+
 	String fieldNumber = "5678";
 	String fieldNotes = "such a beautiful specimen";
 	Person primaryCollector;
-	
+
 	Integer individualCount = 1;
 	Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
 	Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
 	NamedArea country = WaterbodyOrCountry.GERMANY();
-	
+
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
 	TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
-	
+
 	PreservationMethod preservationMethod = PreservationMethod.NewInstance("my prservation", null, null);
 
 	DerivedUnitFacade specimenFacade;
-	
+
 	Specimen collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
 	DerivationEvent firstDerivationEvent;
 	FieldObservation firstFieldObject;
 	Media media1 = Media.NewInstance();
-	
-	
+
+
 //****************************** SET UP *****************************************/
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		// FIXME maybe this will cause problems in other tests
-		new DefaultTermInitializer().initialize();
-	}
+
+//	/**
+//	 * @throws java.lang.Exception
+//	 */
+//	@BeforeClass
+//	public static void setUpBeforeClass() throws Exception {
+//		// FIXME maybe this will cause problems in other tests
+//		// INDEED !!!! it causes problems thus this is replaced by making this test a  CdmIntegrationTest !!!
+//		new DefaultTermInitializer().initialize();
+//	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -110,7 +112,7 @@ public class DerivedUnitFacadeCacheStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		specimen = Specimen.NewInstance();
-		
+
 		derivationEvent = DerivationEvent.NewInstance();
 		specimen.setDerivedFrom(derivationEvent);
 		fieldObservation = FieldObservation.NewInstance();
@@ -125,11 +127,11 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		gatheringEvent.setDistanceToWaterSurface(distanceToSurface);
 		gatheringEvent.setExactLocation(exactLocation);
 		gatheringEvent.setDescription(gatheringEventDescription);
-		
+
 		gatheringEvent.setTimeperiod(gatheringPeriod);
 		gatheringEvent.setLocality(locality);
 		gatheringEvent.setCountry(country);
-		
+
 		fieldObservation.setFieldNumber(fieldNumber);
 		fieldObservation.setFieldNotes(fieldNotes);
 		fieldObservation.setIndividualCount(individualCount);
@@ -158,13 +160,13 @@ public class DerivedUnitFacadeCacheStrategyTest {
 		collectionSpecimen = Specimen.NewInstance();
 		Specimen middleSpecimen = Specimen.NewInstance();
 		firstFieldObject = FieldObservation.NewInstance();
-		
+
 		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
 		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance();
 		firstDerivationEvent = DerivationEvent.NewInstance();
-		
+
 		collectionSpecimen.setDerivedFrom(lastDerivationEvent);
-		
+
 		lastDerivationEvent.addOriginal(middleSpecimen);
 		middleSpecimen.setDerivedFrom(firstDerivationEvent);
 		firstDerivationEvent.addOriginal(firstFieldObject);

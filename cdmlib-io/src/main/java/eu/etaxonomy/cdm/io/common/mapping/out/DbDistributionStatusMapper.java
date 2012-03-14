@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
  * @author a.mueller
  * @created 06.02.2012
  */
-public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>>{
+public class DbDistributionStatusMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbDistributionStatusMapper.class);
 	

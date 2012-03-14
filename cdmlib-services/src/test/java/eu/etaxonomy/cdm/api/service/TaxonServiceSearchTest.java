@@ -215,7 +215,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFindByCommonNameHqlBenchmark() throws CorruptIndexException, IOException, ParseException {
 
-        printDataSet(System.err, new String[] { "TaxonBase" });
+//        printDataSet(System.err, new String[] { "TaxonBase" });
 
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 

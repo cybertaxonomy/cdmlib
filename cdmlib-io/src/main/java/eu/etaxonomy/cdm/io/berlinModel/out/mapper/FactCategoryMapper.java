@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbSingleAttributeExportMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IDbExportMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.IndexCounter;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -35,12 +36,12 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
  * @created 12.05.2009
  * @version 1.0
  */
-public class FactCategoryMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState> implements IDbExportMapper<BerlinModelExportState>{
+public class FactCategoryMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState> implements IDbExportMapper<BerlinModelExportState, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FactCategoryMapper.class);
 	
 	private PreparedStatement preparedStatement;
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = null; 
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = null; 
 	private String dbTableName = "NomStatusRel";
 //	protected BerlinModelExportState<?> state;
 
@@ -48,9 +49,9 @@ public class FactCategoryMapper extends DbSingleAttributeExportMapperBase<Berlin
 		return new FactCategoryMapper(cdmAttributeString, dbAttributeString);
 	}
 
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 
 		mapping.addMapper(MethodMapper.NewInstance("NomStatusFk", this.getClass(), "getNomStatusFk", NomenclaturalStatus.class));
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "NomStatusRefFk"));

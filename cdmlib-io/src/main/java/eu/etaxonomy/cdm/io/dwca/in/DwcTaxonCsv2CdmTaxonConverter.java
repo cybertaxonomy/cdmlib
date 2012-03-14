@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -23,6 +25,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -35,11 +38,14 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @date 22.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>>{
+public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>, String>{
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
-	
+	// key for for case that no dataset information is supplied
+	public static final String NO_DATASET = "no_dataset_jli773oebhjklw";
+
 	
 	/**
 	 * @param state
@@ -50,40 +56,45 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 	}
 
 
-	public IReader<CdmBase> map(CsvStreamItem item){
-		List<CdmBase> resultList = new ArrayList<CdmBase>(); 
+	public IReader<MappedCdmBase> map(CsvStreamItem csvTaxonRecord){
+		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
-		Map<String, String> csvTaxonRecord = item.map;
 		Reference<?> sourceReference = null;
-		String sourceReferecenDetail = null;
+		String sourceReferenceDetail = null;
 		
+		//taxon
 		TaxonBase<?> taxonBase = getTaxonBase(csvTaxonRecord);
-		resultList.add(taxonBase);
+		MappedCdmBase  mcb = new MappedCdmBase(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
+		resultList.add(mcb);
 		
+		//source
 		String id = csvTaxonRecord.get(ID);
-		IdentifiableSource source = taxonBase.addSource(id, "Taxon", sourceReference, sourceReferecenDetail);
-		resultList.add(source);
+		IdentifiableSource source = taxonBase.addSource(id, "Taxon", sourceReference, sourceReferenceDetail);
+		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
+		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
 		
-		Rank rank = getRank(item);
+		//rank
+		NomenclaturalCode nomCode = getNomCode(csvTaxonRecord);
+		Rank rank = getRank(csvTaxonRecord, nomCode);
 
-		NomenclaturalCode nomCode = getNomCode(item);
-		TaxonNameBase<?,?> name = getScientificName(item, nomCode, rank);
+		//name
+		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank);
 		taxonBase.setName(name);
 		
+		//sec
 		Reference<?> sec = getNameAccordingTo(csvTaxonRecord);
 		taxonBase.setSec(sec);
+
+		//classification
+		handleDataset(csvTaxonRecord, resultList, sourceReference, sourceReferenceDetail);
+		
 		
 //		    <field index="0" term="http://rs.tdwg.org/dwc/terms/taxonID"/>
 		
 //		    <!-- LSID -->
 //		    <field index="1" term="http://purl.org/dc/terms/identifier"/>
 
-//		    <!-- CoL source database id -->
-//		    <field index="2" term="http://rs.tdwg.org/dwc/terms/datasetID"/>
-		
-//		    <!-- Short name of source database plus CoL credits -->
-//		    <field index="3" term="http://rs.tdwg.org/dwc/terms/datasetName"/>
 
 		//		    <!-- Top level group; listed as kingdom but may be interpreted as domain or superkingdom
 //		         The following eight groups are recognized: Animalia, Archaea, Bacteria, Chromista, 
@@ -129,11 +140,52 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 //		    <field index='24' term='http://purl.org/dc/terms/description'/>
 //		    </core>
 
-		return new ListReader<CdmBase>(resultList);
+		return new ListReader<MappedCdmBase>(resultList);
 	}
 
 
-	private Reference<?> getNameAccordingTo(Map<String, String> csvTaxonRecord) {
+	private void handleDataset(CsvStreamItem csvTaxonRecord, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
+		String datasetId = CdmUtils.Nz(csvTaxonRecord.get(TermUri.DWC_DATASET_ID)).trim();
+		String datasetName = CdmUtils.Nz(csvTaxonRecord.get(TermUri.DWC_DATASET_NAME)).trim();
+		if (CdmUtils.areBlank(datasetId, datasetName) ){
+			datasetId = NO_DATASET;
+		}
+		
+		//check id
+		boolean classificationExists = state.exists(TermUri.DWC_DATASET_ID.toString() , datasetId, Classification.class);
+		
+		//check name
+		if (!classificationExists){
+			classificationExists = state.exists(TermUri.DWC_DATASET_ID.toString() , datasetName, Classification.class);
+		}
+		
+		//if not exists, create new
+		if (! classificationExists){
+			String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
+			String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
+			Classification classification = Classification.NewInstance(classificationName);
+			//source
+			IdentifiableSource source = classification.addSource(classificationId, "Dataset", sourceReference, sourceReferecenDetail);
+			//add to result
+			resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_ID, datasetId, classification));
+			resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_NAME, datasetName, classification));
+			resultList.add(new MappedCdmBase(source));
+		}
+		
+		//remove to later check if all attributes were used
+		csvTaxonRecord.remove(TermUri.DWC_DATASET_ID);
+		csvTaxonRecord.remove(TermUri.DWC_DATASET_NAME);
+		
+	}
+
+	
+	@Override
+	public String getSourceId(CsvStreamItem item) {
+		String id = item.get(ID);
+		return id;
+	}
+
+	private Reference<?> getNameAccordingTo(CsvStreamItem csvTaxonRecord) {
 		String strSec = csvTaxonRecord.get(TermUri.DWC_NAME_ACCORDING_TO);
 		if (strSec != null){
 			Reference<?> sec = ReferenceFactory.newGeneric();
@@ -182,18 +234,21 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 	}
 
 
-	private Rank getRank(CsvStreamItem csvTaxonRecord) {
+	private Rank getRank(CsvStreamItem csvTaxonRecord, NomenclaturalCode nomCode) {
 		boolean USE_UNKNOWN = true;
 		Rank rank = null;
 		String strRank = getValue(csvTaxonRecord,TermUri.DWC_TAXON_RANK);
 		String strVerbatimRank = getValue(csvTaxonRecord,TermUri.DWC_VERBATIM_TAXON_RANK);
 		if (strRank != null){
 			try {
-				rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+				rank = Rank.getRankByEnglishName(strRank, nomCode, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
-					String message = "Rank can not be defined for '%s'";
-					message = String.format(message, strRank);
-					fireWarningEvent(message, csvTaxonRecord, 4);
+					rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+					if (rank.equals(Rank.UNKNOWN_RANK())){
+						String message = "Rank can not be defined for '%s'";
+						message = String.format(message, strRank);
+						fireWarningEvent(message, csvTaxonRecord, 4);
+					}
 				}
 			} catch (UnknownCdmTypeException e) {
 				//should not happen as USE_UNKNOWN is used
@@ -217,24 +272,46 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 	}
 
 
-	private TaxonBase getTaxonBase(Map<String, String> csvTaxonRecord) {
+	private TaxonBase<?> getTaxonBase(CsvStreamItem item) {
 		TaxonNameBase<?,?> name = null;
 		Reference<?> sec = null;
 		TaxonBase<?> result;
-		String status = csvTaxonRecord.get(TermUri.DWC_TAXONOMIC_STATUS);
-		if (status != null){
-			if (status.matches("accepted|valid|misapplied")){
-				result = Taxon.NewInstance(name, sec);
-			}else if (status.matches(".*synonym|invalid")){
-				result = Synonym.NewInstance(name, sec);
+		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
+		String status = "";
+		boolean isMissaplied = false;
+		if (taxStatus != null){
+			if (taxStatus.matches("accepted|valid")){
+				status += "A";
+			}else if (taxStatus.matches(".*synonym|invalid")){
+				status += "S";
+			}if (taxStatus.matches("misapplied")){
+				status += "M";
 			}else{
-				result = Taxon.NewUnknownStatusInstance(name, sec);
+				status += "?";
 			}
-			csvTaxonRecord.remove(TermUri.DWC_TAXONOMIC_STATUS);
+			item.remove(TermUri.DWC_TAXONOMIC_STATUS);
+		}
+		if (! CdmUtils.isBlank(item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID))){
+			// acceptedNameUsageId = id
+			if (getSourceId(item).equals(item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID))){
+				status += "A";
+			}else{
+				status += "S";
+			}
+		}
+		if (status.contains("A") || status.contains("M")){
+			result = Taxon.NewInstance(name, sec);
+			if (status.contains("S") && ! status.contains("M") ){
+				String message = "Ambigous taxon status (%s)";
+				message = String.format(message, status);
+				fireWarningEvent(message, item, 6);
+			}
+		}else if (status.contains("S")){
+			result = Synonym.NewInstance(name, sec);
 		}else{
 			result = Taxon.NewUnknownStatusInstance(name, sec);
 		}
-		//TODO handle acceptedNameUsage(ID), 
+			
 		return result;
 	}
 	

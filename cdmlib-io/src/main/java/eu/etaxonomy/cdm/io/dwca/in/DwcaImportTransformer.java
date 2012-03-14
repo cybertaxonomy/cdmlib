@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 /**
  * @author a.mueller
  * @created 05.05.2011
- * @version 1.0
  */
 public final class DwcaImportTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")

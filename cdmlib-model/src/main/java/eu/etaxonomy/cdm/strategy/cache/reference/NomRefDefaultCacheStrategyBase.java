@@ -107,7 +107,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		}
 		String result = getTokenizedNomenclaturalTitel(nomenclaturalReference);
 		microReference = CdmUtils.Nz(microReference);
-		if (! "".equals(microReference)){
+		if (StringUtils.isNotBlank(microReference)){
 			microReference = getBeforeMicroReference() + microReference;
 		}
 		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);

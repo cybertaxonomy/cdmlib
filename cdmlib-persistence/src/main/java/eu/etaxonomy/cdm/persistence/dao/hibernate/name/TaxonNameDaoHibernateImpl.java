@@ -45,7 +45,9 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -233,6 +235,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 			return ((Long)query.getSingleResult()).intValue();
 		}
 	}
+
 
 	public int countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status) {
 		checkNotInPriorView("countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status)");
@@ -540,17 +543,67 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		return results;
 	}
 	
-	public List<RelationshipBase> getRelationships(Integer limit, Integer start) {
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    //FIXME only NameRelationships
-			Criteria criteria = getSession().createCriteria(RelationshipBase.class);
-		    return (List<RelationshipBase>)criteria.list();
+        	// for some reason the HQL .class discriminator didn't work here so I created this preliminary
+        	// implementation for now. Should be cleaned in future.
+        	
+        	List<RelationshipBase> result = new ArrayList<RelationshipBase>();
+            
+        	int nameRelSize = countAllRelationships(NameRelationship.class);
+        	if (nameRelSize > start){
+        		
+        		String hql = " FROM %s as rb ORDER BY rb.id ";
+        		hql = String.format(hql, NameRelationship.class.getSimpleName());
+        		Query query = getSession().createQuery(hql);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result = query.list();
+        	}
+        	limit = limit - result.size();
+        	if (limit > 0){
+        		String hql = " FROM HybridRelationship as rb ORDER BY rb.id ";
+        		hql = String.format(hql, HybridRelationship.class.getSimpleName());
+        		Query query = getSession().createQuery(hql);
+        		start = (nameRelSize > start) ? 0 : (start - nameRelSize);
+                query.setFirstResult(start);
+                if (limit != null){
+                    query.setMaxResults(limit);
+                }
+                result.addAll( query.list());
+        	}
+            return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
 			return (List<RelationshipBase>)query.getResultList();
 		}
 	}
+	
+	
+    /**
+     * TODO not yet in interface
+     * @param clazz
+     * @return
+     */
+    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
+    	if (clazz != null && ! NameRelationship.class.isAssignableFrom(clazz) && ! HybridRelationship.class.isAssignableFrom(clazz) ){
+    		throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
+    	}
+    	int size = 0;
+    	 
+        if (clazz == null || NameRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM NameRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        if (clazz == null || HybridRelationship.class.isAssignableFrom(clazz)){
+        	String hql = " SELECT count(rel) FROM HybridRelationship rel";
+        	size += (Long)getSession().createQuery(hql).list().get(0);
+        }
+        return size;
+    }
 	
 	
 	public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {

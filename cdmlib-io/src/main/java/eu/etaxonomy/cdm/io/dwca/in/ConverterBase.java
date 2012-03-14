@@ -57,7 +57,6 @@ public class ConverterBase<STATE extends IoStateBase> {
 		//for performance improvement one may read:
 		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
-
 		
 		fire(event);
 	}
@@ -67,6 +66,9 @@ public class ConverterBase<STATE extends IoStateBase> {
 		for (IIoObserver observer: observers){
 			observer.handleEvent(event);
 		}
+		if (observers.size() == 0){
+			logger.warn(event.getMessage() +  " (no observer for message!).");
+		}
 	}
 	
 
@@ -75,7 +77,7 @@ public class ConverterBase<STATE extends IoStateBase> {
 	 * Returns the value for the given term in the item.
 	 */
 	protected String getValue(CsvStreamItem item, TermUri term) {
-		return item.map.get(term.getUriString());
+		return item.get(term.getUriString());
 	}
 	
 	/**

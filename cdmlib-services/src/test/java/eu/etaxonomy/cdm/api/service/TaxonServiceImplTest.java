@@ -9,20 +9,25 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.dbunit.DatabaseUnitException;
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.datasetfactory.DataSetFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -46,6 +51,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -62,14 +68,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IReferenceService referenceService;
-    
+
     @SpringBeanByType
     private IClassificationService classificationService;
-    
-   
+
+
 /****************** TESTS *****************************/
 
-    /**
+
+	/**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getTaxonByUuid(java.util.UUID)}.
      */
     @Test
@@ -117,10 +124,25 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNull(actualTaxon);
     }
 
+//    @Test
+//    @DataSet("ClearDBDataSet.xml")
+//    public final void clearDataBase() {
+//
+//    	setComplete();
+//    	commitAndStartNewTransaction(null);
+//
+//    	logger.info("DataBase tables cleared");
+//    }
 
-    @Test
+
+//    @Test
     public final void testPrintDataSet() {
-        //printDataSet(System.out);
+//
+//        printDataSet(System.out);
+//        printDataSet(System.err, new String[] {"TAXONNODE", "AgentBase"});
+//    	printTableNames(System.err, "<%1$s />");
+//        System.exit(0);
+
     }
 
     @Test
@@ -134,6 +156,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.swapSynonymAndAcceptedTaxon(synonym, tax1);
 
+        // find forces flush
         TaxonBase<?> tax = service.find(uuidTaxon);
         TaxonBase<?> syn = service.find(uuidSyn);
         HomotypicalGroup groupTest = tax.getHomotypicGroup();
@@ -141,7 +164,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(groupTest, groupTest2);
     }
 
-    @Test
+   //@Test
     public final void testChangeSynonymToAcceptedTaxon(){
         Rank rank = Rank.SPECIES();
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
@@ -214,9 +237,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
-    public final void testMoveSynonymToAnotherTaxon() {
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
+    public final void testMoveSynonymToAnotherTaxon() throws Exception {
         final String[] tableNames = new String[]{"SynonymRelationship"};
+
+//        printDataSet(System.err, new String[]{"AgentBase", "TaxonBase"});
+//        printDataSet(System.err, new String[]{"TaxonNode"});
 
         UUID uuidNewTaxon = UUID.fromString("2d9a642d-5a82-442d-8fec-95efa978e8f8");
         UUID uuidOldTaxon = UUID.fromString("c47fdb72-f32c-452e-8305-4b44f01179d0");
@@ -292,6 +318,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //test heterotypic synonym with no other synonym in homotypic group
         //+ keep reference
+
+//        printDataSet(System.err, new String[]{"TaxonBase"});
+
         newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn5);
         Assert.assertNotNull("Synonym should exist", heterotypicSynonym);
@@ -308,9 +337,19 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             Assert.fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
         //Asserts
+        //FIXME thows exception
         commitAndStartNewTransaction(tableNames);
-        heterotypicSynonym = (Synonym)service.load(uuidSyn5);
-        Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
+
+//        printDataSet(System.err, new String[]{"AgentBase", "TaxonBase"});
+//
+//      printDataSet(System.err, new String[]{"TaxonBase"});
+
+      heterotypicSynonym = (Synonym)service.load(uuidSyn5);
+
+      printDataSet(System.err, new String[]{"TaxonBase"});
+//      System.exit(0);
+
+      Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
         Assert.assertEquals("Synonym should still have 1 relation", 1, heterotypicSynonym.getSynonymRelations().size());
         rel = heterotypicSynonym.getSynonymRelations().iterator().next();
         Assert.assertEquals("Accepted taxon of single relation should be new taxon", newTaxon, rel.getAcceptedTaxon());
@@ -439,6 +478,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
+
     @Test
     public final void testGetHomotypicSynonymsByHomotypicGroup(){
         Rank rank = Rank.SPECIES();
@@ -470,13 +510,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-	@Test
-	@DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
-	public final void testDeleteSynonymSynonymTaxonBoolean(){
-		final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
-				"SynonymRelationship","SynonymRelationship_AUD",
-				"HomotypicalGroup","HomotypicalGroup_AUD"};
-
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    public final void testDeleteSynonymSynonymTaxonBoolean(){
+        final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
+                "SynonymRelationship","SynonymRelationship_AUD",
+                "HomotypicalGroup","HomotypicalGroup_AUD"};
 //		BotanicalName taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 //		taxonName1.setTitleCache("TaxonName1",true);
 //		BotanicalName taxonName2 = BotanicalName.NewInstance(Rank.SPECIES());
@@ -528,7 +567,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanRelToOneTaxon(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
                 "SynonymRelationship","SynonymRelationship_AUD",
@@ -545,14 +584,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //		UUID uuidSynonym2=UUID.fromString("f8d86dc9-5f18-4877-be46-fbb9412465e4");
 
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
+
+
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
 
         taxon2.removeSynonym(synonym1, false);
         service.saveOrUpdate(taxon2);
-        this.setComplete();
-        this.endTransaction();
 
-        this.startNewTransaction();
+        commitAndStartNewTransaction(null);
+
         nSynonyms = service.count(Synonym.class);
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
         nNames = nameService.count(TaxonNameBase.class);
@@ -565,7 +605,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.deleteSynonym(synonym1, null, true, true);
 
-        this.commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
         nSynonyms = service.count(Synonym.class);
         Assert.assertEquals("There should be 1 synonym left in the database", 1, nSynonyms);
@@ -577,11 +617,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanDeleteOneTaxon(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonNameBase","TaxonNameBase_AUD",
                 "SynonymRelationship","SynonymRelationship_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
+
+//        printDataSet(System.err, new String[]{"TaxonNode"});
+
 
         int nSynonyms = service.count(Synonym.class);
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
@@ -642,8 +685,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 4 names left in the database (name is related to synonymName2)", 4, nNames);
         int nRelations = service.countAllRelationships();
         //may change with better implementation of countAllRelationships (see #2653)
-        Assert.assertEquals("There should be 1 relationship left in the database (the name relationship)", 1, nRelations);
-
+        Assert.assertEquals("There should be 0 taxon relationships left in the database", 0, nRelations);
+        nRelations = nameService.getAllRelationships(1000, 0).size();
+        Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
+        
+        
         //clean up database
         name2 = (TaxonNameBase)nameService.load(uuidSynonymName2);
         NameRelationship rel = CdmBase.deproxy(name2.getNameRelations().iterator().next(), NameRelationship.class);
@@ -731,16 +777,17 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         nNames = nameService.count(TaxonNameBase.class);
         Assert.assertEquals("There should be 4 names left in the database", 4, nNames);
         nRelations = service.countAllRelationships();
-        //may change with better implementation of countAllRelationships (see #2653)
-        Assert.assertEquals("There should be 1 name relationship and no synonym relationship in the database", 1, nRelations);
+        Assert.assertEquals("There should be no taxon or synonym relationship in the database", 0, nRelations);
+        nRelations = nameService.getAllRelationships(1000,0).size();
+        Assert.assertEquals("There should be 1 name relationship in the database", 1, nRelations);
 
     }
-    
+
     @Test
     @DataSet("TaxonServiceImplTest.testInferredSynonyms.xml")
-   
+    
     public void testCreateInferredSynonymy(){
-    	
+
     	UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         Classification tree = classificationService.find(classificationUuid);
         UUID taxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
@@ -770,7 +817,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 	public final void testDeleteTaxonConfig(){
 		final String[]tableNames = {
 				"Classification", "Classification_AUD",
-				"TaxonBase","TaxonBase_AUD", 
+				"TaxonBase","TaxonBase_AUD",
 				"TaxonNode","TaxonNode_AUD",
 				"TaxonNameBase","TaxonNameBase_AUD",
 				"SynonymRelationship","SynonymRelationship_AUD",
@@ -782,19 +829,19 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				"Media","Media_AUD",
 				"WorkingSet","WorkingSet_AUD",
 				"DescriptionElementBase","DescriptionElementBase_AUD"};
-		
+
 		UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
 		UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
 		UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
-		
+
 		int nTaxa = service.count(Taxon.class);
 		Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
 		Taxon parent = (Taxon)service.find(uuidParent);
 		Assert.assertNotNull("Parent taxon should exist", parent);
 		Taxon child1 = (Taxon)service.find(uuidChild1);
 		Assert.assertNotNull("Child taxon should exist", child1);
-		
-		
+
+
 		try {
 //			commitAndStartNewTransaction(tableNames);
 			service.deleteTaxon(child1, new TaxonDeletionConfigurator());
@@ -807,36 +854,36 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				Assert.fail("Unexpected error occurred when trying to delete taxon: " + e.getMessage());
 			}
 		}
-		
+
 		nTaxa = service.count(Taxon.class);
 		Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
 		child1 = (Taxon)service.find(uuidChild1);
 		Assert.assertNotNull("Child taxon should exist", child1);
 		Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
-		
+
 		TaxonNode node = child1.getTaxonNodes().iterator().next();
 		node.getParent().deleteChildNode(node);
 		service.save(node.getTaxon());
 		commitAndStartNewTransaction(tableNames);
-		
+
 		child1 = (Taxon)service.find(uuidChild1);
 		try {
 			service.deleteTaxon(child1, new TaxonDeletionConfigurator());
 		} catch (ReferencedObjectUndeletableException e) {
 			Assert.fail("Delete should not throw an exception anymore");
 		}
-		
-		
+
+
 //		nNames = nameService.count(TaxonNameBase.class);
 //		Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
 //		int nRelations = service.countAllRelationships();
 //		Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
 	}
-	
-	
+
+
 //	@Test
 //	public final void testDeleteTaxonCreateData(){
-//		final String[]tableNames = {"TaxonBase","TaxonBase_AUD", 
+//		final String[]tableNames = {"TaxonBase","TaxonBase_AUD",
 //				"TaxonNode","TaxonNode_AUD",
 //				"TaxonNameBase","TaxonNameBase_AUD",
 //				"SynonymRelationship","SynonymRelationship_AUD",
@@ -849,8 +896,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //				"WorkingSet","WorkingSet_AUD",
 //				"DescriptionElementBase","DescriptionElementBase_AUD",
 //				"Classification","Classification_AUD"};
-//		
-//		
+//
+//
 //		BotanicalName taxonName1 = BotanicalName.NewInstance(Rank.GENUS());
 //		taxonName1.setTitleCache("parent",true);
 //		BotanicalName taxonName2 = BotanicalName.NewInstance(Rank.SPECIES());
@@ -859,22 +906,22 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //		synonymName1.setTitleCache("Synonym1",true);
 //		BotanicalName sameAsName = BotanicalName.NewInstance(Rank.SPECIES());
 //		sameAsName.setTitleCache("sameAs",true);
-//		
+//
 //		Reference<?> sec = null;
 //		Taxon parent = Taxon.NewInstance(taxonName1, sec);
 //		Taxon child1 = Taxon.NewInstance(taxonName2, sec);
 //		Synonym synonym1 = Synonym.NewInstance(synonymName1, sec);
 //		Taxon sameAs = Taxon.NewInstance(sameAsName, sec);
-//		
+//
 //		child1.addSynonym(synonym1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 //		Classification classification1 = Classification.NewInstance("classification1");
 //		classification1.addParentChild(parent, child1, null, null);
-//		
-//		
+//
+//
 //		child1.addTaxonRelation(sameAs, TaxonRelationshipType.CONGRUENT_TO(), null, null);
-//		
+//
 //		service.save(child1);
-//		
+//
 //		this.commitAndStartNewTransaction(tableNames);
 //
 //	}

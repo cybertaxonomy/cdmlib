@@ -1,4 +1,5 @@
 /*.project
+/.directory
 /.metadata
 cdmlib-commons/.classpath
 cdmlib-commons/.project
@@ -27,6 +28,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml.edited
 cdmlib-io/src/test/resources/log4j.properties
 cdmlib-io/target
 cdmlib-model/.classpath
@@ -45,6 +47,7 @@ cdmlib-persistence/.project
 cdmlib-persistence/.settings
 cdmlib-persistence/.umlproject
 cdmlib-persistence/002_cdm.dll
+cdmlib-persistence/NewDataSet.xml
 cdmlib-persistence/bin
 cdmlib-persistence/cdmlib-persistence.uml
 cdmlib-persistence/out.xml
@@ -81,13 +84,17 @@ cdmlib-services/.classpath
 cdmlib-services/.project
 cdmlib-services/.settings
 cdmlib-services/.umlproject
+cdmlib-services/CleanSweepInsertLoadStrategy-debug.xml
 cdmlib-services/bin
 cdmlib-services/cdmlib-services.uml
 cdmlib-services/src/main/resources/log4j.properties
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/dataset.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd
 cdmlib-services/target
+cdmlib-services/testTaxonNodeByNameComparator-dump.xml
 /latestChanges.patch
 /target
 /testANTLR

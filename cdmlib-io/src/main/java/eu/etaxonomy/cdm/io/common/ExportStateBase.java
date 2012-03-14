@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @version 1.0
  */
 //TODO make it CONFIG extends DBExportConfigurator
-public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase> extends IoStateBase<CONFIG, CdmExportBase> {
+public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?,?,TRANSFORM>, TRANSFORM extends IExportTransformer> extends IoStateBase<CONFIG, CdmExportBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExportStateBase.class);
 	
@@ -28,7 +28,7 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase> ext
 		this.config = config;
 	}
 	
-	public IExportTransformer getTransformer(){
+	public TRANSFORM getTransformer(){
 		return this.config.getTransformer();
 	}
 	

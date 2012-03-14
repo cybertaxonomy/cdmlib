@@ -195,7 +195,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         Properties props = getHibernateProperties();
         props.setProperty(HIBERNATE_DIALECT, inferHibernateDialectName());
         props.setProperty(HIBERNATE_SEARCH_DEFAULT_INDEX_BASE, CdmUtils.getCdmHomeDir().getPath() + "/remote-webapp/index/".replace("/", File.separator) + findProperty(ATTRIBUTE_DATASOURCE_NAME, true));
-        logger.error("hibernateProperties: " + props.toString());
+        logger.debug("hibernateProperties: " + props.toString());
         return props;
     }
 

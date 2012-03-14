@@ -10,13 +10,14 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -27,6 +28,9 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	
 	public static final String CURRENT_OBJECT_NAMESPACE = "CurrentObjectNamespace";
 	public static final String CURRENT_OBJECT_ID = "CurrentObjectId";
+	
+	
+	private Reference partitionSourceReference;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
@@ -71,6 +75,30 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	 */
 	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects) {
 		relatedObjectsHelper.setRelatedObjects(relatedObjects);
+	}
+	
+
+	/**
+	 * Stores the source reference for the time of a transaction. Needs to be
+	 * deleted manually after transaction finishes to avoid memory leaks.
+	 * @return
+	 */
+	public Reference getTransactionalSourceReference() {
+		return partitionSourceReference;
+	}
+
+	
+	public void resetTransactionalSourceReference(){
+		this.partitionSourceReference = null;
+	}
+	
+	public void makeTransactionalSourceReference(IReferenceService service){
+		//TODO handle undefined sourceRefUuid
+		this.partitionSourceReference = service.find(this.getConfig().getSourceRefUuid());
+		if (this.partitionSourceReference == null){
+			this.partitionSourceReference = this.getConfig().getSourceReference();
+			service.save(this.partitionSourceReference);
+		}
 	}
 
 	

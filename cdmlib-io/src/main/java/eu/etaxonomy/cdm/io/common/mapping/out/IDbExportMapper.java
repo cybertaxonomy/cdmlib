@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public interface IDbExportMapper<T extends DbExportStateBase<?>> {
+public interface IDbExportMapper<T extends DbExportStateBase<?, TRANSFORM> , TRANSFORM extends IExportTransformer> {
 
 //	public void initialize(PreparedStatement stmt, IndexCounter index);
 

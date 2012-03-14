@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 25.02.2010
  * @version 1.0
  */
-public class DbExportNotYetImplementedMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> {
+public class DbExportNotYetImplementedMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> {
 	private static final Logger logger = Logger.getLogger(DbExportNotYetImplementedMapper.class);
 	
 	public static DbExportNotYetImplementedMapper NewInstance(String dbAttributeToIgnore){

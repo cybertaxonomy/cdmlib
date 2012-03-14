@@ -18,14 +18,19 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author a.mueller
  * @date 23.11.2011
  */
+@Ignore //this test was only for the development start, now it needs to throw exceptions, can be deleted soon
 public class DwcaImportTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportTest.class);
@@ -35,7 +40,15 @@ public class DwcaImportTest {
 	private DwcaImport dwcaImport;
 	private DwcaImportState state;
 	
-
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception{
+		if (Rank.SPECIES() == null){
+			DefaultTermInitializer initializer = new DefaultTermInitializer();
+			initializer.initialize();
+		}
+	}
+	
+	
 	/**
 	 * @throws java.lang.Exception
 	 */

@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.out.CdmDbExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.CreatedAndNotesMapper;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.DbIntegerExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbMarkerMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbObjectMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -65,9 +64,9 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		return result;
 	}
 	
-	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> getMapping(){
+	private CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> getMapping(){
 		String tableName = dbTableName;
-		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator>(tableName);
+		CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = new CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer>(tableName);
 		mapping.addMapper(DbObjectMapper.NewInstance("name", "PTNameFk"));
 		mapping.addMapper(DbObjectMapper.NewInstance("sec", "PTRefFk"));
 		mapping.addMapper(MethodMapper.NewInstance("StatusFk", this));
@@ -76,12 +75,12 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("appendedPhrase", "NamePhrase"));
 		
 		//detail
-		ExtensionType detailExtensionType = (ExtensionType)getTermService().find(BerlinModelTaxonImport.DETAIL_EXT_UUID);
+		ExtensionType detailExtensionType = (ExtensionType)getTermService().find(BerlinModelTransformer.DETAIL_EXT_UUID);
 		if (detailExtensionType != null){
 			mapping.addMapper(DbExtensionMapper.NewInstance(detailExtensionType, "Detail"));
 		}
 		//idInSource
-		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(BerlinModelImportBase.ID_IN_SOURCE_EXT_UUID);
+		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(BerlinModelTransformer.ID_IN_SOURCE_EXT_UUID);
 		if (idInSourceExtensionType != null){
 			mapping.addMapper(DbIntegerExtensionMapper.NewInstance(idInSourceExtensionType, "IdInSource"));
 		}
@@ -118,7 +117,7 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 			
 			List<TaxonBase> list = getTaxonService().list(null,100000000, 0, null, null);
 			
-			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator> mapping = getMapping();
+			CdmDbExportMapping<BerlinModelExportState, BerlinModelExportConfigurator, IExportTransformer> mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;

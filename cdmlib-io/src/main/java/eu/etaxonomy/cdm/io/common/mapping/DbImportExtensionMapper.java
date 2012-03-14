@@ -52,6 +52,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	 * @param labelAbbrev
 	 * @return
 	 */
+	@Deprecated
 	public static DbImportExtensionMapper NewInstance(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev){
 		return new DbImportExtensionMapper(dbAttributeString, uuid, label, text, labelAbbrev);
 	}

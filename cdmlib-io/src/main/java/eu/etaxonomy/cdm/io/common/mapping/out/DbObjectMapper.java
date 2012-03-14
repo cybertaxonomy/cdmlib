@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
+public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbObjectMapper.class);
 	
@@ -78,7 +78,7 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	
 
 	protected Integer getId(CdmBase cdmBase){
-		DbExportStateBase<?> state = getState();
+		DbExportStateBase<?, IExportTransformer> state = getState();
 		DbExportConfiguratorBase config = state.getConfig();
 		if (false && config.getIdType() == DbExportConfiguratorBase.IdType.CDM_ID){
 			return cdmBase.getId();

@@ -4,6 +4,21 @@
 @com.sun.xml.bind.XmlAccessorFactory(eu.etaxonomy.cdm.jaxb.CdmAccessorFactoryImpl.class)
 @org.hibernate.annotations.GenericGenerators(
 	{
+		/* @see {@link eu.etaxonomy.cdm.persistence.hibernate.TableGenerator} */
+		@GenericGenerator(
+				name="custom-enhanced-table", 
+				strategy = "eu.etaxonomy.cdm.persistence.hibernate.TableGenerator",
+				parameters = {
+				    @Parameter(name="optimizer", value = "pooled"),
+				    /* initial_value = increment_size as proposed to fix an issue with pooled optimizer
+				     * http://opensource.atlassian.com/projects/hibernate/browse/HHH-3608?focusedCommentId=37112&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#action_37112
+				     */
+				    @Parameter(name="initial_value", value= "10"),
+				    @Parameter(name="increment_size", value = "10"),
+				    /* we want to have a sequence per table */
+				    @Parameter(name="prefer_entity_table_as_segment_value", value="true")
+				}
+		),
 		/* Steve Ebersole of Hibernate highly recommends the use of the two new generators
 		 * http://relation.to/2082.lace
 		 * Also see: http://docs.jboss.org/hibernate/core/3.3/reference/en/html/mapping.html#mapping-declaration-id-enhanced

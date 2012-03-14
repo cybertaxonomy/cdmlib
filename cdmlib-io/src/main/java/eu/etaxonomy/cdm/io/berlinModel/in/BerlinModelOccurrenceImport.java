@@ -162,7 +162,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 				    	}
                      }
 					
-                     Reference<?> sourceRef = state.getConfig().getSourceReference();
+                     Reference<?> sourceRef = state.getTransactionalSourceReference();
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
                      if (areas.size()== 0){
@@ -188,7 +188,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                         	   Distribution duplicate = checkIsNoDuplicate(taxonDescription, distribution, duplicateMap , occurrenceId);
                                if (duplicate == null){
 	                        	   taxonDescription.addElement(distribution); 
-	                               distribution.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
+	                               distribution.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getTransactionalSourceReference(), null);
 	                        	   countDistributions++; 
 	                               if (taxonDescription != oldDescription){ 
 	                            	   taxaToSave.add(taxonDescription.getTaxon()); 
@@ -197,7 +197,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	                               	} 
                                }else{                          	  
                             	   countDuplicates++;
-                            	   duplicate.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getConfig().getSourceReference(), null);
+                            	   duplicate.addSource(String.valueOf(occurrenceId), NAMESPACE, state.getTransactionalSourceReference(), null);
                             	   logger.info("Distribution is duplicate");	                           }
 	                       	} else { 
 	                       		logger.warn("Distribution " + area.getLabel() + " ignored. OccurrenceId = " + occurrenceId);
@@ -260,8 +260,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		}else if("SM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidSerbiaMontenegro, "Serbia & Montenegro", "Euro+Med area 'Serbia & Montenegro'", "SM", NamedAreaType.ADMINISTRATION_AREA(), null);
-		}else if("Yu(K)".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("YUG-KO");
+		}else if("Sr".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSerbia, "Serbia", "Euro+Med area 'Serbia' (including Kosovo and Vojvodina)", "Sr", NamedAreaType.ADMINISTRATION_AREA(), null);
 		
 		
 		//see #2769
@@ -293,11 +293,49 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			return getNamedArea(state, BerlinModelTransformer.uuidMadeira, "Madeira", "Euro+Med area 'Madeira'", "Md(M)", null, null);
 		}else if("Md(P)".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidPortoSanto, "Porto Santo", "Euro+Med area 'Porto Santo'", "Md(P)", null, null);
-		
+		//Azores
 		}else if("Az(L)".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidFlores, "Flores", "Euro+Med area 'Flores'", "Az(L)", null, null);
-
+		}else if("Az(C)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidCorvo, "Corvo", "Euro+Med area 'Corvo'", "Az(C)", null, null);
+		}else if("Az(F)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidFaial, "Faial", "Euro+Med area 'Faial'", "Az(F)", null, null);
+		}else if("Az(G)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidGraciosa, "Graciosa", "Euro+Med area 'Graciosa'", "Az(G)", null, null);
+		}else if("Az(J)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSaoJorge, "S\u00E3o Jorge", "Euro+Med area 'S\u00E3o Jorge'", "Az(J)", null, null);
+		}else if("Az(M)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSaoMiguel, "S\u00E3o Miguel", "Euro+Med area 'S\u00E3o Miguel'", "Az(M)", null, null);
+		}else if("Az(P)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidPico, "Pico", "Euro+Med area 'Pico'", "Az(P)", null, null);
+		}else if("Az(S)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidSantaMaria, "Santa Maria", "Euro+Med area 'Santa Maria'", "Az(S)", null, null);
+		}else if("Az(T)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidTerceira, "Terceira", "Euro+Med area 'Terceira'", "Az(T)", null, null);
+		//Canary Islands
+		}else if("Ca(C)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidGranCanaria, "Gran Canaria", "Euro+Med area 'Gran Canaria'", "Ca(C)", null, null);
+		}else if("Ca(F)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidFuerteventura, "Fuerteventura with Lobos", "Euro+Med area 'Fuerteventura with Lobos'", "Ca(F)", null, null);
+		}else if("Ca(G)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidGomera, "Gomera", "Euro+Med area 'Gomera'", "Ca(G)", null, null);
+		}else if("Ca(H)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidHierro, "Hierro", "Euro+Med area 'Hierro'", "Ca(H)", null, null);
+		}else if("Ca(L)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidLanzaroteWithGraciosa, "Lanzarote with Graciosa", "Euro+Med area 'Lanzarote with Graciosa'", "Ca(L)", null, null);
+		}else if("Ca(P)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidLaPalma, "La Palma", "Euro+Med area 'La Palma'", "Ca(P)", null, null);
+		}else if("Ca(T)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidTenerife, "Tenerife", "Euro+Med area 'Tenerife'", "Ca(T)", null, null);
+			//Baleares
+		}else if("Bl(I)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidIbizaWithFormentera, "Ibiza with Formentera", "Euro+Med area 'Ibiza with Formentera'", "Bl(I)", null, null);
+		}else if("Bl(M)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidTerceira, "Mallorca", "Euro+Med area 'Mallorca'", "Bl(M)", null, null);
+		}else if("Bl(N)".equals(em)){
+			return getNamedArea(state, BerlinModelTransformer.uuidTerceira, "Menorca", "Euro+Med area 'Menorca'", "Bl(N)", null, null);
 		}
+		
 		logger.warn("Area " + em + " could not be found for occurrence import");
 		
 		return null;

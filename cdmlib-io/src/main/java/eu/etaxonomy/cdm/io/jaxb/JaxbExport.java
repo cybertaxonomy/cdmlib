@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @version 1.0
  */
 @Component
-public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExportState> implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
+public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExportState, IExportTransformer> implements ICdmExport<JaxbExportConfigurator, JaxbExportState> {
 
 	private static final Logger logger = Logger.getLogger(JaxbExport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;

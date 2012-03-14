@@ -13,13 +13,14 @@ package eu.etaxonomy.cdm.io.jaxb;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
+import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class JaxbExportState<CONFIG extends JaxbExportConfigurator> extends ExportStateBase<CONFIG>{
+public class JaxbExportState<CONFIG extends JaxbExportConfigurator> extends ExportStateBase<CONFIG, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbExportState.class);
 	

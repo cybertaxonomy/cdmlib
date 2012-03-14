@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
  * @created 06.02.2012
  * @version 1.0
  */
-public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>>{
+public class DbTextDataMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbTextDataMapper.class);
 	

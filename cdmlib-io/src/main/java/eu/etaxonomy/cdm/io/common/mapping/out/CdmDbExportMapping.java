@@ -29,12 +29,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG extends DbExportConfiguratorBase<STATE>> extends CdmIoMapping {
+public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFORM>, CONFIG extends DbExportConfiguratorBase<STATE, TRANSFORM>, TRANSFORM extends IExportTransformer> extends CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(CdmDbExportMapping.class);
 	
 	private PreparedStatement preparedStatement;
 	private String dbTableName;
-	private List<CollectionExportMapping<STATE,CONFIG>> collectionMappingList = new ArrayList<CollectionExportMapping<STATE,CONFIG>>();
+	private List<CollectionExportMapping<STATE,CONFIG, TRANSFORM>> collectionMappingList = new ArrayList<CollectionExportMapping<STATE,CONFIG, TRANSFORM>>();
 	
 
 	public CdmDbExportMapping(String tableName){
@@ -54,13 +54,13 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 			
 			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
-					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
+					IDbExportMapper<DbExportStateBase<?,TRANSFORM>,TRANSFORM> dbMapper = (IDbExportMapper)mapper;
 					dbMapper.initialize(preparedStatement, index, state, dbTableName);
 				}else{
 					logger.warn("mapper "+mapper.toString() + "," + mapper.getClass().getName() +" is not of type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
-			for (CollectionExportMapping<STATE,CONFIG> collectionMapping : this.collectionMappingList ){
+			for (CollectionExportMapping<STATE,CONFIG, TRANSFORM> collectionMapping : this.collectionMappingList ){
 				collectionMapping.initialize(state);
 			}
 			return true;
@@ -79,7 +79,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 					ObjectChangeMapper changeMapper = (ObjectChangeMapper)mapper;
 					cdmBase = changeMapper.getNewObject(cdmBase);
 				}else if (mapper instanceof IDbExportMapper){
-					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
+					IDbExportMapper<DbExportStateBase<?,TRANSFORM>, TRANSFORM> dbMapper = (IDbExportMapper)mapper;
 					try {
 						result &= dbMapper.invoke(cdmBase);
 					} catch (Exception e) {
@@ -94,7 +94,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 			}
 			int count = preparedStatement.executeUpdate();
 			if (logger.isDebugEnabled())logger.debug("Number of rows affected: " + count);
-			for (CollectionExportMapping<STATE,CONFIG> collectionMapping : this.collectionMappingList ){
+			for (CollectionExportMapping<STATE,CONFIG, TRANSFORM> collectionMapping : this.collectionMappingList ){
 				result &= collectionMapping.invoke(cdmBase);
 			}
 			return result;
@@ -106,7 +106,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG>, CONFIG 
 	}
 	
 	
-	public void addCollectionMapping(CollectionExportMapping<STATE,CONFIG> collectionMapping){
+	public void addCollectionMapping(CollectionExportMapping<STATE,CONFIG, TRANSFORM> collectionMapping){
 		this.collectionMappingList.add(collectionMapping);
 	}
 	

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,18 +23,18 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 public class DaoBaseTest  extends CdmIntegrationTest {
-	
-	
-	@SpringBeanByType
-	private  TaxonDaoHibernateImpl daoBaseTester;
-	
+
+
+    @SpringBeanByType
+    private  TaxonDaoHibernateImpl daoBaseTester;
+
 /************ TESTS ********************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase#getSession()}.
-	 */
-	@Test
-	public void testGetSession() {
-		assertNotNull(daoBaseTester.getSession());
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase#getSession()}.
+     */
+    @Test
+    public void testGetSession() {
+        assertNotNull(daoBaseTester.getSession());
+    }
 }

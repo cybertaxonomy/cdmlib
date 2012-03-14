@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @author a.mueller
  * @created 06.02.2012
  */
-public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>>{
+public class DbLanguageMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	private static final Logger logger = Logger.getLogger(DbLanguageMapper.class);
 	
 	private Method method;
