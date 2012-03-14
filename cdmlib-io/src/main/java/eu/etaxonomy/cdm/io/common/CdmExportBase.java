@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public abstract class CdmExportBase<CONFIG extends IExportConfigurator<STATE, TRANSFORM>, STATE extends ExportStateBase, TRANSFORM extends IExportTransformer> extends CdmIoBase<STATE> implements ICdmExport<CONFIG, STATE>{
-	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdmExportBase.class);
 
 	public Object getDbId(CdmBase cdmBase, STATE state){

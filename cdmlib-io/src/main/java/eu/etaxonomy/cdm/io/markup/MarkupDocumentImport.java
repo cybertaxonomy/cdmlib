@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -2856,7 +2857,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(name, language, area);
 			result.add(commonTaxonName);
 		}
-		throw new IllegalStateException("<Feature> has no closing tag");
+		
 		return result;
 	}
 	
@@ -2888,26 +2889,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			} else {
 				handleUnexpectedElement(next);
 			}
-			if (StringUtils.isNotBlank(figureHolder.figurePart)) {
-				String annotationText = "<figurePart>"+ figureHolder.figurePart.trim() + "</figurePart>";
-				Annotation annotation = Annotation.NewInstance(annotationText,AnnotationType.EDITORIAL(), Language.DEFAULT());
-				figureHolderTextData.addAnnotation(annotation);
-			}
-			// if (StringUtils.isNotBlank(figureText)){
-			// figureHolderTextData.putText(Language.DEFAULT(), figureText);
-			// }
-			taxonDescription.addElement(figureHolderTextData);
-			// }
-			registerFigureDemand(state, figureHolderTextData, figureHolder.ref);
-		} else {
-			if (lastDescriptionElement == null) {
-				String message = "No description element created yet that can be referred by figure. Create new TextData instead";
-				fireWarningEvent(message, next, 4);
-				lastDescriptionElement = TextData.NewInstance(figureFeature);
-				taxonDescription.addElement(lastDescriptionElement);
-			}
-			registerFigureDemand(state, lastDescriptionElement,
-					figureHolder.ref);
 		}
 		throw new IllegalStateException("<String> has no closing tag");
 		
@@ -2919,7 +2900,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	 * @param feature
 	 * @param taxon
 	 * @param next
-	 * @throws XMLStreamException
 	 * @throws XMLStreamException
 	 */
 	private void makeFeatureWriter(MarkupImportState state,XMLEventReader reader, Feature feature, Taxon taxon, XMLEvent next) throws XMLStreamException {
@@ -2936,12 +2916,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		} else {
 			String message = "Writer element is empty";
 			fireWarningEvent(message, next, 4);
-			TextData textData = TextData.NewInstance(subheadingFeature);
-			textData.putText(Language.DEFAULT(), subheadingMap.get(subheading));
-			taxonDescription.addElement(textData);
-			// TODO how to handle figures when these data are split in
-			// subheadings
-			lastDescriptionElement = textData;
 		}
 	}
 
