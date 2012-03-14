@@ -12,66 +12,54 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.HitCollector;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Searcher;
-import org.apache.lucene.search.TopDocCollector;
 import org.apache.lucene.search.TopDocs;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
-import org.hibernate.search.reader.ReaderProvider;
-import org.hibernate.search.store.DirectoryProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.print.resources.serviceui;
-
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.IIdentificationKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -82,12 +70,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.search.LuceneSearch;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -100,7 +90,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
-   private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
 	public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
 
@@ -115,7 +105,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Autowired
     private ISearchResultBuilder searchResultBuilder;
 
-   @Autowired
+	@Autowired
 	private INameService nameService;
 
 	@Autowired
@@ -126,13 +116,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private IOrderedTermVocabularyDao orderedVocabularyDao;
-
-     /**
-     * Constructor
-     */
-    public TaxonServiceImpl(){
-        if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
-    }
+	
+	/**
+	 * Constructor
+	 */
+	public TaxonServiceImpl(){
+		if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
+	}
 
     /**
      * FIXME Candidate for harmonization
@@ -655,22 +645,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.countAllRelationships();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#createAllInferredSynonyms(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.taxon.Taxon)
-     */
-    public List<Synonym> createAllInferredSynonyms(Classification tree,
-            Taxon taxon) {
+   
 
-        return this.dao.createAllInferredSynonyms(taxon, tree);
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#createInferredSynonyms(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
-     */
-    public List<Synonym> createInferredSynonyms(Classification tree, Taxon taxon, SynonymRelationshipType type) {
-        return this.dao.createInferredSynonyms(taxon, tree, type);
-    }
-
+    
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findIdenticalTaxonNames(java.util.List)
      */
@@ -678,6 +655,104 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.findIdenticalTaxonNames(propertyPath);
     }
 
+    
+	/* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
+     */
+    @Override
+    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException {
+    	if (config == null){
+    		config = new TaxonDeletionConfigurator();
+    	}
+    	
+			//    	TaxonNode
+			if (! config.isDeleteTaxonNodes()){
+				if (taxon.getTaxonNodes().size() > 0){
+					String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion.";
+					throw new ReferencedObjectUndeletableException(message);
+				}
+			}
+	
+			
+			//    	SynonymRelationShip
+			if (config.isDeleteSynonymRelations()){
+				boolean removeSynonymNameFromHomotypicalGroup = false;
+				for (SynonymRelationship synRel : taxon.getSynonymRelations()){
+					Synonym synonym = synRel.getSynonym();
+					taxon.removeSynonymRelation(synRel, removeSynonymNameFromHomotypicalGroup);
+					if (config.isDeleteSynonymsIfPossible()){
+						//TODO which value
+						boolean newHomotypicGroupIfNeeded = true;
+						deleteSynonym(synonym, taxon, config.isDeleteNameIfPossible(), newHomotypicGroupIfNeeded);
+					}else{
+						deleteSynonymRelationships(synonym, taxon);
+					}
+				}
+			}
+	
+			//    	TaxonRelationship    	
+			if (! config.isDeleteTaxonRelationships()){
+				if (taxon.getTaxonRelations().size() > 0){
+					String message = "Taxon can't be deleted as it is related to another taxon. Remove taxon from all relations to other taxa prior to deletion.";
+					throw new ReferencedObjectUndeletableException(message);
+				}
+			}
+	
+			
+			//    	TaxonDescription
+		    		Set<TaxonDescription> descriptions = taxon.getDescriptions();
+		    		
+		    		for (TaxonDescription desc: descriptions){
+		    			if (config.isDeleteDescriptions()){
+		    				//TODO use description delete configurator ?
+		    				//FIXME check if description is ALWAYS deletable
+		    				descriptionService.delete(desc); 
+		    			}else{
+			    			if (desc.getDescribedSpecimenOrObservations().size()>0){
+			    				String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
+			    						" which also describes specimens or abservations";
+	    		    				throw new ReferencedObjectUndeletableException(message);
+	    		    			}
+	    	    			}
+	    	    		}
+	 
+	    		
+	    		//check references with only reverse mapping
+			Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
+			for (CdmBase referencingObject : referencingObjects){
+				//IIdentificationKeys (Media, Polytomous, MultiAccess)
+				if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
+					String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
+					message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+					throw new ReferencedObjectUndeletableException(message);
+				}
+	
+				
+				//PolytomousKeyNode
+				if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
+					String message = "Taxon can't be deleted as it is used in polytomous key node";
+					throw new ReferencedObjectUndeletableException(message);
+				}
+				
+				//TaxonInteraction
+				if (referencingObject.isInstanceOf(TaxonInteraction.class)){
+					String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
+					throw new ReferencedObjectUndeletableException(message);
+				}
+			}
+			
+			
+			//TaxonNameBase
+			if (config.isDeleteNameIfPossible()){
+	    		try {
+					nameService.delete(taxon.getName(), config.getNameDeletionConfig());
+				} catch (ReferencedObjectUndeletableException e) {
+					//do nothing
+					if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
+				}
+			}
+
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
@@ -738,7 +813,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.getPhylumName(name);
     }
 
-    /* (non-Javadoc)
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
+	 */
+	public long deleteSynonymRelationships(Synonym syn, Taxon taxon) {
+		return dao.deleteSynonymRelationships(syn, taxon);
+	}
+
+/* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym)
      */
     public long deleteSynonymRelationships(Synonym syn) {
@@ -1009,7 +1091,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
 
     }
- public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification, SynonymRelationshipType type){
+    
+    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification, SynonymRelationshipType type){
         List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
         List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<Synonym>();
 
@@ -1484,4 +1567,3 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
 }
-

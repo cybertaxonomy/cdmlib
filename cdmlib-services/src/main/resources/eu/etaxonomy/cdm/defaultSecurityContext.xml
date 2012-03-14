@@ -41,7 +41,7 @@
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator"/>
 	</bean>
 	 
-	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+<--	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
     <constructor-arg ref="roleHierarchy" />
     
 	</bean>
@@ -77,7 +77,7 @@
             </value>
         </property>
 
-	</bean>
+	</bean>-->
 	 
 	
  	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>

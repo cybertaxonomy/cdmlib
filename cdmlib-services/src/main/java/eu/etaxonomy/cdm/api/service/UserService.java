@@ -169,7 +169,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 	@Override
 	@Transactional(readOnly=false)
-	//@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#user, 'CREATE')")
 	public void createUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -184,7 +183,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 	@Override
 	@Transactional(readOnly=false)
-	//@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#username, 'DELETE')")
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
@@ -198,7 +196,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
 	@Override
 	@Transactional(readOnly=false)
-	@PreAuthorize("hasRole('ALL.ADMIN') or hasPermission(#user, 'UPDATE')")
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
