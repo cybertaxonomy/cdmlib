@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -314,6 +315,18 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             this.extensions = new HashSet<Extension>();
         }
         return this.extensions;
+    }
+    public Set<String> getExtensions(ExtensionType type){
+       return getExtensions(type.getUuid());
+    }
+    public Set<String> getExtensions(UUID extensionTypeUuid){
+        Set<String> result = new HashSet<String>(); 
+    	for (Extension extension : getExtensions()){
+    		if (extension.getType().getUuid().equals(extensionTypeUuid)){
+    			result.add(extension.getValue());
+    		}
+    	}
+        return result;
     }
 
     public void addExtension(String value, ExtensionType extensionType){
