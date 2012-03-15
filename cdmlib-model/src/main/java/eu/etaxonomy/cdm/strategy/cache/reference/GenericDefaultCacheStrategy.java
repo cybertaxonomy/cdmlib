@@ -16,10 +16,13 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+	private static final long serialVersionUID = 6687224678019228192L;
+
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategy.class);
 	
-
+	
 	private String prefixEdition = "ed.";
 	private String prefixSeries = "ser.";
 	private String prefixVolume = "vol.";
@@ -53,6 +56,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		super();
 	}
 	
+
 	@Override
 	protected String getNomRefTitleWithoutYearAndAuthor(T genericReference){
 		if (genericReference == null){
@@ -141,6 +145,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends NomRefDef
 //		}
 
 		
+//  FROM BERLIN MODEL TRIGGER:		
 //		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) > 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma + @blank + @Volume + @dot
 //		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) > 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @comma +  @blank + @Refyear + @dot
 //		IF (len(@Authorteam) = 0 AND len(@TitelAbbrev) > 0 AND len(@Edition) > 0 AND isnumeric(@Edition)=1 AND len(@Series) > 0 AND isnumeric(@Series)=1 AND len(@Volume) = 0 AND len(@RefYear) = 0) SET @NomRefCache = @TitelAbbrev + @blank + @prefixEdition + @blank + @Edition +  @comma + @blank + @prefixSeries + @blank + @Series + @dot

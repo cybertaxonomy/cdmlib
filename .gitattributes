@@ -891,6 +891,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaul
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/GenericDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/INomenclaturalReferenceCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/IReferenceBaseCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/InRefDefaultCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/JournalDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/NomRefDefaultCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceBaseDefaultCacheStrategy.java -text
