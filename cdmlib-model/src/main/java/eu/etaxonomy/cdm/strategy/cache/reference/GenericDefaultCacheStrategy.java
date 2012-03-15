@@ -23,6 +23,13 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategy.class);
 	
 	
+	private static final String inRefTypeStr = "generic reference";
+	
+	@Override
+	protected String getInRefType() {
+		return inRefTypeStr;
+	}
+	
 	private String prefixEdition = "ed.";
 	private String prefixSeries = "ser.";
 	private String prefixVolume = "vol.";

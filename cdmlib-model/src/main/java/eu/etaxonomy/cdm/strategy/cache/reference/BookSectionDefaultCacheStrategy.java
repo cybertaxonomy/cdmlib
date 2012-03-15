@@ -22,14 +22,11 @@ public class BookSectionDefaultCacheStrategy <T extends Reference> extends InRef
 	private static final long serialVersionUID = 7293886681984614996L;
 
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
-	
-	public static final String UNDEFINED_BOOK = "- undefined book -";
-	private String afterSectionAuthor = " - ";
-	private String afterNomRefBookAuthor = ", ";
-	private String inBook = "in ";
-	private String blank = " ";
-	
 	final static UUID uuid = UUID.fromString("f9c53f20-addd-4d2f-9697-ef1fe727deba");
+	
+	private static final String inRefTypeStr = "book";
+
+	private static final boolean inRefIsObligatory = true;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
@@ -38,6 +35,12 @@ public class BookSectionDefaultCacheStrategy <T extends Reference> extends InRef
 	protected UUID getUuid() {
 		return uuid; 
 	}
+	
+	@Override
+	protected String getInRefType() {
+		return inRefTypeStr;
+	}
+
 	
 	
 	/**
@@ -57,57 +60,6 @@ public class BookSectionDefaultCacheStrategy <T extends Reference> extends InRef
 
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
-	@Override
-	public String getTitleCache(T bookSection) {
-		boolean hasBook = (bookSection.getInBook() != null);
-		String result;
-		// get book part
-		if (hasBook){
-			result = bookSection.getInReference().getTitleCache();
-		}else{
-			result = "- undefined book -";
-		}
-		
-		//in
-		result = inBook +  result;
-		
-		//section title
-		String title = CdmUtils.Nz(bookSection.getTitle());
-		if (title.length() > 0){
-			result = title + blank + result;
-		}
-		
-		//section author
-		TeamOrPersonBase<?> sectionTeam = bookSection.getAuthorTeam();
-		String sectionAuthor = CdmUtils.Nz(sectionTeam == null ? "" : sectionTeam.getTitleCache());
-		result = sectionAuthor + afterSectionAuthor + result;
-		
-		//date
-		if (bookSection.getDatePublished() != null && ! bookSection.getDatePublished().isEmpty()){
-			String bookSectionDate = bookSection.getDatePublished().toString();
-			if (hasBook && bookSection.getInBook().getDatePublished() != null){
-				TimePeriod bookDate = bookSection.getInBook().getDatePublished();
-				String bookDateString = bookDate.getYear();
-				if (CdmUtils.isNotEmpty(bookDateString)){
-					int pos = StringUtils.lastIndexOf(result, bookDateString);
-					if (pos > -1 ){
-						result = result.substring(0, pos) + bookSectionDate + result.substring(pos + bookDateString.length());
-					}else{
-						logger.warn("BookDateString (" + bookDateString + ") could not be found in result (" + result +")");
-					}
-				}else{
-					result = result + beforeYear + bookSectionDate + afterYear;
-				}
-			}else{
-				result = result + beforeYear + bookSectionDate + afterYear;
-			}
-		}
-		return result;
-	}
-	
-	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.NomRefDefaultCacheStrategyBase#getNomRefTitleWithoutYearAndAuthor(eu.etaxonomy.cdm.model.reference.Reference)
 	 */
 	@Override
@@ -116,6 +68,20 @@ public class BookSectionDefaultCacheStrategy <T extends Reference> extends InRef
 		logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
 		return null;
 	}
+
+
+	@Override
+	public String getTokenizedNomenclaturalTitel(T generic) {
+		return super.getTokenizedNomenclaturalTitel(generic, inRefIsObligatory);
+	}
+
+
+	@Override
+	public String getTitleCache(T thisRef) {
+		return super.getTitleCache(thisRef, inRefIsObligatory);
+	}
+	
+	
 	
 
 }

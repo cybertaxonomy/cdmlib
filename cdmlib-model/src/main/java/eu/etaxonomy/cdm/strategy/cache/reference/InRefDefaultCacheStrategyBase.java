@@ -8,8 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -19,18 +23,38 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends NomRefDefaultCacheStrategyBase<T> {
 	private static final long serialVersionUID = -8418443677312335864L;
+	private static final Logger logger = Logger.getLogger(InRefDefaultCacheStrategyBase.class);
+	
+	private String inSeperator = "in ";
+	private String afterSectionAuthor = " - ";
+	private String blank = " ";
 
+	protected abstract String getInRefType();
+	
 	private String afterInRefAuthor = ", ";
 
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
 	 */
 	@Override
 	public String getTokenizedNomenclaturalTitel(T generic) {
+		return getTokenizedNomenclaturalTitel(generic, false);
+	}
+	
+	protected String getTokenizedNomenclaturalTitel(T generic, boolean inRefIsObligatory) {
+		//generic == null
 		if (generic == null /* || generic.getInReference() == null */){
 			return null;
 		}
+
 		Reference<?> inRef = generic.getInReference();
+		
+		//inRef == null
+		if (! inRefIsObligatory && inRef == null){
+			return super.getTokenizedNomenclaturalTitel(generic);
+		}
+		
 		String result;
 		//use generics's publication date if it exists
 		if ( (generic.getDatePublished() != null && generic.getDatePublished().getStart() != null) || inRef == null){
@@ -56,6 +80,66 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		String result = CdmUtils.Nz( team == null ? "" : team.getTitleCache());
 		if (! result.trim().equals("")){
 			result = result + seperator;	
+		}
+		return result;
+	}
+	
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
+	 */
+	@Override
+	public String getTitleCache(T thisRef) {
+		return getTitleCache(thisRef, false);
+	}	
+	
+	protected String getTitleCache(T thisRef, boolean inRefIsObligatory) {
+		boolean hasInRef = (thisRef.getInReference() != null);
+		String result;
+		// get inRef part
+		if (hasInRef){
+			result = thisRef.getInReference().getTitleCache();
+		}else{
+			if ( ! inRefIsObligatory){
+				return super.getTitleCache(thisRef);
+			}
+			result = String.format("- undefined %s -", getInRefType());
+		}
+		
+		//in
+		result = inSeperator +  result;
+		
+		//section title
+		String title = CdmUtils.Nz(thisRef.getTitle());
+		if (title.length() > 0){
+			result = title + blank + result;
+		}
+		
+		//section author
+		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorTeam();
+		String thisRefAuthor = CdmUtils.Nz(thisRefTeam == null ? "" : thisRefTeam.getTitleCache());
+		result = CdmUtils.concat(afterSectionAuthor, thisRefAuthor, result);
+		
+		//date
+		if (thisRef.getDatePublished() != null && ! thisRef.getDatePublished().isEmpty()){
+			String thisRefDate = thisRef.getDatePublished().toString();
+			if (hasInRef && thisRef.getInBook().getDatePublished() != null){
+				TimePeriod inRefDate = thisRef.getInReference().getDatePublished();
+				String inRefDateString = inRefDate.getYear();
+				if (CdmUtils.isNotEmpty(inRefDateString)){
+					int pos = StringUtils.lastIndexOf(result, inRefDateString);
+					if (pos > -1 ){
+						result = result.substring(0, pos) + thisRefDate + result.substring(pos + inRefDateString.length());
+					}else{
+						logger.warn("InRefDateString (" + inRefDateString + ") could not be found in result (" + result +")");
+					}
+				}else{
+					result = result + beforeYear + thisRefDate + afterYear;
+				}
+			}else{
+				result = result + beforeYear + thisRefDate + afterYear;
+			}
 		}
 		return result;
 	}
