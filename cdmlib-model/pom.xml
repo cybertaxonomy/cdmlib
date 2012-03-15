@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.0.9-SNAPSHOT</version>
+    <version>3.0.10-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -19,7 +19,7 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-          
+
           <execution>
             <id>aspectj-main</id>
             <phase>process-sources</phase>
@@ -134,7 +134,48 @@
     </dependency>
     <dependency>
       <groupId>org.unitils</groupId>
-      <artifactId>unitils</artifactId>
+      <artifactId>unitils-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-database</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbmaintainer</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-dbunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-easymock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-mock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-inject</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+     <dependency>
+      <groupId>org.unitils</groupId>
+      <artifactId>unitils-spring</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -221,7 +262,7 @@
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>  
+      <artifactId>slf4j-log4j12</artifactId>
     </dependency>
     <dependency>
 	  <groupId>jdom</groupId>

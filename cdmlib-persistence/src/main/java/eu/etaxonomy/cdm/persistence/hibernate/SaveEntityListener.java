@@ -21,7 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.permission.AuthorityPermission;
+//import eu.etaxonomy.cdm.permission.AuthorityPermission;
 import eu.etaxonomy.cdm.permission.CdmPermission;
 import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
 
