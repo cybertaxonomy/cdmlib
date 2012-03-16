@@ -500,12 +500,16 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		ResultSet rs = source.getResultSet(sql);
 		while (rs.next()){
 			String strRegionFks = rs.getString("RegionFks"); 
+			if (StringUtils.isBlank(strRegionFks)){
+				continue;
+			}
+			
 			String[] regionFkArray = strRegionFks.split(",");
 			for (String regionFk: regionFkArray){
 				regionFk = regionFk.trim();
 				if (! StringUtils.isNumeric(regionFk) || "".equals(regionFk)  ){
 					state.setUnsuccessfull();
-					logger.warn("RegionFk is not numeric: " + regionFk);
+					logger.warn("RegionFk is not numeric: " + regionFk +  " ( part of " + strRegionFks + ")");
 				}else{
 					regionFks.add(Integer.valueOf(regionFk));
 				}
@@ -544,8 +548,13 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				if (StringUtils.isNotBlank(tdwgCode) ){
 					NamedArea tdwgArea = getNamedArea(state, tdwgCode);
 					regionMap.put(String.valueOf(regionId), tdwgArea);
-				}else{
-					logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
+				}else {
+					NamedArea area = getOtherAreas(state, emCode, tdwgCode);
+					if (area != null){
+						regionMap.put(String.valueOf(regionId), area);
+					}else{
+						logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
+					}
 				}
 			}
 		}
