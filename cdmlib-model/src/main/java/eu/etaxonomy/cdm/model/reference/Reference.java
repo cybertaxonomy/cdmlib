@@ -729,8 +729,10 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	
 	/**
 	 * Returns a string representation for the year of publication / creation
-	 * of <i>this</i> reference. The string is obtained by transformation of
-	 * the {@link #getDatePublished() datePublished} attribute.
+	 * of <i>this</i> reference. If the {@link #getDatePublished() datePublished}
+	 * of this reference contains more date information then (starting) year
+	 * only the year is returned.
+	 * than  attribute.
 	 */
 	@Transient
 	public String getYear(){
@@ -738,6 +740,22 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		if (datePublished != null ){
 			String result = getDatePublished().getYear();
 			return result;
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * Convenience method that returns a string representation for the publication date / creation
+	 * of <i>this</i> reference. The string is obtained by 
+	 * {@link #getDatePublished()#toString() the string representation
+	 * of the date published}.
+	 */
+	@Transient
+	public String getDatePublishedString(){
+		TimePeriod datePublished = this.getDatePublished();
+		if (datePublished != null ){
+			return getDatePublished().toString();
 		}else{
 			return null;
 		}
