@@ -175,7 +175,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	 */
 	public boolean check(STATE state) {
 		if (isIgnore(state)){
-			logger.warn("No check for " + ioName + " (ignored)");
+			logger.info("No check for " + ioName + " (ignored)");
 			return true;
 		}else{
 			return doCheck(state);
