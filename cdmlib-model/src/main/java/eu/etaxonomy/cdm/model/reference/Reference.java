@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -490,6 +491,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 */
 	public void setDatePublished(TimePeriod datePublished){
 		this.datePublished = datePublished;
+	}
+	
+	public boolean hasDatePublished(){
+		boolean result =  ! ( (this.datePublished == null) || StringUtils.isBlank(datePublished.toString()));
+		return result;
 	}
 	
 	/**

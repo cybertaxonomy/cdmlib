@@ -90,8 +90,8 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		if (string == null){
 			return null;
 		}
-		String year = useFullDatePublished ? nomRef.getDatePublishedString() :CdmUtils.Nz(nomRef.getYear());
-		if ("".equals(year)){
+		String year = useFullDatePublished ? nomRef.getDatePublishedString() : nomRef.getYear();
+		if (StringUtils.isBlank(year)){
 			result = string + afterYear;
 		}else{
 			result = string + beforeYear + year + afterYear;

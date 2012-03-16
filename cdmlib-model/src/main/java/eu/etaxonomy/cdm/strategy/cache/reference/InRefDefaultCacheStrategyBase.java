@@ -28,8 +28,7 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 	private String inSeperator = "in ";
 	private String afterSectionAuthor = " - ";
 	private String blank = " ";
-	private String comma = ",";
-	private String prefixSeries = "ser.";
+	
 	
 	protected abstract String getInRefType();
 	
@@ -44,26 +43,26 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		return getTokenizedNomenclaturalTitel(generic, false);
 	}
 	
-	protected String getTokenizedNomenclaturalTitel(T generic, boolean inRefIsObligatory) {
+	protected String getTokenizedNomenclaturalTitel(T thisRef, boolean inRefIsObligatory) {
 		//generic == null
-		if (generic == null /* || generic.getInReference() == null */){
+		if (thisRef == null /* || generic.getInReference() == null */){
 			return null;
 		}
 
-		Reference<?> inRef = generic.getInReference();
+		Reference<?> inRef = thisRef.getInReference();
 		
 		//inRef == null
 		if (! inRefIsObligatory && inRef == null){
-			return super.getTokenizedNomenclaturalTitel(generic);
+			return super.getTokenizedNomenclaturalTitel(thisRef);
 		}
 		
 		String result;
 		//use generics's publication date if it exists
-		if (inRef == null ||  (generic.getDatePublished() != null ) ){
+		if (inRef == null ||  (thisRef.hasDatePublished() ) ){
 			GenericDefaultCacheStrategy<Reference> inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 			result =  inRef == null ? "" : inRefStrategy.getNomRefTitleWithoutYearAndAuthor(inRef);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-			result = addYear(result, generic, true);
+			result = addYear(result, thisRef, true);
 		}else{
 			//else use inRefs's publication date
 			result = inRef.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
@@ -73,7 +72,7 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		}
 		//FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862
 		
-		result = getInRefAuthorPart(generic.getInReference(), afterInRefAuthor) + result;
+		result = getInRefAuthorPart(thisRef.getInReference(), afterInRefAuthor) + result;
 		result = "in " +  result;
 		return result;
 	}
@@ -150,34 +149,6 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		return result;
 	}
 	
-	protected String getSeriesAndVolPart(String series, String volume,
-			boolean needsComma, String nomRefCache) {
-		//inSeries
-		String seriesPart = "";
-		if (!"".equals(series)){
-			seriesPart = series;
-			if (CdmUtils.isNumeric(series)){
-				seriesPart = prefixSeries + blank + seriesPart;
-			}
-			if (needsComma){
-				seriesPart = comma + seriesPart;
-			}
-			needsComma = true;
-		}
-		nomRefCache += seriesPart;
-		
-		
-		//volume Part
-		String volumePart = "";
-		if (!"".equals(volume)){
-			volumePart = volume;
-			if (needsComma){
-				volumePart = comma + blank + volumePart;
-			}
-			//needsComma = false;
-		}
-		nomRefCache += volumePart;
-		return nomRefCache;
-	}
+
 
 }
