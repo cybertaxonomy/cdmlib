@@ -17,16 +17,12 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class ArticleDefaultCacheStrategy <T extends Reference> extends InRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
 	public static final String UNDEFINED_JOURNAL = "- undefined journal -";
-	private String prefixSeries = "ser.";
-	private String prefixVolume = "vol.";
 	private String prefixReferenceJounal = "in";
 	private String blank = " ";
-	private String comma = ",";
-	private String dot =".";
 	
 	final static UUID uuid = UUID.fromString("0d45343a-0c8a-4a64-97ca-e94974b65c96");
 	
@@ -62,7 +58,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 			return article.getTitleCache();
 		}
 		String result =  getNomRefTitleWithoutYearAndAuthor(article);
-		result = addYear(result, article);
+		result = addYear(result, article, false);
 		TeamOrPersonBase<?> team = article.getAuthorTeam();
 		result = CdmUtils.concat(" ", article.getTitle(), result);
 		if (team != null &&  CdmUtils.isNotEmpty(team.getTitleCache())){
@@ -102,31 +98,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 			nomRefCache = nomRefCache + titelAbbrev + blank; 
 		}
 		
-		//inSeries
-		String seriesPart = "";
-		if (!"".equals(series)){
-			seriesPart = series;
-			if (CdmUtils.isNumeric(series)){
-				seriesPart = prefixSeries + blank + seriesPart;
-			}
-			if (needsComma){
-				seriesPart = comma + seriesPart;
-			}
-			needsComma = true;
-		}
-		nomRefCache += seriesPart;
-		
-		
-		//volume Part
-		String volumePart = "";
-		if (!"".equals(volume)){
-			volumePart = volume;
-			if (needsComma){
-				volumePart = comma + blank + volumePart;
-			}
-			//needsComma = false;
-		}
-		nomRefCache += volumePart;
+		nomRefCache = getSeriesAndVolPart(series, volume, needsComma, nomRefCache);
 		
 		//delete "."
 		while (nomRefCache.endsWith(".")){
@@ -135,5 +107,12 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		
 		return nomRefCache.trim();
 	}
+
+
+	@Override
+	protected String getInRefType() {
+		return "article";
+	}
+
 	
 }

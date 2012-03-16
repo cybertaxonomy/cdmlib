@@ -40,7 +40,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 	public String getTokenizedNomenclaturalTitel(T nomenclaturalReference) {
 		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
 		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-		result = addYear(result, nomenclaturalReference);
+		result = addYear(result, nomenclaturalReference, true);
 		return result;
 	}
 
@@ -53,7 +53,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 			return nomenclaturalReference.getTitleCache();
 		}
 		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
-		result = addYear(result, nomenclaturalReference);
+		result = addYear(result, nomenclaturalReference, false);
 		TeamOrPersonBase<?> team = nomenclaturalReference.getAuthorTeam();
 		if (team != null &&  StringUtils.isNotEmpty(team.getTitleCache()) ){
 			result = team.getTitleCache() + afterAuthor + result;
@@ -85,12 +85,12 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		return beforeMicroReference;
 	}
 	
-	protected String addYear(String string, T nomRef){
+	protected String addYear(String string, T nomRef, boolean useFullDatePublished){
 		String result;
 		if (string == null){
 			return null;
 		}
-		String year = CdmUtils.Nz(nomRef.getYear());
+		String year = useFullDatePublished ? nomRef.getDatePublishedString() :CdmUtils.Nz(nomRef.getYear());
 		if ("".equals(year)){
 			result = string + afterYear;
 		}else{

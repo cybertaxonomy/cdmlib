@@ -28,7 +28,9 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 	private String inSeperator = "in ";
 	private String afterSectionAuthor = " - ";
 	private String blank = " ";
-
+	private String comma = ",";
+	private String prefixSeries = "ser.";
+	
 	protected abstract String getInRefType();
 	
 	private String afterInRefAuthor = ", ";
@@ -57,16 +59,20 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		
 		String result;
 		//use generics's publication date if it exists
-		if ( (generic.getDatePublished() != null && generic.getDatePublished().getStart() != null) || inRef == null){
+		if (inRef == null ||  (generic.getDatePublished() != null ) ){
 			GenericDefaultCacheStrategy<Reference> inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 			result =  inRef == null ? "" : inRefStrategy.getNomRefTitleWithoutYearAndAuthor(inRef);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-			result = addYear(result, generic);
+			result = addYear(result, generic, true);
 		}else{
 			//else use inRefs's publication date
 			result = inRef.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
-			result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+			if (result != null){
+				result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+			}
 		}
+		//FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862
+		
 		result = getInRefAuthorPart(generic.getInReference(), afterInRefAuthor) + result;
 		result = "in " +  result;
 		return result;
@@ -142,6 +148,36 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 			}
 		}
 		return result;
+	}
+	
+	protected String getSeriesAndVolPart(String series, String volume,
+			boolean needsComma, String nomRefCache) {
+		//inSeries
+		String seriesPart = "";
+		if (!"".equals(series)){
+			seriesPart = series;
+			if (CdmUtils.isNumeric(series)){
+				seriesPart = prefixSeries + blank + seriesPart;
+			}
+			if (needsComma){
+				seriesPart = comma + seriesPart;
+			}
+			needsComma = true;
+		}
+		nomRefCache += seriesPart;
+		
+		
+		//volume Part
+		String volumePart = "";
+		if (!"".equals(volume)){
+			volumePart = volume;
+			if (needsComma){
+				volumePart = comma + blank + volumePart;
+			}
+			//needsComma = false;
+		}
+		nomRefCache += volumePart;
+		return nomRefCache;
 	}
 
 }
