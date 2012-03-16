@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.mail.MethodNotSupportedException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
@@ -179,8 +181,17 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					" FROM Fact " +
                       	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
                       	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
-              	" WHERE (FactId IN (" + ID_LIST_TOKEN + "))" + 
-                        " ORDER By Sequence";
+              	" WHERE (FactId IN (" + ID_LIST_TOKEN + "))";
+			    try {
+					if (config.getSource().checkColumnExists("Fact", "Sequence")){
+						strQuery +=" ORDER By Sequence";
+					}else{
+						strQuery +=" ORDER By Fact.FactId";
+					}
+				} catch (MethodNotSupportedException e) {
+					logger.info("checkColumnExists not supported");
+					strQuery +=" ORDER By Fact.FactId";
+				}
 		return strQuery;
 	}
 	

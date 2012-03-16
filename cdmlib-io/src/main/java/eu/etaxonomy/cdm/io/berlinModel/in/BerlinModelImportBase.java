@@ -235,7 +235,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	}
 
 	private User getUser(String userString, BerlinModelImportState state){
-		if (CdmUtils.isEmpty(userString)){
+		if (CdmUtils.isBlank(userString)){
 			return null;
 		}
 		userString = userString.trim();
