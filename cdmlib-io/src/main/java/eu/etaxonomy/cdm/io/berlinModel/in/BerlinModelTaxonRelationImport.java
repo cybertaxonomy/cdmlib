@@ -179,7 +179,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		
 		String strQuery = strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
-		if (state.getConfig().getClassificationQuery() == null){
+		if (state.getConfig().getClassificationQuery() != null){
 			strQuery = state.getConfig().getClassificationQuery();
 		}
 		return strQuery;
