@@ -104,7 +104,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	 */
 	public boolean invoke(STATE state) {
 		if (isIgnore( state)){
-			logger.warn("No invoke for " + ioName + " (ignored)");
+			logger.info("No invoke for " + ioName + " (ignored)");
 			return true;
 		}else{
 			updateProgress(state, "Invoking " + ioName);
