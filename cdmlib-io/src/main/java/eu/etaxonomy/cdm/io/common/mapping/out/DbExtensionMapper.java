@@ -10,9 +10,6 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
