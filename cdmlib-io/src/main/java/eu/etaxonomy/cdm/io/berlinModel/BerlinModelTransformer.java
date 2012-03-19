@@ -363,6 +363,8 @@ public final class BerlinModelTransformer {
 			case 26: return TaxonRelationshipType.OVERLAPS();
 			//TODO other relationshipTypes
 			
+			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
+			
 			//FIXME doubtful
 			case 43: return TaxonRelationshipType.CONGRUENT_TO();
 			default: {
