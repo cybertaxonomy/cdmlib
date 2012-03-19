@@ -22,6 +22,18 @@
       <property name="jsonConfig" ref="jsonConfig" />
     </bean>
 
+
+    <bean name="**/name" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="type" value="XML" />
+      <property name="xsl" value="vibrant-name.xsl" />
+    </bean>
+
+
+    <bean name="**/taxon/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="type" value="XML" />
+      <property name="xsl" value="vibrant-taxon.xsl" />
+    </bean>
+
     <!-- taxonomy service -->
     <bean name="**/classification **/classification/* **/classification/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="type" value="XML" />
