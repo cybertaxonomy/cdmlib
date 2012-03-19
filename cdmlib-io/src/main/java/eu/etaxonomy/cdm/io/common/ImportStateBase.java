@@ -72,6 +72,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
 	private Map<UUID, Rank> rankMap = new HashMap<UUID, Rank>();
 	
+	protected IService<CdmBase> service = null;
+	
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
 		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
@@ -97,8 +99,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 	
-	protected IService<CdmBase> service = null;
-
+	
 	/**
 	 * @return the stores
 	 */
