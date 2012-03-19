@@ -114,7 +114,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		}
 			
 		
-		Reference citation = (Reference)getRelatedObject(rs, citationAttribute, citationNamespace);
+		Reference<?> citation = (Reference)getRelatedObject(rs, citationAttribute, citationNamespace);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
@@ -139,7 +139,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		}
 		
 		if (toObject == null){
-			String warning  = "The parent taxon could not be found. Child taxon not added to the tree";
+			String warning  = "The parent taxon could not be found. Child taxon (" + fromTaxon.getTitleCache() + "; " + fromTaxon.getUuid() + ") not added to the tree";
 			logger.warn(warning);
 			return cdmBase;
 		}
@@ -152,6 +152,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 				try {
 					toTaxon = checkTaxonType(alternativeToObject, "Alternative parent", alternativeToId);
 				} catch (IllegalArgumentException e1) {
+					logger.warn("Alternative taxon is of wrong type: " +  alternativeToObject.getTitleCache() + "; " + alternativeToObject.getUuid());
 					return cdmBase;
 				}
 			}else{
@@ -161,7 +162,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		}
 		
 		if (fromTaxon.equals(toTaxon)){
-			String warning  = "A taxon may not be a child of itself. Taxon not added to the tree";
+			String warning  = "A taxon may not be a child of itself. Taxon not added to the tree: " + toTaxon.getTitleCache() + ", " + toTaxon.getLsid().toString();
 			logger.warn(warning);
 			return cdmBase;
 		}
