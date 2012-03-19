@@ -119,6 +119,14 @@ public interface IService<T extends ICdmBase>{
 	 */
 	public T find(int id);
 	
+	/**
+	 * Returns a set of persisted entities that match the database identifiers.
+	 * Returns an empty list if no identifier matches.
+	 * @param idSet
+	 * @return
+	 */
+	public List<T> findById(Set<Integer> idSet);  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
+
 	
 	// FIXME should we expose this method?
 	public Session getSession();
