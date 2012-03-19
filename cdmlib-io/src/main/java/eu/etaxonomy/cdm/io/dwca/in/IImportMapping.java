@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping.CdmKey;
@@ -56,5 +58,19 @@ public interface IImportMapping {
 	 */
 	public boolean exists(String namespace, String sourceKey,Class<?> destinationClass);
 
+	/**
+	 * Returns the mapping for only those obejcts addressed by the namespacedSourceKeys parameter
+	 * @param namespacedKeys
+	 * @return
+	 */
+	public IImportMapping getPartialMapping(Map<String, Set<String>> namespacedSourceKeys);
 
+	/**
+	 * Returns a list for all mapping entries.
+	 * @return
+	 */
+	public List<MappingEntry<String, String, Class, Integer>> getEntryList();
+	
+	
+	
 }

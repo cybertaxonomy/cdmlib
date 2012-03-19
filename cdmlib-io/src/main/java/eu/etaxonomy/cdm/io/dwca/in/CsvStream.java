@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.io.dwca.jaxb.Field;
  * @date 17.10.2011
  *
  */
-public class CsvStream implements IReader<CsvStreamItem>{
+public class CsvStream implements INamespaceReader<CsvStreamItem>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CsvStream.class);
 
@@ -134,4 +134,7 @@ public class CsvStream implements IReader<CsvStreamItem>{
 	public String getFilesLocation() {
 		return this.archiveEntry.getFiles().getLocation();
 	}
+
+	
+	
 }

@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -38,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @date 22.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
 
@@ -313,11 +315,24 @@ public class DwcTaxonCsv2CdmTaxonConverter extends ConverterBase<DwcaImportState
 		}
 			
 		return result;
+
 	}
+	
+// ********************** PARTITIONABLE ****************************************/
+
+
+	@Override
+	protected void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result) {
+		//do nothing, no foreign keys needed here
+	}
+	
+//** ***************************** TO STRING *********************************************/
 	
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
 
+
+	
 }

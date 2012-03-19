@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,9 +27,10 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
  * @date 23.11.2011
  *
  */
-public class ConverterBase<STATE extends IoStateBase> {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ConverterBase.class);
+public abstract class PartitionableConverterBase<STATE extends IoStateBase> 
+		/*implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> */ {
+	
+	private static final Logger logger = Logger.getLogger(PartitionableConverterBase.class);
 
 	protected STATE state;
 	
@@ -89,5 +92,19 @@ public class ConverterBase<STATE extends IoStateBase> {
 	protected boolean exists(TermUri term, CsvStreamItem item) {
 		return ! StringUtils.isBlank(getValue(item, term));
 	}
+	
+
+	
+	public Map<String, Set<String>> getPartitionForeignKeys(IReader<CsvStreamItem> instream) {
+		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+		
+		while (instream.hasNext()){
+			CsvStreamItem next = instream.read();
+			makeForeignKeysForItem(next, result);
+		}
+		return result;
+	}
+
+	protected abstract void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result);
 
 }

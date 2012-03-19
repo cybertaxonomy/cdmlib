@@ -288,7 +288,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IndexCounter.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/MethodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/ObjectChangeMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConverterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text
@@ -304,10 +303,17 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterInput.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterOutput.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IImportMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/INamespace.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/INamespaceReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IPartitionableConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/InMemoryMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ListReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/LookAheadStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/MappedCdmBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/MappingEntry.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/PartitionableConverterBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/StreamPartitioner.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Archive.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/ArchiveEntryBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Core.java -text
