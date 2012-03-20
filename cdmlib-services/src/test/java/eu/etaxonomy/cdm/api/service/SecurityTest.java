@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
 
 
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -191,6 +193,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
 		*/
+		
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
@@ -227,6 +230,7 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
+	
 		Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
 		TaxonDescription description = TaxonDescription.NewInstance(taxon);
 		description.addElement(Distribution.NewInstance());
@@ -255,6 +259,8 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
 	
 	@Test(expected= EvaluationFailedException.class)
 	public void testEditPartOfClassification(){
+		
+		
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
 		SecurityContext context = SecurityContextHolder.getContext();
 		context.setAuthentication(authentication);
