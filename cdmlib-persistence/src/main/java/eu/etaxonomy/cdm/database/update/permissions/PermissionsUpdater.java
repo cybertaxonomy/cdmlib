@@ -38,16 +38,13 @@ public class PermissionsUpdater extends SchemaUpdaterStepBase implements
 		
 		//insert granted authorities
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (1,'889f9961-8d0f-41a9-95ec-59905b3941bf', 'TAXONBASE.ADMIN')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (1,'889f9961-8d0f-41a9-95ec-59905b3941bf', 'USER.EDIT')";
 		datasource.executeUpdate(sql);
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (2,'841a1711-20f1-4209-82df-7944ad2050da', 'TAXONNODE.ADMIN')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (2,'841a1711-20f1-4209-82df-7944ad2050da', 'USER.CREATE')";
 		datasource.executeUpdate(sql);
 		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (3,'bb9e2547-1e28-45fd-8c35-d1ceffbfcb36', 'DESCRIPTIONBASE.ADMIN')";
-		datasource.executeUpdate(sql);
-		
-		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (6,'8e3a8b36-1c9e-43cb-9887-83b117cf7566', 'CLASSIFICATION.UPDATE')";
+		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (3,'bb9e2547-1e28-45fd-8c35-d1ceffbfcb36', 'USER.DELETE')";
 		datasource.executeUpdate(sql);
 		
 		sql = "INSERT INTO grantedauthorityimpl (id,uuid, authority) VALUES (4,'8a61c102-4643-4e81-a3b6-c40d60d2ba99', 'USER.ADMIN')";
@@ -72,23 +69,6 @@ public class PermissionsUpdater extends SchemaUpdaterStepBase implements
 		*/
 		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE 'admin'), 5)";
 		datasource.executeUpdate(sql);
-		
-		sql = "INSERT INTO permissiongroup (id, created, uuid, name) VALUES (1, NOW(), '6f9238e1-c6cb-4bdf-8495-ccbe32c655f0', 'taxon editor')";
-		datasource.executeUpdate(sql);
-		
-		sql = "INSERT INTO permissiongroup_grantedauthorityimpl (PermissionGroup_id, grantedauthorities_id) VALUES (1,1)";
-		datasource.executeUpdate(sql);
-		
-		sql = "INSERT INTO permissiongroup_grantedauthorityimpl (PermissionGroup_id, grantedauthorities_id) VALUES (1,2)";
-		datasource.executeUpdate(sql);
-		
-		sql = "INSERT INTO permissiongroup_grantedauthorityimpl (PermissionGroup_id, grantedauthorities_id) VALUES (1,3)";
-		datasource.executeUpdate(sql);
-		
-		sql = "INSERT INTO permissiongroup_grantedauthorityimpl (PermissionGroup_id, grantedauthorities_id) VALUES (1,6)";
-		datasource.executeUpdate(sql);
-		
-		
 		
 		return null;
 	}

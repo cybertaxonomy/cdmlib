@@ -1105,6 +1105,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseSchemaMismatc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/EvaluationFailedException.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2DbSupport.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2Mode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalH2.java -text
@@ -1283,6 +1284,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmSecur
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPostDataChangeObserver.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUpdateEntityListener.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGenerator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGeneratorGlobalOverride.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/UpdateEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadata.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactory.java -text
