@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 23.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends ConverterBase<DwcaImportState> 
-						implements IConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends PartitionableConverterBase<DwcaImportState> 
+						implements IPartitionableConverter<CsvStreamItem, INamespaceReader<CdmBase>, String>{
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
@@ -251,11 +252,21 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
+//**************************** PARTITIONABLE ************************************************
 
+
+
+
+	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap){
+		//do nothing, their are no foreign keys yet to handle 
+	}
+	
+//************************************* TO STRING ********************************************
 	
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
+
 
 }

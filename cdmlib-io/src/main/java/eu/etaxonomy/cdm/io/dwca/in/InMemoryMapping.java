@@ -8,11 +8,15 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping.CdmKey;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
@@ -31,7 +35,7 @@ public class InMemoryMapping implements IImportMapping {
 		Class<CLASS> clazz;
 		int id;
 		
-		private CdmKey(IdentifiableEntity object){
+		private CdmKey(IdentifiableEntity<?> object){
 			this.clazz = (Class)object.getClass();
 			this.id = object.getId();
 		}
@@ -47,8 +51,14 @@ public class InMemoryMapping implements IImportMapping {
 		putMapping(namespace, String.valueOf(sourceKey), destinationObject);
 	}
 		
+
 	@Override
 	public void putMapping(String namespace, String sourceKey, IdentifiableEntity destinationObject){
+		CdmKey<IdentifiableEntity<?>> cdmKey = new CdmKey(destinationObject);
+		putMapping(namespace, sourceKey, cdmKey);
+	}
+	
+	public void putMapping(String namespace, String sourceKey, CdmKey<IdentifiableEntity<?>> cdmKey){
 		Map<String, Set<CdmKey>> namespaceMap = mapping.get(namespace);
 		if (namespaceMap == null){
 			namespaceMap = new HashMap<String, Set<CdmKey>>();
@@ -60,7 +70,7 @@ public class InMemoryMapping implements IImportMapping {
 			namespaceMap.put(sourceKey, keySet);
 		}
 		
-		keySet.add(new CdmKey(destinationObject));
+		keySet.add(cdmKey);
 	}
 	
 	@Override
@@ -84,6 +94,37 @@ public class InMemoryMapping implements IImportMapping {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public IImportMapping getPartialMapping( Map<String, Set<String>> namespacedSourceKeys) {
+		InMemoryMapping partialMapping = new InMemoryMapping();
+		for (Entry<String,Set<String>> entry  : namespacedSourceKeys.entrySet()){
+			String namespace = entry.getKey();
+			for (String sourceKey : entry.getValue() ){
+				Set<CdmKey> destObjects = this.get(namespace, sourceKey);
+				for (CdmKey cdmKey : destObjects){
+					partialMapping.putMapping(namespace, sourceKey, cdmKey);
+				}
+			}
+		}
+		return partialMapping;
+	}
+
+
+	@Override
+	public List<MappingEntry<String, String, Class, Integer>> getEntryList() {
+		List<MappingEntry<String, String, Class, Integer>> result = new ArrayList<MappingEntry<String,String,Class,Integer>>();
+		for (Entry<String, Map<String, Set<CdmKey>>> namespaceEntry : mapping.entrySet() ){
+			String sourceNamespace = namespaceEntry.getKey();
+			for (Entry<String, Set<CdmKey>> idEntry : namespaceEntry.getValue().entrySet() ){
+				String sourceId = idEntry.getKey();
+				for (CdmKey cdmKey : idEntry.getValue()){
+					result.add(new MappingEntry<String, String, Class, Integer>(sourceNamespace, sourceId, cdmKey.clazz, cdmKey.id));
+				}
+			}
+		}
+		return result;
 	}
 
 }

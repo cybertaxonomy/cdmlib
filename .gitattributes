@@ -288,7 +288,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IndexCounter.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/MethodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/ObjectChangeMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConverterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text
@@ -304,10 +303,17 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterInput.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterOutput.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IImportMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/INamespace.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/INamespaceReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IPartitionableConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/InMemoryMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ListReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/LookAheadStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/MappedCdmBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/MappingEntry.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/PartitionableConverterBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/StreamPartitioner.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Archive.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/ArchiveEntryBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/jaxb/Core.java -text
@@ -1519,9 +1525,6 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug.lau
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
 cdmlib-remote-webapp/pom.xml -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
@@ -1547,6 +1550,9 @@ cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPat
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcher.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcherException.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedUrlHandlerMapping.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AgentController.java -text

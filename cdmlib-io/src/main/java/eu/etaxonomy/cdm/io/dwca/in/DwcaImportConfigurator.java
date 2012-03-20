@@ -29,6 +29,8 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
+	private boolean usePartitions;
+	
 //	//new
 //	private boolean doSpecimen = true;  //reads the specimen worksheet
 //	private boolean doAreaLevels = true;  //reads the areaLevels worksheet
@@ -53,8 +55,8 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 ////	private boolean includeSynonymsForTaxonMatching = false;
 
 		
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -96,12 +98,21 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = ReferenceFactory.newDatabase();
-			sourceReference.setTitleCache("Specimen import", true);
+			sourceReference = ReferenceFactory.newGeneric();
+			sourceReference.setTitleCache("DwC-A import", true);
 		}
 		return sourceReference;
 	}
+
 	
+	
+	public boolean isUsePartitions() {
+		return usePartitions;
+	}
+
+	public void setUsePartitions(boolean usePartitions) {
+		this.usePartitions = usePartitions;
+	}
 	
 	
 }

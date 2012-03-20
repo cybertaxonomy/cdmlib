@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifVernacularNameCsv2CdmConverter extends ConverterBase<DwcaImportState> implements IConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifVernacularNameCsv2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
@@ -70,10 +72,26 @@ public class GbifVernacularNameCsv2CdmConverter extends ConverterBase<DwcaImport
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+//**************************** PARTITIONABLE ************************************************
+
+	@Override
+	protected void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+//************************ STRING ************************************************/
 	
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
+
+
+
+
 
 }

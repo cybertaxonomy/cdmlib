@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.net.URI;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -39,15 +41,65 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		IReader<CsvStream> stream = streamConverter.getStreamStream(state);
 		while (stream.hasNext()){
   			CsvStream csvStream = stream.read();
-			while (csvStream.hasNext()){
-				CsvStreamItem item = csvStream.read();
-				TransactionStatus tx = startTransaction();
-				handleCsvStreamItem(state, item);
-				commitTransaction(tx);
+			
+  			if (state.getConfig().isUsePartitions()){
+	  			StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, null, 1000);
+	  			
+	  			while (partitionStream.hasNext()){
+	  				TransactionStatus tx = startTransaction();
+	  				
+	  				handlePartitionedStreamItem(state, partitionStream);
+	  				commitTransaction(tx);
+	  			}
+			}else {
+		  			
+		  		while (csvStream.hasNext()){
+						TransactionStatus tx = startTransaction();
+						
+						CsvStreamItem item = csvStream.read();
+						handleCsvStreamItem(state, item);
+						
+						commitTransaction(tx);
+					}
 			}
-			finalizeStream(csvStream, state);
+
+  			finalizeStream(csvStream, state);
 		}
 		return;
+	}
+
+	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partStream) {
+		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partStream.getTerm(), state);
+		if (converter == null){
+			state.setSuccess(false);
+			return;
+		}
+		
+		IReader<CsvStreamItem> inputStream = partStream.read();
+		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(inputStream);
+		IImportMapping mapping = state.getMapping();
+		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
+		state.loadRelatedObjects(partialMapping);
+		
+//		while (inputStream.hasNext()){
+//			IReader<MappedCdmBase> resultReader = converter.map(inputStream.read(), xx);
+//			
+//			xx;
+//			while (resultReader.hasNext()){
+//				
+//				MappedCdmBase mappedCdmBase = (resultReader.read());
+//				CdmBase cdmBase = mappedCdmBase.getCdmBase();
+//				save(cdmBase, state, item.getLocation());
+//				if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
+//					IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
+//					
+//					String namespace = mappedCdmBase.getNamespace();
+//					state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
+//				}
+//			}
+//		}
+		return;
+		
 	}
 
 	/**
@@ -56,7 +108,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	 * @return
 	 */
 	private void handleCsvStreamItem(DwcaImportState state, CsvStreamItem item) {
-		IConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(item, state);
+		IConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(item.term, state);
 		if (converter == null){
 			state.setSuccess(false);
 			return;
@@ -114,8 +166,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		}
 	}
 
-	private IConverter<CsvStreamItem,IReader<CdmBase>, String> getConverter(CsvStreamItem item, DwcaImportState state) {
-		TermUri namespace = item.term;
+	private IPartitionableConverter<CsvStreamItem,IReader<CdmBase>, String> getConverter(TermUri namespace, DwcaImportState state) {
 		if (namespace.equals(TermUri.DWC_TAXON)){
 			if (! state.isTaxaCreated()){
 				return new DwcTaxonCsv2CdmTaxonConverter(state);
