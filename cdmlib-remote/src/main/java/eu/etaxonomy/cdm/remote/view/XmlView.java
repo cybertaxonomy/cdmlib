@@ -20,48 +20,48 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @see com.ibm.lsid.MetadataResponse
  */
 public class XmlView extends AbstractView {
-	
-	private Marshaller marshaller;
-	
-	private boolean locationHeader = false;
-	
-	private String locationPrefix = "";
-	
-	public void setLocationHeader(boolean locationHeader) {
-		this.locationHeader = locationHeader;
-	}
 
-	public void setLocationPrefix(String locationPrefix) {
-		this.locationPrefix = locationPrefix;
-	}
+    private Marshaller marshaller;
 
-	public XmlView() {
-		
-	}
-	
-	@Autowired
-	public void setMarshaller(Marshaller marshaller) {
-		this.marshaller = marshaller;
-	}
-	
-	
-	
-	@Override
-	protected void renderMergedOutputModel(Map model,HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		
-		for(Object object : model.values()) {
-		    if(object instanceof IdentifiableEntity) {		    			    	
-		        IdentifiableEntity identifiableEntity = (IdentifiableEntity)object;
+    private boolean locationHeader = false;
+
+    private String locationPrefix = "";
+
+    public void setLocationHeader(boolean locationHeader) {
+        this.locationHeader = locationHeader;
+    }
+
+    public void setLocationPrefix(String locationPrefix) {
+        this.locationPrefix = locationPrefix;
+    }
+
+    public XmlView() {
+
+    }
+
+    @Autowired
+    public void setMarshaller(Marshaller marshaller) {
+        this.marshaller = marshaller;
+    }
+
+
+
+    @Override
+    protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
+        for(Object object : model.values()) {
+            if(object instanceof IdentifiableEntity) {
+                IdentifiableEntity identifiableEntity = (IdentifiableEntity)object;
                 if(locationHeader) {
-		    		response.addHeader("Location", locationPrefix + identifiableEntity.getUuid().toString());
-		    	}
-		        marshaller.marshal(identifiableEntity, new StreamResult(response.getOutputStream()));
-		    } else if(object instanceof Throwable) {  
-		    	eu.etaxonomy.cdm.io.jaxb.Error error = new eu.etaxonomy.cdm.io.jaxb.Error((Throwable)object);
-		    	marshaller.marshal(error, new StreamResult(response.getOutputStream()));
-		    }
-		}		
-	}
+                    response.addHeader("Location", locationPrefix + identifiableEntity.getUuid().toString());
+                }
+                marshaller.marshal(identifiableEntity, new StreamResult(response.getOutputStream()));
+            } else if(object instanceof Throwable) {
+                eu.etaxonomy.cdm.io.jaxb.Error error = new eu.etaxonomy.cdm.io.jaxb.Error((Throwable)object);
+                marshaller.marshal(error, new StreamResult(response.getOutputStream()));
+            }
+        }
+    }
 
 }

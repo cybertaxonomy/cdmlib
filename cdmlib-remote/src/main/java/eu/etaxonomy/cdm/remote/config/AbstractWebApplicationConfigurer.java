@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -26,60 +26,67 @@ public abstract class AbstractWebApplicationConfigurer {
 
     private static final String ATTRIBUTE_ERROR_MESSAGES = "cdm.errorMessages";
 
-	public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
-	
-	WebApplicationContext webApplicationContext;
+    public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
 
-	
-	@Autowired
-	public void setApplicationContext(ApplicationContext applicationContext){
+    WebApplicationContext webApplicationContext;
 
-		if(WebApplicationContext.class.isAssignableFrom(applicationContext.getClass())) {
-			this.webApplicationContext = (WebApplicationContext)applicationContext;
-		} else {
-			logger.error("The " + this.getClass().getSimpleName() + " only can be used within a WebApplicationContext");
-		}
-	}
 
-	/**
-	 * Find a property in the ServletContext if not found search in a second
-	 * step in the environment variables of the OS
-	 * 
-	 * @param property
-	 * @param required
-	 * @return
-	 */
-	protected String findProperty(String property, boolean required) {
-		// 1. look for the property in the ServletContext
-		Object obj = webApplicationContext.getServletContext().getAttribute(property);
-		String value = (String)obj;
-		// 2. look for the property in environment variables of the OS
-		if(value == null){
-			value = System.getProperty(property);
-		}
-		if(value == null && required){
-			logger.error("property {" + property + "} not found.");
-			logger.error("--> This property can be set in two ways:");
-			logger.error("--> 		1. as attribute to the ServletContext");
-			logger.error("--> 		2. as system property e.g. -D" + property);
-			logger.error("Stopping application ...");
-			System.exit(-1);
-		}
-		return value;
-	}
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext){
 
-	protected void addErrorMessageToServletContextAttributes(String errorMessage) {
-		Object o = webApplicationContext.getServletContext().getAttribute(ATTRIBUTE_ERROR_MESSAGES);
-		List<String> messages;
-		if(o != null  && o instanceof List<?>){
-			messages = (List<String>) o;
-		} else {
-			messages = new ArrayList<String>();
-		}
-		messages.add(errorMessage);
-		webApplicationContext.getServletContext().setAttribute(ATTRIBUTE_ERROR_MESSAGES, messages);
-	}
-	
-   
+        if(WebApplicationContext.class.isAssignableFrom(applicationContext.getClass())) {
+            this.webApplicationContext = (WebApplicationContext)applicationContext;
+        } else {
+            logger.error("The " + this.getClass().getSimpleName() + " only can be used within a WebApplicationContext");
+        }
+    }
+
+    /**
+     * Find a property primarily in the ServletContext and secondarily
+     * in the environment variables of the OS. So a property can be set
+     * by two means:
+     * <ol>
+     * <li>As attribute to the ServletContext (the cdm-server makes use of this method)</li>
+     * <li>as system property e.g. by setting the jvm commandline option like for example
+     * <code>-Dcdm.rootpathprefix=my/cdm/remote-instance<code></li>
+     * </ol>
+     *
+     * @param property usually a string constant defined in a subclass of
+     * 		<code>AbstractWebApplicationConfigurer</code> names <code>ATTRIBUTE_*</code>
+     * @param required
+     * @return
+     */
+    protected String findProperty(String property, boolean required) {
+        // 1. look for the property in the ServletContext
+        Object obj = webApplicationContext.getServletContext().getAttribute(property);
+        String value = (String)obj;
+        // 2. look for the property in environment variables of the OS
+        if(value == null){
+            value = System.getProperty(property);
+        }
+        if(value == null && required){
+            logger.error("property {" + property + "} not found.");
+            logger.error("--> This property can be set in two ways:");
+            logger.error("--> 		1. as attribute to the ServletContext");
+            logger.error("--> 		2. as system property e.g. -D" + property);
+            logger.error("Stopping application ...");
+            System.exit(-1);
+        }
+        return value;
+    }
+
+    protected void addErrorMessageToServletContextAttributes(String errorMessage) {
+        Object o = webApplicationContext.getServletContext().getAttribute(ATTRIBUTE_ERROR_MESSAGES);
+        List<String> messages;
+        if(o != null  && o instanceof List<?>){
+            messages = (List<String>) o;
+        } else {
+            messages = new ArrayList<String>();
+        }
+        messages.add(errorMessage);
+        webApplicationContext.getServletContext().setAttribute(ATTRIBUTE_ERROR_MESSAGES, messages);
+    }
+
+
 
 }
