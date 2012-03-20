@@ -1525,9 +1525,6 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug.lau
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
 cdmlib-remote-webapp/pom.xml -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
@@ -1553,6 +1550,9 @@ cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPat
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcher.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcherException.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedUrlHandlerMapping.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/AbstractWebApplicationConfigurer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/DataSourceConfigurer.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/config/LoggingConfigurer.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AbstractListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/AgentController.java -text
