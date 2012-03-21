@@ -37,18 +37,20 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	@Override
 	protected void doInvoke(DwcaImportState state) {
 		URI source = state.getConfig().getSource();
-		DwcaZipToStreamConverter<DwcaImportState> streamConverter = DwcaZipToStreamConverter.NewInstance(source);
-		IReader<CsvStream> stream = streamConverter.getStreamStream(state);
+		DwcaZipToStreamConverter<DwcaImportState> dwcaStreamConverter = DwcaZipToStreamConverter.NewInstance(source);
+		IReader<CsvStream> stream = dwcaStreamConverter.getStreamStream(state);
 		while (stream.hasNext()){
   			CsvStream csvStream = stream.read();
 			
   			if (state.getConfig().isUsePartitions()){
-	  			StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, null, 1000);
+  				IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
+  				StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, partitionConverter, state, 1000);//   (csvStream, streamConverter,state 1000);
 	  			
 	  			while (partitionStream.hasNext()){
 	  				TransactionStatus tx = startTransaction();
 	  				
-	  				handlePartitionedStreamItem(state, partitionStream);
+	  				String location = "Location: partition stream (TODO)";
+	  				handleResults(state, partitionStream, location);
 	  				commitTransaction(tx);
 	  			}
 			}else {
@@ -68,39 +70,45 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		return;
 	}
 
-	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partStream) {
-		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partStream.getTerm(), state);
-		if (converter == null){
-			state.setSuccess(false);
-			return;
-		}
-		
-		IReader<CsvStreamItem> inputStream = partStream.read();
-		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(inputStream);
-		IImportMapping mapping = state.getMapping();
-		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
-		state.loadRelatedObjects(partialMapping);
-		
+//	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partitionStream) {
+//		IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> converter = getConverter(partitionStream.getTerm(), state);
+//		if (converter == null){
+//			state.setSuccess(false);
+//			return;
+//		}
+//		
+//		IReader<CsvStreamItem> lookaheadStream = partitionStream.getLookaheadReader();
+//		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
+//		IImportMapping mapping = state.getMapping();
+//		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
+//		state.loadRelatedObjects(partialMapping);
+//		
+//		ConcatenatingReader<MappedCdmBase> reader = new ConcatenatingReader<MappedCdmBase>();
+// 		
+//		IReader<CsvStreamItem> inputStream = partitionStream.read();
 //		while (inputStream.hasNext()){
-//			IReader<MappedCdmBase> resultReader = converter.map(inputStream.read(), xx);
+//			IReader<MappedCdmBase> resultReader = converter.map(inputStream.read());
+//			reader.add(resultReader);
+//		}
 //			
-//			xx;
-//			while (resultReader.hasNext()){
-//				
-//				MappedCdmBase mappedCdmBase = (resultReader.read());
-//				CdmBase cdmBase = mappedCdmBase.getCdmBase();
-//				save(cdmBase, state, item.getLocation());
-//				if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
-//					IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
-//					
-//					String namespace = mappedCdmBase.getNamespace();
-//					state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
-//				}
+//		while (reader.hasNext()){
+//			MappedCdmBase mappedCdmBase = (reader.read());
+//			CdmBase cdmBase = mappedCdmBase.getCdmBase();
+//			//locate
+//			//TODO find a way to define the location
+//			String location = "partitionStream";
+//			//save
+//			save(cdmBase, state, location);
+//			//store in mapping
+//			if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
+//				IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
+//				String namespace = mappedCdmBase.getNamespace();
+//				//TODO also store in partition mapping
+//				state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
 //			}
 //		}
-		return;
-		
-	}
+//		return;
+//	}
 
 	/**
 	 * @param state
@@ -114,11 +122,21 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return;
 		}
 		IReader<MappedCdmBase> resultReader = converter.map(item);
+		handleResults(state, resultReader, item.getLocation());
+		return;
+	}
+
+	/**
+	 * @param state
+	 * @param item
+	 * @param resultReader
+	 */
+	private void handleResults(DwcaImportState state, IReader<MappedCdmBase> resultReader, String location) {
 		while (resultReader.hasNext()){
 			
 			MappedCdmBase mappedCdmBase = (resultReader.read());
 			CdmBase cdmBase = mappedCdmBase.getCdmBase();
-			save(cdmBase, state, item.getLocation());
+			save(cdmBase, state, location);
 			if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
 				IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
 				
@@ -126,7 +144,6 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 				state.putMapping(namespace,mappedCdmBase.getSourceId(), entity);
 			}
 		}
-		return;
 	}
 
 	private void finalizeStream(CsvStream csvStream, DwcaImportState state) {

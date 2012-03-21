@@ -288,6 +288,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IndexCounter.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/MethodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/ObjectChangeMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConcatenatingReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text

@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -51,7 +52,7 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 	}
 	
 	public ITEM readLookAhead(int max){
-		if (max < fifo.size()){
+		if (max > fifo.size()){
 			ITEM result = stream.read();
 			fifo.add(result);
 			return result;
@@ -61,7 +62,7 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 	}
 	
 	public boolean hasNextLookAhead(int max){
-		if (max < fifo.size() && stream.hasNext()){
+		if (max > fifo.size() && stream.hasNext()){
 			return true;
 		}else{
 			return false;
@@ -72,7 +73,7 @@ public class LookAheadStream<ITEM> implements INamespaceReader<ITEM>{
 		return fifo.size();
 	}
 	
-	public boolean hasLookAhead(){
+	public boolean isLookingAhead(){
 		return ! fifo.isEmpty();
 	}
 

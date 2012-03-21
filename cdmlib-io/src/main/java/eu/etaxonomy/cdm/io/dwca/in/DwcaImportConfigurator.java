@@ -29,7 +29,7 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
-	private boolean usePartitions;
+	private boolean usePartitions = true;
 	
 //	//new
 //	private boolean doSpecimen = true;  //reads the specimen worksheet

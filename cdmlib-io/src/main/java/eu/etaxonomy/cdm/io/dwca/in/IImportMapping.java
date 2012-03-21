@@ -63,7 +63,7 @@ public interface IImportMapping {
 	 * @param namespacedKeys
 	 * @return
 	 */
-	public IImportMapping getPartialMapping(Map<String, Set<String>> namespacedSourceKeys);
+	public InMemoryMapping getPartialMapping(Map<String, Set<String>> namespacedSourceKeys);
 
 	/**
 	 * Returns a list for all mapping entries.

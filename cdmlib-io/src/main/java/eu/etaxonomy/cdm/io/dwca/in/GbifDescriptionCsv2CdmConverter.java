@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -28,7 +29,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
 						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
 	
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifDescriptionCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
@@ -48,11 +48,16 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		Reference<?> sourceReference = null;
 		String sourceReferecenDetail = null;
 		
-		Taxon taxon = getTaxon(csv);
+		String id = getSourceId(item);
+		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
+		}else{
+			String message = "Taxon is null";
+			fireWarningEvent(message, item, 12);
 		}
+		
 		String message = "Not yet implemented"; 
 		fireWarningEvent(message, item, 15);
 		return new ListReader<MappedCdmBase>(resultList);
@@ -64,18 +69,19 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		String id = item.get(CORE_ID);
 		return id;
 	}
-	
-	private Taxon getTaxon(Map<String, String> csv) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	
 //********************** PARTITIONABLE **************************************/
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result) {
-		logger.warn("Not yet implemented");	
+	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+		String value;
+		String key;
+		if ( hasValue(value = item.get(CORE_ID))){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
 	}
 	
 //******************* TO STRING ******************************************/

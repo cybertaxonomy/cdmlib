@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -47,7 +48,8 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		Reference<?> sourceReference = null;
 		String sourceReferecenDetail = null;
 		
-		Taxon taxon = getTaxon(csv);
+		String id = csv.get(CORE_ID);
+		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
@@ -55,6 +57,8 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 			String message = "Taxon is null";
 			fireWarningEvent(message, item, 12);
 		}
+		
+		
 		String message = "Not yet implemented";
 		fireWarningEvent(message, item, 12);
 		return new ListReader<MappedCdmBase>(resultList);
@@ -67,20 +71,18 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		String id = item.get(CORE_ID);
 		return id;
 	}
-	
-	private Taxon getTaxon(Map<String, String> csv) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 
 //**************************** PARTITIONABLE ************************************************
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result) {
-		// TODO Auto-generated method stub
-		
+	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+		String value;
+		String key;
+		if ( hasValue(value = item.get(CORE_ID))){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
 	}
 	
 //************************ STRING ************************************************/

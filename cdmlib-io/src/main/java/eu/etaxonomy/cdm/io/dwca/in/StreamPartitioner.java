@@ -10,67 +10,86 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 
 /**
  * @author a.mueller
  *
  */
-public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<IReader<ITEM>>{
+public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<MappedCdmBase>{
 	private static final Logger logger = Logger.getLogger(StreamPartitioner.class);
 	
 	private int partitionSize;
-	private LookAheadStream<ITEM> stream;
-	private IConverter<ITEM, IConverterOutput, Object> converter;
+	private LookAheadStream<ITEM> inStream;
+	private IPartitionableConverter converter;
+	private DwcaImportState state;
+	private ConcatenatingReader<MappedCdmBase> outStream = new ConcatenatingReader<MappedCdmBase>();
+		
 	
-	public StreamPartitioner(INamespaceReader<ITEM> reader, IConverter converter, Integer size){
-		 this.stream = new LookAheadStream<ITEM>(reader);
+	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, DwcaImportState state, Integer size){
+		 this.inStream = new LookAheadStream<ITEM>(input);
 		 this.converter = converter;
 		 this.partitionSize = size;
+		 this.state = state;
 	}
 	
-	private List<ITEM> readPartition(){
-		List<ITEM> partitionItems = new ArrayList<ITEM>();
-		while ( stream.hasNextLookAhead(partitionSize)){
-			ITEM next = stream.readLookAhead(partitionSize);
-			partitionItems.add(next);
-		}
-		return partitionItems;
-	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.dwca.in.IReader#hasNext()
+	 */
 	public boolean hasNext() {
-		return stream.hasNext();
+		if (this.outStream.hasNext()){
+			return true;
+		}else{
+			return inStream.hasNext();  //TODO what, if converter returns no ouput for inStream.hasNext() ??
+		}
+	}
+	
+	@Override
+	public MappedCdmBase read() {
+		if (! this.outStream.hasNext()){
+			handleNextPartition();
+		}
+		return outStream.read();
+	}
+	
+	private void handleNextPartition(){
+
+		List<ITEM> lookaheadArray = new ArrayList<ITEM>();
+		while (this.inStream.hasNextLookAhead(partitionSize)){
+			lookaheadArray.add(this.inStream.readLookAhead());
+		}
+		
+		IReader<ITEM> lookaheadStream = new ListReader<ITEM>(lookaheadArray);
+		
+		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
+		IImportMapping mapping = state.getMapping();
+		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
+		state.loadRelatedObjects(partialMapping);
+		
+		
+		while (inStream.isLookingAhead() && inStream.hasNext()){
+			IReader<MappedCdmBase> resultReader = converter.map(inStream.read());
+			outStream.add(resultReader);
+		}
+			
+		return;
+
 	}
 
-	@Override
-	public IReader<ITEM> read() {
-		List<ITEM> partitionItems = readPartition();
-		for (ITEM partitionItem : partitionItems){
-			IReader<MappedCdmBase> newItem = converter.map(partitionItem);
-		}
-		
-		while (stream.readLookAhead(partitionSize) != null){
-			//TODO
-			//should this method return a reader of OUTPUT items instead of a List of input items??
-			logger.warn("Unclear what todo here");
-		}
-		
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public TermUri getTerm() {
-		return stream.getTerm();
+		return inStream.getTerm();
 	}
-	
-	
-	
-		
 	
 
 }

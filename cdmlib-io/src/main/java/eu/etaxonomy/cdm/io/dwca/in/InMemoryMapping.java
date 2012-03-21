@@ -97,7 +97,7 @@ public class InMemoryMapping implements IImportMapping {
 	}
 
 	@Override
-	public IImportMapping getPartialMapping( Map<String, Set<String>> namespacedSourceKeys) {
+	public InMemoryMapping getPartialMapping( Map<String, Set<String>> namespacedSourceKeys) {
 		InMemoryMapping partialMapping = new InMemoryMapping();
 		for (Entry<String,Set<String>> entry  : namespacedSourceKeys.entrySet()){
 			String namespace = entry.getKey();

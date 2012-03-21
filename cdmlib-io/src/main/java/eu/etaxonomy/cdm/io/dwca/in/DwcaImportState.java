@@ -79,7 +79,9 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 			Map<String, IdentifiableEntity> namespaceMap = this.partitionStore.get(namespace);
 			if (namespaceMap != null){
 				IdentifiableEntity cdmBase = namespaceMap.get(sourceKey);
-				if (cdmBase.isInstanceOf(destinationClass)){
+				if (cdmBase == null){
+					logger.warn("CdmBase is null");
+				}else if (cdmBase.isInstanceOf(destinationClass)){
 					CLASS typedCdmBase = CdmBase.deproxy(cdmBase, destinationClass);
 					result.add(typedCdmBase);
 				}
@@ -105,7 +107,7 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 	
 	
 	public  void loadRelatedObjects (IImportMapping mapping){
-		 Map<String, Map<String, IdentifiableEntity>> result = new HashMap<String, Map<String,IdentifiableEntity>>();
+		Map<String, Map<String, IdentifiableEntity>> result = new HashMap<String, Map<String,IdentifiableEntity>>();
 		
 		List<MappingEntry<String, String, Class, Integer>> mappingEntryList = mapping.getEntryList();
 		

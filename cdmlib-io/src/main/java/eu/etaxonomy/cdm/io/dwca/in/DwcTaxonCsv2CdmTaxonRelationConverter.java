@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -56,7 +56,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		String sourceReferecenDetail = null;
 		
 		String id = csvRecord.get(ID);
-		TaxonBase<?> taxonBase = getTaxonBase(id, item, null);
+		TaxonBase<?> taxonBase = getTaxonBase(id, item, null, state);
 		if (taxonBase == null){
 			String warning = "Taxon not available for id %s.";
 			warning = String.format(warning, id);
@@ -170,12 +170,16 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 			if (taxonBase.isInstanceOf(Taxon.class)){
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				String accId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
-				Taxon parentTaxon = getTaxonBase(accId, item, Taxon.class);
+				Taxon parentTaxon = getTaxonBase(accId, item, Taxon.class,state);
 				if (parentTaxon == null){
 						fireWarningEvent("NON-ID parent Name Usage not yet implemented or parent name usage id not available", item, 4);
 				}else{
 					Classification classification = getClassification(item);
 					Reference<?> citation = null;
+					if (classification == null){
+						String warning = "Classification not found. Can't create parent-child relationship";
+						fireWarningEvent(warning, item, 12);
+					}
 					classification.addParentChild(parentTaxon, taxon, citation, null);
 					resultList.add(new MappedCdmBase(classification));
 				}
@@ -216,7 +220,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 			}
 			if (taxonBase.isInstanceOf(Synonym.class)){
 				Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-				Taxon accTaxon = getTaxonBase(accId, item, Taxon.class);
+				Taxon accTaxon = getTaxonBase(accId, item, Taxon.class, state);
 				if (accTaxon == null){
 						fireWarningEvent("NON-ID accepted Name Usage not yet implemented or taxon for name usage id not available", item, 4);
 				}else{
@@ -233,34 +237,53 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
-	private <T extends TaxonBase> T getTaxonBase(String id, CsvStreamItem item, Class<T> clazz) {
-		if (clazz == null){
-			clazz = (Class)TaxonBase.class;
-		}
-		List<T> taxonList = state.get(TermUri.DWC_TAXON.toString(), id, clazz);
-		if (taxonList.size() > 1){
-			String message = "Undefined taxon mapping for id %s.";
-			message = String.format(message, id);
-			fireWarningEvent(message, item, 8);
-			logger.warn(message);  //TODO remove when events are handled correctly
-			return null;
-		}else if (taxonList.isEmpty()){
-			return null;
-		}else{
-			return taxonList.get(0);
-		}
-	}
-
 
 //**************************** PARTITIONABLE ************************************************
 
-
-
-
+	@Override
 	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap){
-		//do nothing, their are no foreign keys yet to handle 
+		String value;
+		String key;
+		if ( hasValue(value = item.get(ID))){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		if ( hasValue(value = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID.toString()))){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		if ( hasValue(value = item.get(key = TermUri.DWC_PARENT_NAME_USAGE_ID.toString())) ){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO_ID.toString()))){
+			//TODO
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		boolean hasDefinedClassification = false;
+		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+			hasDefinedClassification = true;
+		}
+		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+			hasDefinedClassification = true;
+		}
+		if (! hasDefinedClassification){
+			Set<String> keySet = getKeySet(TermUri.DWC_DATASET_ID.toString(), fkMap);
+			value = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+			keySet.add(value);
+		}
+		
+		//TODO cont.
 	}
-	
+
 //************************************* TO STRING ********************************************
 	
 	@Override

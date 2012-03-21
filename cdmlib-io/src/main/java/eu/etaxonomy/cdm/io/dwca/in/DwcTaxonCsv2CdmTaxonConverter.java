@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -164,6 +163,10 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		//if not exists, create new
 		if (! classificationExists){
 			String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
+			if (classificationName.equals(NO_DATASET)){
+				classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
+			}
+			
 			String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
 			Classification classification = Classification.NewInstance(classificationName);
 			//source
@@ -172,6 +175,9 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 			resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_ID, datasetId, classification));
 			resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_NAME, datasetName, classification));
 			resultList.add(new MappedCdmBase(source));
+			//TODO this is not so nice but currently necessary as classifications are requested in the same partition
+			state.putMapping(TermUri.DWC_DATASET_ID.toString(), classificationId, classification);
+			state.putMapping(TermUri.DWC_DATASET_NAME.toString(), classificationName, classification);
 		}
 		
 		//remove to later check if all attributes were used

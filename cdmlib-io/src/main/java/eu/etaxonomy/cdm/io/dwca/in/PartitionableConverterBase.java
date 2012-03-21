@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,13 +23,14 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
  * @date 23.11.2011
  *
  */
-public abstract class PartitionableConverterBase<STATE extends IoStateBase> 
+public abstract class PartitionableConverterBase<STATE extends DwcaImportState> 
 		/*implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> */ {
 	
 	private static final Logger logger = Logger.getLogger(PartitionableConverterBase.class);
@@ -107,4 +110,38 @@ public abstract class PartitionableConverterBase<STATE extends IoStateBase>
 
 	protected abstract void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result);
 
+	
+	protected boolean hasValue(String string) {
+		return StringUtils.isNotBlank(string);
+	}
+	
+
+	protected Set<String> getKeySet(String key, Map<String, Set<String>> fkMap) {
+		Set<String> keySet = fkMap.get(key);
+		if (keySet == null){
+			keySet = new HashSet<String>();
+			fkMap.put(key, keySet);
+		}
+		return keySet;
+	}
+	
+
+	protected <T extends TaxonBase> T getTaxonBase(String id, CsvStreamItem item, Class<T> clazz, STATE state) {
+		if (clazz == null){
+			clazz = (Class)TaxonBase.class;
+		}
+		List<T> taxonList = state.get(TermUri.DWC_TAXON.toString(), id, clazz);
+		if (taxonList.size() > 1){
+			String message = "Undefined taxon mapping for id %s.";
+			message = String.format(message, id);
+			fireWarningEvent(message, item, 8);
+			logger.warn(message);  //TODO remove when events are handled correctly
+			return null;
+		}else if (taxonList.isEmpty()){
+			return null;
+		}else{
+			return taxonList.get(0);
+		}
+	}
+	
 }
