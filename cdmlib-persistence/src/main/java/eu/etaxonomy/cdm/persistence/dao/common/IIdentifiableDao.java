@@ -108,6 +108,20 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 */
 	public List<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
+	
+
+	/**
+	 * TODO
+	 * @param clazz
+	 * @param queryString
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param orderHints
+	 * @param matchMode
+	 * @return
+	 */
+	public List<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
+
 	 /**
 	 * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
 	 * 
@@ -147,5 +161,15 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @return a count of instances of type T matching the queryString
 	 */
 	public int countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+
+	/**
+	 * Return a count of distinct titleCache Strings for a given {@link IdentifiableEntity}, optionally filtered by class, optionally with a particular MatchMode
+	 * 
+	 * @param clazz filter by class - can be null to include all instances of type T
+	 * @param queryString the query string to filter by
+	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+	 * @return a count of instances of type T matching the queryString
+	 */
+	public abstract Long countTitleCache(Class<? extends T> clazz, String queryString, MatchMode matchMode);
 
 }

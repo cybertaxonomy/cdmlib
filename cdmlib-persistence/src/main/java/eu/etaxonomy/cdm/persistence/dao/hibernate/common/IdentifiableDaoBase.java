@@ -88,7 +88,56 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return results;
 	}
 	
+	public List<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+		
+		Query query = prepareFindTitleCache(clazz, queryString, pageSize,
+				pageNumber, matchMode, false);        
+		List<T> result = (List<T>)query.list();
+		return result;
+	}
+	
+	@Override
+	public Long countTitleCache(Class<? extends T> clazz, String queryString, MatchMode matchMode){
+		
+		Query query = prepareFindTitleCache(clazz, queryString, null,
+				null, matchMode, true);        
+		Long result = (Long)query.uniqueResult();
+		return result;
+	}
 
+	/**
+	 * @param clazz filter by class - can be null to include all instances of type T
+	 * @param queryString the query string to filter by
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+	 * @return
+	 */
+	private Query prepareFindTitleCache(Class<? extends T> clazz,
+			String queryString, Integer pageSize, Integer pageNumber,
+			MatchMode matchMode, boolean doCount) {
+		if(clazz == null) {
+			clazz = type;
+    	} 
+		
+		String what = (doCount ? "count(distinct e.titleCache)": "distinct e.titleCache");
+		
+		if(matchMode != null){
+			queryString	= matchMode.queryStringFrom(queryString);		
+		}
+		String hql = "select " + what + " from  " + clazz.getName() + " e where e.titleCache like '" + queryString + "'"; 
+		
+		Query query = getSession().createQuery(hql);
+		
+        if(pageSize != null && !doCount) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            }
+        }
+		return query;
+	}
+	
 	
 	public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
@@ -375,6 +424,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		Integer result = (Integer)crit.setProjection(Projections.rowCount()).uniqueResult();
 		return result;
 	}
+
 
 	
 

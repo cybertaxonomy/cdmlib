@@ -15,6 +15,7 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -226,4 +227,17 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @return the number of merges performed during deduplication
      */
     public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy);
+    
+
+    /**
+     * TODO
+     * @param clazz
+     * @param queryString
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param matchMode
+     * @return
+     */
+    public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode);
 }
