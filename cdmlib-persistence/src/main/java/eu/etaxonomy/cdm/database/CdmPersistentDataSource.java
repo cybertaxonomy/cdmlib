@@ -116,28 +116,20 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	/**
 	 * Returns the default CdmDataSource
 	 * @return the default CdmDataSource
+	 * @throws DataSourceNotFoundException 
 	 */
-	public final static CdmPersistentDataSource NewDefaultInstance(){
-		try {
-			return NewInstance("default");
-		} catch (DataSourceNotFoundException e) {
-			logger.error("Default datasource does not exist in config file");
-			return null;
-		}
+	public final static CdmPersistentDataSource NewDefaultInstance() throws DataSourceNotFoundException {
+		return NewInstance("default");
 	}
 	
 	
 	/**
 	 * Returns the default CdmDataSource
 	 * @return the default CdmDataSource
+	 * @throws DataSourceNotFoundException 
 	 */
-	public final static CdmPersistentDataSource NewLocalHsqlInstance(){
-		try {
-			return NewInstance("localDefaultHsql");
-		} catch (DataSourceNotFoundException e) {
-			logger.error("Local datasource does not exist in config file");
-			return null;
-		}
+	public final static CdmPersistentDataSource NewLocalHsqlInstance() throws DataSourceNotFoundException{
+		return NewInstance("localDefaultHsql");
 	}
 	
 	/**
@@ -145,8 +137,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param strDataSource
 	 * @return
 	 */
-	public final static CdmPersistentDataSource NewInstance(String dataSourceName) 
-				throws DataSourceNotFoundException{
+	public final static CdmPersistentDataSource NewInstance(String dataSourceName) throws DataSourceNotFoundException{
 		if (exists(dataSourceName)){
 			return new CdmPersistentDataSource(dataSourceName);
 		}else{
