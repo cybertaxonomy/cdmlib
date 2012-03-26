@@ -1,0 +1,72 @@
+<!DOCTYPE html SYSTEM "http://www.w3.org/tr/xhtml1/Dtd/xhtml1-transitional.dtd">
+<html>
+    <head>
+        
+        <title>VIBRANT names search</title>
+        <link type="text/css" rel="stylesheet" media="all" href="vibrant.css" />
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+        <script type="text/javascript">
+
+
+$(document).ready(function(){
+
+if( $('#query').val().contains('*')){
+    $('#matchModeId').val("LIKE");
+}
+if( $('#query').val().indexOf('*') == -1){
+    $('#matchModeId').val("EXACT");
+}
+        </script>
+        
+    </head>
+    
+    <body>
+        <a href="/vibrant_names.html" title="Home"><img src="acquia_prosper_logo.png" alt="Home" /></a>
+            
+        <!--a href="/vibrant_names.html" title="Home"><img src="acquia_prosper_logo.png" alt="Home" /></a-->
+        <br></br>
+        <table cellpadding="1" width="100%">
+            <tr>
+                <td width="5%"></td>
+
+                <td valign="top">
+                    <h2>ViBRANT Common Data Model names search</h2>
+                    <br></br>
+                    <p> Fill in the empty field in order to query the database for a specific
+                        name.</p>
+                    <p>Search for a botanical name like "Lapsana*". Or for an exact match type the full scientific name e.g. "Lapsana adenophora Boiss.":</p>
+                    <!--form name="form1" method="get" action="http://localhost:8080/name/findTitleCache?" onsubmit="return OnSubmitForm();"-->
+                    <form id="nameFormId" method="get" action="http://localhost:8080/name/findTitleCache?">
+                        <!--form name="form1" method="get" onsubmit="return OnSubmitForm();"-->
+                        <!--form name="form1" method="post" action="javascript:alert('success!');"-->
+                        <!-- pageSize=25&pageNumber=3&doTaxa=1&doSynonyms=1&doMisappliedNames=1&doTaxaByCommonNames=0&-->
+                        <table width="28%" align="left" cellpadding="4" cellspacing="3"
+                            bgcolor="#F5F5F5" style="border-collapse: collapse">
+                            <tr>
+                                <td width="23%"><strong>Name:</strong></td>
+                                <td width="77%">
+                                    <input name="query" type="text" id="query" size="50"></input>
+                                    <input type="hidden" name="pageSize" id="pageSizeId" value="25"></input>
+                                    <input type="hidden" name="pageNumber" value="0"></input>
+                                    <input type="hidden" name="matchMode" id="matchModeId" value="LIKE"></input><!-- TODO Depending on what -->
+                                    <input type="hidden" name="doTaxa" value="1"></input> 
+                                    <input type="hidden" name="doSynonyms" value="1"></input> 
+                                    <input type="hidden" name="doMisappliedNames" value="1"></input>
+                                    <input type="hidden" name="doTaxaByCommonNames" value="0"></input> 
+                                    <div align="left"></div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td colspan="2"><input type="submit" value="Query"
+                                        style="FONT: 12px Verdana,Geneva,sans-serif;" /></td>
+                            </tr>
+                        </table>
+                    </form>
+                    <span></span>
+                </td>
+            </tr>
+        </table>
+              
+    </body>
+</html>
