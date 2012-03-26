@@ -261,7 +261,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 			if (nomRefFkObj != null){
 				String nomRefFk = String.valueOf(nomRefFkObj);
 				String nomRefDetailFk = String.valueOf(nomRefDetailFkObj);
-				Reference ref = getReferenceFromMaps(biblioRefMap,
+				Reference<?> ref = getReferenceFromMaps(biblioRefMap,
 						nomRefMap, biblioDetailMap, nomRefDetailMap,
 						nomRefDetailFk, nomRefFk);									
 				
