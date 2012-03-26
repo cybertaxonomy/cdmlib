@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -32,10 +33,12 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, DwcaImport>{
 	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
 
+	UUID uuid = UUID.randomUUID();
+	
 	boolean taxaCreated;
 	private Map<String, Map<String, IdentifiableEntity>> partitionStore;
 	
-	private IImportMapping mapping = new InMemoryMapping();
+	private IImportMapping mapping = new DatabaseMapping(uuid.toString());
 	
 	public DwcaImportState(DwcaImportConfigurator config) {
 		super(config);
@@ -55,6 +58,10 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 	 */
 	public void setTaxaCreated(boolean taxaCreated) {
 		this.taxaCreated = taxaCreated;
+	}
+	
+	public void finish(){
+		this.mapping.finish();
 	}
 	
 //********************* MAPPING ACCESS *********************************
@@ -106,7 +113,7 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 	}
 	
 	
-	public  void loadRelatedObjects (IImportMapping mapping){
+	public  void loadRelatedObjects (InMemoryMapping mapping){
 		Map<String, Map<String, IdentifiableEntity>> result = new HashMap<String, Map<String,IdentifiableEntity>>();
 		
 		List<MappingEntry<String, String, Class, Integer>> mappingEntryList = mapping.getEntryList();
@@ -190,6 +197,8 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 			return null;
 		}
 	}
+	
+	
 	
 	
 

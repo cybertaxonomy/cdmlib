@@ -79,7 +79,7 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		
 		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 		IImportMapping mapping = state.getMapping();
-		IImportMapping partialMapping = mapping.getPartialMapping(foreignKeys);
+		InMemoryMapping partialMapping = mapping.getPartialMapping(foreignKeys);
 		state.loadRelatedObjects(partialMapping);
 		
 		

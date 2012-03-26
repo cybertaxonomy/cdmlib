@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
+ * @created 10.03.2012
  *
  */
 public class InMemoryMapping implements IImportMapping {
@@ -96,7 +97,10 @@ public class InMemoryMapping implements IImportMapping {
 	}
 
 
-	@Override
+	/**
+	 * Returns a list for all mapping entries.
+	 * @return
+	 */
 	public List<MappingEntry<String, String, Class, Integer>> getEntryList() {
 		List<MappingEntry<String, String, Class, Integer>> result = new ArrayList<MappingEntry<String,String,Class,Integer>>();
 		for (Entry<String, Map<String, Set<CdmKey>>> namespaceEntry : mapping.entrySet() ){
@@ -109,6 +113,15 @@ public class InMemoryMapping implements IImportMapping {
 			}
 		}
 		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#finalize()
+	 */
+	@Override
+	public void finish() {
+		mapping = null;
 	}
 
 }

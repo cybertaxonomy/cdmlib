@@ -64,17 +64,23 @@ public interface IImportMapping {
 	 */
 	public InMemoryMapping getPartialMapping(Map<String, Set<String>> namespacedSourceKeys);
 
-	/**
-	 * Returns a list for all mapping entries.
-	 * @return
-	 */
-	public List<MappingEntry<String, String, Class, Integer>> getEntryList();
-	
+//	/**
+//	 * Returns a list for all mapping entries.
+//	 * @return
+//	 */
+//	//ONLY for InMemoryMapping, remove here
+//	public List<MappingEntry<String, String, Class, Integer>> getEntryList();
+//	
 	
 	public class CdmKey<CLASS extends IdentifiableEntity>{
 		Class<CLASS> clazz;
 		int id;
 		
+		public CdmKey(Class clazz, int id){
+			this.clazz = clazz;
+			this.id = id;
+		}
+			
 		public CdmKey(IdentifiableEntity<?> object){
 			this.clazz = (Class)object.getClass();
 			this.id = object.getId();
@@ -85,5 +91,7 @@ public interface IImportMapping {
 			return id + "@" + clazz.getSimpleName();
 		}
 	}
+
+	public void finish();
 	
 }
