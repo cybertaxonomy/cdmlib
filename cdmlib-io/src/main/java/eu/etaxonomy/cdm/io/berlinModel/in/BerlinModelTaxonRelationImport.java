@@ -315,11 +315,11 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						//etc.
 					}else{
 						if (taxon2 != null && taxon1 == null){
-							logger.warn("First taxon ("+taxon1Id+") for RelPTaxon " + relPTaxonId + " does not exist in store");
+							logger.warn("First taxon ("+taxon1Id+") for RelPTaxon " + relPTaxonId + " does not exist in store. RelType: " + relQualifierFk);
 						}else if (taxon2 == null && taxon1 != null){
-							logger.warn("Second taxon ("+taxon2Id +") for RelPTaxon " + relPTaxonId + " does not exist in store");
+							logger.warn("Second taxon ("+taxon2Id +") for RelPTaxon " + relPTaxonId + " does not exist in store. RelType: " + relQualifierFk);
 						}else{
-							logger.warn("Both taxa ("+taxon1Id+","+taxon2Id +") for RelPTaxon " + relPTaxonId + " do not exist in store");
+							logger.warn("Both taxa ("+taxon1Id+","+taxon2Id +") for RelPTaxon " + relPTaxonId + " do not exist in store. RelType: " + relQualifierFk);
 						}
 						
 						success = false;
