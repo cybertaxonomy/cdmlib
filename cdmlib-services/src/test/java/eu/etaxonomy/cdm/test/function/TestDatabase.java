@@ -68,7 +68,6 @@ public class TestDatabase {
 	ReferenceFactory refFactory;
 	private void test(){
 		System.out.println("Start TestDatabase");
-		refFactory = ReferenceFactory.newInstance();
 		//testNewDatabaseConnection();
 		//testFacts();
 //		testNewDatasourceClass();
