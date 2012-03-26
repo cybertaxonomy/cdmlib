@@ -1,14 +1,12 @@
 package eu.etaxonomy.cdm.io.api.application;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -20,11 +18,11 @@ public class CdmIoApplicationController extends CdmApplicationController {
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
 	
 	
-	public static CdmIoApplicationController NewInstance() {
+	public static CdmIoApplicationController NewInstance() throws DataSourceNotFoundException {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), defaultDbSchemaValidation, false);
 	}
 	
-	public static CdmIoApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) {
+	public static CdmIoApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException {
 		return CdmIoApplicationController.NewInstance(getDefaultDatasource(), dbSchemaValidation, false);
 	}
 	
