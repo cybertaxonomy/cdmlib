@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -84,8 +85,9 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	
 	/**
 	 * Constructor, opens a spring ApplicationContext by using the default data source
+	 * @throws DataSourceNotFoundException 
 	 */
-	public static CdmApplicationController NewInstance() {
+	public static CdmApplicationController NewInstance() throws DataSourceNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
@@ -95,8 +97,9 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 	/**
 	 * Constructor, opens a spring ApplicationContext by using the default data source
 	 * @param dbSchemaValidation validation type for database schema
+	 * @throws DataSourceNotFoundException 
 	 */
-	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) {
+	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = getDefaultDatasource();
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
@@ -143,8 +146,9 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
 	/**
 	 * @return
+	 * @throws DataSourceNotFoundException 
 	 */
-	protected static CdmPersistentDataSource getDefaultDatasource() {
+	protected static CdmPersistentDataSource getDefaultDatasource() throws DataSourceNotFoundException {
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		return dataSource;
 	}

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -61,7 +62,7 @@ public class Datasource {
 		appCtr.close();
 	}
 	
-	private void testDatabaseChange(){
+	private void testDatabaseChange() throws DataSourceNotFoundException{
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance();
 	
@@ -165,7 +166,7 @@ public class Datasource {
 
 	}
 	
-	private void testLocalHsql(){
+	private void testLocalHsql() throws DataSourceNotFoundException{
 
 		CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);

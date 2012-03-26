@@ -77,7 +77,7 @@ public class TestDatabase {
 		System.out.println("\nEnd TestDatabase");
 	}
 
-	public void testNewDatabaseConnection(){
+	public void testNewDatabaseConnection() throws DataSourceNotFoundException{
 
 		Column coL;
 		boolean omitTermLoading = false;
