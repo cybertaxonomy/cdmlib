@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping.CdmKey;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
@@ -30,21 +29,6 @@ public class InMemoryMapping implements IImportMapping {
 	 * a key in the source that is unique within the given namespace, the 
 	 */
 	private Map<String, Map<String, Set<CdmKey>>> mapping = new HashMap<String, Map<String,Set<CdmKey>>>();
-	
-	public class CdmKey<CLASS extends IdentifiableEntity>{
-		Class<CLASS> clazz;
-		int id;
-		
-		private CdmKey(IdentifiableEntity<?> object){
-			this.clazz = (Class)object.getClass();
-			this.id = object.getId();
-		}
-		
-		@Override
-		public String toString(){
-			return id + "@" + clazz.getSimpleName();
-		}
-	}
 	
 	@Override
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity destinationObject){

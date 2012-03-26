@@ -9,8 +9,6 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -44,13 +42,18 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			
   			if (state.getConfig().isUsePartitions()){
   				IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
-  				StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, partitionConverter, state, 1000);//   (csvStream, streamConverter,state 1000);
+  				int partitionSize = state.getConfig().getDefaultPartitionSize();
+				StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
 	  			
+				int i = 1;
 	  			while (partitionStream.hasNext()){
+	  				//FIXME more generic handling of transactions
 	  				TransactionStatus tx = startTransaction();
 	  				
+	  				IReader<MappedCdmBase> partStream = partitionStream.read();
+	  				logger.warn("Handel " + i + ". partition");
 	  				String location = "Location: partition stream (TODO)";
-	  				handleResults(state, partitionStream, location);
+	  				handleResults(state, partStream, location);
 	  				commitTransaction(tx);
 	  			}
 			}else {
@@ -176,7 +179,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 				fireWarningEvent(e.getMessage(), location, 12);
 			}
 			
-			System.out.println(cdmBase.toString());
+//			System.out.println(cdmBase.toString());
 			//end preliminary
 			
 			//TODO

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping.CdmKey;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
@@ -72,5 +71,19 @@ public interface IImportMapping {
 	public List<MappingEntry<String, String, Class, Integer>> getEntryList();
 	
 	
+	public class CdmKey<CLASS extends IdentifiableEntity>{
+		Class<CLASS> clazz;
+		int id;
+		
+		public CdmKey(IdentifiableEntity<?> object){
+			this.clazz = (Class)object.getClass();
+			this.id = object.getId();
+		}
+		
+		@Override
+		public String toString(){
+			return id + "@" + clazz.getSimpleName();
+		}
+	}
 	
 }

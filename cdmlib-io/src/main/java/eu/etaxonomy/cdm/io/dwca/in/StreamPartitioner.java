@@ -16,32 +16,35 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 
 /**
  * @author a.mueller
  *
  */
-public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<MappedCdmBase>{
+public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<IReader<MappedCdmBase>>{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StreamPartitioner.class);
 	
 	private int partitionSize;
 	private LookAheadStream<ITEM> inStream;
 	private IPartitionableConverter converter;
 	private DwcaImportState state;
-	private ConcatenatingReader<MappedCdmBase> outStream = new ConcatenatingReader<MappedCdmBase>();
-		
+	private ConcatenatingReader<MappedCdmBase> outStream;
 	
 	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, DwcaImportState state, Integer size){
 		 this.inStream = new LookAheadStream<ITEM>(input);
 		 this.converter = converter;
 		 this.partitionSize = size;
 		 this.state = state;
+		 initNewOutStream();
 	}
 	
 
+	private void initNewOutStream(){
+		outStream = new ConcatenatingReader<MappedCdmBase>();
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.dwca.in.IReader#hasNext()
 	 */
@@ -50,15 +53,19 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 			return true;
 		}else{
 			return inStream.hasNext();  //TODO what, if converter returns no ouput for inStream.hasNext() ??
+			//but be aware that requesting the next object from the next partition crosses the transactional borders 
 		}
 	}
 	
 	@Override
-	public MappedCdmBase read() {
-		if (! this.outStream.hasNext()){
-			handleNextPartition();
-		}
-		return outStream.read();
+	public IReader<MappedCdmBase> read() {
+		logger.debug("Start partitioner read");
+		handleNextPartition();
+		IReader<MappedCdmBase> result = this.outStream;
+		
+		initNewOutStream();
+		logger.debug("End partitioner read");
+		return result;
 	}
 	
 	private void handleNextPartition(){

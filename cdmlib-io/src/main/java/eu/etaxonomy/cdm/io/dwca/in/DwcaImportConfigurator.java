@@ -30,6 +30,7 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
 	private boolean usePartitions = true;
+	private int defaultPartitionSize = 1000;
 	
 //	//new
 //	private boolean doSpecimen = true;  //reads the specimen worksheet
@@ -112,6 +113,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public void setUsePartitions(boolean usePartitions) {
 		this.usePartitions = usePartitions;
+	}
+
+	public void setDefaultPartitionSize(int defaultPartitionSize) {
+		this.defaultPartitionSize = defaultPartitionSize;
+	}
+
+	public int getDefaultPartitionSize() {
+		return defaultPartitionSize;
 	}
 	
 	
