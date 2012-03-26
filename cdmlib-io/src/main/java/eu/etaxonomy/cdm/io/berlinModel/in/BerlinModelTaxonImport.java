@@ -15,6 +15,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PR
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SYNONYM;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_UNRESOLVED;
 
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -277,6 +278,12 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 					
 					//Notes
 					doIdCreatedUpdatedNotes(state, taxonBase, rs, taxonId, NAMESPACE);
+					
+					//external url
+					if (config.getMakeUrlForTaxon() != null){
+						Method urlMethod = config.getMakeUrlForTaxon();
+						urlMethod.invoke(null, taxonBase, rs);
+					}
 					
 					partitioner.startDoSave();
 					taxaToSave.add(taxonBase);
