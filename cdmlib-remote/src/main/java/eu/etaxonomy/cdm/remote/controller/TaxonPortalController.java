@@ -705,8 +705,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 //
 //            markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
 //        }
-        if(markerTypeUUIDs != null){
+        if(markerTypeUUIDs != null && !markerTypeUUIDs.isEmpty()){
             markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
+        } else if(markerTypeUUIDs.isEmpty()){
+            markerTypeTerms = new ArrayList<DefinedTermBase>();
         }
         Set<MarkerType> markerTypes = new HashSet<MarkerType>();
         List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>();
