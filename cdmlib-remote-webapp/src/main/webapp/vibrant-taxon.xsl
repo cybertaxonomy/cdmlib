@@ -5,11 +5,6 @@
     <xsl:variable name="url_portal"> http://160.45.63.151:8080/cichorieae/ </xsl:variable>
     <xsl:variable name="url_webservice">http://localhost:8080/taxon/findTaxaAndNames</xsl:variable>
 
-    <!--xsl:call-template name="doMoreStuff">
-            <xsl:with-param name="param1" select="document($url)/foo"/>
-        </xsl:call-template-->
-
-
     <xsl:template match="/DefaultPagerImpl">
         <HTML>
             <HEAD>
@@ -33,10 +28,6 @@
 
                             <TABLE border="0" frame="1">
                                 <xsl:for-each select="records/e">
-
-                                    <!--xsl:variable name="url">
-                                http://160.45.63.151:8080/cichorieae/name/<xsl:value-of select="uuid"/>
-                            </xsl:variable-->
                                     <xsl:variable name="url">
                                         <xsl:value-of select="$url_portal"/>name/<xsl:value-of
                                             select="uuid"/>
@@ -71,7 +62,6 @@
             <xsl:value-of select="."/>
         </a>
     </xsl:template>
-
 
 
     <!--xsl:template match=".">
