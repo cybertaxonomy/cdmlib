@@ -230,7 +230,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
     
 
     /**
-     * TODO
+     * Return a Pager of objects with distinct titleCache strings filtered by the given query string, optionally filtered by class, optionally with a particular MatchMode
      * @param clazz
      * @param queryString
      * @param pageSize

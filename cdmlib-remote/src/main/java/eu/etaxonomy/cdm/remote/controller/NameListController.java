@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 @Controller
 @RequestMapping(value = {"/name"})
-public class NameListController extends BaseListController<TaxonNameBase, INameService> {
+public class NameListController extends IdentifiableListController<TaxonNameBase, INameService> {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)

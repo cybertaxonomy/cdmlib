@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  */
 @Controller
 @RequestMapping(value = {"/featuretrees"})
-public class FeatureTreeListController extends BaseListController<FeatureTree, IFeatureTreeService> {
+public class FeatureTreeListController extends IdentifiableListController<FeatureTree, IFeatureTreeService> {
 	private static final Logger logger = Logger
 			.getLogger(FeatureTreeListController.class);
 

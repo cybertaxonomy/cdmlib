@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 @Controller
 @RequestMapping(value = {"/occurrence"})
-public class OccurrenceListController extends BaseListController<SpecimenOrObservationBase, IOccurrenceService> {
+public class OccurrenceListController extends IdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)

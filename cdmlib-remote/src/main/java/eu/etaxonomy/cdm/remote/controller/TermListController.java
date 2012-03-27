@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
  */
 @Controller
 @RequestMapping(value = {"/term"})
-public class TermListController extends BaseListController<DefinedTermBase, ITermService> {
+public class TermListController extends IdentifiableListController<DefinedTermBase, ITermService> {
 
 
 	/* (non-Javadoc)
