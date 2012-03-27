@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -78,6 +79,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.TypeList;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -325,6 +327,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
+        
     }
 
 
@@ -678,24 +681,57 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      * @throws IOException
      */
     @RequestMapping(
-            value = {"descriptions"},
+            value = {"descriptions/{markerTypes}"},
             method = RequestMethod.GET)
     public List<TaxonDescription> doGetDescriptions(
             @PathVariable("uuid") UUID uuid,
+            //@RequestParam(value = "markertypes", required = false) Set<UUID> markerTypeUUIDs,
+            @PathVariable("markerTypes") String markerTypeUUIDs,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
         if(request != null){
             logger.info("doGetDescriptions()" + request.getServletPath());
         }
-        Set<MarkerType> markerTypes = new HashSet<MarkerType>(markerTypeService.listByTermClass(MarkerType.class, null, null, null, null));
+        List<DefinedTermBase> markerTypeTerms = new ArrayList<DefinedTermBase>();
+        Set<UUID> sMarkerTypeUUIDs = new HashSet<UUID>();
+        //if(markerTypeUUIDs !=null) {
+        if(!markerTypeUUIDs.equals("test") && !markerTypeUUIDs.equals("$1")  ) {
+        	String[] strMarkerTypeUUIDs = markerTypeUUIDs.split(",");
+        	for (String uuidMarkerType : strMarkerTypeUUIDs) {
+        		sMarkerTypeUUIDs.add(UUID.fromString(uuidMarkerType));
+			}
+        	
+        	markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
+        }
+        Set<MarkerType> markerTypes = new HashSet<MarkerType>();
+        List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>();
+        for (DefinedTermBase markerTypeTerm : markerTypeTerms) {
+			markerTypes.add((MarkerType)markerTypeTerm);
+		}
+        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        if (markerTypes == null) {
+        	
+        	Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+        	descriptions = p.getRecords();
+        }
+        
+        else if (sMarkerTypeUUIDs.isEmpty()) {
+        	descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+        	
+        }
+        else {
+        	descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+        }
+        /*Set<MarkerType> sMarkerTypes = new HashSet<MarkerType>(markerTypeService.listByTermClass(MarkerType.class, null, null, null, null));
+        //Set<MarkerType> markerTypesToUse = new HashSet<MarkerType>(markerTypeService.);
         //MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
         MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
         
         markerTypes.remove(useMarkerType);
-        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        
         //List<TaxonDescription> descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
         Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
-        List<TaxonDescription> descriptions = p.getRecords();
+        //List<TaxonDescription> descriptions = p.getRecords();
         Iterator<TaxonDescription> itr = descriptions.iterator();
         //for(TaxonDescription taxonDesc: descriptions) {
         while (itr.hasNext()) {
@@ -714,8 +750,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         			}
         		}
         	}
-        }
-      return p.getRecords();
+        }*/
+      //return p.getRecords();
+        return descriptions;
     }
     
     @RequestMapping(value = "useDescriptions", method = RequestMethod.GET)
@@ -753,6 +790,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public ModelAndView doGetDescriptionElementsByType(
             @PathVariable("uuid") UUID uuid,
             @PathVariable("classSimpleName") String classSimpleName,
+            //@RequestParam(value = "markerTypes", required = false, defaultValue = "false") Set<UUID> markerTypes,
+            @PathVariable(value = "markerTypes") String markerTypes,
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -766,7 +805,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         List<String> initStrategy = doCount ? null : DESCRIPTION_ELEMENT_INIT_STRATEGY;
 
-        List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, request, response);
+        List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, markerTypes, request, response);
         try {
             Class type;
             type = Class.forName("eu.etaxonomy.cdm.model.description."

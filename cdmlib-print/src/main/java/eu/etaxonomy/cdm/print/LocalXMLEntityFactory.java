@@ -413,7 +413,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 		Object resultObject = null;
 		try {
 			resultObject = taxonPortalController.doGetDescriptions(uuid, null,
-					null);
+					null, null);
 		} catch (IOException e) {
 			monitor.warning(e.getLocalizedMessage(), e);
 			logger.error(e);
