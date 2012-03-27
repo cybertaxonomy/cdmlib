@@ -42,8 +42,16 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			
   			if (state.getConfig().isUsePartitions()){
   				IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
+  				if (partitionConverter == null){
+  					String warning = "No converter available for %s. Continue with next stream.";
+  					warning = String.format(warning, csvStream.getTerm());
+  					fireWarningEvent (warning, csvStream.read().getLocation(), 12);
+  					continue;
+  				}
+  				
   				int partitionSize = state.getConfig().getDefaultPartitionSize();
-				StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
+				StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, 
+						partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
 	  			
 				int i = 1;
 	  			while (partitionStream.hasNext()){
@@ -199,7 +207,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
 			return new GbifDescriptionCsv2CdmConverter(state);
 		}else{
-			String message = "Now converter available for %s";
+			String message = "No converter available for %s";
 			logger.error(String.format(message, namespace));
 			return null;
 		}

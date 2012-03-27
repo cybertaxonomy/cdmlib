@@ -161,8 +161,8 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		if (archiveEntry == null){
 			return null;
 		}
-		char fieldTerminatedBy = archiveEntry.getFieldsTerminatedBy().charAt(0);
-		char fieldsEnclosedBy = archiveEntry.getFieldsEnclosedBy().charAt(0);
+		char fieldTerminatedBy = archiveEntry.getFieldsTerminatedBy().isEmpty()? CSVReader.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
+		char fieldsEnclosedBy = (archiveEntry.getFieldsEnclosedBy().isEmpty()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
 		boolean ignoreHeader = archiveEntry.getIgnoreHeaderLines();
 		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
 		String encoding = archiveEntry.getEncoding();
@@ -202,7 +202,11 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 
 	private void validateArchive(Archive archive) {
 		if (archive.getCore().getFieldsTerminatedBy().length() > 1){
-			throw new IllegalStateException("CsvReader does not allow field delimiters with more than 1 character");
+			if (archive.getCore().getFieldsTerminatedBy().equals("\\t") ){
+				//TODO handle, TODO also handle other \xxx delimiter
+			}else{
+				throw new IllegalStateException("CsvReader does not allow field delimiters with more than 1 character. ");
+			}
 		}
 		if (archive.getCore().getFieldsEnclosedBy().length() > 1){
 			throw new IllegalStateException("CsvReader does not allow field delimiters with more than 1 character");

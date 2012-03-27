@@ -87,7 +87,7 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 			if (namespaceMap != null){
 				IdentifiableEntity cdmBase = namespaceMap.get(sourceKey);
 				if (cdmBase == null){
-					logger.warn("CdmBase is null");
+					logger.warn("CdmBase does not exist in mapping: " + sourceKey);
 				}else if (cdmBase.isInstanceOf(destinationClass)){
 					CLASS typedCdmBase = CdmBase.deproxy(cdmBase, destinationClass);
 					result.add(typedCdmBase);
