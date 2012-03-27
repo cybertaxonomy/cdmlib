@@ -212,14 +212,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         List<TaxonDescription> results = new ArrayList<TaxonDescription>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+            results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         }
 
         return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
     }
 
     public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        List<TaxonDescription> results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+        List<TaxonDescription> results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         return results;
     }
 
