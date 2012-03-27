@@ -796,7 +796,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             @PathVariable("classSimpleName") String classSimpleName,
             //@RequestParam(value = "markerTypes", required = false, defaultValue = "false") Set<UUID> markerTypes,
-            @PathVariable(value = "markerTypes") String markerTypes,
+//            @PathVariable(value = "markerTypes") String markerTypes,
+            @RequestParam(value = "markerTypes", required = false) UuidList markerTypeUUIDs,
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -810,7 +811,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         List<String> initStrategy = doCount ? null : DESCRIPTION_ELEMENT_INIT_STRATEGY;
 
-        List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, markerTypes, request, response);
+        List<TaxonDescription> taxonDescriptions = doGetDescriptions(uuid, markerTypeUUIDs, request, response);
         try {
             Class type;
             type = Class.forName("eu.etaxonomy.cdm.model.description."
