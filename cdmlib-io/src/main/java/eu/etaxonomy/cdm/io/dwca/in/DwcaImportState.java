@@ -33,12 +33,12 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, DwcaImport>{
 	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
 
-	UUID uuid = UUID.randomUUID();
+	private UUID uuid = UUID.randomUUID();
 	
 	boolean taxaCreated;
 	private Map<String, Map<String, IdentifiableEntity>> partitionStore;
 	
-	private IImportMapping mapping = new DatabaseMapping(uuid.toString());
+	private IImportMapping mapping = getConfig().getMappingType().getMappingInstance(uuid.toString());
 	
 	public DwcaImportState(DwcaImportConfigurator config) {
 		super(config);

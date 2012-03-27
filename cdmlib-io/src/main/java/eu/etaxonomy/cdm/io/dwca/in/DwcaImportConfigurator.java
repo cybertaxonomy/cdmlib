@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.MappingType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -30,31 +31,9 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
 	private boolean usePartitions = true;
-	private int defaultPartitionSize = 1000;
+	private int defaultPartitionSize = 2000;
 	
-//	//new
-//	private boolean doSpecimen = true;  //reads the specimen worksheet
-//	private boolean doAreaLevels = true;  //reads the areaLevels worksheet
-//	private boolean doExtensionTypes = true;  //reads the extensionType worksheet
-	
-	
-//	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry 
-//	//tries to match areas by the abbreviated label
-//	//TODO still needs to be refined as this may hold only for certain vocabularies, levels, ...
-//	//there also maybe more strategies like first label, then abbreviated label, ....
-//	private TermMatchMode areaMatchMode = TermMatchMode.UUID_ONLY;
-//	private PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
-//	
-//	//if true, determinations are imported also as individualAssociations	
-//	private boolean makeIndividualAssociations = true;
-//	private boolean useMaterialsExaminedForIndividualsAssociations = true;
-//	private boolean firstDeterminationIsStoredUnder = false;
-//	private boolean determinationsAreDeterminationEvent = true;
-//	
-//	private boolean preferNameCache = true;
-//	private boolean createTaxonIfNotExists = false;
-////	private boolean includeSynonymsForTaxonMatching = false;
-
+	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
 		
 
 
@@ -121,6 +100,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public int getDefaultPartitionSize() {
 		return defaultPartitionSize;
+	}
+
+	public IImportMapping.MappingType getMappingType() {
+		return mappingType;
+	}
+
+	public void setMappingType(IImportMapping.MappingType mappingType) {
+		this.mappingType = mappingType;
 	}
 	
 	

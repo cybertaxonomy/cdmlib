@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +18,29 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  *
  */
 public interface IImportMapping {
+	
+	
+	public enum MappingType{
+		InMemoryMapping(0),
+		DatabaseMapping(1);
+		
+		private int index; 
+		
+		private MappingType(int index){
+			this.index = index; 
+		}
+		
+		public IImportMapping getMappingInstance(String mappingId){
+			if (this.equals(MappingType.InMemoryMapping)){
+				return new InMemoryMapping();
+			}else if (this.equals(MappingType.DatabaseMapping)){
+				return new DatabaseMapping(mappingId);
+			}else{
+				throw new RuntimeException("Unknown MappingType: " + this.toString());
+			}
+		}
+		
+	}
 	
 	/**
 	 * Put the destination object with for the given namespaced identifier into the mapping.
