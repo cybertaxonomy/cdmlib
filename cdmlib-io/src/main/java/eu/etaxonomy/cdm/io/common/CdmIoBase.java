@@ -169,7 +169,12 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 		return;
 	}
 
-
+	public void rollbackTransaction(TransactionStatus txStatus){
+		PlatformTransactionManager txManager = super.getTransactionManager();
+		txManager.rollback(txStatus);
+		return;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
 	 */
