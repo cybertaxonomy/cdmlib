@@ -44,7 +44,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
-	// key for for case that no dataset information is supplied
+	// key for for case that no dataset information is supplied, TODO use something better
 	public static final String NO_DATASET = "no_dataset_jli773oebhjklw";
 
 	

@@ -58,11 +58,21 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	  				//FIXME more generic handling of transactions
 	  				TransactionStatus tx = startTransaction();
 	  				
-	  				IReader<MappedCdmBase> partStream = partitionStream.read();
-	  				logger.warn("Handel " + i++ + ". partition");
-	  				String location = "Location: partition stream (TODO)";
-	  				handleResults(state, partStream, location);
-	  				commitTransaction(tx);
+	  				try {
+						IReader<MappedCdmBase> partStream = partitionStream.read();
+						logger.warn("Handel " + i++ + ". partition");
+						String location = "Location: partition stream (TODO)";
+						handleResults(state, partStream, location);
+						commitTransaction(tx);
+					} catch (Exception e) {
+						String message = "An exception occurred while handling partition: " + e;
+						StackTraceElement el = e.getStackTrace()[0];
+						String codeLocation = el.getClassName()+ "." + el.getMethodName() + "(" + el.getLineNumber() + ")";
+						message = message + " in: " +  codeLocation;
+						fireWarningEvent(message , csvStream.read().getLocation() , 12);
+						this.rollbackTransaction(tx);
+					}
+	  				
 	  			}
 			}else {
 		  			

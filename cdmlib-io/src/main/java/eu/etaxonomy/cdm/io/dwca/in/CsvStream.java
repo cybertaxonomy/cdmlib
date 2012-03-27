@@ -78,7 +78,7 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 				for (Field field : archiveEntry.getField()){
 					int index = field.getIndex();
 					if (index > next.length -1){
-						throw new RuntimeException("Missing value for archive entry " + field.getTerm());
+						throw new RuntimeException("Missing value for archive entry " + field.getTerm() + " in line " + line);
 					}
 					String value = next[index];
 					String term = field.getTerm();

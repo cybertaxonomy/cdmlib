@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
  *
  */
 public class StreamPartitioner<ITEM extends IConverterInput>  implements INamespaceReader<IReader<MappedCdmBase>>{
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StreamPartitioner.class);
 	
 	private int partitionSize;
