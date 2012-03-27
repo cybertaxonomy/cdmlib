@@ -12,19 +12,19 @@ import java.util.UUID;
 
 public class UUIDListPropertyEditor extends PropertyEditorSupport {
 
-	public void setAsText(String text) {
-		String separator = ",";
-		List<UUID> uuidList = new ArrayList<UUID>();
-		if (text.contains(",")){
-			//set the value for more than one UUID
-			String[] uuidStringList = text.split(separator);
-			for (String element : uuidStringList) {
-				uuidList.add(UUID.fromString(element));
-			}		
-		}else{//set the value of the single UUID
-			uuidList.add(UUID.fromString(text));
-		}
-		setValue(uuidList);
-	}
+    public void setAsText(String text) {
+        String separator = ",";
+        List<UUID> uuidList = new ArrayList<UUID>();
+        if (text.contains(",")){
+            //set the value for more than one UUID
+            String[] uuidStringList = text.split(separator);
+            for (String element : uuidStringList) {
+                    uuidList.add(UUID.fromString(element));
+            }
+        } else if(text.length() > 0){
+            uuidList.add(UUID.fromString(text));
+        }
+        setValue(uuidList);
+    }
 
 }
