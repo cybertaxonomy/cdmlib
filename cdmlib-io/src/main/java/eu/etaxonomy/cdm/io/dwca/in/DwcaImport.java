@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -69,7 +71,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 						StackTraceElement el = e.getStackTrace()[0];
 						String codeLocation = el.getClassName()+ "." + el.getMethodName() + "(" + el.getLineNumber() + ")";
 						message = message + " in: " +  codeLocation;
-						fireWarningEvent(message , csvStream.read().getLocation() , 12);
+						fireWarningEvent(message , String.valueOf(csvStream.getLine()) , 12);
 						this.rollbackTransaction(tx);
 					}
 	  				
@@ -241,8 +243,12 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return this.getTaxonService();
 		}else if (Classification.class.isAssignableFrom(clazz)){
 			return this.getClassificationService();
+		}else if (Reference.class.isAssignableFrom(clazz)){
+			return this.getReferenceService();
+		}else if (TaxonNameBase.class.isAssignableFrom(clazz)){
+			return this.getNameService();
 		}
-		String warning = "Can't map class to cdmService: %s";
+		String warning = "Can't map class to API service: %s";
 		warning = String.format(warning, (clazz == null ? "-" : clazz.getName()));
 		throw new IllegalArgumentException(warning);
 	}

@@ -62,7 +62,7 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 	}
 	
 	private CsvStreamItem readMe(){
-		CsvStreamItem resultItem = new CsvStreamItem(term, null, this);
+		CsvStreamItem resultItem = new CsvStreamItem(term, null, this, line);
 		Map<String, String> resultMap;
 		if (next != null){
 			resultItem = next;
@@ -96,9 +96,8 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 	
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				resultMap = null;
+				//TODO handle as event
+				throw new RuntimeException(e);
 			}
 			resultItem.map = resultMap;
 			if (resultItem.map == null){

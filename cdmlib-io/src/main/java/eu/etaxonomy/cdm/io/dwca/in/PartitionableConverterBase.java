@@ -18,7 +18,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.IoStateBase;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
@@ -108,7 +107,13 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 		return result;
 	}
 
-	protected abstract void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> result);
+	
+	/**
+	 * Fills the the foreign key map with foreign keys required for this item.
+	 * @param next
+	 * @param foreignKeyMap
+	 */
+	protected abstract void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> foreignKeyMap);
 
 	
 	protected boolean hasValue(String string) {

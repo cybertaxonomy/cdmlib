@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -264,6 +263,8 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
+		
+		//classification
 		boolean hasDefinedClassification = false;
 		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
 			Set<String> keySet = getKeySet(key, fkMap);

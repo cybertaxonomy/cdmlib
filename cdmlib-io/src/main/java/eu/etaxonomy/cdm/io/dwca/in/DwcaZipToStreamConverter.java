@@ -59,8 +59,8 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 			TermUri.GBIF_IDENTIFIER,
 			TermUri.GBIF_SPECIES_PROFILE,
 			TermUri.GBIF_REFERENCE,
-			TermUri.GBIF_SPECIES_PROFILE,
 			TermUri.GBIF_DESCRIPTION,
+			TermUri.GBIF_DISTRIBUTION,
 			TermUri.GBIF_IMAGE
 	);
 			

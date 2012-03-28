@@ -32,8 +32,11 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	
 	private boolean usePartitions = true;
 	private int defaultPartitionSize = 2000;
+	private boolean deduplicateNamePublishedIn = true;
 	
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
+	
+	
 		
 
 
@@ -108,6 +111,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public void setMappingType(IImportMapping.MappingType mappingType) {
 		this.mappingType = mappingType;
+	}
+
+	public boolean isDeduplicateNamePublishedIn() {
+		return deduplicateNamePublishedIn;
+	}
+
+	public void setDeduplicateNamePublishedIn(boolean deduplicateNamePublishedIn) {
+		this.deduplicateNamePublishedIn = deduplicateNamePublishedIn;
 	}
 	
 	
