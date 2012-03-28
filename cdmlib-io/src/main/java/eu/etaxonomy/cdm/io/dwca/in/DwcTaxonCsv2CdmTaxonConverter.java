@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -64,6 +65,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	public IReader<MappedCdmBase> map(CsvStreamItem csvTaxonRecord){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
+		//TODO source reference
 		Reference<?> sourceReference = null;
 		String sourceReferenceDetail = null;
 		
@@ -92,7 +94,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		taxonBase.setSec(sec);
 
 		//classification
-		handleDataset(csvTaxonRecord, resultList, sourceReference, sourceReferenceDetail);
+		handleDataset(csvTaxonRecord, taxonBase, resultList, sourceReference, sourceReferenceDetail);
 		
 		//NON core
 	    //term="http://purl.org/dc/terms/identifier"
@@ -175,44 +177,52 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
-	private void handleDataset(CsvStreamItem csvTaxonRecord, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
-		String datasetId = CdmUtils.Nz(csvTaxonRecord.get(TermUri.DWC_DATASET_ID)).trim();
-		String datasetName = CdmUtils.Nz(csvTaxonRecord.get(TermUri.DWC_DATASET_NAME)).trim();
-		if (CdmUtils.areBlank(datasetId, datasetName) ){
-			datasetId = NO_DATASET;
-		}
-		
-		//check id
-		boolean classificationExists = state.exists(TermUri.DWC_DATASET_ID.toString() , datasetId, Classification.class);
-		
-		//check name
-		if (!classificationExists){
-			classificationExists = state.exists(TermUri.DWC_DATASET_NAME.toString() , datasetName, Classification.class);
-		}
-		
-		//if not exists, create new
-		if (! classificationExists){
-			String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
-			if (classificationName.equals(NO_DATASET)){
-				classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
+	private void handleDataset(CsvStreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
+		if (state.getConfig().isDatasetsAsClassifications()){
+			String datasetId = CdmUtils.Nz(item.get(TermUri.DWC_DATASET_ID)).trim();
+			String datasetName = CdmUtils.Nz(item.get(TermUri.DWC_DATASET_NAME)).trim();
+			if (CdmUtils.areBlank(datasetId, datasetName) ){
+				datasetId = NO_DATASET;
 			}
 			
-			String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
-			Classification classification = Classification.NewInstance(classificationName);
-			//source
-			IdentifiableSource source = classification.addSource(classificationId, "Dataset", sourceReference, sourceReferecenDetail);
-			//add to result
-			resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_ID, datasetId, classification));
-			resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_NAME, datasetName, classification));
-			resultList.add(new MappedCdmBase(source));
-			//TODO this is not so nice but currently necessary as classifications are requested in the same partition
-			state.putMapping(TermUri.DWC_DATASET_ID.toString(), classificationId, classification);
-			state.putMapping(TermUri.DWC_DATASET_NAME.toString(), classificationName, classification);
+			//check id
+			boolean classificationExists = state.exists(TermUri.DWC_DATASET_ID.toString() , datasetId, Classification.class);
+			
+			//check name
+			if (!classificationExists){
+				classificationExists = state.exists(TermUri.DWC_DATASET_NAME.toString() , datasetName, Classification.class);
+			}
+			
+			//if not exists, create new
+			if (! classificationExists){
+				String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
+				if (classificationName.equals(NO_DATASET)){
+					classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
+				}
+				
+				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
+				Classification classification = Classification.NewInstance(classificationName);
+				//source
+				IdentifiableSource source = classification.addSource(classificationId, "Dataset", sourceReference, sourceReferecenDetail);
+				//add to result
+				resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_ID, datasetId, classification));
+				resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_NAME, datasetName, classification));
+				resultList.add(new MappedCdmBase(source));
+				//TODO this is not so nice but currently necessary as classifications are requested in the same partition
+				state.putMapping(TermUri.DWC_DATASET_ID.toString(), classificationId, classification);
+				state.putMapping(TermUri.DWC_DATASET_NAME.toString(), classificationName, classification);
+			}
+		}else{
+			//dataset as original source
+			TermUri idTerm = TermUri.DWC_DATASET_ID;
+			TermUri strTerm = TermUri.DWC_DATASET_NAME;
+			Reference<?> citation = getReference(item, resultList, idTerm, strTerm);
+			taxonBase.addSource(null, null, citation, null);
 		}
 		
 		//remove to later check if all attributes were used
-		csvTaxonRecord.remove(TermUri.DWC_DATASET_ID);
-		csvTaxonRecord.remove(TermUri.DWC_DATASET_NAME);
+		item.remove(TermUri.DWC_DATASET_ID);
+		item.remove(TermUri.DWC_DATASET_NAME);
 		
 	}
 
@@ -226,7 +236,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	private Reference<?> getNameAccordingTo(CsvStreamItem item, List<MappedCdmBase> resultList) {
 		TermUri idTerm = TermUri.DWC_NAME_ACCORDING_TO_ID;
 		TermUri strTerm = TermUri.DWC_NAME_ACCORDING_TO;
-		Reference<?> secRef = handleReference(item, resultList, idTerm, strTerm);
+		Reference<?> secRef = getReference(item, resultList, idTerm, strTerm);
 		return secRef;
 		
 	}
@@ -281,15 +291,23 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		//By ID
 		String strScientificNameId = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_ID);
 		if (strScientificNameId != null){
-			String message = "ScientificNameId not yet implemented: '%s'";
-			message = String.format(message, strScientificNameId);
-			fireWarningEvent(message, item, 4);
+			if (state.getConfig().isScientificNameIdAsOriginalSourceId()){
+				if (name != null){
+					Reference<?> sourceReference = null; //FIXME
+					IdentifiableSource source = IdentifiableSource.NewInstance(strScientificNameId, TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference, null);
+					name.addSource(source);
+				}
+			}else{
+				String message = "ScientificNameId not yet implemented: '%s'";
+				message = String.format(message, strScientificNameId);
+				fireWarningEvent(message, item, 4);
+			}
 		}
 		
 		//namePublishedIn
 		TermUri idTerm = TermUri.DWC_NAME_PUBLISHED_IN_ID;
 		TermUri strTerm = TermUri.DWC_NAME_PUBLISHED_IN;
-		Reference<?> nomRef = handleReference(item, resultList, idTerm, strTerm);
+		Reference<?> nomRef = getReference(item, resultList, idTerm, strTerm);
 		
 		if (name != null){
 			if (nomRef != null){
@@ -305,7 +323,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
-	private Reference<?> handleReference(CsvStreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm) {
+	private Reference<?> getReference(CsvStreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm) {
 		
 		Reference result = null;
 		if (exists(idTerm, item) || exists(strTerm, item)){
@@ -469,6 +487,20 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO.toString()))){
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
+		}
+		
+		
+		//dataset
+		if (! state.getConfig().isDatasetsAsClassifications()){
+			//nameAccordingTo
+			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+			}
+			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+			}
 		}
 		
 	}

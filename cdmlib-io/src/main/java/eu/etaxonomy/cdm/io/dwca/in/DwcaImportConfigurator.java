@@ -33,6 +33,8 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private boolean usePartitions = true;
 	private int defaultPartitionSize = 2000;
 	private boolean deduplicateNamePublishedIn = true;
+	private boolean scientificNameIdAsOriginalSourceId = false;
+	private boolean datasetsAsClassifications = true;
 	
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
 	
@@ -119,6 +121,23 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public void setDeduplicateNamePublishedIn(boolean deduplicateNamePublishedIn) {
 		this.deduplicateNamePublishedIn = deduplicateNamePublishedIn;
+	}
+
+	public void setScientificNameIdAsOriginalSourceId(
+			boolean scientificNameIdAsOriginalSourceId) {
+		this.scientificNameIdAsOriginalSourceId = scientificNameIdAsOriginalSourceId;
+	}
+
+	public boolean isScientificNameIdAsOriginalSourceId() {
+		return scientificNameIdAsOriginalSourceId;
+	}
+
+	public void setDatasetsAsClassifications(boolean datasetsAsClassifications) {
+		this.datasetsAsClassifications = datasetsAsClassifications;
+	}
+
+	public boolean isDatasetsAsClassifications() {
+		return datasetsAsClassifications;
 	}
 	
 	
