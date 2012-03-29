@@ -688,77 +688,41 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public List<TaxonDescription> doGetDescriptions(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "markerTypes", required = false) UuidList markerTypeUUIDs,
-//            @PathVariable("markerTypes") String markerTypeUUIDs,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
-        if(request != null){
+    	if(request != null){
             logger.info("doGetDescriptions()" + request.getServletPath());
         }
-        List<DefinedTermBase> markerTypeTerms = new ArrayList<DefinedTermBase>();
-        Set<UUID> sMarkerTypeUUIDs = new HashSet<UUID>();
-        //if(markerTypeUUIDs !=null) {
-//        if(!markerTypeUUIDs.equals("test") && !markerTypeUUIDs.equals("$1")  ) {
-//            String[] strMarkerTypeUUIDs = markerTypeUUIDs.split(",");
-//            for (String uuidMarkerType : strMarkerTypeUUIDs) {
-//                sMarkerTypeUUIDs.add(UUID.fromString(uuidMarkerType));
-//            }
-//
-//            markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
-//        }
+        List<DefinedTermBase> markerTypeTerms = null;
+        Set<UUID> sMarkerTypeUUIDs = null;
+
         if(markerTypeUUIDs != null && !markerTypeUUIDs.isEmpty()){
+        	sMarkerTypeUUIDs = new HashSet<UUID>(markerTypeUUIDs);
             markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
-        } else if(markerTypeUUIDs.isEmpty()){
+        } else if(markerTypeUUIDs != null && markerTypeUUIDs.isEmpty()){
             markerTypeTerms = new ArrayList<DefinedTermBase>();
         }
         Set<MarkerType> markerTypes = new HashSet<MarkerType>();
         List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>();
-        for (DefinedTermBase markerTypeTerm : markerTypeTerms) {
-            markerTypes.add((MarkerType)markerTypeTerm);
+        if (markerTypeTerms != null) {
+	        for (DefinedTermBase markerTypeTerm : markerTypeTerms) {
+	            markerTypes.add((MarkerType)markerTypeTerm);
+	        }
         }
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        if (markerTypes == null) {
+        if (markerTypeTerms == null) {
 
             Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
             descriptions = p.getRecords();
         }
 
-        else if (sMarkerTypeUUIDs.isEmpty()) {
+        else if (markerTypeTerms != null && markerTypeTerms.isEmpty()) {
             descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
 
         }
         else {
             descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
         }
-        /*Set<MarkerType> sMarkerTypes = new HashSet<MarkerType>(markerTypeService.listByTermClass(MarkerType.class, null, null, null, null));
-        //Set<MarkerType> markerTypesToUse = new HashSet<MarkerType>(markerTypeService.);
-        //MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
-        MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
-
-        markerTypes.remove(useMarkerType);
-
-        //List<TaxonDescription> descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
-        Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
-        //List<TaxonDescription> descriptions = p.getRecords();
-        Iterator<TaxonDescription> itr = descriptions.iterator();
-        //for(TaxonDescription taxonDesc: descriptions) {
-        while (itr.hasNext()) {
-            TaxonDescription taxonDesc = (TaxonDescription) itr.next();
-            Pager<Marker> pMarkers = descriptionService.getMarkers(taxonDesc, null, null, null, null, null);
-            Pager<Marker> useMarkers = markerService.page(useMarkerType, null, null, null, null);
-            List<DefinedTermBase> useMarkers2 = markerTypeService.list(MarkerType.class, null, null, null, null);
-            if(pMarkers.getCount() != 0) {
-                List<Marker> testMarkers = pMarkers.getRecords();
-                List<Marker> testUseMarkers = useMarkers.getRecords();
-                for (Marker marker: testMarkers) {
-                    for (Marker useMaker: testUseMarkers){
-                        if(marker.equals(useMaker)) {
-                            itr.remove();
-                        }
-                    }
-                }
-            }
-        }*/
-      //return p.getRecords();
         return descriptions;
     }
 
