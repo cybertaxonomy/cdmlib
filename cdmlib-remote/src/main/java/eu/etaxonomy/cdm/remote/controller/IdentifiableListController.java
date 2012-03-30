@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,6 +69,8 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
             HttpServletResponse response
             )
              throws IOException {
+    	
+    	 
 
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
@@ -75,7 +79,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
         
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
 
-        return (Pager<T>) service.findByTitle(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, null);
+        return (Pager<T>) service.findByTitle(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
         
     }
 

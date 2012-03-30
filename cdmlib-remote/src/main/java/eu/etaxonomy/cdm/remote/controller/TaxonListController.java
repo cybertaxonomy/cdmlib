@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,7 +47,17 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @RequestMapping(value = {"/taxon"})
 public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
 
-    /* (non-Javadoc)
+	
+	
+    /**
+	 * 
+	 */
+	public TaxonListController(){
+        super();
+        setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
+    }
+
+	/* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
      */
     @Override
@@ -109,6 +120,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             HttpServletResponse response
             )
              throws IOException {
+    	
 
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
@@ -116,6 +128,9 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         pagerParams.normalizeAndValidate(response);
 
         ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
+        
+        config.setTaxonPropertyPath(initializationStrategy);
+        
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
