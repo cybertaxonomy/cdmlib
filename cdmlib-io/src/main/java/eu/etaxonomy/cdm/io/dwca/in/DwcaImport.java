@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 /**
  * 
  * @author a.mueller
@@ -67,7 +67,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	  				
 	  				try {
 						IReader<MappedCdmBase> partStream = partitionStream.read();
-						fireProgressEvent("Handel " + i++ + ". partition", i++ + ". partition");
+						fireProgressEvent("Handel " + i + ". partition", i + ". partition");
 						logger.info("Handel " + i++ + ". partition");
 						String location = "Location: partition stream (TODO)";
 						handleResults(state, partStream, location);
@@ -225,6 +225,8 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return new GbifVernacularNameCsv2CdmConverter(state);
 		}else if (namespace.equals(TermUri.GBIF_DESCRIPTION)){
 			return new GbifDescriptionCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_DISTRIBUTION)){
+			return new GbifDistributionCsv2CdmConverter(state);
 		}else{
 			String message = "No converter available for %s";
 			logger.error(String.format(message, namespace));
@@ -254,6 +256,8 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return this.getReferenceService();
 		}else if (TaxonNameBase.class.isAssignableFrom(clazz)){
 			return this.getNameService();
+		}else if (DefinedTermBase.class.isAssignableFrom(clazz)){
+			return this.getTermService();
 		}
 		String warning = "Can't map class to API service: %s";
 		warning = String.format(warning, (clazz == null ? "-" : clazz.getName()));

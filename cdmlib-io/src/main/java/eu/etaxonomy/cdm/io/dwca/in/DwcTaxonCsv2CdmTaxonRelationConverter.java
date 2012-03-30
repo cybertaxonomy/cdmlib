@@ -174,19 +174,20 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
 			if (taxonBase.isInstanceOf(Taxon.class)){
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-				String accId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
-				Taxon parentTaxon = getTaxonBase(accId, item, Taxon.class,state);
+				String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
+				Taxon parentTaxon = getTaxonBase(parentId, item, Taxon.class,state);
 				if (parentTaxon == null){
-						fireWarningEvent("NON-ID parent Name Usage not yet implemented or parent name usage id not available", item, 4);
+					String message = "Can't find parent taxon with id '%s' and NON-ID parent Name Usage not yet implemented.";
+					message = String.format(message, StringUtils.isBlank(parentId)?"-": parentId);
+					fireWarningEvent(message, item, 4);
 				}else{
-					Classification classification = getClassification(item);
+					Classification classification = getClassification(item, resultList);
 					Reference<?> citation = null;
 					if (classification == null){
 						String warning = "Classification not found. Can't create parent-child relationship";
 						fireWarningEvent(warning, item, 12);
 					}
 					classification.addParentChild(parentTaxon, taxon, citation, null);
-					resultList.add(new MappedCdmBase(classification));
 				}
 			}else{
 				String message = "PARENT_NAME_USAGE given for Synonym. This is not allowed in CDM.";
@@ -199,7 +200,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
-	private Classification getClassification(CsvStreamItem item) {
+	private Classification getClassification(CsvStreamItem item, List<MappedCdmBase> resultList) {
 		Set<Classification> resultSet = new HashSet<Classification>();
 		//
 		if (config.isDatasetsAsClassifications()){
@@ -211,6 +212,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 			resultSet.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
 			resultSet.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
 		//TODO accordingToAsClassification
+		//single classification
 		}else{
 			resultSet.addAll(state.get(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, Classification.class));
 			
@@ -223,6 +225,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 				if (StringUtils.isNotBlank(config.getClassificationName())){
 					newClassification.setName(LanguageString.NewInstance(config.getClassificationName(), Language.DEFAULT()));
 				}
+				resultList.add(new MappedCdmBase(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, newClassification));
 				resultSet.add(newClassification);
 			}
 		}
