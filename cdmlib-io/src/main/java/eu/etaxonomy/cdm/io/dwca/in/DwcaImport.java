@@ -41,8 +41,26 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		IReader<CsvStream> zipEntryStream = dwcaStreamConverter.getStreamStream(state);
 		while (zipEntryStream.hasNext()){
   			CsvStream csvStream = zipEntryStream.read();
-			
   			csvStream.addObservers(state.getConfig().getObservers());
+//  			
+//  			boolean isHot = false;
+//			while (csvStream.hasNext()){
+//				CsvStreamItem item = csvStream.read();
+////				System.out.print("-" + csvStream.getLine());
+//				if ( isHot && (csvStream.getLine() % 1) > -1){
+//					System.out.println( csvStream.getLine() + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
+//				}
+//				if ((csvStream.getLine() % 243290) == 0){   //1303304
+//					isHot = true;
+//					System.out.println("Now it becomes interesting ! !" + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
+//				}
+//				if (! csvStream.hasNext()){
+//					System.out.println("Last:" + csvStream.getLine() + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
+//				}
+//				continue;
+//			}
+  			
+  			
   			
   			if (state.getConfig().isUsePartitions()){
   				IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
@@ -67,6 +85,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	  				
 	  				try {
 						IReader<MappedCdmBase> partStream = partitionStream.read();
+
 						fireProgressEvent("Handel " + i + ". partition", i + ". partition");
 						logger.info("Handel " + i++ + ". partition");
 						String location = "Location: partition stream (TODO)";
