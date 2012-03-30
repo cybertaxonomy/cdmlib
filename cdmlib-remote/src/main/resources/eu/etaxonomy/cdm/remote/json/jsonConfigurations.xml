@@ -34,6 +34,9 @@
 
              <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
              <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
+             
+             <value>Synonym.sec</value>
+             <value>Taxon.sec</value>
 
              <value>TextData.feature</value>
              <value>CategoricalData.feature</value>

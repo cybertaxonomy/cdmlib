@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -162,6 +163,20 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
 		 }
 		 return results;
+	}
+	
+	@Transactional(readOnly = true)
+	public Pager<T> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+		long numberOfResults = dao.countTitleCache(clazz, queryString, matchMode);
+			
+		 List<T> results = new ArrayList<T>();
+		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+				results = dao.findTitleCache(clazz, queryString, pageSize, pageNumber, orderHints, matchMode);
+		 }
+		 int r = 0;
+		 r += numberOfResults;
+			
+		  return new DefaultPagerImpl<T>(pageNumber, r , pageSize, results);
 	}
 
 	@Transactional(readOnly = true)

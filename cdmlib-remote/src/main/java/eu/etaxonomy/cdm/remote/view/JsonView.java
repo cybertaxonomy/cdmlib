@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.remote.view;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,7 +85,7 @@ public class JsonView extends BaseView implements View{
         return type.getContentType();
     }
 
-    public void render(Object entity, PrintWriter writer, String documentContextPath) throws Exception {
+    public void render(Object entity, PrintWriter writer, String documentContextPath, String jsonpCallback) throws Exception {
 
         if(jsonConfig == null){
             logger.error("The jsonConfig must not be null. It must be set in the applicationContext.");
@@ -131,7 +133,11 @@ public class JsonView extends BaseView implements View{
             writer.append(xml);
         } else {
             // assuming json
-            writer.append(jsonObj.toString());
+            if(jsonpCallback != null){
+                writer.append(jsonpCallback).append("(").append(jsonObj.toString()).append(")");
+            } else {
+                writer.append(jsonObj.toString());
+            }
         }
         //TODO resp.setContentType(type);
         writer.flush();
@@ -151,7 +157,18 @@ public class JsonView extends BaseView implements View{
 
         PrintWriter writer = response.getWriter();
 
+        // read jsonp parameter from query string
+        String[] tokens = request.getQueryString().split("&", 0);
+        String jsonpParamName = "callback";
+        String jsonpCallback= null;
+        for (int i = 0; i < tokens.length; i++) {
+             if(tokens[i].startsWith(jsonpParamName)){
+                 jsonpCallback = tokens[i].substring(jsonpParamName.length() + 1);
+                 break;
+             }
+        }
+
         // render
-        render(entity, writer, request.getContextPath());
+        render(entity, writer, request.getContextPath(), jsonpCallback);
     }
 }

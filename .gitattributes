@@ -1578,6 +1578,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeContro
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/HttpStatusMessage.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/IdDoesNotExistException.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/IdentifiableListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ManagementController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaListController.java -text

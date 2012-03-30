@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  * @date 20.03.2009
  */
 @Controller
-public class ClassificationPortalListController extends BaseListController<Classification,IClassificationService> {
+public class ClassificationPortalListController extends IdentifiableListController<Classification,IClassificationService> {
 	
 	
 	private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
