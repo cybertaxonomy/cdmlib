@@ -168,6 +168,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmImporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoObservable.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IMatchingImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IPartitionedIO.java -text
@@ -180,6 +181,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ObservableBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/PartitionerProfiler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/RelatedObjectsHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetPartitioner.java -text
@@ -300,6 +302,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifDescriptionCsv2CdmConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifDistributionCsv2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifVernacularNameCsv2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterInput.java -text

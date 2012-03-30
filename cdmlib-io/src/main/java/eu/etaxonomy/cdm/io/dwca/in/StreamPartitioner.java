@@ -16,6 +16,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 
 /**
@@ -79,12 +81,20 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 		IImportMapping mapping = state.getMapping();
 		InMemoryMapping partialMapping = mapping.getPartialMapping(foreignKeys);
+		
+		
 		state.loadRelatedObjects(partialMapping);
 		
 		
 		while (inStream.isLookingAhead() && inStream.hasNext()){
 			IReader<MappedCdmBase> resultReader = converter.map(inStream.read());
-			outStream.add(resultReader);
+			List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();  //maybe better let converter return list from the beginning
+			while (resultReader.hasNext()){
+				MappedCdmBase item = resultReader.read();
+				resultList.add(item);
+				addItemToRelatedObjects(item);
+			}
+			outStream.add(new ListReader<MappedCdmBase>(resultList));
 		}
 			
 		return;
@@ -92,6 +102,22 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 	}
 
 	
+	/**
+	 * Add new items to the local mapping
+	 * @param item
+	 */
+	private void addItemToRelatedObjects(MappedCdmBase<IdentifiableEntity> item) {
+		CdmBase cdmBase = item.getCdmBase();
+		if (cdmBase.getId() == 0){
+			if (cdmBase.isInstanceOf(IdentifiableEntity.class)){
+				if (converter.requiredSourceNamespaces().contains(item.getNamespace())){
+					state.addRelatedObject(item.getNamespace(), item.getSourceId(),  item.getCdmBase());
+				}
+			}
+		}
+	}
+
+
 	@Override
 	public TermUri getTerm() {
 		return inStream.getTerm();

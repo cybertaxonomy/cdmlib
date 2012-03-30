@@ -36,7 +36,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 01.07.2008
  * @version 1.0
  */
-public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration implements ICdmIO<STATE> {
+public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration 
+		implements ICdmIO<STATE>, IIoObservable {
 	private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
@@ -53,36 +54,56 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 	
 //******************** Observers *********************************************************	
 	
+	@Override
+	public boolean addObserver(IIoObserver observer){
+		return observers.add(observer);
+	}
+	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#addObserver(eu.etaxonomy.cdm.io.common.IIoObserver)
+	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#getObservers()
 	 */
-	public void addObserver(IIoObserver observer){
-		observers.add(observer);
+	@Override
+	public Set<IIoObserver> getObservers() {
+		return observers;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#addObservers(java.util.Set)
+	 */
+	@Override
+	public void addObservers(Set<IIoObserver> newObservers) {
+		for (IIoObserver observer : newObservers){
+			this.observers.add(observer);
+		}
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#countObservers()
+	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#countObservers()
 	 */
+	@Override
 	public int countObservers(){
 		return observers.size();
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ICdmIO#deleteObserver(eu.etaxonomy.cdm.io.common.IIoObserver)
-     */
-	public void deleteObserver(IIoObserver observer){
-		observers.remove(observer);
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
+	 */
+	public boolean removeObserver(IIoObserver observer){
+		return observers.remove(observer);
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#deleteObservers()
+	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObservers()
 	 */
-	public void deleteObservers(){
+	public void removeObservers(){
 		observers.removeAll(observers);
 	}
 	
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.IIoEvent)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.events.IIoEvent)
 	 */
 	public void fire(IIoEvent event){
 		for (IIoObserver observer: observers){

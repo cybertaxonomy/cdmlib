@@ -15,11 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -34,6 +37,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends PartitionableConverterBase<DwcaImportState> 
 						implements IPartitionableConverter<CsvStreamItem, INamespaceReader<CdmBase>, String>{
+	private static final String SINGLE_CLASSIFICATION_ID = "1";
+
+	private static final String SINGLE_CLASSIFICATION = "Single Classification";
+
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
@@ -42,8 +49,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	 * @param state
 	 */
 	public DwcTaxonCsv2CdmTaxonRelationConverter(DwcaImportState state) {
-		super();
-		this.state = state;
+		super(state);
 	}
 
 
@@ -194,20 +200,38 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 
 
 	private Classification getClassification(CsvStreamItem item) {
-		Set<Classification> result = new HashSet<Classification>();
-		String datasetKey = item.get(TermUri.DWC_DATASET_ID);
-		if (CdmUtils.areBlank(datasetKey,item.get(TermUri.DWC_DATASET_NAME))){
-			datasetKey = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+		Set<Classification> resultSet = new HashSet<Classification>();
+		//
+		if (config.isDatasetsAsClassifications()){
+			String datasetKey = item.get(TermUri.DWC_DATASET_ID);
+			if (CdmUtils.areBlank(datasetKey,item.get(TermUri.DWC_DATASET_NAME))){
+				datasetKey = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+			}
+			
+			resultSet.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
+			resultSet.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
+		//TODO accordingToAsClassification
+		}else{
+			resultSet.addAll(state.get(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, Classification.class));
+			
+			//classification does not yet exist
+			if (resultSet.isEmpty()){
+				Classification newClassification = Classification.NewInstance("Darwin Core Classification");
+				if (config.getClassificationUuid() != null){
+					newClassification.setUuid(config.getClassificationUuid());
+				}
+				if (StringUtils.isNotBlank(config.getClassificationName())){
+					newClassification.setName(LanguageString.NewInstance(config.getClassificationName(), Language.DEFAULT()));
+				}
+				resultSet.add(newClassification);
+			}
 		}
-		
-		result.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
-		result.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
-		if (result.isEmpty()){
+		if (resultSet.isEmpty()){
 			return null;
-		}else if (result.size() > 1){
+		}else if (resultSet.size() > 1){
 			fireWarningEvent("Dataset is ambigous. I take arbitrary one.", item, 8);
 		}
-		return result.iterator().next();
+		return resultSet.iterator().next();
 	}
 
 
@@ -265,25 +289,54 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		}
 		
 		//classification
-		boolean hasDefinedClassification = false;
-		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
+		if (config.isDatasetsAsClassifications()){
+			boolean hasDefinedClassification = false;
+			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+				hasDefinedClassification = true;
+			}
+			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+				hasDefinedClassification = true;
+			}
+			if (! hasDefinedClassification){
+				Set<String> keySet = getKeySet(TermUri.DWC_DATASET_ID.toString(), fkMap);
+				value = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+				keySet.add(value);
+			}
+		}else{
+			key = SINGLE_CLASSIFICATION;
+			value = SINGLE_CLASSIFICATION_ID;
 			Set<String> keySet = getKeySet(key, fkMap);
-			keySet.add(value);
-			hasDefinedClassification = true;
-		}
-		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
-			Set<String> keySet = getKeySet(key, fkMap);
-			keySet.add(value);
-			hasDefinedClassification = true;
-		}
-		if (! hasDefinedClassification){
-			Set<String> keySet = getKeySet(TermUri.DWC_DATASET_ID.toString(), fkMap);
-			value = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
 			keySet.add(value);
 		}
 		
 		//TODO cont.
 	}
+	
+	@Override
+	public Set<String> requiredSourceNamespaces() {
+		Set<String> result = new HashSet<String>();
+ 		
+		result.add(TermUri.DWC_TAXON.toString());
+		
+		result.add(TermUri.DWC_ACCEPTED_NAME_USAGE_ID.toString());
+ 		result.add(TermUri.DWC_PARENT_NAME_USAGE_ID.toString());
+ 		
+ 		result.add(TermUri.DWC_NAME_ACCORDING_TO_ID.toString());
+ 		result.add(TermUri.DWC_NAME_ACCORDING_TO.toString());
+ 		if (config.isDatasetsAsClassifications()){
+ 			result.add(TermUri.DWC_DATASET_ID.toString());
+ 			result.add(TermUri.DWC_DATASET_NAME.toString());
+ 		}else{
+ 			result.add(SINGLE_CLASSIFICATION);
+ 		}
+ 		
+ 		return result;
+	}
+	
 
 //************************************* TO STRING ********************************************
 	

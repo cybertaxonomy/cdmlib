@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
  * @author a.babadshanjan
  * @created 13.11.2008
  */
-public interface IIoConfigurator {
+public interface IIoConfigurator extends IIoObservable{
 
 	/**
 	 * A String representation of the used source may it be a source to be imported (e.g. "BerlinModel Cichorieae Database")

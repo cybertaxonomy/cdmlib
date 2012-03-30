@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +19,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -36,8 +39,7 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 	 * @param state
 	 */
 	public GbifVernacularNameCsv2CdmConverter(DwcaImportState state) {
-		super();
-		this.state = state;
+		super(state);
 	}
 
 
@@ -52,15 +54,26 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
+			String vernacular = item.get(TermUri.DWC_VERNACULAR_NAME);
+			//TODO language, area,
+			TaxonDescription desc;
+			Set<TaxonDescription> descs = taxon.getDescriptions();
+			if (! descs.isEmpty()){
+				desc = descs.iterator().next();
+			}else{
+				desc = TaxonDescription.NewInstance(taxon);
+			}
+			//TODO
+			Language language = null;
+			CommonTaxonName commonName = CommonTaxonName.NewInstance(vernacular, language);
+			desc.addElement(commonName);
 			resultList.add(mcb);
 		}else{
-			String message = "Taxon is null";
-			fireWarningEvent(message, item, 12);
+			String message = "Can't retrieve taxon from database for id '%s'";
+			fireWarningEvent(String.format(message, id), item, 12);
 		}
 		
-		
-		String message = "Not yet implemented";
-		fireWarningEvent(message, item, 12);
+		//return
 		return new ListReader<MappedCdmBase>(resultList);
 		
 	}
@@ -85,8 +98,18 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		}
 	}
 	
-//************************ STRING ************************************************/
 	
+	@Override
+	public final Set<String> requiredSourceNamespaces() {
+		Set<String> result = new HashSet<String>();
+ 		result.add(TermUri.DWC_TAXON.toString());
+ 		return result;
+	}	
+	
+//************************ STRING ************************************************/
+
+
+
 	@Override
 	public String toString(){
 		return this.getClass().getName();

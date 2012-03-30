@@ -30,11 +30,20 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
+	//partitions
 	private boolean usePartitions = true;
 	private int defaultPartitionSize = 2000;
+	
+	//taxon
 	private boolean deduplicateNamePublishedIn = true;
 	private boolean scientificNameIdAsOriginalSourceId = false;
 	private boolean datasetsAsClassifications = true;
+	
+	//distribution
+	private boolean excludeLocality = false;   //if set to true the dwc locality is not considered during distribution import
+	
+	//validation
+	private boolean validateRankConsistency = true;
 	
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
 	
@@ -138,6 +147,22 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public boolean isDatasetsAsClassifications() {
 		return datasetsAsClassifications;
+	}
+
+	public boolean isExcludeLocality() {
+		return excludeLocality;
+	}
+
+	public void setExcludeLocality(boolean excludeLocality) {
+		this.excludeLocality = excludeLocality;
+	}
+
+	public boolean isValidateRankConsistency() {
+		return validateRankConsistency;
+	}
+
+	public void setValidateRankConsistency(boolean validateRankConsistency) {
+		this.validateRankConsistency = validateRankConsistency;
 	}
 	
 	

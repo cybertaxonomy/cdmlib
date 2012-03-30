@@ -35,8 +35,16 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 	private static final Logger logger = Logger.getLogger(PartitionableConverterBase.class);
 
 	protected STATE state;
+	protected DwcaImportConfigurator config;  //for convenience only (must always be same as state.getConfig())
 	
 	
+	
+	public PartitionableConverterBase(STATE state) {
+		super();
+		this.state = state;
+		this.config = state.getConfig();  //for fast access
+	}
+
 	protected void fireWarningEvent(String message, CsvStreamItem item, Integer severity) {
 		fireWarningEvent(message, getDataLocation(item), severity, 1);
 	}
@@ -116,11 +124,21 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 	protected abstract void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> foreignKeyMap);
 
 	
+	/**
+	 * False if string is null, empty or whitespace only. True otherwise.
+	 * @param string String to test.
+	 */
 	protected boolean hasValue(String string) {
 		return StringUtils.isNotBlank(string);
 	}
 	
 
+	/**
+	 * Returns the key set for a given key or creates a new one.
+	 * @param key
+	 * @param fkMap
+	 * @return
+	 */
 	protected Set<String> getKeySet(String key, Map<String, Set<String>> fkMap) {
 		Set<String> keySet = fkMap.get(key);
 		if (keySet == null){

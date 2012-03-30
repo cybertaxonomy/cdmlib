@@ -140,7 +140,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	
 	private void unRegisterObservers(IImportConfigurator config, ICdmIO io){
 		for (IIoObserver observer : config.getObservers()){
-			io.deleteObserver(observer);
+			io.removeObserver(observer);
 		}
 	}
 	

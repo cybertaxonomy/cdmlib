@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,8 +38,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	 * @param state
 	 */
 	public GbifDescriptionCsv2CdmConverter(DwcaImportState state) {
-		super();
-		this.state = state;
+		super(state);
 	}
 
 	public IReader<MappedCdmBase> map(CsvStreamItem item ){
@@ -82,6 +82,14 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
+	}
+	
+	
+	@Override
+	public Set<String> requiredSourceNamespaces() {
+		Set<String> result = new HashSet<String>();
+ 		result.add(TermUri.DWC_TAXON.toString());
+ 		return result;
 	}
 	
 //******************* TO STRING ******************************************/

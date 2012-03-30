@@ -154,10 +154,13 @@ public abstract class ArchiveEntryBase {
     }
 
     private String normalizeSpecialChars(String string) {
-		if (string.startsWith("\\")){
-			if (string.equals("\\t")){
-				string = "\t";
+		if (string != null){
+	    	if (string.startsWith("\\")){
+				if (string.equals("\\t")){
+					string = "\t";
+				}
 			}
+	    	//TODO some more
 		}
 		return string;
 	}

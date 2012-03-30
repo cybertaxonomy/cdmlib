@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.IIoObservable;
+import eu.etaxonomy.cdm.io.common.ObservableBase;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
@@ -28,7 +30,7 @@ import eu.etaxonomy.cdm.io.dwca.jaxb.Field;
  * @date 17.10.2011
  *
  */
-public class CsvStream implements INamespaceReader<CsvStreamItem>{
+public class CsvStream extends ObservableBase implements INamespaceReader<CsvStreamItem>, IIoObservable{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CsvStream.class);
 
@@ -39,11 +41,13 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 	
 	private CsvStreamItem next;
 	
-	public CsvStream (CSVReader csvReader, ArchiveEntryBase archiveEntry){
+	public CsvStream (CSVReader csvReader, ArchiveEntryBase archiveEntry, int startLine){
 		this.csvReader = csvReader;
 		this.archiveEntry = archiveEntry;
 		String rowType = archiveEntry.getRowType();
 		term = TermUri.valueOfUriString(rowType);
+		line = startLine;
+		
 		//FIXME what if null?
 	}
 	
@@ -57,12 +61,12 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 	}
 	
 	public CsvStreamItem read(){
-		line++;
+//		line++;
 		return readMe();
 	}
 	
 	private CsvStreamItem readMe(){
-		CsvStreamItem resultItem = new CsvStreamItem(term, null, this, line);
+		CsvStreamItem resultItem;
 		Map<String, String> resultMap;
 		if (next != null){
 			resultItem = next;
@@ -72,13 +76,23 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 			resultMap = new HashMap<String, String>();
 			try {
 				String[] next = csvReader.readNext();
+				line++;
+				resultItem = new CsvStreamItem(term, null, this, line);
 				if (next == null){
 					return null;
 				}
 				for (Field field : archiveEntry.getField()){
 					int index = field.getIndex();
 					if (index > next.length -1){
-						throw new RuntimeException("Missing value for archive entry " + field.getTerm() + " in line " + line);
+						String message = "Missing value for archive entry %s in line %d" + line;
+						message = String.format(message, field.getTerm(), line);
+						if (countObservers() == 0){
+							throw new RuntimeException(message);
+						}else{
+							message = message + ". Line is only partly importedCsv-Array is " + next;
+							fireWarningEvent(message, resultItem.getLocation(), 4);
+							break;
+						}
 					}
 					String value = next[index];
 					String term = field.getTerm();
@@ -120,18 +134,20 @@ public class CsvStream implements INamespaceReader<CsvStreamItem>{
 	public TermUri getTerm() {
 		return term;
 	}
+
+	public String getFilesLocation() {
+		return this.archiveEntry.getFiles().getLocation();
+	}
+	
+//******************************** TO STRING **************************************/
 	
 	@Override
 	public String toString(){
 		if (archiveEntry == null){
 			return super.toString();
 		}else{
-			return "CsvStream for " + CdmUtils.Nz(archiveEntry.getRowType());
+			return "CsvStream for " + CdmUtils.Nz(archiveEntry.getRowType() + " at line " + line);
 		}
-	}
-
-	public String getFilesLocation() {
-		return this.archiveEntry.getFiles().getLocation();
 	}
 
 	

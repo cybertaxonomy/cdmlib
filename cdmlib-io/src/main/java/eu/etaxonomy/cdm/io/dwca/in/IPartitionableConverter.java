@@ -26,5 +26,11 @@ public interface IPartitionableConverter<IN extends IConverterInput<CsvStreamIte
 	//TODO make instream a more generic type of stream
 	public Map<String, Set<String>> getPartitionForeignKeys(IReader<CsvStreamItem> instream);
 	
+	/**
+	 * Returns a list of namespaces, which are required for related objects loading.
+	 * @return
+	 */
+	public Set<String> requiredSourceNamespaces();
+	
 	
 }

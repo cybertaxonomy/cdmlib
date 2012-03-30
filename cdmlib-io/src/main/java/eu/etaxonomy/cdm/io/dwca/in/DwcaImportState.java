@@ -67,6 +67,14 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 //********************* MAPPING ACCESS *********************************
 	//TODO this may move to an external class soon
 	
+	public void putMapping(MappedCdmBase mappedCdmBase) throws IllegalArgumentException{
+		if (! mappedCdmBase.getCdmBase().isInstanceOf(IdentifiableEntity.class)){
+			throw new IllegalArgumentException("Mapped cdmBase does not map an identifiable entity");
+		}
+		mapping.putMapping(mappedCdmBase.getNamespace(), mappedCdmBase.getSourceId(), CdmBase.deproxy(mappedCdmBase.getCdmBase(), IdentifiableEntity.class));
+	}
+	
+	
 	public void putMapping(String namespace, Integer sourceKey, IdentifiableEntity<?> destinationObject){
 		mapping.putMapping(namespace, sourceKey, destinationObject);
 	}
@@ -87,7 +95,7 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 			if (namespaceMap != null){
 				IdentifiableEntity cdmBase = namespaceMap.get(sourceKey);
 				if (cdmBase == null){
-					logger.warn("CdmBase does not exist in mapping: " + sourceKey);
+					logger.info("CdmBase does not exist in mapping: " + sourceKey);
 				}else if (cdmBase.isInstanceOf(destinationClass)){
 					CLASS typedCdmBase = CdmBase.deproxy(cdmBase, destinationClass);
 					result.add(typedCdmBase);
@@ -148,8 +156,9 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 		
 		//fill related object map
 		for (MappingEntry<String, String, Class, Integer> entry : mappingEntryList){
-			Map<String, IdentifiableEntity> namespaceMap = getOrMakeNamespaceMap(result, entry.namespace);
 			IdentifiableEntity cdmBase = getCdmObject(classMap, entry);
+			
+			Map<String, IdentifiableEntity> namespaceMap = getOrMakeNamespaceMap(result, entry.namespace);
 			if (cdmBase != null){
 				namespaceMap.put(entry.sourceKey, cdmBase);
 			}else{
@@ -160,6 +169,15 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 		//store
 		this.partitionStore = result;
 		
+	}
+	
+	public void addRelatedObject(String sourceNamespace, String sourceKey, IdentifiableEntity<?> cdmEntity){
+		Map<String, IdentifiableEntity> namespaceMap = getOrMakeNamespaceMap(this.partitionStore, sourceNamespace);
+		if (cdmEntity != null){
+			namespaceMap.put(sourceKey, cdmEntity);
+		}else{
+			logger.info("CdmBase is null and will not be added to related objects.");
+		}
 	}
 
 

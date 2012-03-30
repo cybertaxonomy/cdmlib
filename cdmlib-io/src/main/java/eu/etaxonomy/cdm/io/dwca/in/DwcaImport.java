@@ -38,10 +38,12 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	protected void doInvoke(DwcaImportState state) {
 		URI source = state.getConfig().getSource();
 		DwcaZipToStreamConverter<DwcaImportState> dwcaStreamConverter = DwcaZipToStreamConverter.NewInstance(source);
-		IReader<CsvStream> stream = dwcaStreamConverter.getStreamStream(state);
-		while (stream.hasNext()){
-  			CsvStream csvStream = stream.read();
+		IReader<CsvStream> zipEntryStream = dwcaStreamConverter.getStreamStream(state);
+		while (zipEntryStream.hasNext()){
+  			CsvStream csvStream = zipEntryStream.read();
 			
+  			csvStream.addObservers(state.getConfig().getObservers());
+  			
   			if (state.getConfig().isUsePartitions()){
   				IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
   				if (partitionConverter == null){
@@ -57,6 +59,9 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	  			
 				int i = 1;
 	  			while (partitionStream.hasNext()){
+//	  				if (1== 1){
+//	  					continue;
+//	  				}
 	  				//FIXME more generic handling of transactions
 	  				TransactionStatus tx = startTransaction();
 	  				
@@ -76,6 +81,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 					}
 	  				
 	  			}
+  				logger.debug("Partition stream is empty");
 			}else {
 		  			
 		  		while (csvStream.hasNext()){
@@ -85,7 +91,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 						handleCsvStreamItem(state, item);
 						
 						commitTransaction(tx);
-					}
+				}
 			}
 
   			finalizeStream(csvStream, state);

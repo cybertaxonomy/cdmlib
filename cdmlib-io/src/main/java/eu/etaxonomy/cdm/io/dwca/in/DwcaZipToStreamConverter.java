@@ -28,6 +28,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -161,8 +162,9 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		if (archiveEntry == null){
 			return null;
 		}
-		char fieldTerminatedBy = archiveEntry.getFieldsTerminatedBy().isEmpty()? CSVReader.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
-		char fieldsEnclosedBy = (archiveEntry.getFieldsEnclosedBy().isEmpty()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
+		//CsvReader does not allow empty fieldsEnclosed, need to think about own implementation which allows empty fields)
+		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVReader.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
+		char fieldsEnclosedBy = StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
 		boolean ignoreHeader = archiveEntry.getIgnoreHeaderLines();
 		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
 		String encoding = archiveEntry.getEncoding();
@@ -172,7 +174,7 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		InputStream coreCsvInputStream = makeInputStream(fileLocation);
 		Reader coreReader = new InputStreamReader(coreCsvInputStream, encoding); 
 		CSVReader csvReader = new CSVReader(coreReader, fieldTerminatedBy,fieldsEnclosedBy, skipLines);
-		CsvStream csvStream = new CsvStream(csvReader, archiveEntry);
+		CsvStream csvStream = new CsvStream(csvReader, archiveEntry, skipLines);
 		
 		//		InputStream s;
 //		s.
@@ -201,14 +203,14 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 
 
 	private void validateArchive(Archive archive) {
-		if (archive.getCore().getFieldsTerminatedBy().length() > 1){
+		if (archive.getCore().getFieldsTerminatedBy() != null && archive.getCore().getFieldsTerminatedBy().length() > 1){
 			if (archive.getCore().getFieldsTerminatedBy().equals("\\t") ){
 				//TODO handle, TODO also handle other \xxx delimiter
 			}else{
 				throw new IllegalStateException("CsvReader does not allow field delimiters with more than 1 character. ");
 			}
 		}
-		if (archive.getCore().getFieldsEnclosedBy().length() > 1){
+		if (archive.getCore().getFieldsEnclosedBy() != null && archive.getCore().getFieldsEnclosedBy().length() > 1){
 			throw new IllegalStateException("CsvReader does not allow field delimiters with more than 1 character");
 		}
 		
