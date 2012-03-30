@@ -67,7 +67,8 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	  				
 	  				try {
 						IReader<MappedCdmBase> partStream = partitionStream.read();
-						logger.warn("Handel " + i++ + ". partition");
+						fireProgressEvent("Handel " + i++ + ". partition", i++ + ". partition");
+						logger.info("Handel " + i++ + ". partition");
 						String location = "Location: partition stream (TODO)";
 						handleResults(state, partStream, location);
 						commitTransaction(tx);

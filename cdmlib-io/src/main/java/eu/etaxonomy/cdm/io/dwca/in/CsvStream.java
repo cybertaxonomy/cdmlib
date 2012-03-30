@@ -84,12 +84,12 @@ public class CsvStream extends ObservableBase implements INamespaceReader<CsvStr
 				for (Field field : archiveEntry.getField()){
 					int index = field.getIndex();
 					if (index > next.length -1){
-						String message = "Missing value for archive entry %s in line %d" + line;
+						String message = "Missing value for archive entry %s in line %d";
 						message = String.format(message, field.getTerm(), line);
 						if (countObservers() == 0){
 							throw new RuntimeException(message);
 						}else{
-							message = message + ". Line is only partly importedCsv-Array is " + next;
+							message = message + ". Line is only partly imported. Csv-Array is " + next.toString();
 							fireWarningEvent(message, resultItem.getLocation(), 4);
 							break;
 						}
