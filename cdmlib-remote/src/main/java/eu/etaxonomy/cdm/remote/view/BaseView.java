@@ -35,5 +35,5 @@ public abstract class BaseView {
      *
      * @throws Exception
      */
-    public abstract void render (Object entity, PrintWriter writer, String documentContextPath) throws Exception;
+    public abstract void render (Object entity, PrintWriter writer, String documentContextPath, String jsonpCallback) throws Exception;
 }

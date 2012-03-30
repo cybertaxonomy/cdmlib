@@ -76,6 +76,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             HttpServletResponse response) throws IOException
             {
 
+        logger.info("doGet() " + request.getServletPath());
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
@@ -110,8 +111,11 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
     public List<T> doList(
             @RequestParam(value = "start", required = true) Integer start,
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "class", required = false) Class<T> type) {
+            @RequestParam(value = "class", required = false) Class<T> type,
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
+        logger.info("doGet() " + request.getServletPath());
         //if(start == null){ start = 0;}
         if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
         if(limit < 1){ limit = null;}
