@@ -24,7 +24,7 @@
         $(document).ready(function() {
         
 $('.source-url').each(function(index) {
-    //alert( "SOURCE URL " + $('.source-url').attr('ref'));
+    alert( "UUID " + $('.source-url').attr('ref'));
             
             var fullurl = 'http://localhost:8080/taxon/' + $('.source-url').attr('ref') + '/extensions.json';
             $.ajax({
@@ -139,9 +139,10 @@ $('.source-url').each(function(index) {
                                                 <xsl:variable name="uuid">
                                                     <xsl:value-of select="uuid"/>
                                                 </xsl:variable>
-                                                <TD class="source-url" ref="{uuid}">
+                                                
+                                                <TD class="source-url" ref="{$uuid}">
 
-                                                    <xsl:apply-templates select="uuid"/>
+                                                    <xsl:value-of select="$uuid"/>
                                                   <a>
                                                   <xsl:attribute name="href">                                                 
                                                       <div id="content"> </div>
