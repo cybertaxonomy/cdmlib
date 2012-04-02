@@ -20,13 +20,13 @@
 
                 <script type="text/javascript" language="javascript">               
 
-        //function theCall(jsonurl) {
         $(document).ready(function() {
-        
-$('.source-url').each(function(index) {
-    alert( "UUID " + $('.source-url').attr('ref'));
+
+        $('.source-url').each(function(index) {
             
-            var fullurl = 'http://localhost:8080/taxon/' + $('.source-url').attr('ref') + '/extensions.json';
+            var fullurl = 'http://localhost:8080/taxon/' + $(this).attr('ref') + '/extensions.json';
+            //$(this).html(fullurl);
+            var source_url = 'lorna testing';
             $.ajax({
                 url: fullurl,
                 dataType: "jsonp",
@@ -34,29 +34,31 @@ $('.source-url').each(function(index) {
                 cache: false, // browser will not cache
                 success: function(data) {
                     
-                    var outString = '';
                     var dataRecords = data.records;
+                    $(this).html(data.pageSize);
             
                     $.each(data.records, function(i,record){
                     
-                    var source_url = record.value;
+                    var value = record.value;
                     var ch = 'http';
-                    if ( source_url.indexOf(ch) === 0 ) {
-                        //alert(source_url);
-                        $('#content').append(source_url);
-                        $("<a/>").attr("href", source_url).appendTo('#linktosource');
-                
+                    if ( value.indexOf(ch) === 0 ) {
+
+                        source_url = value;
                         }
                     });
                     },
                 error: function(XMLHttpRequest, statusText, errorThrown){
                                      $("#content").html("ERROR: " + statusText + " - " + errorThrown);
                              }
+                                                        
             });
 
-  });           
- });
-         
+
+            $(this).html('&lt;a href="' + source_url + '"&gt;' + source_url + '&lt;/a&gt;');
+            
+
+            });           
+            });       
             </script>
 
 
@@ -137,21 +139,21 @@ $('.source-url').each(function(index) {
                                             <TR>
                                                 <TD> </TD>
                                                 <xsl:variable name="uuid">
-                                                    <xsl:value-of select="uuid"/>
+                                                  <xsl:value-of select="uuid"/>
                                                 </xsl:variable>
-                                                
+
                                                 <TD class="source-url" ref="{$uuid}">
 
-                                                    <xsl:value-of select="$uuid"/>
                                                   <a>
-                                                  <xsl:attribute name="href">                                                 
-                                                      <div id="content"> </div>
+                                                  <xsl:attribute name="href">
+                                                  <div id="content"> </div>
                                                   </xsl:attribute>
-                                                      <div id="content"> </div>
+                                                  <div id="content"> </div>
                                                   </a>
                                                 </TD>
                                             </TR>
                                         </TABLE>
+                                        <TABLE> </TABLE>
                                     </tr>
                                 </table>
                                 <br/>
@@ -162,6 +164,7 @@ $('.source-url').each(function(index) {
             </BODY>
         </HTML>
     </xsl:template>
+
 
 
     <!--xsl:template match=".">
