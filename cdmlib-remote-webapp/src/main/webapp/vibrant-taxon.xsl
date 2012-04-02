@@ -1,16 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 
     <!-- pass this in as a parameter? -->
-    <xsl:variable name="url_portal"> http://160.45.63.151:8080/cichorieae/ </xsl:variable>
-    <xsl:variable name="url_webservice">http://localhost:8080/taxon/findTaxaAndNames</xsl:variable>
+
+    <xsl:variable name="url_webservice">http://localhost:8080/taxon/findTaxaAndNames</xsl:variable> 
+    <xsl:variable name="url_start">"http://localhost:8080/taxon/</xsl:variable> 
+    <xsl:variable name="url_end">/extensions.json"</xsl:variable> 
+    
 
     <xsl:template match="/DefaultPagerImpl">
         <HTML>
+            
             <HEAD>
+                <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
                 <link type="text/css" rel="stylesheet" media="all" href="/vibrant.css"/>
             </HEAD>
             <BODY>
+            
+            
+            <script type="text/javascript" language="javascript">               
+
+        function theCall(jsonurl) {
+
+            var fullurl = 'http://localhost:8080/taxon/' + jsonurl + '/extensions.json';
+            $.ajax({
+                url: jsonurl,
+                dataType: "jsonp",
+                async: false, // only for debugging, let's you see more error messages
+                cache: false, // browser will not cache
+                success: function(data) {
+                    
+                    var outString = '';
+                    var dataRecords = data.records;
+            
+                    $.each(data.records, function(i,record){
+                    
+                    var source_url = record.value;
+                    var ch = 'http';
+                    if ( source_url.indexOf(ch) === 0 ) {
+                        //alert(source_url);
+                        $('#content').append(source_url);
+                        $("<a/>").attr("href", source_url).appendTo('#linktosource');
+                
+                        }
+                    });
+                    },
+                error: function(XMLHttpRequest, statusText, errorThrown){
+                                     $("#content").html("ERROR: " + statusText + " - " + errorThrown);
+                             }
+            });
+
+            
+ };
+         
+            </script>
+                
+                
+                
                 <a href="/vibrant_names.html" title="Home">
                     <img src="http://localhost:8080/acquia_prosper_logo.png" alt="Home"/>
                 </a>
@@ -19,48 +65,96 @@
                     <tr>
                         <td width="5%"/>
                         <td valign="top">
-                            
+
                             <h2>ViBRANT Common Data Model names search</h2>
-                            <br></br>
-                            <BR></BR>
-                            <H3>Taxon:</H3>
-                            <br></br>
+                            <br/>
+                            <BR/>
+                            <H4>Source(s) using this name: </H4>
+                            <br/>                          
+                            
 
-                            <TABLE border="0" frame="1">
-                                <xsl:for-each select="records/e">
-                                    <xsl:variable name="url">
-                                        <xsl:value-of select="$url_portal"/>name/<xsl:value-of
-                                            select="uuid"/>
-                                    </xsl:variable>
+                            <xsl:for-each select="records/e">
+                                <table width="35%" border="1" cellspacing="4" cellpadding="0"
+                                    bordercolor="#666666" style="border-collapse: collapse">
 
-                                    <TR>
-                                        <TD>Title and reference: </TD>
-                                        <TD>
-                                            <xsl:apply-templates select="titleCache"/>
-                                        </TD>
-                                    </TR>
-                                    <TR>
-                                        <TD>UUID: </TD>
-                                        <TD>
-                                            <xsl:apply-templates select="uuid"/>
-                                        </TD>
-                                    </TR>
-                                </xsl:for-each>
-                            </TABLE>
+                                    <tr>
+                                        <TABLE border="0">
 
+                                            <TR>
+                                                <TD>
+                                                  <strong>Name:</strong>
+                                                </TD>
+                                                <TD>
+                                                  <xsl:apply-templates select="titleCache"/>
+                                                </TD>
+                                            </TR>
+                                            <TR>
+                                                <TD>
+                                                  <strong>Status: </strong>
+                                                </TD>
+                                                <TD>
+                                                    <xsl:variable name="taxonclass"><xsl:value-of select="class"></xsl:value-of></xsl:variable>
+                                                    <xsl:choose>
+                                                        <xsl:when test="$taxonclass = 'Taxon'">
+                                                            <font color="green">
+                                                                <strong>
+                                                                    <xsl:apply-templates select="class"/>
+                                                                </strong>
+                                                            </font>
+                                                        </xsl:when>
+                                                        <xsl:otherwise>
+                                                            <font color="purple">
+                                                                <strong>
+                                                                    <xsl:apply-templates select="class"/>
+                                                                </strong>
+                                                            </font>
+                                                        </xsl:otherwise>
+                                                    </xsl:choose>
+                                                </TD>
+                                            </TR>
+                                            <TR>
+                                                <TD>
+                                                    <strong>Source: </strong>
+                                                </TD>
+                                                <TD>
+                                                    <xsl:apply-templates select="sec/titleCache"/>
+                                                </TD>
+                                            </TR>
+                                            <TR>
+                                                <TD>
+                                                  <strong>UUID: </strong>
+                                                </TD>
+                                                <TD>
+                                                  <xsl:apply-templates select="uuid"/>
+                                                </TD>
+                                            </TR>
+                                            <TR>
+                                                <TD>
+
+                                                </TD>
+                                                <xsl:variable name="uuid"><xsl:value-of select="uuid"></xsl:value-of></xsl:variable>
+                                                <a href="javascript:theCall({$url_start}{uuid}{$url_end})">View source URL</a>
+                                                <!--div id="link"> </div-->
+                                                <a>
+                                                    <xsl:attribute name="href">
+                                                        <!--xsl:value-of select="$url_local"/>name/<xsl:value-of select="../uuid"/-->
+                                                        <div id="content"> </div>
+                                                        <div id="linktosource"> </div>
+                                                        <br></br>
+                                                    </xsl:attribute>
+                                                </a>
+                                                <div id="content"> </div>
+                                            </TR>
+                                        </TABLE>
+                                    </tr>
+                                </table>
+                                <br></br>
+                            </xsl:for-each>
                         </td>
                     </tr>
                 </table>
             </BODY>
         </HTML>
-    </xsl:template>
-
-    <xsl:template match="titleCache">
-        <a>
-            <xsl:attribute name="href"><xsl:value-of select="$url_portal"/>name/<xsl:value-of
-                    select="../uuid"/></xsl:attribute>
-            <xsl:value-of select="."/>
-        </a>
     </xsl:template>
 
 
