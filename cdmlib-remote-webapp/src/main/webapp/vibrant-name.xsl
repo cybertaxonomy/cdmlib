@@ -32,6 +32,7 @@
                     <tr>
                         <td width="5%"/>
                         <td valign="top">
+                            
                             <h2>ViBRANT Common Data Model names search</h2>
                             <strong>
                                 <xsl:value-of select="$vReps"/>
