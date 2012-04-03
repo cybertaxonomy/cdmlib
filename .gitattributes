@@ -1545,8 +1545,15 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsp/index.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
+cdmlib-remote-webapp/src/main/webapp/acquia_prosper_logo.png -text
+cdmlib-remote-webapp/src/main/webapp/background-body-crop.jpg -text
 cdmlib-remote-webapp/src/main/webapp/human.xsl -text
+cdmlib-remote-webapp/src/main/webapp/namesSearch.html -text
 cdmlib-remote-webapp/src/main/webapp/oai2.xsl -text
+cdmlib-remote-webapp/src/main/webapp/vibrant-name.xsl -text
+cdmlib-remote-webapp/src/main/webapp/vibrant-taxon.xsl -text
+cdmlib-remote-webapp/src/main/webapp/vibrant.css -text
+cdmlib-remote-webapp/src/main/webapp/vibrant_names.html -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
 cdmlib-remote-webapp/src/test/resources/log4j.properties -text
 cdmlib-remote/LICENSE.TXT -text
