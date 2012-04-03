@@ -19,12 +19,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.FirebirdDialect;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -214,6 +217,28 @@ public class DwcaImportState extends ImportStateBase<DwcaImportConfigurator, Dwc
 		}else{
 			return null;
 		}
+	}
+
+	/**
+	 * Returns the source reference object that is attached to the current transaction.
+	 * @return
+	 */
+	public Reference<?> getTransactionalSourceReference() {
+		TermUri namespaceSourceReference = TermUri.CDM_SOURCE_REFERENCE;
+		UUID sourceReferenceUuid = getConfig().getSourceRefUuid();
+		List<Reference> references = this.get(namespaceSourceReference.toString(), sourceReferenceUuid.toString(), Reference.class);
+		if (references.isEmpty()){
+			//TODO better fire warning, but not yet available for state
+			throw new RuntimeException("Source reference can not be found. This should not happen.");
+		}else if (references.size() > 1){
+			//TODO better fire warning, but not yet available for state
+			throw new RuntimeException("More than 1 source reference found. This is not yet handled.");
+		}else{
+			return references.get(0);
+		}
+		
+		
+		
 	}
 	
 	

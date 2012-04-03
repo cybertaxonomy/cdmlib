@@ -64,7 +64,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 				resultList.add(mcb);
 			}else if (! config.isExcludeLocality()){
 				String locality = item.get(TermUri.DWC_LOCALITY);
-				area = getAreaByLocation(item, locality);
+				area = getAreaByLocality(item, locality);
 				MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(TermUri.DWC_LOCALITY), area);
 				resultList.add(mcb);
 			}
@@ -100,11 +100,12 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 	}
 
 	
-	private NamedArea getAreaByLocation(CsvStreamItem item, String locality) {
-		String namespace = TermUri.DWC_LOCATION_ID.toString();
+	private NamedArea getAreaByLocality(CsvStreamItem item, String locality) {
+		String namespace = TermUri.DWC_LOCALITY.toString();
 		List<NamedArea> result = state.get(namespace, locality, NamedArea.class);
 		if (result.isEmpty()){
 			NamedArea newArea = NamedArea.NewInstance(locality, locality, locality);
+			newArea.setTitleCache(locality, true);
 			return newArea;
 		}
 		if (result.size() > 1){

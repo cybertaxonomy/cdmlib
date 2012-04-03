@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @created 05.05.2011
  */
 public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportState, URI> implements IImportConfigurator {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
@@ -37,7 +38,7 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	//taxon
 	private boolean deduplicateNamePublishedIn = true;
 	private boolean scientificNameIdAsOriginalSourceId = false;
-	private boolean datasetsAsClassifications = true;
+	private DatasetUse datasetUse = DatasetUse.CLASSIFICATION;
 	
 	//distribution
 	private boolean excludeLocality = false;   //if set to true the dwc locality is not considered during distribution import
@@ -47,6 +48,12 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
 	
+	public enum DatasetUse{
+		CLASSIFICATION,
+		SECUNDUM,
+		ORIGINAL_SOURCE
+		
+	}
 	
 		
 
@@ -89,11 +96,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	 */
 	@Override
 	public Reference getSourceReference() {
-		//TODO
 		if (this.sourceReference == null){
-			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = ReferenceFactory.newGeneric();
 			sourceReference.setTitleCache("DwC-A import", true);
+		}
+		if (getSourceRefUuid() != null){
+			sourceReference.setUuid(getSourceRefUuid());
+		}else{
+			setSourceRefUuid(sourceReference.getUuid());
 		}
 		return sourceReference;
 	}
@@ -141,12 +151,8 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 		return scientificNameIdAsOriginalSourceId;
 	}
 
-	public void setDatasetsAsClassifications(boolean datasetsAsClassifications) {
-		this.datasetsAsClassifications = datasetsAsClassifications;
-	}
-
 	public boolean isDatasetsAsClassifications() {
-		return datasetsAsClassifications;
+		return this.datasetUse.equals(DatasetUse.CLASSIFICATION);
 	}
 
 	public boolean isExcludeLocality() {
@@ -163,6 +169,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public void setValidateRankConsistency(boolean validateRankConsistency) {
 		this.validateRankConsistency = validateRankConsistency;
+	}
+
+	public boolean isDatasetsAsSecundumReference() {
+		return this.datasetUse.equals(DatasetUse.SECUNDUM);
+	}
+
+	public boolean isDatasetsAsOriginalSource() {
+		return this.datasetUse.equals(DatasetUse.ORIGINAL_SOURCE);
 	}
 	
 	

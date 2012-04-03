@@ -37,20 +37,22 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	@Override
 	protected void doInvoke(DwcaImportState state) {
 		URI source = state.getConfig().getSource();
+		makeSourceRef(state);
+		
 		DwcaZipToStreamConverter<DwcaImportState> dwcaStreamConverter = DwcaZipToStreamConverter.NewInstance(source);
-		IReader<CsvStream> zipEntryStream = dwcaStreamConverter.getStreamStream(state);
+		IReader<CsvStream> zipEntryStream = dwcaStreamConverter.getEntriesStream(state);
 		while (zipEntryStream.hasNext()){
   			CsvStream csvStream = zipEntryStream.read();
   			csvStream.addObservers(state.getConfig().getObservers());
-//  			
-//  			boolean isHot = false;
+  			
+//  			boolean isHot = true;
 //			while (csvStream.hasNext()){
 //				CsvStreamItem item = csvStream.read();
 ////				System.out.print("-" + csvStream.getLine());
-//				if ( isHot && (csvStream.getLine() % 1) > -1){
+//				if ( isHot && (csvStream.getLine() % 100000) == 0){
 //					System.out.println( csvStream.getLine() + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
 //				}
-//				if ((csvStream.getLine() % 243290) == 0){   //1303304
+//				if ((csvStream.getLine() % 2332900) == 0){   //1303304
 //					isHot = true;
 //					System.out.println("Now it becomes interesting ! !" + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
 //				}
@@ -59,7 +61,6 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 //				}
 //				continue;
 //			}
-  			
   			
   			
   			if (state.getConfig().isUsePartitions()){
@@ -77,9 +78,6 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	  			
 				int i = 1;
 	  			while (partitionStream.hasNext()){
-//	  				if (1== 1){
-//	  					continue;
-//	  				}
 	  				//FIXME more generic handling of transactions
 	  				TransactionStatus tx = startTransaction();
 	  				
@@ -93,8 +91,13 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 						commitTransaction(tx);
 					} catch (Exception e) {
 						String message = "An exception occurred while handling partition: " + e;
-						StackTraceElement el = e.getStackTrace()[0];
-						String codeLocation = el.getClassName()+ "." + el.getMethodName() + "(" + el.getLineNumber() + ")";
+						String codeLocation;
+						if (e.getStackTrace().length > 0){
+							StackTraceElement el = e.getStackTrace()[0];
+							codeLocation = el.getClassName()+ "." + el.getMethodName() + "(" + el.getLineNumber() + ")";
+						}else{
+							codeLocation = "No stacktrace";
+						}
 						message = message + " in: " +  codeLocation;
 						fireWarningEvent(message , String.valueOf(csvStream.getLine()) , 12);
 						this.rollbackTransaction(tx);
@@ -118,6 +121,11 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		}
 		state.finish();
 		return;
+	}
+
+	private void makeSourceRef(DwcaImportState state) {
+		Reference<?> sourceRef = state.getConfig().getSourceReference();
+		getReferenceService().saveOrUpdate(sourceRef);
 	}
 
 //	private void handlePartitionedStreamItem(DwcaImportState state,  StreamPartitioner<CsvStreamItem> partitionStream) {
@@ -197,6 +205,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	}
 
 	private void finalizeStream(CsvStream csvStream, DwcaImportState state) {
+		fireWarningEvent("Stream finished", csvStream.getFilesLocation(), 0);
 		if (csvStream.getTerm().equals(TermUri.DWC_TAXON)){
 			if (state.isTaxaCreated() == false){
 				state.setTaxaCreated(true);

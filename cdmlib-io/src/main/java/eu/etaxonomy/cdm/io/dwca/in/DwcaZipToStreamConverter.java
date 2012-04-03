@@ -117,7 +117,7 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		return getStream(rowType.getUriString());
 	}
 
-	public IReader<CsvStream> getStreamStream(STATE state){
+	public IReader<CsvStream> getEntriesStream(STATE state){
 		List<CsvStream> streamList = new ArrayList<CsvStream>();
 		try {
 			streamList.add(getCoreStream()); //for taxa and names

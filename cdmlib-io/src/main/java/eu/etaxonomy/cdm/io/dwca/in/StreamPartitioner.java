@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -81,11 +82,11 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 		Map<String, Set<String>> foreignKeys = converter.getPartitionForeignKeys(lookaheadStream);
 		IImportMapping mapping = state.getMapping();
 		InMemoryMapping partialMapping = mapping.getPartialMapping(foreignKeys);
-		
+		Reference<?> sourceRef = state.getCurrentIO().getReferenceService().find(state.getConfig().getSourceRefUuid());
+		partialMapping.putMapping(TermUri.CDM_SOURCE_REFERENCE.toString(), state.getConfig().getSourceRefUuid().toString(), sourceRef);
 		
 		state.loadRelatedObjects(partialMapping);
-		
-		
+				
 		while (inStream.isLookingAhead() && inStream.hasNext()){
 			IReader<MappedCdmBase> resultReader = converter.map(inStream.read());
 			List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>();  //maybe better let converter return list from the beginning

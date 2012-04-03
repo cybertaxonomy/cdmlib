@@ -25,18 +25,20 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
@@ -49,9 +51,10 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
-	// key for for case that no dataset information is supplied, TODO use something better
+	// temporary key for the case that no dataset information is supplied, TODO use something better
 	public static final String NO_DATASET = "no_dataset_jli773oebhjklw";
 
+	private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 	
 	/**
 	 * @param state
@@ -64,8 +67,8 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	public IReader<MappedCdmBase> map(CsvStreamItem csvTaxonRecord){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
-		//TODO source reference
-		Reference<?> sourceReference = null;
+		//TODO what if not transactional? 
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferenceDetail = null;
 		
 		//taxon
@@ -85,13 +88,13 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		Rank rank = getRank(csvTaxonRecord, nomCode);
 
 		//name && name published in
-		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank, resultList);
+		TaxonNameBase<?,?> name = getScientificName(csvTaxonRecord, nomCode, rank, resultList, sourceReference);
 		taxonBase.setName(name);
 		
-		//sec
+		//nameAccordingTo
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
 		if (sec != null){
-			taxonBase.setSec(sec == null ? null : sec.getCdmBase());
+			taxonBase.setSec(sec.getCdmBase());
 		}
 
 		//classification
@@ -213,13 +216,24 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 				state.putMapping(TermUri.DWC_DATASET_ID.toString(), classificationId, classification);
 				state.putMapping(TermUri.DWC_DATASET_NAME.toString(), classificationName, classification);
 			}
-		}else{
+		}else if (config.isDatasetsAsSecundumReference()){
+			//dataset as secundum reference
+			TermUri idTerm = TermUri.DWC_DATASET_ID;
+			TermUri strTerm = TermUri.DWC_DATASET_NAME;
+			MappedCdmBase<Reference> mappedCitation = getReference(item, resultList, idTerm, strTerm, true);
+			Reference<?> sec = mappedCitation.getCdmBase();
+			taxonBase.setSec(sec);
+		
+		}else if (config.isDatasetsAsOriginalSource()){
 			//dataset as original source
 			TermUri idTerm = TermUri.DWC_DATASET_ID;
 			TermUri strTerm = TermUri.DWC_DATASET_NAME;
 			MappedCdmBase<Reference> mappedCitation = getReference(item, resultList, idTerm, strTerm, true);
 //			resultList.add(mappedCitation);
 			taxonBase.addSource(null, null, mappedCitation.getCdmBase(), null);
+		}else{
+			String message = "DatasetUse type not yet implemented. Can't import dataset information.";
+			fireWarningEvent(message, item, 4);
 		}
 		
 		//remove to later check if all attributes were used
@@ -236,11 +250,15 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 	private MappedCdmBase<Reference> getNameAccordingTo(CsvStreamItem item, List<MappedCdmBase> resultList) {
-		TermUri idTerm = TermUri.DWC_NAME_ACCORDING_TO_ID;
-		TermUri strTerm = TermUri.DWC_NAME_ACCORDING_TO;
-		MappedCdmBase<Reference> secRef = getReference(item, resultList, idTerm, strTerm, false);
-		return secRef;
-		
+		if (config.isDatasetsAsSecundumReference()){
+			//TODO store nameAccordingTo info some where else or let the user define where to store it.
+			return null;
+		}else{
+			TermUri idTerm = TermUri.DWC_NAME_ACCORDING_TO_ID;
+			TermUri strTerm = TermUri.DWC_NAME_ACCORDING_TO;
+			MappedCdmBase<Reference> secRef = getReference(item, resultList, idTerm, strTerm, false);
+			return secRef;
+		}
 	}
 
 	private NomenclaturalCode getNomCode(CsvStreamItem item) {
@@ -261,25 +279,29 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		String strKingdom = getValue(item, TermUri.DWC_KINGDOM);
 		if (strKingdom.equalsIgnoreCase("Plantae")){
 			nomCode = NomenclaturalCode.ICBN;
-		}else if (strKingdom.equalsIgnoreCase("Animalia")){
-			nomCode = NomenclaturalCode.ICZN;
 		}else if (strKingdom.equalsIgnoreCase("Fungi")){
 			nomCode = NomenclaturalCode.ICBN;
+		}else if (strKingdom.equalsIgnoreCase("Animalia")){
+			nomCode = NomenclaturalCode.ICZN;
+		}else if (strKingdom.equalsIgnoreCase("Protozoa")){
+			nomCode = NomenclaturalCode.ICZN;
 		}
 		//TODO further kingdoms
 		if (nomCode == null){
 			//TODO warning
+			if (config.getNomenclaturalCode() != null){
+				nomCode = config.getNomenclaturalCode();
+			}
 		}
 		return nomCode;
 	}
 
 
-	private TaxonNameBase<?,?> getScientificName(CsvStreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList) {
+	private TaxonNameBase<?,?> getScientificName(CsvStreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
 		TaxonNameBase<?,?> name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
 		if (strScientificName != null){
-			INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
 			name = parser.parseFullName(strScientificName, nomCode, rank);
 			if ( rank != null && name != null && name.getRank() != null &&  ! rank.equals(name.getRank())){
 				if (config.isValidateRankConsistency()){
@@ -296,7 +318,6 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		if (strScientificNameId != null){
 			if (config.isScientificNameIdAsOriginalSourceId()){
 				if (name != null){
-					Reference<?> sourceReference = null; //FIXME
 					IdentifiableSource source = IdentifiableSource.NewInstance(strScientificNameId, TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference, null);
 					name.addSource(source);
 				}
@@ -326,6 +347,15 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
+	/**
+	 * Generell method to handle references used for multiple attributes.
+	 * @param item
+	 * @param resultList
+	 * @param idTerm
+	 * @param strTerm
+	 * @param idIsInternal
+	 * @return
+	 */
 	private MappedCdmBase<Reference> getReference(CsvStreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
 		Reference<?> newRef = null;
 		Reference<?> sourceCitation = null;
@@ -383,9 +413,16 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		
 		if (! nvName.isProtectedTitleCache()){
 			if (StringUtils.isBlank(nvName.getAuthorshipCache())){
-				//TODO some more sophisticated stuff can be done here like parsing etc.
-				nvName.setAuthorshipCache(strAuthors);
-				//TODO warning (scientific name should always include authorship)
+				if (nvName.isInstanceOf(BotanicalName.class) || nvName.isInstanceOf(ZoologicalName.class)){
+					try {
+						parser.parseAuthors(nvName, strAuthors);
+					} catch (StringNotParsableException e) {
+						nvName.setAuthorshipCache(strAuthors);
+					}		
+				}else{
+					nvName.setAuthorshipCache(strAuthors);
+				}
+				//TODO throw warning (scientific name should always include authorship) by DwC definition
 			}
 		}
 		
@@ -495,27 +532,25 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		}
 		
 		//nameAccordingTo
-		if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO_ID.toString()))){
-			Set<String> keySet = getKeySet(key, fkMap);
-			keySet.add(value);
+		if (! config.isDatasetsAsSecundumReference()){
+			if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO_ID.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+			}
+			if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+			}
 		}
-		if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO.toString()))){
-			Set<String> keySet = getKeySet(key, fkMap);
-			keySet.add(value);
-		}
-		
 		
 		//dataset
-		if (! config.isDatasetsAsClassifications()){
-			//nameAccordingTo
-			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
-				Set<String> keySet = getKeySet(key, fkMap);
-				keySet.add(value);
-			}
-			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
-				Set<String> keySet = getKeySet(key, fkMap);
-				keySet.add(value);
-			}
+		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
 		}
 		
 	}
@@ -526,11 +561,13 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		Set<String> result = new HashSet<String>();
  		result.add(TermUri.DWC_NAME_PUBLISHED_IN_ID.toString());
  		result.add(TermUri.DWC_NAME_PUBLISHED_IN.toString());
- 		result.add(TermUri.DWC_NAME_ACCORDING_TO_ID.toString());
- 		result.add(TermUri.DWC_NAME_ACCORDING_TO.toString());
- 		result.add(TermUri.DWC_DATASET_ID.toString());
- 		result.add(TermUri.DWC_DATASET_NAME.toString());
- 		return result;
+ 		if (!config.isDatasetsAsSecundumReference()){
+	 		result.add(TermUri.DWC_NAME_ACCORDING_TO_ID.toString());
+	 		result.add(TermUri.DWC_NAME_ACCORDING_TO.toString());
+ 		}
+	 	result.add(TermUri.DWC_DATASET_ID.toString());
+	 	result.add(TermUri.DWC_DATASET_NAME.toString());
+	 	return result;
 	}
 	
 //** ***************************** TO STRING *********************************************/
