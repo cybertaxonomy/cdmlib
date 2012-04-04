@@ -13,7 +13,7 @@
 
             <HEAD>
                 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
-                <link type="text/css" rel="stylesheet" media="all" href="../vibrant.css"/>
+                <link type="text/css" rel="stylesheet" media="all" href="/vibrant_index/vibrant.css"/>
             </HEAD>
             <BODY>
 
@@ -24,7 +24,7 @@
 
         $('.source-url').each(function(index) {
             
-            var fullurl = '/vibrant_index/taxon/' + $(this).attr('ref') + '/extensions.json';
+            var fullurl = '../taxon/' + $(this).attr('ref') + '/extensions.json';
             //$(this).html(fullurl);
             var source_url = 'lorna testing';
             $.ajax({
