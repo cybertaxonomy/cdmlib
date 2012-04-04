@@ -147,6 +147,17 @@ public class LSID implements Serializable {
 		return revision;
 	}
 	
+	public static boolean isLsid(String strLsid){
+		try {
+			//TODO use algorithm rather than exceptions
+			new LSID(strLsid);
+			return true;
+		} catch (MalformedLSIDException e) {
+			return false;
+		}
+	}
+	
+	
 	/**
 	 * return the string representation
 	 * @return String
