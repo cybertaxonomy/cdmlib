@@ -39,13 +39,19 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private boolean deduplicateNamePublishedIn = true;
 	private boolean scientificNameIdAsOriginalSourceId = false;
 	private DatasetUse datasetUse = DatasetUse.CLASSIFICATION;
-	
+
+
 	//distribution
 	private boolean excludeLocality = false;   //if set to true the dwc locality is not considered during distribution import
+	
+	//reference
+	private boolean guessNomenclaturalReferences = false;
+	private boolean handleAllRefsAsCitation = false;
 	
 	//validation
 	private boolean validateRankConsistency = true;
 	
+	//mapping
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
 	
 	public enum DatasetUse{
@@ -177,6 +183,27 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public boolean isDatasetsAsOriginalSource() {
 		return this.datasetUse.equals(DatasetUse.ORIGINAL_SOURCE);
+	}
+	
+	
+	public void setDatasetUse(DatasetUse datasetUse) {
+		this.datasetUse = datasetUse;
+	}
+
+	public boolean isGuessNomenclaturalReferences() {
+		return guessNomenclaturalReferences;
+	}
+
+	public void setGuessNomenclaturalReferences(boolean guessNomenclaturalReferences) {
+		this.guessNomenclaturalReferences = guessNomenclaturalReferences;
+	}
+
+	public boolean isHandleAllRefsAsCitation() {
+		return handleAllRefsAsCitation;
+	}
+
+	public void setHandleAllRefsAsCitation(boolean handleAllRefsAsCitation) {
+		this.handleAllRefsAsCitation = handleAllRefsAsCitation;
 	}
 	
 	

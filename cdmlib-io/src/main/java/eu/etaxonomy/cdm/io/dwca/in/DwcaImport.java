@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 /**
  * 
  * @author a.mueller
@@ -286,6 +287,8 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return this.getNameService();
 		}else if (DefinedTermBase.class.isAssignableFrom(clazz)){
 			return this.getTermService();
+		}else if (DescriptionBase.class.isAssignableFrom(clazz)){
+			return this.getDescriptionService();
 		}
 		String warning = "Can't map class to API service: %s";
 		warning = String.format(warning, (clazz == null ? "-" : clazz.getName()));

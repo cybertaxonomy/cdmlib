@@ -47,7 +47,7 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = null;
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
 		
 		String id = csv.get(CORE_ID);
@@ -56,13 +56,8 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			String vernacular = item.get(TermUri.DWC_VERNACULAR_NAME);
 			//TODO language, area,
-			TaxonDescription desc;
-			Set<TaxonDescription> descs = taxon.getDescriptions();
-			if (! descs.isEmpty()){
-				desc = descs.iterator().next();
-			}else{
-				desc = TaxonDescription.NewInstance(taxon);
-			}
+			TaxonDescription desc = getTaxonDescription(taxon, false);
+			
 			//TODO
 			Language language = null;
 			CommonTaxonName commonName = CommonTaxonName.NewInstance(vernacular, language);

@@ -50,7 +50,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = null;
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
 		
 		String id = getSourceId(item);
@@ -72,13 +72,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 			if (area != null){
 				
 				//TODO language, area,
-				TaxonDescription desc;
-				Set<TaxonDescription> descs = taxon.getDescriptions();
-				if (! descs.isEmpty()){
-					desc = descs.iterator().next();
-				}else{
-					desc = TaxonDescription.NewInstance(taxon);
-				}
+				TaxonDescription desc = getTaxonDescription(taxon, false);
 				
 				//TODO
 				PresenceAbsenceTermBase<?> status = null;
@@ -98,6 +92,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		//return
 		return new ListReader<MappedCdmBase>(resultList);
 	}
+
 
 	
 	private NamedArea getAreaByLocality(CsvStreamItem item, String locality) {

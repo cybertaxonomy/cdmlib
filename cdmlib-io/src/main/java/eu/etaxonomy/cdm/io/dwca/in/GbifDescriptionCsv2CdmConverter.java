@@ -45,7 +45,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
-		Reference<?> sourceReference = null;
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
 		
 		String id = getSourceId(item);

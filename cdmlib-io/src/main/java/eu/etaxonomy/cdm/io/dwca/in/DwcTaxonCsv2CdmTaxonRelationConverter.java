@@ -57,7 +57,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csvRecord = item.map;
-		Reference<?> sourceReference = null;
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
 		
 		String id = csvRecord.get(ID);
@@ -182,12 +182,12 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 					fireWarningEvent(message, item, 4);
 				}else{
 					Classification classification = getClassification(item, resultList);
-					Reference<?> citation = null;
+					Reference<?> citationForParentChild = null;
 					if (classification == null){
 						String warning = "Classification not found. Can't create parent-child relationship";
 						fireWarningEvent(warning, item, 12);
 					}
-					classification.addParentChild(parentTaxon, taxon, citation, null);
+					classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
 				}
 			}else{
 				String message = "PARENT_NAME_USAGE given for Synonym. This is not allowed in CDM.";
