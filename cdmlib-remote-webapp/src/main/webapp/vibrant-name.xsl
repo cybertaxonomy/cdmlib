@@ -7,8 +7,8 @@
 
     <!-- pass this in as a parameter? -->
     <!--xsl:variable name="url_taxon">/taxon/findTaxaAndNames</xsl:variable-->
-    <xsl:variable name="url_taxon">/vibrant_index/taxon/findByTitle</xsl:variable>
-    <xsl:variable name="url_webservice">/vibrant_index/name/findTitleCache</xsl:variable>
+    <xsl:variable name="url_taxon">../taxon/findByTitle</xsl:variable>
+    <xsl:variable name="url_webservice">../name/findTitleCache</xsl:variable>
     <xsl:param name="matchMode"/>
     <xsl:param name="url"/>
 
@@ -47,15 +47,15 @@ $('.source-url').each(function(index) {
 	//$('#content').append(test_query);
 	var displayPage = parseInt($(this).attr('ref')) + 1;
 	
-    $(this).html('&lt;a href="/vibrant_index/name/findTitleCache?query=' + test_query + '&amp;matchMode=BEGINNING&amp;pageNumber=' + $(this).attr('ref') + '"&gt;' + displayPage + '&lt;/a&gt;');
+    $(this).html('&lt;a href="../name/findTitleCache?query=' + test_query + '&amp;matchMode=BEGINNING&amp;pageNumber=' + $(this).attr('ref') + '"&gt;' + displayPage + '&lt;/a&gt;');
 
 });
 });
 
 </script>                   
                 
-                <a href="/vibrant_index/vibrant_names.html" title="Home">
-                    <img src="/vibrant_index/acquia_prosper_logo.png" alt="Home"/>
+                <a href="../vibrant_names.html" title="Home">
+                    <img src="../acquia_prosper_logo.png" alt="Home"/>
                 </a>
                 <br/>
                 <table cellpadding="1" width="100%">
