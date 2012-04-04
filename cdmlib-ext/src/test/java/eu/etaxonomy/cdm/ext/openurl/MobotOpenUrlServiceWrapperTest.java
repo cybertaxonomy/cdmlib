@@ -44,7 +44,7 @@ public class MobotOpenUrlServiceWrapperTest {
 
 	
 	@Test
-	@Ignore // ignore web accessing tests
+	//@Ignore // ignore web accessing tests
 	public void testDoResolveAndPage_1() {
 
 		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
@@ -111,7 +111,6 @@ public class MobotOpenUrlServiceWrapperTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testDoResolveAndPage_3() {
 
 		MobotOpenUrlQuery query  = new MobotOpenUrlQuery();
