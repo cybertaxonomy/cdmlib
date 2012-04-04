@@ -24,7 +24,7 @@
 
         $('.source-url').each(function(index) {
             
-            var fullurl = '../taxon/' + $(this).attr('ref') + '/extensions.json';
+            var fullurl = '/vibrant_index/taxon/' + $(this).attr('ref') + '/extensions.json';
             //$(this).html(fullurl);
             var source_url = 'lorna testing';
             $.ajax({
