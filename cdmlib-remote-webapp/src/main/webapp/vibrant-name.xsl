@@ -18,7 +18,7 @@
         <HTML>
             <HEAD>
                 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
-                <link type="text/css" rel="stylesheet" media="all" href="/vibrant.css"/>
+                <link type="text/css" rel="stylesheet" media="all" href="../vibrant.css"/>
             </HEAD>
             <BODY>
                 
