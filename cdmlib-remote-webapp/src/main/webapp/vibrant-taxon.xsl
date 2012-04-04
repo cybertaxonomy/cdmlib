@@ -3,9 +3,9 @@
 
     <!-- pass this in as a parameter? -->
 
-    <xsl:variable name="url_webservice">/taxon/findTaxaAndNames</xsl:variable>
-    <xsl:variable name="url_start">"/taxon/</xsl:variable>
-    <xsl:variable name="url_end">/extensions.json"</xsl:variable>
+    <xsl:variable name="url_webservice">/vibrant_index/taxon/findTaxaAndNames</xsl:variable>
+    <xsl:variable name="url_start">"/vibrant_index/taxon/</xsl:variable>
+    <xsl:variable name="url_end">/vibrant_index/extensions.json"</xsl:variable>
 
 
     <xsl:template match="/DefaultPagerImpl">
@@ -63,8 +63,8 @@
 
 
 
-                <a href="/vibrant_names.html" title="Home">
-                    <img src="/acquia_prosper_logo.png" alt="Home"/>
+                <a href="/vibrant_index/vibrant_names.html" title="Home">
+                    <img src="/vibrant_index/acquia_prosper_logo.png" alt="Home"/>
                 </a>
                 <br/>
                 <table cellpadding="1" width="100%">
