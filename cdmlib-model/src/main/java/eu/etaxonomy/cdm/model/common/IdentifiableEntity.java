@@ -101,7 +101,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElement(name = "TitleCache", required = true)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Column(length=255, name="titleCache")
-
     @FieldBridge(impl=StripHtmlBridge.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
