@@ -46,17 +46,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 22.11.2011
  *
  */
-public class GbifReferencesCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
+public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
 						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
 	
-	private static final Logger logger = Logger.getLogger(GbifReferencesCsv2CdmConverter.class);
+	private static final Logger logger = Logger.getLogger(GbifReferenceCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";
 	
 	/**
 	 * @param state
 	 */
-	public GbifReferencesCsv2CdmConverter(DwcaImportState state) {
+	public GbifReferenceCsv2CdmConverter(DwcaImportState state) {
 		super(state);
 	}
 
