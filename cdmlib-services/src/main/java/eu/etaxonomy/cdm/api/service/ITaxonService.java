@@ -547,7 +547,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param tree
      * @return list of inferred synonyms
      */
-    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type);
+    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type, boolean doWithMisappliedNames);
     
     /**
      * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
@@ -556,7 +556,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param iDatabase 
      * @return list of inferred synonyms
      */
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
+    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
        
 
