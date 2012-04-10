@@ -95,8 +95,8 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 		
 		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute);
 		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
-		String fromId = String.valueOf(rs.getObject(fromAttribute));
-		String toId = String.valueOf(rs.getObject(toAttribute));
+		String fromId = rs.getObject(fromAttribute)== null ? null: String.valueOf(rs.getObject(fromAttribute));
+		String toId = rs.getObject(toAttribute) == null? null : String.valueOf(rs.getObject(toAttribute));
 		
 		if (toId == null){
 			return fromObject;

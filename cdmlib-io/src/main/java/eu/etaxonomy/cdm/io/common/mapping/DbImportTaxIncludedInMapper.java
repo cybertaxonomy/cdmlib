@@ -106,8 +106,8 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		TaxonBase alternativeToObject = (TaxonBase)getRelatedObject(rs, alternativeAttribute, alternativeNamespace);
 		
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
-		String toId = String.valueOf(rs.getObject(toAttribute));
-		String alternativeToId = String.valueOf(rs.getObject(alternativeAttribute));
+		String toId = rs.getObject(toAttribute) == null ? null : String.valueOf(rs.getObject(toAttribute));
+		String alternativeToId = rs.getObject(alternativeAttribute) == null ? null : String.valueOf(rs.getObject(alternativeAttribute));
 
 		if (toId == null){
 			return fromObject;
