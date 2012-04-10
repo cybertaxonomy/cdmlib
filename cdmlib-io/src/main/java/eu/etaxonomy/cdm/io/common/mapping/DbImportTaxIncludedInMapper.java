@@ -93,7 +93,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = getState();
-		CdmImportBase currentImport = state.getCurrentIO();
+		CdmImportBase<?,STATE> currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
 			if (ignoreRecord){
