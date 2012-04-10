@@ -67,7 +67,8 @@ public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 			if (result.startsWith(" ") || result.endsWith(" ")){
 				result = result.trim();
 			}
-			if (result.length() > getPrecision() && getPrecision() != MAX_PRECISION){
+			//truncate if needed
+			if (result.length() > getPrecision() && getPrecision() != MAX_PRECISION && getPrecision() > 0){
 				logger.warn("Truncation (" + result.length() + "->" + getPrecision() + ") needed for Attribute " + getDestinationAttribute() + " in " +  cdmBase + "." );
 				result = result.substring(0, getPrecision());
 			}
