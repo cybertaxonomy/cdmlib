@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -902,7 +903,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		String abbrevLabel = representation.getAbbreviatedLabel();
 		String label = representation.getLabel();
 		if (abbrevLabel == null){
-			logger.warn("label is NULL");
+			logger.warn("Abbreviated lable for rank is NULL.Can't add rank: " + CdmUtils.Nz(rank.getLabel()));
 			return;
 		}
 		//initialize maps
