@@ -1309,8 +1309,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 
                                 taxon.addSynonym(potentialCombination, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
                                 inferredSynonyms.add(potentialCombination);
-                                zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
-                         		taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
+                                zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
+                         		taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
                                 
                             }
                             
@@ -1359,8 +1359,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	                        		
 	                        		taxon.addSynonym(potentialCombination, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
 	                        		inferredSynonyms.add(potentialCombination);
-	                        		zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
-	                         		taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
+	                        		zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
+	                         		taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
 	                        	}
                         	}
                         }
