@@ -127,7 +127,7 @@ public class ImportHelper {
 		return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull, obligat);
 	}
 	
-	public static boolean addValue(Object sourceValue, CdmBase cdmBase, String cdmAttrName, Class clazz, boolean overwriteNull, boolean obligat){
+	public static boolean addValue(Object sourceValue, CdmBase cdmBase, String cdmAttrName, Class<?> clazz, boolean overwriteNull, boolean obligat){
 		String methodName;
 //		Object strValue;
 		try {
@@ -173,23 +173,39 @@ public class ImportHelper {
 	 * @return
 //	 * @throws IllegalArgumentException if a clazz is not yet supported
 	 */
-	public static String getSetterMethodName(Class clazz, String cdmAttrName) {
+	public static String getSetterMethodName(Class<?> clazz, String cdmAttrName) {
+		return getSetterPutterMethodName(clazz, cdmAttrName, "set");
+	}
+	
+	/**
+	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
+	 * @param cdmAttrName 
+	 * @return
+//	 * @throws IllegalArgumentException if a clazz is not yet supported
+	 */
+	public static String getPutterMethodName(Class<?> clazz, String cdmAttrName) {
+		return getSetterPutterMethodName(clazz, cdmAttrName, "put");
+	}
+	
+	/**
+	 * @param clazz either boolean or other class (for boolean the naming strategy is different !)
+	 * @param cdmAttrName 
+	 * @return
+//	 * @throws IllegalArgumentException if a clazz is not yet supported
+	 */
+	private static String getSetterPutterMethodName(Class<?> clazz, String cdmAttrName, String prefix) {
 		String methodName; 
 		if (clazz == boolean.class || clazz == Boolean.class){
 			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
 				throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters");
 			}
-			methodName = "set" + cdmAttrName.substring(2, 3).toUpperCase() + cdmAttrName.substring(3) ;
+			methodName = prefix + cdmAttrName.substring(2, 3).toUpperCase() + cdmAttrName.substring(3) ;
 		}else  {
 			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
 				throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
 			}
-			methodName = "set" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
+			methodName = prefix + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
 		}
-//		else{
-//			logger.error("Class not supported: " + clazz.toString());
-//			throw new IllegalArgumentException("Classes other than boolean or String are not yet supported");
-//		};
 		return methodName;
 	}
 
@@ -219,7 +235,7 @@ public class ImportHelper {
 			}
 			methodName = "add" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
 			
-			Class[] classArray = classes.toArray(new Class[0]);
+			Class<?>[] classArray = classes.toArray(new Class[0]);
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName, classArray);
 			cdmMethod.invoke(cdmBase, sourceValues.toArray());
 			return true;
@@ -299,7 +315,7 @@ public class ImportHelper {
 		try {
 			methodName = getGetterMethodName(cdmAttrName, isBoolean);
 			if (cdmBase.isInstanceOf(NonViralName.class)){
-				cdmBase = cdmBase.deproxy(cdmBase, NonViralName.class);
+				cdmBase = CdmBase.deproxy(cdmBase, NonViralName.class);
 			}
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
 			result = (T)cdmMethod.invoke(cdmBase);
