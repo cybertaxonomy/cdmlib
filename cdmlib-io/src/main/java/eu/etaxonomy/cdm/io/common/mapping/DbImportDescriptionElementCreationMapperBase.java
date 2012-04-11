@@ -55,7 +55,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 
 //************************************ METHODS *******************************************/
 
-	public DbImportDescriptionElementCreationMapperBase setSource(String dbCitationAttribute, String sourceNamespace, String dbMicroCitationAttribute){
+	public DbImportDescriptionElementCreationMapperBase<ELEMENT,STATE> setSource(String dbCitationAttribute, String sourceNamespace, String dbMicroCitationAttribute){
 		this.dbCitationAttribute = dbCitationAttribute;
 		this.sourceNamespace = sourceNamespace;
 		this.dbMicroCitationAttribute = dbMicroCitationAttribute;
@@ -88,7 +88,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	 */
 	private void addSource(ResultSet rs, ELEMENT element) throws SQLException {
 		String microCitation = getStringDbValue(rs, dbMicroCitationAttribute);
-		Reference citation = (Reference) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
+		Reference<?> citation = (Reference<?>) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
 		element.addSource(null, null, citation, microCitation);
 	}
 
@@ -99,7 +99,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	 */
 	protected Taxon getAcceptedTaxon(ResultSet rs) throws SQLException {
 		String taxonFk = getForeignKey(rs, dbTaxonFkAttribute);
-		TaxonBase taxonBase = (TaxonBase)getRelatedObject(taxonNamespace, taxonFk);
+		TaxonBase<?> taxonBase = (TaxonBase<?>)getRelatedObject(taxonNamespace, taxonFk);
 		Taxon taxon = null;
 		if (taxonBase == null){
 			logger.warn("TaxonBase not found: " + taxonFk);
