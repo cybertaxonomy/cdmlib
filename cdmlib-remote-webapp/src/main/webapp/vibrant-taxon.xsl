@@ -13,10 +13,9 @@
 
             <HEAD>
                 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
-                <link type="text/css" rel="stylesheet" media="all" href="../vibrant.css"/>
+                <link type="text/css" rel="stylesheet" media="all" href="/vibrant.css"/>
             </HEAD>
             <BODY>
-
 
                 <script type="text/javascript" language="javascript">               
 
@@ -24,7 +23,7 @@
 
         $('.source-url').each(function(index) {
             
-            var fullurl = '/vibrant_index/taxon/' + $(this).attr('ref') + '/extensions.json';
+            var fullurl = '../taxon/' + $(this).attr('ref') + '/extensions.json';
             //$(this).html(fullurl);
             var source_url = 'lorna testing';
             $.ajax({
@@ -54,11 +53,18 @@
             });
 
 
-            $(this).html('&lt;a href="' + source_url + '"&gt;' + source_url + '&lt;/a&gt;');
+            //$(this).html('&lt;a href="' + source_url + '"&gt;' + source_url + '&lt;/a&gt;');            
+            $(this).html('&lt;a href="' + source_url + '"&gt;View summary in source database&lt;/a&gt;');
+                       
+            });        
             
+            });
+            
+                        function open(url)
 
-            });           
-            });       
+    {window.open(url);}
+
+    
             </script>
 
 
@@ -128,14 +134,14 @@
                                                   <xsl:apply-templates select="sec/titleCache"/>
                                                 </TD>
                                             </TR>
-                                            <TR>
+                                            <!--TR>
                                                 <TD>
                                                   <strong>UUID: </strong>
                                                 </TD>
                                                 <TD>
                                                   <xsl:apply-templates select="uuid"/>
                                                 </TD>
-                                            </TR>
+                                            </TR-->
                                             <TR>
                                                 <TD> </TD>
                                                 <xsl:variable name="uuid">
@@ -151,16 +157,34 @@
                                                   <div id="content"> </div>
                                                   </a>
                                                 </TD>
-                                            </TR>
+                                            </TR>                                         
                                         </TABLE>
-                                        <TABLE> </TABLE>
                                     </tr>
                                 </table>
                                 <br/>
                             </xsl:for-each>
+                            <TABLE>
+                                <TR>
+                                    <TD>
+                                        <FORM>
+                                            <INPUT type="button" value="Back To Results" onClick="history.back()"></INPUT>
+                                        </FORM> 
+                                    </TD>
+                                    <TD>
+                                        <!--FORM>
+                                            <INPUT type="button" value="New Search" onClick="javascript:open('../vibrant_names.html');"></INPUT>
+                                            <button><a href="../vibrant_names.html" title="Home"></a></button>
+                                        </FORM -->
+                                        <FORM METHOD="LINK" ACTION="../vibrant_names.html">
+                                            <INPUT TYPE="submit" VALUE="New Search"></INPUT>
+                                        </FORM>
+                                    </TD>
+                                </TR>
+                            </TABLE>
                         </td>
                     </tr>
                 </table>
+
             </BODY>
         </HTML>
     </xsl:template>

@@ -6,7 +6,7 @@ body{
     font-family:Arial, Helvetica, Verdana, "Bitstream Vera Sans", sans-serif;
     font-size:75%;
     
-    background-image:url(background-body-crop.jpg);
+    background-image:url(../background-body-crop.jpg);
     background-repeat:no-repeat;
     background-attachment:fixed;
     background-position:0% 0%;
@@ -14,15 +14,15 @@ body{
 
 
 
-a:link,
+a:active,
 a:visited{
-    color:#000069;
+    color:#800080;
 }
-a:hover,
+a:hover{
+ COLOR: purple /*The color of the mouseover or 'hover' link*/
+}
 a:focus,
-a:active{
-    color:#369;
-}
+
 h1,
 h2,
 h3,
