@@ -18,7 +18,7 @@
         <HTML>
             <HEAD>
                 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
-                <link type="text/css" rel="stylesheet" media="all" href="/vibrant_index/vibrant.css"/>
+                <link type="text/css" rel="stylesheet" media="all" href="/vibrant.css"/>
             </HEAD>
             <BODY>
                 
@@ -41,8 +41,11 @@
  
 // Document load
 $(document).ready(function() {
-$('.source-url').each(function(index) {
+
+//$('#content').append('Showing page ' + parseInt($.getQuery('pageNumber') + 1) + ':');
 	var test_query = $.getQuery('query');
+
+$('.source-url').each(function(index) {
 	//alert(test_query); 
 	//$('#content').append(test_query);
 	var displayPage = parseInt($(this).attr('ref')) + 1;
@@ -60,6 +63,7 @@ $('.source-url').each(function(index) {
                 <br/>
                 <table cellpadding="1" width="100%">
                     <tr>
+                        
                         <td width="5%"/>
                         <td valign="top">
 
@@ -67,11 +71,12 @@ $('.source-url').each(function(index) {
                             <strong>
                                 <xsl:value-of select="$vReps"/>
                             </strong>
-                            <br/>
+                            <BR></BR>
                             <H3>Search results:</H3>
                             <p><strong><xsl:value-of select="count"/></strong> unique names found.
                                 Click on name for details of source.</p>
-                            <br/>
+                            <TD><div id="content"> </div></TD>
+                            <BR></BR>
 
                             <TABLE border="0">
                                 <xsl:for-each select="records/e">
@@ -144,8 +149,6 @@ $('.source-url').each(function(index) {
         </HTML>
     </xsl:template>
 
-
-
     <!-- show page links with parameters -->
     <xsl:template match="pagesAvailableold">
         <xsl:variable name="pagesAvailable"><xsl:value-of select="."/></xsl:variable>
@@ -161,23 +164,24 @@ $('.source-url').each(function(index) {
         <!--xsl:variable name="query_string"><xsl:value-of select="$url_webservice"/>?query=Lapsana&amp;matchMode=ANYWHERE</xsl:variable-->
         <table>
         <tr>
-        
-            
+                  
         <xsl:variable name="query_string"><xsl:value-of select="$url_webservice"/>?query=&amp;matchMode=matchMode=BEGINNING</xsl:variable>
         <!--pass in query strong instead of lapsana 
         only show next and previous if the pages exist-->
 
         <!--a href="{$query_string}&amp;pageNumber=0">First</a> &#160; -->
-        <xsl:for-each select="e">
-                       
+            
+        <!-- If there is more than one page show links to other pages -->
+        <xsl:if test="count(e) > 1">              
+        <xsl:for-each select="e">                      
             <xsl:variable name="page_number"><xsl:value-of select="."/></xsl:variable>
             
-            <TD class="source-url" ref="{$page_number}">
-
-                
+            <TD class="source-url" ref="{$page_number}">               
             </TD>
+            
         </xsl:for-each>
-
+        </xsl:if>
+            
         </tr>
         </table>
     </xsl:template>
