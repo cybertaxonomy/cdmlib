@@ -93,7 +93,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = getState();
-		CdmImportBase<?,STATE> currentImport = state.getCurrentIO();
+		CdmImportBase<?,?> currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
 			if (ignoreRecord){
@@ -101,9 +101,9 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			}
 		}
 		
-		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute, fromNamespace);
-		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute, toNamespace);
-		TaxonBase alternativeToObject = (TaxonBase)getRelatedObject(rs, alternativeAttribute, alternativeNamespace);
+		TaxonBase<?> fromObject = (TaxonBase<?>)getRelatedObject(rs, fromAttribute, fromNamespace);
+		TaxonBase<?> toObject = (TaxonBase<?>)getRelatedObject(rs, toAttribute, toNamespace);
+		TaxonBase<?> alternativeToObject = (TaxonBase<?>)getRelatedObject(rs, alternativeAttribute, alternativeNamespace);
 		
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
 		String toId = rs.getObject(toAttribute) == null ? null : String.valueOf(rs.getObject(toAttribute));
@@ -114,7 +114,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		}
 			
 		
-		Reference<?> citation = (Reference)getRelatedObject(rs, citationAttribute, citationNamespace);
+		Reference<?> citation = (Reference<?>)getRelatedObject(rs, citationAttribute, citationNamespace);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
@@ -189,7 +189,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	
 	public static final String TAXONOMIC_TREE_NAMESPACE = "Classification";
 	
-	private boolean makeTaxonomicallyIncluded(STATE state, Integer classificationRefFk, Taxon child, Taxon parent, Reference citation, String microCitation){
+	private boolean makeTaxonomicallyIncluded(STATE state, Integer classificationRefFk, Taxon child, Taxon parent, Reference<?> citation, String microCitation){
 		String treeKey;
 		UUID treeUuid;
 		if (classificationRefFk == null){
@@ -231,7 +231,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		if (dbAttribute != null){
 			Object dbValue = rs.getObject(dbAttribute);
 			String id = String.valueOf(dbValue);
-			DbImportStateBase state = importMapperHelper.getState();
+			DbImportStateBase<?,?> state = importMapperHelper.getState();
 			result = state.getRelatedObject(namespace, id);
 		}
 		return result;
@@ -245,13 +245,13 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 * @param id
 	 * @return
 	 */
-	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) throws IllegalArgumentException{
+	private Taxon checkTaxonType(TaxonBase<?> taxonBase, String typeString, String id) throws IllegalArgumentException{
 		if (! taxonBase.isInstanceOf(Taxon.class)){
 			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);
 			throw new IllegalArgumentException(warning);
 		}
-		return (taxonBase.deproxy(taxonBase, Taxon.class));
+		return (CdmBase.deproxy(taxonBase, Taxon.class));
 	}
 
 
