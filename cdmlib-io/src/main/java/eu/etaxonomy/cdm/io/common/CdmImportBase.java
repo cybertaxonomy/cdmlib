@@ -526,6 +526,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		return getLanguage(state, uuid, label, text, labelAbbrev, null);
+	}
+	
+	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
 		if (uuid == null){
 			return null;
 		}
@@ -536,9 +540,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				language = Language.NewInstance(text, label, labelAbbrev);
 				
 				language.setUuid(uuid);
+				if (voc == null){
+					UUID uuidLanguageVoc = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b"); 
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidLanguageVoc, "User defined languages", "User defined languages", "User defined languages", null, isOrdered, language);
+				}
 				//set vocabulary ; FIXME use another user-defined vocabulary
-				UUID uuidLanguageVoc = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"); 
-				TermVocabulary<Language> voc = getVocabularyService().find(uuidLanguageVoc);
+				
 				voc.addTerm(language);
 				getTermService().save(language);
 			}
