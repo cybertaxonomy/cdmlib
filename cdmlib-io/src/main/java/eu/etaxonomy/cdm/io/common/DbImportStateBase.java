@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.io.common;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -30,7 +29,7 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	public static final String CURRENT_OBJECT_ID = "CurrentObjectId";
 	
 	
-	private Reference partitionSourceReference;
+	private Reference<?> partitionSourceReference;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
