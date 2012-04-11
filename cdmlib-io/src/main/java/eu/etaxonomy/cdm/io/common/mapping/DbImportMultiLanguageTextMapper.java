@@ -36,8 +36,8 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 
 //****************************** FACTORY METHOD ********************************************/
 	
-	public static DbImportMultiLanguageTextMapper NewInstance(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute){
-		return new DbImportMultiLanguageTextMapper(dbTextAttribute, dbLanguageAttribute, languageNamespace, cdmMultiLanguageTextAttribute);
+	public static DbImportMultiLanguageTextMapper<CdmBase> NewInstance(String dbTextAttribute, String dbLanguageAttribute, String languageNamespace, String cdmMultiLanguageTextAttribute){
+		return new DbImportMultiLanguageTextMapper<CdmBase>(dbTextAttribute, dbLanguageAttribute, languageNamespace, cdmMultiLanguageTextAttribute);
 	}
 	
 	
@@ -65,16 +65,17 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 	@Override
 	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		super.initialize(state, destinationClass);
+		String methodName = "";
 		try {
-			Class targetClass = getTargetClass(destinationClass);
+			Class<?> targetClass = getTargetClass(destinationClass);
 			Class<?> parameterType = getTypeClass();
-			String methodName = ImportHelper.getSetterMethodName(targetClass, cdmMultiLanguageTextAttribute);
+			methodName = ImportHelper.getSetterMethodName(targetClass, cdmMultiLanguageTextAttribute);
 			destinationMethod = targetClass.getMethod(methodName, parameterType);
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
-			String message = "NoSuchMethod in MultiLanguageTextMapper for attribute %s and destination method %s";
-			message = String.format(message, this.dbTextAttribute, this.destinationMethod);
+			String message = "NoSuchMethod in MultiLanguageTextMapper for attribute %s, destination method %s and destination class %s";
+			message = String.format(message, this.dbTextAttribute,methodName, destinationClass);
 			throw new RuntimeException(message, e);
 		}
 	}
@@ -94,7 +95,7 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 	 * @throws SecurityException
 	 * @throws NoSuchMethodException
 	 */
-	protected Class getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
+	protected Class<?> getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
 		return destinationClass;
 	}
 	
