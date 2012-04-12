@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
@@ -68,6 +69,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
+	private Map<UUID, TaxonRelationshipType> taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
 	
 	private Map<UUID, ReferenceSystem> referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
 	private Map<UUID, Rank> rankMap = new HashMap<UUID, Rank>();
@@ -244,6 +246,15 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
 	}
+	
+	public TaxonRelationshipType getTaxonRelationshipType(UUID uuid){
+		return taxonRelationshipTypeMap.get(uuid);
+	}
+	
+	public void putTaxonRelationshipType(TaxonRelationshipType relType){
+		taxonRelationshipTypeMap.put(relType.getUuid(), relType);
+	}
+	
 	
 	public PresenceTerm getPresenceTerm(UUID uuid){
 		return presenceTermMap.get(uuid);

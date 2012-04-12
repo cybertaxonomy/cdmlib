@@ -37,14 +37,23 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	
 //******************************** FACTORY METHOD ***************************************************/
 	
-	public static DbImportSynonymMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String relTypeAttribute, boolean useTaxonRelationshipIfNeeded){
-		return new DbImportSynonymMapper(dbFromAttribute, dbToAttribute, null, relatedObjectNamespace, relTypeAttribute, useTaxonRelationshipIfNeeded);
+	/**
+	 * Creates a new instance of SynonymMapper. 
+	 * @param dbFromAttribute
+	 * @param dbToAttribute
+	 * @param relatedObjectNamespace
+	 * @param relTypeAttribute
+	 * @param taxonRelationshipType this relationshiptype is taken for accepted taxa being synonyms (may be the case if data are dirty)
+	 * @return
+	 */
+	public static DbImportSynonymMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String relTypeAttribute, TaxonRelationshipType taxonRelationshipType){
+		return new DbImportSynonymMapper(dbFromAttribute, dbToAttribute, taxonRelationshipType, relatedObjectNamespace, relTypeAttribute);
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
 	private String fromAttribute;
 	private String toAttribute;
-//	private TaxonRelationshipType relType;
+	private TaxonRelationshipType relType;
 	private String relatedObjectNamespace;
 	private String citationAttribute;
 	private String microCitationAttribute;
@@ -57,18 +66,18 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 	 * @param relatedObjectNamespace 
 	 * @param mappingImport
 	 */
-	protected DbImportSynonymMapper(String fromAttribute, String toAttribute, TaxonRelationshipType relType, String relatedObjectNamespace, String relTypeAttribute, boolean useTaxonRelationshipIfNeeded) {
+	protected DbImportSynonymMapper(String fromAttribute, String toAttribute, TaxonRelationshipType relType, String relatedObjectNamespace, String relTypeAttribute) {
 		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
 		this.toAttribute = toAttribute;
-//		this.relType = relType;
+		this.relType = relType;
 		this.relatedObjectNamespace = relatedObjectNamespace;
 		this.relationshipTypeAttribute = relTypeAttribute;
 		if (relTypeAttribute != null){
 			logger.warn("Synonymrelationship type not yet implemented");
 		}
-		this.useTaxonRelationship = useTaxonRelationshipIfNeeded; 
+		this.useTaxonRelationship = (relType != null); 
 	}
 
 //************************************ METHODS *******************************************/
@@ -121,11 +130,13 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>> extends
 			SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
 			Synonym synonym = CdmBase.deproxy(fromObject, Synonym.class);
 			taxon.addSynonym(synonym, relType, citation, microCitation);
-		}else if (fromObject.isInstanceOf(Taxon.class)){
-			TaxonRelationshipType type = TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS();
+		}else if (fromObject.isInstanceOf(Taxon.class)  && this.useTaxonRelationship){
+			TaxonRelationshipType type = relType;
 			Taxon synonymTaxon = CdmBase.deproxy(fromObject, Taxon.class);
 			synonymTaxon.addTaxonRelation(taxon, type, citation, microCitation);
 			
+		}else{
+			logger.warn("Taxon is not a synonym and accepted taxa are not allowed as synonyms: " +  fromObject.getTitleCache() + "; " + fromObject.getId());
 		}
 		return fromObject;
 	}
