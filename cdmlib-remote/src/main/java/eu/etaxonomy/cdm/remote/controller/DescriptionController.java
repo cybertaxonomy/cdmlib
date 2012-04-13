@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,21 +34,17 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
@@ -66,8 +61,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 {
     @Autowired
     private IFeatureTreeService featureTreeService;
-
-
+    
+    
     public DescriptionController(){
         super();
     }
@@ -214,11 +209,29 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 (TaxonDescription)description,
                 languages,
                 ", ");
-
+        
+        
+        
+        
+               
+        
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
         textData.putText(Language.DEFAULT(), naturalLanguageDescription);
-
-        mv.addObject(textData);
+        /*MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
+        boolean isUseDescription = false;
+        if(!description.getMarkers().isEmpty()) {
+        	Set<Marker> markers = description.getMarkers();
+        	for (Marker marker: markers) {
+        		MarkerType markerType = marker.getMarkerType();
+        		if (markerType.equals(useMarkerType)) {
+        			isUseDescription = true;
+        		}
+        		
+        	}
+        }
+        if(!isUseDescription) {*/
+        	mv.addObject(textData);
+        //}
 
         return mv;
     }

@@ -228,7 +228,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     private void addMarkerTypesCriterion(Set<MarkerType> markerTypes,
             Criteria criteria) {
 
-        if(markerTypes != null) {
+        if(markerTypes != null && !markerTypes.isEmpty()) {
             Set<Integer> markerTypeIds = new HashSet<Integer>();
             for(MarkerType markerType : markerTypes) {
                 markerTypeIds.add(markerType.getId());
@@ -236,9 +236,14 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             criteria.createCriteria("markers").add(Restrictions.eq("flag", true))
                     .createAlias("markerType", "mt")
                      .add(Restrictions.in("mt.id", markerTypeIds));
-        } else {
-            // match those without any markertype
-
+        } else if (markerTypes != null && markerTypes.isEmpty()){
+        	//criteria.createCriteria("markers").add(Restrictions.eq("flag", false));
+        	//criteria.createCriteria("markers").add(Restrictions.not(Restrictions.in("marker.id", values))
+            //.createAlias("markerType", "mt")
+            //.createAlias("description", "desc")
+            //.add(Restrictions.not(Restrictions.in)
+            //.add(Restrictions.eq("mt.id", null));
+            //.add(Restrictions.isEmpty("mt.id"));
         }
     }
 
