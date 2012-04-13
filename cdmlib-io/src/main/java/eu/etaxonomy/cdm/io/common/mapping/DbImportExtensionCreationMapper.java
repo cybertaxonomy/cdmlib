@@ -16,8 +16,8 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @created 11.03.2010
  * @version 1.0
  */
-public class DbImportExtensionCreationMapper extends DbImportSupplementCreationMapperBase<Extension, IdentifiableEntity, DbImportStateBase<?, ?>> {
+public class DbImportExtensionCreationMapper extends DbImportSupplementCreationMapperBase<Extension, IdentifiableEntity, DbImportStateBase<?, ?>, ExtensionType > {
 	private static final Logger logger = Logger.getLogger(DbImportExtensionCreationMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
@@ -56,14 +56,14 @@ public class DbImportExtensionCreationMapper extends DbImportSupplementCreationM
 	 * @param extensionType if null no extension type is set
 	 * @return DbImportExtensionCreationMapper
 	 */
-	public static DbImportExtensionCreationMapper NewInstance( String dbExtendedObjectAttribute, String extendedObjectNamespace, String dbExtensionValueAttribute,String dbIdAttribute, DefinedTermBase extensionType){
+	public static DbImportExtensionCreationMapper NewInstance( String dbExtendedObjectAttribute, String extendedObjectNamespace, String dbExtensionValueAttribute,String dbIdAttribute, ExtensionType extensionType){
 		return new DbImportExtensionCreationMapper(dbExtendedObjectAttribute, extendedObjectNamespace, dbExtensionValueAttribute, dbIdAttribute, extensionType);
 	}
 
 	
 //********************************* CONSTRUCTOR ****************************************/
 
-	protected DbImportExtensionCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, String dbIdAttribute, DefinedTermBase supplementType) {
+	protected DbImportExtensionCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, String dbIdAttribute, ExtensionType supplementType) {
 		super(dbSupplementValueAttribute, dbSupplementedObjectAttribute, dbIdAttribute, supplementedObjectNamespace, supplementType);
 	}
 
@@ -100,6 +100,7 @@ public class DbImportExtensionCreationMapper extends DbImportSupplementCreationM
 	@Override
 	protected Extension createObject(ResultSet rs) throws SQLException {
 		Extension extension = Extension.NewInstance();
+		extension.setType(this.supplementType);
 		return extension;
 	}
 

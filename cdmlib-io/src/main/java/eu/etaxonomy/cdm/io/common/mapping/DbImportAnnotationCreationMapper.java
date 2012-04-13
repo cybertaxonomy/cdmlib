@@ -18,10 +18,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 
 
 /**
@@ -31,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @created 11.03.2010
  * @version 1.0
  */
-public class DbImportAnnotationCreationMapper extends DbImportSupplementCreationMapperBase<Annotation, AnnotatableEntity, DbImportStateBase<?, ?>> {
+public class DbImportAnnotationCreationMapper extends DbImportSupplementCreationMapperBase<Annotation, AnnotatableEntity, DbImportStateBase<?, ?>, AnnotationType> {
 	private static final Logger logger = Logger.getLogger(DbImportAnnotationCreationMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
@@ -60,7 +58,7 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 	 * @param annotationType
 	 * @return
 	 */
-	public static DbImportAnnotationCreationMapper NewInstance(String dbAnnotatedObjectAttribute, String annotatedObjectNamespace, String dbAnnotationTextAttribute, Language language, String dbIdAttribute, MarkerType annotationType){
+	public static DbImportAnnotationCreationMapper NewInstance(String dbAnnotatedObjectAttribute, String annotatedObjectNamespace, String dbAnnotationTextAttribute, Language language, String dbIdAttribute, AnnotationType annotationType){
 		return new DbImportAnnotationCreationMapper(dbAnnotatedObjectAttribute, annotatedObjectNamespace, dbAnnotationTextAttribute, language, dbIdAttribute, annotationType);
 	}
 	
@@ -77,7 +75,7 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 	 * @param supplementedObjectNamespace
 	 * @param supplementType
 	 */
-	protected DbImportAnnotationCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, Language language, String dbIdAttribute, DefinedTermBase supplementType) {
+	protected DbImportAnnotationCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, Language language, String dbIdAttribute, AnnotationType supplementType) {
 		super(dbSupplementValueAttribute, dbSupplementedObjectAttribute, dbIdAttribute, supplementedObjectNamespace, supplementType);
 		this.language = language;
 	}
@@ -114,7 +112,7 @@ public class DbImportAnnotationCreationMapper extends DbImportSupplementCreation
 	 */
 	@Override
 	protected Annotation createObject(ResultSet rs) throws SQLException {
-		Annotation annotation = Annotation.NewInstance(null, null);
+		Annotation annotation = Annotation.NewInstance(null, supplementType, null);
 		if (language != null){
 			annotation.setLanguage(language);
 		}
