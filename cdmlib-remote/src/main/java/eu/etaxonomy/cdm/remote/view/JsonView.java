@@ -158,14 +158,17 @@ public class JsonView extends BaseView implements View{
         PrintWriter writer = response.getWriter();
 
         // read jsonp parameter from query string
-        String[] tokens = request.getQueryString().split("&", 0);
-        String jsonpParamName = "callback";
         String jsonpCallback= null;
-        for (int i = 0; i < tokens.length; i++) {
-             if(tokens[i].startsWith(jsonpParamName)){
-                 jsonpCallback = tokens[i].substring(jsonpParamName.length() + 1);
-                 break;
-             }
+        String queryString = request.getQueryString();
+        if(queryString != null){
+            String[] tokens = request.getQueryString().split("&", 0);
+            String jsonpParamName = "callback";
+            for (int i = 0; i < tokens.length; i++) {
+                if(tokens[i].startsWith(jsonpParamName)){
+                    jsonpCallback = tokens[i].substring(jsonpParamName.length() + 1);
+                    break;
+                }
+            }
         }
 
         // render
