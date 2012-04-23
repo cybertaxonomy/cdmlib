@@ -259,8 +259,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             /*//"elements.multilanguageText",
-            "elements.media.representations.parts",
-            "elements.media.title",*/
+            "elements.media.representations.parts",*/
+            "elements.media.title",
     });
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
