@@ -237,13 +237,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     .createAlias("markerType", "mt")
                      .add(Restrictions.in("mt.id", markerTypeIds));
         } else if (markerTypes != null && markerTypes.isEmpty()){
-        	//criteria.createCriteria("markers").add(Restrictions.eq("flag", false));
-        	//criteria.createCriteria("markers").add(Restrictions.not(Restrictions.in("marker.id", values))
-            //.createAlias("markerType", "mt")
-            //.createAlias("description", "desc")
-            //.add(Restrictions.not(Restrictions.in)
-            //.add(Restrictions.eq("mt.id", null));
-            //.add(Restrictions.isEmpty("mt.id"));
+        	//AT: added in case the projects requires an third state description, An empty Marker type set
         }
     }
 

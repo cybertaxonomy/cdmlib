@@ -209,30 +209,9 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 (TaxonDescription)description,
                 languages,
                 ", ");
-        
-        
-        
-        
-               
-        
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
         textData.putText(Language.DEFAULT(), naturalLanguageDescription);
-        /*MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
-        boolean isUseDescription = false;
-        if(!description.getMarkers().isEmpty()) {
-        	Set<Marker> markers = description.getMarkers();
-        	for (Marker marker: markers) {
-        		MarkerType markerType = marker.getMarkerType();
-        		if (markerType.equals(useMarkerType)) {
-        			isUseDescription = true;
-        		}
-        		
-        	}
-        }
-        if(!isUseDescription) {*/
-        	mv.addObject(textData);
-        //}
-
+        mv.addObject(textData);
         return mv;
     }
     

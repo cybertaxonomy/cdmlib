@@ -479,12 +479,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         }
         else if (isUseDescription) {
-        	/*TextData naturalLanguageDescriptionText = null;
-        	
-        	naturalLanguageDescriptionText = naturalLanguageGenerator.generateUseDescriptionData(featureTree,
-                    ((TaxonDescription)description),
-                    lang);
-        	return naturalLanguageDescriptionText.getText(lang);*/
+        	//AT: Left Blank in case we need to generate a Natural language text string.
 		}
         return naturalLanguageDescription.toString();
     }
