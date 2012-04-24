@@ -30,6 +30,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -1042,6 +1043,39 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     }
 
+    /* (non-Javadoc)
+<    * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findByUuid(java.util.UUID, java.util.List<org.hibernate.criterion.Criterion>, java.util.List<java.lang.String>)
+     */
+	public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
+
+		Criteria crit = getSession().createCriteria(type);
+
+		if (uuid != null) {
+			crit.add(Restrictions.eq("uuid", uuid));
+		} else {
+			logger.warn("UUID is NULL");
+			return null;
+		}
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+		crit.addOrder(Order.asc("uuid"));
+
+		List<? extends TaxonBase> results = crit.list();
+		if (results.size() == 1) {
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			TaxonBase taxon = results.iterator().next();
+			return taxon;
+		} else if (results.size() > 1) {
+			logger.error("Multiple results for UUID: " + uuid);
+		} else if (results.size() == 0) {
+			logger.info("No results for UUID: " + uuid);
+		}
+			
+		return null;
+	}
     /*
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean)

@@ -231,6 +231,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public List<TaxonNameBase<?, ?>> searchNames(String queryString,
 			Integer pageSize, Integer pageNumber);
+	
+	
 
 	/**
 	 * Returns a count of TaxonNameBase instances which nameCache matches the
@@ -254,6 +256,31 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 	
+	/**
+	 * @param queryString
+	 * @param matchmode
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param criteria
+	 * @param propertyPaths TODO
+	 * @return
+	 */
+	public List<? extends TaxonNameBase<?, ?>> findByTitle(String queryString,
+			MatchMode matchmode, Integer pageSize, Integer pageNumber,
+			List<Criterion> criteria, List<String> propertyPaths);
+	
+	/**
+	 * Returns a taxon name corresponding to the given uuid
+	 * 
+	 * @param uuid 
+	 * 			The uuid of the taxon name requested
+	 * @param criteria
+	 * 			Custom criteria to be added to the default list of applied criteria.
+	 * @param propertyPaths 
+	 * 			
+	 * @return 
+	 */
+	public TaxonNameBase<?, ?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
 	
 	/**
 	 * @param queryString

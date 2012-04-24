@@ -543,6 +543,67 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		return results;
 	}
 	
+	public List<? extends TaxonNameBase<?,?>> findByTitle(String queryString, 
+			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+
+		Criteria crit = getSession().createCriteria(type);
+		if (matchmode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));
+		} else {
+			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+		}
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+		crit.addOrder(Order.asc("titleCache"));
+
+		if(pageSize != null) {
+			crit.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				crit.setFirstResult(pageNumber * pageSize);
+			}
+		}
+
+		List<? extends TaxonNameBase<?,?>> results = crit.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		
+		return results;
+	}
+	
+
+	public TaxonNameBase<?,?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
+
+		Criteria crit = getSession().createCriteria(type);
+
+		if (uuid != null) {
+			crit.add(Restrictions.eq("uuid", uuid));
+		} else {
+			logger.warn("UUID is NULL");
+			return null;
+		}
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+		crit.addOrder(Order.asc("uuid"));
+
+		List<? extends TaxonNameBase<?,?>> results = crit.list();
+		if (results.size() == 1) {
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			TaxonNameBase<?, ?> taxonName = results.iterator().next();
+			return taxonName;
+		} else if (results.size() > 1) {
+			logger.error("Multiple results for UUID: " + uuid);
+		} else if (results.size() == 0) {
+			logger.info("No results for UUID: " + uuid);
+		}
+			
+		return null;
+	}
+	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
