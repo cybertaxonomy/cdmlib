@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -474,7 +475,18 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
+
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
+    
+	/**
+	 * Returns the TaxonBase with the given UUID 
+	 * using the given match mode and initialization strategy
+	 * 
+	 * @param uuid
+	 * @param propertyPaths
+	 * @return
+	 */
+    public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths);
     
     public int countAllRelationships();
 
