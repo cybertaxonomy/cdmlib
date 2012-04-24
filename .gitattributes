@@ -1640,6 +1640,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/SimpleDarwinRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/SimpleDarwinRecordSet.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/package-info.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/namecatalogue/NameInformation.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/namecatalogue/NameSearch.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/namecatalogue/TaxonInformation.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/About.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/DeletedRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Description.java -text
