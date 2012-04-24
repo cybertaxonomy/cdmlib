@@ -50,6 +50,15 @@
          </set>
        </property>
      </bean>
+     
+     <bean id="nameCatalogueApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
+       <property name="includeToOneRelations" value="true" />
+       <property name="includeToManyRelations" value="true" />
+       <property name="exceptions">
+         <set>
+         </set>
+       </property>
+     </bean>
 
   <!--
          =================================================
@@ -349,6 +358,8 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
+
+        
         <entry key="java.lang.Class">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
@@ -376,4 +387,66 @@
       </list>
     </property>
   </bean>
+  
+   <!--
+         =================================================
+            default configuration name catalogue service
+         =================================================
+    -->
+  <bean name="nameCatalogueJsonConfig" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
+    init-method="init">
+    <property name="jsonPropertyFilter">
+        <bean class="net.sf.json.filters.OrPropertyFilter">
+          <constructor-arg>
+              <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+          </constructor-arg>
+          <constructor-arg ref="nameCatalogueApiCardinalityPropertyFilter">
+          </constructor-arg>
+        </bean>
+    </property>
+    <property name="jsonValueProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.HibernateJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.UUID">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.DateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Calendar">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.Partial">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Map">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+          <entry key="java.net.URI">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+          </entry>
+
+      </map>
+    </property>
+    <property name="ignoreDefaultExcludes" value="true" />
+    <property name="excludes">
+      <list value-type="java.lang.String">
+      	<value>class</value>
+        <value>declaringClass</value><!-- DefaultExclude -->
+        <value>metaClass</value><!-- DefaultExclude -->
+        <value>id</value>
+        <value>cacheStrategy</value>
+        <value>createdBy</value>
+        <value>updatedBy</value>
+      </list>
+    </property>
+  </bean>
+  
 </beans>
