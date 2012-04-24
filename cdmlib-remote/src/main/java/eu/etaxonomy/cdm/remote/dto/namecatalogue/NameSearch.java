@@ -10,8 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 
-import eu.etaxonomy.cdm.model.common.RemoteResponse;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 /**
  * The class representing the response from the CDM Remote Web Service API to a single name search query.

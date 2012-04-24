@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.etaxonomy.cdm.model.common.RemoteResponse;
+import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 /**
  * @author c.mathew
