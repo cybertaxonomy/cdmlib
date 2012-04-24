@@ -1636,6 +1636,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/Pref
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/RemoveHTMLReader.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/StripTagsConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/TimePeriodConverter.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/common/ErrorResponse.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/common/RemoteResponse.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/SimpleDarwinRecord.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dwc/SimpleDarwinRecordSet.java -text
