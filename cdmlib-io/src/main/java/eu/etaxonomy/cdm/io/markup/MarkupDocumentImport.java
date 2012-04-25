@@ -241,7 +241,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	// second time
 	private UnmatchedLeads unmatchedLeads;
 
-	@Autowired
+
 	private IEditGeoService editGeoService;
 	
 	// TODO remove preliminary
