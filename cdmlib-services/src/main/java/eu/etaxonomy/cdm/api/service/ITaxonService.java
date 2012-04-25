@@ -558,6 +558,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
 
+	public TaxonBase findTaxonByName(String taxonName);
+
        
 
 

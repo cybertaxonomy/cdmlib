@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -722,6 +723,16 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         }
         else {
             descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+            /*for (TaxonDescription description: descriptions) {
+            	for (IdentifiableSource source :description.getSources()) {
+            		if (source.getOriginalNameString() != null) {
+            			description.
+            		}
+            		
+            	}
+            	
+            	
+            }*/
         }
         return descriptions;
     }
@@ -761,8 +772,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public ModelAndView doGetDescriptionElementsByType(
             @PathVariable("uuid") UUID uuid,
             @PathVariable("classSimpleName") String classSimpleName,
-            //@RequestParam(value = "markerTypes", required = false, defaultValue = "false") Set<UUID> markerTypes,
-//            @PathVariable(value = "markerTypes") String markerTypes,
             @RequestParam(value = "markerTypes", required = false) UuidList markerTypeUUIDs,
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,

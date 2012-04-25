@@ -57,6 +57,9 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     private IOccurrenceService occurrenceService;
     @Autowired
     private INameService nameService;
+    @Autowired 
+    private ITaxonService taxonService; 
+    
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
             "taxonNodes"
@@ -120,6 +123,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             return null;
         }
     }
+   
 
     @RequestMapping(value = "specimensOrObersvations", method = RequestMethod.GET)
     public ModelAndView doListSpecimensOrObersvations(
@@ -159,6 +163,19 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         TaxonBase tb = service.load(uuid, Arrays.asList(new String[] {"name"}));
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
+    }
+    
+    @RequestMapping(value = "/bestMatchingTaxon/{taxonName}", method = RequestMethod.GET)
+    public TaxonBase doFindBestMatchingTaxon(
+    	 	@PathVariable("taxonName") String taxonName,
+    		HttpServletRequest request, 
+    		HttpServletResponse response)throws IOException {
+		
+    	Taxon bestMatchingTaxon =  taxonService.findBestMatchingTaxon(taxonName);
+    	
+    	return bestMatchingTaxon;
+    
+    	
     }
 
 }

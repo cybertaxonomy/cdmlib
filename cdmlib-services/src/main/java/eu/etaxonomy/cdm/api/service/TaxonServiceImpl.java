@@ -938,6 +938,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return bestCandidate;
     }
+    
+    public TaxonBase findTaxonByName(String taxonName) {
+    	 TaxonBase taxon = null;
+    	 List<TaxonBase> taxonList = dao.findByNameTitleCache(true, true, taxonName, null, MatchMode.EXACT, null, 0, null, null);
+    	 if (taxonList.size()>0) {
+    		 return taxonList.get(0);
+    	 }
+    	 return taxon;
+    }
 
     private boolean isInClassification(Taxon taxon, MatchingTaxonConfigurator config) {
         UUID configClassificationUuid = config.getClassificationUuid();
