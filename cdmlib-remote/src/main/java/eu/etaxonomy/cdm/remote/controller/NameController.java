@@ -127,8 +127,8 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
         return mv;
     }
     
-    @RequestMapping(value = "/namesByName/{taxonName}", method = RequestMethod.GET)
-    public TaxonNameBase doGetTaxonNameBase(
+    @RequestMapping(value = "namesByName/{taxonName}", method = RequestMethod.GET)
+    public TaxonNameBase doGetnamesByName(
     	 	@PathVariable("taxonName") String taxonName,
     		HttpServletRequest request, 
     		HttpServletResponse response)throws IOException {
