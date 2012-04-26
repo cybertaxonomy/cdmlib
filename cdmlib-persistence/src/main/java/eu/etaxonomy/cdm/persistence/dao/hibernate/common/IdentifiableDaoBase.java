@@ -77,6 +77,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", queryString));
 		List<T> results = crit.list();
+		List<String> propertyPaths = null;
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
 	
