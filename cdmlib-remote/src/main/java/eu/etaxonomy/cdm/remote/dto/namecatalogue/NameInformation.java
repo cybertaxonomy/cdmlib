@@ -9,6 +9,8 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
@@ -107,12 +109,14 @@ public class NameInformation implements RemoteResponse {
 	}
 	
 	public void addToResponseTaxonInfo(Set<TaxonBase> taxonBases) {
-		Iterator it = taxonBases.iterator();
-		System.out.println("TB Size : " + taxonBases.size());	
+		Iterator it = taxonBases.iterator();		
 		while(it.hasNext()) {
 			TaxonBase tb = (TaxonBase)it.next();
-			response.addToTaxonUuids(tb.getUuid().toString());
-			response.addToTaxonLsids(tb.getLsid().toString());
+			response.addToTaxonUuids(tb.getUuid().toString());	
+			if(tb.isInstanceOf(Taxon.class) && tb.getLsid() != null) {
+				response.addToTaxonLsids(tb.getLsid().toString());
+			}
+			
 		}			
 	}
 	

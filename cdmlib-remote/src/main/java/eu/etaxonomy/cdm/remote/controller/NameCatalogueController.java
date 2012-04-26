@@ -144,8 +144,6 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 			logger.info("doGetNameSearch()" + request.getServletPath() + " for query \"" + query + "\" without wild cards : " + queryWOWildcards + " and match mode : " + mm);
 			List<NonViralName> nameList = (List<NonViralName>)service.findNamesByTitleCache(queryWOWildcards, mm, NAME_SEARCH_INIT_STRATEGY);
 			if(nameList == null || !nameList.isEmpty()) {
-				System.out.println("Size : " + nameList.size());
-
 				NameSearch ns = new NameSearch();	
 				ns.setRequest(query);		
 
@@ -190,7 +188,7 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 		ModelAndView mv = new ModelAndView();
 		List <RemoteResponse> niList = new ArrayList<RemoteResponse>();
 		for(String nameUuid : nameUuids ) {
-			logger.info("doGetNameInformation()" + request.getServletPath() + " for name uuid \"" + nameUuid);
+			logger.info("doGetNameInformation()" + request.getServletPath() + " for name uuid \"" + nameUuid + "\"");
 			NonViralName nvn = (NonViralName)service.findNameByUuid(UUID.fromString(nameUuid), NAME_INFORMATION_INIT_STRATEGY);
 			if(nvn != null) {				
 				NameInformation ni = new NameInformation();
@@ -230,13 +228,11 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 			logger.info("doGetTaxonInformation()" + request.getServletPath() + " for taxon uuid \"" + taxonUuid);
 			TaxonBase tb= taxonService.findTaxonByUuid(UUID.fromString(taxonUuid), TAXON_INFORMATION_INIT_STRATEGY);
 			if(tb != null) {
-				System.out.println("Name : " + tb.getTitleCache());
 				TaxonInformation ti = new TaxonInformation();
 				ti.setRequest(taxonUuid);
 
 				if(tb.isInstanceOf(Taxon.class)) {
 					Taxon taxon = (Taxon)tb;
-					System.out.println("Is a Taxon");
 					ti.setResponseTaxon(tb.getTitleCache(), 
 							ACCECPTED_NAME_STATUS, 
 							buildFlagMap(tb),
@@ -250,7 +246,6 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 					}
 				} else if(tb instanceof Synonym) {
 					Synonym synonym = (Synonym)tb;
-					System.out.println("Is a Synonym");
 					ti.setResponseTaxon(tb.getTitleCache(), 
 							SYNONYM_STATUS, 
 							buildFlagMap(tb),
@@ -277,7 +272,7 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 	private MatchMode getMatchModeFromQuery(String query) {
 		if(query.startsWith("*") && query.endsWith("*")) {
 			return MatchMode.ANYWHERE;
-		} else if(query.startsWith("*")) {
+		} else if(query.startsWith("*")) {			
 			return MatchMode.END;
 		} else if(query.endsWith("*")) {
 			return MatchMode.BEGINNING;
@@ -289,14 +284,16 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 	private String getQueryWithoutWildCards(String query) {
 
 		String newQuery = query;
-		if(query.startsWith("*")) {
-			newQuery = newQuery.substring(1, newQuery.length());
+		
+		if(query.startsWith("*")) {			
+			newQuery = newQuery.substring(1, newQuery.length());			
 		}
 
 		if(query.endsWith("*")) {
 			newQuery = newQuery.substring(0, newQuery.length()-1);
 		}
-		return newQuery;
+		
+		return newQuery.trim();
 	}
 
 	private Map<String, String> buildFlagMap(TaxonBase tb) {
@@ -316,10 +313,8 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 
 				classification.put(classificationtn.getTaxon().getName().getRank().getTitleCache(), 
 						classificationtn.getTaxon().getName().getTitleCache());
-				System.out.println("Classification : " + classificationtn.getTaxon().getName().getRank().getTitleCache());
-
 			}
-			System.out.println("CTitle : " + tn.getClassification().getTitleCache());
+
 			String cname = tn.getClassification().getTitleCache();
 			String [] words = cname.split("\\s+");
 			//"\\s+" in regular expression language meaning one or more spaces
