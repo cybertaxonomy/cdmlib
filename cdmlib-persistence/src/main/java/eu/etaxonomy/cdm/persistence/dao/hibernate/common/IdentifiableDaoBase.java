@@ -124,6 +124,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		int firstItem = (page - 1) * pagesize;
 		crit.setFirstResult(firstItem);
 		List<T> results = crit.list();
+		List<String> propertyPaths = null;
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
 
