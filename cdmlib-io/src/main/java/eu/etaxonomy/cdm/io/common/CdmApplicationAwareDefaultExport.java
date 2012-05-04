@@ -141,7 +141,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 	
 	private void unRegisterObservers(IExportConfigurator config, ICdmIO io){
 		for (IIoObserver observer : config.getObservers()){
-			io.deleteObserver(observer);
+			io.removeObserver(observer);
 		}
 	}
 	

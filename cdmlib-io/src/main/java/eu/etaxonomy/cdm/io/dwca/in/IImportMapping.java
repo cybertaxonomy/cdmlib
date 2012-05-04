@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.util.Map;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.io.dwca.in.InMemoryMapping.CdmKey;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
@@ -18,6 +18,29 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  *
  */
 public interface IImportMapping {
+	
+	
+	public enum MappingType{
+		InMemoryMapping(0),
+		DatabaseMapping(1);
+		
+		private int index; 
+		
+		private MappingType(int index){
+			this.index = index; 
+		}
+		
+		public IImportMapping getMappingInstance(String mappingId){
+			if (this.equals(MappingType.InMemoryMapping)){
+				return new InMemoryMapping();
+			}else if (this.equals(MappingType.DatabaseMapping)){
+				return new DatabaseMapping(mappingId);
+			}else{
+				throw new RuntimeException("Unknown MappingType: " + this.toString());
+			}
+		}
+		
+	}
 	
 	/**
 	 * Put the destination object with for the given namespaced identifier into the mapping.
@@ -56,5 +79,41 @@ public interface IImportMapping {
 	 */
 	public boolean exists(String namespace, String sourceKey,Class<?> destinationClass);
 
+	/**
+	 * Returns the mapping for only those obejcts addressed by the namespacedSourceKeys parameter
+	 * @param namespacedKeys
+	 * @return
+	 */
+	public InMemoryMapping getPartialMapping(Map<String, Set<String>> namespacedSourceKeys);
 
+//	/**
+//	 * Returns a list for all mapping entries.
+//	 * @return
+//	 */
+//	//ONLY for InMemoryMapping, remove here
+//	public List<MappingEntry<String, String, Class, Integer>> getEntryList();
+//	
+	
+	public class CdmKey<CLASS extends IdentifiableEntity>{
+		Class<CLASS> clazz;
+		int id;
+		
+		public CdmKey(Class clazz, int id){
+			this.clazz = clazz;
+			this.id = id;
+		}
+			
+		public CdmKey(IdentifiableEntity<?> object){
+			this.clazz = (Class)object.getClass();
+			this.id = object.getId();
+		}
+		
+		@Override
+		public String toString(){
+			return id + "@" + clazz.getSimpleName();
+		}
+	}
+
+	public void finish();
+	
 }

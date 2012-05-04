@@ -189,6 +189,19 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
+	/**
+	 * Returns a taxon corresponding to the given uuid
+	 * 
+	 * @param uuid 
+	 * 			The uuid of the taxon requested
+	 * @param criteria
+	 * 			Custom criteria to be added to the default list of applied criteria.
+	 * @param propertyPaths 
+	 * 			
+	 * @return 
+	 */
+    public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+    
     /**
      * @param queryString
      * @param classification
@@ -202,6 +215,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
     public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
     MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
     Integer pageNumber, List<String> propertyPaths);
+
 
     /**
      * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.

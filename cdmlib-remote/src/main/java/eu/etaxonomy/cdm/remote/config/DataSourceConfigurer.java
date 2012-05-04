@@ -71,15 +71,23 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
 
-    private static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
-    private static final String HIBERNATE_DIALECT = "hibernate.dialect";
-    private static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
-    private static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
-    private static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";
+    protected static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
+    protected static final String HIBERNATE_DIALECT = "hibernate.dialect";
+    protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
+    protected static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
+    /**
+     * Attribute to configure the name of the data source as set as bean name in the datasources.xml.
+     * This name usually is used as the prefix for the webapplication root path.
+     * <br>
+     * <b>This is a required attribute!</b>
+     *
+     * @see AbstractWebApplicationConfigurer#findProperty(String, boolean)
+     */
+    protected static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";
 
-    private static final String DATASOURCE_BEANDEF_DEFAULT = CdmUtils.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
+    protected static final String DATASOURCE_BEANDEF_DEFAULT = CdmUtils.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
 
-    private static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
+    protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
 
     public void setBeanDefinitionFile(String filename){
         beanDefinitionFile = filename;

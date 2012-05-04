@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -65,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
@@ -83,6 +85,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
+	public static final UUID uuidUserDefinedTaxonRelationshipTypeVocabulary = UUID.fromString("31a324dc-408d-4877-891f-098db21744c6");
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
@@ -481,6 +484,41 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 	
+	/**
+	 * Returns a taxon relationship type for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the taxon relationship type exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no taxon relationship type is created.
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected TaxonRelationshipType getTaxonRelationshipType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<TaxonRelationshipType> voc){
+		if (uuid == null){
+			return null;
+		}
+		TaxonRelationshipType relType = state.getTaxonRelationshipType(uuid);
+		if (relType == null){
+			relType = (TaxonRelationshipType)getTermService().find(uuid);
+			if (relType == null && ! hasNoLabel(label, text, labelAbbrev)){
+				relType = new TaxonRelationshipType();
+				Representation repr = Representation.NewInstance(text, label, labelAbbrev, Language.DEFAULT());
+				relType.addRepresentation(repr);
+				relType.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = true;
+					voc = getVocabulary(uuidUserDefinedTaxonRelationshipTypeVocabulary, "User defined vocabulary for taxon relationship types", "User Defined Taxon Relationship Types", null, null, isOrdered, relType);
+				}
+				voc.addTerm(relType);
+				getTermService().save(relType);
+			}
+			state.putTaxonRelationshipType(relType);
+		}
+		return relType;
+	}
+	
 	private boolean hasNoLabel(String label, String text, String labelAbbrev) {
 		return label == null && text == null && labelAbbrev == null;
 	}
@@ -526,6 +564,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		return getLanguage(state, uuid, label, text, labelAbbrev, null);
+	}
+	
+	protected Language getLanguage(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
 		if (uuid == null){
 			return null;
 		}
@@ -536,9 +578,13 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				language = Language.NewInstance(text, label, labelAbbrev);
 				
 				language.setUuid(uuid);
+				if (voc == null){
+					UUID uuidLanguageVoc = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b"); 
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidLanguageVoc, "User defined languages", "User defined languages", "User defined languages", null, isOrdered, language);
+				}
 				//set vocabulary ; FIXME use another user-defined vocabulary
-				UUID uuidLanguageVoc = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"); 
-				TermVocabulary<Language> voc = getVocabularyService().find(uuidLanguageVoc);
+				
 				voc.addTerm(language);
 				getTermService().save(language);
 			}

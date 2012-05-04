@@ -23,22 +23,25 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
  */
 public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(CsvStream.class);
+	private static Logger logger = Logger.getLogger(CsvStreamItem.class);
 
 	public TermUri term;
 	public Map<String, String> map;
 	private CsvStream stream;
+	private int line;
+	
 	
 	/**
 	 * @param term
 	 * @param map
 	 * @param stream
 	 */
-	public CsvStreamItem(TermUri term, Map<String, String> map, CsvStream stream) {
+	public CsvStreamItem(TermUri term, Map<String, String> map, CsvStream stream, int line) {
 		super();
 		this.term = term;
 		this.map = map;
 		this.stream = stream;
+		this.line = line;
 	}
 
 	public String get(String mapKey){
@@ -65,7 +68,7 @@ public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 	 * @return
 	 */
 	public String getLocation() {
-		return CdmUtils.concat("/", stream.getFilesLocation() ,String.valueOf(stream.getLine()));
+		return CdmUtils.concat("/", stream.getFilesLocation() ,String.valueOf(line));
 	}
 	
 	@Override

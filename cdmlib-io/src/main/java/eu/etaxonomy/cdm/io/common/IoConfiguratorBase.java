@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public abstract class IoConfiguratorBase implements IIoConfigurator{
+public abstract class IoConfiguratorBase extends ObservableBase implements IIoConfigurator, IIoObservable{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
 
@@ -90,24 +90,6 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 
-	/**
-	 * Sets the observers for this import/export
-	 * @return
-	 */
-	public Set<IIoObserver> getObservers() {
-		return observers;
-	}
-	
-	public void setObservers(Set<IIoObserver> observers) {
-		this.observers = observers;
-	}
-	
-	public boolean addObserver(IIoObserver observer){
-		return this.observers.add(observer);
-	}
-	
-	public boolean removeObserver(IIoObserver observer){
-		return this.observers.remove(observer);
-	}
+
 
 }

@@ -18,7 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -53,7 +52,7 @@ public class GenericDefaultCacheStrategyTest {
 	public void setUp() throws Exception {
 		generic1 = ReferenceFactory.newGeneric();
 		generic1.setCacheStrategy(defaultStrategy);
-		team1 = Team.NewTitledInstance("Author", "TT.");
+		team1 = Team.NewTitledInstance("Authorteam", "TT.");
 	}
 	
 //**************************** TESTS ***********************************
@@ -65,6 +64,46 @@ public class GenericDefaultCacheStrategyTest {
 		Assert.assertEquals("Unexpected title cache.", "auct.", generic1.getTitleCache());
 	}
 	
+	
+	@Test
+	public void testGetInRef(){
+		generic1.setTitle("auct.");
+		IBook book1 = ReferenceFactory.newBook();
+		book1.setTitle("My book title");
+		book1.setAuthorTeam(team1);
+		Reference<?> inRef = (Reference<?>)book1;
+		generic1.setInReference(inRef);
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("Unexpected title cache.", "in Authorteam, My book title: 2", generic1.getNomenclaturalCitation("2"));
+	}
+
+	@Test
+	public void testGetInRefWithoutInRef(){
+		generic1.setTitle("My generic title");
+		generic1.setAuthorTeam(team1);
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("Unexpected title cache.", "My generic title: 2", generic1.getNomenclaturalCitation("2"));
+	}
+	
+	@Test
+	public void testGetTitleCache2(){
+		generic1.setTitle("Part Title");
+		IBook book1 = ReferenceFactory.newBook();
+		book1.setTitle("My book title");
+		book1.setAuthorTeam(team1);
+		Reference<?> inRef = (Reference<?>)book1;
+		generic1.setInReference(inRef);
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("Unexpected title cache.", "Part Title in Authorteam, My book title", generic1.getTitleCache());
+	}
+
+	@Test
+	public void testGetTitleCacheWithoutInRef(){
+		generic1.setTitle("My generic title");
+		generic1.setAuthorTeam(team1);
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("Unexpected title cache.", "Authorteam, My generic title", generic1.getTitleCache());
+	}
 
 	
 }

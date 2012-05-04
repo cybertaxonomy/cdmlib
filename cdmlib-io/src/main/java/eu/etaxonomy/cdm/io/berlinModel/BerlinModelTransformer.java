@@ -115,6 +115,9 @@ public final class BerlinModelTransformer {
 	
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
+	
+	//languages
+	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
 
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
@@ -359,6 +362,8 @@ public final class BerlinModelTransformer {
 			
 			case 26: return TaxonRelationshipType.OVERLAPS();
 			//TODO other relationshipTypes
+			
+			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
 			
 			//FIXME doubtful
 			case 43: return TaxonRelationshipType.CONGRUENT_TO();

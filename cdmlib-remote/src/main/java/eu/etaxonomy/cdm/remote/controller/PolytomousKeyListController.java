@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 @Controller
 @RequestMapping(value = {"/polytomousKey"})
-public class PolytomousKeyListController extends BaseListController<PolytomousKey, IPolytomousKeyService> {
+public class PolytomousKeyListController extends IdentifiableListController<PolytomousKey, IPolytomousKeyService> {
 
     public static final Logger logger = Logger.getLogger(PolytomousKeyListController.class);
 

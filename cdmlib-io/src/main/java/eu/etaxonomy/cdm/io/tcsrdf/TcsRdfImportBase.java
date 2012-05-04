@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -26,11 +25,7 @@ import org.jdom.Namespace;
 import org.jdom.Text;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -78,7 +73,7 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 				}
 			}
 		}
-		return true;
+		return result;
 	}
 	
 	private Object getValue(CdmSingleAttributeXmlMapperBase mapper, Element parentElement){

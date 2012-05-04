@@ -1,0 +1,415 @@
+html{
+    background:white;
+}
+body{
+    background:white;
+    font-family:Arial, Helvetica, Verdana, "Bitstream Vera Sans", sans-serif;
+    font-size:75%;
+    
+    background-image:url(background-body-crop.jpg);
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-position:0% 0%;
+}
+
+
+
+a:active,
+a:visited{
+    color:#800080;
+}
+a:hover{
+ COLOR: purple /*The color of the mouseover or 'hover' link*/
+}
+a:focus,
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+    color:#000000;
+    font-weight:normal;
+    line-height:100%;
+}
+h1,
+h1.title{
+    font-size:250%;
+}
+h2{
+    font-size:200%;
+}
+h3{
+    font-size:166.67%;
+}
+h4{
+    font-size:116.67%;
+}
+h5{
+    font-size:100%;
+}
+h6{
+    font-size:83.33%;
+}
+.header-primary-menu-inner ul.menu li{
+    font-size:108.33%;
+}
+ul.links li{
+    font-size:100%;
+}
+ul.pager li.pager-current{
+    line-height:190%;
+}
+.form-submit{
+    font-size:80%;
+}
+body{
+    padding:0;
+}
+.page{
+}
+.page-inner{
+}
+.primary-menu{
+    margin:0;
+    overflow:visible;
+    position:relative;
+    z-index:10;
+}
+.primary-menu-inner ul.menu{
+    margin:0;
+}
+.primary-menu-inner ul.menu li a:link,
+.primary-menu-inner ul.menu li a:visited{
+    border-left:1px solid #5b5b5b;
+    color:white;
+    display:block;
+    float:left;
+    padding:8px 20px 8px 20px;
+}
+.primary-menu-inner ul.menu li a:hover,
+.primary-menu-inner ul.menu li a:focus{
+    color:#fff;
+}
+.primary-menu-inner ul.sf-menu{
+    float:none;
+}
+.primary-menu-inner ul.sf-menu li a:hover,
+.primary-menu-inner ul.menu li.active-trail a,
+.primary-menu-inner ul.sf-menu li:hover a,
+.primary-menu-inner ul.sf-menu li.hover a{
+    background-image:url(background.jpg);
+    background-position:50% 0%;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    color:black;
+}
+#header-group,
+#header-group-wrapper,
+#footer-wrapper{
+    background-image:url(background-body.jpg);
+    background-position:50% 0%;
+    background-repeat:no-repeat;
+    background-color:white;
+    background-attachment:fixed;
+}
+#main-wrapper{
+    background-image:url(background-body.jpg);
+    background-position:50% 0%;
+    background-repeat:no-repeat;
+    background-color:white;
+    background-attachment:fixed;
+}
+#main-group,
+#sidebar-first .block{
+    background-image:url(background-body.jpg);
+    background-position:50% 0%;
+    background-repeat:no-repeat;
+    background-color:white;
+    background-attachment:fixed;
+}
+#sidebar-first .block{
+    padding-top:10px !important;
+    padding-bottom:10px !important;
+}
+#sidebar-first .block.first{
+    padding-top:20px !important;
+}
+#main-content{
+}
+#logo{
+    float:left;
+    margin:0 10px 0 0;
+}
+#site-name a:link,
+#site-name a:visited{
+    color:#d8d8d8;
+}
+#slogan{
+    color:#acacac;
+    float:left;
+    font-style:italic;
+}
+#site-name-slogan{
+    float:left;
+}
+#page-inner{
+    border:0;
+    margin-bottom:0;
+    padding:0;
+}
+.header-group-wrapper{
+    background:#383838;
+    float:left;
+}
+.header-group-inner{
+    padding:5px 0 0;
+}
+.header-group-wrapper a:link,
+.header-group-wrapper a:visited{
+    color:#fff;
+}
+.header-top-wrapper{
+    background:#4f4f4f url(/sites/vbrant.eu/themes/acquia_prosper/images/secondary-menu-bg.png) repeat-x top left;
+    float:left;
+    min-height:32px;
+}
+.header-top{
+    overflow:visible;
+    position:relative;
+}
+.header-top-region{
+    color:#AFAFAF;
+    padding:20px 0 0 0;
+}
+.header-top-region a:link,
+.header-top-region a:visited,
+.header-top-region a:hover,
+.header-top-region a:focus{
+    color:#fff;
+}
+.header-site-info{
+    margin:0;
+    width:auto;
+}
+.header-site-info-inner{
+    float:left;
+}
+.header-group .block{
+    margin:0;
+}
+.header-group .inner{
+    color:black;
+}
+.header-wrapper .header a:link,
+.header-wrapper .header a:visited{
+    color:#fff;
+}
+.preface-top{
+    padding:20px 0 0 0;
+}
+
+#sidebar-first{
+    padding:0;
+}
+#content-inner{
+    clear:both;
+}
+.postscript-bottom{
+    padding:20px 0 0 0;
+}
+.postscript-bottom h2.block-title,
+h2.block-title{
+    color:black;
+}
+.postscript-bottom a:link,
+.postscript-bottom a:visited,
+.footer-message a:hover{
+    color:#fff;
+}
+.footer-wrapper,
+.store-footer,
+.footer-wrapper h2.block-title{
+    color:#727171;
+}
+.footer{
+    padding:20px 0 0 0;
+}
+.footer-message-wrapper{
+    display:none;
+}
+.footer-wrapper{
+    background:#343434;
+}
+.footer-message{
+    padding:10px 0;
+}
+.footer-message a:link,
+.footer-message a:visited,
+.footer a:link,
+.footer a:visited{
+    color:#a9a9a9;
+}
+#store-footer{
+    background:#343434;
+}
+#store-footer a:link,
+#store-footer a:visited{
+    color:#a9a9a9;
+}
+#store-footer{
+    color:#727171;
+}
+
+thead th,
+th{
+    background:#e8e8e8;
+    border-bottom:1px solid #cfcfcf;
+    padding:3px 10px;
+}
+tbody th{
+    border-bottom:1px solid #cfcfcf;
+}
+tr.even,
+tr.odd{
+    background:transparent;
+}
+tr.even td,
+tr.odd td{
+    background:transparent;
+    border:1px solid #dbdbdb;
+}
+tr.drag td,
+tr.drag-previous td{
+    background:#ffd;
+}
+ul.pager{
+    margin:10px 0;
+    background-color:#ebebeb;
+    padding:9px 5px 5px 5px;
+    border:1px solid #cecece;
+    border-left:1px solid #d9d9d9;
+    border-right:1px solid #d9d9d9;
+    border-bottom:1px solid #fff;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+}
+ul.pager li{
+    display:block;
+    margin:0 5px 0 0;
+    float:left;
+}
+ul.pager li a,
+ul.pager li.pager-current{
+    background-color:#aaa;
+    color:#fff;
+    padding:3px 8px;
+    text-transform:uppercase;
+}
+ul.pager li.pager-current{
+    background-color:#f3f3f3;
+    border:1px solid #cecece;
+    border-top:none;
+    color:#acacac;
+    display:block;
+    font-weight:bold;
+    height:22px;
+    margin:-10px 5px 0 0;
+    padding:7px 8px 0 8px;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+}
+ul.pager li a:link,
+ul.pager li a:visited{
+    border:1px solid #a8a8a8;
+    color:#fff;
+    margin:3px 0 0 0;
+    text-decoration:none;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+}
+ul.pager li a:hover,
+ul.pager li a:focus{
+    background-color:#888;
+    color:#fff;
+    text-decoration:none;
+}
+ul.pager li.pager-first a,
+ul.pager li.pager-previous a,
+ul.pager li.pager-next a,
+ul.pager li.pager-last a{
+    border:none;
+    color:transparent;
+    display:block;
+    height:22px;
+    margin:-3px 0 0 0;
+    overflow:hidden;
+    padding:0;
+    text-indent:-9000px;
+    width:22px;
+}
+ul.pager li.pager-first a{
+    background:url(/sites/vbrant.eu/themes/acquia_prosper/images/pager-first.png) no-repeat;
+    width:22px;
+}
+ul.pager li.pager-previous a{
+    background:url(/sites/vbrant.eu/themes/acquia_prosper/images/pager-previous.png) no-repeat;
+}
+ul.pager li.pager-next a{
+    background:url(/sites/vbrant.eu/themes/acquia_prosper/images/pager-next.png) no-repeat;
+}
+ul.pager li.pager-last a{
+    background:url(/sites/vbrant.eu/themes/acquia_prosper/images/pager-last.png) no-repeat;
+    width:22px;
+}
+ul.pager li.pager-first a:hover,
+ul.pager li.pager-first a:focus,
+ul.pager li.pager-previous a:hover,
+ul.pager li.pager-previous a:focus,
+ul.pager li.pager-next a:hover,
+ul.pager li.pager-next a:focus,
+ul.pager li.pager-last a:hover,
+ul.pager li.pager-last a:focus{
+    background-position:0 -22px;
+}
+.header-group-wrapper ul.pager li.pager-current{
+    background-color:#383838;
+    border:1px solid #444;
+    border-top:none;
+    color:#acacac;
+}
+.header-group-wrapper ul.pager{
+    background-color:#4F4F4F;
+    border-bottom:1px solid #6F6F6F;
+    border-left:1px solid #5F5F5F;
+    border-right:1px solid #5F5F5F;
+    border-top:1px solid #444;
+}
+.postscript-bottom-wrapper ul.pager li.pager-current{
+    background-color:#4C4C4C;
+    border:1px solid #444;
+    border-top:none;
+    color:#fff;
+}
+.postscript-bottom-wrapper ul.pager{
+    background-color:#5F5F5F;
+    border-bottom:1px solid #6F6F6F;
+    border-left:1px solid #5F5F5F;
+    border-right:1px solid #5F5F5F;
+    border-top:1px solid #444;
+}
+.footer-wrapper ul.pager li.pager-current{
+    background-color:#343434;
+    border:1px solid #444;
+    border-top:none;
+    color:#fff;
+}
+.footer-wrapper ul.pager{
+    background-color:#4F4F4F;
+    border-bottom:1px solid #6F6F6F;
+    border-left:1px solid #5F5F5F;
+    border-right:1px solid #5F5F5F;
+    border-top:1px solid #444;
+}
+

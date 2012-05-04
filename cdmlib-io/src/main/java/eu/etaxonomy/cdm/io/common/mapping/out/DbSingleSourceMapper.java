@@ -67,6 +67,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 	protected Object getValue(CdmBase cdmBase) {
 		//TODO implement also for Identifiable sources
 		if (cdmBase.isInstanceOf(DescriptionElementBase.class)){ 
+			//find source candidates
 			DescriptionElementBase el = CdmBase.deproxy(cdmBase, DescriptionElementBase.class);
 			Set<DescriptionElementSource> sourceCandidates = el.getSources();
 			Set<DescriptionElementSource> filteredSources = new HashSet<DescriptionElementSource>();
@@ -75,6 +76,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 					filteredSources.add(sourceCandidate);
 				}
 			}
+			//filter 
 			if (filteredSources.size() == 0 ){
 				return null;
 			}else if (filteredSources.size() > 1){

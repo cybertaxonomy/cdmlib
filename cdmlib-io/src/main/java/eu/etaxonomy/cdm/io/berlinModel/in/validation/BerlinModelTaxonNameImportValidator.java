@@ -44,7 +44,7 @@ public class BerlinModelTaxonNameImportValidator implements IOValidator<BerlinMo
 		try {
 			boolean result = true;
 			Source source = state.getConfig().getSource();
-			String strQuery = " SELECT n.NameId, n.FullNameCache, n.Created_Who, n.Updated_Who, cat.RefCategoryAbbrev, r.NomRefCache, r.RefCache, r.Title, r.Edition, r.Volume, r.Series, r.RefYear " +
+			String strQuery = " SELECT n.NameId, n.FullNameCache, n.Created_Who, cat.RefCategoryAbbrev, r.NomRefCache, r.RefCache, r.Title, r.Edition, r.Volume, r.Series, r.RefYear " +
 						" FROM RefCategory AS cat INNER JOIN Reference AS r ON cat.RefCategoryId = r.RefCategoryFk " + 
 						" INNER JOIN Name AS n ON r.RefId = n.NomRefFk " +
 						" WHERE (r.RefCategoryFk = 9) ";

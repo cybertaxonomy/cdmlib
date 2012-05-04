@@ -26,6 +26,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_VALIDATION_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF;
 
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -207,6 +208,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 		if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
 			nameRelationship = nameTo.addBasionym(nameFrom, citation, microcitation, rule);
 		}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
+			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), citation, microcitation, rule) ;
+		}else if (relQualifierFk == NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF){
 			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), citation, microcitation, rule) ;
 		}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
 			nameRelationship = nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, rule) ;

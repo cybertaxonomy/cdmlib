@@ -699,6 +699,7 @@ public class NonViralNameParserImplTest {
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
 		NonViralName<?> name3 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
 		assertFullRefNameStandard(name3);
+		name3.setTitleCache(null);
 		assertEquals(fullReference, name3.getFullTitleCache());
 		assertFalse(name3.hasProblem());
 		ref = name3.getNomenclaturalReference();
@@ -964,6 +965,7 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> nameBookSection2 = 
 			parser.parseReferencedName(strBookSection2, null, null);
 		assertFalse(nameBookSection2.hasProblem());
+		nameBookSection2.setFullTitleCache(null, false);
 		assertEquals(strBookSection2NoComma.replace(" ed.", ", ed."), nameBookSection2.getFullTitleCache());
 		assertEquals(-1, nameBookSection2.getProblemStarts()); 
 		assertEquals(-1, nameBookSection2.getProblemEnds());

@@ -21,12 +21,10 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
 	public static final String UNDEFINED_JOURNAL = "- undefined journal -";
-	private String prefixSeries = "ser.";
-	private String prefixVolume = "vol.";
 	private String prefixReferenceJounal = "in";
 	private String blank = " ";
 	private String comma = ",";
-	private String dot =".";
+	private String prefixSeries = "ser.";
 	
 	final static UUID uuid = UUID.fromString("0d45343a-0c8a-4a64-97ca-e94974b65c96");
 	
@@ -62,7 +60,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 			return article.getTitleCache();
 		}
 		String result =  getNomRefTitleWithoutYearAndAuthor(article);
-		result = addYear(result, article);
+		result = addYear(result, article, false);
 		TeamOrPersonBase<?> team = article.getAuthorTeam();
 		result = CdmUtils.concat(" ", article.getTitle(), result);
 		if (team != null &&  CdmUtils.isNotEmpty(team.getTitleCache())){
@@ -102,6 +100,18 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 			nomRefCache = nomRefCache + titelAbbrev + blank; 
 		}
 		
+		nomRefCache = getSeriesAndVolPart(series, volume, needsComma, nomRefCache);
+		
+		//delete "."
+		while (nomRefCache.endsWith(".")){
+			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
+		}
+		
+		return nomRefCache.trim();
+	}
+	
+	protected String getSeriesAndVolPart(String series, String volume,
+			boolean needsComma, String nomRefCache) {
 		//inSeries
 		String seriesPart = "";
 		if (!"".equals(series)){
@@ -127,13 +137,8 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 			//needsComma = false;
 		}
 		nomRefCache += volumePart;
-		
-		//delete "."
-		while (nomRefCache.endsWith(".")){
-			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
-		}
-		
-		return nomRefCache.trim();
+		return nomRefCache;
 	}
+
 	
 }

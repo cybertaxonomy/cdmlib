@@ -68,7 +68,6 @@ public class TestDatabase {
 	ReferenceFactory refFactory;
 	private void test(){
 		System.out.println("Start TestDatabase");
-		refFactory = ReferenceFactory.newInstance();
 		//testNewDatabaseConnection();
 		//testFacts();
 //		testNewDatasourceClass();
@@ -77,7 +76,7 @@ public class TestDatabase {
 		System.out.println("\nEnd TestDatabase");
 	}
 
-	public void testNewDatabaseConnection(){
+	public void testNewDatabaseConnection() throws DataSourceNotFoundException{
 
 		Column coL;
 		boolean omitTermLoading = false;

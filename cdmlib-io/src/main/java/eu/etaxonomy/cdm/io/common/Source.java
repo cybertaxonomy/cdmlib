@@ -183,7 +183,7 @@ public class Source {
             mStmt = mConn.createStatement();
             rs = mStmt.executeQuery(query);
             return rs;
-        }catch(SQLException e){
+        }catch(Exception e){
             logger.error("Problems when creating Resultset for query \n  " + query + " \n" + "Exception: " + e);
             return null;
         }

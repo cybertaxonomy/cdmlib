@@ -102,24 +102,21 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String recordQuery = "";
 		recordQuery = 
-			" SELECT emCommonName.CommonNameId, emCommonName.CommonName, PTaxon.RIdentifier AS taxonId, emCommonName.PTNameFk, emCommonName.RefFk AS refId, emCommonName.Status, " + 
-				" emCommonName.RegionFks, emCommonName.MisNameRefFk, emCommonName.NameInSourceFk , emCommonName.Created_When, emCommonName.Updated_When, emCommonName.Created_Who, emCommonName.Updated_Who, emCommonName.Note as Notes," + 
-        		" regionLanguage.Language AS regionLanguage, languageCommonName.Language, languageCommonName.LanguageOriginal, languageCommonName.ISO639_1, languageCommonName.ISO639_2, " + 
-        		" emLanguageRegion.Region, emLanguageReference.RefFk as languageRefRefFk, emLanguageReference.ReferenceShort, " + 
-        		" emLanguageReference.ReferenceLong, emLanguageReference.LanguageFk, languageReferenceLanguage.Language AS refLanguage, " +
-        		" languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2, regionLanguage.ISO639_2 AS regionLanguageIso, " +
-        		" misappliedTaxon.RIdentifier AS misappliedTaxonId " + 
-        	" FROM emLanguage as regionLanguage RIGHT OUTER JOIN " + 
-        		" emLanguageRegion ON regionLanguage.LanguageId = emLanguageRegion.LanguageFk RIGHT OUTER JOIN " +
-        		" emLanguage AS languageReferenceLanguage RIGHT OUTER JOIN " +
-        		" emLanguageReference ON languageReferenceLanguage.LanguageId = emLanguageReference.LanguageFk RIGHT OUTER JOIN " +
-        		" emCommonName INNER JOIN " +
-        		" PTaxon ON emCommonName.PTNameFk = PTaxon.PTNameFk AND emCommonName.PTRefFk = PTaxon.PTRefFk ON " + 
-        		" emLanguageReference.ReferenceId = emCommonName.LanguageRefFk LEFT OUTER JOIN " +
-        		" emLanguage AS languageCommonName ON emCommonName.LanguageFk = languageCommonName.LanguageId ON " + 
-        		" emLanguageRegion.RegionId = emCommonName.RegionFks LEFT OUTER JOIN " +
-        		" PTaxon as misappliedTaxon ON emCommonName.NameInSourceFk = misappliedTaxon.PTNameFk AND emCommonName.MisNameRefFk = misappliedTaxon.PTRefFk " + 
-			" WHERE emCommonName.CommonNameId IN (" + ID_LIST_TOKEN + ")";
+				" SELECT     cn.CommonNameId, cn.CommonName, PTaxon.RIdentifier AS taxonId, cn.PTNameFk, cn.RefFk AS refId, cn.Status, cn.RegionFks, cn.MisNameRefFk, " +
+					       "               cn.NameInSourceFk, cn.Created_When, cn.Updated_When, cn.Created_Who, cn.Updated_Who, cn.Note AS Notes, languageCommonName.Language, " +
+					       "               languageCommonName.LanguageOriginal, languageCommonName.ISO639_1, languageCommonName.ISO639_2,   " +
+					       "               emLanguageReference.RefFk AS languageRefRefFk, emLanguageReference.ReferenceShort, emLanguageReference.ReferenceLong,  " +
+					       "               emLanguageReference.LanguageFk, languageReferenceLanguage.Language AS refLanguage, languageReferenceLanguage.ISO639_2 AS refLanguageIso639_2,  "+ 
+					       "               misappliedTaxon.RIdentifier AS misappliedTaxonId " +
+					" FROM         PTaxon AS misappliedTaxon RIGHT OUTER JOIN " +
+					    "                  emLanguage AS languageReferenceLanguage RIGHT OUTER JOIN " + 
+					               "       emLanguageReference ON languageReferenceLanguage.LanguageId = emLanguageReference.LanguageFk RIGHT OUTER JOIN " +
+					               "       emCommonName AS cn INNER JOIN " +
+					               "       PTaxon ON cn.PTNameFk = PTaxon.PTNameFk AND cn.PTRefFk = PTaxon.PTRefFk ON  " +
+					               "       emLanguageReference.ReferenceId = cn.LanguageRefFk LEFT OUTER JOIN " +
+					                "      emLanguage AS languageCommonName ON cn.LanguageFk = languageCommonName.LanguageId ON misappliedTaxon.PTNameFk = cn.NameInSourceFk AND  " +
+					                "      misappliedTaxon.PTRefFk = cn.MisNameRefFk " +
+			" WHERE cn.CommonNameId IN (" + ID_LIST_TOKEN + ")";
 		return recordQuery;
 	}
 	
@@ -209,7 +206,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				Object misappliedTaxonId = rs.getObject("misappliedTaxonId");
 				
 				//regions
-				String region = rs.getString("Region");
 				String regionFks  = rs.getString("RegionFks");
 				String[] regionFkSplit = regionFks.split(",");
 				
@@ -234,7 +230,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				}
 				
 				//Language
-				Language language = getAndHandleLanguage(iso6392Map, iso639_2, iso639_1, languageString, originalLanguageString);
+				Language language = getAndHandleLanguage(iso6392Map, iso639_2, iso639_1, languageString, originalLanguageString, state);
 				
 				//CommonTaxonName
 				List<CommonTaxonName> commonTaxonNames = new ArrayList<CommonTaxonName>();
@@ -292,7 +288,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					//Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
 					Taxon misappliedNameTaxon = null;
 					if (misappliedTaxonId != null){
-						misappliedNameTaxon = taxonMap.get(String.valueOf(misappliedTaxonId));
+						TaxonBase misTaxonBase =  taxonMap.get(String.valueOf(misappliedTaxonId));
+						if (misTaxonBase == null){
+							logger.warn("MisappliedName not found for misappliedTaxonId " + misappliedTaxonId + "; commonNameId: " + commonNameId);
+						}else if (misTaxonBase.isInstanceOf(Taxon.class)){
+							misappliedNameTaxon = CdmBase.deproxy(misTaxonBase, Taxon.class);
+						}else{
+							logger.warn("Misapplied name taxon is not of type Taxon but " + misTaxonBase.getClass().getSimpleName());
+						}
 					}else{
 						
 						Reference<?> sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
@@ -412,9 +415,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param iso639_2
 	 * @param languageString
 	 * @param originalLanguageString
+	 * @param state 
 	 * @return
 	 */
-	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString) {
+	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString, BerlinModelImportState state) {
 		Language language;
 		if (CdmUtils.isNotEmpty(iso639_2)|| CdmUtils.isNotEmpty(iso639_1)  ){
 			//TODO test performance, implement in state
@@ -433,6 +437,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			}
 		} else if ("unknown".equals(languageString)){
 			language = Language.UNKNOWN_LANGUAGE();
+		} else if ("Majorcan".equalsIgnoreCase(languageString)){
+			language = getLanguage(state, BerlinModelTransformer.uuidLangMajorcan, "Majorcan", "Majorcan (original 'mallorqu\u00EDn')", null);
 		}else{
 			logger.warn("language ISO 639_1 and ISO 639_2 were empty for " + languageString);
 			language = null;
@@ -462,7 +468,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param originalLanguageString
 	 */
 	private void addOriginalLanguage(Language language,	String originalLanguageString) {
-		if (CdmUtils.isEmpty(originalLanguageString)){
+		if (CdmUtils.isBlank(originalLanguageString)){
 			return;
 		}else if (language == null){
 			logger.warn("Language could not be defined, but originalLanguageString exists: " + originalLanguageString);
@@ -494,12 +500,16 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		ResultSet rs = source.getResultSet(sql);
 		while (rs.next()){
 			String strRegionFks = rs.getString("RegionFks"); 
+			if (StringUtils.isBlank(strRegionFks)){
+				continue;
+			}
+			
 			String[] regionFkArray = strRegionFks.split(",");
 			for (String regionFk: regionFkArray){
 				regionFk = regionFk.trim();
 				if (! StringUtils.isNumeric(regionFk) || "".equals(regionFk)  ){
 					state.setUnsuccessfull();
-					logger.warn("RegionFk is not numeric: " + regionFk);
+					logger.warn("RegionFk is not numeric: " + regionFk +  " ( part of " + strRegionFks + ")");
 				}else{
 					regionFks.add(Integer.valueOf(regionFk));
 				}
@@ -538,8 +548,13 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				if (StringUtils.isNotBlank(tdwgCode) ){
 					NamedArea tdwgArea = getNamedArea(state, tdwgCode);
 					regionMap.put(String.valueOf(regionId), tdwgArea);
-				}else{
-					logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
+				}else {
+					NamedArea area = getOtherAreas(state, emCode, tdwgCode);
+					if (area != null){
+						regionMap.put(String.valueOf(regionId), area);
+					}else{
+						logger.warn("emCode did not map to valid tdwgCode: " +  CdmUtils.Nz(emCode) + "->" + CdmUtils.Nz(tdwgCode));
+					}
 				}
 			}
 		}
@@ -645,19 +660,31 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
+		int pos = -1;
 		try{
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> nameIdSet = new HashSet<String>();
 			Set<String> referenceIdSet = new HashSet<String>();
 			while (rs.next()){
+				pos = 0;
 				handleForeignKey(rs, taxonIdSet, "taxonId");
+				pos = 1;
 				handleForeignKey(rs, taxonIdSet, "misappliedTaxonId");
+				pos = 2;
 				handleForeignKey(rs, referenceIdSet, "refId");
+				pos = 3;
 				handleForeignKey(rs, referenceIdSet, "languageRefRefFk");
+				pos = 4;
 				handleForeignKey(rs, nameIdSet, "NameInSourceFk");
+				pos = 5;
 				handleForeignKey(rs, nameIdSet, "PTNameFk");
+				pos = 6;
 				handleForeignKey(rs, referenceIdSet, "MisNameRefFk");
+				pos = -2;
+				
 			}
+			
+			pos = 7;
 			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
@@ -666,6 +693,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, TaxonNameBase<?,?>> nameMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 
+			pos = 8;
+			
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
 			cdmClass = TaxonBase.class;
@@ -673,6 +702,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, TaxonBase<?>> taxonMap = (Map<String, TaxonBase<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
 
+			pos = 9;
+			
 			//nom reference map
 			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
@@ -680,6 +711,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nomReferenceMap);
 
+			pos = 10;
+			
 			//biblio reference map
 			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
@@ -687,8 +720,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			Map<String, Reference<?>> biblioReferenceMap = (Map<String, Reference<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
 
+			pos = 11;
+			
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("pos: " +pos, e);
 		} catch (NullPointerException nep){
 			logger.error("NullPointerException in getRelatedObjectsForPartition()");
 		}

@@ -15,11 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -32,8 +35,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 23.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends ConverterBase<DwcaImportState> 
-						implements IConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends PartitionableConverterBase<DwcaImportState> 
+						implements IPartitionableConverter<CsvStreamItem, INamespaceReader<CdmBase>, String>{
+	private static final String SINGLE_CLASSIFICATION_ID = "1";
+
+	private static final String SINGLE_CLASSIFICATION = "Single Classification";
+
 	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonRelationConverter.class);
 
 	private static final String ID = "id";
@@ -42,8 +49,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	 * @param state
 	 */
 	public DwcTaxonCsv2CdmTaxonRelationConverter(DwcaImportState state) {
-		super();
-		this.state = state;
+		super(state);
 	}
 
 
@@ -51,11 +57,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csvRecord = item.map;
-		Reference<?> sourceReference = null;
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		String sourceReferecenDetail = null;
 		
 		String id = csvRecord.get(ID);
-		TaxonBase<?> taxonBase = getTaxonBase(id, item, null);
+		TaxonBase<?> taxonBase = getTaxonBase(id, item, null, state);
 		if (taxonBase == null){
 			String warning = "Taxon not available for id %s.";
 			warning = String.format(warning, id);
@@ -168,15 +174,20 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
 			if (taxonBase.isInstanceOf(Taxon.class)){
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-				String accId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
-				Taxon parentTaxon = getTaxonBase(accId, item, Taxon.class);
+				String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
+				Taxon parentTaxon = getTaxonBase(parentId, item, Taxon.class,state);
 				if (parentTaxon == null){
-						fireWarningEvent("NON-ID parent Name Usage not yet implemented or parent name usage id not available", item, 4);
+					String message = "Can't find parent taxon with id '%s' and NON-ID parent Name Usage not yet implemented.";
+					message = String.format(message, StringUtils.isBlank(parentId)?"-": parentId);
+					fireWarningEvent(message, item, 4);
 				}else{
-					Classification classification = getClassification(item);
-					Reference<?> citation = null;
-					classification.addParentChild(parentTaxon, taxon, citation, null);
-					resultList.add(new MappedCdmBase(classification));
+					Classification classification = getClassification(item, resultList);
+					Reference<?> citationForParentChild = null;
+					if (classification == null){
+						String warning = "Classification not found. Can't create parent-child relationship";
+						fireWarningEvent(warning, item, 12);
+					}
+					classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
 				}
 			}else{
 				String message = "PARENT_NAME_USAGE given for Synonym. This is not allowed in CDM.";
@@ -189,21 +200,41 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
-	private Classification getClassification(CsvStreamItem item) {
-		Set<Classification> result = new HashSet<Classification>();
-		String datasetKey = item.get(TermUri.DWC_DATASET_ID);
-		if (CdmUtils.areBlank(datasetKey,item.get(TermUri.DWC_DATASET_NAME))){
-			datasetKey = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+	private Classification getClassification(CsvStreamItem item, List<MappedCdmBase> resultList) {
+		Set<Classification> resultSet = new HashSet<Classification>();
+		//
+		if (config.isDatasetsAsClassifications()){
+			String datasetKey = item.get(TermUri.DWC_DATASET_ID);
+			if (CdmUtils.areBlank(datasetKey,item.get(TermUri.DWC_DATASET_NAME))){
+				datasetKey = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+			}
+			
+			resultSet.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
+			resultSet.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
+		//TODO accordingToAsClassification
+		//single classification
+		}else{
+			resultSet.addAll(state.get(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, Classification.class));
+			
+			//classification does not yet exist
+			if (resultSet.isEmpty()){
+				Classification newClassification = Classification.NewInstance("Darwin Core Classification");
+				if (config.getClassificationUuid() != null){
+					newClassification.setUuid(config.getClassificationUuid());
+				}
+				if (StringUtils.isNotBlank(config.getClassificationName())){
+					newClassification.setName(LanguageString.NewInstance(config.getClassificationName(), Language.DEFAULT()));
+				}
+				resultList.add(new MappedCdmBase(SINGLE_CLASSIFICATION, SINGLE_CLASSIFICATION_ID, newClassification));
+				resultSet.add(newClassification);
+			}
 		}
-		
-		result.addAll(state.get(TermUri.DWC_DATASET_ID.toString(), datasetKey, Classification.class));
-		result.addAll(state.get(TermUri.DWC_DATASET_NAME.toString(), item.get(TermUri.DWC_DATASET_NAME), Classification.class));
-		if (result.isEmpty()){
+		if (resultSet.isEmpty()){
 			return null;
-		}else if (result.size() > 1){
+		}else if (resultSet.size() > 1){
 			fireWarningEvent("Dataset is ambigous. I take arbitrary one.", item, 8);
 		}
-		return result.iterator().next();
+		return resultSet.iterator().next();
 	}
 
 
@@ -215,7 +246,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 			}
 			if (taxonBase.isInstanceOf(Synonym.class)){
 				Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-				Taxon accTaxon = getTaxonBase(accId, item, Taxon.class);
+				Taxon accTaxon = getTaxonBase(accId, item, Taxon.class, state);
 				if (accTaxon == null){
 						fireWarningEvent("NON-ID accepted Name Usage not yet implemented or taxon for name usage id not available", item, 4);
 				}else{
@@ -232,30 +263,90 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	}
 
 
-	private <T extends TaxonBase> T getTaxonBase(String id, CsvStreamItem item, Class<T> clazz) {
-		if (clazz == null){
-			clazz = (Class)TaxonBase.class;
+
+//**************************** PARTITIONABLE ************************************************
+
+	@Override
+	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap){
+		String value;
+		String key;
+		if ( hasValue(value = item.get(ID))){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
 		}
-		List<T> taxonList = state.get(TermUri.DWC_TAXON.toString(), id, clazz);
-		if (taxonList.size() > 1){
-			String message = "Undefined taxon mapping for id %s.";
-			message = String.format(message, id);
-			fireWarningEvent(message, item, 8);
-			logger.warn(message);  //TODO remove when events are handled correctly
-			return null;
-		}else if (taxonList.isEmpty()){
-			return null;
+		if ( hasValue(value = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID.toString()))){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		if ( hasValue(value = item.get(key = TermUri.DWC_PARENT_NAME_USAGE_ID.toString())) ){
+			key = TermUri.DWC_TAXON.toString();
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		if ( hasValue(value = item.get(key = TermUri.DWC_NAME_ACCORDING_TO_ID.toString()))){
+			//TODO
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
+		}
+		
+		//classification
+		if (config.isDatasetsAsClassifications()){
+			boolean hasDefinedClassification = false;
+			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_ID.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+				hasDefinedClassification = true;
+			}
+			if ( hasValue(value = item.get(key = TermUri.DWC_DATASET_NAME.toString()))){
+				Set<String> keySet = getKeySet(key, fkMap);
+				keySet.add(value);
+				hasDefinedClassification = true;
+			}
+			if (! hasDefinedClassification){
+				Set<String> keySet = getKeySet(TermUri.DWC_DATASET_ID.toString(), fkMap);
+				value = DwcTaxonCsv2CdmTaxonConverter.NO_DATASET;
+				keySet.add(value);
+			}
 		}else{
-			return taxonList.get(0);
+			key = SINGLE_CLASSIFICATION;
+			value = SINGLE_CLASSIFICATION_ID;
+			Set<String> keySet = getKeySet(key, fkMap);
+			keySet.add(value);
 		}
+		
+		//TODO cont.
 	}
+	
+	@Override
+	public Set<String> requiredSourceNamespaces() {
+		Set<String> result = new HashSet<String>();
+ 		
+		result.add(TermUri.DWC_TAXON.toString());
+		
+		result.add(TermUri.DWC_ACCEPTED_NAME_USAGE_ID.toString());
+ 		result.add(TermUri.DWC_PARENT_NAME_USAGE_ID.toString());
+ 		
+ 		result.add(TermUri.DWC_NAME_ACCORDING_TO_ID.toString());
+ 		result.add(TermUri.DWC_NAME_ACCORDING_TO.toString());
+ 		if (config.isDatasetsAsClassifications()){
+ 			result.add(TermUri.DWC_DATASET_ID.toString());
+ 			result.add(TermUri.DWC_DATASET_NAME.toString());
+ 		}else{
+ 			result.add(SINGLE_CLASSIFICATION);
+ 		}
+ 		
+ 		return result;
+	}
+	
 
-
-
+//************************************* TO STRING ********************************************
 	
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
+
 
 }

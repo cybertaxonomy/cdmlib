@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * TODO write controller documentation

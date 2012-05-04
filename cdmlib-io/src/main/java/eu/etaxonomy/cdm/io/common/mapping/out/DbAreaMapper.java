@@ -81,7 +81,7 @@ public class DbAreaMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 					return transformer.getKeyByNamedArea(area);
 				}
 			} catch (Exception e) {
-				logger.error("Exception when invoking method: " + e.getLocalizedMessage());
+				logger.error("Exception when invoking method: " + e.getMessage());
 				return null;
 			}
 			

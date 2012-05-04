@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @created 12.05.2009
  * @version 1.0
  */
-public abstract class DbImportSupplementCreationMapperBase<SUPPLEMENT extends VersionableEntity, SUPPLEMENTABLE extends AnnotatableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportObjectCreationMapperBase<SUPPLEMENT, STATE>  {
+public abstract class DbImportSupplementCreationMapperBase<SUPPLEMENT extends VersionableEntity, SUPPLEMENTABLE extends AnnotatableEntity, STATE extends DbImportStateBase<?,?>, TYPE extends DefinedTermBase> extends DbImportObjectCreationMapperBase<SUPPLEMENT, STATE>  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportSupplementCreationMapperBase.class);
 	
@@ -37,7 +37,7 @@ public abstract class DbImportSupplementCreationMapperBase<SUPPLEMENT extends Ve
 //******************************* ATTRIBUTES ***************************************/
 	protected String dbSupplementValueAttribute;
 	protected String dbSupplementedObjectAttribute;
-	protected DefinedTermBase supplementType;
+	protected TYPE supplementType;
 	protected boolean addOriginalSourceId = false;
 	
 	
@@ -45,7 +45,7 @@ public abstract class DbImportSupplementCreationMapperBase<SUPPLEMENT extends Ve
 	/**
 	 * @param mappingImport
 	 */
-	protected DbImportSupplementCreationMapperBase(String dbSupplementValueAttribute, String dbSupplementedObjectAttribute, String dbIdAttribute, String supplementedObjectNamespace, DefinedTermBase supplementType) {
+	protected DbImportSupplementCreationMapperBase(String dbSupplementValueAttribute, String dbSupplementedObjectAttribute, String dbIdAttribute, String supplementedObjectNamespace, TYPE supplementType) {
 		super(dbIdAttribute, supplementedObjectNamespace);
 		this.dbSupplementValueAttribute = dbSupplementValueAttribute;
 		this.dbSupplementedObjectAttribute = dbSupplementedObjectAttribute;

@@ -196,7 +196,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
             result = null;
         }else{
             TaxonNameBase name = taxonBase.getName();
-            if (name == null){
+           if (name == null){
                 result = null;
             }else{
                 if (name instanceof ZoologicalName){
@@ -208,10 +208,15 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
                         result = null;
                     }else{
                         if (ref.getDatePublished() == null){
-                            if (ref.getInReference() == null){
+                        	Reference inRef = ref.getInReference();
+                        	if (inRef == null){
                                 result = null;
                             }else{
-                                result = ref.getInReference().getDatePublished().getStartYear();
+                                if (inRef.getDatePublished() == null){
+                                	result = null;
+                                }else{
+                                	result = ref.getInReference().getDatePublished().getStartYear();
+                                }
                             }
                         }else{
                             result = ref.getDatePublished().getStartYear();

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  */
 @Controller
 @RequestMapping(value = {"/classification"})
-public class ClassificationListController extends BaseListController<Classification,IClassificationService> {
+public class ClassificationListController extends IdentifiableListController<Classification,IClassificationService> {
 	
 	private static final Logger logger = Logger
 			.getLogger(ClassificationListController.class);

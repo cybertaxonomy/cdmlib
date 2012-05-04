@@ -641,7 +641,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         }
 
         //infra species
-        String infraSpeciesPart = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim().replace("null", "");
+        String infraSpeciesPart = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim();
         if (StringUtils.isNotBlank(infraSpeciesPart)){
             tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
         }
@@ -658,12 +658,12 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      */
     protected List<TaggedText> getRanklessTaggedNameCache(NonViralName<?> nonViralName){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
-        String speciesEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+        String speciesEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
         if (StringUtils.isNotBlank(speciesEpi)){
             tags.add(new TaggedText(TagEnum.name, speciesEpi));
         }
 
-        String infraSpeciesEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim().replace("null", "");
+        String infraSpeciesEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet());
         if (StringUtils.isNotBlank(infraSpeciesEpi)){
             tags.add(new TaggedText(TagEnum.name, infraSpeciesEpi));
         }
@@ -685,7 +685,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
             addHybridPrefix(tags);
         }
 
-        String uninomial = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim().replace("null", "");
+        String uninomial = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
         if (StringUtils.isNotBlank(uninomial)){
             tags.add(new TaggedText(TagEnum.name, uninomial));
         }
@@ -732,7 +732,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         }else{
         	infraGenericMarker = "'undefined infrageneric rank'";
         }
-        String infraGenEpi = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim().replace("null", "");
+        String infraGenEpi = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim();
         
         addInfraGenericPart(nonViralName, tags, infraGenericMarker, infraGenEpi);
 
@@ -872,7 +872,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         }
 
         //Species Epi
-        String specEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+        String specEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
         if (! hasInfraGenericEpi && nonViralName.isBinomHybrid() ||
                 hasInfraGenericEpi && nonViralName.isTrinomHybrid()){
             addHybridPrefix(tags);

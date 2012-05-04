@@ -111,8 +111,28 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param name
 	 * @return
 	 */
-	public List<NonViralName> getNamesByNameCache(String nameCache);
+	public List<NonViralName> getNamesByNameCache(String nameCache);	
 
+	/**
+	 * Returns all NonViralNames with a title cache that matches the given string 
+	 * using the given match mode and initialization strategy
+	 * 
+	 * @param name
+	 * @param matchMode
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
+	
+	/**
+	 * Returns the NonViralName with the given UUID 
+	 * using the given match mode and initialization strategy
+	 * 
+	 * @param uuid
+	 * @param propertyPaths
+	 * @return
+	 */
+	public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths);
 	/**
 	 * @param name
 	 * @param sessionObject An object that is attached to the session before executing the query

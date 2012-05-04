@@ -103,6 +103,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String occurrenceFilter = null;
 	private String occurrenceSourceFilter = null;
 	private String webMarkerFilter = null;
+	
+	//specific functions
+	private Method 	makeUrlForTaxon = null;
 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -669,6 +672,13 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	}
 
 
+	public Method getMakeUrlForTaxon() {
+		return makeUrlForTaxon;
+	}
+
+	public void setMakeUrlForTaxon(Method makeUrlForTaxon) {
+		this.makeUrlForTaxon = makeUrlForTaxon;
+	}
 
 
 

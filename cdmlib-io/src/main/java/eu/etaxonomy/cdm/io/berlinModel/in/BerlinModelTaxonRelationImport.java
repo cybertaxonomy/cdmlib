@@ -179,7 +179,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		
 		String strQuery = strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
-		if (state.getConfig().getClassificationQuery() == null){
+		if (state.getConfig().getClassificationQuery() != null){
 			strQuery = state.getConfig().getClassificationQuery();
 		}
 		return strQuery;
@@ -242,7 +242,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 
 					if (taxon2 != null && taxon1 != null){
 						if (!(taxon2 instanceof Taxon)){
-							logger.error("TaxonBase (ID = " + taxon2.getId()+ ", RIdentifier = " + taxon2Id + ") can't be casted to Taxon");
+							logger.error("ToTaxon (ID = " + taxon2.getId()+ ", RIdentifier = " + taxon2Id + ") can't be casted to Taxon. RelPTaxon: " + relPTaxonId );
 							success = false;
 							continue;
 						}
@@ -250,7 +250,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						Taxon toTaxon = (Taxon)taxon2;
 						if (isTaxonRelationship(relQualifierFk)){
 							if (!(taxon1 instanceof Taxon)){
-								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") for TaxonRelation ("+relPTaxonId+") can't be casted to Taxon");
 								success = false;
 								continue;
 							}
@@ -315,11 +315,11 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						//etc.
 					}else{
 						if (taxon2 != null && taxon1 == null){
-							logger.warn("First taxon ("+taxon1Id+") for RelPTaxon " + relPTaxonId + " does not exist in store");
+							logger.warn("First taxon ("+taxon1Id+") for RelPTaxon " + relPTaxonId + " does not exist in store. RelType: " + relQualifierFk);
 						}else if (taxon2 == null && taxon1 != null){
-							logger.warn("Second taxon ("+taxon2Id +") for RelPTaxon " + relPTaxonId + " does not exist in store");
+							logger.warn("Second taxon ("+taxon2Id +") for RelPTaxon " + relPTaxonId + " does not exist in store. RelType: " + relQualifierFk);
 						}else{
-							logger.warn("Both taxa ("+taxon1Id+","+taxon2Id +") for RelPTaxon " + relPTaxonId + " do not exist in store");
+							logger.warn("Both taxa ("+taxon1Id+","+taxon2Id +") for RelPTaxon " + relPTaxonId + " do not exist in store. RelType: " + relQualifierFk);
 						}
 						
 						success = false;

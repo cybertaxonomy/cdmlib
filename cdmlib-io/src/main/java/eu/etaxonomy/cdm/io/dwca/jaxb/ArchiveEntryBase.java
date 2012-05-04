@@ -138,7 +138,7 @@ public abstract class ArchiveEntryBase {
      *     
      */
     public String getLinesTerminatedBy() {
-        return linesTerminatedBy;
+        return normalizeSpecialChars(linesTerminatedBy);
     }
 
     /**
@@ -150,10 +150,22 @@ public abstract class ArchiveEntryBase {
      *     
      */
     public void setLinesTerminatedBy(String value) {
-        this.linesTerminatedBy = value;
+        this.linesTerminatedBy = normalizeSpecialChars(value);
     }
 
-    /**
+    private String normalizeSpecialChars(String string) {
+		if (string != null){
+	    	if (string.startsWith("\\")){
+				if (string.equals("\\t")){
+					string = "\t";
+				}
+			}
+	    	//TODO some more
+		}
+		return string;
+	}
+
+	/**
      * Gets the value of the ignoreHeaderLines property.
      * 
      */
@@ -178,7 +190,7 @@ public abstract class ArchiveEntryBase {
      *     
      */
     public String getFieldsTerminatedBy() {
-        return fieldsTerminatedBy;
+        return normalizeSpecialChars(fieldsTerminatedBy);
     }
 
     /**
@@ -190,7 +202,7 @@ public abstract class ArchiveEntryBase {
      *     
      */
     public void setFieldsTerminatedBy(String value) {
-        this.fieldsTerminatedBy = value;
+        this.fieldsTerminatedBy = normalizeSpecialChars(value);
     }
 
     /**
@@ -202,7 +214,7 @@ public abstract class ArchiveEntryBase {
      *     
      */
     public String getFieldsEnclosedBy() {
-        return fieldsEnclosedBy;
+        return normalizeSpecialChars(fieldsEnclosedBy);
     }
 
     /**
@@ -214,7 +226,7 @@ public abstract class ArchiveEntryBase {
      *     
      */
     public void setFieldsEnclosedBy(String value) {
-        this.fieldsEnclosedBy = value;
+        this.fieldsEnclosedBy = normalizeSpecialChars(value);
     }
 
     /**

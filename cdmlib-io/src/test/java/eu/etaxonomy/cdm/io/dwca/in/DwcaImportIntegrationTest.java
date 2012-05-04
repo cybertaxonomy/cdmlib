@@ -65,6 +65,7 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	public void testInvoke() {
+		configurator.setDefaultPartitionSize(3);
 		boolean result = defaultImport.invoke(configurator);
 		Assert.assertTrue("Invoke should return true", result);
 		//to be continued

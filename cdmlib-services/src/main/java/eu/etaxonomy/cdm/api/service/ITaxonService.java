@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -474,7 +475,18 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
+
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
+    
+	/**
+	 * Returns the TaxonBase with the given UUID 
+	 * using the given match mode and initialization strategy
+	 * 
+	 * @param uuid
+	 * @param propertyPaths
+	 * @return
+	 */
+    public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths);
     
     public int countAllRelationships();
 
@@ -547,7 +559,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param tree
      * @return list of inferred synonyms
      */
-    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type);
+    public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type, boolean doWithMisappliedNames);
     
     /**
      * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
@@ -556,7 +568,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param iDatabase 
      * @return list of inferred synonyms
      */
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree);
+    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
 	public TaxonBase findTaxonByName(String taxonName);
 

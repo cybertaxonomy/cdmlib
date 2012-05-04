@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -307,4 +308,45 @@ public class UriUtils {
 		 }
 	}
 	
+	//from http://www.javabeginners.de/Netzwerk/File_zu_URL.php
+	public static URL fileToURL(File file){
+        URL url = null;
+        try {
+        	// Sonderzeichen (z.B. Leerzeichen) bleiben erhalten
+            url = new URL("file://" + file.getPath());
+            // Sonderzeichen (z.B. Leerzeichen) werden codiert
+            url = file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    } 
+	
+	//from http://blogs.sphinx.at/java/erzeugen-von-javaiofile-aus-javaneturl/	
+	public static File urlToFile(URL url) {
+        URI uri;
+        try {
+            // this is the step that can fail, and so
+            // it should be this step that should be fixed
+            uri = url.toURI();
+        } catch (URISyntaxException e) {
+            // OK if we are here, then obviously the URL did
+            // not comply with RFC 2396. This can only
+            // happen if we have illegal unescaped characters.
+            // If we have one unescaped character, then
+            // the only automated fix we can apply, is to assume
+            // all characters are unescaped.
+            // If we want to construct a URI from unescaped
+            // characters, then we have to use the component
+            // constructors:
+            try {
+                uri = new URI(url.getProtocol(), url.getUserInfo(), url
+                        .getHost(), url.getPort(), url.getPath(), url
+                        .getQuery(), url.getRef());
+            } catch (URISyntaxException e1) {
+                throw new IllegalArgumentException("broken URL: " + url);
+            }
+        }
+        return new File(uri);
+    }
 }

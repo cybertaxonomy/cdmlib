@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -492,6 +493,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.datePublished = datePublished;
 	}
 	
+	public boolean hasDatePublished(){
+		boolean result =  ! ( (this.datePublished == null) || StringUtils.isBlank(datePublished.toString()));
+		return result;
+	}
+	
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the
 	 * content of <i>this</i> reference.
@@ -729,8 +735,10 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	
 	/**
 	 * Returns a string representation for the year of publication / creation
-	 * of <i>this</i> reference. The string is obtained by transformation of
-	 * the {@link #getDatePublished() datePublished} attribute.
+	 * of <i>this</i> reference. If the {@link #getDatePublished() datePublished}
+	 * of this reference contains more date information then (starting) year
+	 * only the year is returned.
+	 * than  attribute.
 	 */
 	@Transient
 	public String getYear(){
@@ -738,6 +746,22 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		if (datePublished != null ){
 			String result = getDatePublished().getYear();
 			return result;
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * Convenience method that returns a string representation for the publication date / creation
+	 * of <i>this</i> reference. The string is obtained by 
+	 * {@link #getDatePublished()#toString() the string representation
+	 * of the date published}.
+	 */
+	@Transient
+	public String getDatePublishedString(){
+		TimePeriod datePublished = this.getDatePublished();
+		if (datePublished != null ){
+			return getDatePublished().toString();
 		}else{
 			return null;
 		}

@@ -112,7 +112,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IReferencedEntity, IParsable, IRelated, IMatchable, Cloneable {
     private static final long serialVersionUID = -4530368639601532116L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);

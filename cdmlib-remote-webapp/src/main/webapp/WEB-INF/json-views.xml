@@ -24,6 +24,10 @@
     <bean name="**/classification **/classification/* **/classification/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigClassification" />
     </bean>
+    
+    <bean name="**/name_catalogue/* **/name_catalogue" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="jsonConfig" ref="nameCatalogueJsonConfig" />
+    </bean>
 
     <!-- portal service -->
     <bean name="**/portal/* **/portal/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">

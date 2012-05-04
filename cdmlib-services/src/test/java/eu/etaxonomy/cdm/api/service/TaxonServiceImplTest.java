@@ -797,15 +797,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = (Taxon)taxonBase;
         //synonyms = taxonDao.getAllSynonyms(null, null);
         //assertEquals("Number of synonyms should be 2",2,synonyms.size());
-        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
+        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         	System.err.println(inferredSynonyms.size());
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ");
-        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         System.err.println(inferredSynonyms.get(0).getTitleCache());
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ");
-        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
+        inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ");
         //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))

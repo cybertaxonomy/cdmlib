@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  */
 @Controller
 @RequestMapping(value = {"/media"})
-public class MediaListController extends BaseListController<Media, IMediaService> {
+public class MediaListController extends IdentifiableListController<Media, IMediaService> {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)

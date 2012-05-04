@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+
 /**
  * @author a.mueller
  * @date 23.11.2011
@@ -28,4 +29,6 @@ public interface IReader<TYPE extends Object> extends IConverterOutput<IReader<T
 	 * @return True if there is a next object, false otherwise.
 	 */
 	boolean hasNext();
+	
+	
 }

@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 
@@ -29,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @created 11.03.2010
  * @version 1.0
  */
-public class DbImportMarkerCreationMapper extends DbImportSupplementCreationMapperBase<Marker, AnnotatableEntity, DbImportStateBase<?, ?>> {
+public class DbImportMarkerCreationMapper extends DbImportSupplementCreationMapperBase<Marker, AnnotatableEntity, DbImportStateBase<?, ?>, MarkerType> {
 	private static final Logger logger = Logger.getLogger(DbImportMarkerCreationMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
@@ -71,7 +70,7 @@ public class DbImportMarkerCreationMapper extends DbImportSupplementCreationMapp
 	 * @param supplementedObjectNamespace
 	 * @param supplementType
 	 */
-	protected DbImportMarkerCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, String dbIdAttribute, DefinedTermBase supplementType) {
+	protected DbImportMarkerCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, String dbIdAttribute, MarkerType supplementType) {
 		super(dbSupplementValueAttribute, dbSupplementedObjectAttribute, dbIdAttribute, supplementedObjectNamespace, supplementType);
 	}
 
@@ -108,6 +107,7 @@ public class DbImportMarkerCreationMapper extends DbImportSupplementCreationMapp
 	@Override
 	protected Marker createObject(ResultSet rs) throws SQLException {
 		Marker marker = Marker.NewInstance();
+		marker.setMarkerType(supplementType);
 		return marker;
 	}
 

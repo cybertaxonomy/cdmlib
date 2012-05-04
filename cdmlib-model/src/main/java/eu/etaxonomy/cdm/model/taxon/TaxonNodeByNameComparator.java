@@ -40,7 +40,6 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
-    @SuppressWarnings("unchecked")
     public int compare(TaxonNode o1, TaxonNode o2) {
 
         String titleCache1 = createSortableTitleCache(o1);

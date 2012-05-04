@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;

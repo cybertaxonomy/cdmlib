@@ -74,14 +74,17 @@ public class BookSectionDefaultCacheStrategyTest {
 		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1975", bookSection1.getTitleCache());
 		book1.setDatePublished(null);
 		bookSection1.setDatePublished(TimePeriod.NewInstance(1976));
+		bookSection1.setTitleCache(null);
+		book1.setTitleCache(null);
 		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
 		book1.setDatePublished(TimePeriod.NewInstance(1977));
 		bookSection1.setTitleCache(null);
+		book1.setTitleCache(null);
 		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
 		
 		bookSection1.setInBook(null);
 		bookSection1.setTitleCache(null);
-		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in " + BookSectionDefaultCacheStrategy.UNDEFINED_BOOK + ". 1976", bookSection1.getTitleCache());
+		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in - undefined book -. 1976", bookSection1.getTitleCache());
 		
 	}
 	
@@ -104,7 +107,7 @@ public class BookSectionDefaultCacheStrategyTest {
 		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book. 1976", bookSection1.getTitleCache());
 		
 		bookSection1.setInBook(null);
-		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in " + BookSectionDefaultCacheStrategy.UNDEFINED_BOOK + ". 1976", bookSection1.getTitleCache());
+		Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in - undefined book -. 1976", bookSection1.getTitleCache());
 		
 	}
 

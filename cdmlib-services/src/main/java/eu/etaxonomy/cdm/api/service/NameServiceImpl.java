@@ -277,6 +277,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
     }
+    
+    
+    public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
+        List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
+        return result;
+    }
+    
+    public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
+        return (NonViralName)dao.findByUuid(uuid, null ,propertyPaths);        
+    }
 
     public List getNamesByName(String name, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(name, sessionObject);
