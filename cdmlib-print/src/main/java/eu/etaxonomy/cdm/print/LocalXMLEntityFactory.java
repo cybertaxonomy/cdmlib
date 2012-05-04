@@ -420,7 +420,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 		}
 
 		Element result = render(resultObject);
-        Element result = render(resultObject);
+        //Element result = render(resultObject);
 
         return result;
     }
