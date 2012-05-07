@@ -2,7 +2,7 @@
 /**
  * Copyright (C) 2009 EDIT European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -38,15 +38,15 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @RequestMapping(value = {"/name"})
 public class NameListController extends IdentifiableListController<TaxonNameBase, INameService> {
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Override
-	@Autowired
-	public void setService(INameService service) {
-		this.service = service; 
-	}
-	
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Override
+    @Autowired
+    public void setService(INameService service) {
+        this.service = service;
+    }
+
    @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
     public Pager<TaxonNameBase> doFindTitleCache(
             @RequestParam(value = "query", required = true) String query,
@@ -64,23 +64,21 @@ public class NameListController extends IdentifiableListController<TaxonNameBase
         pagerParams.normalizeAndValidate(response);
 
         return (Pager<TaxonNameBase>) service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
-        
-    }
-   
-   @RequestMapping(value = "findByName/", method = RequestMethod.GET)
-   public Pager<TaxonNameBase> doFindByName(
-   	    @RequestParam(value = "query", required = true) String query,
-        @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-        @RequestParam(value = "pageSize", required = false) Integer pageSize,
-        @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
-   		HttpServletRequest request, 
-   		HttpServletResponse response)throws IOException {
-		
-	   PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
-       pagerParameters.normalizeAndValidate(response);
 
-   	   return (Pager<TaxonNameBase>) service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, null);
-       //return (Pager<TaxonNameBase>) service.findByName(null, query, matchMode, null, pageSize, pageNumber, null, null);
-   }
+    }
+
+    @RequestMapping(value = "findByName", method = RequestMethod.GET)
+    public Pager<TaxonNameBase> doFindByName(
+            @RequestParam(value = "query", required = true) String query,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+        pagerParameters.normalizeAndValidate(response);
+
+        return (Pager<TaxonNameBase>) service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
+    }
 
 }
