@@ -87,8 +87,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     private ITypeDesignationDao typeDesignationDao;
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
-	@Autowired
-	private ICdmGenericDao genericDao;
+    @Autowired
+    private ICdmGenericDao genericDao;
 
     /**
      * Constructor
@@ -97,232 +97,288 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         if (logger.isDebugEnabled()) { logger.debug("Load NameService Bean"); }
     }
 
-//********************* METHODS ****************************************************************//	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	@Override
-	public UUID delete(TaxonNameBase name){
-		NameDeletionConfigurator config = new NameDeletionConfigurator();  
-		try {
-			return delete(name, config);
-		} catch (ReferencedObjectUndeletableException e) {
-			//TODO throw DeleteException - current implementation is preliminary for testing
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
-	 */
-	@Override
-	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException{
-		if (name == null){
-			return null;
-		}
-		
-		//remove references to this name
-		removeNameRelationshipsByDeleteConfig(name, config);
-		
-		//check if this name is still used somewhere
-		
-		//name relationships
-		if (! name.getNameRelations().isEmpty()){
-			String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-			throw new ReferencedObjectUndeletableException(message);
+//********************* METHODS ****************************************************************//
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public UUID delete(TaxonNameBase name){
+        NameDeletionConfigurator config = new NameDeletionConfigurator();
+        try {
+            return delete(name, config);
+        } catch (ReferencedObjectUndeletableException e) {
+            //TODO throw DeleteException - current implementation is preliminary for testing
+            throw new RuntimeException(e);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
+     */
+    @Override
+    public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException{
+        if (name == null){
+            return null;
+        }
+
+        //remove references to this name
+        removeNameRelationshipsByDeleteConfig(name, config);
+
+        //check if this name is still used somewhere
+
+        //name relationships
+        if (! name.getNameRelations().isEmpty()){
+            String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
+            throw new ReferencedObjectUndeletableException(message);
 //			return null;
-		}
-		
-		//concepts
-		if (! name.getTaxonBases().isEmpty()){
-			String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-			throw new ReferencedObjectUndeletableException(message);
-		}
-		
-		//hybrid relationships
-		if (name.isInstanceOf(NonViralName.class)){
-			NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+        }
+
+        //concepts
+        if (! name.getTaxonBases().isEmpty()){
+            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
+            throw new ReferencedObjectUndeletableException(message);
+        }
+
+        //hybrid relationships
+        if (name.isInstanceOf(NonViralName.class)){
+            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
 //			if (! nvn.getHybridChildRelations().isEmpty()){
 //				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
 //				throw new RuntimeException(message);
 //			}
-			if (! nvn.getHybridParentRelations().isEmpty()){
-				String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-				throw new ReferencedObjectUndeletableException(message);
-			}
-		}
-		
-		//all type designation relationships are removed as they belong to the name
-		deleteTypeDesignation(name, null);
+            if (! nvn.getHybridParentRelations().isEmpty()){
+                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
+                throw new ReferencedObjectUndeletableException(message);
+            }
+        }
+
+        //all type designation relationships are removed as they belong to the name
+        deleteTypeDesignation(name, null);
 //		//type designations
 //		if (! name.getTypeDesignations().isEmpty()){
 //			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
 //			throw new ReferrencedObjectUndeletableException(message);
 //		}
-		
-		//check references with only reverse mapping
-		Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
-		for (CdmBase referencingObject : referencingObjects){
-			//DerivedUnitBase?.storedUnder
-			if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
-				String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-				message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
-				throw new ReferencedObjectUndeletableException(message);
-			}
-			//DescriptionElementSource#nameUsedInSource
-			if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
-				String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-				throw new ReferencedObjectUndeletableException(message);
-			}
-			//NameTypeDesignation#typeName
-			if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-				String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-				throw new ReferencedObjectUndeletableException(message);
-			}
 
-			//TaxonNameDescriptions#taxonName
-			//deleted via cascade?
-			
-			//NomenclaturalStatus
-			//deleted via cascade?    
-				
-		}
-		
-		//TODO inline references
-		
-		dao.delete(name);
-		return name.getUuid();
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.INameService#deleteTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.TypeDesignationBase)
-	 */
-	@Override
-	public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
-		if (name == null && typeDesignation == null){
-			return;
-		}else if (name != null && typeDesignation != null){
-			removeSingleDesignation(name, typeDesignation);
-		}else if (name != null){
-			Set<TypeDesignationBase> designationSet = new HashSet<TypeDesignationBase>(name.getTypeDesignations());
-			for (Object o : designationSet){
-				TypeDesignationBase desig = CdmBase.deproxy(o, TypeDesignationBase.class);
-				removeSingleDesignation(name, desig);
-			}
-		}else if (typeDesignation != null){
-			Set<TaxonNameBase> nameSet = new HashSet<TaxonNameBase>(typeDesignation.getTypifiedNames());
-			for (Object o : nameSet){
-				TaxonNameBase singleName = CdmBase.deproxy(o, TaxonNameBase.class);
-				removeSingleDesignation(singleName, typeDesignation);
-			}
-		}
-	}
+        //check references with only reverse mapping
+        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+        for (CdmBase referencingObject : referencingObjects){
+            //DerivedUnitBase?.storedUnder
+            if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
+                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                throw new ReferencedObjectUndeletableException(message);
+            }
+            //DescriptionElementSource#nameUsedInSource
+            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+                throw new ReferencedObjectUndeletableException(message);
+            }
+            //NameTypeDesignation#typeName
+            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+                throw new ReferencedObjectUndeletableException(message);
+            }
 
-	/**
-	 * @param name
-	 * @param typeDesignation
-	 */
-	private void removeSingleDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation) {
-		name.removeTypeDesignation(typeDesignation);
-		if (typeDesignation.getTypifiedNames().isEmpty()){
-			typeDesignation.removeType();
-			typeDesignationDao.delete(typeDesignation);
-		}
-	}
-	
-	
+            //TaxonNameDescriptions#taxonName
+            //deleted via cascade?
 
-	/**
-	 * @param name
-	 * @param config
-	 */
-	private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name, NameDeletionConfigurator config) {
-		if (config.isRemoveAllNameRelationships()){
-			Set<NameRelationship> rels = name.getNameRelations();
-			for (NameRelationship rel : rels){
-				name.removeNameRelationship(rel);
-			}
-		}else{
-			//relations to this name
-			Set<NameRelationship> rels = name.getRelationsToThisName();
-			for (NameRelationship rel : rels){
-				if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
-						name.removeNameRelationship(rel);
-				}else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
-					name.removeNameRelationship(rel);
-				}
-			}
-			//relations from this name
-			rels = name.getRelationsFromThisName();
-			for (NameRelationship rel : rels){
-				if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
-					name.removeNameRelationship(rel);
-				}else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
-					name.removeNameRelationship(rel);
-				}
-			}
-			
-		}
-	}
+            //NomenclaturalStatus
+            //deleted via cascade?
+
+        }
+
+        //TODO inline references
+
+        dao.delete(name);
+        return name.getUuid();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.INameService#deleteTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.TypeDesignationBase)
+     */
+    @Override
+    public void deleteTypeDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation){
+        if (name == null && typeDesignation == null){
+            return;
+        }else if (name != null && typeDesignation != null){
+            removeSingleDesignation(name, typeDesignation);
+        }else if (name != null){
+            Set<TypeDesignationBase> designationSet = new HashSet<TypeDesignationBase>(name.getTypeDesignations());
+            for (Object o : designationSet){
+                TypeDesignationBase desig = CdmBase.deproxy(o, TypeDesignationBase.class);
+                removeSingleDesignation(name, desig);
+            }
+        }else if (typeDesignation != null){
+            Set<TaxonNameBase> nameSet = new HashSet<TaxonNameBase>(typeDesignation.getTypifiedNames());
+            for (Object o : nameSet){
+                TaxonNameBase singleName = CdmBase.deproxy(o, TaxonNameBase.class);
+                removeSingleDesignation(singleName, typeDesignation);
+            }
+        }
+    }
+
+    /**
+     * @param name
+     * @param typeDesignation
+     */
+    private void removeSingleDesignation(TaxonNameBase name, TypeDesignationBase typeDesignation) {
+        name.removeTypeDesignation(typeDesignation);
+        if (typeDesignation.getTypifiedNames().isEmpty()){
+            typeDesignation.removeType();
+            typeDesignationDao.delete(typeDesignation);
+        }
+    }
+
+
+
+    /**
+     * @param name
+     * @param config
+     */
+    private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name, NameDeletionConfigurator config) {
+        if (config.isRemoveAllNameRelationships()){
+            Set<NameRelationship> rels = name.getNameRelations();
+            for (NameRelationship rel : rels){
+                name.removeNameRelationship(rel);
+            }
+        }else{
+            //relations to this name
+            Set<NameRelationship> rels = name.getRelationsToThisName();
+            for (NameRelationship rel : rels){
+                if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
+                        name.removeNameRelationship(rel);
+                }else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+                    name.removeNameRelationship(rel);
+                }
+            }
+            //relations from this name
+            rels = name.getRelationsFromThisName();
+            for (NameRelationship rel : rels){
+                if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
+                    name.removeNameRelationship(rel);
+                }else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+                    name.removeNameRelationship(rel);
+                }
+            }
+
+        }
+    }
 
 //********************* METHODS ****************************************************************//
 
-
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     */
+    @Deprecated
     public List getNamesByName(String name){
         return super.findCdmObjectsByTitle(name);
     }
 
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * duplicate of findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     */
+    @Deprecated
     public List<NonViralName> getNamesByNameCache(String nameCache){
         List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
     }
-    
-    
+
+
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     */
+    @Deprecated
     public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
-    
+
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     */
+    @Deprecated
     public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
-        return (NonViralName)dao.findByUuid(uuid, null ,propertyPaths);        
+        return (NonViralName)dao.findByUuid(uuid, null ,propertyPaths);
     }
 
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     */
+    @Deprecated
     public List getNamesByName(String name, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(name, sessionObject);
     }
 
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     */
+    @Deprecated
     public List findNamesByTitle(String title){
         return super.findCdmObjectsByTitle(title);
     }
 
+    /**
+     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     */
+    @Deprecated
     public List findNamesByTitle(String title, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(title, sessionObject);
     }
 
+    /**
+     * TODO candidate for harmonization
+     * new name saveHomotypicalGroups
+     */
     @Transactional(readOnly = false)
     public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
         return homotypicalGroupDao.saveAll(homotypicalGroups);
     }
 
+    /**
+     * TODO candidate for harmonization
+     * new name saveTypeDesignations
+     */
     @Transactional(readOnly = false)
     public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
         return typeDesignationDao.saveAll(typeDesignationCollection);
     }
 
+    /**
+     * TODO candidate for harmonization
+     * new name saveReferencedEntities
+     */
     @Transactional(readOnly = false)
     public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
         return referencedEntityDao.saveAll(referencedEntityCollection);
     }
 
+    /**
+     * TODO candidate for harmonization
+     * new name getNames
+     */
     public List<TaxonNameBase> getAllNames(int limit, int start){
         return dao.list(limit, start);
     }
 
+    /**
+     * TODO candidate for harmonization
+     * new name getNomenclaturalStatus
+     */
     public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
         return nomStatusDao.list(limit, start);
     }
 
+    /**
+     * TODO candidate for harmonization
+     * new name getTypeDesignations
+     */
     public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
