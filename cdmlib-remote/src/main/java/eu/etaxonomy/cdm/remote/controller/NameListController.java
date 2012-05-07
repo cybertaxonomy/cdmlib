@@ -67,22 +67,20 @@ public class NameListController extends IdentifiableListController<TaxonNameBase
         
     }
    
-   @RequestMapping(value = "findByName/{taxonName}", method = RequestMethod.GET)
-   public TaxonNameBase doFindByName(
-   	 	@PathVariable("taxonName") String taxonName,
+   @RequestMapping(value = "findByName/", method = RequestMethod.GET)
+   public Pager<TaxonNameBase> doFindByName(
+   	    @RequestParam(value = "query", required = true) String query,
+        @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+        @RequestParam(value = "pageSize", required = false) Integer pageSize,
+        @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
    		HttpServletRequest request, 
    		HttpServletResponse response)throws IOException {
 		
-   	List<TaxonNameBase> listTNB = service.getNamesByName(taxonName);
-   	
-   	TaxonNameBase tnb =  null;
-   	service.getNamesByName(taxonName);
-   	if (listTNB.size()>0) {
-   		tnb = listTNB.get(0);
-   	}
-   	
-   	return tnb;
-   	
+	   PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+       pagerParameters.normalizeAndValidate(response);
+
+   	   return (Pager<TaxonNameBase>) service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, null);
+       //return (Pager<TaxonNameBase>) service.findByName(null, query, matchMode, null, pageSize, pageNumber, null, null);
    }
 
 }
