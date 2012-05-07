@@ -120,7 +120,7 @@ public class EditGeoService implements IEditGeoService{
 			String backLayer,
 			List<Language> langs) {
 		
-		List<TaxonDescription> taxonDescriptions = dao.getTaxonDescriptions(taxon, null, null, null, null, null, null);
+		List<TaxonDescription> taxonDescriptions = dao.listTaxonDescriptions(taxon, null, null, null, null, null, null);
 		
 		Set<Distribution> distCollection = new HashSet<Distribution>();
 		// get descriptions elements for each description

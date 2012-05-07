@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -72,6 +74,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     protected IFeatureNodeDao featureNodeDao;
     protected IFeatureDao featureDao;
     protected ITermVocabularyDao vocabularyDao;
+    protected IDefinedTermDao definedTermDao;
     protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -94,6 +97,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     @Autowired
     protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
         this.vocabularyDao = vocabularyDao;
+    }
+    
+    @Autowired
+    protected void setDefinedTermDao(IDefinedTermDao definedTermDao) {
+        this.definedTermDao = definedTermDao;
     }
 
     @Autowired
@@ -212,14 +220,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         List<TaxonDescription> results = new ArrayList<TaxonDescription>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+            results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         }
 
         return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
     }
 
     public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        List<TaxonDescription> results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+        List<TaxonDescription> results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         return results;
     }
 
@@ -378,8 +386,20 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         featureTree = featureTreeDao.load(featureTree.getUuid());
 
         StringBuilder naturalLanguageDescription = new StringBuilder();
+        
+        MarkerType useMarkerType = (MarkerType) definedTermDao.load(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
+        boolean isUseDescription = false;
+        if(!description.getMarkers().isEmpty()) {
+        	for (Marker marker: description.getMarkers()) {
+        		MarkerType markerType = marker.getMarkerType();
+        		if (markerType.equals(useMarkerType)) {
+        			isUseDescription = true;
+        		}
+        		
+        	}
+        }
 
-        if(description.hasStructuredData()){
+        if(description.hasStructuredData() && !isUseDescription){
 
 
             String lastCategory = null;
@@ -458,6 +478,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 //			}
 
         }
+        else if (isUseDescription) {
+        	//AT: Left Blank in case we need to generate a Natural language text string.
+		}
         return naturalLanguageDescription.toString();
     }
 

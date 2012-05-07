@@ -402,7 +402,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 		markerTypes.add(completeMarkerType);
 		int n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
 		Assert.assertEquals("There should be 1 description marked 'complete'", 1, n1);
-		List<TaxonDescription> descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		List<TaxonDescription> descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
 		Assert.assertEquals("There should be 1 description marked 'complete'", 1, descriptions.size());
 		
 		//doubtful
@@ -412,7 +412,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 		markerTypes.add(isDoubtfulMarkerType);
 		int n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
 		Assert.assertEquals("There should be no description marked 'doubtful'", 0, n2);
-		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
 		Assert.assertEquals("There should be 0 description marked 'doubtful'", 0, descriptions.size());
 		
 		//imported = false
@@ -423,10 +423,10 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 		markerTypes.add(importedMarkerType);
 		int n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
 		Assert.assertEquals("There should be no description marked 'imported' as true", 0, n3);
-		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
 		Assert.assertEquals("There should be no description marked 'imported' as true", 0, descriptions.size());
 		markerTypes = null;
-		descriptions = this.descriptionDao.getTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+		descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
 		Assert.assertEquals("There should be 1 description", 1, descriptions.size());
 		TaxonDescription desc = descriptions.iterator().next();
 		boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);

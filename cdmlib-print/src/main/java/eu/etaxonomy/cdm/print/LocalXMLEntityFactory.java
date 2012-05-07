@@ -410,16 +410,17 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         xmlView.setJsonConfig(jsonConfigPortal);
         UUID uuid = XMLHelper.getUuid(taxonElement);
 
-        Object resultObject = null;
-        try {
-            resultObject = taxonPortalController.doGetDescriptions(uuid, null,
-                    null);
-        } catch (IOException e) {
-            monitor.warning(e.getLocalizedMessage(), e);
-            logger.error(e);
-        }
+		Object resultObject = null;
+		try {
+			resultObject = taxonPortalController.doGetDescriptions(uuid, null,
+					null, null);
+		} catch (IOException e) {
+			monitor.warning(e.getLocalizedMessage(), e);
+			logger.error(e);
+		}
 
-        Element result = render(resultObject);
+		Element result = render(resultObject);
+        //Element result = render(resultObject);
 
         return result;
     }

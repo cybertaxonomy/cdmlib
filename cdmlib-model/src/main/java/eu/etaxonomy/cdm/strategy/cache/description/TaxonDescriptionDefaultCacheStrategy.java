@@ -9,8 +9,11 @@
 
 package eu.etaxonomy.cdm.strategy.cache.description;
 
+import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -44,9 +47,19 @@ public class TaxonDescriptionDefaultCacheStrategy extends StrategyBase implement
 	}
 	
 	private String getFirstPart(TaxonDescription taxonDescription){
+		Set<Marker> markers = taxonDescription.getMarkers();
+		MarkerType markerType = MarkerType.USE();
+		Boolean isUseDescription = false;
+		for (Marker marker : markers) {
+			if(marker.getMarkerType().equals(markerType)) {
+				isUseDescription = true;
+			}
+		} 
 		if (taxonDescription.isImageGallery()){
 			return "Image gallery for " ;
-		}else {
+		} else if (isUseDescription) {
+			return "Use description for  ";
+		} else {
 			return "Taxon description for ";
 		}
 	}

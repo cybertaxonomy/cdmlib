@@ -10,12 +10,14 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,4 +66,21 @@ public class NameListController extends IdentifiableListController<TaxonNameBase
         return (Pager<TaxonNameBase>) service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
         
     }
+   
+   @RequestMapping(value = "findByName/", method = RequestMethod.GET)
+   public Pager<TaxonNameBase> doFindByName(
+   	    @RequestParam(value = "query", required = true) String query,
+        @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+        @RequestParam(value = "pageSize", required = false) Integer pageSize,
+        @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+   		HttpServletRequest request, 
+   		HttpServletResponse response)throws IOException {
+		
+	   PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+       pagerParameters.normalizeAndValidate(response);
+
+   	   return (Pager<TaxonNameBase>) service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, null);
+       //return (Pager<TaxonNameBase>) service.findByName(null, query, matchMode, null, pageSize, pageNumber, null, null);
+   }
+
 }

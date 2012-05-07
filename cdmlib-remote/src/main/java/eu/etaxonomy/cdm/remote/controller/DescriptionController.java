@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,22 +31,20 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
@@ -64,8 +61,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 {
     @Autowired
     private IFeatureTreeService featureTreeService;
-
-
+    
+    
     public DescriptionController(){
         super();
     }
@@ -77,6 +74,17 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 "root.children.feature.representations",
                 "root.children.children.feature.representations",
             });
+    
+    
+    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "elements.$",
+            "elements.sources.citation.authorTeam",
+            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.multilanguageText",
+            "elements.media.representations.parts",
+            "elements.media.title",
+    });
 
     @InitBinder
     @Override
@@ -127,6 +135,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
     }
+    
+
 
     @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
     public Pager<DescriptionElementBase> doFindDescriptionElements(
@@ -199,16 +209,12 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 (TaxonDescription)description,
                 languages,
                 ", ");
-
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
         textData.putText(Language.DEFAULT(), naturalLanguageDescription);
-
         mv.addObject(textData);
-
         return mv;
     }
-
-
+    
     @RequestMapping(value = "/description/{uuid}/hasStructuredData", method = RequestMethod.GET)
     public ModelAndView doHasStructuredData(
             @PathVariable("uuid") UUID uuid,

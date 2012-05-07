@@ -91,7 +91,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonDescription instances
 	 */
-	List<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method

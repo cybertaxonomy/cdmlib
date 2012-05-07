@@ -947,7 +947,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return bestCandidate;
     }
-
+    
     private boolean isInClassification(Taxon taxon, MatchingTaxonConfigurator config) {
         UUID configClassificationUuid = config.getClassificationUuid();
         if (configClassificationUuid == null){
