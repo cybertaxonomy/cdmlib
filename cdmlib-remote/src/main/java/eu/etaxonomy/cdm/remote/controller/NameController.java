@@ -126,22 +126,5 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
         return mv;
     }
     
-    @RequestMapping(value = "/name/namesByName/{taxonName}", method = RequestMethod.GET)
-    public TaxonNameBase findByName(
-    	 	@PathVariable("taxonName") String taxonName,
-    		HttpServletRequest request, 
-    		HttpServletResponse response)throws IOException {
-		
-    	List<TaxonNameBase> listTNB = service.getNamesByName(taxonName);
-    	
-    	TaxonNameBase tnb =  null;
-    	service.getNamesByName(taxonName);
-    	if (listTNB.size()>0) {
-    		tnb = listTNB.get(0);
-    	}
-    	
-    	return tnb;
-    	
-    }
 
 }

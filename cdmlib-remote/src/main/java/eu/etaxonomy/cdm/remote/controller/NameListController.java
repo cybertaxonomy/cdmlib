@@ -10,12 +10,14 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,4 +66,23 @@ public class NameListController extends IdentifiableListController<TaxonNameBase
         return (Pager<TaxonNameBase>) service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
         
     }
+   
+   @RequestMapping(value = "findByName/{taxonName}", method = RequestMethod.GET)
+   public TaxonNameBase doFindByName(
+   	 	@PathVariable("taxonName") String taxonName,
+   		HttpServletRequest request, 
+   		HttpServletResponse response)throws IOException {
+		
+   	List<TaxonNameBase> listTNB = service.getNamesByName(taxonName);
+   	
+   	TaxonNameBase tnb =  null;
+   	service.getNamesByName(taxonName);
+   	if (listTNB.size()>0) {
+   		tnb = listTNB.get(0);
+   	}
+   	
+   	return tnb;
+   	
+   }
+
 }
