@@ -270,7 +270,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     /**
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     * duplicate of findByName
      */
     @Deprecated
     public List getNamesByName(String name){
@@ -278,10 +278,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     * TODO candidate for harmonization
+     * new name findByName
      */
-    @Deprecated
     public List<NonViralName> getNamesByNameCache(String nameCache){
         List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
@@ -289,9 +288,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 
     /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * TODO candidate for harmonization
+     * new name saveHomotypicalGroups
+     *
+     * findByTitle
      */
-    @Deprecated
     public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
         return result;
@@ -306,10 +307,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     /**
-     * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     * TODO candidate for harmonization
      */
-    @Deprecated
     public List getNamesByName(String name, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(name, sessionObject);
     }
@@ -325,7 +324,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     /**
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
-     * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
+     * duplicate of findByTitle()
      */
     @Deprecated
     public List findNamesByTitle(String title, CdmBase sessionObject){
