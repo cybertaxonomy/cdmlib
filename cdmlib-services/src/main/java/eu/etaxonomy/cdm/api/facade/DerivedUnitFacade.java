@@ -1517,7 +1517,7 @@ public class DerivedUnitFacade {
 
 	// field object definition
 	public void addFieldObjectDefinition(String text, Language language) {
-		getFieldObservation(true).addDefinition(text, language);
+		getFieldObservation(true).putDefinition(language, text);
 	}
 
 	@Transient
