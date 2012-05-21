@@ -102,8 +102,12 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 //						logger.debug("String to long (" + strValue.length() + ") for object " + cdmBase.toString() + ": " + value);
 //					}
 					int precision = getPrecision();
+					if (strValue.length() > 450){
+						logger.debug(">450");
+					}
+					
 					if (strValue.length() > precision && precision > 0 ){
-						logger.warn("The length of the string to save is longer than the database columns precision. String will be truncated: " + strValue);
+						logger.warn("The length of the string to save ("+ getDestinationAttribute() + ") is longer than the database columns precision ("+precision+"). String will be truncated: " + strValue);
 						if (precision >= 4) {
 							strValue = strValue.substring(0, precision - 4 )+" ...";
 						} else {
