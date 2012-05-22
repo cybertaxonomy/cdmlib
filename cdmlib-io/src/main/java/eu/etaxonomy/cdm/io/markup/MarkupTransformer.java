@@ -135,6 +135,8 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidMaleInflorescences = UUID.fromString("374fa3fe-70c2-4ec9-a611-97c62288aeba");
 	public static final UUID uuidFemaleInflorescences = UUID.fromString("179af784-850c-4187-ba1f-cdc9f68970ef");
 	public static final UUID uuidFlowers = UUID.fromString("7fd80f15-9abf-44e7-b55a-be264b9dd7ac");
+	public static final UUID uuidHermaphroditeFlowers = UUID.fromString("e2faea4c-49d8-4e65-b76f-0cfff5add113");
+	
 	public static final UUID uuidSepals = UUID.fromString("d6867f7c-68c9-4b7c-9094-862bdfe1e064");
 	public static final UUID uuidOuterSepals = UUID.fromString("e95b65f8-656f-4770-b716-2824cb4b54b6");
 	public static final UUID uuidAnthers = UUID.fromString("3f40ea65-320b-4875-86e6-f499017b4bc6");
@@ -290,27 +292,53 @@ public class MarkupTransformer extends InputTransformerBase {
 	public static final UUID uuidVascularStrands = UUID.fromString("15d7ae67-c220-45c1-8cfa-a52f520bbe45");
 	
 	
+	//gabon
+	public static final UUID uuidEndosperm = UUID.fromString("0077b7ab-1987-4879-8dfc-e2def5377410");
+	public static final UUID uuidVeinlets = UUID.fromString("21412ceb-767d-4c4f-b7f0-953acdb75a96");
+	public static final UUID uuidAxillaryFlowers = UUID.fromString("61ec9cd7-bb44-47fe-abca-8ef817aba605");
+	public static final UUID uuidLateralVeins = UUID.fromString("aa6aa22a-1b6f-4bc4-99bd-93281fa01a98");
+	public static final UUID uuidIntegument = UUID.fromString("baaba14e-31bc-45b4-9f4a-f534073c9565");
+	public static final UUID uuidJuvenileLeaves = UUID.fromString("a21bd0a7-3808-4158-8499-d49a9b3cef28");
+	public static final UUID uuidPeduncle = UUID.fromString("e7ef4187-4522-4297-8945-9aeb94d0bec5");
+	public static final UUID uuidJuvenileFruits = UUID.fromString("96d6c3ee-d393-4759-bbe6-d34e8282e59e");
+	public static final UUID uuuidPollenSacs = UUID.fromString("3e42eb8f-5b14-427b-83be-da69d250242e");
+	public static final UUID uuidConnective = UUID.fromString("1602a923-96a0-4450-8388-3467692bf244");
+	public static final UUID uuidCarpels = UUID.fromString("55cbf691-b347-4399-b14f-f054a872d3e4");
+	public static final UUID uuidOvule = UUID.fromString("5871858c-144f-4209-81e2-5d0fc0a61cc3");
+	public static final UUID uuidSeedNumber = UUID.fromString("405762c0-0733-4eef-af74-ac85d6301810");
+	public static final UUID uuidAndrophore = UUID.fromString("06757528-7a62-4068-8982-fa5900de796a");
+	public static final UUID uuidRadicle = UUID.fromString("e2f7895f-1fd5-41ef-90d8-6a53e28bb7c7");
+	public static final UUID uuidCentralFolioles = UUID.fromString("0587bf46-2f4c-474d-93d6-2866455e8286");
+	public static final UUID uuidLateralFolioles = UUID.fromString("c1c98bc3-3e45-47c2-8ee8-915ad942066c");
+	public static final UUID uuidOvarianFollicles = UUID.fromString("362d7509-1cce-44a3-b2e3-f68b4b6fb174");
+	public static final UUID uuidFolioles = UUID.fromString("2f1f3b07-508d-44ca-aff1-814f985a39ce");
+	public static final UUID uuidMainFolioles = UUID.fromString("85102fd1-1974-4963-a068-edeb9c0ced39");
+	public static final UUID uuidTerminalFolioles = UUID.fromString("a09122d0-97ff-444c-9be4-c31df05dc4df");
+	public static final UUID uuidInferiorFolioles = UUID.fromString("f5737453-a326-4931-8b79-6ba81dbd67c8");
 	
+	public static final UUID uuidLeafShape = UUID.fromString("dc7dd8aa-39ee-4a82-8e67-e03574a224f0");
+	public static final UUID uuidJuvenileLamina = UUID.fromString("490e70c8-6777-4baa-9895-d1f22dbe5e4c");
+	public static final UUID uuidApicalBuds = UUID.fromString("07e85d1a-2051-4b29-ae4d-86cf076a9fa8");
+	public static final UUID uuidJuvenileCarpels = UUID.fromString("c7527c25-a599-4c85-be94-0076003b46ce");
+	public static final UUID uuidAndrogynophore = UUID.fromString("a5404cfa-cff2-4b20-b300-3d10667426a7");
+	public static final UUID uuidEmbryo = UUID.fromString("fe9eee1a-ba98-4cf5-8f7f-561877e4aa79");
+	public static final UUID uuidMesocarp = UUID.fromString("df0fc7bf-b63f-4e7c-91b6-60f79a0d2e07");
+	public static final UUID uuidEndocarp = UUID.fromString("37dfd3e5-0a1b-4e72-a7de-72961351c118");
+	public static final UUID uuidSurfaces = UUID.fromString("57598ba1-3ba6-4358-ae17-45571f99cf3c");
+	public static final UUID uuidRoots = UUID.fromString("77363ffb-5683-4801-a71a-f8e3b1342edc");
+	public static final UUID uuidPanicles = UUID.fromString("8ec7ee47-ae72-42de-9b37-2e991b117e62");
+	public static final UUID uuidFruiting = UUID.fromString("5dbdd977-0928-4479-93ea-00f303616fcd");
+	public static final UUID uuidLabellum = UUID.fromString("b869ac9f-ac0a-43ee-8d22-e20dfc25c73a");
+	public static final UUID uuidFlowerColor = UUID.fromString("2c94b502-13fc-40f6-a8ae-69a20b5fe9ca");
+	public static final UUID uuidReceptacle = UUID.fromString("1264dae6-e72e-4de5-b1ea-604417f71987");
+	public static final UUID uuidSpines = UUID.fromString("2ac1f9a4-1a36-4337-9a57-444576cc91ab");
+	public static final UUID uuidTeeth = UUID.fromString("9275dcaa-5106-4bd7-8c93-9b46b1db9d29");
+	public static final UUID uuidSecondaryVeins = UUID.fromString("24776a0b-cf0f-4045-b3b1-c0e541a88cf7");
+	public static final UUID uuidIntersecondaryVeins = UUID.fromString("294812c5-d26d-409b-9e14-2929da1af189");
+//	public static final UUID uuid = UUID.fromString("");
+
 	
-//	88112486-2382-4b38-a51d-77f9ea0c1068
-//	8e1ca880-3c75-4dca-93b5-764dc49e25aa
-//	392ba780-4b5b-44cd-8579-181cca299121
-//	dab59461-0e4f-4ce4-b9a1-bfca1b3a7693
-//	f16f8c67-e076-468a-b33d-7827aa6870ba
-//	84c42682-0aa2-4233-9bc9-9dac871062f9
-//	270fcb8c-4d91-4e29-9395-67c795cd26a2
-//	50ce0cf2-ebda-476e-a25d-71e6cc1a6574
-//	41db2ce3-f423-4bcd-b841-8dad4dc7707d
-//	d57be670-f94a-48e6-9d7d-000cc4ba3529
-//	fb388867-7d6b-4dc5-834e-fc9681854fe0
-//	ed766c4f-fe6a-49c5-a177-04716e803b93
-//	b2da6418-282a-45ba-8120-41402b7efff1
-//	9183b975-3752-4990-9a04-801e22470e76
-//	288d758a-4cd1-4c49-82b3-5bcfb04cbdd3
-//	cb19bc05-bf95-4251-9688-079ecb940f73
-//	24afa6c4-2fc2-4f8b-8bd0-fb50a02fb83e
-//	56dd4e82-7bc2-405f-9ca2-3dcbaabb679d
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
 	 */
@@ -381,6 +409,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("Infructescences")){return uuidInfructescences;
 		}else if (key.equalsIgnoreCase("Branches")){return uuidBranches;
 		}else if (key.equalsIgnoreCase("Flower")){return uuidFlower;
+		}else if (key.equalsIgnoreCase("hermaphrodite flowers")){return uuidHermaphroditeFlowers;
 		}else if (key.equalsIgnoreCase("Ovules")){return uuidOvules;
 		}else if (key.equalsIgnoreCase("Female")){return uuidFemaleFlowers;
 		}else if (key.equalsIgnoreCase("Style")){return uuidStyle;
@@ -543,10 +572,55 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("vascular strands")){return uuidVascularStrands;
 		
 		
+		//FdG
+		}else if (key.equalsIgnoreCase("endosperm")){return uuidEndosperm;
+		}else if (key.equalsIgnoreCase("veinlets")){return uuidVeinlets;
+		}else if (key.equalsIgnoreCase("axillary flowers")){return uuidAxillaryFlowers;
+		}else if (key.equalsIgnoreCase("lateral veins")){return uuidLateralVeins;
+		}else if (key.equalsIgnoreCase("secondary veins")){return uuidSecondaryVeins;
+		}else if (key.equalsIgnoreCase("intersecondary veins")){return uuidIntersecondaryVeins;
+		
+		}else if (key.equalsIgnoreCase("integument")){return uuidIntegument;
+		}else if (key.equalsIgnoreCase("juvenile leaves")){return uuidJuvenileLeaves;
+		}else if (key.equalsIgnoreCase("peduncle")){return uuidPeduncle;
+		}else if (key.equalsIgnoreCase("juvenile fruits")){return uuidJuvenileFruits;
+		}else if (key.equalsIgnoreCase("pollen sacs")){return uuuidPollenSacs;
+		}else if (key.equalsIgnoreCase("connective")){return uuidConnective;
+		}else if (key.equalsIgnoreCase("carpels")){return uuidCarpels;
+		}else if (key.equalsIgnoreCase("ovule")){return uuidOvule;
+		}else if (key.equalsIgnoreCase("seed number")){return uuidSeedNumber;
+		}else if (key.equalsIgnoreCase("androphore")){return uuidAndrophore;
+		}else if (key.equalsIgnoreCase("radicle")){return uuidRadicle;
+		
+		
+		}else if (key.equalsIgnoreCase("folioles")){return uuidFolioles;
+		}else if (key.equalsIgnoreCase("central folioles")){return uuidCentralFolioles;
+		}else if (key.equalsIgnoreCase("lateral folioles")){return uuidLateralFolioles;
+		}else if (key.equalsIgnoreCase("main folioles")){return uuidMainFolioles;
+		}else if (key.equalsIgnoreCase("terminal folioles")){return uuidTerminalFolioles;
+		}else if (key.equalsIgnoreCase("inferior folioles")){return uuidInferiorFolioles;
+		}else if (key.equalsIgnoreCase("ovarian follicles")){return uuidOvarianFollicles;
+
+		}else if (key.equalsIgnoreCase("leaf shape")){return uuidLeafShape;
+		}else if (key.equalsIgnoreCase("juvenile lamina")){return uuidJuvenileLamina;
+		}else if (key.equalsIgnoreCase("apical buds")){return uuidApicalBuds;
+		}else if (key.equalsIgnoreCase("juvenile carpels")){return uuidJuvenileCarpels;
+		}else if (key.equalsIgnoreCase("androgynophore")){return uuidAndrogynophore;
+		}else if (key.equalsIgnoreCase("embryo")){return uuidEmbryo;
+		}else if (key.equalsIgnoreCase("mesocarp")){return uuidMesocarp;
+		}else if (key.equalsIgnoreCase("endocarp")){return uuidEndocarp;
+		}else if (key.equalsIgnoreCase("surfaces")){return uuidSurfaces;
+		}else if (key.equalsIgnoreCase("roots")){return uuidRoots;
+		}else if (key.equalsIgnoreCase("panicles")){return uuidPanicles;
+		}else if (key.equalsIgnoreCase("fruiting")){return uuidFruiting;
+		}else if (key.equalsIgnoreCase("labellum")){return uuidLabellum;
+		}else if (key.equalsIgnoreCase("flower color")){return uuidFlowerColor;
+		}else if (key.equalsIgnoreCase("receptacle")){return uuidReceptacle;
+		}else if (key.equalsIgnoreCase("spines")){return uuidSpines;
+		}else if (key.equalsIgnoreCase("teeth")){return uuidTeeth;
 		
 		
 //		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
-
 		
 		
 		}else{

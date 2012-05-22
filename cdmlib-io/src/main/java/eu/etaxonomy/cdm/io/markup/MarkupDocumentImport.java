@@ -619,8 +619,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				} else if (isStartingElement(next, FIGURE)) {
 					handleFigure(state, reader, next);
 				} else if (isStartingElement(next, FOOTNOTE)) {
-					FootnoteDataHolder footnote = handleFootnote(state, reader,
-							next);
+					FootnoteDataHolder footnote = handleFootnote(state, reader,	next);
 					if (footnote.isRef()) {
 						String message = "Ref footnote not implemented here";
 						fireWarningEvent(message, next, 4);
@@ -724,9 +723,9 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	 * @param next
 	 * @throws XMLStreamException
 	 */
-	private void handleKeyTitle(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
+	private void handleKeyTitle(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		PolytomousKey key = state.getCurrentKey();
-		String keyTitle = getCData(state, reader, next);
+		String keyTitle = getCData(state, reader, parentEvent);
 		String standardTitles = "(?i)(Key\\sto\\sthe\\s(genera|species|varieties|forms))";
 		
 		if (isNotBlank(keyTitle) ){
@@ -3525,7 +3524,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	}
 
 	protected static final List<String> htmlList = Arrays.asList("sub", "sup",
-			"ol", "ul", "li", "i", "b", "table", "br");
+			"ol", "ul", "li", "i", "b", "table", "br","tr","td");
 
 	private boolean isHtml(XMLEvent event) {
 		if (event.isStartElement()) {
@@ -3545,6 +3544,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		String classValue = getClassOnlyAttribute(parentEvent);
 		Feature feature = makeFeature(classValue, state, parentEvent);
 
+		boolean isTextMode = true;
 		String text = "";
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
@@ -3558,6 +3558,19 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			} else if (isEndingElement(next, FIGURE_REF)) {
 				//TODO
 				popUnimplemented(next.asEndElement());
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				popUnimplemented(next.asEndElement());	
+			} else if (isStartingElement(next, BR)) {
+				text += "<br/>";
+				isTextMode = false;
+			} else if (isEndingElement(next, BR)) {
+				isTextMode = true;
+			} else if (isHtml(next)) {
+				text += getXmlTag(next);
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, ANNOTATION)) {
 					handleNotYetImplementedElement(next);
@@ -3565,11 +3578,26 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, BOLD)) {
 					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, FIGURE)) {
+					handleFigure(state, reader, next);
+				} else if (isStartingElement(next, FOOTNOTE)) {
+					FootnoteDataHolder footnote = handleFootnote(state, reader,	next);
+					if (footnote.isRef()) {
+						String message = "Ref footnote not implemented here";
+						fireWarningEvent(message, next, 4);
+					} else {
+						registerGivenFootnote(state, footnote);
+					}
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
 				}
 			} else if (next.isCharacters()) {
-				text += next.asCharacters().getData();
+				if (!isTextMode) {
+					String message = "String is not in text mode";
+					fireWarningEvent(message, next, 6);
+				} else {
+					text += next.asCharacters().getData();
+				}
 			} else {
 				handleUnexpectedEndElement(next.asEndElement());
 			}
