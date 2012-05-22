@@ -134,8 +134,8 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
 				String notes = rs.getString("notes");
 				
-				TaxonNameBase nameFrom = nameMap.get(String.valueOf(name1Id));
-				TaxonNameBase nameTo = nameMap.get(String.valueOf(name2Id));
+				TaxonNameBase<?,?> nameFrom = nameMap.get(String.valueOf(name1Id));
+				TaxonNameBase<?,?> nameTo = nameMap.get(String.valueOf(name2Id));
 				
 				
 				Reference<?> citation = null;
@@ -153,10 +153,15 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				if (nameFrom != null && nameTo != null){
 					success = handleNameRelationship(success, config, name1Id, name2Id,	relQualifierFk, 
 							notes, nameFrom, nameTo, citation, microcitation, rule);
-					nameFrom.setTitleCache(null);
-					nameTo.setTitleCache(null);
-					nameFrom.getTitleCache();
-					nameTo.getTitleCache();
+					
+					if (! nameFrom.isProtectedTitleCache()){
+						nameFrom.setTitleCache(null);
+						nameFrom.getTitleCache();
+					}
+					if (! nameTo.isProtectedTitleCache()){
+						nameTo.setTitleCache(null);
+						nameTo.getTitleCache();
+					}
 					nameToSave.add(nameFrom);
 					
 					//TODO
