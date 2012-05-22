@@ -327,6 +327,7 @@
     </xsl:for-each>
   </xsl:template>
 
+<!-- first date in brackets -->
   <xsl:template match="nomenclaturalReference">
     <xsl:text> (</xsl:text>
     <fo:inline>
@@ -443,6 +444,12 @@
     <xsl:for-each select="e">
       <xsl:text> - </xsl:text>
       <xsl:apply-templates select="name"/>
+      <xsl:call-template name="citations">
+      <!--LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
+        <xsl:with-param name="descriptionelements" select="../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+        <xsl:with-param name="name-uuid" select="name/uuid"/>
+      </xsl:call-template>
+      
     </xsl:for-each>
   </xsl:template>
 
@@ -475,7 +482,15 @@
         <xsl:if test="nameUsedInSource/uuid=$name-uuid">
           <xsl:text>; </xsl:text>
           <fo:inline>
-            <xsl:value-of select="citation/authorTeam/titleCache"/>
+            <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
+            <xsl:for-each select="citation/authorTeam/teamMembers/e">
+              <xsl:value-of select="lastname"/>
+              <xsl:choose>
+                <xsl:when test="position() != last()"><xsl:text> &amp; </xsl:text></xsl:when>
+              </xsl:choose>
+            </xsl:for-each>
+            
+            <xsl:value-of select="citation/authorTeam/lastname"/>
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
             <xsl:text>: </xsl:text>
