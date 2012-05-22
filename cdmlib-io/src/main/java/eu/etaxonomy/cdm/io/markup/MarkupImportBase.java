@@ -300,7 +300,7 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 	}
 
 	protected void handleNotYetImplementedAttributeValue(XMLEvent xmlEvent, String attrName, String attrValue) {
-		String message = "Attribute %s not yet implemented vor value '%s'";
+		String message = "Attribute %s not yet implemented for value '%s'";
 		message = String.format(message, attrName, attrValue);
 		IIoEvent event = makeProblemEvent(xmlEvent.getLocation(), message, 1, 1 );
 		fire(event);		
