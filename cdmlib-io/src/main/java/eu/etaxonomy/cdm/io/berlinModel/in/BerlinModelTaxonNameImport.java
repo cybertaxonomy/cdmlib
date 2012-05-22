@@ -151,6 +151,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				String fullNameCache = rs.getString("FullNameCache");
 				
 				try {
+					
+					//define rank
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
 					
@@ -163,6 +165,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						logger.warn("Rank did not yet exist: " +  rank.getTitleCache());
 					}
 					
+					//create TaxonNameBase
 					TaxonNameBase taxonNameBase;
 					if (config.getNomenclaturalCode() != null){
 						taxonNameBase = config.getNomenclaturalCode().getNewTaxonNameInstance(rank);
@@ -181,6 +184,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						logger.warn("Rank is null. Genus epethiton was imported. May be wrong");
 						success = false;
 					}
+					
+					//epithets
 					if (rank != null && rank.isSupraGeneric()){
 						dbAttrName = "supraGenericName";
 					}else{
@@ -235,7 +240,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	
 					//NonViralName
 					if (taxonNameBase instanceof NonViralName){
-						NonViralName nonViralName = (NonViralName)taxonNameBase;
+						NonViralName<?> nonViralName = (NonViralName<?>)taxonNameBase;
 						
 						//authorTeams
 						if (teamMap != null ){
@@ -271,7 +276,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						taxonNameBase.setTitleCache(fullNameCache, true);
 						taxonNameBase.setFullTitleCache(taxonNameBase.getFullTitleCache(), true);
 						if (taxonNameBase instanceof NonViralName){
-							NonViralName nvn = (NonViralName)taxonNameBase;
+							NonViralName<?> nvn = (NonViralName<?>)taxonNameBase;
 							nvn.setNameCache(nameCache, true);
 							nvn.setAuthorshipCache(nvn.getAuthorshipCache(), true);
 						}
