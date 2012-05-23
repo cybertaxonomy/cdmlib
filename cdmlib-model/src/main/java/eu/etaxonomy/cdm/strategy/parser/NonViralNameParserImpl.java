@@ -1215,7 +1215,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){
 			return null;
-		}else if (! teamSplitterPattern.matcher(authorString).find() && ! authorIsAlwaysTeam){
+		}else if (! finalTeamSplitterPattern.matcher(authorString).find() && ! authorIsAlwaysTeam){
 			//1 Person
 			Person result = Person.NewInstance();
 			result.setNomenclaturalTitle(authorString);
@@ -1234,7 +1234,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 */
 	protected Team parsedTeam(String authorString){
 		Team result = Team.NewInstance();
-		String[] authors = authorString.split(teamSplitter);
+		String[] authors = authorString.split(notFinalTeamSplitter);
 		for (String author : authors){
 			Person person = Person.NewInstance();
 			person.setNomenclaturalTitle(author);

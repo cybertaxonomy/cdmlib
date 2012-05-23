@@ -23,6 +23,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *
  */
 public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
+	private static final String FINAL_TEAM_CONCATINATION = " & ";
+	private static final String STD_TEAM_CONCATINATION = ", ";
 	private static final long serialVersionUID = 8375295443642690479L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
@@ -55,13 +57,22 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	 */
 	public String getNomenclaturalTitle(Team team) {
 		String result = "";
+		
 		List<Person> teamMembers = team.getTeamMembers();
+		int i = 0;
 		for (Person teamMember : teamMembers){
-			result += teamMember.getNomenclaturalTitle() + " & ";
+			i++;
+			String concat;
+			if (i <= 1){
+				concat = "";
+			}else if (i < teamMembers.size()){
+				concat = STD_TEAM_CONCATINATION;
+			}else{
+				concat = FINAL_TEAM_CONCATINATION;
+			}
+			result += concat + teamMember.getNomenclaturalTitle();
 		}
-		if (teamMembers.size() > 0){
-			result = result.substring(0, result.length() - 3);
-		}else{
+		if (teamMembers.size() == 0){
 			result = team.getTitleCache();
 		}
 		return result;
@@ -74,12 +85,21 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		// TODO is still dummy
 		String result = "";
 		List<Person> teamMembers = team.getTeamMembers();//Hibernate.initialize(teamMembers);
+		
+		int i = 0;
 		for (Person teamMember : teamMembers){
-			result += teamMember.getTitleCache() + " & ";
+			i++;
+			String concat;
+			if (i <= 1){
+				concat = "";
+			}else if (i < teamMembers.size()){
+				concat = STD_TEAM_CONCATINATION;
+			}else{
+				concat = FINAL_TEAM_CONCATINATION;
+			}
+			result += concat + teamMember.getTitleCache();
 		}
-		if (teamMembers.size() > 0){
-			result = result.substring(0, result.length() - 3);
-		}else{
+		if (teamMembers.size() == 0){
 			result = EMPTY_TEAM;
 		}
 		return result;

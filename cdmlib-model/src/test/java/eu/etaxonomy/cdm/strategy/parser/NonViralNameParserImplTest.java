@@ -113,6 +113,34 @@ public class NonViralNameParserImplTest {
 	public final void testTaxonNameParserBotanicalNameImpl() {
 		logger.warn("Not yet implemented"); // TODO
 	}
+	
+	@Test
+	public final void testTeamSeperation(){
+		Rank speciesRank = Rank.SPECIES();
+		NonViralName<?> name;
+		
+//		String strNameWith1AUthorAndCommaSepEditon = "Abies alba Mill., Sp. Pl., ed. 3: 455. 1987";
+//		name = parser.parseReferencedName(strNameWith1AUthorAndCommaSepEditon, botanicCode, speciesRank);
+//		Assert.assertFalse("No problems should exist", name.hasProblem());
+//		Assert.assertEquals("Name should not include reference part", "Abies alba Mill.", name.getTitleCache());
+//		Assert.assertEquals("Mill., Sp. Pl., ed. 3. 1987", name.getNomenclaturalReference().getTitleCache());
+//		
+//		
+//		String strNameWith2Authors = "Abies alba L. & Mill., Sp. Pl., ed. 3: 455. 1987";
+//		name = parser.parseReferencedName(strNameWith2Authors, botanicCode, speciesRank);
+//		Assert.assertFalse("No problems should exist", name.hasProblem());
+//		Assert.assertEquals("Name should not include reference part", "Abies alba L. & Mill.", name.getTitleCache());
+//		Assert.assertEquals("Name should have authorteam with 2 authors", 2, ((Team)name.getCombinationAuthorTeam()).getTeamMembers().size());
+//		Assert.assertEquals("L. & Mill., Sp. Pl., ed. 3. 1987", name.getNomenclaturalReference().getTitleCache());
+		
+		String strNameWith3Authors = "Abies alba Mess., L. & Mill., Sp. Pl., ed. 3: 455. 1987";
+		name = parser.parseReferencedName(strNameWith3Authors, botanicCode, speciesRank);
+		Assert.assertFalse("No problems should exist", name.hasProblem());
+		Assert.assertEquals("Name should not include reference part", "Abies alba Mess., L. & Mill.", name.getTitleCache());
+		Assert.assertEquals("Name should have authorteam with 2 authors", 3, ((Team)name.getCombinationAuthorTeam()).getTeamMembers().size());
+		Assert.assertEquals("Mess., L. & Mill., Sp. Pl., ed. 3. 1987", name.getNomenclaturalReference().getTitleCache());
+		
+	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
@@ -651,12 +679,13 @@ public class NonViralNameParserImplTest {
 		
 		//null
 		String strNull = null;
-		NonViralName<?> nameNull = parser.parseReferencedName(strNull, null, Rank.SPECIES());
+		Rank rankSpecies = Rank.SPECIES();
+		NonViralName<?> nameNull = parser.parseReferencedName(strNull, null, rankSpecies);
 		assertNull(nameNull);
 				
 		//Empty
 		String strEmpty = "";
-		NonViralName<?> nameEmpty = parser.parseReferencedName(strEmpty, null, Rank.SPECIES());
+		NonViralName<?> nameEmpty = parser.parseReferencedName(strEmpty, null, rankSpecies);
 		assertFalse(nameEmpty.hasProblem());
 		assertEquals(strEmpty, nameEmpty.getFullTitleCache());
 		assertNull(nameEmpty.getNomenclaturalMicroReference());
@@ -664,14 +693,14 @@ public class NonViralNameParserImplTest {
 		
 		//Whitespaces
 		String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
-		NonViralName<?> namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, Rank.SPECIES());
+		NonViralName<?> namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, rankSpecies);
 		assertFullRefStandard(namefullWhiteSpcaceAndDot);
 		assertTrue(((Reference)namefullWhiteSpcaceAndDot.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
 		assertEquals( "Abies alba Mill., Sp. Pl. 4: 455. 1987", namefullWhiteSpcaceAndDot.getFullTitleCache());
 
 		//Book
 		String fullReference = "Abies alba Mill., Sp. Pl. 4: 455. 1987";
-		NonViralName<?> name1 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
+		NonViralName<?> name1 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFullRefStandard(name1);
 		assertTrue(((Reference)name1.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
 		assertEquals(fullReference, name1.getFullTitleCache());
@@ -679,7 +708,7 @@ public class NonViralNameParserImplTest {
 		
 		//Book Section
 		fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
-		NonViralName<?> name2 = parser.parseReferencedName(fullReference + ".", null, Rank.SPECIES());
+		NonViralName<?> name2 = parser.parseReferencedName(fullReference + ".", null, rankSpecies);
 		assertFullRefNameStandard(name2);
 		assertEquals(fullReference, name2.getFullTitleCache());
 		assertFalse(name2.hasProblem());
@@ -697,7 +726,7 @@ public class NonViralNameParserImplTest {
 		
 		//Article
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
-		NonViralName<?> name3 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
+		NonViralName<?> name3 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFullRefNameStandard(name3);
 		name3.setTitleCache(null);
 		assertEquals(fullReference, name3.getFullTitleCache());
@@ -720,7 +749,7 @@ public class NonViralNameParserImplTest {
 		String fullReferenceWithoutYear = "Abies alba Mill. in " + journalTitle + " 4(6): 455.";
 		fullReference = fullReferenceWithoutYear + yearPart;
 		String fullReferenceWithEnd = fullReference + ".";
-		NonViralName<?> name4 = parser.parseReferencedName(fullReferenceWithEnd, null, Rank.SPECIES());
+		NonViralName<?> name4 = parser.parseReferencedName(fullReferenceWithEnd, null, rankSpecies);
 		assertFalse(name4.hasProblem());
 		assertFullRefNameStandard(name4);
 		assertEquals(fullReferenceWithoutYear + " " + parsedYear, name4.getFullTitleCache());
@@ -767,21 +796,21 @@ public class NonViralNameParserImplTest {
 		
 		//Special MicroRefs
 		String strSpecDetail1 = "Abies alba Mill. in Sp. Pl. 4(6): [455]. 1987";
-		NonViralName<?> nameSpecDet1 = parser.parseReferencedName(strSpecDetail1 + ".", null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet1 = parser.parseReferencedName(strSpecDetail1 + ".", null, rankSpecies);
 		assertFalse(nameSpecDet1.hasProblem());
 		assertEquals(strSpecDetail1, nameSpecDet1.getFullTitleCache());
 		assertEquals("[455]", nameSpecDet1.getNomenclaturalMicroReference());
 		
 		//Special MicroRefs
 		String strSpecDetail2 = "Abies alba Mill. in Sp. Pl. 4(6): couv. 2. 1987";
-		NonViralName<?> nameSpecDet2 = parser.parseReferencedName(strSpecDetail2 + ".", null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet2 = parser.parseReferencedName(strSpecDetail2 + ".", null, rankSpecies);
 		assertFalse(nameSpecDet2.hasProblem());
 		assertEquals(strSpecDetail2, nameSpecDet2.getFullTitleCache());
 		assertEquals("couv. 2", nameSpecDet2.getNomenclaturalMicroReference());
 		
 		//Special MicroRefs
 		String strSpecDetail3 = "Abies alba Mill. in Sp. Pl. 4(6): fig. 455. 1987";
-		NonViralName<?> nameSpecDet3 = parser.parseReferencedName(strSpecDetail3 + ".", null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet3 = parser.parseReferencedName(strSpecDetail3 + ".", null, rankSpecies);
 		assertFalse(nameSpecDet3.hasProblem());
 		assertEquals(strSpecDetail3, nameSpecDet3.getFullTitleCache());
 		assertEquals("fig. 455", nameSpecDet3.getNomenclaturalMicroReference());
@@ -789,7 +818,7 @@ public class NonViralNameParserImplTest {
 		//Special MicroRefs
 		String strSpecDetail4 = "Abies alba Mill. in Sp. Pl. 4(6): fig. 455-567. 1987";
 		fullReference = strSpecDetail4 + ".";
-		NonViralName<?> nameSpecDet4 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet4 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFalse(nameSpecDet4.hasProblem());
 		assertEquals(strSpecDetail4, nameSpecDet4.getFullTitleCache());
 		assertEquals("fig. 455-567", nameSpecDet4.getNomenclaturalMicroReference());
@@ -798,7 +827,7 @@ public class NonViralNameParserImplTest {
 		//Special MicroRefs
 		String strSpecDetail5 = "Abies alba Mill. in Sp. Pl. 4(6): Gard n\u00B0 4. 1987";
 		fullReference = strSpecDetail5 + ".";
-		NonViralName<?> nameSpecDet5 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet5 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFalse(nameSpecDet5.hasProblem());
 		assertEquals(strSpecDetail5, nameSpecDet5.getFullTitleCache());
 		assertEquals("Gard n\u00B0 4", nameSpecDet5.getNomenclaturalMicroReference());
@@ -806,7 +835,7 @@ public class NonViralNameParserImplTest {
 		//Special MicroRefs
 		String strSpecDetail6 = "Abies alba Mill. in Sp. Pl. 4(6): 455a. 1987";
 		fullReference = strSpecDetail6 + ".";
-		NonViralName<?> nameSpecDet6 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet6 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFalse(nameSpecDet6.hasProblem());
 		assertEquals(strSpecDetail6, nameSpecDet6.getFullTitleCache());
 		assertEquals("455a", nameSpecDet6.getNomenclaturalMicroReference());
@@ -814,14 +843,14 @@ public class NonViralNameParserImplTest {
 		//Special MicroRefs
 		String strSpecDetail7 = "Abies alba Mill. in Sp. Pl. 4(6): pp.455-457. 1987";
 		fullReference = strSpecDetail7 + ".";
-		NonViralName<?> nameSpecDet7 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet7 = parser.parseReferencedName(fullReference, null, rankSpecies);
 		assertFalse(nameSpecDet7.hasProblem());
 		assertEquals(strSpecDetail7, nameSpecDet7.getFullTitleCache());
 		assertEquals("pp.455-457", nameSpecDet7.getNomenclaturalMicroReference());
 		
 		//Special MicroRefs
 		String strSpecDetail8 = "Abies alba Mill. in Sp. Pl. 4(6): ppp.455-457. 1987";
-		NonViralName<?> nameSpecDet8 = parser.parseReferencedName(strSpecDetail8, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet8 = parser.parseReferencedName(strSpecDetail8, null, rankSpecies);
 		assertTrue(nameSpecDet8.hasProblem());
 		assertEquals(20, nameSpecDet8.getProblemStarts()); //TODO better start behind :
 		assertEquals(51, nameSpecDet8.getProblemEnds());   //TODO better stop after -457
@@ -829,21 +858,21 @@ public class NonViralNameParserImplTest {
 
 		//Special MicroRefs
 		String strSpecDetail9 = "Abies alba Mill. in Sp. Pl. 4(6): pp. 455 - 457. 1987";
-		NonViralName<?> nameSpecDet9 = parser.parseReferencedName(strSpecDetail9, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet9 = parser.parseReferencedName(strSpecDetail9, null, rankSpecies);
 		assertFalse(nameSpecDet9.hasProblem());
 		assertEquals(strSpecDetail9, nameSpecDet9.getFullTitleCache());
 		assertEquals("pp. 455 - 457", nameSpecDet9.getNomenclaturalMicroReference());
 
 		//Special MicroRefs
 		String strSpecDetail10 = "Abies alba Mill. in Sp. Pl. 4(6): p 455. 1987";
-		NonViralName<?> nameSpecDet10 = parser.parseReferencedName(strSpecDetail10, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet10 = parser.parseReferencedName(strSpecDetail10, null, rankSpecies);
 		assertFalse(nameSpecDet10.hasProblem());
 		assertEquals(strSpecDetail10, nameSpecDet10.getFullTitleCache());
 		assertEquals("p 455", nameSpecDet10.getNomenclaturalMicroReference());
 		
 		//Special MicroRefs
 		String strSpecDetail11 = "Abies alba Mill. in Sp. Pl. 4(6): p. 455 - 457. 1987";
-		NonViralName<?> nameSpecDet11 = parser.parseReferencedName(strSpecDetail11, null, Rank.SPECIES());
+		NonViralName<?> nameSpecDet11 = parser.parseReferencedName(strSpecDetail11, null, rankSpecies);
 		assertTrue(nameSpecDet11.hasProblem());
 		list = nameSpecDet11.getParsingProblems();
 		assertTrue("Problem is Detail. Must be pp.", list.contains(ParserProblem.CheckDetailOrYear));
@@ -853,7 +882,7 @@ public class NonViralNameParserImplTest {
 		
 		//no volume, no edition
 		String strNoVolume = "Abies alba Mill., Sp. Pl.: 455. 1987";
-		NonViralName<?> nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
+		NonViralName<?> nameNoVolume = parser.parseReferencedName(strNoVolume, null, rankSpecies);
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
 		assertEquals(null, ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
@@ -861,7 +890,7 @@ public class NonViralNameParserImplTest {
 
 		//volume, no edition
 		strNoVolume = "Abies alba Mill., Sp. Pl. 2: 455. 1987";
-		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
+		nameNoVolume = parser.parseReferencedName(strNoVolume, null, rankSpecies);
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
 		assertEquals("2", ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
@@ -869,7 +898,7 @@ public class NonViralNameParserImplTest {
 
 		//no volume, edition
 		strNoVolume = "Abies alba Mill., Sp. Pl., ed. 3: 455. 1987";
-		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
+		nameNoVolume = parser.parseReferencedName(strNoVolume, null, rankSpecies);
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
 		assertEquals(null, ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
@@ -877,14 +906,14 @@ public class NonViralNameParserImplTest {
 		
 		//volume, edition
 		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3, 4(5): 455. 1987";
-		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
+		nameNoVolume = parser.parseReferencedName(strNoVolume, null, rankSpecies);
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume.replace(" ed.", ", ed."), nameNoVolume.getFullTitleCache());
 		assertEquals("4(5)", ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
 		assertEquals("3", ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
 		
 		String strUnparsableInRef = "Abies alba Mill. in -er46: 455. 1987";
-		NonViralName<?> nameUnparsableInRef = parser.parseReferencedName(strUnparsableInRef, null, Rank.SPECIES());
+		NonViralName<?> nameUnparsableInRef = parser.parseReferencedName(strUnparsableInRef, null, rankSpecies);
 		assertTrue(nameUnparsableInRef.hasProblem());
 		list = nameUnparsableInRef.getParsingProblems();
 		assertTrue("Unparsable title", list.contains(ParserProblem.UnparsableReferenceTitle));
@@ -895,7 +924,7 @@ public class NonViralNameParserImplTest {
 		
 		//volume, edition
 		String strNoSeparator = "Abies alba Mill. Sp. Pl. ed. 3, 4(5): 455. 1987";
-		NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, NomenclaturalCode.ICBN, Rank.SPECIES());
+		NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, NomenclaturalCode.ICBN, rankSpecies);
 		assertTrue(nameNoSeparator.hasProblem());
 		list = nameNoSeparator.getParsingProblems();
 		assertTrue("Problem is missing name-reference separator", list.contains(ParserProblem.NameReferenceSeparation));
@@ -904,7 +933,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(47, nameNoSeparator.getProblemEnds());   //TODO better stop before :
 		
 		String strUnparsableInRef2 = "Hieracium pepsicum L., My Bookkkk 1. 1903";
-		NonViralName<?> nameUnparsableInRef2 = parser.parseReferencedName(strUnparsableInRef2, null, Rank.SPECIES());
+		NonViralName<?> nameUnparsableInRef2 = parser.parseReferencedName(strUnparsableInRef2, null, rankSpecies);
 		assertTrue(nameUnparsableInRef2.hasProblem());
 		list = nameUnparsableInRef2.getParsingProblems();
 		assertTrue("Problem detail", list.contains(ParserProblem.CheckDetailOrYear));
@@ -1058,6 +1087,8 @@ public class NonViralNameParserImplTest {
 		testParsable = "Cichorium intybus subsp. glaucum (Hoffmanns. & Link) Tzvelev in Komarov, Fl. SSSR 29: 17. 1964";
 		assertTrue("Reference containing a word in uppercase is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
 	}
+	
+	
 	
 	
 	

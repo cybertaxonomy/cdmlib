@@ -83,8 +83,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     //AuthorString
     protected static String authorPart = "(" + "(d'|D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
     protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
-    protected static String teamSplitter = fWs + "(&)" + fWs;
-    protected static String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
+    protected static String finalTeamSplitter = fWs + "(&)" + fWs;
+    protected static String notFinalTeamSplitter = "(" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
+    protected static String authorTeam = fWs + "((" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?"  + author + "(" + finalTeamSplitter + "al.)?" + fWs;
     protected static String exString = "(ex.?)";
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
@@ -264,7 +265,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     
     //Pattern
     protected static Pattern oWsPattern = Pattern.compile(oWs);
-    protected static Pattern teamSplitterPattern = Pattern.compile(teamSplitter);
+    protected static Pattern finalTeamSplitterPattern = Pattern.compile(finalTeamSplitter);
     protected static Pattern cultivarPattern = Pattern.compile(cultivar);
     protected static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
     protected static Pattern hybridPattern = Pattern.compile(hybridFull); 
