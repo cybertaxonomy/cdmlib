@@ -27,7 +27,7 @@ public class ProfilerController {
 				controller = new Controller();
 				memSnapshotCnt = 0;
 			} catch (Exception e) {
-				logger.error(e);
+				logger.info("The initialization of ProfilerCOntroller fails");
 			}
 		}
 	}
@@ -38,7 +38,7 @@ public class ProfilerController {
 			logger.info("taking memory snapshot " + memSnapshotCnt++);
 			controller.captureMemorySnapshot();
 		} catch (Exception e) {
-			logger.error("taking memory snapshot " + memSnapshotCnt++, e);
+			logger.info("taking memory snapshot " + memSnapshotCnt++ + " fails");
 		}
 	}
 
