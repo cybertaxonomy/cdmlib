@@ -610,22 +610,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         List<TaggedText> tags = getSpeciesTaggedNameCache(nonViralName);
 
         //author
-        //TODO should this include basionym authors and ex authors
-        INomenclaturalAuthor author = nonViralName.getCombinationAuthorTeam();
-        String authorPart = "";
-        if (author != null){
-            authorPart = CdmUtils.Nz(author.getNomenclaturalTitle());
-        }
-        INomenclaturalAuthor basAuthor = nonViralName.getBasionymAuthorTeam();
-        String basAuthorPart = "";
-        if (basAuthor != null){
-            basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
-        }
-        if (! "".equals(basAuthorPart)){
-            authorPart = "("+ basAuthorPart +") " + authorPart;
-        }
-        if (StringUtils.isNotBlank(authorPart)){
-            tags.add(new TaggedText(TagEnum.authors, authorPart));
+        String authorCache = getAuthorshipCache(nonViralName);
+        if (StringUtils.isNotBlank(authorCache)){
+            tags.add(new TaggedText(TagEnum.authors, authorCache));
         }
 
 
