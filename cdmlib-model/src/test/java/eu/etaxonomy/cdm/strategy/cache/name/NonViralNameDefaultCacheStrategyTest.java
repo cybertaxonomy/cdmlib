@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -553,6 +554,20 @@ public class NonViralNameDefaultCacheStrategyTest {
     	rules = new HTMLTagRules().addRule(TagEnum.name, "i").addRule(TagEnum.name, "b").addRule(TagEnum.authors, "b");
     	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
     	
+    }
+    
+    @Test //#2888
+    public void testAutonymWithExAuthor(){
+    	BotanicalName name = BotanicalName.NewInstance(Rank.FORM());
+    	name.setGenusOrUninomial("Euphorbia");
+    	name.setSpecificEpithet("atropurpurea");
+    	name.setInfraSpecificEpithet("atropurpurea");
+    	Team combTeam = Team.NewTitledInstance("Combauthor", "Combauthor");
+    	name.setCombinationAuthorTeam(combTeam);
+    	Team exCombTeam = Team.NewTitledInstance("Excomb", "Excomb");
+    	name.setExCombinationAuthorTeam(exCombTeam);
+    	
+    	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
     }
 
 
