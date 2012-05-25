@@ -69,7 +69,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 
 			int recordsPerTransaction = config.getRecordsPerTransaction();
 			try{
-				ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
+				ResultSetPartitioner<BerlinModelImportState> partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
 				while (partitioner.nextPartition()){
 					try {
 						partitioner.doPartition(this, state);
