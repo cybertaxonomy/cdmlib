@@ -142,6 +142,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private static final String COLLECTION_AND_TYPE = "collectionAndType";
 	private static final String COLLECTION_TYPE_STATUS = "collectionTypeStatus";
 	private static final String COLLECTOR = "collector";
+	private static final String COLLECTION = "collection";
 	private static final String COORDINATES = "coordinates";
 	private static final String COUPLET = "couplet";
 	private static final String DATES = "dates";
@@ -553,6 +554,10 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					checkMandatoryElement(hasTitle, parentEvent, TAXONTITLE);
 					checkMandatoryElement(hasNomenclature, parentEvent,	NOMENCLATURE);
 					handleUnexpectedAttributes(parentEvent.getLocation(),attributes);
+					if (taxon.getName().getRank() == null){
+						String warning = "No rank exists for taxon " + taxon.getTitleCache();
+						fireWarningEvent(warning, next, 12);
+					}
 					
 					makeKeyNodes(state, parentEvent, taxonTitle);
 					state.setCurrentTaxon(null);
@@ -698,7 +703,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			} else if (isEndingElement(next, KEYNOTES)){
 				popUnimplemented(next.asEndElement());
 			} else if (isStartingElement(next, KEY_TITLE)) {
-					handleKeyTitle(state, reader, next);
+				handleKeyTitle(state, reader, next);
 			} else if (isStartingElement(next, KEYNOTES)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -767,8 +772,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	 * @param childList
 	 */
 	private void completeCouplet(MarkupImportState state, XMLEvent parentEvent,
-			PolytomousKeyNode parentNode, String num,
-			List<PolytomousKeyNode> childList) {
+			PolytomousKeyNode parentNode, String num, List<PolytomousKeyNode> childList) {
 		if (parentNode != null){
 			for (PolytomousKeyNode childNode : childList){
 				parentNode.addChild(childNode);
@@ -814,7 +818,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				handleToCouplet(state, reader, next, myNode);
 			} else if (isStartingElement(next, TO_TAXON)) {
 				handleToTaxon(state, reader, next, myNode);
-			
 			} else if (isStartingElement(next, TO_KEY)) {
 				//TODO
 				handleNotYetImplementedElement(next);
@@ -1025,16 +1028,14 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	private Taxon createTaxonAndName(MarkupImportState state,
 			Map<String, Attribute> attributes) {
 		NonViralName<?> name;
-		Rank rank = Rank.SPECIES(); // default
-		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS,
-				"cultivated");
+		Rank rank = null;  //Rank.SPECIES(); // default
+		boolean isCultivar = checkAndRemoveAttributeValue(attributes, CLASS, "cultivated");
 		if (isCultivar) {
 			name = CultivarPlantName.NewInstance(rank);
 		} else {
 			name = createNameByCode(state, rank);
 		}
-		Taxon taxon = Taxon.NewInstance(name, state.getConfig()
-				.getSourceReference());
+		Taxon taxon = Taxon.NewInstance(name, state.getConfig().getSourceReference());
 		if (checkAndRemoveAttributeValue(attributes, CLASS, "dubious")) {
 			taxon.setDoubtful(true);
 		} else if (checkAndRemoveAttributeValue(attributes, CLASS, "excluded")) {
@@ -1583,8 +1584,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		throw new IllegalStateException("<Reference> has no closing tag");
 	}
 
-	private void handleHomotypes(MarkupImportState state,
-			XMLEventReader reader, StartElement parentEvent)
+	private void handleHomotypes(MarkupImportState state, XMLEventReader reader, StartElement parentEvent)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
@@ -1609,8 +1609,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				}
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, NOM)) {
-					NonViralName<?> name = handleNom(state, reader, next,
-							homotypicalGroup);
+					NonViralName<?> name = handleNom(state, reader, next, homotypicalGroup);
 					homotypicalGroup = name.getHomotypicalGroup();
 					hasNom = true;
 				} else if (isStartingElement(next, NAME_TYPE)) {
@@ -1692,9 +1691,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 
 	}
 
-	private void handleSpecimenType(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent,
-			HomotypicalGroup homotypicalGroup) throws XMLStreamException {
+	private void handleSpecimenType(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
+				HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		// attributes
 		Map<String, Attribute> attributes = getAttributes(parentEvent);
 		String typeStatus = getAndRemoveAttributeValue(attributes, TYPE_STATUS);
@@ -1725,20 +1723,17 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			String message = "There is no name in a homotypical group. Can't create the specimen type";
 			fireWarningEvent(message, parentEvent, 8);
 		} else {
-			firstName = CdmBase.deproxy(names.iterator().next(),
-					NonViralName.class);
+			firstName = CdmBase.deproxy(names.iterator().next(),NonViralName.class);
 		}
 
-		DerivedUnitFacade facade = DerivedUnitFacade
-				.NewInstance(DerivedUnitType.Specimen);
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
 		String text = "";
 		// elements
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (next.isEndElement()) {
 				if (isMyEndingElement(next, parentEvent)) {
-					makeSpecimenType(state, facade, text, firstName,
-							parentEvent);
+					makeSpecimenType(state, facade, text, firstName, parentEvent);
 					return;
 				} else {
 					if (isEndingElement(next, FULL_TYPE)) {
@@ -1784,6 +1779,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, COLLECTION_AND_TYPE)) {
 					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, CITATION)) {
+					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, NOTES)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, ANNOTATION)) {
@@ -1801,9 +1798,8 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		throw new IllegalStateException("Specimen type has no closing tag"); 
 	}
 
-	private void makeSpecimenType(MarkupImportState state,
-			DerivedUnitFacade facade, String text, NonViralName name,
-			XMLEvent parentEvent) {
+	private void makeSpecimenType(MarkupImportState state, DerivedUnitFacade facade, String text, 
+			NonViralName name, XMLEvent parentEvent) {
 		text = text.trim();
 		// remove brackets
 		if (text.matches("^\\(.*\\)\\.?$")) {
@@ -1885,11 +1881,17 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					} else if (isEndingElement(next, COLLECTION_TYPE_STATUS)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, COLLECTION_AND_TYPE)) {
+						// NOT YET IMPLEMENTED , does this make sense here? 
+						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next,
 							ALTERNATIVE_COLLECTION_TYPE_STATUS)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, SUB_COLLECTION)) {
+						// NOT YET IMPLEMENTED
+						popUnimplemented(next.asEndElement());
+					} else if (isEndingElement(next, COLLECTION)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, DATES)) {
@@ -1918,10 +1920,13 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, COLLECTION_TYPE_STATUS)) {
 					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next,
-						ALTERNATIVE_COLLECTION_TYPE_STATUS)) {
+				} else if (isStartingElement(next, COLLECTION_AND_TYPE)) {  //does this make sense here?
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, ALTERNATIVE_COLLECTION_TYPE_STATUS)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, SUB_COLLECTION)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, COLLECTION)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, LOCALITY)) {
 					handleLocality(state, reader, next, facade);
@@ -2094,9 +2099,6 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					if (isEndingElement(next, FULL_NAME)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, NUM)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, HOMONYM)) {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
@@ -2116,7 +2118,17 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					// homotypicalGroup = handleNom(state, reader, next, taxon,
 					// homotypicalGroup);
 				} else if (isStartingElement(next, NUM)) {
-					handleNotYetImplementedElement(next);
+					String num = getCData(state, reader, next);
+					num = num.replace(".", "");
+					num = num.replace(")", "");
+					if (StringUtils.isNotBlank(num)){
+						if (state.getCurrentTaxonNum() != null &&  ! state.getCurrentTaxonNum().equals(num) ){
+							String message = "Taxontitle num and homotypes/nom/num differ ( %s <-> %s ). I use the later one.";
+							message = String.format(message, state.getCurrentTaxonNum(), num);
+							fireWarningEvent(message, next, 4);
+						}
+						state.setCurrentTaxonNum(num);
+					}
 				} else if (isStartingElement(next, NAME)) {
 					handleName(state, reader, next, nameMap);
 				} else if (isStartingElement(next, CITATION)) {
@@ -2174,8 +2186,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			try {
 				// TODO handle trim earlier
 				statusStr = statusStr.trim();
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
-						.getNomenclaturalStatusTypeByAbbreviation(statusStr);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr);
 				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
 			} catch (UnknownCdmTypeException e) {
 				String message = "Status '%s' could not be recognized";
@@ -2213,13 +2224,13 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 				}
 				String value = nameMap.get(key);
 				if (rank.isSupraGeneric() || rank.isGenus()) {
-					name.setGenusOrUninomial(value);
+					name.setGenusOrUninomial(toFirstCapital(value));
 				} else if (rank.isInfraGeneric()) {
-					name.setInfraGenericEpithet(value);
+					name.setInfraGenericEpithet(toFirstCapital(value));
 				} else if (rank.isSpecies()) {
-					name.setSpecificEpithet(value);
+					name.setSpecificEpithet(value.toLowerCase());
 				} else if (rank.isInfraSpecific()) {
-					name.setInfraSpecificEpithet(value);
+					name.setInfraSpecificEpithet(value.toLowerCase());
 				} else {
 					String message = "Invalid rank '%s'. Can't decide which epithet to fill with '%s'";
 					message = String.format(message, rank.getTitleCache(),value);
@@ -2252,6 +2263,19 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 					fireWarningEvent(message, event, 2);
 				}
 			}
+		}
+	}
+
+	private String toFirstCapital(String value) {
+		if (StringUtils.isBlank(value)){
+			return value;
+		}else{
+			String result = "";
+			result += value.substring(0,1).toUpperCase();
+			if (value.length()>1){
+				result += value.substring(1).toLowerCase();
+			}
+			return result;
 		}
 	}
 
@@ -2325,15 +2349,16 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void testRankAuthorConsistency(NonViralName name, XMLEvent event,
-					String authorStr, String paraut, String infrParAut, String infrAut) {
+	private void testRankAuthorConsistency(NonViralName name, XMLEvent event, 
+				String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() == null){
 			return;
 		}
 		if (name.getRank().isInfraSpecific()) {
 			if (StringUtils.isBlank(infrParAut)
-					&& StringUtils.isNotBlank(infrAut)
-					&& (StringUtils.isNotBlank(paraut) || StringUtils.isNotBlank(authorStr))) {
+					&& StringUtils.isBlank(infrAut)    //was isNotBlank before 29.5.2012
+					&& (StringUtils.isNotBlank(paraut) || StringUtils.isNotBlank(authorStr)) 
+					&& ! name.isAutonym()) {
 				String message = "Rank is infraspecicific but has only specific or higher author(s)";
 				fireWarningEvent(message, event, 4);
 			}
@@ -2365,8 +2390,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 			if (homotypicalGroup != null) {
 				name.setHomotypicalGroup(homotypicalGroup);
 			}
-			SynonymRelationshipType synonymType = SynonymRelationshipType
-					.HETEROTYPIC_SYNONYM_OF();
+			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 			}
@@ -3659,7 +3683,7 @@ public class MarkupDocumentImport extends MarkupImportBase implements ICdmIO<Mar
 		unmatchedLeads.saveToSession(getPolytomousKeyNodeService());
 
 		// TODO generally do not store the reference object in the config
-		Reference sourceReference = state.getConfig().getSourceReference();
+		Reference<?> sourceReference = state.getConfig().getSourceReference();
 		getReferenceService().saveOrUpdate(sourceReference);
 	}
 

@@ -338,15 +338,21 @@ public class MarkupTransformer extends InputTransformerBase {
 //	public static final UUID uuid = UUID.fromString("");
 
 	
+//	guianas
+	public static final UUID uuidExtraxylarySclerenchyma = UUID.fromString("cdddefbe-2f41-4d5c-89e8-4790b6d069fb");
+
+	
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
 	 */
 	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		
 		}else if (key.equalsIgnoreCase("ecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("phenology")){return Feature.PHENOLOGY();
 		}else if (key.equalsIgnoreCase("uses")){return Feature.USES();
 		}else if (key.equalsIgnoreCase("anatomy")){return Feature.ANATOMY();
 		}else if (key.equalsIgnoreCase("description")){return Feature.DESCRIPTION();
@@ -368,9 +374,8 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public UUID getFeatureUuid(String key) 	throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 
-		
 		}else if (key.equalsIgnoreCase("cultivation")){return uuidCultivation;
 		}else if (key.equalsIgnoreCase("history")){return uuidHistory;
 		}else if (key.equalsIgnoreCase("phylogeny")){return uuidPhylogeny;
@@ -620,6 +625,10 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("teeth")){return uuidTeeth;
 		
 		
+		//guianas
+		}else if (key.equalsIgnoreCase("extraxylary sclerenchyma")){return uuidExtraxylarySclerenchyma;
+		
+		
 //		}else if (key.equalsIgnoreCase("Inflorescence")){return uuidInflorescence;
 		
 		
@@ -636,7 +645,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public MarkerType getMarkerTypeByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 //		}else if (key.equalsIgnoreCase("distribution")){return MarkerType.;
 //		}else if (key.equalsIgnoreCase("habitatecology")){return Feature.ECOLOGY();
 		}else{
@@ -646,7 +655,7 @@ public class MarkupTransformer extends InputTransformerBase {
 
 	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("INCOMPLETELY KNOWN SPECIES")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFICIENTLY KNOWN")){return uuidIncompleteTaxon;
 		}else if (key.equalsIgnoreCase("INSUFFICIENTLY KNOWN")){return uuidIncompleteTaxon;
@@ -661,7 +670,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	@Override
 	public NamedAreaLevel getNamedAreaLevelByKey(String key )throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("country")){return NamedAreaLevel.COUNTRY();
 		}else if (key.equalsIgnoreCase("province")){return NamedAreaLevel.PROVINCE();
 		}else if (key.equalsIgnoreCase("town")){return NamedAreaLevel.TOWN();
@@ -680,7 +689,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
 		}else if (key.equalsIgnoreCase("continental region")){return uuidContinentalRegion;
 		}else if (key.equalsIgnoreCase("world")){return uuidWorld;
@@ -701,7 +710,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("Kalimantan")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-KA");
 		}else if (key.equalsIgnoreCase("Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR");
 		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
@@ -734,7 +743,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("Kalimantan")){return uuidKalimantan;
 		}else if (key.equalsIgnoreCase("Borneo")){return uuidBorneo;
 		}else if (key.equalsIgnoreCase("Moluccas")){return uuidMoluccas;
@@ -773,7 +782,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public PresenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("endemic")){return PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
 		}else if (key.equalsIgnoreCase("cultivated")){return PresenceTerm.CULTIVATED();
 		}else{
@@ -786,7 +795,7 @@ public class MarkupTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 //		}else if (key.equalsIgnoreCase("region")){return uuidRegion;
 		}else{
 			return null;
@@ -796,7 +805,7 @@ public class MarkupTransformer extends InputTransformerBase {
 
 	@Override
 	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.equalsIgnoreCase("fang")){return uuidLanguageFang;
 		}else if (key.equalsIgnoreCase("owimo")){return uuidLanguageOwimo;
 		}else if (key.equalsIgnoreCase("batanga")){return uuidLanguageBatanga;
