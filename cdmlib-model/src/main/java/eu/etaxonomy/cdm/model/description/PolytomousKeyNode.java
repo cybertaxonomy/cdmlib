@@ -363,7 +363,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 
 	private void updateNodeNumber() {
-		int nodeNumber = 0;
+		int nodeNumber = 1;
 		PolytomousKeyNode root = getKey().getRoot();
 		root.setNodeNumber(nodeNumber++);
 		nodeNumber = updateChildNodeNumbers(nodeNumber, root);
@@ -374,7 +374,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			parent.setNodeNumber(null);
 		} else {
 			for (PolytomousKeyNode child : parent.getChildren()) {
-				child.setNodeNumber(nodeNumber++);
+				if (! child.isLeaf()){
+					child.setNodeNumber(nodeNumber++);
+				}
 				nodeNumber = updateChildNodeNumbers(nodeNumber, child);
 			}
 		}
