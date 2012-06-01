@@ -36,7 +36,9 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -117,6 +119,29 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		return strRecordQuery +  "";
 	}
 
+
+
+	@Override
+	protected void doInvoke(BerlinModelImportState state) {
+		//update rank labels if necessary
+		String strAbbrev = state.getConfig().getInfrGenericRankAbbrev();
+		Rank rank = Rank.INFRAGENERICTAXON();
+		testRankAbbrev(strAbbrev, rank);
+		
+		strAbbrev = state.getConfig().getInfrSpecificRankAbbrev();
+		rank = Rank.INFRASPECIFICTAXON();
+		testRankAbbrev(strAbbrev, rank);
+		
+		super.doInvoke(state);
+	}
+
+	private void testRankAbbrev(String strAbbrev, Rank rank) {
+		if (strAbbrev != null){
+			Representation rep = rank.getRepresentation(Language.ENGLISH());
+			rep.setAbbreviatedLabel(strAbbrev);
+			getTermService().saveOrUpdate(rank);
+		}
+	}
 
 
 	/* (non-Javadoc)

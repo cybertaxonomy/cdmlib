@@ -89,6 +89,12 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	private boolean switchSpeciesGroup = false;
 	
+	//Term labels
+	private String infrGenericRankAbbrev = null;
+	private String infrSpecificRankAbbrev = null;
+	
+	
+	
 	//Data Filter
 
 	private String taxonTable = "PTaxon";
@@ -678,6 +684,30 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setMakeUrlForTaxon(Method makeUrlForTaxon) {
 		this.makeUrlForTaxon = makeUrlForTaxon;
+	}
+
+
+
+	public String getInfrGenericRankAbbrev() {
+		return infrGenericRankAbbrev;
+	}
+
+
+
+	public void setInfrGenericRankAbbrev(String infrGenericRankAbbrev) {
+		this.infrGenericRankAbbrev = infrGenericRankAbbrev;
+	}
+
+
+
+	public String getInfrSpecificRankAbbrev() {
+		return infrSpecificRankAbbrev;
+	}
+
+
+
+	public void setInfrSpecificRankAbbrev(String infrSpecificRankAbbrev) {
+		this.infrSpecificRankAbbrev = infrSpecificRankAbbrev;
 	}
 
 
