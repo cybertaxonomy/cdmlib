@@ -131,4 +131,11 @@ public class ExportTransformerBase implements IExportTransformer {
 		String warning = "getQualityStatusCacheByKey is not yet implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
+	@Override
+	public String getTaxonStatusCacheByKey(Integer taxonStatusId) throws UndefinedTransformerMethodException {
+		String warning = "getTaxonStatusCacheByKey is not yet implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+
+		
 }

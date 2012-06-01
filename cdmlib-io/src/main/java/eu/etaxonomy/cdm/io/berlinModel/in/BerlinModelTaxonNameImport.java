@@ -182,7 +182,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
 					
 					if (rank == null || rank.equals(Rank.UNKNOWN_RANK()) || rank.equals(Rank.INFRASPECIFICTAXON())){
-						rank = handleProlesAndRace(state, rs, rank);
+						rank = handleProlesAndRaceSublusus(state, rs, rank);
 					}
 					
 					if (rank.getId() == 0){
@@ -327,7 +327,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	}
 
 
-	private Rank handleProlesAndRace(BerlinModelImportState state, ResultSet rs, Rank rank) throws SQLException {
+	private Rank handleProlesAndRaceSublusus(BerlinModelImportState state, ResultSet rs, Rank rank) throws SQLException {
 		Rank result;
 		String rankAbbrev = rs.getString("RankAbbrev");
 		String rankStr = rs.getString("Rank");
@@ -335,8 +335,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
 			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
-//		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "taxon")){
-//			result = getRank(state, BerlinModelTransformer.uuidRankTaxon, rankStr, "Rank [taxon]", rankAbbrev, Rank.SPECIES().getVocabulary());
+		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "sublusus")){
+			result = getRank(state, BerlinModelTransformer.uuidRankSublusus, rankStr, "Rank Sublusus", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
 		}else{
 			result = rank;
 			logger.warn("Unhandled rank: " + rankAbbrev);

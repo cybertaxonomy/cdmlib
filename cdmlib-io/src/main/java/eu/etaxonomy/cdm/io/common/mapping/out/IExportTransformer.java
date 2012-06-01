@@ -54,5 +54,8 @@ public interface IExportTransformer {
 	//Quality status,only needed for PESI export -> TODO refactor
 	public String getQualityStatusCacheByKey(Integer qualityStatusFk) throws UndefinedTransformerMethodException;
 	
+	//Taxon status only needed for PESI export -> TODO refactor
+	public String getTaxonStatusCacheByKey(Integer taxonStatusId) throws UndefinedTransformerMethodException;
+		
 
 }
