@@ -579,7 +579,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			return getNamedArea(state, BerlinModelTransformer.uuidTerceira, "Menorca", "Euro+Med area 'Menorca'", "Bl(N)", null, null);
 		}
 		
-		logger.warn("Area " + em + " could not be found for occurrence import");
+		logger.warn("Area(em: '" + em + "', tdwg: '" + tdwg +"') could not be found for occurrence import");
 		
 		return null;
 	}

@@ -144,6 +144,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			SortedSet<Integer> regionFks = new TreeSet<Integer>();
 			Source source = state.getConfig().getSource();
 			
+			//fill set with all regionFk from emCommonName.regionFks
 			getRegionFks(state, regionFks, source);
 			//concat filter string
 			String sqlWhere = getSqlWhere(regionFks);
@@ -485,11 +486,13 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * Fills the regionFks with all regionFks from emCommonName. Comma separated regionFks will be split.
 	 * @param state
 	 * @param regionFks
 	 * @param source
 	 * @return
 	 * @throws SQLException
+	 * 
 	 */
 	private void getRegionFks(BerlinModelImportState state, SortedSet<Integer> regionFks, Source source) throws SQLException {
 		String sql = " SELECT DISTINCT RegionFks FROM emCommonName";
@@ -521,6 +524,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * Fills the {@link #regionMap} by all emLanguageRegion regions defined in the sql filter.
+	 * {@link #regionMap} maps emLanguageRegion.RegionId to named areas.
 	 * @param state
 	 * @param sqlWhere
 	 * @param emTdwgMap
@@ -562,6 +567,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * Returns the are for a given TDWG code. See {@link #getEmTdwgMap(Source)} for exceptions from
+	 * the TDWG code
 	 * @param state 
 	 * @param tdwgCode
 	 */
@@ -569,11 +576,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		NamedArea area;
 		if (tdwgCode.equalsIgnoreCase("Ab")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidAzerbaijanNakhichevan, "Azerbaijan & Nakhichevan", "Azerbaijan (including Nakhichevan)",  "Ab", null, null);
-		}else if (tdwgCode.equalsIgnoreCase("Rf")){
-			area = WaterbodyOrCountry.RUSSIANFEDERATION();
-//			getTermService().save(area);
+			getTermService().save(area);
 		}else if (tdwgCode.equalsIgnoreCase("Uk")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
+			getTermService().save(area);
+		}else if (tdwgCode.equalsIgnoreCase("Rf")){
+			area = WaterbodyOrCountry.RUSSIANFEDERATION();
+		}else if (tdwgCode.equalsIgnoreCase("Gg")){
+			area = WaterbodyOrCountry.GEORGIA();
 		}else{
 			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
 		}
@@ -582,8 +592,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		}
 		return area;
 	}
-
-
 
 	/**
 	 * @param regionFks
@@ -601,6 +609,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 
 	/**
+	 * Returns a map which is filled by the emCode->TdwgCode mapping defined in emArea.
+	 * Some exceptions are defined for emCode 'Ab','Rf','Uk' and some additional mapping is added 
+	 * for 'Ab / Ab(A)', 'Ga / Ga(F)', 'It / It(I)', 'Ar / Ar(A)','Hs / Hs(S)'
 	 * @param source
 	 * @throws SQLException
 	 */
@@ -615,7 +626,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			String TDWGCode = rs.getString("TDWGCode");
 			if (StringUtils.isNotBlank(emCode) ){
 				emCode = emCode.trim();
-				if (emCode.equalsIgnoreCase("Ab") || emCode.equalsIgnoreCase("Rf")|| emCode.equalsIgnoreCase("Uk") ){
+				if (emCode.equalsIgnoreCase("Ab") || emCode.equalsIgnoreCase("Rf")|| 
+						emCode.equalsIgnoreCase("Uk") || emCode.equalsIgnoreCase("Gg")){
 					emTdwgMap.put(emCode, emCode);
 				}else if (StringUtils.isNotBlank(TDWGCode)){
 					emTdwgMap.put(emCode, TDWGCode.trim());
@@ -627,6 +639,8 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		emTdwgMap.put("It / It(I)", "ITA");
 		emTdwgMap.put("Uk / Uk(U)", "Uk");
 		emTdwgMap.put("Ar / Ar(A)", "TCS-AR");
+		emTdwgMap.put("Hs / Hs(S)", "SPA-SP");
+		
 		return emTdwgMap;
 	}
 
