@@ -93,7 +93,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private String infrGenericRankAbbrev = null;
 	private String infrSpecificRankAbbrev = null;
 	
-	
+	private boolean removeHttpMapsAnchor = false;
 	
 	//Data Filter
 
@@ -708,6 +708,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setInfrSpecificRankAbbrev(String infrSpecificRankAbbrev) {
 		this.infrSpecificRankAbbrev = infrSpecificRankAbbrev;
+	}
+
+
+
+	public boolean isRemoveHttpMapsAnchor() {
+		return removeHttpMapsAnchor;
+	}
+
+
+
+	public void setRemoveHttpMapsAnchor(boolean removeHttpMapsAnchor) {
+		this.removeHttpMapsAnchor = removeHttpMapsAnchor;
 	}
 
 

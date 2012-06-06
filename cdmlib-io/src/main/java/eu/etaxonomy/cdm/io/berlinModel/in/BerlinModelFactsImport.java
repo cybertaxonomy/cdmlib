@@ -287,6 +287,12 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 //							notes = notes.replaceAll("</OriginalName>", "");
 							fact = notes + ": " +  fact ;
 						}
+						//for E+M maps
+						if (categoryFk == 14 && state.getConfig().isRemoveHttpMapsAnchor() && fact.contains("<a href")){
+							//example <a href="http://euromed.luomus.fi/euromed_map.php?taxon=280629&size=medium">distribution</a>
+							fact = fact.replace("<a href\"", "").replace("\">distribution</a>", "");
+						}
+						
 						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
 						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 						if (! taxonDescription.isImageGallery()){
