@@ -1126,6 +1126,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceReloader.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseSchemaMismatchException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/EvaluationFailedException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2DbSupport.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2Mode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -text
@@ -1301,6 +1302,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataC
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmHibernateInterceptor.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmPostDataChangeObservableListener.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmSecurityHibernateInterceptor.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPostDataChangeObserver.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUpdateEntityListener.java -text
