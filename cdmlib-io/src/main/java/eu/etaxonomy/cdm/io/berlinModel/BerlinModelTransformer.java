@@ -222,6 +222,8 @@ public final class BerlinModelTransformer {
 	public static int FACT_OBSERVATION = 9;
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
+	public static final UUID uuidFeatureMaps = UUID.fromString("8367730e-f3c3-4361-8360-a2057e4295ed");
+	
 	
 	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
 	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");

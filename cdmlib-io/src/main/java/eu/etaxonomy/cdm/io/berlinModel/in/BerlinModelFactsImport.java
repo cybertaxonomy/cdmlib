@@ -14,11 +14,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.mail.MethodNotSupportedException;
 
@@ -90,10 +90,10 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		}
 	}
 	
-	private Map<Integer, Feature>  invokeFactCategories(BerlinModelImportConfigurator bmiConfig){
+	private Map<Integer, Feature>  invokeFactCategories(BerlinModelImportState state){
 		
-		Map<Integer, Feature>  result = bmiConfig.getFeatureMap();
-		Source source = bmiConfig.getSource();
+		Map<Integer, Feature>  result = state.getConfig().getFeatureMap();
+		Source source = state.getConfig().getSource();
 		
 		try {
 			//get data from database
@@ -114,15 +114,21 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 				int factCategoryId = rs.getInt("factCategoryId");
 				String factCategory = rs.getString("factCategory");
 				
-					
 				Feature feature;
 				try {
 					feature = BerlinModelTransformer.factCategory2Feature(factCategoryId);
 				} catch (UnknownCdmTypeException e) {
-					logger.warn("New Feature (FactCategoryId: " + factCategoryId + ")");
-					feature = Feature.NewInstance(factCategory, factCategory, null);
-					featureVocabulary.addTerm(feature);
-					feature.setSupportsTextData(true);
+					UUID featureUuid = null;
+					if (factCategoryId == 14 && factCategory.startsWith("Maps")){
+						//E+M maps
+						featureUuid = BerlinModelTransformer.uuidFeatureMaps;  
+					}else{
+						logger.warn("New Feature (FactCategoryId: " + factCategoryId + ")");
+					}
+					feature = getFeature(state, featureUuid, factCategory, factCategory, null, featureVocabulary);
+								feature = Feature.NewInstance(factCategory, factCategory, null);
+//					featureVocabulary.addTerm(feature);
+//					feature.setSupportsTextData(true);
 					//TODO
 //					MaxFactNumber	int	Checked
 //					ExtensionTableName	varchar(100)	Checked
@@ -133,8 +139,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 								
 				result.put(factCategoryId, feature);
 			}
-			Collection<Feature> col = result.values();
-			getTermService().save((Collection)col);
+//			Collection<Feature> col = result.values();
+//			getTermService().saveOrUpdate((Collection)col);
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -148,7 +154,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected void doInvoke(BerlinModelImportState state) {
-		featureMap = invokeFactCategories(state.getConfig());
+		featureMap = invokeFactCategories(state);
 		super.doInvoke(state);
 		return;
 	}
