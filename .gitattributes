@@ -868,10 +868,12 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/AuditEventContext
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/GlobalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/InheritableThreadLocalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/ThreadLocalAuditEventContextHolderStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/AuthorityPermission.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermission.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/UserPermissionEvaluator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluatorPermitAll.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/DescriptionPermissionEvaluator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/HTMLTagRules.java -text

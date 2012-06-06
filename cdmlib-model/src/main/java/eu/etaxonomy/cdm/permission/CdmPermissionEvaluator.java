@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/
+*/ 
 package eu.etaxonomy.cdm.permission;
 
 import java.io.Serializable;
@@ -17,8 +17,12 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -28,47 +32,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class CdmPermissionEvaluator implements PermissionEvaluator {
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
 
-	private class AuthorityPermission{
-		CdmPermissionClass className;
-		CdmPermission permission;
-		UUID targetUuid;
-
-		public AuthorityPermission(String className, CdmPermission permission, UUID uuid){
-			try {
-				this.className = CdmPermissionClass.valueOf(className);
-			} catch (IllegalArgumentException e) {
-				//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
-				this.className = null;
-			}
-			this.permission = permission;
-			targetUuid = uuid;
-		}
-
-		public AuthorityPermission (String authority){
-			String permissionString;
-			int firstPoint = authority.indexOf(".");
-			if (firstPoint == -1){
-				className = CdmPermissionClass.valueOf(authority);
-			}else{
-				className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
-				int bracket = authority.indexOf("{");
-				if (bracket == -1){
-					permissionString = authority.substring(firstPoint+1);
-				}else{
-					permissionString = authority.substring(firstPoint+1, bracket);
-					int secondBracket = authority.indexOf("}");
-					String uuid = authority.substring(bracket+1, secondBracket);
-					targetUuid = UUID.fromString(uuid);
-				}
-				permission = CdmPermission.valueOf(permissionString.toUpperCase());
-			}
-		}
-	}
-
+	
+	
 
 	public boolean hasPermission(Authentication authentication,
 			Serializable targetId, String targetType, Object permission) {
-		logger.info("hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) always returning false");
+		logger.info("hasPermission returns false");
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -76,49 +45,50 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     public boolean hasPermission(Authentication authentication,
             Object targetDomainObject, Object permission) {
-
+       
+    	
+    	AuthorityPermission evalPermission;
         CdmPermission cdmPermission;
-        boolean hasPermission = false;
-
 		if (!(permission instanceof CdmPermission)){
 			String permissionString = (String)permission;
 			if (permissionString.equals("changePassword")){
-				hasPermission =  (targetDomainObject.equals(((User)authentication.getPrincipal()).getUsername()));
-				logger.debug("hasPermission for " + targetDomainObject + " with permission " + permission + " evaluates to " + Boolean.valueOf(hasPermission).toString());
-				return hasPermission;
+				if (targetDomainObject.equals(((User)authentication.getPrincipal())))return true;
+				else{
+					cdmPermission = CdmPermission.ADMIN;
+				}
+			}else{
+				cdmPermission = CdmPermission.valueOf(permissionString);
 			}
-			cdmPermission = CdmPermission.valueOf(permissionString);
 		}else {
 			cdmPermission = (CdmPermission)permission;
 		}
+		
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
-
-        AuthorityPermission evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-        //FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
+        
+        try{
+        	//evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+        	evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+        }catch(NullPointerException e){
+        	//evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
+        	evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, null);
+        }
+        
+        	
 		if (evalPermission.className != null) {
-			if (evalPermission.className.equals(CdmPermissionClass.USER)) {
-				hasPermission = evalPermission(authorities, evalPermission,
-						(CdmBase) targetDomainObject);
-			} else {
-				hasPermission = true;
-			}
+			return evalPermission(authorities, evalPermission,
+					(CdmBase) targetDomainObject);
+			
 		}else{
-			//FIXME this is a workaround until the concept of CdmPermissionClass is finally discussed
-			//see also AuthorityPermission constructor
-			hasPermission = false;
+			return true;
 		}
-
-		logger.debug("hasPermission for " + targetDomainObject + " with permission " + permission + " evaluates to " + Boolean.valueOf(hasPermission).toString());
-
-		return hasPermission;
-
+        
     }
 
     private TaxonNode findTargetUuidInTree(UUID targetUuid, TaxonNode node){
         if (targetUuid.equals(node.getUuid()))
             return node;
         else if (node.getParent()!= null){
-            findTargetUuidInTree(targetUuid, node.getParent());
+             return findTargetUuidInTree(targetUuid, node.getParent());
         }
         return null;
     }
@@ -126,37 +96,55 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
 
+    	//if user has administrator rights return true;
+    	 for (GrantedAuthority authority: authorities){
+    		 if (authority.getAuthority().equals("ALL.ADMIN"))return true;
+    	 }
+    	
+    	//if targetDomainObject is instance of DescriptionBase or DescriptionElementBase use the DescriptionPermissionEvaluator
+    	if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionElementBase){
+    		return DescriptionPermissionEvaluator.hasPermission(authorities, targetDomainObject, evalPermission);
+    	}
+    	 	
+    	
+    	
+    	
+    	
+    	
         for (GrantedAuthority authority: authorities){
             AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
             //evaluate authorities
-            if (authorityPermission.className.equals(evalPermission.className) && authorityPermission.permission.equals(evalPermission.permission)){
-                if (authorityPermission.targetUuid != null){
+           //if classnames match or the authorityClassName is ALL, AND the permission matches or is ADMIN the evaluation is successful 
+            if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))
+            		&& (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
+               /* if (authorityPermission.targetUuid != null){
                     //TODO
 
-                }else{
-                    return true;
-                }
+                }else{*/
+                	return true;
+                //}
 
             }
-
+            //if authority is restricted to only one object (and the cascaded objects???) 
             if (authorityPermission.targetUuid != null){
                 if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
                     if (authorityPermission.permission.equals(evalPermission.permission)){
-                        return true;
+                    	return true;
                     }
                 }
             }
-
-            if (authorityPermission.className.equals(CdmPermissionClass.TAXONNODE) && targetDomainObject.getClass().getSimpleName().equals(CdmPermissionClass.TAXONNODE)){
-                //TODO: walk through the tree and look for the uuid
+            //if the user has the rights for a subtree
+            if (authorityPermission.className.equals(CdmPermissionClass.TAXONBASE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals("TaxonNode")){
+               
                 TaxonNode node = (TaxonNode)targetDomainObject;
                 TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
                 if (targetNode != null){
-                    if (evalPermission.permission.equals(authorityPermission.permission)){
-                        return true;
+                    if (evalPermission.permission.equals(authorityPermission.permission) ){
+                    	return true;
                     }
                 }
             }
+           
 
         }
         return false;
