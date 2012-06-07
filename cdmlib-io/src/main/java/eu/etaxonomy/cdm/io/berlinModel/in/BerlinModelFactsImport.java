@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelFactsImportValid
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
@@ -119,14 +120,13 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					feature = BerlinModelTransformer.factCategory2Feature(factCategoryId);
 				} catch (UnknownCdmTypeException e) {
 					UUID featureUuid = null;
-					if (factCategoryId == 14 && factCategory.startsWith("Maps")){
-						//E+M maps
-						featureUuid = BerlinModelTransformer.uuidFeatureMaps;  
-					}else{
+					featureUuid = BerlinModelTransformer.getFeatureUuid(String.valueOf(factCategoryId+"-"+factCategory));
+					if (featureUuid == null){
 						logger.warn("New Feature (FactCategoryId: " + factCategoryId + ")");
+						featureUuid = UUID.randomUUID();
 					}
 					feature = getFeature(state, featureUuid, factCategory, factCategory, null, featureVocabulary);
-								feature = Feature.NewInstance(factCategory, factCategory, null);
+//								feature = Feature.NewInstance(factCategory, factCategory, null);
 //					featureVocabulary.addTerm(feature);
 //					feature.setSupportsTextData(true);
 					//TODO
@@ -144,6 +144,10 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
+			return null;
+		} catch (UndefinedTransformerMethodException e1) {
+			logger.error("UndefinedTransformerMethodException:" +  e1);
+			e1.printStackTrace();
 			return null;
 		}
 
