@@ -39,7 +39,6 @@ public class MultilanguageTextBridge implements FieldBridge {
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
      */
-    @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
         // value should be the Map<Language, LanguageString>
         @SuppressWarnings("unchecked")
