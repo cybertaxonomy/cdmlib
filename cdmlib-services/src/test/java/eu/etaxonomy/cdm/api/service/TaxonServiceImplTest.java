@@ -57,6 +57,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  *
  */
+
+
 public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
 
@@ -76,7 +78,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 /****************** TESTS *****************************/
 
 
-	/**
+    /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getTaxonByUuid(java.util.UUID)}.
      */
     @Test
@@ -346,7 +348,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
       heterotypicSynonym = (Synonym)service.load(uuidSyn5);
 
-      printDataSet(System.err, new String[]{"TaxonBase"});
+//      printDataSet(System.err, new String[]{"TaxonBase"});
 //      System.exit(0);
 
       Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
@@ -688,8 +690,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 0 taxon relationships left in the database", 0, nRelations);
         nRelations = nameService.getAllRelationships(1000, 0).size();
         Assert.assertEquals("There should be 1 name relationship left in the database", 1, nRelations);
-        
-        
+
+
         //clean up database
         name2 = (TaxonNameBase)nameService.load(uuidSynonymName2);
         NameRelationship rel = CdmBase.deproxy(name2.getNameRelations().iterator().next(), NameRelationship.class);
@@ -765,7 +767,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         this.setComplete();
         this.endTransaction();
 
-        printDataSet(System.out, tableNames);
+//        printDataSet(System.out, tableNames);
 
         //out of wrapping transaction
         service.deleteSynonym(synonym1, null, true, true);
@@ -785,10 +787,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet("TaxonServiceImplTest.testInferredSynonyms.xml")
-    
+
     public void testCreateInferredSynonymy(){
 
-    	UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
+        UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         Classification tree = classificationService.find(classificationUuid);
         UUID taxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
         TaxonBase taxonBase =  service.find(taxonUuid);
@@ -799,11 +801,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //assertEquals("Number of synonyms should be 2",2,synonyms.size());
         List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-        	System.err.println(inferredSynonyms.size());
+//        System.err.println(inferredSynonyms.size());
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ");
         inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-        System.err.println(inferredSynonyms.get(0).getTitleCache());
+//        System.err.println(inferredSynonyms.get(0).getTitleCache());
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ");
         inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
@@ -811,74 +813,74 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
     }
 
-	@Test
-	@DataSet("TaxonServiceImplTest.testDeleteTaxonConfig.xml")
-	@Ignore  //not fully working yet
-	public final void testDeleteTaxonConfig(){
-		final String[]tableNames = {
-				"Classification", "Classification_AUD",
-				"TaxonBase","TaxonBase_AUD",
-				"TaxonNode","TaxonNode_AUD",
-				"TaxonNameBase","TaxonNameBase_AUD",
-				"SynonymRelationship","SynonymRelationship_AUD",
-				"TaxonRelationship", "TaxonRelationship_AUD",
-				"TaxonDescription", "TaxonDescription_AUD",
-				"HomotypicalGroup","HomotypicalGroup_AUD",
-				"PolytomousKey","PolytomousKey_AUD",
-				"PolytomousKeyNode","PolytomousKeyNode_AUD",
-				"Media","Media_AUD",
-				"WorkingSet","WorkingSet_AUD",
-				"DescriptionElementBase","DescriptionElementBase_AUD"};
+    @Test
+    @DataSet("TaxonServiceImplTest.testDeleteTaxonConfig.xml")
+    @Ignore  //not fully working yet
+    public final void testDeleteTaxonConfig(){
+        final String[]tableNames = {
+                "Classification", "Classification_AUD",
+                "TaxonBase","TaxonBase_AUD",
+                "TaxonNode","TaxonNode_AUD",
+                "TaxonNameBase","TaxonNameBase_AUD",
+                "SynonymRelationship","SynonymRelationship_AUD",
+                "TaxonRelationship", "TaxonRelationship_AUD",
+                "TaxonDescription", "TaxonDescription_AUD",
+                "HomotypicalGroup","HomotypicalGroup_AUD",
+                "PolytomousKey","PolytomousKey_AUD",
+                "PolytomousKeyNode","PolytomousKeyNode_AUD",
+                "Media","Media_AUD",
+                "WorkingSet","WorkingSet_AUD",
+                "DescriptionElementBase","DescriptionElementBase_AUD"};
 
-		UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
-		UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
-		UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
+        UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
+        UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
+        UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
 
-		int nTaxa = service.count(Taxon.class);
-		Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
-		Taxon parent = (Taxon)service.find(uuidParent);
-		Assert.assertNotNull("Parent taxon should exist", parent);
-		Taxon child1 = (Taxon)service.find(uuidChild1);
-		Assert.assertNotNull("Child taxon should exist", child1);
+        int nTaxa = service.count(Taxon.class);
+        Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
+        Taxon parent = (Taxon)service.find(uuidParent);
+        Assert.assertNotNull("Parent taxon should exist", parent);
+        Taxon child1 = (Taxon)service.find(uuidChild1);
+        Assert.assertNotNull("Child taxon should exist", child1);
 
 
-		try {
+        try {
 //			commitAndStartNewTransaction(tableNames);
-			service.deleteTaxon(child1, new TaxonDeletionConfigurator());
-			Assert.fail("Delete should throw an error as long as name is used in classification.");
-		} catch (ReferencedObjectUndeletableException e) {
-			if (e.getMessage().contains("Taxon can't be deleted as it is used in a classification node")){
-				//ok
-				commitAndStartNewTransaction(tableNames);
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon: " + e.getMessage());
-			}
-		}
+            service.deleteTaxon(child1, new TaxonDeletionConfigurator());
+            Assert.fail("Delete should throw an error as long as name is used in classification.");
+        } catch (ReferencedObjectUndeletableException e) {
+            if (e.getMessage().contains("Taxon can't be deleted as it is used in a classification node")){
+                //ok
+                commitAndStartNewTransaction(tableNames);
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon: " + e.getMessage());
+            }
+        }
 
-		nTaxa = service.count(Taxon.class);
-		Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
-		child1 = (Taxon)service.find(uuidChild1);
-		Assert.assertNotNull("Child taxon should exist", child1);
-		Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
+        nTaxa = service.count(Taxon.class);
+        Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
+        child1 = (Taxon)service.find(uuidChild1);
+        Assert.assertNotNull("Child taxon should exist", child1);
+        Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
 
-		TaxonNode node = child1.getTaxonNodes().iterator().next();
-		node.getParent().deleteChildNode(node);
-		service.save(node.getTaxon());
-		commitAndStartNewTransaction(tableNames);
+        TaxonNode node = child1.getTaxonNodes().iterator().next();
+        node.getParent().deleteChildNode(node);
+        service.save(node.getTaxon());
+        commitAndStartNewTransaction(tableNames);
 
-		child1 = (Taxon)service.find(uuidChild1);
-		try {
-			service.deleteTaxon(child1, new TaxonDeletionConfigurator());
-		} catch (ReferencedObjectUndeletableException e) {
-			Assert.fail("Delete should not throw an exception anymore");
-		}
+        child1 = (Taxon)service.find(uuidChild1);
+        try {
+            service.deleteTaxon(child1, new TaxonDeletionConfigurator());
+        } catch (ReferencedObjectUndeletableException e) {
+            Assert.fail("Delete should not throw an exception anymore");
+        }
 
 
 //		nNames = nameService.count(TaxonNameBase.class);
 //		Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
 //		int nRelations = service.countAllRelationships();
 //		Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
-	}
+    }
 
 
 //	@Test

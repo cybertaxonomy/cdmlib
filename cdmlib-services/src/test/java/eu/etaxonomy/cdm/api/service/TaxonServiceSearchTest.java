@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
- * @author a.babadshanjan
+ * @author a.babadshanjan, a.kohlbecker
  * @created 04.02.2009
  * @version 1.0
  */
@@ -81,7 +81,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private ICdmMassIndexer indexer;
 
-    private static final int BENCHMARK_ROUNDS = 10;
+    private static final int BENCHMARK_ROUNDS = 300;
 
     @Test
     public void testDbUnitUsageTest() throws Exception {
@@ -152,8 +152,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    @Ignore
     public final void testFindByDescriptionElementFullText() throws CorruptIndexException, IOException, ParseException {
+
+//         printDataSet(System.out, new String[] {
+//                 "DESCRIPTIONELEMENTBASE",
+//                 "DESCRIPTIONBASE", "LANGUAGESTRING"});
 
         refreshLuceneIndex();
 
@@ -167,8 +170,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         TaxonBase taxon = pager.getRecords().get(0).getEntity();
 
         String newName = "Quercus robur";
-        // TODO setting the taxon.titleCache indirectly via the taxonName doe
-        // not work for some reason ...
+        // NOTE setting the taxon.titleCache indirectly via the taxonName does
+        // not work since this is not yet implemented into the CDM Library
+        //
         // BotanicalName name = HibernateProxyHelper.deproxy(taxon.getName(),
         // BotanicalName.class);
         // name.setProtectedNameCache(false);
@@ -177,14 +181,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // name.setNameCache(newNameCache, true);
         // name.setFullTitleCache(newNameCache, true);
         // name.setTitleCache(newNameCache, true);
-        // TODO (continued) ... need to set it directly:
+        //
+        // ... so we will set it directly:
         taxon.setTitleCache(newName + " sec. ", true);
 
         taxonService.saveOrUpdate(taxon);
-
-        setComplete();
-        endTransaction();
-        startNewTransaction();
+        commitAndStartNewTransaction(null);
 
         // printDataSet(System.err, new String[] {"TaxonBase", "TaxonNameBase"});
 
@@ -202,16 +204,15 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      *
      */
     private void refreshLuceneIndex() {
+
+        commitAndStartNewTransaction(null);
         indexer.purge();
         indexer.reindex();
-
-        endTransaction();
-        startNewTransaction();
+        commitAndStartNewTransaction(null);
     }
 
     @SuppressWarnings("rawtypes")
     @Test
-    @Ignore //there seems to be a bug in unitils 1.0 which prevents from adding data to an non blank db. This problem might be fixed in recent versions of unitils version > 3.3
     @DataSet
     public final void testFindByCommonNameHqlBenchmark() throws CorruptIndexException, IOException, ParseException {
 
@@ -242,7 +243,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("rawtypes")
     @Test
-    @Ignore //there seems to be a bug in unitils 1.0 which prevents from adding data to an non blank db. This problem might be fixed in recent versions of unitils version > 3.3
     @DataSet
     public final void testFindByCommonNameLuceneBenchmark() throws CorruptIndexException, IOException, ParseException {
 

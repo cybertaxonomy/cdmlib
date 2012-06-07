@@ -92,13 +92,13 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
-	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
-	public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
+    public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
 
-	public static final String INFERRED_EPITHET_NAMESPACE = "Inferred epithet";
+    public static final String INFERRED_EPITHET_NAMESPACE = "Inferred epithet";
 
-	public static final String INFERRED_GENUS_NAMESPACE = "Inferred genus";
+    public static final String INFERRED_GENUS_NAMESPACE = "Inferred genus";
 
 
     @Autowired
@@ -107,24 +107,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Autowired
     private ISearchResultBuilder searchResultBuilder;
 
-	@Autowired
-	private INameService nameService;
+    @Autowired
+    private INameService nameService;
 
-	@Autowired
-	private ICdmGenericDao genericDao;
+    @Autowired
+    private ICdmGenericDao genericDao;
 
-	@Autowired
-	private IDescriptionService descriptionService;
+    @Autowired
+    private IDescriptionService descriptionService;
 
     @Autowired
     private IOrderedTermVocabularyDao orderedVocabularyDao;
-	
-	/**
-	 * Constructor
-	 */
-	public TaxonServiceImpl(){
-		if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
-	}
+
+    /**
+     * Constructor
+     */
+    public TaxonServiceImpl(){
+        if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
+    }
 
     /**
      * FIXME Candidate for harmonization
@@ -639,12 +639,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
         return this.dao.findById(listOfIDs);
     }
-    
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxonByUuid(UUID uuid, List<String> propertyPaths)
      */
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths){
-        return this.dao.findByUuid(uuid, null ,propertyPaths);        
+        return this.dao.findByUuid(uuid, null ,propertyPaths);
     }
 
     /* (non-Javadoc)
@@ -654,9 +654,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.countAllRelationships();
     }
 
-   
 
-    
+
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findIdenticalTaxonNames(java.util.List)
      */
@@ -664,102 +664,102 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.findIdenticalTaxonNames(propertyPath);
     }
 
-    
-	/* (non-Javadoc)
+
+    /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
      */
     @Override
     public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException {
-    	if (config == null){
-    		config = new TaxonDeletionConfigurator();
-    	}
-    	
-			//    	TaxonNode
-			if (! config.isDeleteTaxonNodes()){
-				if (taxon.getTaxonNodes().size() > 0){
-					String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion.";
-					throw new ReferencedObjectUndeletableException(message);
-				}
-			}
-	
-			
-			//    	SynonymRelationShip
-			if (config.isDeleteSynonymRelations()){
-				boolean removeSynonymNameFromHomotypicalGroup = false;
-				for (SynonymRelationship synRel : taxon.getSynonymRelations()){
-					Synonym synonym = synRel.getSynonym();
-					taxon.removeSynonymRelation(synRel, removeSynonymNameFromHomotypicalGroup);
-					if (config.isDeleteSynonymsIfPossible()){
-						//TODO which value
-						boolean newHomotypicGroupIfNeeded = true;
-						deleteSynonym(synonym, taxon, config.isDeleteNameIfPossible(), newHomotypicGroupIfNeeded);
-					}else{
-						deleteSynonymRelationships(synonym, taxon);
-					}
-				}
-			}
-	
-			//    	TaxonRelationship    	
-			if (! config.isDeleteTaxonRelationships()){
-				if (taxon.getTaxonRelations().size() > 0){
-					String message = "Taxon can't be deleted as it is related to another taxon. Remove taxon from all relations to other taxa prior to deletion.";
-					throw new ReferencedObjectUndeletableException(message);
-				}
-			}
-	
-			
-			//    	TaxonDescription
-		    		Set<TaxonDescription> descriptions = taxon.getDescriptions();
-		    		
-		    		for (TaxonDescription desc: descriptions){
-		    			if (config.isDeleteDescriptions()){
-		    				//TODO use description delete configurator ?
-		    				//FIXME check if description is ALWAYS deletable
-		    				descriptionService.delete(desc); 
-		    			}else{
-			    			if (desc.getDescribedSpecimenOrObservations().size()>0){
-			    				String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-			    						" which also describes specimens or abservations";
-	    		    				throw new ReferencedObjectUndeletableException(message);
-	    		    			}
-	    	    			}
-	    	    		}
-	 
-	    		
-	    		//check references with only reverse mapping
-			Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
-			for (CdmBase referencingObject : referencingObjects){
-				//IIdentificationKeys (Media, Polytomous, MultiAccess)
-				if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
-					String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-					message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
-					throw new ReferencedObjectUndeletableException(message);
-				}
-	
-				
-				//PolytomousKeyNode
-				if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
-					String message = "Taxon can't be deleted as it is used in polytomous key node";
-					throw new ReferencedObjectUndeletableException(message);
-				}
-				
-				//TaxonInteraction
-				if (referencingObject.isInstanceOf(TaxonInteraction.class)){
-					String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
-					throw new ReferencedObjectUndeletableException(message);
-				}
-			}
-			
-			
-			//TaxonNameBase
-			if (config.isDeleteNameIfPossible()){
-	    		try {
-					nameService.delete(taxon.getName(), config.getNameDeletionConfig());
-				} catch (ReferencedObjectUndeletableException e) {
-					//do nothing
-					if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
-				}
-			}
+        if (config == null){
+            config = new TaxonDeletionConfigurator();
+        }
+
+            //    	TaxonNode
+            if (! config.isDeleteTaxonNodes()){
+                if (taxon.getTaxonNodes().size() > 0){
+                    String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion.";
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+            }
+
+
+            //    	SynonymRelationShip
+            if (config.isDeleteSynonymRelations()){
+                boolean removeSynonymNameFromHomotypicalGroup = false;
+                for (SynonymRelationship synRel : taxon.getSynonymRelations()){
+                    Synonym synonym = synRel.getSynonym();
+                    taxon.removeSynonymRelation(synRel, removeSynonymNameFromHomotypicalGroup);
+                    if (config.isDeleteSynonymsIfPossible()){
+                        //TODO which value
+                        boolean newHomotypicGroupIfNeeded = true;
+                        deleteSynonym(synonym, taxon, config.isDeleteNameIfPossible(), newHomotypicGroupIfNeeded);
+                    }else{
+                        deleteSynonymRelationships(synonym, taxon);
+                    }
+                }
+            }
+
+            //    	TaxonRelationship
+            if (! config.isDeleteTaxonRelationships()){
+                if (taxon.getTaxonRelations().size() > 0){
+                    String message = "Taxon can't be deleted as it is related to another taxon. Remove taxon from all relations to other taxa prior to deletion.";
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+            }
+
+
+            //    	TaxonDescription
+                    Set<TaxonDescription> descriptions = taxon.getDescriptions();
+
+                    for (TaxonDescription desc: descriptions){
+                        if (config.isDeleteDescriptions()){
+                            //TODO use description delete configurator ?
+                            //FIXME check if description is ALWAYS deletable
+                            descriptionService.delete(desc);
+                        }else{
+                            if (desc.getDescribedSpecimenOrObservations().size()>0){
+                                String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
+                                        " which also describes specimens or abservations";
+                                    throw new ReferencedObjectUndeletableException(message);
+                                }
+                            }
+                        }
+
+
+                //check references with only reverse mapping
+            Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
+            for (CdmBase referencingObject : referencingObjects){
+                //IIdentificationKeys (Media, Polytomous, MultiAccess)
+                if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
+                    String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
+                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+
+
+                //PolytomousKeyNode
+                if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
+                    String message = "Taxon can't be deleted as it is used in polytomous key node";
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+
+                //TaxonInteraction
+                if (referencingObject.isInstanceOf(TaxonInteraction.class)){
+                    String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+            }
+
+
+            //TaxonNameBase
+            if (config.isDeleteNameIfPossible()){
+                try {
+                    nameService.delete(taxon.getName(), config.getNameDeletionConfig());
+                } catch (ReferencedObjectUndeletableException e) {
+                    //do nothing
+                    if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
+                }
+            }
 
     }
 
@@ -822,12 +822,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return this.dao.getPhylumName(name);
     }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
-	 */
-	public long deleteSynonymRelationships(Synonym syn, Taxon taxon) {
-		return dao.deleteSynonymRelationships(syn, taxon);
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
+     */
+    public long deleteSynonymRelationships(Synonym syn, Taxon taxon) {
+        return dao.deleteSynonymRelationships(syn, taxon);
+    }
 
 /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym)
@@ -947,7 +947,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return bestCandidate;
     }
-    
+
     private boolean isInClassification(Taxon taxon, MatchingTaxonConfigurator config) {
         UUID configClassificationUuid = config.getClassificationUuid();
         if (configClassificationUuid == null){
@@ -1090,7 +1090,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        String luceneQueryTemplate = "titleCache:%1$s OR multilanguageText.text:%1$s OR name:%1$s";
+        String luceneQueryTemplate = "titleCache:%1$s OR text.ALL:%1$s OR name:%1$s";
         String luceneQuery = String.format(luceneQueryTemplate, queryString);
 
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), clazz);
@@ -1100,25 +1100,25 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
 
     }
-    
+
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification, SynonymRelationshipType type, boolean doWithMisappliedNames){
         List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
         List<Synonym> inferredSynonymsToBeRemoved = new ArrayList<Synonym>();
 
         HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
-        
-        
+
+
         UUID uuid= taxon.getName().getUuid();
         ZoologicalName taxonName = getZoologicalName(uuid, zooHashMap);
         String epithetOfTaxon = null;
         String infragenericEpithetOfTaxon = null;
         String infraspecificEpithetOfTaxon = null;
         if (taxonName.isSpecies()){
-        	 epithetOfTaxon= taxonName.getSpecificEpithet();
+             epithetOfTaxon= taxonName.getSpecificEpithet();
         } else if (taxonName.isInfraGeneric()){
-        	infragenericEpithetOfTaxon = taxonName.getInfraGenericEpithet();
+            infragenericEpithetOfTaxon = taxonName.getInfraGenericEpithet();
         } else if (taxonName.isInfraSpecific()){
-        	infraspecificEpithetOfTaxon = taxonName.getInfraSpecificEpithet();
+            infraspecificEpithetOfTaxon = taxonName.getInfraSpecificEpithet();
         }
         String genusOfTaxon = taxonName.getGenusOrUninomial();
         Set<TaxonNode> nodes = taxon.getTaxonNodes();
@@ -1130,93 +1130,93 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             if (node.getClassification().equals(classification)){
                 if (!node.isTopmostNode()){
-	                TaxonNode parent = (TaxonNode)node.getParent();
-	                parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
-	                TaxonNameBase parentName =  parent.getTaxon().getName();
-	                ZoologicalName zooParentName = HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
-	                Taxon parentTaxon = (Taxon)HibernateProxyHelper.deproxy(parent.getTaxon());
-	                Rank rankOfTaxon = taxonName.getRank();
-	                
-	
-	                //create inferred synonyms for species, subspecies
-	                if ((parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())) ){
-	
-	                    Synonym inferredEpithet = null;
-	                    Synonym inferredGenus = null;
-	                    Synonym potentialCombination = null;
-	
-	                    List<String> propertyPaths = new ArrayList<String>();
-	                    propertyPaths.add("synonym");
-	                    propertyPaths.add("synonym.name");
-	                    List<OrderHint> orderHints = new ArrayList<OrderHint>();
-	                    orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
-	
-	                    List<SynonymRelationship> synonymRelationshipsOfParent = dao.getSynonyms(parentTaxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
-	                    List<SynonymRelationship> synonymRelationshipsOfTaxon= dao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
-	                    
-	                    List<TaxonRelationship> taxonRelListParent = null;
-	                    List<TaxonRelationship> taxonRelListTaxon = null;
-	                    if (doWithMisappliedNames){
-	                    	taxonRelListParent = dao.getTaxonRelationships(parentTaxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, orderHints, propertyPaths, Direction.relatedTo);
-	                    	taxonRelListTaxon = dao.getTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, orderHints, propertyPaths, Direction.relatedTo);
-	                    }
-	                    
-	
-	                    if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())){
-	                    	Set<String> genusNames = new HashSet<String>();
-	                    		                    	
-	                        for (SynonymRelationship synonymRelationOfParent:synonymRelationshipsOfParent){
-	                            Synonym syn = synonymRelationOfParent.getSynonym();
-	                            
-	                            inferredEpithet = createInferredEpithets(taxon, 
-										zooHashMap, taxonName, epithetOfTaxon,
-										infragenericEpithetOfTaxon,
-										infraspecificEpithetOfTaxon,
-										taxonNames, parentName, 
-										syn);
-	                            
-	                            
-	                            inferredSynonyms.add(inferredEpithet);
-	                            zooHashMap.put(inferredEpithet.getName().getUuid(), (ZoologicalName)inferredEpithet.getName());
-	                    		taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
-	                        }
-	                        
-	                        if (doWithMisappliedNames){
-	                        	
-	                        	for (TaxonRelationship taxonRelationship: taxonRelListParent){
-	                        		 Taxon misappliedName = taxonRelationship.getFromTaxon();
-	                        		
-	                        		 inferredEpithet = createInferredEpithets(taxon,
-	 										zooHashMap, taxonName, epithetOfTaxon,
-	 										infragenericEpithetOfTaxon,
-	 										infraspecificEpithetOfTaxon,
-	 										taxonNames, parentName, 
-	 										misappliedName);
-	                        		
-	                        		inferredSynonyms.add(inferredEpithet);
-	                        		zooHashMap.put(inferredEpithet.getName().getUuid(), (ZoologicalName)inferredEpithet.getName());
-	 	                    		taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
-	                        	}
-	                        }
-	
-	                        if (!taxonNames.isEmpty()){
-	                        List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
-	                        ZoologicalName name;
-	                        if (!synNotInCDM.isEmpty()){
-	                            inferredSynonymsToBeRemoved.clear();
-	
-	                            for (Synonym syn :inferredSynonyms){
-	                                name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
-	                                if (!synNotInCDM.contains(name.getNameCache())){
-	                                    inferredSynonymsToBeRemoved.add(syn);
-	                                }
-	                            }
-	
-	                            // Remove identified Synonyms from inferredSynonyms
-	                            for (Synonym synonym : inferredSynonymsToBeRemoved) {
-	                                inferredSynonyms.remove(synonym);
-	                            }
-	                        }
+                    TaxonNode parent = (TaxonNode)node.getParent();
+                    parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
+                    TaxonNameBase parentName =  parent.getTaxon().getName();
+                    ZoologicalName zooParentName = HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
+                    Taxon parentTaxon = (Taxon)HibernateProxyHelper.deproxy(parent.getTaxon());
+                    Rank rankOfTaxon = taxonName.getRank();
+
+
+                    //create inferred synonyms for species, subspecies
+                    if ((parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())) ){
+
+                        Synonym inferredEpithet = null;
+                        Synonym inferredGenus = null;
+                        Synonym potentialCombination = null;
+
+                        List<String> propertyPaths = new ArrayList<String>();
+                        propertyPaths.add("synonym");
+                        propertyPaths.add("synonym.name");
+                        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+                        orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+
+                        List<SynonymRelationship> synonymRelationshipsOfParent = dao.getSynonyms(parentTaxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
+                        List<SynonymRelationship> synonymRelationshipsOfTaxon= dao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,orderHints,propertyPaths);
+
+                        List<TaxonRelationship> taxonRelListParent = null;
+                        List<TaxonRelationship> taxonRelListTaxon = null;
+                        if (doWithMisappliedNames){
+                            taxonRelListParent = dao.getTaxonRelationships(parentTaxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, orderHints, propertyPaths, Direction.relatedTo);
+                            taxonRelListTaxon = dao.getTaxonRelationships(taxon, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null, orderHints, propertyPaths, Direction.relatedTo);
+                        }
+
+
+                        if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())){
+                            Set<String> genusNames = new HashSet<String>();
+
+                            for (SynonymRelationship synonymRelationOfParent:synonymRelationshipsOfParent){
+                                Synonym syn = synonymRelationOfParent.getSynonym();
+
+                                inferredEpithet = createInferredEpithets(taxon,
+                                        zooHashMap, taxonName, epithetOfTaxon,
+                                        infragenericEpithetOfTaxon,
+                                        infraspecificEpithetOfTaxon,
+                                        taxonNames, parentName,
+                                        syn);
+
+
+                                inferredSynonyms.add(inferredEpithet);
+                                zooHashMap.put(inferredEpithet.getName().getUuid(), (ZoologicalName)inferredEpithet.getName());
+                                taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
+                            }
+
+                            if (doWithMisappliedNames){
+
+                                for (TaxonRelationship taxonRelationship: taxonRelListParent){
+                                     Taxon misappliedName = taxonRelationship.getFromTaxon();
+
+                                     inferredEpithet = createInferredEpithets(taxon,
+                                             zooHashMap, taxonName, epithetOfTaxon,
+                                             infragenericEpithetOfTaxon,
+                                             infraspecificEpithetOfTaxon,
+                                             taxonNames, parentName,
+                                             misappliedName);
+
+                                    inferredSynonyms.add(inferredEpithet);
+                                    zooHashMap.put(inferredEpithet.getName().getUuid(), (ZoologicalName)inferredEpithet.getName());
+                                     taxonNames.add(((ZoologicalName)inferredEpithet.getName()).getNameCache());
+                                }
+                            }
+
+                            if (!taxonNames.isEmpty()){
+                            List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
+                            ZoologicalName name;
+                            if (!synNotInCDM.isEmpty()){
+                                inferredSynonymsToBeRemoved.clear();
+
+                                for (Synonym syn :inferredSynonyms){
+                                    name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
+                                    if (!synNotInCDM.contains(name.getNameCache())){
+                                        inferredSynonymsToBeRemoved.add(syn);
+                                    }
+                                }
+
+                                // Remove identified Synonyms from inferredSynonyms
+                                for (Synonym synonym : inferredSynonymsToBeRemoved) {
+                                    inferredSynonyms.remove(synonym);
+                                }
+                            }
                         }
 
                     }else if (type.equals(SynonymRelationshipType.INFERRED_GENUS_OF())){
@@ -1228,28 +1228,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                             Synonym syn = synonymRelationOfTaxon.getSynonym();
                             inferredGenus = createInferredGenus(taxon,
-									zooHashMap, taxonName, epithetOfTaxon,
-									genusOfTaxon, taxonNames, zooParentName, syn);
-                            
+                                    zooHashMap, taxonName, epithetOfTaxon,
+                                    genusOfTaxon, taxonNames, zooParentName, syn);
+
                             inferredSynonyms.add(inferredGenus);
                             zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
-                    		taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
-                            
-                            
+                            taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
+
+
                         }
-                        
+
                         if (doWithMisappliedNames){
-                        	
-                        	for (TaxonRelationship taxonRelationship: taxonRelListTaxon){
-                        		Taxon misappliedName = taxonRelationship.getFromTaxon();
-                        		inferredGenus = createInferredGenus(taxon, zooHashMap, taxonName, infraspecificEpithetOfTaxon, genusOfTaxon, taxonNames, zooParentName,  misappliedName);
-                        		
-                        		inferredSynonyms.add(inferredGenus);
-                        		zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
-                         		taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
-                        	}
+
+                            for (TaxonRelationship taxonRelationship: taxonRelListTaxon){
+                                Taxon misappliedName = taxonRelationship.getFromTaxon();
+                                inferredGenus = createInferredGenus(taxon, zooHashMap, taxonName, infraspecificEpithetOfTaxon, genusOfTaxon, taxonNames, zooParentName,  misappliedName);
+
+                                inferredSynonyms.add(inferredGenus);
+                                zooHashMap.put(inferredGenus.getName().getUuid(), (ZoologicalName)inferredGenus.getName());
+                                 taxonNames.add(( (ZoologicalName)inferredGenus.getName()).getNameCache());
+                            }
                         }
-                        
+
 
                         if (!taxonNames.isEmpty()){
                             List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
@@ -1293,45 +1293,45 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             String synParentGenus = parentSynZooName.getGenusOrUninomial();
                             String synParentInfragenericName = null;
                             String synParentSpecificEpithet = null;
-                            
+
                             if (parentSynZooName.isInfraGeneric()){
-                            	synParentInfragenericName = parentSynZooName.getInfraGenericEpithet();
+                                synParentInfragenericName = parentSynZooName.getInfraGenericEpithet();
                             }
                             if (parentSynZooName.isSpecies()){
-                            	synParentSpecificEpithet = parentSynZooName.getSpecificEpithet();
+                                synParentSpecificEpithet = parentSynZooName.getSpecificEpithet();
                             }
-                            
+
                            /* if (synGenusName != null && !synonymsGenus.containsKey(synGenusName)){
                                 synonymsGenus.put(synGenusName, idInSource);
                             }*/
-                            
+
                             //for all synonyms of the taxon
-                            
+
                             for (SynonymRelationship synonymRelationOfTaxon:synonymRelationshipsOfTaxon){
-                            	
+
                                 Synonym syn = synonymRelationOfTaxon.getSynonym();
                                 ZoologicalName zooSynName = getZoologicalName(syn.getName().getUuid(), zooHashMap);
                                 potentialCombination = createPotentialCombination(idInSourceParent, parentSynZooName, zooSynName,
-										synParentGenus,
-										synParentInfragenericName,
-										synParentSpecificEpithet, syn, zooHashMap);
-                                
+                                        synParentGenus,
+                                        synParentInfragenericName,
+                                        synParentSpecificEpithet, syn, zooHashMap);
+
                                 taxon.addSynonym(potentialCombination, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
                                 inferredSynonyms.add(potentialCombination);
                                 zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
-                         		taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
-                                
+                                 taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
+
                             }
-                            
-                            
+
+
                         }
-                        
+
                         if (doWithMisappliedNames){
-                        	
-                        	for (TaxonRelationship parentRelationship: taxonRelListParent){
-                        	
-                        		TaxonNameBase misappliedParentName;
-                        		
+
+                            for (TaxonRelationship parentRelationship: taxonRelListParent){
+
+                                TaxonNameBase misappliedParentName;
+
                                 Taxon misappliedParent = parentRelationship.getFromTaxon();
                                 misappliedParentName = misappliedParent.getName();
 
@@ -1347,51 +1347,51 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 String synParentGenus = parentSynZooName.getGenusOrUninomial();
                                 String synParentInfragenericName = null;
                                 String synParentSpecificEpithet = null;
-                                
+
                                 if (parentSynZooName.isInfraGeneric()){
-                                	synParentInfragenericName = parentSynZooName.getInfraGenericEpithet();
+                                    synParentInfragenericName = parentSynZooName.getInfraGenericEpithet();
                                 }
                                 if (parentSynZooName.isSpecies()){
-                                	synParentSpecificEpithet = parentSynZooName.getSpecificEpithet();
+                                    synParentSpecificEpithet = parentSynZooName.getSpecificEpithet();
                                 }
-                                
-                        		
-	                        	for (TaxonRelationship taxonRelationship: taxonRelListTaxon){
-	                        		Taxon misappliedName = taxonRelationship.getFromTaxon();
-	                        		ZoologicalName zooMisappliedName = getZoologicalName(misappliedName.getName().getUuid(), zooHashMap);
-	                        		potentialCombination = createPotentialCombination(
-											idInSourceParent, parentSynZooName, zooMisappliedName,
-											synParentGenus,
-											synParentInfragenericName,
-											synParentSpecificEpithet, misappliedName, zooHashMap);
-	                        		
-	                        		
-	                        		taxon.addSynonym(potentialCombination, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
-	                        		inferredSynonyms.add(potentialCombination);
-	                        		zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
-	                         		taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
-	                        	}
-                        	}
+
+
+                                for (TaxonRelationship taxonRelationship: taxonRelListTaxon){
+                                    Taxon misappliedName = taxonRelationship.getFromTaxon();
+                                    ZoologicalName zooMisappliedName = getZoologicalName(misappliedName.getName().getUuid(), zooHashMap);
+                                    potentialCombination = createPotentialCombination(
+                                            idInSourceParent, parentSynZooName, zooMisappliedName,
+                                            synParentGenus,
+                                            synParentInfragenericName,
+                                            synParentSpecificEpithet, misappliedName, zooHashMap);
+
+
+                                    taxon.addSynonym(potentialCombination, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
+                                    inferredSynonyms.add(potentialCombination);
+                                    zooHashMap.put(potentialCombination.getName().getUuid(), (ZoologicalName)potentialCombination.getName());
+                                     taxonNames.add(( (ZoologicalName)potentialCombination.getName()).getNameCache());
+                                }
+                            }
                         }
-                        
+
                         if (!taxonNames.isEmpty()){
-                        	List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
+                            List<String> synNotInCDM = dao.taxaByNameNotInDB(taxonNames);
                             ZoologicalName name;
                             if (!synNotInCDM.isEmpty()){
-                            	inferredSynonymsToBeRemoved.clear();
-                            	for (Synonym syn :inferredSynonyms){
-                            		try{
-                            			name = (ZoologicalName) syn.getName();
+                                inferredSynonymsToBeRemoved.clear();
+                                for (Synonym syn :inferredSynonyms){
+                                    try{
+                                        name = (ZoologicalName) syn.getName();
                                     }catch (ClassCastException e){
-                                    	name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
+                                        name = getZoologicalName(syn.getName().getUuid(), zooHashMap);
                                     }
                                     if (!synNotInCDM.contains(name.getNameCache())){
-                                    	inferredSynonymsToBeRemoved.add(syn);
+                                        inferredSynonymsToBeRemoved.add(syn);
                                     }
                                  }
-                            	// Remove identified Synonyms from inferredSynonyms
+                                // Remove identified Synonyms from inferredSynonyms
                                 for (Synonym synonym : inferredSynonymsToBeRemoved) {
-                                	inferredSynonyms.remove(synonym);
+                                    inferredSynonyms.remove(synonym);
                                 }
                             }
                          }
@@ -1402,230 +1402,230 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                 }
             }
-          
+
         }
 
         return inferredSynonyms;
     }
 
-	private Synonym createPotentialCombination(String idInSourceParent,
-			ZoologicalName parentSynZooName, 	ZoologicalName zooSynName, String synParentGenus,
-			String synParentInfragenericName, String synParentSpecificEpithet,
-			TaxonBase syn, HashMap<UUID, ZoologicalName> zooHashMap) {
-		Synonym potentialCombination;
-		Reference sourceReference;
-		ZoologicalName inferredSynName;
-		HibernateProxyHelper.deproxy(syn);
+    private Synonym createPotentialCombination(String idInSourceParent,
+            ZoologicalName parentSynZooName, 	ZoologicalName zooSynName, String synParentGenus,
+            String synParentInfragenericName, String synParentSpecificEpithet,
+            TaxonBase syn, HashMap<UUID, ZoologicalName> zooHashMap) {
+        Synonym potentialCombination;
+        Reference sourceReference;
+        ZoologicalName inferredSynName;
+        HibernateProxyHelper.deproxy(syn);
 
-		// Set sourceReference
-		sourceReference = syn.getSec();
+        // Set sourceReference
+        sourceReference = syn.getSec();
 
-	
-		String synTaxonSpecificEpithet = zooSynName.getSpecificEpithet();
-                       
-		String synTaxonInfraSpecificName= null;
-		
-		if (parentSynZooName.isSpecies()){
-			synTaxonInfraSpecificName = zooSynName.getInfraSpecificEpithet();
-		}
-		
-		/*if (epithetName != null && !synonymsEpithet.contains(epithetName)){
-		    synonymsEpithet.add(epithetName);
-		}*/
-		
-		//create potential combinations...
-		inferredSynName = ZoologicalName.NewInstance(syn.getName().getRank());
-		
-		inferredSynName.setGenusOrUninomial(synParentGenus);
-		if (zooSynName.isSpecies()){
-			  inferredSynName.setSpecificEpithet(synTaxonSpecificEpithet);
-			  if (parentSynZooName.isInfraGeneric()){
-				  inferredSynName.setInfraGenericEpithet(synParentInfragenericName);
-			  }
-		}
-		if (zooSynName.isInfraSpecific()){
-			inferredSynName.setSpecificEpithet(synParentSpecificEpithet);
-			inferredSynName.setInfraSpecificEpithet(synTaxonInfraSpecificName);
-		}
-		if (parentSynZooName.isInfraGeneric()){
-			inferredSynName.setInfraGenericEpithet(synParentInfragenericName);
-		}
-		
-                        
-		potentialCombination = Synonym.NewInstance(inferredSynName, null);
 
-		// Set the sourceReference
-		potentialCombination.setSec(sourceReference);
+        String synTaxonSpecificEpithet = zooSynName.getSpecificEpithet();
 
-                        
-		// Determine the idInSource
-		String idInSourceSyn= getIdInSource(syn);
-		
-		if (idInSourceParent != null && idInSourceSyn != null) {
-		    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
-		    inferredSynName.addSource(originalSource);
-		    originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
-		    potentialCombination.addSource(originalSource);
-		}
-		
-		inferredSynName.generateTitle();
-	
-		return potentialCombination;
-	}
+        String synTaxonInfraSpecificName= null;
 
-	private Synonym createInferredGenus(Taxon taxon,
-			HashMap<UUID, ZoologicalName> zooHashMap, ZoologicalName taxonName,
-			String epithetOfTaxon, String genusOfTaxon,
-			List<String> taxonNames, ZoologicalName zooParentName,
-			TaxonBase syn) {
-		
-		Synonym inferredGenus;
-		TaxonNameBase synName;
-		ZoologicalName inferredSynName;
-		synName =syn.getName();
-		HibernateProxyHelper.deproxy(syn);
+        if (parentSynZooName.isSpecies()){
+            synTaxonInfraSpecificName = zooSynName.getInfraSpecificEpithet();
+        }
 
-		// Determine the idInSource
-		String idInSourceSyn = getIdInSource(syn);
-		String idInSourceTaxon = getIdInSource(taxon);
-		// Determine the sourceReference
-		Reference sourceReference = syn.getSec();
+        /*if (epithetName != null && !synonymsEpithet.contains(epithetName)){
+            synonymsEpithet.add(epithetName);
+        }*/
 
-		synName = syn.getName();
-		ZoologicalName synZooName = getZoologicalName(synName.getUuid(), zooHashMap);
-		String synSpeciesEpithetName = synZooName.getSpecificEpithet();
+        //create potential combinations...
+        inferredSynName = ZoologicalName.NewInstance(syn.getName().getRank());
+
+        inferredSynName.setGenusOrUninomial(synParentGenus);
+        if (zooSynName.isSpecies()){
+              inferredSynName.setSpecificEpithet(synTaxonSpecificEpithet);
+              if (parentSynZooName.isInfraGeneric()){
+                  inferredSynName.setInfraGenericEpithet(synParentInfragenericName);
+              }
+        }
+        if (zooSynName.isInfraSpecific()){
+            inferredSynName.setSpecificEpithet(synParentSpecificEpithet);
+            inferredSynName.setInfraSpecificEpithet(synTaxonInfraSpecificName);
+        }
+        if (parentSynZooName.isInfraGeneric()){
+            inferredSynName.setInfraGenericEpithet(synParentInfragenericName);
+        }
+
+
+        potentialCombination = Synonym.NewInstance(inferredSynName, null);
+
+        // Set the sourceReference
+        potentialCombination.setSec(sourceReference);
+
+
+        // Determine the idInSource
+        String idInSourceSyn= getIdInSource(syn);
+
+        if (idInSourceParent != null && idInSourceSyn != null) {
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            inferredSynName.addSource(originalSource);
+            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            potentialCombination.addSource(originalSource);
+        }
+
+        inferredSynName.generateTitle();
+
+        return potentialCombination;
+    }
+
+    private Synonym createInferredGenus(Taxon taxon,
+            HashMap<UUID, ZoologicalName> zooHashMap, ZoologicalName taxonName,
+            String epithetOfTaxon, String genusOfTaxon,
+            List<String> taxonNames, ZoologicalName zooParentName,
+            TaxonBase syn) {
+
+        Synonym inferredGenus;
+        TaxonNameBase synName;
+        ZoologicalName inferredSynName;
+        synName =syn.getName();
+        HibernateProxyHelper.deproxy(syn);
+
+        // Determine the idInSource
+        String idInSourceSyn = getIdInSource(syn);
+        String idInSourceTaxon = getIdInSource(taxon);
+        // Determine the sourceReference
+        Reference sourceReference = syn.getSec();
+
+        synName = syn.getName();
+        ZoologicalName synZooName = getZoologicalName(synName.getUuid(), zooHashMap);
+        String synSpeciesEpithetName = synZooName.getSpecificEpithet();
                      /* if (synonymsEpithet != null && !synonymsEpithet.contains(synSpeciesEpithetName)){
-		    synonymsEpithet.add(synSpeciesEpithetName);
-		}*/
-                     
-		inferredSynName = ZoologicalName.NewInstance(taxon.getName().getRank());
-		//TODO:differ between parent is genus and taxon is species, parent is subgenus and taxon is species, parent is species and taxon is subspecies and parent is genus and taxon is subgenus...
+            synonymsEpithet.add(synSpeciesEpithetName);
+        }*/
+
+        inferredSynName = ZoologicalName.NewInstance(taxon.getName().getRank());
+        //TODO:differ between parent is genus and taxon is species, parent is subgenus and taxon is species, parent is species and taxon is subspecies and parent is genus and taxon is subgenus...
 
 
-		inferredSynName.setGenusOrUninomial(genusOfTaxon);
-		if (zooParentName.isInfraGeneric()){
-			inferredSynName.setInfraGenericEpithet(zooParentName.getInfraGenericEpithet());
-		}
-		
-		if (taxonName.isSpecies()){
-			inferredSynName.setSpecificEpithet(synSpeciesEpithetName);
-		}
-		if (taxonName.isInfraSpecific()){
-			inferredSynName.setSpecificEpithet(epithetOfTaxon);
-			inferredSynName.setInfraSpecificEpithet(synZooName.getInfraGenericEpithet());
-		}
-                     
-                   
-		inferredGenus = Synonym.NewInstance(inferredSynName, null);
+        inferredSynName.setGenusOrUninomial(genusOfTaxon);
+        if (zooParentName.isInfraGeneric()){
+            inferredSynName.setInfraGenericEpithet(zooParentName.getInfraGenericEpithet());
+        }
 
-		// Set the sourceReference
-		inferredGenus.setSec(sourceReference);
+        if (taxonName.isSpecies()){
+            inferredSynName.setSpecificEpithet(synSpeciesEpithetName);
+        }
+        if (taxonName.isInfraSpecific()){
+            inferredSynName.setSpecificEpithet(epithetOfTaxon);
+            inferredSynName.setInfraSpecificEpithet(synZooName.getInfraGenericEpithet());
+        }
 
-		// Add the original source
-		if (idInSourceSyn != null && idInSourceTaxon != null) {
-		    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
-		    inferredGenus.addSource(originalSource);
-		    
-		    originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
-		    inferredSynName.addSource(originalSource);
-		    
-		}
 
-		taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_GENUS_OF());
-		
-		inferredSynName.generateTitle();
-		
-		
-		return inferredGenus;
-	}
+        inferredGenus = Synonym.NewInstance(inferredSynName, null);
 
-	private Synonym createInferredEpithets(Taxon taxon,
-			HashMap<UUID, ZoologicalName> zooHashMap, ZoologicalName taxonName,
-			String epithetOfTaxon, String infragenericEpithetOfTaxon,
-			String infraspecificEpithetOfTaxon, List<String> taxonNames,
-			TaxonNameBase parentName, TaxonBase syn) {
-		
-		Synonym inferredEpithet;
-		TaxonNameBase synName;
-		ZoologicalName inferredSynName;
-		HibernateProxyHelper.deproxy(syn);
+        // Set the sourceReference
+        inferredGenus.setSec(sourceReference);
 
-		// Determine the idInSource
-		String idInSourceSyn = getIdInSource(syn);
-		String idInSourceTaxon =  getIdInSource(taxon);
-		// Determine the sourceReference
-		Reference sourceReference = syn.getSec();
+        // Add the original source
+        if (idInSourceSyn != null && idInSourceTaxon != null) {
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            inferredGenus.addSource(originalSource);
 
-		synName = syn.getName();
-		ZoologicalName zooSynName = getZoologicalName(synName.getUuid(), zooHashMap);
-		String synGenusName = zooSynName.getGenusOrUninomial();
-		String synInfraGenericEpithet = null;
-		String synSpecificEpithet = null;
-		
-		if (zooSynName.getInfraGenericEpithet() != null){
-			synInfraGenericEpithet = zooSynName.getInfraGenericEpithet();
-		} 
-		
-		if (zooSynName.isInfraSpecific()){
-			synSpecificEpithet = zooSynName.getSpecificEpithet();
-		} 
-		
+            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            inferredSynName.addSource(originalSource);
+
+        }
+
+        taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_GENUS_OF());
+
+        inferredSynName.generateTitle();
+
+
+        return inferredGenus;
+    }
+
+    private Synonym createInferredEpithets(Taxon taxon,
+            HashMap<UUID, ZoologicalName> zooHashMap, ZoologicalName taxonName,
+            String epithetOfTaxon, String infragenericEpithetOfTaxon,
+            String infraspecificEpithetOfTaxon, List<String> taxonNames,
+            TaxonNameBase parentName, TaxonBase syn) {
+
+        Synonym inferredEpithet;
+        TaxonNameBase synName;
+        ZoologicalName inferredSynName;
+        HibernateProxyHelper.deproxy(syn);
+
+        // Determine the idInSource
+        String idInSourceSyn = getIdInSource(syn);
+        String idInSourceTaxon =  getIdInSource(taxon);
+        // Determine the sourceReference
+        Reference sourceReference = syn.getSec();
+
+        synName = syn.getName();
+        ZoologicalName zooSynName = getZoologicalName(synName.getUuid(), zooHashMap);
+        String synGenusName = zooSynName.getGenusOrUninomial();
+        String synInfraGenericEpithet = null;
+        String synSpecificEpithet = null;
+
+        if (zooSynName.getInfraGenericEpithet() != null){
+            synInfraGenericEpithet = zooSynName.getInfraGenericEpithet();
+        }
+
+        if (zooSynName.isInfraSpecific()){
+            synSpecificEpithet = zooSynName.getSpecificEpithet();
+        }
+
                      /* if (synGenusName != null && !synonymsGenus.containsKey(synGenusName)){
-		    synonymsGenus.put(synGenusName, idInSource);
-		}*/
-		
-		inferredSynName = ZoologicalName.NewInstance(taxon.getName().getRank());
+            synonymsGenus.put(synGenusName, idInSource);
+        }*/
 
-		// DEBUG TODO: for subgenus or subspecies the infrageneric or infraspecific epithet should be used!!!
-		if (epithetOfTaxon == null && infragenericEpithetOfTaxon == null && infraspecificEpithetOfTaxon == null) {
-		    logger.error("This specificEpithet is NULL" + taxon.getTitleCache());
-		}
-		inferredSynName.setGenusOrUninomial(synGenusName);
-                     
-		if (parentName.isInfraGeneric()){
-			inferredSynName.setInfraGenericEpithet(synInfraGenericEpithet);
-		}
-		if (taxonName.isSpecies()){
-			inferredSynName.setSpecificEpithet(epithetOfTaxon);
-		}else if (taxonName.isInfraSpecific()){
-			inferredSynName.setSpecificEpithet(synSpecificEpithet);
-			inferredSynName.setInfraSpecificEpithet(infraspecificEpithetOfTaxon);
-		}
-		
-		inferredEpithet = Synonym.NewInstance(inferredSynName, null);
-		
-		// Set the sourceReference
-		inferredEpithet.setSec(sourceReference);
+        inferredSynName = ZoologicalName.NewInstance(taxon.getName().getRank());
 
-		/* Add the original source
-		if (idInSource != null) {
-		    IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredEpithetOf", syn.getSec(), null);
+        // DEBUG TODO: for subgenus or subspecies the infrageneric or infraspecific epithet should be used!!!
+        if (epithetOfTaxon == null && infragenericEpithetOfTaxon == null && infraspecificEpithetOfTaxon == null) {
+            logger.error("This specificEpithet is NULL" + taxon.getTitleCache());
+        }
+        inferredSynName.setGenusOrUninomial(synGenusName);
 
-		    // Add the citation
-		    Reference citation = getCitation(syn);
-		    if (citation != null) {
-		        originalSource.setCitation(citation);
-		        inferredEpithet.addSource(originalSource);
-		    }
-		}*/
-		String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
-                     
-		IdentifiableSource originalSource;
-		originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
-		
-		inferredEpithet.addSource(originalSource);
-		
-		originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
-		
-		inferredSynName.addSource(originalSource);
-		
-		
-		
-		taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_EPITHET_OF());
-		
-		inferredSynName.generateTitle();
-		return inferredEpithet;
-	}
+        if (parentName.isInfraGeneric()){
+            inferredSynName.setInfraGenericEpithet(synInfraGenericEpithet);
+        }
+        if (taxonName.isSpecies()){
+            inferredSynName.setSpecificEpithet(epithetOfTaxon);
+        }else if (taxonName.isInfraSpecific()){
+            inferredSynName.setSpecificEpithet(synSpecificEpithet);
+            inferredSynName.setInfraSpecificEpithet(infraspecificEpithetOfTaxon);
+        }
+
+        inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+
+        // Set the sourceReference
+        inferredEpithet.setSec(sourceReference);
+
+        /* Add the original source
+        if (idInSource != null) {
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSource, "InferredEpithetOf", syn.getSec(), null);
+
+            // Add the citation
+            Reference citation = getCitation(syn);
+            if (citation != null) {
+                originalSource.setCitation(citation);
+                inferredEpithet.addSource(originalSource);
+            }
+        }*/
+        String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
+
+        IdentifiableSource originalSource;
+        originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+
+        inferredEpithet.addSource(originalSource);
+
+        originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+
+        inferredSynName.addSource(originalSource);
+
+
+
+        taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_EPITHET_OF());
+
+        inferredSynName.generateTitle();
+        return inferredEpithet;
+    }
 
     /**
      * Returns an existing ZoologicalName or extends an internal hashmap if it does not exist.
@@ -1641,7 +1641,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         return taxonName;
     }
-    
+
     /**
      * Returns the idInSource for a given Synonym.
      * @param syn
@@ -1668,7 +1668,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return idInSource;
     }
-    
+
 
     /**
      * Returns the citation for a given Synonym.
@@ -1688,7 +1688,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return citation;
     }
-    
+
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames){
         List <Synonym> inferredSynonyms = new ArrayList<Synonym>();
 

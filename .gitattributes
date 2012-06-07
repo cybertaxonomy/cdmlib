@@ -595,6 +595,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DateTimeBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/DescriptionBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/MultilanguageTextBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/StripHtmlBridge.java -text

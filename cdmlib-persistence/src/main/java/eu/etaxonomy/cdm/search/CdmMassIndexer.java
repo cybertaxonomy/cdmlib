@@ -67,7 +67,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
         Long countResult = (Long)countResultObj;
-        Long numOfBatches = countResult / BATCH_SIZE;
+        Long numOfBatches = countResult > 0 ? ((countResult-1)/BATCH_SIZE)+1 : 0;
 
         // Scrollable results will avoid loading too many objects in memory
         ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
@@ -78,7 +78,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             if (index % BATCH_SIZE == 0 || index == countResult) {
                 fullTextSession.flushToIndexes(); // apply changes to indexes
                 fullTextSession.clear(); // clear since the queue is processed
-                logger.info("\tbatch " + index / BATCH_SIZE + "/" + numOfBatches + " processed");
+                logger.info("\tbatch " + (((index-1)/BATCH_SIZE)+1) + "/" + numOfBatches + " processed");
                 //if(index / BATCH_SIZE > 10 ) break;
             }
         }
