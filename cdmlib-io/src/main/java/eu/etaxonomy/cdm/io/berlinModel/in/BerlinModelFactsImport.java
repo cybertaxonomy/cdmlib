@@ -126,9 +126,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						featureUuid = UUID.randomUUID();
 					}
 					feature = getFeature(state, featureUuid, factCategory, factCategory, null, featureVocabulary);
-//								feature = Feature.NewInstance(factCategory, factCategory, null);
-//					featureVocabulary.addTerm(feature);
-//					feature.setSupportsTextData(true);
+
 					//TODO
 //					MaxFactNumber	int	Checked
 //					ExtensionTableName	varchar(100)	Checked
@@ -139,8 +137,6 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 								
 				result.put(factCategoryId, feature);
 			}
-//			Collection<Feature> col = result.values();
-//			getTermService().saveOrUpdate((Collection)col);
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
