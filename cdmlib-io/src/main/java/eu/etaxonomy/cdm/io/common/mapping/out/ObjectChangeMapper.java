@@ -33,6 +33,8 @@ public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExp
 
 	private DbExportStateBase<?, IExportTransformer> state;  //for possible later use
 	
+	private Class<? extends CdmBase> oldClass;
+	private Class<? extends CdmBase> newClass;
 	private String cdmAttribute;
 	
 	private Method method;
@@ -40,17 +42,19 @@ public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExp
 	
 	public static ObjectChangeMapper NewInstance(Class<? extends CdmBase>  oldClass, Class<? extends CdmBase> newClass, String cdmAttribute){
 		String methodName = "get" + cdmAttribute;
-		return new ObjectChangeMapper(oldClass, methodName, (Class<?>[])null);
+		return new ObjectChangeMapper(oldClass, newClass, methodName, (Class<?>[])null);
 	}
 	
 	/**
 	 * @param parameterTypes 
 	 * @param dbIdAttributString
 	 */
-	protected ObjectChangeMapper(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+	protected ObjectChangeMapper(Class<? extends CdmBase>oldClazz,Class<? extends CdmBase>newClazz, String methodName, Class<?>... parameterTypes) {
 		try {
 //			this.parameterTypes = parameterTypes;
-			method = clazz.getDeclaredMethod(methodName, parameterTypes);
+			oldClass = oldClazz;
+			newClass = newClazz;
+			method = oldClazz.getDeclaredMethod(methodName, parameterTypes);
 			method.setAccessible(true);
 		} catch (SecurityException e) {
 			logger.error("SecurityException", e);
@@ -71,7 +75,14 @@ public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExp
 
 	public CdmBase getNewObject(CdmBase oldCdmBase){
 		try {
-			return  (CdmBase)method.invoke(oldCdmBase, (Object[])null);
+			if (oldCdmBase.isInstanceOf(oldClass)){
+				return  (CdmBase)method.invoke(oldCdmBase, (Object[])null);
+			}else if (oldCdmBase.isInstanceOf(newClass)){
+				return oldCdmBase;
+			}else{
+				logger.warn("ObjectChangeMapper "+this.toString()+"not applicable for CdmBase " + oldCdmBase.getClass());
+				return oldCdmBase;
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
