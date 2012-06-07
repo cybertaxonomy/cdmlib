@@ -229,7 +229,7 @@ public final class BerlinModelTransformer {
 	public static final UUID uuidFeatureUse = UUID.fromString("199bbbd8-2db6-4335-b454-2e92ae02b699");
 	public static final UUID uuidFeatureComments = UUID.fromString("31cc2b92-5cad-44e9-b50f-b8af591a527c");
 	public static final UUID uuidFeatureDistrEM = UUID.fromString("a5ba7e7f-ca7f-4f50-afc7-73e76b3231d4");
-	public static final UUID uuidFeatureDistWorld = UUID.fromString("e4e24080-7017-47e6-924e-d2560fa68fb8");
+	public static final UUID uuidFeatureDistrWorld = UUID.fromString("e4e24080-7017-47e6-924e-d2560fa68fb8");
 	public static final UUID uuidFeatureEditorBrackets = UUID.fromString("b3b5bc1a-7ba8-4a39-9c0d-63ba599eb5d8");
 	public static final UUID uuidFeatureEditorParenthesis = UUID.fromString("6ee10a2e-ff02-4cf4-a520-89630edc5b44");
 	public static final UUID uuidFeatureInedited = UUID.fromString("c93e2968-bc52-4165-9755-ce37611faf01");
@@ -458,7 +458,7 @@ public final class BerlinModelTransformer {
 		}else if (key.equalsIgnoreCase("303-Comments")){ return uuidFeatureComments;
 		
 		}else if (key.equalsIgnoreCase("10-general distribution (Euro+Med)")){ return uuidFeatureDistrEM;
-		}else if (key.equalsIgnoreCase("11-general distribution (world)")){ return uuidFeatureDistWorld;
+		}else if (key.equalsIgnoreCase("11-general distribution (world)")){ return uuidFeatureDistrWorld;
 		}else if (key.equalsIgnoreCase("250-Editor_Brackets")){ return uuidFeatureEditorBrackets;
 		}else if (key.equalsIgnoreCase("251-Editor_Parenthesis")){ return uuidFeatureEditorParenthesis;
 		}else if (key.equalsIgnoreCase("252-Inedited")){ return uuidFeatureInedited;
