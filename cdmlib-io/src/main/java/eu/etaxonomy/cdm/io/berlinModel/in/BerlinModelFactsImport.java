@@ -296,7 +296,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//for E+M maps
 						if (categoryFk == 14 && state.getConfig().isRemoveHttpMapsAnchor() && fact.contains("<a href")){
 							//example <a href="http://euromed.luomus.fi/euromed_map.php?taxon=280629&size=medium">distribution</a>
-							fact = fact.replace("<a href\"", "").replace("\">distribution</a>", "");
+							fact = fact.replace("<a href=\"", "").replace("\">distribution</a>", "");
 						}
 						
 						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
