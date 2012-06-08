@@ -72,7 +72,7 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 			Set<DescriptionElementSource> sourceCandidates = el.getSources();
 			Set<DescriptionElementSource> filteredSources = new HashSet<DescriptionElementSource>();
 			for (DescriptionElementSource sourceCandidate : sourceCandidates){
-				if (isPesiSource(sourceCandidate)){
+				if (isPesiSource(sourceCandidate)){  //TODO pesi should not appear here
 					filteredSources.add(sourceCandidate);
 				}
 			}
