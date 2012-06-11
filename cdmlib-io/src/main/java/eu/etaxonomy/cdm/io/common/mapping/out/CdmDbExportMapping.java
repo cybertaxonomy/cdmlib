@@ -89,7 +89,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 						continue;
 					}
 				}else {
-					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
+					logger.warn("mapper " + mapper.toString() + "is not of required type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
 			int count = preparedStatement.executeUpdate();
