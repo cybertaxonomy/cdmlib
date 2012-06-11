@@ -277,15 +277,18 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		}
 		// by Kingdom
 		String strKingdom = getValue(item, TermUri.DWC_KINGDOM);
-		if (strKingdom.equalsIgnoreCase("Plantae")){
-			nomCode = NomenclaturalCode.ICBN;
-		}else if (strKingdom.equalsIgnoreCase("Fungi")){
-			nomCode = NomenclaturalCode.ICBN;
-		}else if (strKingdom.equalsIgnoreCase("Animalia")){
-			nomCode = NomenclaturalCode.ICZN;
-		}else if (strKingdom.equalsIgnoreCase("Protozoa")){
-			nomCode = NomenclaturalCode.ICZN;
+		if (strKingdom != null){
+			if (strKingdom.equalsIgnoreCase("Plantae")){
+				nomCode = NomenclaturalCode.ICBN;
+			}else if (strKingdom.equalsIgnoreCase("Fungi")){
+				nomCode = NomenclaturalCode.ICBN;
+			}else if (strKingdom.equalsIgnoreCase("Animalia")){
+				nomCode = NomenclaturalCode.ICZN;
+			}else if (strKingdom.equalsIgnoreCase("Protozoa")){
+				nomCode = NomenclaturalCode.ICZN;
+			}
 		}
+		
 		//TODO further kingdoms
 		if (nomCode == null){
 			//TODO warning
