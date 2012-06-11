@@ -393,7 +393,7 @@
                     <fromDir>${project.build.directory}/docbkx/</fromDir>
                     <includes>**/*</includes>
                     <excludes />
-                    <url>scpexe://160.45.63.151</url>
+                    <url>scpexe://wp5.e-taxonomy.eu</url>
                     <serverId>wp5.e-taxonomy.eu</serverId>
                     <toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
                 </configuration>
@@ -551,13 +551,13 @@
         <site>
             <id>wp5.e-taxonomy.eu</id>
             <name>CDM Library Website</name>
-            <url>scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
+            <url>scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/</url>
         </site>
         <repository>
             <uniqueVersion>false</uniqueVersion>
             <id>wp5.e-taxonomy.eu</id>
             <name>Edit Maven Repository</name>
-            <url>scpexe://160.45.63.151/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
+            <url>scpexe://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/mavenrepo/</url>
             <layout>default</layout>
         </repository>
     </distributionManagement>
