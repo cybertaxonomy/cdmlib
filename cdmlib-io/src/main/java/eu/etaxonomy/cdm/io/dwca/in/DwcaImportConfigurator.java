@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.net.URI;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -50,6 +51,8 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	
 	//validation
 	private boolean validateRankConsistency = true;
+	
+	private String sourceReferenceTitle = null;
 	
 	//mapping
 	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
@@ -104,7 +107,11 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	public Reference getSourceReference() {
 		if (this.sourceReference == null){
 			sourceReference = ReferenceFactory.newGeneric();
-			sourceReference.setTitleCache("DwC-A import", true);
+			if (StringUtils.isBlank(this.sourceReferenceTitle )){
+				sourceReference.setTitleCache("DwC-A import", true);
+			}else{
+				sourceReference.setTitleCache(this.sourceReferenceTitle, true);
+			}
 		}
 		if (getSourceRefUuid() != null){
 			sourceReference.setUuid(getSourceRefUuid());
