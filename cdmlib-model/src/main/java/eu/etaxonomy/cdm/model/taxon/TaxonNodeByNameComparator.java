@@ -80,9 +80,9 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
 	private String createSortableTitleCache(TaxonNode taxonNode) {
 
 		String titleCache = null;
-		TaxonNameBase name = taxonNode.getTaxon().getName();
-        if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
-            if (taxonNode.getTaxon().getName() instanceof NonViralName){
+		if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
+			TaxonNameBase name = taxonNode.getTaxon().getName();
+	        if (name instanceof NonViralName){
             	logger.trace(name + " isNonViralName");
             	NonViralName nonViralName = (NonViralName)name;
                 if (name.isInfraSpecific()){
@@ -105,6 +105,10 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator implemen
             	logger.trace("titleCache still null, using name.getTitleCache()");
                 titleCache = name.getTitleCache();
             }
+        }
+		if (titleCache == null){
+        	logger.trace("titleCache still null, using taxonNode id");
+            titleCache = String.valueOf(taxonNode.getId());
         }
         logger.trace("SortableTitleCache: " + titleCache);
 		return titleCache;
