@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+import java.util.UUID;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -28,14 +29,28 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -43,14 +58,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfigurator, MarkupImportState> {
+public abstract class MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
 	
 	protected static final String CLASS = "class";
 
+	protected MarkupDocumentImport docImport;
 	
-	protected abstract void doInvoke(MarkupImportState state);
+	public MarkupImportBase(MarkupDocumentImport docImport) {
+		super();
+		this.docImport = docImport;
+	}
 
 	private Stack<QName> unhandledElements = new Stack<QName>();
 	private Stack<QName> handledElements = new Stack<QName>();
@@ -63,13 +82,13 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		T example = collection.iterator().next();
 		if (example.isInstanceOf(TaxonBase.class)){
 			Collection<TaxonBase> typedCollection = (Collection<TaxonBase>)collection;
-			getTaxonService().saveOrUpdate(typedCollection);
+			docImport.getTaxonService().saveOrUpdate(typedCollection);
 		}else if (example.isInstanceOf(Classification.class)){
 			Collection<Classification> typedCollection = (Collection<Classification>)collection;
-			getClassificationService().saveOrUpdate(typedCollection);
+			docImport.getClassificationService().saveOrUpdate(typedCollection);
 		}else if (example.isInstanceOf(PolytomousKey.class)){
 			Collection<PolytomousKey> typedCollection = (Collection<PolytomousKey>)collection;
-			getPolytomousKeyService().saveOrUpdate(typedCollection);
+			docImport.getPolytomousKeyService().saveOrUpdate(typedCollection);
 		}else if (example.isInstanceOf(DefinedTermBase.class)){
 			Collection<DefinedTermBase> typedCollection = (Collection<DefinedTermBase>)collection;
 			getTermService().saveOrUpdate(typedCollection);
@@ -77,24 +96,35 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		
 	}
 	
+
+
 	protected void save(CdmBase cdmBase, MarkupImportState state) {
 		if (state.isCheck()){
 			return;
 		}
 		if (cdmBase.isInstanceOf(TaxonBase.class)){
 			TaxonBase<?> taxonBase = CdmBase.deproxy(cdmBase, TaxonBase.class);
-			getTaxonService().saveOrUpdate(taxonBase);
+			docImport.getTaxonService().saveOrUpdate(taxonBase);
 		}else if (cdmBase.isInstanceOf(Classification.class)){
 			Classification classification = CdmBase.deproxy(cdmBase, Classification.class);
-			getClassificationService().saveOrUpdate(classification);
+			docImport.getClassificationService().saveOrUpdate(classification);
 		}else if (cdmBase.isInstanceOf(PolytomousKey.class)){
 			PolytomousKey key = CdmBase.deproxy(cdmBase, PolytomousKey.class);
-			getPolytomousKeyService().saveOrUpdate(key);
+			docImport.getPolytomousKeyService().saveOrUpdate(key);
 		}else if (cdmBase.isInstanceOf(DefinedTermBase.class)){
 			DefinedTermBase<?> term = CdmBase.deproxy(cdmBase, DefinedTermBase.class);
-			getTermService().saveOrUpdate(term);
+			docImport.getTermService().saveOrUpdate(term);
 		}
 		//logger.warn("Saved " +  cdmBase);
+	}
+	
+	
+	protected ITermService getTermService() {
+		return docImport.getTermService();
+	}
+	
+	protected IClassificationService getClassificationService() {
+		return docImport.getClassificationService();
 	}
 
 //*********************** Attribute methods *************************************/
@@ -527,7 +557,6 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		return isEndingElement(next, parentEvent.asStartElement().getName().getLocalPart());
 	}
 	
-
 	/**
 	 * Trims the text and removes turns all whitespaces into single empty space.
 	 * @param text
@@ -585,9 +614,79 @@ public abstract class MarkupImportBase  extends XmlImportBase<MarkupImportConfig
 		return classValue;
 	}
 	
-	protected void fireWarningEvent(String message, XMLEvent event, Integer severity) {
-		fireWarningEvent(message, makeLocationStr(event.getLocation()), severity, 1);
+	
+	protected void fireWarningEvent(String message, String locationStr, Integer severity, Integer depth) {
+		docImport.fireWarningEvent(message, locationStr, severity, depth);
 	}
+	
+	protected void fireWarningEvent(String message, XMLEvent event, Integer severity) {
+		docImport.fireWarningEvent(message, makeLocationStr(event.getLocation()), severity, 1);
+	}
+	
+	protected void fireSchemaConflictEventExpectedStartTag(String elName, XMLEventReader reader) throws XMLStreamException {
+		docImport.fireSchemaConflictEventExpectedStartTag(elName, reader);
+	}
+
+	
+
+	protected void fireWarningEvent(String message, String makeLocationStr, int severity) {
+		docImport.fireWarningEvent(message, makeLocationStr, severity);	
+	}
+	
+	protected void fire(IIoEvent event) {
+		docImport.fire(event);
+	}
+	
+	protected boolean isNotBlank(String str){
+		return StringUtils.isNotBlank(str);
+	}
+	
+	protected boolean isBlank(String str){
+		return StringUtils.isBlank(str);
+	}
+
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);	
+	}	
+
+//*********************** FROM XML IMPORT BASE ****************************************
+	protected boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
+		return docImport.isEndingElement(event, elName);
+	}
+	
+	protected boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
+		return docImport.isStartingElement(event, elName);
+	}
+	
+
+	protected void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
+		docImport.fillMissingEpithetsForTaxa(parentTaxon, childTaxon);	
+	}
+	
+	protected Feature getFeature(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
+		return docImport.getFeature(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
+	protected ExtensionType getExtensionType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev){
+		return docImport.getExtensionType(state, uuid, label, text, labelAbbrev);
+	}
+	
+	protected AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
+		return docImport.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
+	protected NamedAreaLevel getNamedAreaLevel(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<NamedAreaLevel> voc){
+		return docImport.getNamedAreaLevel(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
+	protected NamedArea getNamedArea(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+		return docImport.getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode);
+	}
+	
+	protected Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+		return docImport.getLanguage(state, uuid, label, text, labelAbbrev, voc);
+	}
+	
 	
 //********************************************** OLD *************************************	
 
