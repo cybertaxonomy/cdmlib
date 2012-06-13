@@ -93,6 +93,9 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		
 		//nameAccordingTo
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
+		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
+			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
+		}
 		if (sec != null){
 			taxonBase.setSec(sec.getCdmBase());
 		}
@@ -351,7 +354,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 
 
 	/**
-	 * Generell method to handle references used for multiple attributes.
+	 * General method to handle references used for multiple attributes.
 	 * @param item
 	 * @param resultList
 	 * @param idTerm
@@ -470,6 +473,11 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
+	/**
+	 * Creates an empty taxon object with a given status.
+	 * @param item
+	 * @return
+	 */
 	private TaxonBase<?> getTaxonBase(CsvStreamItem item) {
 		TaxonNameBase<?,?> name = null;
 		Reference<?> sec = null;

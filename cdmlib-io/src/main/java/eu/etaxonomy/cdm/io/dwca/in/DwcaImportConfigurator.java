@@ -40,6 +40,7 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private boolean deduplicateNamePublishedIn = true;
 	private boolean scientificNameIdAsOriginalSourceId = false;
 	private DatasetUse datasetUse = DatasetUse.CLASSIFICATION;
+	private boolean useSourceReferenceAsSec = false;
 
 
 	//distribution
@@ -211,6 +212,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 
 	public void setHandleAllRefsAsCitation(boolean handleAllRefsAsCitation) {
 		this.handleAllRefsAsCitation = handleAllRefsAsCitation;
+	}
+
+	public boolean isUseSourceReferenceAsSec() {
+		return useSourceReferenceAsSec;
+	}
+
+	public void setUseSourceReferenceAsSec(boolean useSourceReferenceAsSec) {
+		this.useSourceReferenceAsSec = useSourceReferenceAsSec;
 	}
 	
 	
