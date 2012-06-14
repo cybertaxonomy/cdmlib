@@ -121,7 +121,7 @@ private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> claz
 			else if (TaxonNameBase.class.isAssignableFrom(clazz)){
 				getNameService().updateTitleCache((Class) clazz, null, null, null);
 			}
-			//TaxonNameBase
+			//Classification
 			else if (Classification.class.isAssignableFrom(clazz)){
 				getClassificationService().updateTitleCache((Class) clazz, null, null, null);
 			}
