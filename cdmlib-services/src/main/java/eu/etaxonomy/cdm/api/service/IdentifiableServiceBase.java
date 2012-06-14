@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -212,6 +211,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache()
 	 */
 	@Override
+	@Transactional(readOnly = false)
 	public void updateTitleCache() {
 		updateTitleCache(null, null, null, null);
 	}

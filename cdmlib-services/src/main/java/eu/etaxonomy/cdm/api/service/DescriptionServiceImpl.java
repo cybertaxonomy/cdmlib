@@ -132,6 +132,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
      */
     @Override
+    @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends DescriptionBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DescriptionBase> cacheStrategy, IProgressMonitor monitor) {
         if (clazz == null){
             clazz = DescriptionBase.class;

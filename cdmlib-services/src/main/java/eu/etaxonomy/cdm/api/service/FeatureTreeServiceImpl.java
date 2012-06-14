@@ -55,7 +55,8 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
+	@Transactional(readOnly = false)
+    public void updateTitleCache(Class<? extends FeatureTree> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<FeatureTree> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = FeatureTree.class;
 		}

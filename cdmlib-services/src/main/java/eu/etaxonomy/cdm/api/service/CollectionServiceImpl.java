@@ -41,7 +41,8 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache(Class<? extends Collection> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Collection> cacheStrategy, IProgressMonitor monitor) {
+	@Transactional(readOnly = false)
+    public void updateTitleCache(Class<? extends Collection> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Collection> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = Collection.class;
 		}
