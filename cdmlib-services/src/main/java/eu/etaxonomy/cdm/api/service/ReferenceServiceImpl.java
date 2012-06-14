@@ -45,7 +45,8 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
+	@Transactional(readOnly = false)
+    public void updateTitleCache(Class<? extends Reference> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<Reference> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = Reference.class;
 		}

@@ -43,7 +43,8 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
 	 */
 	@Override
-	public void updateTitleCache(Class<? extends TermVocabulary> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermVocabulary> cacheStrategy, IProgressMonitor monitor) {
+	@Transactional(readOnly = false)
+    public void updateTitleCache(Class<? extends TermVocabulary> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermVocabulary> cacheStrategy, IProgressMonitor monitor) {
 		if (clazz == null){
 			clazz = TermVocabulary.class;
 		}
