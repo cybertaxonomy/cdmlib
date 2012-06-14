@@ -28,12 +28,12 @@ import org.unitils.dbunit.util.MultiSchemaDataSet;
  */
 public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
 
-	protected static final Logger logger = Logger.getLogger(CleanSweepInsertLoadStrategy.class);
+    protected static final Logger logger = Logger.getLogger(CleanSweepInsertLoadStrategy.class);
 
-	private static String clearDataResource = "eu/etaxonomy/cdm/database/ClearDBDataSet.xml";
+    private static String clearDataResource = "eu/etaxonomy/cdm/database/ClearDBDataSet.xml";
 
 
-	/**
+    /**
      * Executes this DataSetLoadStrategy.
      * This means the given dataset is inserted in the database using the given dbUnit
      * database connection object.
@@ -44,30 +44,31 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
     @Override
     public void doExecute(DbUnitDatabaseConnection dbUnitDatabaseConnection, IDataSet dataSet) throws DatabaseUnitException, SQLException {
 
-    	// will clear all data in the DataSet except all term related tables
-    	// before doing a CLEAN_INSERT:
-    	MultiSchemaDataSet multiSchemaDataset = null;
-    	try {
-			MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
-			URL fileUrl = getClass().getClassLoader().getResource(clearDataResource);
-			if (fileUrl == null) {
-				throw new IOException("the Resource " + clearDataResource + " could not be found");
-			}
-			multiSchemaDataset = dataSetFactory.createDataSet(new File(fileUrl.toURI()));
-		} catch (Exception e) {
-			logger.error("unable to load the clearing dataset as resource", e);
-		}
+        // will clear all data in the DataSet except all term related tables
+        // before doing a CLEAN_INSERT:
+        MultiSchemaDataSet multiSchemaDataset = null;
+        try {
+            MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
+            URL fileUrl = getClass().getClassLoader().getResource(clearDataResource);
+            if (fileUrl == null) {
+                throw new IOException("the Resource " + clearDataResource + " could not be found");
+            }
+            multiSchemaDataset = dataSetFactory.createDataSet(new File(fileUrl.toURI()));
+        } catch (Exception e) {
+            logger.error("unable to load the clearing dataset as resource", e);
+        }
 
-    	if(multiSchemaDataset != null){
-	       	for (String name : multiSchemaDataset.getSchemaNames()) {
-	    		IDataSet clearDataSet = multiSchemaDataset.getDataSetForSchema(name);
-	    		DatabaseOperation.CLEAN_INSERT.execute(dbUnitDatabaseConnection, clearDataSet);
-	    	}
-    	}
+        if(multiSchemaDataset != null){
+               for (String name : multiSchemaDataset.getSchemaNames()) {
+                IDataSet clearDataSet = multiSchemaDataset.getDataSetForSchema(name);
+                logger.debug("doing CLEAN_INSERT with dataset '" + name + "'");
+                DatabaseOperation.CLEAN_INSERT.execute(dbUnitDatabaseConnection, clearDataSet);
+            }
+        }
 
-    	super.doExecute(dbUnitDatabaseConnection, dataSet);
+        super.doExecute(dbUnitDatabaseConnection, dataSet);
 
-    	// DEBUGGING the resulting database
+        // DEBUGGING the resulting database
 //		try {
 //			OutputStream out;
 //			out = new FileOutputStream("CleanSweepInsertLoadStrategy-debug.xml");
@@ -79,24 +80,24 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
 
     private void printDataSet(DbUnitDatabaseConnection dbUnitDatabaseConnection, OutputStream out, String ... tableNames) {
 
-		try {
-			IDataSet actualDataSet;
-			if(tableNames == null){
-				actualDataSet = dbUnitDatabaseConnection.createDataSet();
-			} else {
-				actualDataSet = dbUnitDatabaseConnection.createDataSet(tableNames);
-			}
-			FlatXmlDataSet.write(actualDataSet, out);
-		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			try {
-				dbUnitDatabaseConnection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-	}
+        try {
+            IDataSet actualDataSet;
+            if(tableNames == null){
+                actualDataSet = dbUnitDatabaseConnection.createDataSet();
+            } else {
+                actualDataSet = dbUnitDatabaseConnection.createDataSet(tableNames);
+            }
+            FlatXmlDataSet.write(actualDataSet, out);
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            try {
+                dbUnitDatabaseConnection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
 
 
 }
