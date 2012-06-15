@@ -1852,13 +1852,13 @@ public class ResultSetProxy implements ResultSet {
 		return resultSet.wasNull();
 	}
 
-	
+	// added for compatibility with Java 7	
 	public <T> T getObject(int arg0, Class<T> arg1) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
+	// added for compatibility with Java 7
 	public <T> T getObject(String arg0, Class<T> arg1) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
