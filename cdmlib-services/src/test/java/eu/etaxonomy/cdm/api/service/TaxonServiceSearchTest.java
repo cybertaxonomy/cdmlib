@@ -55,11 +55,13 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
+
 /**
  * @author a.babadshanjan, a.kohlbecker
  * @created 04.02.2009
  * @version 1.0
  */
+
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String CLASSIFICATION_UUID = "2a5ceebb-4830-4524-b330-78461bf8cb6b";

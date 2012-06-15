@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
@@ -185,7 +186,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
 	 */
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDeleteTaxonNameBaseWithNameRelations() {
 		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 
@@ -229,7 +230,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
 	 */
+
 	@Test
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
 	public void testDeleteTaxonNameBaseConfiguratorWithNameRelations() {
 		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 

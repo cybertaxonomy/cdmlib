@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +33,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
@@ -41,12 +44,13 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 /**
  * @author a.mueller
  *
  */
-public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
+public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSecurity {
 
 	private UUID uuid;
 	private TaxonBase cdmBase;
@@ -68,6 +72,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
 		cdmBase = Taxon.NewInstance(null, null);
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
+		
 
 		// Clear the context prior to each test
 		SecurityContextHolder.clearContext();
@@ -133,6 +138,9 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 		assert user != null : "User cannot be null";
 		setAuthentication(user);
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+		cdmBase.setDoubtful(true);
+		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+		
 	}
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
@@ -142,6 +150,26 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 	@ExpectedDataSet
 	public void testSave() throws Exception {
 		cdmEntityDaoBase.save(cdmBase);
+	}
+	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	@DataSet("CdmEntityDaoBaseTest.xml")
+	public void testSaveWithAuthenticationFailedPermissionEvaluation() throws Exception {
+		User user = userDao.findByUuid(UUID.fromString("04f43bec-ff0e-4263-b4f8-24d763e590eb"));
+		assert user != null : "User cannot be null";
+		setAuthentication(user);
+		
+		
+		try{
+			cdmEntityDaoBase.save(cdmBase);
+			Assert.fail();
+		}catch(EvaluationFailedException e){
+			
+		}
 	}
 
 	/**

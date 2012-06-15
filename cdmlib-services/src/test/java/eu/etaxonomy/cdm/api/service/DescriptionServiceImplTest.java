@@ -21,6 +21,7 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -38,6 +39,8 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @created 09.02.2009
  * @version 1.0
  */
+
+@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class DescriptionServiceImplTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(DescriptionServiceImplTest.class);

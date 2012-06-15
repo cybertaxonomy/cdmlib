@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @date 03.06.2010
  *
  */
+
 public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldObservationCacheStrategyTest.class);

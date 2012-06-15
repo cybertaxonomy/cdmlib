@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.permission.CdmPermission;
-import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 @Component
 public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 	private static final Logger logger = Logger
@@ -28,7 +28,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             String[] propertyNames,
             Type[] type) {
 		
-		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+		CdmPermissionEvaluator permissionEvaluator = new eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator();
 		if (SecurityContextHolder.getContext().getAuthentication() != null && entity instanceof CdmBase){
 			if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.CREATE)){
 				throw new EvaluationFailedException("Permission evaluation failed for test test" + entity);

@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.permission;
+package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.io.Serializable;
 

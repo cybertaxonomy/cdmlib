@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @created Dec 16, 2010
  * @version 1.0
  */
-
+@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 
 	@SpringBeanByType

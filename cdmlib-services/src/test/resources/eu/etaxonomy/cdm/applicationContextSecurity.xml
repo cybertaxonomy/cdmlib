@@ -16,7 +16,7 @@
         ************************************************************************
         *                                                                      *
         *       DETLETE this file, only kept as reference, replaced by         *
-        *                 *-testSecurity.xml                                   *
+        *                 *-securityTest.xml                                   *
         *                                                                      *
         ************************************************************************
      -->
@@ -25,7 +25,7 @@
 
      <!--<import resource="classpath:/eu/etaxonomy/cdm/persistence.xml"/>   -->
 
-    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
+    <context:component-scan base-package="eu/etaxonomy/cdm/persistence_security">
    		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
     <context:component-scan base-package="eu/etaxonomy/cdm/database"/>

@@ -64,6 +64,8 @@ import eu.etaxonomy.cdm.model.reference.IPersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+
 
 /**
  * @author a.mueller

@@ -871,12 +871,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/AuditEventContext
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/GlobalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/InheritableThreadLocalAuditEventContextHolderStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/ThreadLocalAuditEventContextHolderStrategy.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/AuthorityPermission.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermission.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionClass.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/CdmPermissionEvaluatorPermitAll.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/permission/DescriptionPermissionEvaluator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/HTMLTagRules.java -text
@@ -1312,6 +1306,12 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUp
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGeneratorGlobalOverride.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/UpdateEntityListener.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/AuthorityPermission.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermission.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionClass.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionEvaluator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionEvaluatorPermitAll.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/DescriptionPermissionEvaluator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadata.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactory.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ListReferringObjectMetadata.java -text
@@ -1342,6 +1342,7 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/h2-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence_security.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/spelling.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/main/resources/spy.properties -text
@@ -1399,6 +1400,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmIntegrationTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTestWithSecurity.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HSQLDialect.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HsqldbDataTypeFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
@@ -1413,6 +1415,7 @@ cdmlib-persistence/src/test/resources/dbscripts/001-cdm.h2.sql -text
 cdmlib-persistence/src/test/resources/dbscripts/001_cdm.hsqldb.ddl -text
 cdmlib-persistence/src/test/resources/dbscripts/hibernate.cfg.xml -text
 cdmlib-persistence/src/test/resources/dbscripts/hibernate.properties -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-securityTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testPersistentDataSource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testWithConfigurableNameCacheStrategyGenerators.xml -text
@@ -1943,6 +1946,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicate
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services_security.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/validation-mapping-1.0.xsd -text
 cdmlib-services/src/main/resources/spy.properties -text
@@ -1965,6 +1969,8 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityWithTransaction.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
@@ -2015,6 +2021,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/NameServiceImplT
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/SecurityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testDeleteSynonym.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testInferredSynonyms.xml -text
@@ -2028,8 +2035,8 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthori
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServicesWithKnownLSID-result.wsdl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.testGetMetadata-result.rdf -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-securityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-testSecurity.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml -text

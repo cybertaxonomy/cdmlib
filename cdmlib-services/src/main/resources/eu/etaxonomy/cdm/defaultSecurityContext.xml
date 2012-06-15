@@ -41,6 +41,6 @@
 	</bean>
 	
 	
- 	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
+ 	<bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
      -->
 </beans>

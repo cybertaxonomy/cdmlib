@@ -17,11 +17,9 @@ import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.permission.CdmPermission;
-import eu.etaxonomy.cdm.permission.CdmPermissionEvaluator;
+
 
 public class UpdateEntityListener implements SaveOrUpdateEventListener {
 	private static final long serialVersionUID = -3295612929556041686L;
