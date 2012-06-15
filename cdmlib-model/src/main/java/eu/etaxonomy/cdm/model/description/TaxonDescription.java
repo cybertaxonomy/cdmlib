@@ -93,7 +93,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
 //	@JoinColumn(name="taxon_fk")
-    @Cascade(CascadeType.SAVE_UPDATE)
+   @Cascade(CascadeType.SAVE_UPDATE)
     @IndexedEmbedded
     private Taxon taxon;
 
