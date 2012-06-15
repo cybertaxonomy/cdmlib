@@ -126,7 +126,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 		return dataSourceInfos;
 	}
 
-
+	// added for compatibility with Java 7
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		// TODO Auto-generated method stub
 		return null;
