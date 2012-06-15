@@ -236,48 +236,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			List<T> entitiesToUpdate = new ArrayList<T>();
 			for (T entity : list){
 				if (entity.isProtectedTitleCache() == false){
-					IIdentifiableEntityCacheStrategy entityCacheStrategy = cacheStrategy;
-					if (entityCacheStrategy == null){
-						entityCacheStrategy = entity.getCacheStrategy();
-						//FIXME find out why the wrong cache strategy is loaded here, see #1876 
-						if (entity instanceof Reference){
-							entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
-						}
-					}
-					entity.setCacheStrategy(entityCacheStrategy);
-					entity.setProtectedTitleCache(true);
-					String titleCache = entity.getTitleCache();
-					entity.setProtectedTitleCache(false);
-					String nameCache = null;
-					if (entity instanceof NonViralName ){
-						NonViralName nvn = (NonViralName) entity;
-						if (!nvn.isProtectedNameCache()){
-							nvn.setProtectedNameCache(true);
-							nameCache = nvn.getNameCache();
-							nvn.setProtectedNameCache(false);
-						}
-						
-						
-					}
-					setOtherCachesNull(entity); //TODO find better solution
-					String newTitleCache = entityCacheStrategy.getTitleCache(entity);
-					if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache) ){
-						entity.setTitleCache(null, false);
-						entity.getTitleCache();
-						if (entity instanceof NonViralName){
-							NonViralName nvn = (NonViralName) entity;
-							String newnameCache = nvn.getNameCache();
-						}
-						entitiesToUpdate.add(entity);
-					}else if (entity instanceof NonViralName){
-						NonViralName nvn = (NonViralName) entity;
-						String newnameCache = nvn.getNameCache();
-						if (nameCache == null || (nameCache != null && !nameCache.equals(newnameCache))){
-							entitiesToUpdate.add(entity);
-						}
-					}
-					
+					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
 				}
+				worked++;
 			}
 			for (T entity: entitiesToUpdate){
 				if (entity.getTitleCache() != null){
@@ -288,13 +249,72 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				
 			}
 			saveOrUpdate(entitiesToUpdate);
-			monitor.worked(worked++);
+			monitor.worked(list.size());
 			if (monitor.isCanceled()){
 				monitor.done();
 				return;
 			}
 		}
 		monitor.done();
+	}
+
+	/**
+	 * @param cacheStrategy
+	 * @param entitiesToUpdate
+	 * @param entity
+	 */
+	private void updateTitleCacheForSingleEntity(
+			IIdentifiableEntityCacheStrategy<T> cacheStrategy,
+			List<T> entitiesToUpdate, T entity) {
+		//exclude recursive inreferences
+		if (entity.isInstanceOf(Reference.class)){
+			Reference ref = CdmBase.deproxy(entity, Reference.class);
+			if (ref.getInReference() != null && ref.getInReference().equals(ref)){
+				return;
+			}
+		}
+		
+		
+		IIdentifiableEntityCacheStrategy entityCacheStrategy = cacheStrategy;
+		if (entityCacheStrategy == null){
+			entityCacheStrategy = entity.getCacheStrategy();
+			//FIXME find out why the wrong cache strategy is loaded here, see #1876 
+			if (entity instanceof Reference){
+				entityCacheStrategy = ReferenceFactory.newReference(((Reference)entity).getType()).getCacheStrategy();
+			}
+		}
+		entity.setCacheStrategy(entityCacheStrategy);
+		entity.setProtectedTitleCache(true);
+		String titleCache = entity.getTitleCache();
+		entity.setProtectedTitleCache(false);
+		String nameCache = null;
+		if (entity instanceof NonViralName ){
+			NonViralName nvn = (NonViralName) entity;
+			if (!nvn.isProtectedNameCache()){
+				nvn.setProtectedNameCache(true);
+				nameCache = nvn.getNameCache();
+				nvn.setProtectedNameCache(false);
+			}
+			
+			
+		}
+		setOtherCachesNull(entity); //TODO find better solution
+		String newTitleCache = entityCacheStrategy.getTitleCache(entity);
+		if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache) ){
+			entity.setTitleCache(null, false);
+			entity.getTitleCache();
+			if (entity instanceof NonViralName){
+				NonViralName nvn = (NonViralName) entity;
+				String newnameCache = nvn.getNameCache();
+			}
+			entitiesToUpdate.add(entity);
+		}else if (entity instanceof NonViralName){
+			NonViralName nvn = (NonViralName) entity;
+			String newnameCache = nvn.getNameCache();
+			if (nameCache == null || (nameCache != null && !nameCache.equals(newnameCache))){
+				entitiesToUpdate.add(entity);
+			}
+		}
 	}
 	
 	
