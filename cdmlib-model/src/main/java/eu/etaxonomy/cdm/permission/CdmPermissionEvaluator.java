@@ -102,7 +102,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     	 }
     	
     	//if targetDomainObject is instance of DescriptionBase or DescriptionElementBase use the DescriptionPermissionEvaluator
-    	if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionElementBase){
+    	if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionBase){
     		return DescriptionPermissionEvaluator.hasPermission(authorities, targetDomainObject, evalPermission);
     	}
     	 	
