@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationListener;
@@ -207,10 +208,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 		progressMonitor.worked(1);
 		
 		//omitTerms
-		/*String initializerName = "persistentTermInitializer";
-		BeanDefinition beanDef = applicationContext.getBeanDefinition(initializerName);
-		MutablePropertyValues values = beanDef.getPropertyValues();
-		values.addPropertyValue("omit", omitTermLoading);*/
+		if (omitTermLoading == true){
+			String initializerName = "persistentTermInitializer";
+			BeanDefinition beanDef = applicationContext.getBeanDefinition(initializerName);
+			MutablePropertyValues values = beanDef.getPropertyValues();
+			values.addPropertyValue("omit", omitTermLoading);
+		}
 		
 		if (listeners != null){
 			for(ApplicationListener listener : listeners){
