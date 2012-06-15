@@ -41,7 +41,7 @@ public enum MatchMode {
 			case ANYWHERE:
 				return "%" + queryString + "%";
 			case END:
-				return queryString + "%";
+				return "%" + queryString;
 			default:
 				return queryString;
 		}
