@@ -75,7 +75,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @XmlElement(name = "State")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
-    @IndexedEmbedded(depth = 2)
+    @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
     private List<StateData> states = new ArrayList<StateData>();
 

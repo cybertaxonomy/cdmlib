@@ -39,8 +39,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseFieldBridge;
+import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
@@ -100,7 +104,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @ManyToOne(fetch = FetchType.LAZY)
     //@Cascade(CascadeType.SAVE_UPDATE)
     @Cascade(CascadeType.MERGE)
-    @IndexedEmbedded
+    @IndexedEmbedded(depth=3)
     private Feature feature;
 
     @XmlElementWrapper(name = "Modifiers")
@@ -109,6 +113,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionElementBase_Modifier")
+    @IndexedEmbedded(depth=3)
     private Set<Modifier> modifiers = new HashSet<Modifier>();
 
     @XmlElement(name = "ModifyingText")
@@ -116,6 +121,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "DescriptionElementBase_ModifyingText")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Field
+    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
 
     @XmlElementWrapper(name = "Media")

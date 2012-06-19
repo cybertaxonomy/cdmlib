@@ -7,7 +7,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.hibernate;
+package eu.etaxonomy.cdm.hibernate.search;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date Dec 19, 2011
  *
  */
-public class DescriptionBaseClassBridge implements FieldBridge {
+public class DescriptionBaseFieldBridge implements FieldBridge {
 
     /*
      * (non-Javadoc)

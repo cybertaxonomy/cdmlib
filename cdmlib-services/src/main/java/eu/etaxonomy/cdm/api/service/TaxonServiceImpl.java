@@ -41,9 +41,11 @@ import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseFieldBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -1088,18 +1090,69 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     @Override
-    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
+            Class<? extends DescriptionElementBase> clazz, String queryString,
+            List<Language> languages, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        String luceneQueryTemplate = "titleCache:%1$s OR text.ALL:%1$s OR name:%1$s";
-        String luceneQuery = String.format(luceneQueryTemplate, queryString);
+//        // type selection
+//        String typeSelect = "";
+//        if(clazz != null){
+//            typeSelect = "_hibernate_class:\"" + clazz.getName() + "\" AND ";
+//        }
+        Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
+        if(clazz != null){
+            directorySelectClass = clazz;
+        }
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), clazz);
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQuery);
+        StringBuilder luceneQueryTemplate = new StringBuilder();
+
+        luceneQueryTemplate.append("titleCache:%1$s ");
+        luceneQueryTemplate.append("name:%1$s").append(" ");
+        // text field from TextData
+        appendLocalizedFieldQuery("text", languages, luceneQueryTemplate).append(" ");
+        // state field from CategoricalData
+        appendLocalizedFieldQuery("states.state.representation", languages, luceneQueryTemplate).append(" ");
+        // state field from CategoricalData
+        appendLocalizedFieldQuery("states.modifyingText", languages, luceneQueryTemplate).append(" ");
+
+//        String luceneQueryTemplate = typeSelect + "( titleCache:%1$s OR " + languageSelection + "OR name:%1$s )";
+        String luceneQuery = String.format(luceneQueryTemplate.toString(), queryString);
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQuery, clazz);
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSetFromIds(luceneSearch, topDocsResultSet, dao, "inDescription.taxon.id");
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
 
+    }
+
+    /**
+     * DefinedTerm representations and MultilanguageString maps are stored in the Lucene index by the {@link DefinedTermBaseFieldBridge}
+     * and {@link MultilanguageTextFieldBridge } in a consistent way. One field per language and also in one additional field for all languages.
+     * This method is a convenient means to retrieve a Lucene query string for such the fields.
+     *
+     * @param name name of the term field as in the Lucene index. Must be field created by {@link DefinedTermBaseFieldBridge}
+     * or {@link MultilanguageTextFieldBridge }
+     * @param languages the languages to search for exclusively. Can be <code>null</code> to search in all languages
+     * @param stringBuilder a StringBuilder to be reused, if <code>null</code> a new StringBuilder will be instantiated and is returned
+     * @return the StringBuilder given a parameter or a new one if the stringBuilder parameter was null.
+     *
+     * TODO move to utiliy class !!!!!!!!
+     */
+    private StringBuilder appendLocalizedFieldQuery(String name, List<Language> languages, StringBuilder stringBuilder) {
+
+        if(stringBuilder == null){
+            stringBuilder = new StringBuilder();
+        }
+        if(languages == null || languages.size() == 0){
+            stringBuilder.append(name + ".ALL:%1$s ");
+        } else {
+            for(Language lang : languages){
+                stringBuilder.append(name + "." + lang.getLabel() + ":%1$s ");
+            }
+        }
+        return stringBuilder;
     }
 
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification, SynonymRelationshipType type, boolean doWithMisappliedNames){

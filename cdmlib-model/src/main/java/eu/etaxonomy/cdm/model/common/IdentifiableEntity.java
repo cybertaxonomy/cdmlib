@@ -41,10 +41,11 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;
+import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -101,11 +102,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElement(name = "TitleCache", required = true)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Column(length=255, name="titleCache")
-    @FieldBridge(impl=StripHtmlBridge.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
     @Size(max = 255)
-    @Field
+    @Field(store=Store.YES)
+    @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;
 
     //if true titleCache will not be automatically generated/updated
@@ -319,12 +320,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
        return getExtensions(type.getUuid());
     }
     public Set<String> getExtensions(UUID extensionTypeUuid){
-        Set<String> result = new HashSet<String>(); 
-    	for (Extension extension : getExtensions()){
-    		if (extension.getType().getUuid().equals(extensionTypeUuid)){
-    			result.add(extension.getValue());
-    		}
-    	}
+        Set<String> result = new HashSet<String>();
+        for (Extension extension : getExtensions()){
+            if (extension.getType().getUuid().equals(extensionTypeUuid)){
+                result.add(extension.getValue());
+            }
+        }
         return result;
     }
 

@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  */
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
-	protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
+    protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
 //	@SpringBeanByType
 //	private IAgentDao agentDao;
@@ -88,242 +88,242 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 //	}
 
 
-	@TestDataSource
-	protected DataSource dataSource;
+    @TestDataSource
+    protected DataSource dataSource;
 
-	private PlatformTransactionManager transactionManager;
-	protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+    private PlatformTransactionManager transactionManager;
+    protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
 
-	protected IDatabaseConnection getConnection() throws SQLException {
-		IDatabaseConnection connection = null;
-		try {
-			connection = new DatabaseConnection(dataSource.getConnection());
+    protected IDatabaseConnection getConnection() throws SQLException {
+        IDatabaseConnection connection = null;
+        try {
+            connection = new DatabaseConnection(dataSource.getConnection());
 
-			DatabaseConfig config = connection.getConfig();
+            DatabaseConfig config = connection.getConfig();
 
-			// FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName
-			//       & database.dialect to find configured DataTypeFactory
-			config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-					new H2DataTypeFactory());
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return connection;
-	}
-
-	/**
-	 * Prints the data set to an output stream, using the
-	 * {@link FlatFullXmlWriter}.
-	 * <p>
-	 * <h2>NOTE: for compatibility with unitils 3.x you may
-	 * want to use the {@link #printDataSetWithNull(OutputStream)}
-	 * method instead.</h2>
-	 * <p>
-	 * Remember, if you've just called save() or
-	 * update(), the data isn't written to the database until the
-	 * transaction is committed, and that isn't until after the
-	 * method exits. Consequently, if you want to test writing to
-	 * the database, either use the {@literal @ExpectedDataSet}
-	 * annotation (that executes after the test is run), or use
-	 * {@link CdmTransactionalIntegrationTest}.
-	 *
-	 * @param out The OutputStream to write to.
-	 * @see FlatFullXmlWriter
-	 */
-	public void printDataSet(OutputStream out) {
-		IDatabaseConnection connection = null;
-
-		try {
-			connection = getConnection();
-			IDataSet actualDataSet = connection.createDataSet();
-			FlatXmlDataSet.write(actualDataSet, out);
-		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-	}
-
-	/**
-	 * Prints the data set to an output stream, using the
-	 * {@link FlatFullXmlWriter}.
-	 * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
-	 * inserts '[null]' place holders for null values but skipping them.
-	 * This was necessary to make this xml database export compatible to the
-	 * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
-	 * <p>
-	 * Remember, if you've just called save() or
-	 * update(), the data isn't written to the database until the
-	 * transaction is committed, and that isn't until after the
-	 * method exits. Consequently, if you want to test writing to
-	 * the database, either use the {@literal @ExpectedDataSet}
-	 * annotation (that executes after the test is run), or use
-	 * {@link CdmTransactionalIntegrationTest}.
-	 *
-	 * @param out The OutputStream to write to.
-	 * @see FlatFullXmlWriter
-	 */
-	public void printDataSetWithNull(OutputStream out) {
-		IDatabaseConnection connection = null;
-
-		try {
-			connection = getConnection();
-
-//			IDataSet dataSet = connection.createDataSet();
-			DatabaseDataSet dataSet = new DatabaseDataSet(connection, false);
-
-			FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
-			writer.write(dataSet);
-		} catch (Exception e) {
-			logger.error("Error on writing dataset:", e);
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-	}
-
-	/**
-	 *
-	 * @param out
-	 * @param formatString can be null, otherwise a format string like eg. "&lt; %1$s /&gt;" see also {@link String#format(String, Object...)}
-	 */
-	public void printTableNames(OutputStream out, String formatString) {
-		IDatabaseConnection connection = null;
-		OutputStreamWriter writer = new OutputStreamWriter(out);
-
-		try {
-			connection = getConnection();
-			IDataSet actualDataSet = connection.createDataSet();
-			ITableIterator tableIterator = actualDataSet.iterator();
-			String tableName = null;
-			while(tableIterator.next()){
-				tableName = tableIterator.getTable().getTableMetaData().getTableName();
-				if(formatString != null){
-					tableName = String.format(formatString, tableName);
-				}
-				writer.append(tableName).append("\n");
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			try {
-				writer.close();
-			} catch (IOException ioe) {
-				logger.error(ioe);
-			}
-			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-	}
-
-	/**
-	 * Prints the named tables to an output stream, using dbunit's
-	 * {@link org.dbunit.dataset.xml.FlatXmlDataSet}.
-	 *
-	 * @see {@link #printDataSet(OutputStream)}
-	 * @param out
-	 * @param tableNames
-	 */
-	public void printDataSet(OutputStream out, String[] tableNames) {
-		IDatabaseConnection connection = null;
-
-		try {
-			connection = getConnection();
-			IDataSet actualDataSet = connection.createDataSet(tableNames);
-			FlatXmlDataSet.write(actualDataSet, out);
-		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-	}
-
-	/**
-	 * Prints a dtd to an output stream, using dbunit's
-	 * {@link org.dbunit.dataset.xml.FlatDtdDataSet}.
-	 *
-	 * @param out The OutputStream to write to.
-	 * @see org.dbunit.dataset.xml.FlatDtdDataSet
-	 */
-	public void printDtd(OutputStream out) {
-		IDatabaseConnection connection = null;
-
-		try {
-			connection = getConnection();
-			IDataSet actualDataSet = connection.createDataSet();
-			FlatDtdDataSet.write(actualDataSet, out);
-		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-	}
-
-	/**
-	 * Transforms a javax.xml.transform.Source to a java.lang.String (useful for comparison in
-	 * XmlUnit tests etc).
-	 *
-	 * @param source
-	 * @return
-	 * @throws TransformerException
-	 */
-	public String transformSourceToString(Source source) throws TransformerException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		Result result = new StreamResult(outputStream);
-		transformer.transform(source, result);
-
-		return new String(outputStream.toByteArray());
+            // FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName
+            //       & database.dialect to find configured DataTypeFactory
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
+                    new H2DataTypeFactory());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return connection;
     }
 
-	@SpringBeanByType
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
-		this.transactionManager = transactionManager;
-	}
+    /**
+     * Prints the data set to an output stream, using the
+     * {@link FlatFullXmlWriter}.
+     * <p>
+     * <h2>NOTE: for compatibility with unitils 3.x you may
+     * want to use the {@link #printDataSetWithNull(OutputStream)}
+     * method instead.</h2>
+     * <p>
+     * Remember, if you've just called save() or
+     * update(), the data isn't written to the database until the
+     * transaction is committed, and that isn't until after the
+     * method exits. Consequently, if you want to test writing to
+     * the database, either use the {@literal @ExpectedDataSet}
+     * annotation (that executes after the test is run), or use
+     * {@link CdmTransactionalIntegrationTest}.
+     *
+     * @param out The OutputStream to write to.
+     * @see FlatFullXmlWriter
+     */
+    public void printDataSet(OutputStream out) {
+        IDatabaseConnection connection = null;
+
+        try {
+            connection = getConnection();
+            IDataSet actualDataSet = connection.createDataSet();
+            FlatXmlDataSet.write(actualDataSet, out);
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
+
+    /**
+     * Prints the data set to an output stream, using the
+     * {@link FlatFullXmlWriter}.
+     * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
+     * inserts '[null]' place holders for null values but skipping them.
+     * This was necessary to make this xml database export compatible to the
+     * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+     * <p>
+     * Remember, if you've just called save() or
+     * update(), the data isn't written to the database until the
+     * transaction is committed, and that isn't until after the
+     * method exits. Consequently, if you want to test writing to
+     * the database, either use the {@literal @ExpectedDataSet}
+     * annotation (that executes after the test is run), or use
+     * {@link CdmTransactionalIntegrationTest}.
+     *
+     * @param out The OutputStream to write to.
+     * @see FlatFullXmlWriter
+     */
+    public void printDataSetWithNull(OutputStream out) {
+        IDatabaseConnection connection = null;
+
+        try {
+            connection = getConnection();
+
+//			IDataSet dataSet = connection.createDataSet();
+            DatabaseDataSet dataSet = new DatabaseDataSet(connection, false);
+
+            FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
+            writer.write(dataSet);
+        } catch (Exception e) {
+            logger.error("Error on writing dataset:", e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param out
+     * @param formatString can be null, otherwise a format string like eg. "&lt; %1$s /&gt;" see also {@link String#format(String, Object...)}
+     */
+    public void printTableNames(OutputStream out, String formatString) {
+        IDatabaseConnection connection = null;
+        OutputStreamWriter writer = new OutputStreamWriter(out);
+
+        try {
+            connection = getConnection();
+            IDataSet actualDataSet = connection.createDataSet();
+            ITableIterator tableIterator = actualDataSet.iterator();
+            String tableName = null;
+            while(tableIterator.next()){
+                tableName = tableIterator.getTable().getTableMetaData().getTableName();
+                if(formatString != null){
+                    tableName = String.format(formatString, tableName);
+                }
+                writer.append(tableName).append("\n");
+            }
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException ioe) {
+                logger.error(ioe);
+            }
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
+
+    /**
+     * Prints the named tables to an output stream, using dbunit's
+     * {@link org.dbunit.dataset.xml.FlatXmlDataSet}.
+     *
+     * @see {@link #printDataSet(OutputStream)}
+     * @param out
+     * @param tableNames
+     */
+    public void printDataSet(OutputStream out, String[] tableNames) {
+        IDatabaseConnection connection = null;
+
+        try {
+            connection = getConnection();
+            IDataSet actualDataSet = connection.createDataSet(tableNames);
+            FlatXmlDataSet.write(actualDataSet, out);
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
+
+    /**
+     * Prints a dtd to an output stream, using dbunit's
+     * {@link org.dbunit.dataset.xml.FlatDtdDataSet}.
+     *
+     * @param out The OutputStream to write to.
+     * @see org.dbunit.dataset.xml.FlatDtdDataSet
+     */
+    public void printDtd(OutputStream out) {
+        IDatabaseConnection connection = null;
+
+        try {
+            connection = getConnection();
+            IDataSet actualDataSet = connection.createDataSet();
+            FlatDtdDataSet.write(actualDataSet, out);
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
+
+    /**
+     * Transforms a javax.xml.transform.Source to a java.lang.String (useful for comparison in
+     * XmlUnit tests etc).
+     *
+     * @param source
+     * @return
+     * @throws TransformerException
+     */
+    public String transformSourceToString(Source source) throws TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Result result = new StreamResult(outputStream);
+        transformer.transform(source, result);
+
+        return new String(outputStream.toByteArray());
+    }
+
+    @SpringBeanByType
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
 
 
-	@Deprecated // no longer used and for sure not needed at all
-	protected void loadDataSet(InputStream dataset) {
-		txDefinition.setName("CdmIntergartionTest.loadDataSet");
-		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		IDatabaseConnection connection = null;
+    @Deprecated // no longer used and for sure not needed at all
+    protected void loadDataSet(InputStream dataset) {
+        txDefinition.setName("CdmIntergartionTest.loadDataSet");
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+        IDatabaseConnection connection = null;
 
-		try {
-			connection = getConnection();
-			IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(dataset));
+        try {
+            connection = getConnection();
+            IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(dataset));
 
-			DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
-		} catch (Exception e) {
-			logger.error(e);
-			for(StackTraceElement ste : e.getStackTrace()) {
-				logger.error(ste);
-			}
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException sqle) {
-				logger.error(sqle);
-			}
-		}
-		transactionManager.commit(txStatus);
-	}
+            DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+        } catch (Exception e) {
+            logger.error(e);
+            for(StackTraceElement ste : e.getStackTrace()) {
+                logger.error(ste);
+            }
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+        transactionManager.commit(txStatus);
+    }
 }

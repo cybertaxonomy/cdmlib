@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -31,8 +31,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;
+import eu.etaxonomy.cdm.hibernate.search.LanguageFieldBridge;
+import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
 /**
@@ -46,78 +48,80 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
     "language"
 })
 @XmlSeeAlso({
-	LanguageString.class
+    LanguageString.class
 })
 @MappedSuperclass
 public abstract class LanguageStringBase extends AnnotatableEntity{
-	private static final long serialVersionUID = -1892526642162438277L;
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LanguageStringBase.class);
+    private static final long serialVersionUID = -1892526642162438277L;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(LanguageStringBase.class);
 
-	@XmlElement(name = "Text")
-	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
-	@Column(length=65536)
-	@Field(index=Index.TOKENIZED)
-	@FieldBridge(impl=StripHtmlBridge.class)
-	@Lob
-	protected String text;
-	
-	@XmlElement(name = "Language")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Cascade({CascadeType.MERGE})
-	protected Language language;
+    @XmlElement(name = "Text")
+    @XmlJavaTypeAdapter(FormattedTextAdapter.class)
+    @Column(length=65536)
+    @Field(index=Index.TOKENIZED)
+    @FieldBridge(impl=StripHtmlBridge.class)
+    @Lob
+    protected String text;
 
-	protected LanguageStringBase() {
-		super();
-	}
+    @XmlElement(name = "Language")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Cascade({CascadeType.MERGE})
+    @Field
+    @FieldBridge(impl=LanguageFieldBridge.class)
+    protected Language language;
 
-	protected LanguageStringBase(String text, Language language) {
-		super();
-		this.setLanguage(language);
-		this.setText(text);
-		
-	}
-	
-	public Language getLanguage(){
-		return this.language;
-	}
-	public void setLanguage(Language language){
-		this.language = language;
-	}
+    protected LanguageStringBase() {
+        super();
+    }
 
-	public String getText(){
-		return this.text;
-	}
-	
-	public void setText(String text) {
-		this.text = text;
-	}
-	
-	@Transient
-	public String getLanguageLabel(){
-		if (language != null){
-			return this.language.getRepresentation(Language.DEFAULT()).getLabel();
-		}else{
-			return null;
-		}
-	}
+    protected LanguageStringBase(String text, Language language) {
+        super();
+        this.setLanguage(language);
+        this.setText(text);
 
-	public String getLanguageLabel(Language lang){
-		if (language != null){
-			return this.language.getRepresentation(lang).getLabel();
-		}else{
-			return null;
-		}
-	}
-	
-	@Override
-	public Object clone() throws CloneNotSupportedException{
-		LanguageStringBase result = (LanguageStringBase) super.clone();
-		//no changes to text and language
-		//result.setText(this.text);
-		//result.setLanguage(this.language);
-		return result;
-	}
+    }
+
+    public Language getLanguage(){
+        return this.language;
+    }
+    public void setLanguage(Language language){
+        this.language = language;
+    }
+
+    public String getText(){
+        return this.text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Transient
+    public String getLanguageLabel(){
+        if (language != null){
+            return this.language.getRepresentation(Language.DEFAULT()).getLabel();
+        }else{
+            return null;
+        }
+    }
+
+    public String getLanguageLabel(Language lang){
+        if (language != null){
+            return this.language.getRepresentation(lang).getLabel();
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        LanguageStringBase result = (LanguageStringBase) super.clone();
+        //no changes to text and language
+        //result.setText(this.text);
+        //result.setLanguage(this.language);
+        return result;
+    }
 }

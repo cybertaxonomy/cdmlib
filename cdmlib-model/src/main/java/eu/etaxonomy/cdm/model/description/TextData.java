@@ -38,8 +38,9 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
-import eu.etaxonomy.cdm.hibernate.MultilanguageTextBridge;
+import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -78,8 +79,8 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
-    @Field(name="text")
-    @FieldBridge(impl=MultilanguageTextBridge.class)
+    @Field(name="text", store=Store.YES)
+    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     @NotNull
     private Map<Language, LanguageString> multilanguageText = new HashMap<Language,LanguageString>();
 

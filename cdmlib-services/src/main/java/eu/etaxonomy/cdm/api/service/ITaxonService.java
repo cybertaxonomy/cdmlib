@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -198,21 +199,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
-	/**
-	 * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
-	 * @param syn the synonym
-	 * @param taxon
-	 * @return
-	 */
-	public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
-	
+    /**
+     * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
+     * @param syn the synonym
+     * @param taxon
+     * @return
+     */
+    public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
+
     /**
      * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
      * @param taxon
      * @param config
      * @throws ReferencedObjectUndeletableException
      */
-	public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException;
+    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -447,19 +448,20 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *
      * @param clazz
      * @param queryString the query string to filter by
+     * @param languages TODO
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
      *            authorTeam.persistentTitleCache
+     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @return a paged list of instances of type T matching the queryString
      * @throws IOException
      * @throws CorruptIndexException
      * @throws ParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, List<Language> languages, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
 
     /**
@@ -477,17 +479,17 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
-    
-	/**
-	 * Returns the TaxonBase with the given UUID 
-	 * using the given match mode and initialization strategy
-	 * 
-	 * @param uuid
-	 * @param propertyPaths
-	 * @return
-	 */
+
+    /**
+     * Returns the TaxonBase with the given UUID
+     * using the given match mode and initialization strategy
+     *
+     * @param uuid
+     * @param propertyPaths
+     * @return
+     */
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths);
-    
+
     public int countAllRelationships();
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
@@ -552,7 +554,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
     public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator);
-    
+
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database
      * @param taxon
@@ -560,17 +562,17 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return list of inferred synonyms
      */
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymRelationshipType type, boolean doWithMisappliedNames);
-    
+
     /**
      * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
      * @param taxon
      * @param tree
-     * @param iDatabase 
+     * @param iDatabase
      * @return list of inferred synonyms
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
-       
+
 
 
 }

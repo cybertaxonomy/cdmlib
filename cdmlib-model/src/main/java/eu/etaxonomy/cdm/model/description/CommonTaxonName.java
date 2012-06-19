@@ -25,10 +25,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseFieldBridge;
+import eu.etaxonomy.cdm.hibernate.search.LanguageFieldBridge;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -61,20 +65,26 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
     private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 
     @XmlElement(name = "Name")
-    @Field(index = Index.TOKENIZED)
+    @Field(index = Index.TOKENIZED, store=Store.YES)
     private String name;
 
     @XmlElement(name = "Language")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth = 2)
+    @Field
+    @FieldBridge(impl=LanguageFieldBridge.class)
     private Language language;
 
     @XmlElement(name = "Area")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+    //UNDER CONSTRUCION
+//    @Field
+//    @FieldBridge(impl=DefinedTermBaseBridge.class)
+    // FIXME we need a special field bridge for this type?
+    @IndexedEmbedded
     private NamedArea area;
 
 

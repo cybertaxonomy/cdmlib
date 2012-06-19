@@ -14,15 +14,20 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.hibernate.Session;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
+import org.hibernate.search.engine.DocumentBuilder;
 import org.hibernate.search.reader.ReaderProvider;
 import org.hibernate.search.store.DirectoryProvider;
 
@@ -52,7 +57,8 @@ public class LuceneSearch {
     public LuceneSearch(Session session, Class<? extends CdmBase> type) {
          this.session = session;
 
-         //TODO the abstract base class DescriptionElementBase can not be used, so we are using one subclass to find the DirectoryProvider,
+         //TODO the abstract base class DescriptionElementBase can not be used, so we are using an arbitraty
+         ///    subclass to find the DirectoryProvider,
          //     future versions of hibernate search my allow using abstract base classes
          // see http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java
          if(type.equals(DescriptionElementBase.class)) {
@@ -89,15 +95,32 @@ public class LuceneSearch {
     }
 
     /**
-     * @param luceneQuery
+     * @param luceneQueryString
+     * @param clazz the type as additional filter criterion
      * @return
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(String luceneQuery) throws ParseException, IOException {
+    public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz) throws ParseException, IOException {
 
-        logger.debug("luceneQuery:" + luceneQuery);
-        Query query = getQueryParser().parse(luceneQuery);
+        Query query;
+        logger.debug("luceneQueryString given: " + luceneQueryString);
+        Query luceneQuery = getQueryParser().parse(luceneQueryString);
+
+        if(clazz != null){
+            BooleanQuery classFilter = new BooleanQuery();
+            classFilter.setBoost(0);
+            Term t = new Term(DocumentBuilder.CLASS_FIELDNAME, clazz.getName());
+            TermQuery termQuery = new TermQuery(t);
+            classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
+            BooleanQuery filteredQuery = new BooleanQuery();
+            filteredQuery.add(luceneQuery, BooleanClause.Occur.MUST);
+            filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+            query = filteredQuery;
+        } else {
+            query = luceneQuery;
+        }
+        logger.debug("final query: " + query.toString());
         TopDocs topDocsResultSet = getSearcher().search(query, null, 100);
 
         return topDocsResultSet;
