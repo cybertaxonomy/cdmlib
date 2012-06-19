@@ -11,20 +11,19 @@ package eu.etaxonomy.cdm.strategy.cache.common;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
  * @author a.mueller
  * @date 19.05.2010
  *
  */
-public class TermDefaultCacheStrategy<T extends TermBase> extends StrategyBase implements IIdentifiableEntityCacheStrategy<T> {
+public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEntityDefaultCacheStrategy<T> implements IIdentifiableEntityCacheStrategy<T> {
 	/**
 	 * 
 	 */
@@ -56,17 +55,17 @@ public class TermDefaultCacheStrategy<T extends TermBase> extends StrategyBase i
 			}
 			//return label, or if not exists abbreviated label, of if not exists description
 			result = representation.getLabel();
-			if (CdmUtils.isEmpty(result)){
+			if (StringUtils.isBlank(result)){
 					result = representation.getAbbreviatedLabel();
 			}
-			if (CdmUtils.isEmpty(result)){
+			if (StringUtils.isBlank(result)){
 				result = representation.getText();
 				representation.getDescription();
 			}
 		}
 		//if still empty return toString
-		if (CdmUtils.isEmpty(result)){
-			result = toString();
+		if (StringUtils.isBlank(result)){
+			result = term.getClass().getSimpleName() + "<" + term.getUuid() + ">";
 		}
 		return result;
 	}
