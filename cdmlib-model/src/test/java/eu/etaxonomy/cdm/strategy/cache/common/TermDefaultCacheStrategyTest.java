@@ -9,17 +9,17 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.common;
 
-import static org.junit.Assert.*;
+import java.util.UUID;
+
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 
@@ -74,6 +74,18 @@ public class TermDefaultCacheStrategyTest {
 	public void testGetTitleCache() {
 		Assert.assertEquals("Genus title cache should be 'Genus'", "Genus", Rank.GENUS().getTitleCache());
 		Assert.assertEquals("Nom. Illeg. title cache should be 'Illegitimate'", "Illegitimate", NomenclaturalStatusType.ILLEGITIMATE().getTitleCache());
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.TermBase)}.
+	 */
+	@Test
+	public void testGetTitleCacheNoRepresentations() {
+		final String newTermUuid = "e3a6e29d-314a-4e06-be70-cbfe093842ec";
+		NamedArea newTerm = NamedArea.NewInstance();
+		newTerm.setUuid(UUID.fromString(newTermUuid));
+		
+		Assert.assertEquals("Term with no representation must return a title that makes some sense", "NamedArea<e3a6e29d-314a-4e06-be70-cbfe093842ec>", newTerm.getTitleCache());
 	}
 
 }
