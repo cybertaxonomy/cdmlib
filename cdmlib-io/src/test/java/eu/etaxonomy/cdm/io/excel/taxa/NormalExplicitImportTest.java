@@ -224,7 +224,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Unexpected feature", Feature.DESCRIPTION(), feature);
 		assertEquals("There should be exactly 1 language", 1,textData.getMultilanguageText().size());
 		language = textData.getMultilanguageText().keySet().iterator().next();
-		assertEquals("Language should be Spanish", Language.SPANISH_CATALAN(), language);
+		assertEquals("Language should be Spanish", Language.SPANISH_CASTILIAN(), language);
 		text = textData.getText(language);
 		assertEquals("Unexpected description text", expectedText, text);
 		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());

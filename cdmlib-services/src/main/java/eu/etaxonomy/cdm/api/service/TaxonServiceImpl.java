@@ -1108,7 +1108,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         StringBuilder luceneQueryTemplate = new StringBuilder();
 
         luceneQueryTemplate.append("titleCache:%1$s ");
-        luceneQueryTemplate.append("name:%1$s").append(" ");
+        // common name
+        if(languages == null || languages.size() == 0){
+            luceneQueryTemplate.append("name:%1$s ");
+        } else {
+            luceneQueryTemplate.append("(name:%1$s AND (");
+            for(Language lang : languages){
+                luceneQueryTemplate.append(" language.label:" + lang.getLabel());
+            }
+            luceneQueryTemplate.append("))");
+        }
         // text field from TextData
         appendLocalizedFieldQuery("text", languages, luceneQueryTemplate).append(" ");
         // state field from CategoricalData

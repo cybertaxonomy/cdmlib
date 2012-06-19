@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.junit.Assert;
@@ -168,6 +169,26 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", Arrays.asList(new Language[]{Language.GERMAN()}), null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching in German", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", Arrays.asList(new Language[]{Language.RUSSIAN()}), null, null, null, null);
+        Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
+    @Ignore
     public final void testFindByDescriptionElementFullText_TextData() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
@@ -199,17 +220,37 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting one entity", Integer.valueOf(1), pager.getCount());
         Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getEntity().getTitleCache());
 
-        // modify the taxon
-        TaxonBase taxon = pager.getRecords().get(0).getEntity();
+        //
+        // modify the DescriptionElement
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), null, null, null, null);
+        Document indexDocument = pager.getRecords().get(0).getDoc();
+        String[] uuidStrings = indexDocument.getValues("uuid");
+        // is only one uuid!
+        DescriptionElementBase textData = descriptionService.getDescriptionElementByUuid(UUID.fromString(uuidStrings[0]));
 
-        String newName = "Quercus robur";
-        taxon.setTitleCache(newName + " sec. ", true);
+        ((TextData)textData).removeText(Language.GERMAN());
+        ((TextData)textData).putText(Language.SPANISH_CASTILIAN(), "abeto balsámico");
 
-        taxonService.saveOrUpdate(taxon);
+        descriptionService.saveDescriptionElement(textData);
+
         commitAndStartNewTransaction(null);
+        //
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), null, null, null, null);
+        Assert.assertEquals("The german 'Balsam-Tanne' TextData should no longer be indexed", Integer.valueOf(0), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsámico", Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), null, null, null, null);
+        Assert.assertEquals("expecting to find the  SPANISH_CATALAN 'abeto balsámico'", Integer.valueOf(1), pager.getCount());
 
-        taxon = taxonService.load(taxon.getUuid());
-        Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
+        //
+        // modify the DescriptionElement via the Description object
+
+//        String newName = "Quercus robur";
+//        taxon.setTitleCache(newName + " sec. ", true);
+//
+//        taxonService.saveOrUpdate(taxon);
+//        commitAndStartNewTransaction(null);
+//
+//        taxon = taxonService.load(taxon.getUuid());
+//        Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
     }
 
     @SuppressWarnings("rawtypes")
@@ -228,7 +269,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         statedata.putModifyingText(Language.ENGLISH(), "always, even during winter");
         cdata.addState(statedata);
         d_abies_balsamea.addElement(cdata);
-        
+
         termService.save(state);
         descriptionService.save(d_abies_balsamea);
 
@@ -246,7 +287,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getDoc().get("inDescription.taxon.titleCache"));
 
 
-        // modify the taxon
+        //TODO modify the StateData
         TaxonBase taxon = pager.getRecords().get(0).getEntity();
 
         String newName = "Quercus robur";
