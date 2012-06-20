@@ -270,7 +270,15 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		this.doTaxa = doTaxa;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#isOmitTermLoading()
+	 */
+	@Override
+	public boolean isOmitTermLoading() {
+		return true;
+	}
 
+	
 
 
 }

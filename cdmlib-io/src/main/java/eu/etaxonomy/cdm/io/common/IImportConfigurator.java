@@ -184,4 +184,15 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 */
 	public void setTransformer(IInputTransformer transformer);
 	
+	
+	/**
+	 * Defines if term loading should take place if a new application controller
+	 * is created. Usually should return false as imports run into existing databases.
+	 * However, some imports like the current implementation of the JAXB import require
+	 * to create ALL data anew and import the data itself. Therefore they need to
+	 * allow omitting term loading.
+	 * This may be replaced by a more sophisticated solution in future. 
+	 * @return
+	 */
+	public boolean isOmitTermLoading();
 }

@@ -413,5 +413,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.sourceRefUuid = sourceRefUuid;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isOmitTermLoading()
+	 */
+	@Override
+	public boolean isOmitTermLoading() {
+		return false;
+	}
+
 
 }
