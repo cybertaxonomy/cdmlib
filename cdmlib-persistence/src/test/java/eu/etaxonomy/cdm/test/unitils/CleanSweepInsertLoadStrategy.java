@@ -6,12 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
@@ -69,13 +67,14 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
         super.doExecute(dbUnitDatabaseConnection, dataSet);
 
         // DEBUGGING the resulting database
-//		try {
-//			OutputStream out;
-//			out = new FileOutputStream("CleanSweepInsertLoadStrategy-debug.xml");
-//			printDataSet(dbUnitDatabaseConnection, out, (String[]) null);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
+//        try {
+//            OutputStream out;
+//            out = new FileOutputStream("CleanSweepInsertLoadStrategy-debug.xml");
+////			printDataSet(dbUnitDatabaseConnection, out, (String[]) null);
+//            printDataSet(dbUnitDatabaseConnection, out, new String[]{"TAXONNODE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE"});
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void printDataSet(DbUnitDatabaseConnection dbUnitDatabaseConnection, OutputStream out, String ... tableNames) {

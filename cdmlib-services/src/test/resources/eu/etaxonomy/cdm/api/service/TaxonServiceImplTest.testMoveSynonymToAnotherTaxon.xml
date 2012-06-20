@@ -1,10 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../service/dataset.xsd">
 
-  <!-- clear
-  <TAXONNODE>
-  </TAXONNODE>
-   this table -->
+<!--
+    clearing these tables is required even if the test is using the CleanSweepInsertLoadStrategy !?
+ -->
+  <TAXONNODE />
+  <CLASSIFICATION />
+  <CLASSIFICATION_TAXONNODE />
   <TAXONBASE DTYPE="Taxon" ID="1" CREATED="2011-10-12 19:57:31.0" UUID="c47fdb72-f32c-452e-8305-4b44f01179d0" PROTECTEDTITLECACHE="false" TITLECACHE="Old Taxon sec. ???" DOUBTFUL="false" USENAMECACHE="false" TAXONSTATUSUNKNOWN="false" UNPLACED="false" EXCLUDED="false" TAXONOMICCHILDRENCOUNT="0" NAME_ID="1"/>
   <TAXONBASE DTYPE="Taxon" ID="2" CREATED="2011-10-12 19:57:31.0" UUID="2d9a642d-5a82-442d-8fec-95efa978e8f8" PROTECTEDTITLECACHE="false" TITLECACHE="New Taxon sec. ???" DOUBTFUL="false" USENAMECACHE="false" TAXONSTATUSUNKNOWN="false" UNPLACED="false" EXCLUDED="false" TAXONOMICCHILDRENCOUNT="0" NAME_ID="2"/>
   <TAXONBASE DTYPE="Synonym" ID="3" CREATED="2011-10-12 19:57:31.0" UUID="7da85381-ad9d-4886-9d4d-0eeef40e3d88" PROTECTEDTITLECACHE="false" TITLECACHE="Homotypic synonym1 sec. ???" DOUBTFUL="false" USENAMECACHE="false" TAXONSTATUSUNKNOWN="[null]" UNPLACED="[null]" EXCLUDED="[null]" TAXONOMICCHILDRENCOUNT="[null]" NAME_ID="3"/>
