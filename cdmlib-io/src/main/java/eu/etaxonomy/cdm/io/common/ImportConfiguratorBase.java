@@ -421,5 +421,12 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isCreateNew()
+	 */
+	@Override
+	public boolean isCreateNew(){
+		return false;
+	}
 
 }

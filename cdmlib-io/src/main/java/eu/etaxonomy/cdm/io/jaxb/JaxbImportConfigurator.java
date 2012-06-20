@@ -278,7 +278,25 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		return true;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isCreateNew()
+	 */
+	@Override
+	public boolean isCreateNew(){
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IoConfiguratorBase#getDbSchemaValidation()
+	 */
+	@Override
+	public DbSchemaValidation getDbSchemaValidation() {
+		if (isCreateNew()){
+			return DbSchemaValidation.CREATE;
+		}else{
+			return super.getDbSchemaValidation();
+		}
+	}
 
 
 }

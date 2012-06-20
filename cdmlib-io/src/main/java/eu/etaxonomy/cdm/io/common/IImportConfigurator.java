@@ -195,4 +195,14 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 * @return
 	 */
 	public boolean isOmitTermLoading();
+	
+	/**
+	 * Defines if the database will be created anew. Usually should return false as imports 
+	 * run into existing databases.
+	 * However, some imports like the current implementation of the JAXB import require
+	 * to create ALL data anew. Therefore they need to allow to create all data anew.
+	 * This may be replaced by a more sophisticated solution in future. 
+	 * @return
+	 */
+	public boolean isCreateNew();
 }

@@ -24,12 +24,12 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 	
 	public boolean invoke(T config){
 		ICdmDataSource destination = config.getDestination();
-		boolean omitTermLoading = false;
+		boolean omitTermLoading = config.isOmitTermLoading();
 		return invoke(config, destination, omitTermLoading);
 	}
 
 	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
-		boolean createNew = false;
+		boolean createNew = config.isCreateNew();
 		
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
 			return false;
