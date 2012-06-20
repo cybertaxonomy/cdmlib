@@ -121,8 +121,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "DescriptionElementBase_ModifyingText")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @Field
-    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+//    @Field
+//    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+    @IndexedEmbedded
     private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
 
     @XmlElementWrapper(name = "Media")

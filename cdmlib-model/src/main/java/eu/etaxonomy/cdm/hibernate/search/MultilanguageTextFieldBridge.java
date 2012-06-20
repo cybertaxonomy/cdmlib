@@ -53,7 +53,7 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
                     allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
-            Field langField = new Field(name + "." + languageString.getLanguageLabel(),
+            Field langField = new Field(name + "." + languageString.getLanguage().getUuid(),
                     languageString.getText(),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),

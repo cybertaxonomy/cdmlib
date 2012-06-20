@@ -65,7 +65,7 @@ public class DefinedTermBaseFieldBridge implements FieldBridge {
                     allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
-            Field langField = new Field(name + ".representation." + representation.getLanguageLabel(),
+            Field langField = new Field(name + ".representation." + representation.getLanguage().getUuid().toString(),
                     representation.getText(),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
