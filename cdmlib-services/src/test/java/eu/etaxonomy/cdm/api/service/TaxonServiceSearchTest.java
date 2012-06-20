@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -188,7 +189,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    @Ignore
     public final void testFindByDescriptionElementFullText_TextData() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
@@ -224,24 +224,47 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // modify the DescriptionElement
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), null, null, null, null);
         Document indexDocument = pager.getRecords().get(0).getDoc();
-        String[] uuidStrings = indexDocument.getValues("uuid");
+        String[] descriptionElementUuidStr = indexDocument.getValues("uuid");
+        String[] inDescriptionUuidStr = indexDocument.getValues("inDescription.uuid");
         // is only one uuid!
-        DescriptionElementBase textData = descriptionService.getDescriptionElementByUuid(UUID.fromString(uuidStrings[0]));
+        DescriptionElementBase textData = descriptionService.getDescriptionElementByUuid(UUID.fromString(descriptionElementUuidStr[0]));
 
         ((TextData)textData).removeText(Language.GERMAN());
         ((TextData)textData).putText(Language.SPANISH_CASTILIAN(), "abeto balsámico");
 
         descriptionService.saveDescriptionElement(textData);
-
         commitAndStartNewTransaction(null);
+//        printDataSet(System.out, new String[] {
+//                "DESCRIPTIONELEMENTBASE", "LANGUAGESTRING", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING" }
+//        );
+
         //
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), null, null, null, null);
         Assert.assertEquals("The german 'Balsam-Tanne' TextData should no longer be indexed", Integer.valueOf(0), pager.getCount());
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsámico", Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), null, null, null, null);
-        Assert.assertEquals("expecting to find the  SPANISH_CATALAN 'abeto balsámico'", Integer.valueOf(1), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), null, null, null, null);
+        Assert.assertEquals("expecting to find the SPANISH_CATALAN 'abeto balsámico'", Integer.valueOf(1), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsámico", null, null, null, null, null);
+        Assert.assertEquals("expecting to find the SPANISH_CATALAN 'abeto balsámico'", Integer.valueOf(1), pager.getCount());
 
         //
         // modify the DescriptionElement via the Description object
+        DescriptionBase description = descriptionService.find(UUID.fromString(inDescriptionUuidStr[0]));
+        Set<DescriptionElementBase> elements = description.getElements();
+        for( DescriptionElementBase elm : elements){
+            if(elm.getUuid().toString().equals(descriptionElementUuidStr[0])){
+                ((TextData)elm).removeText(Language.SPANISH_CASTILIAN());
+                ((TextData)elm).putText(Language.POLISH(), "Jodła balsamiczna");
+            }
+        }
+
+        descriptionService.saveOrUpdate(description);
+        commitAndStartNewTransaction(null);
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), null, null, null, null);
+        Assert.assertEquals("The spanish 'abeto balsámico' TextData should no longer be indexed", Integer.valueOf(0), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsamiczna", Arrays.asList(new Language[]{Language.POLISH()}), null, null, null, null);
+        Assert.assertEquals("expecting to find the POLISH 'Jodła balsamiczna'", Integer.valueOf(1), pager.getCount());
+
 
 //        String newName = "Quercus robur";
 //        taxon.setTitleCache(newName + " sec. ", true);

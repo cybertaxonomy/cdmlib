@@ -1816,7 +1816,6 @@ cdmlib-remote/src/test/resources/log4j.properties -text
 cdmlib-remote/src/test/resources/unitils.properties -text
 cdmlib-services/LICENSE.TXT -text
 cdmlib-services/README.TXT -text
-cdmlib-services/TaxonServiceSearchTest.xml -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text

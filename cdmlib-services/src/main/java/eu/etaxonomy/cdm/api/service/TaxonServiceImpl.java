@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseFieldBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -1095,11 +1096,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             List<Language> languages, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-//        // type selection
-//        String typeSelect = "";
-//        if(clazz != null){
-//            typeSelect = "_hibernate_class:\"" + clazz.getName() + "\" AND ";
-//        }
         Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
         if(clazz != null){
             directorySelectClass = clazz;
@@ -1114,7 +1110,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         } else {
             luceneQueryTemplate.append("(name:%1$s AND (");
             for(Language lang : languages){
-                luceneQueryTemplate.append(" language.label:" + lang.getLabel());
+                luceneQueryTemplate.append(" language.uuid:" + lang.getUuid().toString());
             }
             luceneQueryTemplate.append("))");
         }
@@ -1158,7 +1154,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             stringBuilder.append(name + ".ALL:%1$s ");
         } else {
             for(Language lang : languages){
-                stringBuilder.append(name + "." + lang.getLabel() + ":%1$s ");
+                stringBuilder.append(name + "." + lang.getUuid().toString() + ":%1$s ");
             }
         }
         return stringBuilder;
