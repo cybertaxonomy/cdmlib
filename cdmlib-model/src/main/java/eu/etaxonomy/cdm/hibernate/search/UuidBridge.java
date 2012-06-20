@@ -20,7 +20,6 @@ import org.hibernate.search.bridge.StringBridge;
  */
 public class UuidBridge implements StringBridge {
 
-    @Override
     public String objectToString(Object object) {
         if(object != null) {
             return ((UUID)object).toString();
