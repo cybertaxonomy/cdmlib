@@ -485,14 +485,15 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 		String status = "";
 		boolean isMissaplied = false;
+		
 		if (taxStatus != null){
-			if (taxStatus.matches("accepted|valid")){
+			if (taxStatus.matches("accepted.*|valid")){
 				status += "A";
-			}else if (taxStatus.matches(".*synonym|invalid")){
+			} else if (taxStatus.matches(".*synonym|invalid")){
 				status += "S";
-			}if (taxStatus.matches("misapplied")){
+			} else if (taxStatus.matches("misapplied.*")){
 				status += "M";
-			}else{
+			} else{
 				status += "?";
 			}
 			item.remove(TermUri.DWC_TAXONOMIC_STATUS);
@@ -512,9 +513,9 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 				message = String.format(message, status);
 				fireWarningEvent(message, item, 6);
 			}
-		}else if (status.contains("S")){
+		} else if (status.contains("S")){
 			result = Synonym.NewInstance(name, sec);
-		}else{
+		} else{
 			result = Taxon.NewUnknownStatusInstance(name, sec);
 		}
 			

@@ -241,18 +241,29 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState
 	private void handleAcceptedNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase taxonBase, String id) {
 		if (exists(TermUri.DWC_ACCEPTED_NAME_USAGE_ID, item) || exists(TermUri.DWC_ACCEPTED_NAME_USAGE, item)){
 			String accId = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
+			String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 			if (id.equals(accId)){
 				return;   //mapping to itself needs no further handling
 			}
+			Taxon accTaxon = getTaxonBase(accId, item, Taxon.class, state);
 			if (taxonBase.isInstanceOf(Synonym.class)){
 				Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-				Taxon accTaxon = getTaxonBase(accId, item, Taxon.class, state);
+				
 				if (accTaxon == null){
 						fireWarningEvent("NON-ID accepted Name Usage not yet implemented or taxon for name usage id not available", item, 4);
-				}else{
+				} else{
 					accTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(),null, null);
 				}
-			} else{
+				// FIXME : no information regarding misapplied name available at this point,
+				//         hence a regexp check for 'misapplied' is done to add them as a relationship
+			} else if(taxonBase.isInstanceOf(Taxon.class) && taxStatus.matches("misapplied.*")) {
+				if (accTaxon == null){
+					fireWarningEvent("NON-ID accepted (misapplied) Name Usage not yet implemented or taxon for name usage id not available", item, 4);
+				} else{
+					Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+					accTaxon.addMisappliedName(taxon,null,null);
+				}
+			} else {
 				String message = "Accepted name usage is not of type synonym. This is not allowed in CDM. Can't create realtionship";
 				//TODO check "is this Taxon"
 				fireWarningEvent(message, item, 4);
