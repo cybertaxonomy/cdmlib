@@ -166,11 +166,11 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 		setRelatedTo(toTaxon);
 	}
 
-	protected Taxon getRelatedFrom() {
+	public Taxon getRelatedFrom() {
 		return relatedFrom;
 	}
 
-	protected Taxon getRelatedTo() {
+	public Taxon getRelatedTo() {
 		return relatedTo;
 	}
 
