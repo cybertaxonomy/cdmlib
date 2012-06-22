@@ -189,19 +189,28 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) ;
 
-	/**
-	 * Returns a taxon corresponding to the given uuid
-	 * 
-	 * @param uuid 
-	 * 			The uuid of the taxon requested
-	 * @param criteria
-	 * 			Custom criteria to be added to the default list of applied criteria.
-	 * @param propertyPaths 
-	 * 			
-	 * @return 
-	 */
+    /**
+     * Returns a taxon corresponding to the given uuid
+     *
+     * @param uuid
+     * 			The uuid of the taxon requested
+     * @param criteria
+     * 			Custom criteria to be added to the default list of applied criteria.
+     * @param propertyPaths
+     *
+     * @return
+     */
     public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
-    
+
+    /**
+     * Returns a list of Taxon entities corresponding to the given uuid list.
+     * @param uuids
+     * @param criteria
+     * @param propertyPaths
+     * @return
+     */
+    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths);
+
     /**
      * @param queryString
      * @param classification
@@ -417,8 +426,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     //public List<Synonym> insertAllInferredSynonymy(Classification tree);
 
-    
-    
+
+
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
     public String getPhylumName(TaxonNameBase name);
 
@@ -461,7 +470,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas);
-    
+
     public List<String> taxaByNameNotInDB(List<String> taxonNames);
 
 
