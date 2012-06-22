@@ -296,6 +296,17 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
+    
+    /**
+     * TODO candidate for harmonization
+     * new name saveHomotypicalGroups
+     *
+     * findByTitle
+     */
+    public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
+        List result = dao.findByName(nameCache, matchMode, null, null, null ,propertyPaths);
+        return result;
+    }
 
     /**
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions

@@ -125,6 +125,17 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths);
 	
 	/**
+	 * Returns all NonViralNames with a name cache that matches the given string 
+	 * using the given match mode and initialization strategy
+	 * 
+	 * @param name
+	 * @param matchMode
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths);
+	
+	/**
 	 * Returns the NonViralName with the given UUID 
 	 * using the given match mode and initialization strategy
 	 * 
