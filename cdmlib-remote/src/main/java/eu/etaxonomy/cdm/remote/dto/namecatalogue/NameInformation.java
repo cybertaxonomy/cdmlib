@@ -28,7 +28,8 @@ public class NameInformation implements RemoteResponse {
 		request.setNameUuid(nameUuid);
 	}
 	
-	public void setResponse(String name, 
+	public void setResponse(String title,
+			String name,
 			String rank, 
 			Set<NomenclaturalStatus> nomenclatureStatus,
 			String citation,
@@ -36,6 +37,7 @@ public class NameInformation implements RemoteResponse {
 			Set<NameRelationship> relationsToThisName,
 			Set<TaxonBase> taxonBases) {
 		response = new NameInformation.NameInformationResponse();
+		response.setTitle(title);
 		response.setName(name);
 		response.setRank(rank);
 		
@@ -59,14 +61,14 @@ public class NameInformation implements RemoteResponse {
 				Set<NameRelationship> relationsToThisName) {
 		// set name from relationship
 		String typeString = "";
-		String relatedTitleCache = "";
+		String relatednameCache = "";
 		String relatedCitation = "";
 		
 		Iterator it = relationsFromThisName.iterator();
 		
 		while(it.hasNext()) {
 			typeString = "";
-			relatedTitleCache = "";
+			relatednameCache = "";
 			relatedCitation = "";
 			
 			NameRelationship nr = (NameRelationship)it.next();
@@ -74,13 +76,13 @@ public class NameInformation implements RemoteResponse {
 				typeString = nr.getType().toString();
 			}
 			if(nr.getRelatedFrom() != null) {
-				relatedTitleCache = nr.getRelatedFrom().getTitleCache();
+				relatednameCache = nr.getRelatedFrom().getTitleCache();
 				Reference ref = (Reference) nr.getRelatedFrom().getNomenclaturalReference();
 				relatedCitation = ref.getTitleCache();
 			}
 			response.addToNameRelationships(typeString, 
 					NameInformationResponse.NameRelationshipInfo.DIRECTION_FROM, 
-					relatedTitleCache, 
+					relatednameCache, 
 					relatedCitation);
 		}	
 		// set name to relationship
@@ -88,7 +90,7 @@ public class NameInformation implements RemoteResponse {
 		
 		while(it.hasNext()) {
 			typeString = "";
-			relatedTitleCache = "";
+			relatednameCache = "";
 			relatedCitation = "";
 			
 			NameRelationship nr = (NameRelationship)it.next();
@@ -96,13 +98,13 @@ public class NameInformation implements RemoteResponse {
 				typeString = nr.getType().toString();
 			}
 			if(nr.getRelatedTo() != null) {
-				relatedTitleCache = nr.getRelatedTo().getTitleCache();
+				relatednameCache = nr.getRelatedTo().getTitleCache();
 				Reference ref = (Reference) nr.getRelatedTo().getNomenclaturalReference();
 				relatedCitation = ref.getTitleCache();
 			}
 			response.addToNameRelationships(typeString, 
 					NameInformationResponse.NameRelationshipInfo.DIRECTION_TO, 
-					relatedTitleCache, 
+					relatednameCache, 
 					relatedCitation);
 		}	
 		
@@ -148,6 +150,7 @@ public class NameInformation implements RemoteResponse {
 	}
 	
 	public class NameInformationResponse {
+		private String title;
 		private String name;
 		private String rank;
 		private List<String> nomenclatureStatus;
@@ -158,6 +161,7 @@ public class NameInformation implements RemoteResponse {
 
 		
 		public NameInformationResponse() {
+			title = "";
 			name = "";
 			rank = "";
 			nomenclatureStatus = new ArrayList<String>();
@@ -166,6 +170,14 @@ public class NameInformation implements RemoteResponse {
 			taxonUuids = new HashSet<String>();
 			taxonLsids = new HashSet<String>();
 			
+		}
+		
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		
+		public String getTitle() {
+			return this.title;
 		}
 		
 		public void setName(String name) {

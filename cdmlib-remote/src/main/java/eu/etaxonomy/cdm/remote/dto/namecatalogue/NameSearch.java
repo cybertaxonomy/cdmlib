@@ -43,17 +43,17 @@ public class NameSearch implements RemoteResponse {
 		return this.request;
 	}
 	
-	public void addToResponseList(String name, String nameUuid, Set<TaxonBase> taxonBases) {
+	public void addToResponseList(String title, String name, String nameUuid, Set<TaxonBase> taxonBases) {
 		
-		NameSearch.NameSearchResponse res = responseWithName(name);
+		NameSearch.NameSearchResponse res = responseWithtitle(title);
 		if(res == null) {
 			res = new NameSearch.NameSearchResponse();
-			res.setName(name);				
+			res.setTitle(title);	
+			res.setName(name);
 			response.add(res);
 		} 		
 		res.addToNameUuids(nameUuid);
-		Iterator it = taxonBases.iterator();
-		System.out.println("TB Size : " + taxonBases.size());	
+		Iterator it = taxonBases.iterator();		
 		while(it.hasNext()) {
 			TaxonBase tb = (TaxonBase)it.next();
 			res.addToTaxonUuids(tb.getUuid().toString());
@@ -64,9 +64,9 @@ public class NameSearch implements RemoteResponse {
 		return this.response;
 	}
 	
-	private NameSearch.NameSearchResponse responseWithName(String name) {
+	private NameSearch.NameSearchResponse responseWithtitle(String title) {
 		for(NameSearch.NameSearchResponse nsres : response) {
-			if(nsres.getName().trim().equals(name.trim())) {
+			if(nsres.getTitle().trim().equals(title.trim())) {
 				return nsres;
 			}
 		}
@@ -89,14 +89,24 @@ public class NameSearch implements RemoteResponse {
 	}
 	
 	public class NameSearchResponse {
+		private String title;
 		private String name;
 		private Set<String> nameUuids;
 		private Set<String> taxonUuids;
 		
 		public NameSearchResponse() {
+			title = "";
 			name = "";
 			nameUuids = new HashSet<String>();
 			taxonUuids = new HashSet<String>();
+		}
+		
+		public void setTitle(String title) {
+			this.title = title;
+		}
+		
+		public String getTitle() {
+			return this.title;
 		}
 		
 		public void setName(String name) {

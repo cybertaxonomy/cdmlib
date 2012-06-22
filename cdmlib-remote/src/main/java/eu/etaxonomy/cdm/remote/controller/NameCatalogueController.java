@@ -29,14 +29,17 @@ import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -53,11 +56,15 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 public class NameCatalogueController  extends BaseController<TaxonNameBase, INameService> {
 
 	/** Taxon status strings*/
-	public static final String ACCECPTED_NAME_STATUS = "accepted_name";
+	public static final String ACCEPTED_NAME_STATUS = "accepted";
 	public static final String SYNONYM_STATUS = "synonym";
 	
 	/** Flag strings*/
 	public static final String DOUBTFUL_FLAG = "doubtful";
+	
+	/** Query strings */
+	public static final String NAME_SEARCH = "name";
+	public static final String TITLE_SEARCH = "title";
 	
 	@Autowired
 	private ITaxonService taxonService;
@@ -70,6 +77,7 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 			"exCombinationAuthorTeam.$",
 			"basionymAuthorTeam.$",
 			"exBasionymAuthorTeam.$",
+			"nameCache",
 			"taxonBases"
 	});
 
@@ -86,7 +94,9 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 	});
 
 	private static final List<String> TAXON_INFORMATION_INIT_STRATEGY = Arrays.asList(new String []{
-			"synonymRelations",	
+			"synonymRelations.type.$",	
+			"relationsFromThisTaxon.type.$",
+			"relationsToThisTaxon.type.$",
 			"taxonNodes",
 			"taxonNodes.classification"
 	});
@@ -124,6 +134,10 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 	 * 			The taxon name pattern(s) to query for. The query can contain wildcard characters ('*'). 
 	 *  		The query can be performed with no wildcard or with the wildcard at the begin and / or end 
 	 *  		depending on the search pattern.
+	 * @param type
+	 * 			The type of name to query. This could any of,
+	 *          - name	: scientific name corresponding to 'name cache' in CDM
+	 *          - title	: complete name corresponding to 'title cache' in CDM
 	 * @param request
 	 * @param response
 	 * @return a List of {@link NameSearch} objects each corresponding to a single query. These are built from 
@@ -133,24 +147,39 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 	@RequestMapping(value = {""},
 			method = RequestMethod.GET)
 	public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
+			@RequestParam(value = "type", required = false, defaultValue=NAME_SEARCH) String searchType,
 			HttpServletRequest request, 
 			HttpServletResponse response) throws IOException {
 		ModelAndView mv = new ModelAndView();
 		List <RemoteResponse> nsList = new ArrayList<RemoteResponse>();
+		
+		if(!searchType.equals(NAME_SEARCH) && !searchType.equals(TITLE_SEARCH)) {
+			ErrorResponse er = new ErrorResponse();
+			er.setErrorMessage("searchType parameter can only be set as" + NAME_SEARCH + " or " + TITLE_SEARCH);			
+			mv.addObject(er);
+			return mv;	   
+		}
+		
 		for(String query : queries ) {
 
 			String queryWOWildcards = getQueryWithoutWildCards(query);
 			MatchMode mm = getMatchModeFromQuery(query);
 			logger.info("doGetNameSearch()" + request.getServletPath() + " for query \"" + query + "\" without wild cards : " + queryWOWildcards + " and match mode : " + mm);
-			List<NonViralName> nameList = (List<NonViralName>)service.findNamesByTitleCache(queryWOWildcards, mm, NAME_SEARCH_INIT_STRATEGY);
+			List<NonViralName> nameList = new ArrayList<NonViralName>();
+			if(searchType.equals(NAME_SEARCH)) {
+				nameList = (List<NonViralName>)service.findNamesByNameCache(queryWOWildcards, mm, NAME_SEARCH_INIT_STRATEGY);
+			}
+
+			if(searchType.equals(TITLE_SEARCH)) {
+				nameList = (List<NonViralName>)service.findNamesByTitleCache(queryWOWildcards, mm, NAME_SEARCH_INIT_STRATEGY);
+			}
 			if(nameList == null || !nameList.isEmpty()) {
 				NameSearch ns = new NameSearch();	
 				ns.setRequest(query);		
 
 				for (NonViralName nvn : nameList)
-				{
-					String titleCacheString = nvn.getTitleCache();	    
-					ns.addToResponseList(titleCacheString, nvn.getUuid().toString(), nvn.getTaxonBases());
+				{								
+					ns.addToResponseList(nvn.getTitleCache(), nvn.getNameCache(), nvn.getUuid().toString(), nvn.getTaxonBases());
 				}
 				nsList.add(ns);
 
@@ -200,6 +229,7 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 					citation = ref.getTitleCache();
 				}
 				ni.setResponse(nvn.getTitleCache(), 
+						nvn.getNameCache(),
 						nvn.getRank().getTitleCache(), 
 						nvn.getStatus(), 
 						citation,
@@ -227,6 +257,7 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 		for(String taxonUuid : taxonUuids ) {
 			logger.info("doGetTaxonInformation()" + request.getServletPath() + " for taxon uuid \"" + taxonUuid);
 			TaxonBase tb= taxonService.findTaxonByUuid(UUID.fromString(taxonUuid), TAXON_INFORMATION_INIT_STRATEGY);
+			
 			if(tb != null) {
 				TaxonInformation ti = new TaxonInformation();
 				ti.setRequest(taxonUuid);
@@ -234,29 +265,58 @@ public class NameCatalogueController  extends BaseController<TaxonNameBase, INam
 				if(tb.isInstanceOf(Taxon.class)) {
 					Taxon taxon = (Taxon)tb;
 					ti.setResponseTaxon(tb.getTitleCache(), 
-							ACCECPTED_NAME_STATUS, 
+							ACCEPTED_NAME_STATUS, 
 							buildFlagMap(tb),
-							buildClassificationMap(taxon));					
-					Set<Synonym> synonyms = taxon.getSynonyms();
-					for(Synonym syn: synonyms) {
+							buildClassificationMap(taxon));			
+					Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();				
+					for(SynonymRelationship sr: synRelationships) {
+						Synonym syn = sr.getSynonym();
 						String uuid = syn.getUuid().toString();
-						String name = syn.getTitleCache();
+						String title = syn.getTitleCache();
 						String status = SYNONYM_STATUS; 
-						ti.addToResponseRelatedTaxa(taxonUuid, name, status, "");
+						String relLabel = sr.getType().getInverseRepresentation(Language.DEFAULT()).getLabel();
+						ti.addToResponseRelatedTaxa(uuid, title, status, "", relLabel);
+					}
+					
+					Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
+					
+					for(TaxonRelationship tr : trFromSet) {
+						String titleFrom = tr.getRelatedFrom().getTitleCache();
+						
+						String titleTo = tr.getRelatedTo().getTitleCache();
+						String uuid = tr.getRelatedTo().getUuid().toString();
+						String status = ACCEPTED_NAME_STATUS; 
+						String relLabel = tr.getType().getRepresentation(Language.DEFAULT()).getLabel();
+						//System.out.println("From : " + titleFrom + ", To : " + titleTo + "type " + tr.getType().getTitleCache());
+						ti.addToResponseRelatedTaxa(uuid, titleTo, status, "", relLabel);
+					}
+					
+					Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();					
+					for(TaxonRelationship tr : trToSet) {
+						String titleTo = tr.getRelatedTo().getTitleCache();
+						
+						String titleFrom = tr.getRelatedFrom().getTitleCache();
+						String uuid = tr.getRelatedFrom().getUuid().toString();
+						String status = ACCEPTED_NAME_STATUS; 
+						String relLabel = tr.getType().getInverseRepresentation(Language.DEFAULT()).getLabel();				
+						//System.out.println("From : " + titleFrom + ", To : " + titleFrom + "type " + tr.getType().getTitleCache());
+						ti.addToResponseRelatedTaxa(uuid, titleFrom, status, "", relLabel);
 					}
 				} else if(tb instanceof Synonym) {
 					Synonym synonym = (Synonym)tb;
-					ti.setResponseTaxon(tb.getTitleCache(), 
+					ti.setResponseTaxon(synonym.getTitleCache(), 
 							SYNONYM_STATUS, 
-							buildFlagMap(tb),
+							buildFlagMap(synonym),
 							null);
-					Set<Taxon> acceptedTaxa = synonym.getAcceptedTaxa();
-					for(Taxon taxon : acceptedTaxa) {
-						String uuid = taxon.getUuid().toString();
-						String name = taxon.getTitleCache();
-						String status = ACCECPTED_NAME_STATUS;
-						ti.addToResponseRelatedTaxa(taxonUuid, name, status, "");
-					}
+					Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();	
+					for(SynonymRelationship sr: synRelationships) {
+						Taxon accTaxon = sr.getAcceptedTaxon();
+						String uuid = accTaxon.getUuid().toString();
+						String title = accTaxon.getTitleCache();
+						String status = ACCEPTED_NAME_STATUS; 
+						String relLabel = sr.getType().getRepresentation(Language.DEFAULT()).getLabel();
+						ti.addToResponseRelatedTaxa(uuid, title, status, "", relLabel);
+					}					
 				}				
 				tiList.add(ti);	
 			} else {

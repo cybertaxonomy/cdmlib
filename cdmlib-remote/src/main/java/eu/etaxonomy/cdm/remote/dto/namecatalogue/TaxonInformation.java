@@ -46,8 +46,8 @@ public class TaxonInformation implements RemoteResponse {
 		return response;
 	}
 	
-	public void addToResponseRelatedTaxa(String taxonUuid, String name, String taxonStatus, String sourceUrl) {
-		response.addToRelatedTaxa(taxonUuid, name, taxonStatus, sourceUrl);
+	public void addToResponseRelatedTaxa(String taxonUuid, String name, String taxonStatus, String sourceUrl, String relationshipType) {
+		response.addToRelatedTaxa(taxonUuid, name, taxonStatus, sourceUrl, relationshipType);
 	}
 	
 
@@ -79,7 +79,7 @@ public class TaxonInformation implements RemoteResponse {
 				Map<String, String> flags,
 				Map<String, Map> classificationMap) {
 			this.taxon = new TaxonInformationResponse.TaxonInfo();
-			this.taxon.setName(name);
+			this.taxon.setTitle(name);
 			this.taxon.setTaxonStatus(taxonStatus);
 			this.taxon.setFlags(flags);
 			this.taxon.setClassificationMap(classificationMap);
@@ -89,12 +89,13 @@ public class TaxonInformation implements RemoteResponse {
 			return this.taxon;
 		}
 		
-		public void addToRelatedTaxa(String taxonUuid, String name, String taxonStatus, String sourceUrl) {
+		public void addToRelatedTaxa(String taxonUuid, String name, String taxonStatus, String sourceUrl, String relationshipType) {
 			RelatedTaxonInfo rti = new RelatedTaxonInfo();
 			rti.setTaxonUuid(taxonUuid);
-			rti.setName(name);
+			rti.setTitle(name);
 			rti.setTaxonStatus(taxonStatus);
 			rti.setSourceUrl(sourceUrl);		
+			rti.setRelationshipType(relationshipType);
 			relatedTaxa.add(rti);
 		}
 		
@@ -103,25 +104,25 @@ public class TaxonInformation implements RemoteResponse {
 		}
 		
 		public class TaxonInfo {
-			private String name;
+			private String title;
 			private String taxonStatus;
 			private Map<String, String> flags;
 			private Map<String, Map> classificationMap;
 			
 			
 			public TaxonInfo() {
-				name = "";
+				title = "";
 				taxonStatus = "";
 				flags = new Hashtable<String,String>();
 				classificationMap = new Hashtable<String,Map>();				
 			}
 			
-			public void setName(String name) {
-				this.name = name;
+			public void setTitle(String title) {
+				this.title = title;
 			}
 			
-			public String getName() {
-				return this.name;
+			public String getTitle() {
+				return this.title;
 			}
 			
 			public void setTaxonStatus(String taxonStatus) {
@@ -157,15 +158,17 @@ public class TaxonInformation implements RemoteResponse {
 		
 		public class RelatedTaxonInfo {
 			String taxonUuid;
-			String name;
+			String title;
 			String taxonStatus;
 			String sourceUrl;
+			String relationshipType;
 			
 			public RelatedTaxonInfo() {
 				taxonUuid = "";
-				name =  "";
+				title =  "";
 				taxonStatus = "";
 				sourceUrl = "";
+				relationshipType = "";
 			}
 			
 			public void setTaxonUuid(String taxonUuid) {
@@ -176,12 +179,12 @@ public class TaxonInformation implements RemoteResponse {
 				return this.taxonUuid;
 			}
 			
-			public void setName(String name) {
-				this.name = name;
+			public void setTitle(String title) {
+				this.title = title;
 			}
 			
-			public String getName() {
-				return this.name;
+			public String getTitle() {
+				return this.title;
 			}
 			
 			public void setTaxonStatus(String taxonStatus) {
@@ -198,6 +201,14 @@ public class TaxonInformation implements RemoteResponse {
 			
 			public String getSourceUrl() {
 				return this.sourceUrl;
+			}
+			
+			public void setRelationshipType(String relationshipType) {
+				this.relationshipType = relationshipType;
+			}
+			
+			public String getRelationshipType() {
+				return this.relationshipType;
 			}
 		}
 	}
