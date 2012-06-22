@@ -90,6 +90,4 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 
-
-
 }
