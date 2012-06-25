@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
@@ -310,6 +311,18 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public NomenclaturalCode getNomenclaturalCode() {
 		return nomenclaturalCode;
 	}
+
+	@Override
+	public String toString() {
+		if (StringUtils.isBlank(this.database)){
+			return super.toString();
+		}else{
+			String result = "DataSource<" + dbType.getConnectionString(this).replace(CdmUtils.Nz(password), "") + ">";
+			return result;
+		}
+	}
+	
+	
 
 }
 
