@@ -32,6 +32,9 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
+	//csv config
+	private boolean isNoQuotes = false;
+	
 	//partitions
 	private boolean usePartitions = true;
 	private int defaultPartitionSize = 2000;
@@ -221,6 +224,14 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	public void setUseSourceReferenceAsSec(boolean useSourceReferenceAsSec) {
 		this.useSourceReferenceAsSec = useSourceReferenceAsSec;
 	}
+
+        public boolean isNoQuotes() {
+                return isNoQuotes;
+        }
+
+        public void setNoQuotes(boolean isNoQuotes) {
+                this.isNoQuotes = isNoQuotes;
+        }
 	
 	
 }

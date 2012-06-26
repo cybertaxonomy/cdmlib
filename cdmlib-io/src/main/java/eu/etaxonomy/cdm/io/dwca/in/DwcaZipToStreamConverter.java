@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
-import eu.etaxonomy.cdm.io.common.IoStateBase;
+import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
  * @date 17.10.2011
  *
  */
-public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
+public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	private static Logger logger = Logger.getLogger(DwcaZipToStreamConverter.class);
 
 	private final String META_XML = "meta.xml";
@@ -93,13 +93,13 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 			return this.archive;
 	}
 	
-	public CsvStream getCoreStream() throws IOException{
+	public CsvStream getCoreStream(STATE state) throws IOException{
 		initArchive();
 		ArchiveEntryBase core = archive.getCore();
-		return makeStream(core);
+		return makeStream(core, state);
 	}
 	
-	public CsvStream getStream(String rowType) throws IOException{
+	public CsvStream getStream(String rowType, STATE state) throws IOException{
 		initArchive();
 		
 		ArchiveEntryBase archiveEntry = null; 
@@ -110,24 +110,24 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 				break;
 			}
 		}
-		return makeStream(archiveEntry);
+		return makeStream(archiveEntry, state);
 	}
 	
-	public CsvStream getStream(TermUri rowType) throws IOException{
-		return getStream(rowType.getUriString());
+	public CsvStream getStream(TermUri rowType, STATE state) throws IOException{
+		return getStream(rowType.getUriString(), state);
 	}
 
 	public IReader<CsvStream> getEntriesStream(STATE state){
 		List<CsvStream> streamList = new ArrayList<CsvStream>();
 		try {
-			streamList.add(getCoreStream()); //for taxa and names
+			streamList.add(getCoreStream(state)); //for taxa and names
 		} catch (IOException e) {
 			String message = "Core stream not available for %s: %s";
 			logger.warn(String.format(message, "taxa", e.getMessage()));
 			state.setSuccess(false);
 		} 
 		try {
-			streamList.add(getCoreStream());//for taxon and name relations
+			streamList.add(getCoreStream(state));//for taxon and name relations
 		} catch (IOException e) {
 			String message = "Core stream not available for %s: %s";
 			logger.warn(String.format(message, "taxon relations", e.getMessage()));
@@ -136,7 +136,7 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 		for (TermUri extension : extensionList){
 			CsvStream extensionStream;
 			try {
-				extensionStream = getStream(extension);
+				extensionStream = getStream(extension, state);
 				if (extensionStream != null){
 					streamList.add(extensionStream);
 				}
@@ -154,17 +154,21 @@ public class DwcaZipToStreamConverter<STATE extends IoStateBase> {
 	/**
 	 * Creates the CsvStream for an archive entry. Returns null if archive entry is null.
 	 * @param archiveEntry
+	 * @param state 
 	 * @return
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	private CsvStream makeStream(ArchiveEntryBase archiveEntry) throws IOException, UnsupportedEncodingException {
+	private CsvStream makeStream(ArchiveEntryBase archiveEntry, STATE state) throws IOException, UnsupportedEncodingException {
 		if (archiveEntry == null){
 			return null;
 		}
 		//CsvReader does not allow empty fieldsEnclosed, need to think about own implementation which allows empty fields)
 		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVReader.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
-		char fieldsEnclosedBy = StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
+		char fieldsEnclosedBy = CSVWriter.NO_QUOTE_CHARACTER;
+		if(state == null || !state.getConfig().isNoQuotes()) {
+		        fieldsEnclosedBy= StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
+		}
 		boolean ignoreHeader = archiveEntry.getIgnoreHeaderLines();
 		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
 		String encoding = archiveEntry.getEncoding();

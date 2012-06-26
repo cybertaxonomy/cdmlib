@@ -68,7 +68,7 @@ public class DwcaZipToStreamConverterTest {
 	@Test 
 	public void testGetCoreStream(){
 		try {
-			CsvStream coreStream = converter.getCoreStream();
+			CsvStream coreStream = converter.getCoreStream(null);
 			Assert.assertNotNull("core stream should not be null", coreStream);
 			CsvStreamItem next = coreStream.read();
 			Assert.assertNotNull("Entry should exist in core stream", next);
@@ -85,7 +85,7 @@ public class DwcaZipToStreamConverterTest {
 	@Test 
 	public void testGetVernacularStream(){
 		try {
-			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
+			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME,null);
 			Assert.assertNotNull("Vernacular stream should not be null", vernacularStream);
 			CsvStreamItem next = vernacularStream.read();
 			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
@@ -103,7 +103,7 @@ public class DwcaZipToStreamConverterTest {
 	@Test 
 	public void testCoreExtensionAttributes(){
 		try {
-			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME);
+			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME,null);
 			CsvStreamItem next = vernacularStream.read();
 			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
 			Assert.assertEquals("First entry should be coreid1", "1", next.get("coreId"));
