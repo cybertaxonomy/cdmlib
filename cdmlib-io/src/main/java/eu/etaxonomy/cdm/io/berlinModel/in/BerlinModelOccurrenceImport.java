@@ -348,7 +348,16 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(BerlinModelImportState state){
-		return ! state.getConfig().isDoOccurrence();
+		if (! state.getConfig().isDoOccurrence()){
+			return true;
+		}else{
+			if (!this.checkSqlServerColumnExists(state.getConfig().getSource(), "emOccurrence", "OccurrenceId")){
+				logger.error("emOccurrence table or emOccurrenceId does not exist. Must ignore occurrence import");
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
 	
 }
