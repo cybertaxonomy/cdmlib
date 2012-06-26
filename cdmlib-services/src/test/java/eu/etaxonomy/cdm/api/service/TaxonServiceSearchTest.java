@@ -324,7 +324,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("rawtypes")
     @Test
-//    @Ignore //FIXME index is not updated after commit !!! (see below)
     @DataSet
     public final void testFindByDescriptionElementFullText_modify_Classification() throws CorruptIndexException, IOException, ParseException {
 

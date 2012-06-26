@@ -25,15 +25,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- * needed to overcome limitations in hibernate search see:
- * "Support runtime polymorphism on associations (instead of defining the indexed properties based on the returned type"
- * (https://hibernate.onjira.com/browse/HSEARCH-438) and see:
- * https://forum.hibernate
- * .org/search.php?keywords=indexembedded+subclass&terms=all
- * &author=&sc=1&sf=all&sk=t&sd=d&sr=posts&st=0&ch=300&t=0&submit=Search
- *
- * DEVELOPER NOTE: the problem: void org.hibernate.search.engine.DocumentBuilderContainedEntity.initializeClass(XClass clazz, PropertiesMetadata propertiesMetadata, boolean isRoot, String prefix, Set<XClass> processedClasses, InitContext context)
- * is not taking sublasses into account so the taxon field defined in taxonBase is not registered in the propertiesMetdata
+ * This class bridge is needed to overcome limitations in hibernate search with polymorphism on associations. See:
+ * <ol>
+ * <li>"Support runtime polymorphism on associations (instead of defining the indexed properties based on the returned type"
+ * (https://hibernate.onjira.com/browse/HSEARCH-438)</li>
+ * <li>https://forum.hibernate.org/search.php?keywords=indexembedded+subclass&terms=all
+ * &author=&sc=1&sf=all&sk=t&sd=d&sr=posts&st=0&ch=300&t=0&submit=Search</li>
+ *</ol>
+ * DEVELOPER NOTE: the problem is in {@link org.hibernate.search.engine.DocumentBuilderContainedEntity#initializeClass()} which
+ * is not taking subclasses into account, so the <code>taxon</code> field defined in {@link TaxonDescription} is not registered in the <code>propertiesMetdata</code>
  *
  * @author Andreas Kohlbecker
  * @date Dec 19, 2011
