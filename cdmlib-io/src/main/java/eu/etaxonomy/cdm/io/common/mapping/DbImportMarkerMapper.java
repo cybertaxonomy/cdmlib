@@ -170,6 +170,9 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 		}
 		if (dbValue != null && ! dbValue.equals(this.ignoreValue)){
 			Marker.NewInstance(annotatableEntity, dbValue, this.markerType);
+			if (this.markerType == null){
+				logger.warn("No marker type available for marker");
+			}
 		}
 		return annotatableEntity;
 	}

@@ -170,6 +170,9 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		}
 		if (CdmUtils.isNotEmpty(dbValue)){
 			Extension.NewInstance(identifiableEntity, dbValue, extensionType);
+			if (extensionType == null){
+				logger.warn("No extension type available for extension");
+			}
 		}
 		return identifiableEntity;
 	}
