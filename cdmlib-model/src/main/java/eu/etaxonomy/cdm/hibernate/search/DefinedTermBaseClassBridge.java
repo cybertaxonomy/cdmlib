@@ -23,13 +23,11 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
- *
- *
  * @author Andreas Kohlbecker
  * @date Jun 4, 2012
  *
  */
-public class DefinedTermBaseFieldBridge implements FieldBridge {
+public class DefinedTermBaseClassBridge implements FieldBridge {
 
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
@@ -43,21 +41,21 @@ public class DefinedTermBaseFieldBridge implements FieldBridge {
         DefinedTermBase term = (DefinedTermBase)value;
         for(Representation representation : term.getRepresentations()){
 
-            Field idField = new Field(name + ".id",
+            Field idField = new Field(name + "id",
                     String.valueOf(term.getId()),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
                     luceneOptions.getTermVector());
             document.add(idField);
 
-            Field uuidField = new Field(name + ".uuid",
+            Field uuidField = new Field(name + "uuid",
                     term.getUuid().toString(),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
                     luceneOptions.getTermVector());
             document.add(uuidField);
 
-            Field allField = new Field(name + ".representation.ALL",
+            Field allField = new Field(name + "representation.ALL",
                     representation.getText(),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
@@ -65,7 +63,7 @@ public class DefinedTermBaseFieldBridge implements FieldBridge {
                     allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
-            Field langField = new Field(name + ".representation." + representation.getLanguage().getUuid().toString(),
+            Field langField = new Field(name + "representation." + representation.getLanguage().getUuid().toString(),
                     representation.getText(),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),

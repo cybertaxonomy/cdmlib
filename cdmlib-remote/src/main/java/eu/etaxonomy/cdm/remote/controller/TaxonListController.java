@@ -11,12 +11,14 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.queryParser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +30,17 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
@@ -47,17 +53,17 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 @RequestMapping(value = {"/taxon"})
 public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
 
-	
-	
+
+
     /**
-	 * 
-	 */
-	public TaxonListController(){
+     *
+     */
+    public TaxonListController(){
         super();
         setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
     }
 
-	/* (non-Javadoc)
+    /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
      */
     @Override
@@ -65,10 +71,10 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
     public void setService(ITaxonService service) {
         this.service = service;
     }
-    
+
     @Autowired
     private IClassificationService classificationService;
-    
+
     /**
      * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
      * <p>
@@ -120,17 +126,17 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             HttpServletResponse response
             )
              throws IOException {
-    	
 
-        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        logger.info("findTaxaAndNames : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
         ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
-        
+
         config.setTaxonPropertyPath(initializationStrategy);
-        
+
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
@@ -147,6 +153,45 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         }
 
         return (Pager<IdentifiableEntity>) service.findTaxaAndNames(config);
-        
+
     }
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param treeUuid TODO unimplemented in TaxonServiceImpl !!!!
+     * @param languages
+     * @param pageNumber
+     * @param pageSize
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     * @throws ParseException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"dofindByDescriptionElementFullText"})
+    public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
+            @RequestParam(value = "clazz", required = false) Class clazz,
+            @RequestParam(value = "query", required = true) String queryString,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "languages", required = false) List<Language> languages,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException {
+
+         logger.info("dofindByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        if(treeUuid != null){
+            Classification classification = classificationService.find(treeUuid);
+        }
+        return service.findByDescriptionElementFullText(clazz, queryString, null, languages, pageSize, pageNumber, ((List<OrderHint>)null), initializationStrategy);
+    }
+
+//    findByDescriptionElementFullText(
+//            Class<? extends DescriptionElementBase> clazz, String queryString,
+//            List<Language> languages, Integer pageSize, Integer pageNumber,
+//            List<OrderHint> orderHints, List<String> propertyPaths)
 }

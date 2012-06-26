@@ -19,10 +19,13 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocCollector;
 import org.apache.lucene.search.TopDocs;
 import org.hibernate.Session;
 import org.hibernate.search.Search;
@@ -36,6 +39,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 
 /**
+ *
  * @author Andreas Kohlbecker
  * @date Dec 21, 2011
  *
@@ -49,6 +53,15 @@ public class LuceneSearch {
     private Searcher searcher;
 
     private Class<? extends CdmBase> type;
+
+
+    /**
+     * The MAX_HITS_ALLOWED value must be one less than Integer.MAX_VALUE
+     * otherwise PriorityQueue will produce an exception since it
+     * will always add 1 to the maxhits so Integer.MAX_VALUE
+     * would become Integer.MIN_VALUE
+     */
+    public final int MAX_HITS_ALLOWED = 10000;
 
 
     /**
@@ -97,15 +110,42 @@ public class LuceneSearch {
     /**
      * @param luceneQueryString
      * @param clazz the type as additional filter criterion
+     * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
+     * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
      * @return
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz) throws ParseException, IOException {
+    public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz, Integer pageSize,
+            Integer pageNumber) throws ParseException, IOException {
+
+        logger.debug("luceneQueryString to be parsed: " + luceneQueryString);
+        Query luceneQuery = getQueryParser().parse(luceneQueryString);
+
+        return executeSearch(luceneQuery, clazz, pageSize, pageNumber);
+    }
+
+    /**
+     * @param luceneQuery
+     * @param clazz the type as additional filter criterion
+     * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
+     * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
+     * @return
+     * @throws ParseException
+     * @throws IOException
+     */
+    public TopDocs executeSearch(Query luceneQuery, Class<? extends CdmBase> clazz, Integer pageSize,
+            Integer pageNumber) throws ParseException, IOException {
+
+        if(pageNumber == null || pageNumber < 0){
+            pageNumber = 0;
+        }
+        if(pageSize == null || pageSize <= 0 || pageSize > MAX_HITS_ALLOWED){
+            pageSize = MAX_HITS_ALLOWED;
+            logger.info("limiting pageSize to MAX_HITS_ALLOWED = " + MAX_HITS_ALLOWED + " items");
+        }
 
         Query query;
-        logger.debug("luceneQueryString given: " + luceneQueryString);
-        Query luceneQuery = getQueryParser().parse(luceneQueryString);
 
         if(clazz != null){
             BooleanQuery classFilter = new BooleanQuery();
@@ -120,10 +160,35 @@ public class LuceneSearch {
         } else {
             query = luceneQuery;
         }
-        logger.debug("final query: " + query.toString());
-        TopDocs topDocsResultSet = getSearcher().search(query, null, 100);
+        logger.info("final query: " + query.toString());
 
-        return topDocsResultSet;
+        int start = pageNumber * pageSize;
+        int limit = (pageNumber + 1) * pageSize - 1 ;
+
+        logger.debug("start: " + start + "; limit:" + limit);
+
+        TopDocCollector hitCollector = new TopDocCollector(limit);
+        getSearcher().search(query, null, hitCollector);
+
+
+        //TODO when switched to Lucene 3.x which is included in hibernate 4.x
+        //     use TopDocCollector.topDocs(int start, int howMany);
+        //     since this method might be more memory save than our own implementation
+        TopDocs topDocs = hitCollector.topDocs();
+        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+
+        int docsAvailableInPage = Math.min(scoreDocs.length - start, pageSize);
+        logger.debug("docsAvailableInPage:" + docsAvailableInPage);
+
+        ScoreDoc[] pagedDocs = new ScoreDoc[docsAvailableInPage];
+        for(int i = 0; i < docsAvailableInPage; i++){
+            pagedDocs[i] = scoreDocs[start + i];
+        }
+        TopDocs pagedTopDocs = new TopDocs(docsAvailableInPage, pagedDocs, topDocs.getMaxScore());
+        //
+        /////////////////////////////////////////////
+
+        return pagedTopDocs;
     }
 
 

@@ -39,7 +39,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseFieldBridge;
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -79,18 +79,13 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    //UNDER CONSTRUCION
-    @Field
-    @FieldBridge(impl=DefinedTermBaseFieldBridge.class)
+    @IndexedEmbedded
     private State state;
 
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-  //UNDER CONSTRUCION
-//    @Field
-//    @FieldBridge(impl=DefinedTermBaseFieldBridge.class)
     @IndexedEmbedded
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<Modifier> modifiers = new HashSet<Modifier>();

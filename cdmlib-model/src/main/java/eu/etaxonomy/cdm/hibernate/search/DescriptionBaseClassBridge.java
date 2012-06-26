@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * needed to overcome limitations in hibernate search see:
@@ -31,11 +32,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * .org/search.php?keywords=indexembedded+subclass&terms=all
  * &author=&sc=1&sf=all&sk=t&sd=d&sr=posts&st=0&ch=300&t=0&submit=Search
  *
+ * DEVELOPER NOTE: the problem: void org.hibernate.search.engine.DocumentBuilderContainedEntity.initializeClass(XClass clazz, PropertiesMetadata propertiesMetadata, boolean isRoot, String prefix, Set<XClass> processedClasses, InitContext context)
+ * is not taking sublasses into account so the taxon field defined in taxonBase is not registered in the propertiesMetdata
+ *
  * @author Andreas Kohlbecker
  * @date Dec 19, 2011
  *
  */
-public class DescriptionBaseFieldBridge implements FieldBridge {
+public class DescriptionBaseClassBridge implements FieldBridge {
 
     /*
      * (non-Javadoc)
@@ -57,7 +61,15 @@ public class DescriptionBaseFieldBridge implements FieldBridge {
                     Field uuidfield = new Field(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES, Index.ANALYZED,
                             luceneOptions.getTermVector());
                     document.add(uuidfield);
+                    for(TaxonNode node : taxon.getTaxonNodes()){
+                        if(node.getClassification() != null){
+                        Field taxonNodeField = new Field(name + "taxon.taxonNodes.classification.id", String.valueOf(node.getClassification().getId()), Store.YES, Index.ANALYZED,
+                                luceneOptions.getTermVector());
+                        document.add(taxonNodeField);
+                        }
+                    }
                 }
+
             }
             if (entity instanceof TaxonNameDescription) {
                 TaxonNameBase taxonName = ((TaxonNameDescription) entity).getTaxonName();

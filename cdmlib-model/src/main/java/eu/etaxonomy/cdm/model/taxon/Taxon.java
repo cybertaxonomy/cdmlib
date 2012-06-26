@@ -42,6 +42,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
@@ -147,6 +148,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @IndexedEmbedded
     private Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
 
     //cached number of taxonomic children

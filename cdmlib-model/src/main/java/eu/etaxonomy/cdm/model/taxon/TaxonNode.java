@@ -32,6 +32,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -55,6 +58,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
 public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable{
     private static final long serialVersionUID = -4743289894926587693L;
@@ -65,6 +69,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @ContainedIn
     private Taxon taxon;
 
 
@@ -81,7 +86,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
     private Classification classification;
 

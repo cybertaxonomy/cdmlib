@@ -31,6 +31,11 @@
   <HOMOTYPICALGROUP ID="16" CREATED="2012-01-19 11:12:01.0" UUID="8a19f374-c4c0-4b45-bc0b-49d37d9986de"/>
 
   <CLASSIFICATION ID="10" CREATED="2012-01-19 11:12:01.0" UUID="2a5ceebb-4830-4524-b330-78461bf8cb6b" PROTECTEDTITLECACHE="false" TITLECACHE="European Abies for testing" NAME_ID="10"/>
+  <CLASSIFICATION ID="11"  CREATED="2012-06-22 14:57:12.0" UUID="d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce" PROTECTEDTITLECACHE="false" TITLECACHE="Abies alternative" NAME_ID="13"/>
+  <CLASSIFICATION_TAXONNODE CLASSIFICATION_ID="10" ROOTNODES_ID="10"/>
+  <CLASSIFICATION_TAXONNODE CLASSIFICATION_ID="11" ROOTNODES_ID="11"/>
+  <TAXONNODE ID="10" CREATED="2012-06-22 14:57:12.0" UUID="fab7121f-d1f6-4f42-a001-d5cd3c8c48eb" COUNTCHILDREN="0" CLASSIFICATION_ID="10" TAXON_ID="12"/>
+  <TAXONNODE ID="11" CREATED="2012-06-22 14:57:12.0" UUID="ffafa5d5-f44b-4b3b-a481-db261984bc4a" COUNTCHILDREN="0" CLASSIFICATION_ID="11" TAXON_ID="16"/>
 
   <DESCRIPTIONBASE DTYPE="TaxonDescription" ID="10" CREATED="2012-01-19 11:12:01.0" UUID="ec8bba03-d993-4c85-8472-18b14942464b" PROTECTEDTITLECACHE="false" TITLECACHE="Taxon description for Abies alba" IMAGEGALLERY="false" TAXON_ID="11"/>
   <DESCRIPTIONBASE DTYPE="TaxonDescription" ID="11" CREATED="2012-01-19 11:12:01.0" UUID="900108d8-e6ce-495e-b32e-7aad3099135e" PROTECTEDTITLECACHE="false" TITLECACHE="Taxon description for Abies balsamea" IMAGEGALLERY="false" TAXON_ID="12"/>
@@ -46,6 +51,7 @@
   <LANGUAGESTRING ID="10" CREATED="2012-01-19 11:12:01.0" UUID="06a901ee-d90b-4dab-bb2f-abb4c9f9dc39" TEXT="European Abies for testing" LANGUAGE_ID="124"/>
   <LANGUAGESTRING ID="11" CREATED="2012-01-19 11:12:01.0" UUID="d1c98b3f-b42f-4160-805b-b39b85f7814d" TEXT="Бальзам ньыв (лат. Abies balsamea) – быдмассэзлӧн пожум котырись ньыв увтырын торья вид. Ньывпуыс быдмӧ 14–20 метра вылына да овлӧ 10–60 см кыза диаметрын. Ньывпу пантасьӧ Ойвыв Америкаын." LANGUAGE_ID="286"/>
   <LANGUAGESTRING ID="12" CREATED="2012-01-19 11:12:01.0" UUID="3f5e7b0e-e970-4c5c-a01d-f7f4d11e97e2" TEXT="Die Balsam-Tanne (Abies balsamea) ist eine Pflanzenart aus der Gattung der Tannen (Abies). Sie wächst im nordöstlichen Nordamerika, wo sie sowohl Tief- als auch Bergland besiedelt. Sie gilt als relativ anspruchslos gegenüber dem Standort und ist frosthart. In vielen Teilen des natürlichen Verbreitungsgebietes stellt sie die Klimaxbaumart dar." LANGUAGE_ID="46"/>
+  <LANGUAGESTRING ID="13" CREATED="2012-06-22 14:57:12.0" UUID="2a226b2a-f62a-45dd-a86b-d4785b2a30f1" TEXT="Abies alternative" LANGUAGE_ID="124"/>
 
 </dataset>
 

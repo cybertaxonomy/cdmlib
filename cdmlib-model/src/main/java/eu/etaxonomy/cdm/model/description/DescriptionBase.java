@@ -37,7 +37,7 @@ import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseFieldBridge;
+import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@ClassBridge(impl=DescriptionBaseFieldBridge.class)
+@ClassBridge(impl=DescriptionBaseClassBridge.class)
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = Logger.getLogger(DescriptionBase.class);

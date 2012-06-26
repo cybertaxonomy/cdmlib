@@ -600,8 +600,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseFieldBridge.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseFieldBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/LanguageFieldBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PartialBridge.java -text

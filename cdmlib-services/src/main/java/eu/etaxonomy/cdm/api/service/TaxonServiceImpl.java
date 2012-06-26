@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseFieldBridge;
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -1093,26 +1093,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
             Class<? extends DescriptionElementBase> clazz, String queryString,
-            List<Language> languages, Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            Classification classification, List<Language> languages, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
         if(clazz != null){
             directorySelectClass = clazz;
         }
 
+        // ---- search criteria
         StringBuilder luceneQueryTemplate = new StringBuilder();
-
+        luceneQueryTemplate.append("+(");
         luceneQueryTemplate.append("titleCache:%1$s ");
         // common name
         if(languages == null || languages.size() == 0){
             luceneQueryTemplate.append("name:%1$s ");
         } else {
-            luceneQueryTemplate.append("(name:%1$s AND (");
+            luceneQueryTemplate.append("(+name:%1$s ");
             for(Language lang : languages){
-                luceneQueryTemplate.append(" language.uuid:" + lang.getUuid().toString());
+                luceneQueryTemplate.append(" +language.uuid:" + lang.getUuid().toString());
             }
-            luceneQueryTemplate.append("))");
+            luceneQueryTemplate.append(")");
         }
         // text field from TextData
         appendLocalizedFieldQuery("text", languages, luceneQueryTemplate).append(" ");
@@ -1120,12 +1121,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         appendLocalizedFieldQuery("states.state.representation", languages, luceneQueryTemplate).append(" ");
         // state field from CategoricalData
         appendLocalizedFieldQuery("states.modifyingText", languages, luceneQueryTemplate).append(" ");
+        luceneQueryTemplate.append(") ");
 
-//        String luceneQueryTemplate = typeSelect + "( titleCache:%1$s OR " + languageSelection + "OR name:%1$s )";
-        String luceneQuery = String.format(luceneQueryTemplate.toString(), queryString);
+        if(classification != null){
+            luceneQueryTemplate.append("+inDescription.taxon.taxonNodes.classification.id:").append(classification.getId()).append(" ");
+        }
+        // the description must be associated with a taxon
+        // TODO open range queries [0 TO *] not working in the current version of lucene (https://issues.apache.org/jira/browse/LUCENE-995)
+        //       so we are using integer maximum as workaround
+        luceneQueryTemplate.append("+inDescription.taxon.id:[0 TO " + Integer.MAX_VALUE + "] ");
 
+        String luceneQueryStr = String.format(luceneQueryTemplate.toString(), queryString);
+
+        // ---- execute criteria
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQuery, clazz);
+
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQueryStr, clazz, pageSize, pageNumber);
+
+        // initialize taxa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSetFromIds(luceneSearch, topDocsResultSet, dao, "inDescription.taxon.id");
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
@@ -1133,11 +1146,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     /**
-     * DefinedTerm representations and MultilanguageString maps are stored in the Lucene index by the {@link DefinedTermBaseFieldBridge}
+     * DefinedTerm representations and MultilanguageString maps are stored in the Lucene index by the {@link DefinedTermBaseClassBridge}
      * and {@link MultilanguageTextFieldBridge } in a consistent way. One field per language and also in one additional field for all languages.
      * This method is a convenient means to retrieve a Lucene query string for such the fields.
      *
-     * @param name name of the term field as in the Lucene index. Must be field created by {@link DefinedTermBaseFieldBridge}
+     * @param name name of the term field as in the Lucene index. Must be field created by {@link DefinedTermBaseClassBridge}
      * or {@link MultilanguageTextFieldBridge }
      * @param languages the languages to search for exclusively. Can be <code>null</code> to search in all languages
      * @param stringBuilder a StringBuilder to be reused, if <code>null</code> a new StringBuilder will be instantiated and is returned
