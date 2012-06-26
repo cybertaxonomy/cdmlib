@@ -291,7 +291,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 //			}//end resultSetList	
 
-			logger.info("end makeReferences ..." + getSuccessString(success));;
+//			logger.info("end makeReferences ..." + getSuccessString(success));;
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -376,7 +376,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				
 //			}//end resultSetList	
 
-			logger.info("end makeReferences ..." + getSuccessString(success));;
+//			logger.info("end makeReferences ..." + getSuccessString(success));;
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
