@@ -36,24 +36,24 @@
         <mailingList>
             <name>dev-edit</name>
             <subscribe>
-                https://webmail.mnhn.fr/wws/subrequest/dev-edit
+                https://listes.mnhn.fr/wwsympa.fcgi/suboptions/dev-edit
             </subscribe>
             <unsubscribe>
-                https://webmail.mnhn.fr/wws/sigrequest/dev-edit
+                https://listes.mnhn.fr/wwsympa.fcgi/signoff/dev-edit
             </unsubscribe>
             <post>dev-edit@mnhn.fr</post>
-            <archive>https://webmail.mnhn.fr/wws/arc/dev-edit/</archive>
+            <archive>https://listes.mnhn.fr/wwsympa.fcgi/arc/dev-edit</archive>
         </mailingList>
         <mailingList>
             <name>cdm-edit</name>
             <post>cdm-edit@mnhn.fr</post>
             <subscribe>
-                https://webmail.mnhn.fr/wws/subrequest/cdm-edit
+                https://listes.mnhn.fr/wwsympa.fcgi/suboptions/cdm-edit
             </subscribe>
             <unsubscribe>
-                https://webmail.mnhn.fr/wws/sigrequest/cdm-edit
+                https://listes.mnhn.fr/wwsympa.fcgi/signoff/cdm-edit
             </unsubscribe>
-            <archive>https://webmail.mnhn.fr/wws/arc/cdm-edit/</archive>
+            <archive>https://listes.mnhn.fr/wwsympa.fcgi/arc/cdm-edit</archive>
         </mailingList>
     </mailingLists>
     <licenses>
@@ -82,23 +82,6 @@
             <timezone>0</timezone>
             <roles>
                 <role>Architect</role>
-                <role>Java Developer</role>
-            </roles>
-            <url />
-        </developer>
-        <developer>
-            <!-- your SVN account id please! -->
-            <id>n.hoffmann</id>
-            <name>
-                Niels Hoffmann
-            </name>
-            <email>n.hoffmann [at] bgbm.org</email>
-            <organization>
-                Botanic Garden Botanical Museum Berlin
-            </organization>
-            <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
-            <timezone>+1</timezone>
-            <roles>
                 <role>Java Developer</role>
             </roles>
             <url />
@@ -153,23 +136,6 @@
                 <role>Architect</role>
                 <role>Java Developer</role>
                 <role>Release Manager</role>
-            </roles>
-            <url />
-        </developer>
-        <developer>
-            <!-- your SVN account id please! -->
-            <id>f.revilla</id>
-            <name>
-                Francisco Revilla
-            </name>
-            <email>f.revilla [at] bgbm.org</email>
-            <organization>
-                Botanical Garden Botanical Museum Berlin
-            </organization>
-            <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
-            <timezone>+1</timezone>
-            <roles>
-                <role>Java Developer</role>
             </roles>
             <url />
         </developer>
