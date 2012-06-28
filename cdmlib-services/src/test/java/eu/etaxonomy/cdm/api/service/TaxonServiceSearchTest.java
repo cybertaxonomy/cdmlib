@@ -181,14 +181,27 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, null, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, Arrays.asList(new Language[]{Language.GERMAN()}), null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, Arrays.asList(new Language[]{Language.GERMAN()}), null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching in German", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, Arrays.asList(new Language[]{Language.RUSSIAN()}), null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, Arrays.asList(new Language[]{Language.RUSSIAN()}), null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
+    public final void testFindByDescriptionElementFullText_wildcard() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, null, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
     }
 
     @SuppressWarnings("rawtypes")
