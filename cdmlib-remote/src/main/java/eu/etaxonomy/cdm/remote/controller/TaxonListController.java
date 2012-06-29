@@ -169,7 +169,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @throws IOException
      * @throws ParseException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"dofindByDescriptionElementFullText"})
+    @RequestMapping(method = RequestMethod.GET, value={"findByDescriptionElementFullText"})
     public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
             @RequestParam(value = "clazz", required = false) Class clazz,
             @RequestParam(value = "query", required = true) String queryString,
@@ -182,12 +182,16 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException {
 
-         logger.info("dofindByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
 
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         pagerParams.normalizeAndValidate(response);
+
+         Classification classification = null;
         if(treeUuid != null){
-            Classification classification = classificationService.find(treeUuid);
+            classification = classificationService.find(treeUuid);
         }
-        return service.findByDescriptionElementFullText(clazz, queryString, null, languages, pageSize, pageNumber, ((List<OrderHint>)null), initializationStrategy);
+        return service.findByDescriptionElementFullText(clazz, queryString, classification, languages, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), initializationStrategy);
     }
 
 //    findByDescriptionElementFullText(
