@@ -122,7 +122,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     /**
      * @return
      */
-    private Class[] indexedClasses() {
+    public Class[] indexedClasses() {
         return new Class[] {
                 DescriptionElementBase.class,
                 Classification.class,
