@@ -580,6 +580,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTe
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/BlankDataSet.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
