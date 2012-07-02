@@ -191,11 +191,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
         }
-        return service.findByDescriptionElementFullText(clazz, queryString, classification, languages, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), initializationStrategy);
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, languages, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), initializationStrategy);
+        return pager;
     }
-
-//    findByDescriptionElementFullText(
-//            Class<? extends DescriptionElementBase> clazz, String queryString,
-//            List<Language> languages, Integer pageSize, Integer pageNumber,
-//            List<OrderHint> orderHints, List<String> propertyPaths)
 }

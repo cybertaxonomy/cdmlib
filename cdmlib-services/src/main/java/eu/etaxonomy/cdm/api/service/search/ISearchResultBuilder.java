@@ -28,11 +28,12 @@ public interface ISearchResultBuilder {
      * @param topDocsResultSet
      * @param dao
      * @param idField
+     * @param propertyPaths TODO
      * @return
      * @throws CorruptIndexException
      * @throws IOException
      */
     public abstract <T extends CdmBase> List<SearchResult<T>> createResultSetFromIds(LuceneSearch luceneSearch, TopDocs topDocsResultSet,
-            ICdmEntityDao<T> dao, String idField) throws CorruptIndexException, IOException;
+            ICdmEntityDao<T> dao, String idField, List<String> propertyPaths) throws CorruptIndexException, IOException;
 
 }

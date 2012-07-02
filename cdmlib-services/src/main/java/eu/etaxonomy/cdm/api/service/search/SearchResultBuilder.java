@@ -48,7 +48,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * @throws IOException
      */
     public <T extends CdmBase> List<SearchResult<T>> createResultSetFromIds(LuceneSearch luceneSearch, TopDocs topDocsResultSet,
-            ICdmEntityDao<T> dao, String idField) throws CorruptIndexException, IOException {
+            ICdmEntityDao<T> dao, String idField, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
         List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
 
@@ -59,7 +59,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
             //      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented
             if(idStrings.length > 0){
-                T entity = dao.findById(Integer.valueOf(idStrings[0]));
+                T entity = dao.load(Integer.valueOf(idStrings[0]), propertyPaths);
                 searchResult.setEntity(entity);
             }
             searchResults.add(searchResult);

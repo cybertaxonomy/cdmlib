@@ -34,7 +34,7 @@
 
              <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
              <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
-             
+
              <value>Synonym.sec</value>
              <value>Taxon.sec</value>
 
@@ -47,10 +47,12 @@
              <value>TaxonInteraction.feature</value>
              <value>TextData.feature</value>
              <value>IdentifiableSource.citation</value>
+
+             <value>SearchResult.entity</value>
          </set>
        </property>
      </bean>
-     
+
      <bean id="nameCatalogueApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
        <property name="includeToOneRelations" value="true" />
        <property name="includeToManyRelations" value="true" />
@@ -359,7 +361,7 @@
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
 
-        
+
         <entry key="java.lang.Class">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
@@ -387,7 +389,7 @@
       </list>
     </property>
   </bean>
-  
+
    <!--
          =================================================
             default configuration name catalogue service
@@ -438,7 +440,7 @@
     <property name="ignoreDefaultExcludes" value="true" />
     <property name="excludes">
       <list value-type="java.lang.String">
-      	<value>class</value>
+        <value>class</value>
         <value>declaringClass</value><!-- DefaultExclude -->
         <value>metaClass</value><!-- DefaultExclude -->
         <value>id</value>
@@ -448,5 +450,5 @@
       </list>
     </property>
   </bean>
-  
+
 </beans>

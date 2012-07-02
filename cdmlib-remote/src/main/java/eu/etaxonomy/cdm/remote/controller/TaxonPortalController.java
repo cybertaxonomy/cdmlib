@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.http.HttpRequest;
 import org.apache.log4j.Logger;
+import org.apache.lucene.queryParser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -52,10 +53,12 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -76,6 +79,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -426,6 +430,45 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     }
 
     /**
+     * @param clazz
+     * @param queryString
+     * @param treeUuid TODO unimplemented in TaxonServiceImpl !!!!
+     * @param languages
+     * @param pageNumber
+     * @param pageSize
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     * @throws ParseException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/findByDescriptionElementFullText"})
+    public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
+            @RequestParam(value = "clazz", required = false) Class clazz,
+            @RequestParam(value = "query", required = true) String queryString,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "languages", required = false) List<Language> languages,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException {
+
+         logger.info("findByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         pagerParams.normalizeAndValidate(response);
+
+         Classification classification = null;
+        if(treeUuid != null){
+            classification = classificationService.find(treeUuid);
+        }
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, languages, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
+        return pager;
+    }
+
+    /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.
      * The synonymy consists
      * of two parts: The group of homotypic synonyms of the taxon and the
@@ -694,14 +737,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "markerTypes", required = false) UuidList markerTypeUUIDs,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
-    	if(request != null){
+        if(request != null){
             logger.info("doGetDescriptions()" + request.getServletPath());
         }
         List<DefinedTermBase> markerTypeTerms = null;
         Set<UUID> sMarkerTypeUUIDs = null;
 
         if(markerTypeUUIDs != null && !markerTypeUUIDs.isEmpty()){
-        	sMarkerTypeUUIDs = new HashSet<UUID>(markerTypeUUIDs);
+            sMarkerTypeUUIDs = new HashSet<UUID>(markerTypeUUIDs);
             markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
         } else if(markerTypeUUIDs != null && markerTypeUUIDs.isEmpty()){
             markerTypeTerms = new ArrayList<DefinedTermBase>();
@@ -709,9 +752,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         Set<MarkerType> markerTypes = new HashSet<MarkerType>();
         List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>();
         if (markerTypeTerms != null) {
-	        for (DefinedTermBase markerTypeTerm : markerTypeTerms) {
-	            markerTypes.add((MarkerType)markerTypeTerm);
-	        }
+            for (DefinedTermBase markerTypeTerm : markerTypeTerms) {
+                markerTypes.add((MarkerType)markerTypeTerm);
+            }
         }
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         if (markerTypeTerms == null) {
@@ -727,14 +770,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         else {
             descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
             /*for (TaxonDescription description: descriptions) {
-            	for (IdentifiableSource source :description.getSources()) {
-            		if (source.getOriginalNameString() != null) {
-            			description.
-            		}
-            		
-            	}
-            	
-            	
+                for (IdentifiableSource source :description.getSources()) {
+                    if (source.getOriginalNameString() != null) {
+                        description.
+                    }
+
+                }
+
+
             }*/
         }
         return descriptions;

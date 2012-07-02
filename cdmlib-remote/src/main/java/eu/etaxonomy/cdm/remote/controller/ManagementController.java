@@ -68,6 +68,16 @@ public class ManagementController
         return mv;
     }
 
+    /**
+     *
+     * Reindex all cdm entities litest in {@link ICdmMassIndexer#indexedClasses()}.
+     * Re-indexing will not purge the index.
+     *
+     * @param request
+     * @param respone
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
     public ModelAndView doReindex(HttpServletRequest request, HttpServletResponse respone) throws Exception {
 
@@ -81,6 +91,14 @@ public class ManagementController
         return mv;
     }
 
+    /**
+     * This will wipe out the index.
+     *
+     * @param request
+     * @param respone
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
     public ModelAndView doPurge(HttpServletRequest request, HttpServletResponse respone) throws Exception {
 
