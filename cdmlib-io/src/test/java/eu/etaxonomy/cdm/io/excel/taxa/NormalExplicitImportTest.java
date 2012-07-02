@@ -27,7 +27,6 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -109,7 +108,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet
-	@Ignore //does run standalone, but not in suite (maven)
 	public void testDoInvoke() {
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
@@ -167,7 +165,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
-	@Ignore //does run standalone, but not in suite (maven)
 	public void testUUID() throws URISyntaxException{
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
