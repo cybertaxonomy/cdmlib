@@ -19,16 +19,19 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.database.annotations.Transactional;
 import org.unitils.spring.annotation.SpringBeanByName;
 
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import org.unitils.database.util.TransactionMode;
 
 /**
  * @author a.mueller
  * @date 23.11.2011
  */
+@Transactional(TransactionMode.ROLLBACK)
 public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportIntegrationTest.class);
@@ -69,10 +72,10 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 		boolean result = defaultImport.invoke(configurator);
 		Assert.assertTrue("Invoke should return true", result);
 		//to be continued
-		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
-                "SynonymRelationship","TaxonNode",
-                "HomotypicalGroup"};
-		commitAndStartNewTransaction(tableNames);
+//		final String[]tableNames = {"TaxonBase","TaxonNameBase","Classification",
+//                "SynonymRelationship","TaxonNode",
+//                "HomotypicalGroup"};
+//		commitAndStartNewTransaction(tableNames);
 	}
 
 }

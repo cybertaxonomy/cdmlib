@@ -22,10 +22,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author b.clark
@@ -33,7 +35,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @version 1.0
  */
 
-@Ignore // we ignore this test at the moment because it does not run with maven
+//@Ignore // we ignore this test at the moment because it does not run with maven
 //org.hibernate.PropertyAccessException: Null value was assigned to a property of primitive type setter of eu.etaxonomy.cdm.model.common.Language.protectedTitleCache
 //...at eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl.getLanguageByIso(DefinedTermDaoImpl.java:286) 
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
@@ -62,7 +64,8 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testDoInvoke() {
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../BlankDataSet.xml")
+	public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
         this.setComplete();
         this.endTransaction();
