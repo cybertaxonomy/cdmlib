@@ -1,20 +1,28 @@
 package eu.etaxonomy.cdm.test.unitils;
 
+import static org.unitils.thirdparty.org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.sql.SQLException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.unitils.core.UnitilsException;
 import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
 import org.unitils.dbunit.datasetloadstrategy.impl.CleanInsertLoadStrategy;
 import org.unitils.dbunit.util.DbUnitDatabaseConnection;
 import org.unitils.dbunit.util.MultiSchemaDataSet;
+import org.unitils.thirdparty.org.apache.commons.io.IOUtils;
+import org.unitils.util.FileUtils;
 
 /**
  * will clear all data in the DataSet except all term related tables
@@ -50,7 +58,16 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
             if (fileUrl == null) {
                 throw new IOException("the Resource " + clearDataResource + " could not be found");
             }
-            multiSchemaDataset = dataSetFactory.createDataSet(new File(fileUrl.toURI()));
+            File file;
+            if(fileUrl.getProtocol().equals("jar:file:")){
+                // extract file from jar into tmp folder
+                String millisecTimeStamp = String.valueOf(System.currentTimeMillis());
+                file = copyClassPathResource(clearDataResource, System.getProperty("java.user.home") + File.separator + millisecTimeStamp);
+
+            } else {
+                file = new File(fileUrl.toURI());
+            }
+            multiSchemaDataset = dataSetFactory.createDataSet(file);
         } catch (Exception e) {
             logger.error("unable to load the clearing dataset as resource from " + fileUrl.toString(), e);
         }
@@ -95,6 +112,36 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
                 logger.error(sqle);
             }
         }
+    }
+
+    /**
+     * more or less 1:1 copy from {@link FileUtils#copyClassPathResource(String, String)}
+     *
+     * @param classPathResourceName
+     * @param fileSystemDirectoryName
+     * @return
+     */
+    public File copyClassPathResource(String classPathResourceName, String fileSystemDirectoryName) {
+
+        InputStream resourceInputStream = null;
+        OutputStream fileOutputStream = null;
+        File file = null;
+        try {
+            resourceInputStream = FileUtils.class.getResourceAsStream(classPathResourceName);
+            String fileName = StringUtils.substringAfterLast(classPathResourceName, "/");
+            File fileSystemDirectory = new File(fileSystemDirectoryName);
+            fileSystemDirectory.mkdirs();
+            String filePath = fileSystemDirectoryName + "/" + fileName;
+            fileOutputStream = new FileOutputStream(filePath);
+            IOUtils.copy(resourceInputStream, fileOutputStream);
+            file = new File(filePath);
+        } catch (IOException e) {
+            throw new UnitilsException(e);
+        } finally {
+            closeQuietly(resourceInputStream);
+            closeQuietly(fileOutputStream);
+        }
+        return file;
     }
 
 
