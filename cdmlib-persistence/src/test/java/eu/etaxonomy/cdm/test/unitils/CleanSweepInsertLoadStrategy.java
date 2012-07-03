@@ -59,11 +59,10 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
                 throw new IOException("the Resource " + clearDataResource + " could not be found");
             }
             File file;
-            if(fileUrl.getProtocol().equals("jar:file:")){
+            if(fileUrl.toString().startsWith("jar:file:")){
                 // extract file from jar into tmp folder
                 String millisecTimeStamp = String.valueOf(System.currentTimeMillis());
                 file = copyClassPathResource(clearDataResource, System.getProperty("java.user.home") + File.separator + millisecTimeStamp);
-
             } else {
                 file = new File(fileUrl.toURI());
             }
