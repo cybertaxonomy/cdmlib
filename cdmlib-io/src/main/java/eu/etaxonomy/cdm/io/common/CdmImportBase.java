@@ -423,9 +423,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				for (NamedAreaLevel level : terms){
 					TermVocabulary<NamedAreaLevel> levelVoc = level.getVocabulary();
 					if (levelVoc == null){
-						logger.error("Level voc is null");
+						logger.error("ONLY FOR DEBUG: Level voc is null");
 					}else{
-						logger.warn("Level voc is not null");
+						logger.warn("ONLY FOR DEBUG: Level voc is not null");
 					}
 				}
 				voc.addTerm(namedAreaLevel);
