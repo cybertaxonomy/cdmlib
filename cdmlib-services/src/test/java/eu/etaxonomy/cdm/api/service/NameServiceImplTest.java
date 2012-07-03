@@ -58,684 +58,684 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  *
  */
 public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
+    private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
 
-	@SpringBeanByType
-	private INameService nameService;
+    @SpringBeanByType
+    private INameService nameService;
 
-	@SpringBeanByType
-	private IOccurrenceService occurrenceService;
+    @SpringBeanByType
+    private IOccurrenceService occurrenceService;
 
-	@SpringBeanByType
-	private ITaxonService taxonService;
+    @SpringBeanByType
+    private ITaxonService taxonService;
 
-	@SpringBeanByType
-	private ITermService termService;
+    @SpringBeanByType
+    private ITermService termService;
 
 
 /* ******************** TESTS ********************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao)}.
-	 */
-	@Test
-	public void testSetDao() {
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao)}.
+     */
+    @Test
+    public void testSetDao() {
 //		Assert.assertNotNull(((NameServiceImpl)nameService).dao);
-	}
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#setVocabularyDao(eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao)}.
-	 */
-	@Test
-	public void testSetVocabularyDao() {
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#setVocabularyDao(eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao)}.
+     */
+    @Test
+    public void testSetVocabularyDao() {
 //		Assert.assertNotNull(( (NameServiceImpl)nameService).vocabularyDao);
-	}
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getNamesByName(java.lang.String)}.
-	 */
-	@Test
-	public void testGetNamesByName() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getNamesByName(java.lang.String)}.
+     */
+    @Test
+    public void testGetNamesByName() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTaxonNameByUuid(java.util.UUID)}.
-	 */
-	@Test
-	public void testGetTaxonNameByUuid() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTaxonNameByUuid(java.util.UUID)}.
+     */
+    @Test
+    public void testGetTaxonNameByUuid() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#saveTaxonName(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
-	 */
-	@Test
-	public void testSaveTaxonName() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#saveTaxonName(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
+     */
+    @Test
+    public void testSaveTaxonName() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#saveTaxonNameAll(java.util.Collection)}.
-	 */
-	@Test
-	public void testSaveTaxonNameAll() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#saveTaxonNameAll(java.util.Collection)}.
+     */
+    @Test
+    public void testSaveTaxonNameAll() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#removeTaxon(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
-	 */
-	@Test
-	public void testRemoveTaxon() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#removeTaxon(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
+     */
+    @Test
+    public void testRemoveTaxon() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getAllNames(int, int)}.
-	 */
-	@Test
-	public void testGetAllNames() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getAllNames(int, int)}.
+     */
+    @Test
+    public void testGetAllNames() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getRankVocabulary()}.
-	 */
-	@Test
-	@Ignore //FIXME assertSame does not work yet
-	public void testGetRankVocabulary() {
-		//TODO move test to vocabulary service
-		OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
-		assertNotNull(rankVocabulary);
-		assertEquals(66, rankVocabulary.size());
-		Rank highestRank = rankVocabulary.getHighestTerm();
-		assertEquals(Rank.EMPIRE(), highestRank);
-		assertEquals(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
-		assertSame(Rank.EMPIRE(), highestRank);
-		assertSame(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getRankVocabulary()}.
+     */
+    @Test
+    @Ignore //FIXME assertSame does not work yet
+    public void testGetRankVocabulary() {
+        //TODO move test to vocabulary service
+        OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
+        assertNotNull(rankVocabulary);
+        assertEquals(66, rankVocabulary.size());
+        Rank highestRank = rankVocabulary.getHighestTerm();
+        assertEquals(Rank.EMPIRE(), highestRank);
+        assertEquals(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
+        assertSame(Rank.EMPIRE(), highestRank);
+        assertSame(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTypeDesignationVocabulary()}.
-	 */
-	@Test
-	@Ignore  //not yet correctly implemented
-	public void testGetTypeDesignationVocabulary() {
-		//TODO move test to vocabulary service
-		OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary =
-			nameService.getSpecimenTypeDesignationVocabulary();
-		assertNotNull(typeDesignationVocabulary);
-		assertEquals(20, typeDesignationVocabulary.size());
-		SpecimenTypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
-		assertEquals(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
-		assertEquals(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
-		assertSame(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
-		assertSame(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTypeDesignationVocabulary()}.
+     */
+    @Test
+    @Ignore  //not yet correctly implemented
+    public void testGetTypeDesignationVocabulary() {
+        //TODO move test to vocabulary service
+        OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary =
+            nameService.getSpecimenTypeDesignationVocabulary();
+        assertNotNull(typeDesignationVocabulary);
+        assertEquals(20, typeDesignationVocabulary.size());
+        SpecimenTypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
+        assertEquals(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
+        assertEquals(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
+        assertSame(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
+        assertSame(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	public void testGenerateTitleCache() {
-		logger.warn("Not yet implemented");
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    public void testGenerateTitleCache() {
+        logger.warn("Not yet implemented");
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-	public void testDeleteTaxonNameBaseWithNameRelations() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testDeleteTaxonNameBaseWithNameRelations() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
-		nameWithBasionym.setTitleCache("nameWithBasionym", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
+        nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
-		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+        NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
 //		nameWithBasionym.addBasionym(name1);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames);
 
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as name relationships exist.");
-		} catch (Exception e) {
-			if (e.getMessage().contains("Name can't be deleted as it is used in name relationship")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1);
+            Assert.fail("Delete should throw an error as long as name relationships exist.");
+        } catch (Exception e) {
+            if (e.getMessage().contains("Name can't be deleted as it is used in name relationship")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
 //				printDataSet(System.out, tableNames);
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
-		nameWithBasionym.removeBasionyms();
-		nameService.delete(name1); //should throw now exception
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
+        nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
+        nameWithBasionym.removeBasionyms();
+        nameService.delete(name1); //should throw now exception
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
 
-	}
+    }
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
 
-	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
-	public void testDeleteTaxonNameBaseConfiguratorWithNameRelations() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testDeleteTaxonNameBaseConfiguratorWithNameRelations() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
-		nameWithBasionym.setTitleCache("nameWithBasionym", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
+        nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
-		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames);
-		NameDeletionConfigurator config = new NameDeletionConfigurator();
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1, config);
-			Assert.fail("Delete should throw an error as long as name relationships exist.");
-		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
+        NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames);
+        NameDeletionConfigurator config = new NameDeletionConfigurator();
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1, config);
+            Assert.fail("Delete should throw an error as long as name relationships exist.");
+        } catch (Exception e) {
+            if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
 //				printDataSet(System.out, tableNames);
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
 
-		//ignore is basionym for
-		config.setIgnoreIsBasionymFor(true);
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1, config);
-			commitAndStartNewTransaction(tableNames);
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			Assert.assertNull("Name should not be in database anymore",name1);
-		} catch (Exception e) {
-			Assert.fail("Delete should not throw an error for .");
-		}
-	}
+        //ignore is basionym for
+        config.setIgnoreIsBasionymFor(true);
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1, config);
+            commitAndStartNewTransaction(tableNames);
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            Assert.assertNull("Name should not be in database anymore",name1);
+        } catch (Exception e) {
+            Assert.fail("Delete should not throw an error for .");
+        }
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	public void testDeleteTaxonNameBaseConfiguratorWithNameRelationsAll() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    public void testDeleteTaxonNameBaseConfiguratorWithNameRelationsAll() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
-		nameWithBasionym.setTitleCache("nameWithBasionym", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
+        nameWithBasionym.setTitleCache("nameWithBasionym", true);
 
-		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-		name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames);
-		NameDeletionConfigurator config = new NameDeletionConfigurator();
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1, config);
-			Assert.fail("Delete should throw an error as long as name relationships exist.");
-		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
+        NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+        name1.addRelationshipToName(nameWithBasionym,nameRelType , null, null, null);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames);
+        NameDeletionConfigurator config = new NameDeletionConfigurator();
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1, config);
+            Assert.fail("Delete should throw an error as long as name relationships exist.");
+        } catch (Exception e) {
+            if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
 //				printDataSet(System.out, tableNames);
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
 
-		//ignore all name relationships
-		config.setRemoveAllNameRelationships(true);
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1, config);
-			commitAndStartNewTransaction(tableNames);
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			Assert.assertNull("Name should not be in database anymore",name1);
-		} catch (Exception e) {
-			Assert.fail("Delete should not throw an error for .");
-		}
-	}
+        //ignore all name relationships
+        config.setRemoveAllNameRelationships(true);
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1, config);
+            commitAndStartNewTransaction(tableNames);
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            Assert.assertNull("Name should not be in database anymore",name1);
+        } catch (Exception e) {
+            Assert.fail("Delete should not throw an error for .");
+        }
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	public void testDeleteTaxonNameBaseConfiguratorWithHasBasionym() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    public void testDeleteTaxonNameBaseConfiguratorWithHasBasionym() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
-		basionym.setTitleCache("basionym", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
+        basionym.setTitleCache("basionym", true);
 
-		NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
-		basionym.addRelationshipToName(name1,nameRelType , null, null, null);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames);
-		NameDeletionConfigurator config = new NameDeletionConfigurator();
-		config.setIgnoreHasBasionym(false);
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1, config);
-			Assert.fail("Delete should throw an error as long as name relationships exist.");
-		} catch (Exception e) {
-			if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
+        NameRelationshipType nameRelType = (NameRelationshipType)termService.find(NameRelationshipType.BASIONYM().getUuid());
+        basionym.addRelationshipToName(name1,nameRelType , null, null, null);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames);
+        NameDeletionConfigurator config = new NameDeletionConfigurator();
+        config.setIgnoreHasBasionym(false);
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1, config);
+            Assert.fail("Delete should throw an error as long as name relationships exist.");
+        } catch (Exception e) {
+            if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
 //				printDataSet(System.out, tableNames);
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
 
-		//ignore has basionym
-		config.setIgnoreHasBasionym(true);
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1, config);
-			commitAndStartNewTransaction(tableNames);
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			Assert.assertNull("Name should not be in database anymore",name1);
-		} catch (Exception e) {
-			Assert.fail("Delete should not throw an error for .");
-		}
-	}
+        //ignore has basionym
+        config.setIgnoreHasBasionym(true);
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1, config);
+            commitAndStartNewTransaction(tableNames);
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            Assert.assertNull("Name should not be in database anymore",name1);
+        } catch (Exception e) {
+            Assert.fail("Delete should not throw an error for .");
+        }
+    }
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBaseWithHybridRelations() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBaseWithHybridRelations() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		NonViralName<?> parent = BotanicalName.NewInstance(getSpeciesRank());
-		parent.setTitleCache("parent", true);
-		NonViralName<?> child = BotanicalName.NewInstance(getSpeciesRank());
-		child.setTitleCache("child", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        NonViralName<?> parent = BotanicalName.NewInstance(getSpeciesRank());
+        parent.setTitleCache("parent", true);
+        NonViralName<?> child = BotanicalName.NewInstance(getSpeciesRank());
+        child.setTitleCache("child", true);
 
-		HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
-		name1.addHybridParent(parent, relType, null);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
-		Assert.assertEquals("'Parent' should be a parent in a hybrid relation.", 1,parent.getHybridParentRelations().size());
+        HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
+        name1.addHybridParent(parent, relType, null);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
+        Assert.assertEquals("'Parent' should be a parent in a hybrid relation.", 1,parent.getHybridParentRelations().size());
 //		printDataSet(System.out, tableNames);
 
-		//parent
-		try {
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1);
-			//delete via cascade -> no exception
-		} catch (Exception e) {
-			Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + e.getMessage());
-		}
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
-		parent = (NonViralName<?>)nameService.find(parent.getUuid());
-		Assert.assertEquals("'Parent' should not be a parent anymore.", 0,parent.getHybridParentRelations().size());
+        //parent
+        try {
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1);
+            //delete via cascade -> no exception
+        } catch (Exception e) {
+            Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + e.getMessage());
+        }
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+        parent = (NonViralName<?>)nameService.find(parent.getUuid());
+        Assert.assertEquals("'Parent' should not be a parent anymore.", 0,parent.getHybridParentRelations().size());
 
-		//child
-		name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.addHybridChild(child, relType, null);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames);
+        //child
+        name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.addHybridChild(child, relType, null);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames);
 
-		try {
-			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as hybrid child exist.");
-		} catch (Exception e) {
-			if (e.getMessage().contains("Name can't be deleted as it is a parent in")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		name1.removeHybridChild(child);
-		nameService.delete(name1); //should throw now exception
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
-	}
+        try {
+            nameService.delete(name1);
+            Assert.fail("Delete should throw an error as long as hybrid child exist.");
+        } catch (Exception e) {
+            if (e.getMessage().contains("Name can't be deleted as it is a parent in")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
+        name1.removeHybridChild(child);
+        nameService.delete(name1); //should throw now exception
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBaseInConcept() {
-		final String[] tableNames = new String[]{"TaxonNameBase","TaxonBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBaseInConcept() {
+        final String[] tableNames = new String[]{"TaxonNameBase","TaxonBase"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
-		basionym.setTitleCache("basionym", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        TaxonNameBase<?,?> basionym = BotanicalName.NewInstance(getSpeciesRank());
+        basionym.setTitleCache("basionym", true);
 
-		Taxon taxon = Taxon.NewInstance(name1, null);
-		nameService.save(name1);
-		taxonService.save(taxon);
-		commitAndStartNewTransaction(tableNames);
+        Taxon taxon = Taxon.NewInstance(name1, null);
+        nameService.save(name1);
+        taxonService.save(taxon);
+        commitAndStartNewTransaction(tableNames);
 
-		try {
-			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as name is used in a concept.");
-		} catch (Exception e) {
-			if (e.getMessage().contains("Name can't be deleted as it is used in concept")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		taxon = (Taxon)taxonService.find(taxon.getUuid());
-		Assert.assertNotNull("Taxon should still be in database",taxon);
-		taxon.setName(basionym);
-		taxonService.save(taxon);
-		nameService.delete(name1); //should throw now exception
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
-		taxon = (Taxon)taxonService.find(taxon.getUuid());
-		Assert.assertNotNull("Taxon should still be in database",taxon);
-	}
+        try {
+            nameService.delete(name1);
+            Assert.fail("Delete should throw an error as long as name is used in a concept.");
+        } catch (Exception e) {
+            if (e.getMessage().contains("Name can't be deleted as it is used in concept")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
+        taxon = (Taxon)taxonService.find(taxon.getUuid());
+        Assert.assertNotNull("Taxon should still be in database",taxon);
+        taxon.setName(basionym);
+        taxonService.save(taxon);
+        nameService.delete(name1); //should throw now exception
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+        taxon = (Taxon)taxonService.find(taxon.getUuid());
+        Assert.assertNotNull("Taxon should still be in database",taxon);
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBaseAsStoredUnder() {
-		final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBaseAsStoredUnder() {
+        final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		Specimen specimen = Specimen.NewInstance();
-		specimen.setStoredUnder(name1);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        Specimen specimen = Specimen.NewInstance();
+        specimen.setStoredUnder(name1);
 
-		occurrenceService.save(specimen);
-		nameService.save(name1);
-		try {
-			commitAndStartNewTransaction(tableNames);
-			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as name is used for specimen#storedUnder.");
-		} catch (Exception e) {
-			if (e.getMessage().contains("Name can't be deleted as it is used as derivedUnit#storedUnder")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		specimen = (Specimen)occurrenceService.find(specimen.getUuid());
-		Assert.assertNotNull("Specimen should still be in database",name1);
-		specimen.setStoredUnder(null);
-		occurrenceService.saveOrUpdate(specimen);
-		nameService.delete(name1); //should throw now exception
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
-		specimen = (Specimen)occurrenceService.find(specimen.getUuid());
-		Assert.assertNotNull("Specimen should still be in database",specimen);
+        occurrenceService.save(specimen);
+        nameService.save(name1);
+        try {
+            commitAndStartNewTransaction(tableNames);
+            nameService.delete(name1);
+            Assert.fail("Delete should throw an error as long as name is used for specimen#storedUnder.");
+        } catch (Exception e) {
+            if (e.getMessage().contains("Name can't be deleted as it is used as derivedUnit#storedUnder")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
+        specimen = (Specimen)occurrenceService.find(specimen.getUuid());
+        Assert.assertNotNull("Specimen should still be in database",name1);
+        specimen.setStoredUnder(null);
+        occurrenceService.saveOrUpdate(specimen);
+        nameService.delete(name1); //should throw now exception
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+        specimen = (Specimen)occurrenceService.find(specimen.getUuid());
+        Assert.assertNotNull("Specimen should still be in database",specimen);
 
-		occurrenceService.delete(specimen); //this is to better run this test in the test suit
+        occurrenceService.delete(specimen); //this is to better run this test in the test suit
 
-	}
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBaseInSource() {
-		final String[] tableNames = new String[]{"TaxonNameBase","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBaseInSource() {
+        final String[] tableNames = new String[]{"TaxonNameBase","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
-		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(getSpeciesRank());
-		taxonName.setTitleCache("taxonName", true);
-		Taxon taxon = Taxon.NewInstance(taxonName, null);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
+        TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(getSpeciesRank());
+        taxonName.setTitleCache("taxonName", true);
+        Taxon taxon = Taxon.NewInstance(taxonName, null);
 
-		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
-		Feature feature = (Feature)termService.find(Feature.DESCRIPTION().getUuid());
-		Language lang = (Language)termService.find(Language.DEFAULT().getUuid());
-		TextData textData = TextData.NewInstance("Any text", lang, null);
-		textData.setFeature(feature);
-		taxonDescription.addElement(textData);
-		DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, name1, "");
-		textData.addSource(source);
-		taxonService.saveOrUpdate(taxon);
-		nameService.save(name1);
-		try {
-			commitAndStartNewTransaction(tableNames);
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as name is used in a source.");
-		} catch (Exception e) {
-			if (e.getMessage().contains("Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		taxon = (Taxon)taxonService.find(taxon.getUuid());
-		Assert.assertNotNull("Taxon should still be in database",name1);
-		source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
-		source.setNameUsedInSource(null);
-		taxonService.saveOrUpdate(taxon);
-		nameService.delete(name1);  //should throw now exception
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
-		taxon = (Taxon)taxonService.find(taxon.getUuid());
-		Assert.assertNotNull("Taxon should still be in database",taxon);
-		source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
-		Assert.assertNull("Source should not have a nameUsedInSource anymore",source.getNameUsedInSource());
-	}
+        TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
+        Feature feature = (Feature)termService.find(Feature.DESCRIPTION().getUuid());
+        Language lang = (Language)termService.find(Language.DEFAULT().getUuid());
+        TextData textData = TextData.NewInstance("Any text", lang, null);
+        textData.setFeature(feature);
+        taxonDescription.addElement(textData);
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, name1, "");
+        textData.addSource(source);
+        taxonService.saveOrUpdate(taxon);
+        nameService.save(name1);
+        try {
+            commitAndStartNewTransaction(tableNames);
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1);
+            Assert.fail("Delete should throw an error as long as name is used in a source.");
+        } catch (Exception e) {
+            if (e.getMessage().contains("Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
+        taxon = (Taxon)taxonService.find(taxon.getUuid());
+        Assert.assertNotNull("Taxon should still be in database",name1);
+        source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
+        source.setNameUsedInSource(null);
+        taxonService.saveOrUpdate(taxon);
+        nameService.delete(name1);  //should throw now exception
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+        taxon = (Taxon)taxonService.find(taxon.getUuid());
+        Assert.assertNotNull("Taxon should still be in database",taxon);
+        source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
+        Assert.assertNull("Source should not have a nameUsedInSource anymore",source.getNameUsedInSource());
+    }
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBaseAsType() {
-		final String[] tableNames = new String[]{"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBaseAsType() {
+        final String[] tableNames = new String[]{"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name used as type", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name used as type", true);
 
-		NonViralName<?> higherName = BotanicalName.NewInstance(getGenusRank());
-		higherName.setTitleCache("genus name", true);
-		NameTypeDesignationStatus typeStatus = (NameTypeDesignationStatus)termService.find(NameTypeDesignationStatus.AUTOMATIC().getUuid());
-		boolean addToAllHomotypicNames = true;
-		higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
-		nameService.save(higherName);
-		try {
-			commitAndStartNewTransaction(tableNames);
-			name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-			nameService.delete(name1);
-			Assert.fail("Delete should throw an error as long as name is used in a type designation.");
-		} catch (Exception e) {
-			if (e.getMessage().contains("Name can't be deleted as it is used as a name type")){
-				//ok
-				endTransaction();  //exception rolls back transaction!
-				startNewTransaction();
-			}else{
-				Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-			}
-		}
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNotNull("Name should still be in database",name1);
-		higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
-		higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
+        NonViralName<?> higherName = BotanicalName.NewInstance(getGenusRank());
+        higherName.setTitleCache("genus name", true);
+        NameTypeDesignationStatus typeStatus = (NameTypeDesignationStatus)termService.find(NameTypeDesignationStatus.AUTOMATIC().getUuid());
+        boolean addToAllHomotypicNames = true;
+        higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
+        nameService.save(higherName);
+        try {
+            commitAndStartNewTransaction(tableNames);
+            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+            nameService.delete(name1);
+            Assert.fail("Delete should throw an error as long as name is used in a type designation.");
+        } catch (Exception e) {
+            if (e.getMessage().contains("Name can't be deleted as it is used as a name type")){
+                //ok
+                endTransaction();  //exception rolls back transaction!
+                startNewTransaction();
+            }else{
+                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+            }
+        }
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNotNull("Name should still be in database",name1);
+        higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
+        higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
 //		nameService.deleteTypeDesignation(higherName,commitAndStartNewTransaction(tableNames) );  //deletes the complete designation  //both options can be used
-		nameService.delete(name1);  //should throw now exception
-		commitAndStartNewTransaction(tableNames);
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
-		higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
-		Assert.assertNotNull("Higher name should still exist in database",higherName);
-		Assert.assertEquals("Higher name should not have type designations anymore",1, higherName.getTypeDesignations().size());
-	}
+        nameService.delete(name1);  //should throw now exception
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+        higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
+        Assert.assertNotNull("Higher name should still exist in database",higherName);
+        Assert.assertEquals("Higher name should not have type designations anymore",1, higherName.getTypeDesignations().size());
+    }
 
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBase() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBase() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1", true);
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1", true);
 
-		//TaxonNameDescription
-		name1 = BotanicalName.NewInstance(getSpeciesRank());
-		TaxonNameDescription.NewInstance(name1);
-		nameService.saveOrUpdate(name1);
-		commitAndStartNewTransaction(tableNames);
+        //TaxonNameDescription
+        name1 = BotanicalName.NewInstance(getSpeciesRank());
+        TaxonNameDescription.NewInstance(name1);
+        nameService.saveOrUpdate(name1);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		nameService.delete(name1);  //should throw now exception
-		setComplete();
-		endTransaction();
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		Assert.assertNull("Name should not be in database anymore",name1);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        nameService.delete(name1);  //should throw now exception
+        setComplete();
+        endTransaction();
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
 
 //		printDataSet(System.out, tableNames);
 
 
-		//NomenclaturalStatus
-		name1 = BotanicalName.NewInstance(getSpeciesRank());
-		NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)termService.find(NomenclaturalStatusType.ILLEGITIMATE().getUuid());
-		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(nomStatusType);
-		name1.addStatus(status);
-		nameService.saveOrUpdate(name1);
-		commitAndStartNewTransaction(tableNames);
+        //NomenclaturalStatus
+        name1 = BotanicalName.NewInstance(getSpeciesRank());
+        NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)termService.find(NomenclaturalStatusType.ILLEGITIMATE().getUuid());
+        NomenclaturalStatus status = NomenclaturalStatus.NewInstance(nomStatusType);
+        name1.addStatus(status);
+        nameService.saveOrUpdate(name1);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		nameService.delete(name1);  //should throw now exception
-		setComplete();
-		endTransaction();
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        nameService.delete(name1);  //should throw now exception
+        setComplete();
+        endTransaction();
 //		printDataSet(System.out, tableNames);
 
 
-		//Type Designations
-		name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name with type designation", true);
-		SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
-		SpecimenTypeDesignationStatus typeStatus = (SpecimenTypeDesignationStatus)termService.find(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid());
-		typeDesignation.setTypeStatus(typeStatus);
-		Specimen specimen = Specimen.NewInstance();
-		specimen.setTitleCache("Type specimen", true);
-		occurrenceService.save(specimen);
-		typeDesignation.setTypeSpecimen(specimen);
+        //Type Designations
+        name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name with type designation", true);
+        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+        SpecimenTypeDesignationStatus typeStatus = (SpecimenTypeDesignationStatus)termService.find(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid());
+        typeDesignation.setTypeStatus(typeStatus);
+        Specimen specimen = Specimen.NewInstance();
+        specimen.setTitleCache("Type specimen", true);
+        occurrenceService.save(specimen);
+        typeDesignation.setTypeSpecimen(specimen);
 
-		name1.addTypeDesignation(typeDesignation, true);
-		nameService.save(name1);
-		commitAndStartNewTransaction(tableNames);
+        name1.addTypeDesignation(typeDesignation, true);
+        nameService.save(name1);
+        commitAndStartNewTransaction(tableNames);
 //		printDataSet(System.out, tableNames);
 
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		nameService.delete(name1);  //should throw now exception
-		setComplete();
-		endTransaction();
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        nameService.delete(name1);  //should throw now exception
+        setComplete();
+        endTransaction();
 //		printDataSet(System.out, tableNames);
 
-	}
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
-	 */
-	@Test
-	@Ignore //currently does not run in suite
-	public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
-		final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
+     */
+    @Test
+    @Ignore //currently does not run in suite
+    public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
+        final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
-		//Type Designations for homotypical group with > 1 names
-		NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
-		name1.setTitleCache("Name1 with type designation", true);
-		NonViralName<?> name2 = BotanicalName.NewInstance(getSpeciesRank());
-		name2.setTitleCache("Name2 with type designation", true);
-		name2.setHomotypicalGroup(name1.getHomotypicalGroup());
+        //Type Designations for homotypical group with > 1 names
+        NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
+        name1.setTitleCache("Name1 with type designation", true);
+        NonViralName<?> name2 = BotanicalName.NewInstance(getSpeciesRank());
+        name2.setTitleCache("Name2 with type designation", true);
+        name2.setHomotypicalGroup(name1.getHomotypicalGroup());
 
-		Specimen specimen = Specimen.NewInstance();
-		specimen.setTitleCache("Type specimen 2", true);
-		occurrenceService.save(specimen);
-		SpecimenTypeDesignationStatus typeStatus = (SpecimenTypeDesignationStatus)termService.find(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid());
+        Specimen specimen = Specimen.NewInstance();
+        specimen.setTitleCache("Type specimen 2", true);
+        occurrenceService.save(specimen);
+        SpecimenTypeDesignationStatus typeStatus = (SpecimenTypeDesignationStatus)termService.find(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid());
 
-		SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
-		typeDesignation.setTypeStatus(typeStatus);
-		typeDesignation.setTypeSpecimen(specimen);
+        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+        typeDesignation.setTypeStatus(typeStatus);
+        typeDesignation.setTypeSpecimen(specimen);
 
-		boolean addToAllNames = true;
-		name1.addTypeDesignation(typeDesignation, addToAllNames);
-		nameService.saveOrUpdate(name1);
-		commitAndStartNewTransaction(tableNames);
+        boolean addToAllNames = true;
+        name1.addTypeDesignation(typeDesignation, addToAllNames);
+        nameService.saveOrUpdate(name1);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-		nameService.delete(name1);  //should throw now exception
-		setComplete();
-		endTransaction();
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        nameService.delete(name1);  //should throw now exception
+        setComplete();
+        endTransaction();
 //		printDataSet(System.out, tableNames);
 
-	}
+    }
 
-	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-	public void testDeleteTypeDesignation() {
-		final String[] tableNames = new String[]{
-				"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase",
-				"SpecimenOrObservationBase"};
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testDeleteTypeDesignation() {
+        final String[] tableNames = new String[]{
+                "TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase",
+                "SpecimenOrObservationBase"};
 
 //		BotanicalName name1 = BotanicalName.NewInstance(getSpeciesRank());
 //		name1.setTitleCache("Name1");
@@ -779,167 +779,167 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //
 
 
-		TaxonNameBase name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		TaxonNameBase name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		TaxonNameBase name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		Specimen specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		Fossil fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        TaxonNameBase name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        TaxonNameBase name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        TaxonNameBase name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        Specimen specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        Fossil fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
-		Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
-		Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
+        Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
+        Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
+        Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
-		Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-		Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
+        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-		nameService.deleteTypeDesignation(null, null);
+        nameService.deleteTypeDesignation(null, null);
 
-		commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		desigs1 = name1.getTypeDesignations();
-		desigs2 = name2.getTypeDesignations();
-		desigs3 = name3.getTypeDesignations();
+        desigs1 = name1.getTypeDesignations();
+        desigs2 = name2.getTypeDesignations();
+        desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
-		Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-		Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
+        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-		nameService.deleteTypeDesignation(name1, null);
+        nameService.deleteTypeDesignation(name1, null);
 
-		commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		desigs1 = name1.getTypeDesignations();
-		desigs2 = name2.getTypeDesignations();
-		desigs3 = name3.getTypeDesignations();
+        desigs1 = name1.getTypeDesignations();
+        desigs2 = name2.getTypeDesignations();
+        desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
-		Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-		Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
+        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
-		SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
-		nameService.deleteTypeDesignation(name2, desig2);
+        SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
+        nameService.deleteTypeDesignation(name2, desig2);
 
-		commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		desigs1 = name1.getTypeDesignations();
-		desigs2 = name2.getTypeDesignations();
-		desigs3 = name3.getTypeDesignations();
+        desigs1 = name1.getTypeDesignations();
+        desigs2 = name2.getTypeDesignations();
+        desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
-		Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-		Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
+        Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
-		NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
-		nameService.deleteTypeDesignation(name3, desig3);
+        NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
+        nameService.deleteTypeDesignation(name3, desig3);
 
-		commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		desigs1 = name1.getTypeDesignations();
-		desigs2 = name2.getTypeDesignations();
-		desigs3 = name3.getTypeDesignations();
+        desigs1 = name1.getTypeDesignations();
+        desigs2 = name2.getTypeDesignations();
+        desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
-		Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-		Assert.assertEquals("name3 should have 0 type designations", 0, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
+        Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
+        Assert.assertEquals("name3 should have 0 type designations", 0, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
-	}
+    }
 
-	@Test
-	@DataSet
-	public void testDeleteTypeDesignationAllNames() {
-		final String[] tableNames = new String[]{
-				"TaxonNameBase","TypeDesignationBase",
-				"TaxonNameBase_TypeDesignationBase","SpecimenOrObservationBase"};
+    @Test
+    @DataSet
+    public void testDeleteTypeDesignationAllNames() {
+        final String[] tableNames = new String[]{
+                "TaxonNameBase","TypeDesignationBase",
+                "TaxonNameBase_TypeDesignationBase","SpecimenOrObservationBase"};
 
 
-		TaxonNameBase name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		TaxonNameBase name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		TaxonNameBase name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		Specimen specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		Fossil fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        TaxonNameBase name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        TaxonNameBase name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        TaxonNameBase name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        Specimen specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        Fossil fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
-		Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
-		Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
+        Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
+        Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
+        Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
-		Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-		Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
+        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-		SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
+        SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
 
-		nameService.deleteTypeDesignation(null, desig2);
+        nameService.deleteTypeDesignation(null, desig2);
 
-		commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
-		name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-		name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-		name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-		specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
-		fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
+        name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
+        name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
+        name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")),Specimen.class);
+        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")),Fossil.class);
 
-		desigs1 = name1.getTypeDesignations();
-		desigs2 = name2.getTypeDesignations();
-		desigs3 = name3.getTypeDesignations();
+        desigs1 = name1.getTypeDesignations();
+        desigs2 = name2.getTypeDesignations();
+        desigs3 = name3.getTypeDesignations();
 
-		Assert.assertEquals("name1 should have 1 type designations", 1, desigs1.size());
-		Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-		Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-		Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("name1 should have 1 type designations", 1, desigs1.size());
+        Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
+        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
+        Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
+        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
 
-	}
+    }
 
-	/**
-	 * @return
-	 */
-	private Rank getSpeciesRank() {
-		return (Rank)termService.find(Rank.uuidSpecies);
-	}
+    /**
+     * @return
+     */
+    private Rank getSpeciesRank() {
+        return (Rank)termService.find(Rank.uuidSpecies);
+    }
 
-	/**
-	 * @return
-	 */
-	private Rank getGenusRank() {
-		return (Rank)termService.find(Rank.uuidGenus);
-	}
+    /**
+     * @return
+     */
+    private Rank getGenusRank() {
+        return (Rank)termService.find(Rank.uuidGenus);
+    }
 
 
 }
