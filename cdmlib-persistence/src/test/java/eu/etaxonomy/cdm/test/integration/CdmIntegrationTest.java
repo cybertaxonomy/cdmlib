@@ -42,6 +42,7 @@ import org.dbunit.dataset.filter.ExcludeTableFilter;
 import org.dbunit.dataset.filter.ITableFilterSimple;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.dataset.xml.XmlDataSetWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
@@ -251,6 +252,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             connection = getConnection();
             IDataSet actualDataSet = connection.createDataSet(tableNames);
             FlatXmlDataSet.write(actualDataSet, out);
+
+            
         } catch (Exception e) {
             logger.error(e);
         } finally {
@@ -262,6 +265,42 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         }
     }
 
+    /**
+     * Prints the named tables to an output stream, using dbunit's
+     * {@link org.dbunit.dataset.xml.FlatXmlWriter}.
+     *
+     * @see {@link #printDataSet(OutputStream)}
+     * @param out
+     * @param filter
+     */
+    public void printDataSet(OutputStream out, ITableFilterSimple filter) {
+        if (filter == null){
+        	filter = new ExcludeTableFilter();
+        }
+        
+    	IDatabaseConnection connection = null;
+
+        try {
+            connection = getConnection();
+//            FlatXmlDataSet.write(actualDataSet, out);
+
+            IDataSet dataSet = new DatabaseDataSet(connection, false, filter);
+
+            FlatXmlWriter writer = new FlatXmlWriter(out);
+            writer.write(dataSet);
+            
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException sqle) {
+                logger.error(sqle);
+            }
+        }
+    }
+
+    
     /**
      * Prints a dtd to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatDtdDataSet}.
