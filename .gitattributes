@@ -509,7 +509,6 @@ cdmlib-io/src/main/resources/schema/xml/XMLSchema.xsd -text
 cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMappingTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportIntegrationTest.java -text
-cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
