@@ -35,7 +35,6 @@ public class StreamUtils {
 	 * @return
 	 * @throws IOException
 	 * 
-	 * TODO move into commons
 	 */
 	public static InputStream streamReplace(InputStream stream, String search,	String replace) throws IOException {
 		InputStreamReader reader = new InputStreamReader(stream);
