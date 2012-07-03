@@ -21,6 +21,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.common.media.MediaInfo;
@@ -101,22 +103,39 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 
 		try {
 			this.institutionCode = unit.get("institution").replaceAll("None", null);
-		} catch (Exception e) {this.institutionCode = "";}
+		} catch (Exception e) {
+			this.institutionCode = "";
+		}
 
-		try {this.collectionCode = unit.get("collection").replaceAll("None", null);
-		} catch (Exception e) {this.collectionCode = "";}
+		try {
+			this.collectionCode = unit.get("collection").replaceAll("None", null);
+		} catch (Exception e) {
+			this.collectionCode = "";
+		}
 
-		try {this.unitID = unit.get("unitID").replaceAll("None", null);
-		} catch (Exception e) {this.unitID = "";}
+		try {
+			this.unitID = unit.get("unitID").replaceAll("None", null);
+		} catch (Exception e) {
+			this.unitID = "";
+		}
 
-		try {this.recordBasis = unit.get("recordBasis").replaceAll("None", null);
-		} catch (Exception e) {this.recordBasis = "";}
+		try {
+			this.recordBasis = unit.get("recordBasis").replaceAll("None", null);
+		} catch (Exception e) {
+			this.recordBasis = "";
+		}
 
-		try {this.accessionNumber = null;
-		} catch (Exception e) {this.accessionNumber = "";}
+		try {
+			this.accessionNumber = null;
+		} catch (Exception e) {
+			this.accessionNumber = "";
+		}
 
-		try {this.locality = unit.get("locality").replaceAll("None", null);
-		} catch (Exception e) {this.locality = "";}
+		try {
+			this.locality = unit.get("locality").replaceAll("None", "");
+		} catch (Exception e) {
+			this.locality = "";
+		}
 
 		try {this.longitude = Double.valueOf(unit.get("longitude"));
 		} catch (Exception e) {this.longitude = 0.0;}
@@ -220,18 +239,15 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void setTaxonNameBase(SpecimenSynthesysExcelImportConfigurator config, DerivedUnitBase derivedThing, Reference sec){
+	private void setTaxonNameBase(SpecimenSynthesysExcelImportConfigurator config, DerivedUnitFacade derivedUnit, Reference sec){
 		NonViralName<?> taxonName = null;
-		String fullScientificNameString;
 		Taxon taxon = null;
-		DeterminationEvent determinationEvent = null;
-		List<TaxonBase> names = null;
-
+		
 		String scientificName="";
 		boolean preferredFlag=false;
 
 		for (int i = 0; i < this.identificationList.size(); i++) {
-			fullScientificNameString = this.identificationList.get(i);
+			String fullScientificNameString = this.identificationList.get(i);
 			fullScientificNameString = fullScientificNameString.replaceAll(" et ", " & ");
 			if (fullScientificNameString.indexOf("_preferred_") != -1){
 				scientificName = fullScientificNameString.split("_preferred_")[0];
@@ -240,31 +256,34 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 					preferredFlag=true;
 				else
 					preferredFlag=false;
+			}else {
+				scientificName = fullScientificNameString;
 			}
-			else scientificName = fullScientificNameString;
 
-			if (fullScientificNameString.indexOf("_code_") != -1)	
+			if (fullScientificNameString.indexOf("_code_") != -1){	
 				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
-
+			}
 			if (config.getDoAutomaticParsing()){	
 				taxonName = this.parseScientificName(scientificName);	
 			} else {
+				taxonName = NonViralName.NewInstance(null);
 				taxonName.setTitleCache(scientificName, true);
 			}
 
 			if (config.getDoReUseTaxon()){
 				try{
-					names = getTaxonService().searchTaxaByName(scientificName, sec);
-					taxon = (Taxon)names.get(0);
+					List<TaxonBase> taxa = getTaxonService().searchTaxaByName(scientificName, sec);
+					taxon = (Taxon)taxa.get(0);
+				}catch(Exception e){
+					taxon=null;
 				}
-				catch(Exception e){taxon=null;}
 			}
 			if (!config.getDoReUseTaxon() || taxon == null){
 				getNameService().save(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 			}
 
-			determinationEvent = DeterminationEvent.NewInstance();
+			DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
 			determinationEvent.setPreferredFlag(preferredFlag);
 //			no reference in the GBIF INDEX
@@ -273,7 +292,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 //			reference.setTitleCache(this.referenceList.get(l));
 //			determinationEvent.addReference(reference);
 //			}
-			derivedThing.addDetermination(determinationEvent);
+			derivedUnit.addDetermination(determinationEvent);
 		}
 
 	}
@@ -300,7 +319,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 		if (this.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
 			if (taxonName.hasProblem())
-				problem=true;;}
+				problem=true;}
 		if (this.nomenclatureCode.toString().equals("Bacterial")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
 			if (taxonName.hasProblem())
@@ -309,7 +328,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 		if (this.nomenclatureCode.toString().equals("Cultivar")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP, null);
 			if (taxonName.hasProblem())
-				problem=true;;
+				problem=true;
 		}
 //		if (this.nomenclatureCode.toString().equals("Viral")){
 //		ViralName taxonName = (ViralName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
@@ -327,51 +346,50 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 
 
 	/*
-	 * Store the unit with its Gathering informations in the CDM
+	 * Store the unit with it's Gathering informations in the CDM
 	 */
 	public boolean start(SpecimenSynthesysExcelImportConfigurator config){
 		boolean result = true;
-		TransactionStatus tx = null;
 
-		tx = startTransaction();
+		TransactionStatus tx = startTransaction();
 		try {
-			Reference sec = config.getTaxonReference();
+			Reference<?> sec = config.getTaxonReference();
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
 			 */
-			DerivedUnitBase derivedThing = null;
+			DerivedUnitFacade derivedUnit = null;
 			//create specimen
 			boolean rbFound=false;
 			if (this.recordBasis != null){
 				if (this.recordBasis.toLowerCase().startsWith("s")) {//specimen
-					derivedThing = Specimen.NewInstance();
+					derivedUnit = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
 					rbFound = true;
 				}
 				else if (this.recordBasis.toLowerCase().startsWith("o")) {//observation
-					derivedThing = Observation.NewInstance();	
+					derivedUnit = DerivedUnitFacade.NewInstance(DerivedUnitType.Observation);
 					rbFound = true;
 				}
 				else if (this.recordBasis.toLowerCase().startsWith("l")) {//living -> fossil, herbarium sheet....???
-					derivedThing = LivingBeing.NewInstance();
+					derivedUnit = DerivedUnitFacade.NewInstance(DerivedUnitType.LivingBeing);
 					rbFound = true;
 				}
 				if (! rbFound){
 					logger.info("The basis of record does not seem to be known: "+this.recordBasis);
-					derivedThing = DerivedUnit.NewInstance();
+					derivedUnit = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit);
 				}
 			}
 			else{
 				logger.info("The basis of record is null");
-				derivedThing = DerivedUnit.NewInstance();
+				derivedUnit = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit);
 			}
 
-			this.setTaxonNameBase(config, derivedThing, sec);
+			this.setTaxonNameBase(config, derivedUnit, sec);
 
 
 			//set catalogue number (unitID)
-			derivedThing.setCatalogNumber(this.unitID);
-			derivedThing.setAccessionNumber(this.accessionNumber);
+			derivedUnit.setCatalogNumber(this.unitID);
+			derivedUnit.setAccessionNumber(this.accessionNumber);
 			
 
 			/**
@@ -382,7 +400,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			//manage collection
 			Collection collection = this.getCollection(this.collectionCode, institution, config); 
 			//link specimen & collection
-			derivedThing.setCollection(collection);
+			derivedUnit.setCollection(collection);
 
 			/**
 			 * GATHERING EVENT
@@ -399,13 +417,10 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 //			for (int i=0; i<nas.size();i++)
 //				unitsGatheringEvent.addArea(nas.get(i));
 
-
-			//create field/observation
-			FieldObservation fieldObservation = FieldObservation.NewInstance();
 			//add fieldNumber
-			fieldObservation.setFieldNumber(this.fieldNumber);
+			derivedUnit.setFieldNumber(this.fieldNumber);
 			//join gatheringEvent to fieldObservation
-			fieldObservation.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
+			derivedUnit.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
 			//add Multimedia URLs
 			if(this.multimediaObjects.size()>0){
 				MediaRepresentation representation;
@@ -426,26 +441,21 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 							representation.addRepresentationPart(imf);
 							media = Media.NewInstance();
 							media.addRepresentation(representation);
-							fieldObservation.addMedia(media);
+							derivedUnit.addFieldObjectMedia(media);
 						}
 					}
 				}
 			}
-//			//link fieldObservation and specimen
-			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
-			derivationEvent.addOriginal(fieldObservation);
-			derivedThing.addDerivationEvent(derivationEvent);
 
 			/**
 			 * SAVE AND STORE DATA
 			 */			
-
 			getTermService().save(areaCountry);//save it sooner
 			//ONLY FOR ABCD XML DATA
 //			for (int i=0; i<nas.size();i++)
 //				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
 			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
-			getOccurrenceService().save(derivedThing);
+			getOccurrenceService().save(derivedUnit.innerDerivedUnit());
 
 			logger.info("saved new specimen ...");
 
@@ -493,8 +503,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 	 */
 	@Override
 	protected void doInvoke(SpecimenSynthesysExcelImportState state) {
-		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
-		SpecimenSythesysExcelImport test = new SpecimenSythesysExcelImport();
+		boolean success = true;
 		URI source = state.getConfig().getSource();
 		ArrayList<HashMap<String,String>> unitsList = null;
 		try{
@@ -504,17 +513,19 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 			warnProgress(state, message, e);
 			logger.error(message);
 		}
-		System.out.println("unitsList"+unitsList);
+//		System.out.println("unitsList"+unitsList);
 		if (unitsList != null){
 			HashMap<String,String> unit=null;
 			for (int i=0; i<unitsList.size();i++){
 				unit = unitsList.get(i);
-				test.setUnitPropertiesExcel(unit);//and then invoke
-				test.start(state.getConfig());
-				state.getConfig().setDbSchemaValidation(DbSchemaValidation.UPDATE);
+				//FIXME do this via state
+				this.setUnitPropertiesExcel(unit);//and then invoke
+				success &= this.start(state.getConfig());
 			}
 		}
-
+		if (success == false){
+			state.setUnsuccessfull();
+		}
 		return;
 	}
 

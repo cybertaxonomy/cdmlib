@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -27,6 +28,9 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -34,7 +38,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @created 29.01.2009
  * @version 1.0
  */
-@Ignore //this is just a copy of the ABCD import test. It still needs to be adapted 
+//@Ignore("Test class is just a copy of the ABCD import test. It still needs to be adapted")  
 public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
@@ -50,16 +54,11 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 	private IImportConfigurator configurator;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		try {
-			configurator = SpecimenSynthesysExcelImportConfigurator.NewInstance(url.toURI(), null);
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
+		configurator = SpecimenSynthesysExcelImportConfigurator.NewInstance(url.toURI(), null);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	
@@ -74,8 +73,10 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 10", 10, nameService.count(null));
-		//assertEquals("Number of specimen should be 10", 10, occurrenceService.count(DerivedUnitBase.class));
+		assertEquals("Number of TaxonNames should be 3", 3, nameService.count(null));
+		assertEquals("Number of specimen should be 6", 6, occurrenceService.count(SpecimenOrObservationBase.class));
+		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
+		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(FieldObservation.class));
 		
 	}
 

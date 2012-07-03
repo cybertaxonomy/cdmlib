@@ -159,7 +159,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 			return false;
 		}
 				
-		Reference sourceReference = config.getSourceReference();
+		config.getSourceReference();
 		logger.info("Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'");
 		
 		
