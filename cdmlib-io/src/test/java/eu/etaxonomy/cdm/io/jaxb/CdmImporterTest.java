@@ -54,13 +54,14 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	@DataSet
 	@ExpectedDataSet("CdmImporterTest.xml")
 	@Ignore
-	// FIXME Ignoring this test since it has probelems with the dataset and unitils 3.x
+	// FIXME Dataset file is corrupt since moving to unitils. Need to check what is  
+	//		Ignoring this test since it has probelems with the dataset and unitils 3.x
 	// 	     => create new dataset with void eu.etaxonomy.cdm.database.TestingTermInitializerTest.testPrintDataSet()
 	//		 this method has some problem though
+	/**
+	 * this test imports an empty data set and tests that this empty import is changing nothing
+	 */
 	public void testImport() throws Exception {
-		/**
-		 * this test imports an empty data set and tests if this empty import is changing nothing
-		 */
 		jaxbImport.doInvoke(new JaxbImportState(configurator));
 //		testExpectedDataSet(this.getClass().getResourceAsStream("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.testImport-result.xml"));
 	}
