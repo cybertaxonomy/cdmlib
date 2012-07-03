@@ -60,7 +60,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	final static boolean MAKE_EMPTY = true;
 	final static boolean MAKE_NOT_EMPTY = false;
 	
-	private boolean authorIsAlwaysTeam = true;
+	private boolean authorIsAlwaysTeam = false;
 	
 	public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
@@ -984,7 +984,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseAuthors(eu.etaxonomy.cdm.model.name.NonViralName, java.lang.String)
 	 */
-	@Override
+//	@Override
 	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException{
 		TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
