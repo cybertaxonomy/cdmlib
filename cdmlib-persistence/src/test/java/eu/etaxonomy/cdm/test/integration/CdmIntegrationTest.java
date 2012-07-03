@@ -38,6 +38,8 @@ import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITableIterator;
+import org.dbunit.dataset.filter.ExcludeTableFilter;
+import org.dbunit.dataset.filter.ITableFilterSimple;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.XmlDataSetWriter;
@@ -168,13 +170,21 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see FlatFullXmlWriter
      */
     public void printDataSetWithNull(OutputStream out) {
-        IDatabaseConnection connection = null;
-
+    	printDataSetWithNull(out, null);
+    }
+    
+    public void printDataSetWithNull(OutputStream out, ITableFilterSimple filter) {
+        if (filter == null){
+        	filter = new ExcludeTableFilter();
+        }
+    	IDatabaseConnection connection = null;
+        
+        
         try {
             connection = getConnection();
 
 //			IDataSet dataSet = connection.createDataSet();
-            DatabaseDataSet dataSet = new DatabaseDataSet(connection, false);
+            DatabaseDataSet dataSet = new DatabaseDataSet(connection, false, filter);
 
             FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
             writer.write(dataSet);
