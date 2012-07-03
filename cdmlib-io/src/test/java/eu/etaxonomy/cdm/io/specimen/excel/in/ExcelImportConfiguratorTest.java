@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -70,6 +71,7 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 	}
 	
 	@Test
+	@DataSet("../../../BlankDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
