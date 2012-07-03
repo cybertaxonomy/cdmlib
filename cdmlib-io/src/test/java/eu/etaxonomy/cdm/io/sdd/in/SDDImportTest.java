@@ -64,7 +64,7 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../BlankDataSet.xml")
+    @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="../../BlankDataSet.xml")
 	public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
         this.setComplete();
