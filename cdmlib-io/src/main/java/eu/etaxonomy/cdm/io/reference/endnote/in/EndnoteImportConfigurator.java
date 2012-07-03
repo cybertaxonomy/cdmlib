@@ -48,13 +48,13 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	
 	//	rdfNamespace
 	Namespace EndnoteNamespace;
-/*TODO: wieder zurück!!!
+
+	@Override
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			EndnoteRecordsImport.class
 		};
 	};
-*/
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -214,11 +214,7 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 		this.placeholderClass = placeholderClass;
 	}
 
-	@Override
-	protected void makeIoClassList() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	
 }
