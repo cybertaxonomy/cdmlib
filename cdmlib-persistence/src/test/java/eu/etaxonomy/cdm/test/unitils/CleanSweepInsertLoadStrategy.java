@@ -43,15 +43,16 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
         // will clear all data in the DataSet except all term related tables
         // before doing a CLEAN_INSERT:
         MultiSchemaDataSet multiSchemaDataset = null;
+        URL fileUrl = null;
         try {
             MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
-            URL fileUrl = getClass().getClassLoader().getResource(clearDataResource);
+            fileUrl = getClass().getClassLoader().getResource(clearDataResource);
             if (fileUrl == null) {
                 throw new IOException("the Resource " + clearDataResource + " could not be found");
             }
             multiSchemaDataset = dataSetFactory.createDataSet(new File(fileUrl.toURI()));
         } catch (Exception e) {
-            logger.error("unable to load the clearing dataset as resource", e);
+            logger.error("unable to load the clearing dataset as resource from " + fileUrl.toString(), e);
         }
 
         if(multiSchemaDataset != null){
