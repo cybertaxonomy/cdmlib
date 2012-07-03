@@ -45,12 +45,14 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -59,7 +61,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
@@ -406,6 +410,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			commonTaxon = getAcceptedTaxon(taxonBase);
 			if (taxonBase != null){
 				commonName = taxonBase.getName();
+			}else{
+				commonTaxon = createTaxonFromDetermination(state, commonDetermination);
+				commonName = commonTaxon.getName();
 			}
 		}
 		
@@ -461,6 +468,104 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			isFirstDetermination = false;
 		}
 	}
+
+	private Taxon createTaxonFromDetermination( SpecimenCdmExcelImportState state, DeterminationLight commonDetermination) {
+		
+		//rank
+		Rank rank;
+		try {
+			rank = StringUtils.isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrAbbreviation(commonDetermination.rank, true);
+		} catch (UnknownCdmTypeException e) {
+			rank = null;
+		}
+
+		//name
+		NonViralName<?> name;
+		INonViralNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
+		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+		if (StringUtils.isNotBlank(commonDetermination.fullName)){
+			name = parser.parseFullName(commonDetermination.fullName, nc, rank);
+			if (StringUtils.isBlank(name.getAuthorshipCache()) && StringUtils.isNotBlank(commonDetermination.author)){
+				setAuthorship(name, commonDetermination.author, parser);
+			}
+		}else{
+			if (nc != null){
+				name = (NonViralName)nc.getNewTaxonNameInstance(rank);
+			}else{
+				name = NonViralName.NewInstance(rank);
+			}
+			if (StringUtils.isNotBlank(commonDetermination.genus)){
+				name.setGenusOrUninomial(commonDetermination.genus);
+			}
+			if (StringUtils.isNotBlank(commonDetermination.speciesEpi)){
+				name.setSpecificEpithet(commonDetermination.speciesEpi);
+			}
+			if (StringUtils.isNotBlank(commonDetermination.infraSpeciesEpi)){
+				name.setInfraSpecificEpithet(commonDetermination.infraSpeciesEpi);
+			}
+			if (StringUtils.isNotBlank(commonDetermination.author)){
+				setAuthorship(name, commonDetermination.author, parser);
+			}
+			//guess rank if null
+			if (name.getRank() == null){
+				if (name.getInfraGenericEpithet() != null && name.getSpecificEpithet() == null){
+					name.setRank(Rank.INFRAGENERICTAXON());
+				}else if (name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() == null){
+					name.setRank(Rank.SPECIES());
+				}else if (name.getInfraSpecificEpithet() != null){
+					name.setRank(Rank.INFRASPECIFICTAXON());
+				}
+				
+			}
+			
+		}
+		//sec
+		Reference<?> sec = null;
+		if (StringUtils.isNotBlank(commonDetermination.determinedBy)){
+			sec = ReferenceFactory.newGeneric();
+			TeamOrPersonBase determinedBy;
+			BotanicalName dummyName = BotanicalName.NewInstance(Rank.SPECIES());
+			try {
+				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
+				determinedBy = (TeamOrPersonBase)dummyName.getCombinationAuthorTeam();
+			} catch (StringNotParsableException e) {
+				determinedBy = Team.NewTitledInstance(commonDetermination.determinedBy, commonDetermination.determinedBy);
+			}
+			sec.setAuthorTeam(determinedBy);
+		}
+		
+		//taxon
+		Taxon taxon = Taxon.NewInstance(name, sec);
+
+		if (StringUtils.isNotBlank(commonDetermination.family)){
+			if (name.getRank() == null || name.getRank().isLower(Rank.FAMILY()) ){
+				logger.warn("Family taxon could not be created");
+			}
+		}
+		
+		//return
+		return taxon;
+		
+	}
+
+
+
+
+	private void setAuthorship(NonViralName name, String author, INonViralNameParser<NonViralName> parser) {
+		if (name.isInstanceOf(BotanicalName.class) || name.isInstanceOf(ZoologicalName.class)){
+			try {
+				parser.parseAuthors(name, author);
+			} catch (StringNotParsableException e) {
+				name.setAuthorshipCache(author);
+			}		
+		}else{
+			name.setAuthorshipCache(author);
+		}
+		
+	}
+
+
+
 
 	/**
 	 * This method tries to find the best matching taxon depending on the import configuration,
@@ -597,7 +702,12 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (StringUtils.isNotBlank(determination.determinedBy)){
 			authors.add(determination.determinedBy);
 		}
-		AgentBase actor = getOrMakeAgent(state, authors);
+		TeamOrPersonBase<?> actor = getOrMakeAgent(state, authors);
+		TeamOrPersonBase<?> secAuthor = taxon.getSec() == null ? null : taxon.getSec().getAuthorTeam();
+		if (actor != null && secAuthor != null & secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitle().equals(actor.getNomenclaturalTitle())) {
+			actor = secAuthor;
+		}
+		
 		event.setActor(actor);
 		
 		//TODO
@@ -620,7 +730,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		return desc;
 	}
 
-	private AgentBase<?> getOrMakeAgent(SpecimenCdmExcelImportState state, List<String> agents) {
+	private TeamOrPersonBase<?> getOrMakeAgent(SpecimenCdmExcelImportState state, List<String> agents) {
 		if (agents.size() == 0){
 			return null;
 		}else if (agents.size() == 1){
