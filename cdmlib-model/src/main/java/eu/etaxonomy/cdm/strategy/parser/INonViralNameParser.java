@@ -144,6 +144,6 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 */
 	public void parseReferencedName(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 
-	void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException;
+	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException;
 	
 }

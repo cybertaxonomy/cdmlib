@@ -9,12 +9,8 @@
 
 package eu.etaxonomy.cdm.strategy.parser;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -984,6 +980,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nonViralName
 	 * @param authorString
 	 * @throws StringNotParsableException
+	 */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseAuthors(eu.etaxonomy.cdm.model.name.NonViralName, java.lang.String)
 	 */
 	@Override
 	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException{
