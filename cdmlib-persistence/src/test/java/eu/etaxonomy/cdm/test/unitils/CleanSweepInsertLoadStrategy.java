@@ -59,10 +59,11 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
                 throw new IOException("the Resource " + clearDataResource + " could not be found");
             }
             File file;
+            logger.debug("fileUrl:" + fileUrl.toString() + "; protocol: " +  fileUrl.getProtocol());
             if(fileUrl.toString().startsWith("jar:file:")){
                 // extract file from jar into tmp folder
                 String millisecTimeStamp = String.valueOf(System.currentTimeMillis());
-                file = copyClassPathResource(clearDataResource, System.getProperty("java.user.home") + File.separator + millisecTimeStamp);
+                file = copyClassPathResource(fileUrl, System.getProperty("java.io.tmpdir") + File.separator + millisecTimeStamp);
             } else {
                 file = new File(fileUrl.toURI());
             }
@@ -92,6 +93,38 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
 //        }
     }
 
+
+    /**
+     * more or less 1:1 copy from {@link FileUtils#copyClassPathResource(String, String)}
+     *
+     * @param classPathResourceName
+     * @param fileSystemDirectoryName
+     * @return
+     */
+    public File copyClassPathResource(URL resourceURL, String fileSystemDirectoryName) {
+
+        InputStream resourceInputStream = null;
+        OutputStream fileOutputStream = null;
+        File file = null;
+        try {
+            resourceInputStream = resourceURL.openStream();
+            String fileName = StringUtils.substringAfterLast(resourceURL.getPath(), "/");
+            File fileSystemDirectory = new File(fileSystemDirectoryName);
+            fileSystemDirectory.mkdirs();
+            String filePath = fileSystemDirectoryName + "/" + fileName;
+            fileOutputStream = new FileOutputStream(filePath);
+            IOUtils.copy(resourceInputStream, fileOutputStream);
+            file = new File(filePath);
+        } catch (IOException e) {
+            throw new UnitilsException(e);
+        } finally {
+            closeQuietly(resourceInputStream);
+            closeQuietly(fileOutputStream);
+        }
+        return file;
+    }
+
+    @SuppressWarnings("unused")
     private void printDataSet(DbUnitDatabaseConnection dbUnitDatabaseConnection, OutputStream out, String ... tableNames) {
 
         try {
@@ -112,36 +145,5 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
             }
         }
     }
-
-    /**
-     * more or less 1:1 copy from {@link FileUtils#copyClassPathResource(String, String)}
-     *
-     * @param classPathResourceName
-     * @param fileSystemDirectoryName
-     * @return
-     */
-    public File copyClassPathResource(String classPathResourceName, String fileSystemDirectoryName) {
-
-        InputStream resourceInputStream = null;
-        OutputStream fileOutputStream = null;
-        File file = null;
-        try {
-            resourceInputStream = FileUtils.class.getResourceAsStream(classPathResourceName);
-            String fileName = StringUtils.substringAfterLast(classPathResourceName, "/");
-            File fileSystemDirectory = new File(fileSystemDirectoryName);
-            fileSystemDirectory.mkdirs();
-            String filePath = fileSystemDirectoryName + "/" + fileName;
-            fileOutputStream = new FileOutputStream(filePath);
-            IOUtils.copy(resourceInputStream, fileOutputStream);
-            file = new File(filePath);
-        } catch (IOException e) {
-            throw new UnitilsException(e);
-        } finally {
-            closeQuietly(resourceInputStream);
-            closeQuietly(fileOutputStream);
-        }
-        return file;
-    }
-
 
 }
