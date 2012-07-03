@@ -69,11 +69,17 @@ public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
 	}
 	
 	@Test
+	public void testDoInvokeWithoutExceptions() {
+		defaultImport.invoke(configurator);
+	}
+	
+	@Test
+	@Ignore("Import does not fully work yet")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		//TODO result is still false
 		logger.warn("No real testing for endnote import yet");
-//		Assert.assertTrue("Return value for import.invoke() should be true", result);
+		Assert.assertTrue("Return value for import.invoke() should be true", result);
 //		assertEquals("Number of TaxonNames should be 5", 5, nameService.count());
 	}
 }
