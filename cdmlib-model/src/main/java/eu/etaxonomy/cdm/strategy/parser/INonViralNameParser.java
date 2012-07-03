@@ -10,9 +10,11 @@
 package eu.etaxonomy.cdm.strategy.parser;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.IStrategy;
+import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 
 
 /**
@@ -141,5 +143,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * 				formerly attached to this name will be lost.
 	 */
 	public void parseReferencedName(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
+
+	void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException;
 	
 }

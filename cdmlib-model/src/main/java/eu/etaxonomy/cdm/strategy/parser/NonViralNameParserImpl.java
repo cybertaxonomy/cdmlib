@@ -985,6 +985,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param authorString
 	 * @throws StringNotParsableException
 	 */
+	@Override
 	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException{
 		TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
