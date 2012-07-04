@@ -1397,7 +1397,6 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
-cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmIntegrationTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTestWithSecurity.java -text
@@ -1417,13 +1416,11 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-securi
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testPersistentDataSource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testWithConfigurableNameCacheStrategyGenerators.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/ClearDBDataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.xml.backup -text
@@ -1466,6 +1463,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaRepresentationPartDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.tif -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/Blank.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsBidirectionalCascade-result.xml -text
