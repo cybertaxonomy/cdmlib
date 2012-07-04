@@ -1405,7 +1405,6 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmIntegratio
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTestWithSecurity.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HSQLDialect.java -text
-cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HsqldbDataTypeFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_1.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_2.java -text

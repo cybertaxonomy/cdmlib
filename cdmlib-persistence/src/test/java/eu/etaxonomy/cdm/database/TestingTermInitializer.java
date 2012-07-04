@@ -9,10 +9,7 @@
 
 package eu.etaxonomy.cdm.database;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -35,10 +32,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
 import org.unitils.dbunit.util.MultiSchemaDataSet;
 
-import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
-import eu.etaxonomy.cdm.test.integration.HsqldbDataTypeFactory;
 
 public class TestingTermInitializer extends PersistentTermInitializer {
     private static final Logger logger = Logger.getLogger(TestingTermInitializer.class);

@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
+import org.aspectj.weaver.IEclipseSourceContext;
+import org.dbunit.dataset.filter.ExcludeTableFilter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,10 +38,12 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
     	taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
     }
 
-//    @Test
+//    @Test  uncomment for creating datasets
 	public void testPrintDataSet() {
 		try {
-			printDataSetWithNull(new FileOutputStream("NewDataSet.xml"));
+			ExcludeTableFilter filter = new ExcludeTableFilter();
+			filter.excludeTable("Rights");  //throws exception wiht H2
+			printDataSetWithNull(new FileOutputStream("NewDataSet.xml"), filter);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
