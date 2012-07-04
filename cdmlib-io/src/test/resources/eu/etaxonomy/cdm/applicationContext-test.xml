@@ -9,7 +9,20 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
 
-  <context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+  	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+
+   <!--
+        use TestingTermInitializer
+     -->
+    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
+        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
+        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
+        <property name="omit" value="false"/>
+    </bean>
+    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+        <property name="omit" value="true"/>
+    </bean>
+
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
 
@@ -26,6 +39,18 @@
             </props>
         </property>
     </bean>
+    
+    <bean id="tableGeneratorGlobalOverride"
+        class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
+        <property name="properties">
+            <props>
+                <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
+                <prop key="optimizer">none</prop>
+                <prop key="initial_value">3000</prop>
+            </props>
+        </property>
+    </bean>
+    
 
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>

@@ -1038,7 +1038,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		String fullScientificNameString;
 		Taxon taxon = null;
 		DeterminationEvent determinationEvent = null;
-		List<TaxonBase> names = null;
+		List<TaxonBase> taxonList = null;
 
 		String scientificName="";
 		boolean preferredFlag=false;
@@ -1082,8 +1082,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			
 			if (taxon == null && config.isDoReUseTaxon()){
 				try{
-					names = getTaxonService().searchTaxaByName(scientificName, sec);
-					taxon = (Taxon)names.get(0);
+					taxonList = getTaxonService().searchTaxaByName(scientificName, sec);
+					taxon = (Taxon)taxonList.get(0);
 				} catch(Exception e){
 					taxon=null;
 				}
@@ -1116,7 +1116,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			if(config.isDoCreateIndividualsAssociations()){
 				TaxonDescription taxonDescription = null;
 				if(config.isDoMatchToExistingDescription()){
-					logger.error("The import option 'DoMatchToExistingDescription' is not yet implemented.");
+					logger.warn("The import option 'DoMatchToExistingDescription' is not yet implemented.");
 				} else {
 					UUID taxonDescriptionUUID = config.getTaxonToDescriptionMap().get(taxon.getUuid()); // rather put in state
 					taxonDescription = (TaxonDescription) getDescriptionService().load(taxonDescriptionUUID);
