@@ -13,17 +13,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
+import eu.etaxonomy.cdm.api.service.SecurityTest;
 
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
         {
-            eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeTest.class,
+            SecurityTest.class,
             NameServiceImplTest.class
         }
     )
-public class TestsShouldNotFailInSuite_s2 {
+public class TestsShouldNotFailInSuite_s3 {
 
     // the class remains completely empty,
     // being used only as a holder for the above annotations
