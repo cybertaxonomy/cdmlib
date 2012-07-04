@@ -584,7 +584,7 @@ public class Point implements Cloneable, Serializable {
 		result += getLatitudeSexagesimal() == null ? "" : getLatitudeSexagesimal().toString(includeEmptySeconds);
 		result = CdmUtils.concat(", ", result, getLongitudeSexagesimal() == null ? "" : getLongitudeSexagesimal().toString(includeEmptySeconds));
 		if (includeReferenceSystem && getReferenceSystem() != null){
-			String refSys = CdmUtils.isEmpty(getReferenceSystem().getLabel()) ? "" : "(" + getReferenceSystem().getLabel() + ")";
+			String refSys = CdmUtils.isBlank(getReferenceSystem().getLabel()) ? "" : "(" + getReferenceSystem().getLabel() + ")";
 			result = CdmUtils.concat(" ", result, refSys);
 		}
 		return result;
