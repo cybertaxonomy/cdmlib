@@ -190,6 +190,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     public void testDeleteTaxonNameBaseWithNameRelations() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
 
+        printDataSet(System.err, new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","USERACCOUNT","USERACCOUNT_PERMISSIONGROUP", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL"});
+
         NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
         TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
@@ -235,6 +237,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTaxonNameBaseConfiguratorWithNameRelations() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship"};
+
+//        printDataSet(System.err, new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase",
+//                "DescriptionElementBase",
+//                "AGENTBASE", "USERACCOUNT", "PERMISSIONGROUP", "USERACCOUNT_PERMISSIONGROUP", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL"});
+
+        printDataSetWithNull(System.err, true, null);
 
         NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);

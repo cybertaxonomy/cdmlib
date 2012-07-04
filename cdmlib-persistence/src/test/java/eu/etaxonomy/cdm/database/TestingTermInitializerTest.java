@@ -34,60 +34,60 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
     private UUID taxonomicallyIncludedInUuid;
 
     @Before
-	public void setUp() {
-    	taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
+    public void setUp() {
+        taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
     }
 
 //    @Test  uncomment for creating datasets
-	public void testPrintDataSet() {
-		try {
-			ExcludeTableFilter filter = new ExcludeTableFilter();
-			filter.excludeTable("Rights");  //throws exception wiht H2
-			printDataSetWithNull(new FileOutputStream("NewDataSet.xml"), filter);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+    public void testPrintDataSet() {
+        try {
+            ExcludeTableFilter filter = new ExcludeTableFilter();
+            filter.excludeTable("Rights");  //throws exception wiht H2
+            printDataSetWithNull(new FileOutputStream("NewDataSet.xml"), null, filter);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Test
-	public void testInit() {
-		assertNotNull("TermInitializer should have initialized Language.DEFAULT",Language.DEFAULT());
-		assertEquals("Language.DEFAULT should equal Language.ENGLISH",Language.DEFAULT(),Language.ENGLISH());
-	}
+    @Test
+    public void testInit() {
+        assertNotNull("TermInitializer should have initialized Language.DEFAULT",Language.DEFAULT());
+        assertEquals("Language.DEFAULT should equal Language.ENGLISH",Language.DEFAULT(),Language.ENGLISH());
+    }
 
-	@Test
-	public void testMarkerTypeIds() {
-		assertEquals("We expect MarkerType.TO_BE_CHECKED to have an id of 893",893,MarkerType.TO_BE_CHECKED().getId());
-	}
+    @Test
+    public void testMarkerTypeIds() {
+        assertEquals("We expect MarkerType.TO_BE_CHECKED to have an id of 893",893,MarkerType.TO_BE_CHECKED().getId());
+    }
 
-	@Test
-	public void testFeatureIds() {
-		assertEquals("We expect Feature.ECOLOGY to have an id of 922",922,Feature.ECOLOGY().getId());
-	}
+    @Test
+    public void testFeatureIds() {
+        assertEquals("We expect Feature.ECOLOGY to have an id of 922",922,Feature.ECOLOGY().getId());
+    }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType#TAXONOMICALLY_INCLUDED_IN()}.
-	 */
-	@Test
-	public final void testTermsAreLoaded() {
-		assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
-		assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
-		assertNotNull("SynonymRelationshipType.INFERREDEPITHET should be loaded" + SynonymRelationshipType.INFERRED_EPITHET_OF());
-	}
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType#TAXONOMICALLY_INCLUDED_IN()}.
+     */
+    @Test
+    public final void testTermsAreLoaded() {
+        assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
+        assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
+        assertNotNull("SynonymRelationshipType.INFERREDEPITHET should be loaded" + SynonymRelationshipType.INFERRED_EPITHET_OF());
+    }
 
-	@Test
-	public void testUnlazyStatusTerms() {
-			assertNotNull("NomenclaturalStatusType.SUPERFLUOUS should exist",NomenclaturalStatusType.SUPERFLUOUS());
-			assertNotNull("NomenclaturalStatusType.NUDUM should exist",NomenclaturalStatusType.NUDUM());
-			assertNotNull("NomenclaturalStatusType.ILLEGITIMATE should exist",NomenclaturalStatusType.ILLEGITIMATE());
-			assertNotNull("NomenclaturalStatusType.INVALID should exist",NomenclaturalStatusType.INVALID());
-			assertNotNull("NomenclaturalStatusType.CONSERVED should exist",NomenclaturalStatusType.CONSERVED());
-			assertNotNull("NomenclaturalStatusType.ALTERNATIVE should exist",NomenclaturalStatusType.ALTERNATIVE());
-			assertNotNull("NomenclaturalStatusType.REJECTED should exist",NomenclaturalStatusType.REJECTED());
-			assertNotNull("NomenclaturalStatusType.REJECTED_PROP should exist",NomenclaturalStatusType.REJECTED_PROP());
-			assertNotNull("NomenclaturalStatusType.PROVISIONAL should exist",NomenclaturalStatusType.PROVISIONAL());
-			assertNotNull("NomenclaturalStatusType.SUBNUDUM should exist",NomenclaturalStatusType.SUBNUDUM());
-			assertNotNull("NomenclaturalStatusType.OPUS_UTIQUE_OPPR should exist",NomenclaturalStatusType.OPUS_UTIQUE_OPPR());
-			assertNotNull("NomenclaturalStatusType.VALID should exist",NomenclaturalStatusType.VALID());
-	}
+    @Test
+    public void testUnlazyStatusTerms() {
+            assertNotNull("NomenclaturalStatusType.SUPERFLUOUS should exist",NomenclaturalStatusType.SUPERFLUOUS());
+            assertNotNull("NomenclaturalStatusType.NUDUM should exist",NomenclaturalStatusType.NUDUM());
+            assertNotNull("NomenclaturalStatusType.ILLEGITIMATE should exist",NomenclaturalStatusType.ILLEGITIMATE());
+            assertNotNull("NomenclaturalStatusType.INVALID should exist",NomenclaturalStatusType.INVALID());
+            assertNotNull("NomenclaturalStatusType.CONSERVED should exist",NomenclaturalStatusType.CONSERVED());
+            assertNotNull("NomenclaturalStatusType.ALTERNATIVE should exist",NomenclaturalStatusType.ALTERNATIVE());
+            assertNotNull("NomenclaturalStatusType.REJECTED should exist",NomenclaturalStatusType.REJECTED());
+            assertNotNull("NomenclaturalStatusType.REJECTED_PROP should exist",NomenclaturalStatusType.REJECTED_PROP());
+            assertNotNull("NomenclaturalStatusType.PROVISIONAL should exist",NomenclaturalStatusType.PROVISIONAL());
+            assertNotNull("NomenclaturalStatusType.SUBNUDUM should exist",NomenclaturalStatusType.SUBNUDUM());
+            assertNotNull("NomenclaturalStatusType.OPUS_UTIQUE_OPPR should exist",NomenclaturalStatusType.OPUS_UTIQUE_OPPR());
+            assertNotNull("NomenclaturalStatusType.VALID should exist",NomenclaturalStatusType.VALID());
+    }
 }

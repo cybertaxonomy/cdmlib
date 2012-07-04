@@ -100,8 +100,9 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
      * @param classPathResourceName
      * @param fileSystemDirectoryName
      * @return
+     * @throws IOException
      */
-    public File copyClassPathResource(URL resourceURL, String fileSystemDirectoryName) {
+    public File copyClassPathResource(URL resourceURL, String fileSystemDirectoryName) throws IOException {
 
         InputStream resourceInputStream = null;
         OutputStream fileOutputStream = null;
@@ -115,8 +116,11 @@ public class CleanSweepInsertLoadStrategy extends CleanInsertLoadStrategy {
             fileOutputStream = new FileOutputStream(filePath);
             IOUtils.copy(resourceInputStream, fileOutputStream);
             file = new File(filePath);
+            if(!file.canRead()){
+                throw new IOException("tmp file " + file.toString() + " not readable.");
+            }
         } catch (IOException e) {
-            throw new UnitilsException(e);
+            throw e;
         } finally {
             closeQuietly(resourceInputStream);
             closeQuietly(fileOutputStream);

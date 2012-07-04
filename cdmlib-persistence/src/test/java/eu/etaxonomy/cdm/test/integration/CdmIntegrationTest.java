@@ -20,6 +20,9 @@ import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -62,6 +65,7 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.database.PersistentTermInitializer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.agent.AgentDaoImpl;
@@ -76,7 +80,27 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  */
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
+
     protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
+
+    /**
+     * List of the tables which are initially being populated during term loading. {@link PersistentTermInitializer}
+     */
+    public static final String[] termLoadingTables = new String[]{
+        "DEFINEDTERMBASE",
+        "DEFINEDTERMBASE_AUD",
+        "DEFINEDTERMBASE_CONTINENT",
+        "DEFINEDTERMBASE_REPRESENTATION",
+        "DEFINEDTERMBASE_REPRESENTATION_AUD",
+        "HIBERNATE_SEQUENCES",
+        "RELATIONSHIPTERMBASE_INVERSEREPRESENTATION",
+        "RELATIONSHIPTERMBASE_INVERSEREPRESENTATION_AUD",
+        "REPRESENTATION",
+        "REPRESENTATION_AUD",
+        "TERMVOCABULARY",
+        "TERMVOCABULARY_AUD",
+        "TERMVOCABULARY_REPRESENTATION",
+        "TERMVOCABULARY_REPRESENTATION_AUD"};
 
 //	@SpringBeanByType
 //	private IAgentDao agentDao;
@@ -116,7 +140,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
     /**
      * Prints the data set to an output stream, using the
-     * {@link FlatFullXmlWriter}.
+     * {@link FlatXmlDataSet}.
      * <p>
      * <h2>NOTE: for compatibility with unitils 3.x you may
      * want to use the {@link #printDataSetWithNull(OutputStream)}
@@ -171,20 +195,27 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see FlatFullXmlWriter
      */
     public void printDataSetWithNull(OutputStream out) {
-    	printDataSetWithNull(out, null);
+        printDataSetWithNull(out, null, null);
     }
-    
-    public void printDataSetWithNull(OutputStream out, ITableFilterSimple filter) {
-        if (filter == null){
-        	filter = new ExcludeTableFilter();
+
+    public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables, ITableFilterSimple filter) {
+
+        if(excludeTermLoadingTables != null && excludeTermLoadingTables.equals(true)){
+            ExcludeTableFilter excludeTableFilter = new ExcludeTableFilter();
+
+            for(String tname : termLoadingTables){
+                excludeTableFilter.excludeTable(tname);
+            }
+            filter = excludeTableFilter;
         }
-    	IDatabaseConnection connection = null;
-        
-        
+
+        if (filter == null){
+            filter = new ExcludeTableFilter();
+        }
+
+        IDatabaseConnection connection = null;
         try {
             connection = getConnection();
-
-//			IDataSet dataSet = connection.createDataSet();
             DatabaseDataSet dataSet = new DatabaseDataSet(connection, false, filter);
 
             FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
@@ -253,7 +284,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             IDataSet actualDataSet = connection.createDataSet(tableNames);
             FlatXmlDataSet.write(actualDataSet, out);
 
-            
+
         } catch (Exception e) {
             logger.error(e);
         } finally {
@@ -275,10 +306,10 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      */
     public void printDataSet(OutputStream out, ITableFilterSimple filter) {
         if (filter == null){
-        	filter = new ExcludeTableFilter();
+            filter = new ExcludeTableFilter();
         }
-        
-    	IDatabaseConnection connection = null;
+
+        IDatabaseConnection connection = null;
 
         try {
             connection = getConnection();
@@ -288,7 +319,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
             FlatXmlWriter writer = new FlatXmlWriter(out);
             writer.write(dataSet);
-            
+
         } catch (Exception e) {
             logger.error(e);
         } finally {
@@ -300,7 +331,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         }
     }
 
-    
+
     /**
      * Prints a dtd to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatDtdDataSet}.
