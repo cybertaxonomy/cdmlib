@@ -8,16 +8,9 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
-import org.hibernate.SessionFactory;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.SessionImplementor;
-import org.hibernate.id.IdentifierGeneratorHelper;
 import org.hibernate.type.Type;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
-import org.springframework.stereotype.Component;
-
-import eu.etaxonomy.cdm.database.PersistentTermInitializer;
 
 /**
  * Subclass of the {@link org.hibernate.id.enhanced.TableGenerator} for the sole purpose to
