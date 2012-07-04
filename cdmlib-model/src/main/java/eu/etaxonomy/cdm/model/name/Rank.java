@@ -901,7 +901,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		String abbrevLabel = representation.getAbbreviatedLabel();
 		String label = representation.getLabel();
 		if (abbrevLabel == null){
-			logger.warn("Abbreviated lable for rank is NULL.Can't add rank: " + CdmUtils.Nz(rank.getLabel()));
+			logger.warn("Abbreviated label for rank is NULL.Can't add rank: " + CdmUtils.Nz(rank.getLabel()));
 			return;
 		}
 		//initialize maps
