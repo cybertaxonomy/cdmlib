@@ -78,8 +78,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 
 
 @RunWith(UnitilsJUnit4TestClassRunner.class)
-@Transactional(TransactionMode.DISABLED)
-@SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContext-securityTest.xml"})
 @DataSet
 public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
@@ -89,219 +87,219 @@ private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class
  */
 @SpringBeanByType
 PlatformTransactionManager transactionManager;
-	
-	@SpringBeanByType
-	private ITaxonService taxonService;
 
-	@SpringBeanByType
-	private ITaxonNodeService taxonNodeService;
-	
-	@SpringBeanByType
-	private IDescriptionService descriptionService;
-	
-	@SpringBeanByType
-	private IUserService userService;
-	
-	
-	@TestDataSource
-	protected DataSource dataSource;
-	
-	private Authentication authentication;
-	
-	@SpringBeanByType
-	private AuthenticationManager authenticationManager;
-	
-	
-	
-	private UsernamePasswordAuthenticationToken token;
-	
-		
-	@Before
-	public void setUp(){
-		token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
-	}
-	
-	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
-	 */
-	@Test
-	public final void testSaveTaxon() {
-		/*
-		Md5PasswordEncoder encoder =new Md5PasswordEncoder();
-		ReflectionSaltSource saltSource = new ReflectionSaltSource();
-		saltSource.setUserPropertyToUse("getUsername");
-		User user = User.NewInstance("partEditor", "test4");
-		System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
-		
-		*/
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
-		UUID uuid = taxonService.save(expectedTaxon);
-		//taxonService.getSession().flush();
-		TaxonBase<?> actualTaxon = taxonService.load(uuid);
-		assertEquals(expectedTaxon, actualTaxon);
-		
-		token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
-		authentication = authenticationManager.authenticate(token);
-		context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
-		taxonService.saveOrUpdate(actualTaxon);
-		
-		
-	}
-	@Test
-	public void testUpdateUser(){
-		
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		String username = "standardUser";
-		String password = "pw";
-		User user = User.NewInstance(username, password);
-		
-		userService.createUser(user);
-		user.setEmailAddress("test@bgbm.org");
-		
-		userService.updateUser(user);
-		userService.update(user);
-		userService.saveOrUpdate(user);
-	}
-	
-	@Test
-	public final void testSaveOrUpdateTaxon() {
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		Taxon expectedTaxon = Taxon.NewInstance(null, null);
-		UUID uuid = taxonService.save(expectedTaxon);
-		TaxonBase<?> actualTaxon = taxonService.load(uuid);
-		assertEquals(expectedTaxon, actualTaxon);
-		
-		actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
-		taxonService.saveOrUpdate(actualTaxon);
-		
-		token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
-		authentication = authenticationManager.authenticate(token);
-		context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		actualTaxon = taxonService.load(uuid);
-			
-		actualTaxon.setDoubtful(true);
-		taxonService.saveOrUpdate(actualTaxon);
-			
-	}
-	
-	
-	
-	@Test
-	public void testCascadingInSpringSecurityAccesDenied(){
-		/*authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		*/
-		
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonEditor", "test2"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-		
-		Taxon taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-		taxon.setDoubtful(false);
-		assertTrue(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
-		taxonService.save(taxon);
-		taxon = null;
-		commitAndStartNewTransaction(null);
-		
-		//during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it, 
-		//when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
-		//taxonService.saveOrUpdate(taxon);
-		
-		
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
-		context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		//taxonService.saveOrUpdate(taxon);
-		
-		taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));	
-		
-		TaxonDescription description = TaxonDescription.NewInstance(taxon);
-		description.setTitleCache("test");
-		descriptionService.saveOrUpdate(description);
-		commitAndStartNewTransaction(null);
-		taxon = (Taxon)taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-		assertTrue(taxon.getDescriptions().contains(description));
-		
-		
-		
-	}
-	
-	@Test
-	public void testCascadingInSpring(){
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-	
-		Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
-		TaxonDescription description = TaxonDescription.NewInstance(taxon);
-		description.addElement(Distribution.NewInstance());
-		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-		assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
-		
-		descriptionService.saveOrUpdate(description);
-		
-		taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
-		Set<TaxonDescription> descriptions = taxon.getDescriptions();
-		assertTrue(descriptions.contains(description));
-		
-		
-	}
-	
-	@Test
-	public void testSaveSynonym(){
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonomist", "test4"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
-		taxonService.saveOrUpdate(syn);
-		
-	}
-	
-	@Test(expected= EvaluationFailedException.class)
-	public void testEditPartOfClassification(){
-		
-		
-		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		
-		TaxonNode node = taxonNodeService.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
-		
-		node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
-		taxonNodeService.saveOrUpdate(node);
-		
-		node = taxonNodeService.load(UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9"));
-		node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
-		taxonNodeService.saveOrUpdate(node);
-		
-	}
-	
-	public static void main(String[] args){
-		Md5PasswordEncoder encoder =new Md5PasswordEncoder();
-	
-		ReflectionSaltSource saltSource = new ReflectionSaltSource();
-		saltSource.setUserPropertyToUse("getUsername");
-		User user = User.NewInstance("taxonomist", "test4");
-		System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
-	}
-	
-	
-	
-	
+    @SpringBeanByType
+    private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private ITaxonNodeService taxonNodeService;
+
+    @SpringBeanByType
+    private IDescriptionService descriptionService;
+
+    @SpringBeanByType
+    private IUserService userService;
+
+
+    @TestDataSource
+    protected DataSource dataSource;
+
+    private Authentication authentication;
+
+    @SpringBeanByType
+    private AuthenticationManager authenticationManager;
+
+
+
+    private UsernamePasswordAuthenticationToken token;
+
+
+    @Before
+    public void setUp(){
+        token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+    }
+
+
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
+     */
+    @Test
+    public final void testSaveTaxon() {
+        /*
+        Md5PasswordEncoder encoder =new Md5PasswordEncoder();
+        ReflectionSaltSource saltSource = new ReflectionSaltSource();
+        saltSource.setUserPropertyToUse("getUsername");
+        User user = User.NewInstance("partEditor", "test4");
+        System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
+
+        */
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        UUID uuid = taxonService.save(expectedTaxon);
+        //taxonService.getSession().flush();
+        TaxonBase<?> actualTaxon = taxonService.load(uuid);
+        assertEquals(expectedTaxon, actualTaxon);
+
+        token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
+        authentication = authenticationManager.authenticate(token);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        taxonService.saveOrUpdate(actualTaxon);
+
+
+    }
+    @Test
+    public void testUpdateUser(){
+
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        String username = "standardUser";
+        String password = "pw";
+        User user = User.NewInstance(username, password);
+
+        userService.createUser(user);
+        user.setEmailAddress("test@bgbm.org");
+
+        userService.updateUser(user);
+        userService.update(user);
+        userService.saveOrUpdate(user);
+    }
+
+    @Test
+    public final void testSaveOrUpdateTaxon() {
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        Taxon expectedTaxon = Taxon.NewInstance(null, null);
+        UUID uuid = taxonService.save(expectedTaxon);
+        TaxonBase<?> actualTaxon = taxonService.load(uuid);
+        assertEquals(expectedTaxon, actualTaxon);
+
+        actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
+        taxonService.saveOrUpdate(actualTaxon);
+
+        token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
+        authentication = authenticationManager.authenticate(token);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        actualTaxon = taxonService.load(uuid);
+
+        actualTaxon.setDoubtful(true);
+        taxonService.saveOrUpdate(actualTaxon);
+
+    }
+
+
+
+    @Test
+    public void testCascadingInSpringSecurityAccesDenied(){
+        /*authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        */
+
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonEditor", "test2"));
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+
+        Taxon taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+        taxon.setDoubtful(false);
+        assertTrue(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
+        taxonService.save(taxon);
+        taxon = null;
+        commitAndStartNewTransaction(null);
+
+        //during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it,
+        //when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
+        //taxonService.saveOrUpdate(taxon);
+
+
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        //taxonService.saveOrUpdate(taxon);
+
+        taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+
+        TaxonDescription description = TaxonDescription.NewInstance(taxon);
+        description.setTitleCache("test");
+        descriptionService.saveOrUpdate(description);
+        commitAndStartNewTransaction(null);
+        taxon = (Taxon)taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+        assertTrue(taxon.getDescriptions().contains(description));
+
+
+
+    }
+
+    @Test
+    public void testCascadingInSpring(){
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+        TaxonDescription description = TaxonDescription.NewInstance(taxon);
+        description.addElement(Distribution.NewInstance());
+        CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+        assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+
+        descriptionService.saveOrUpdate(description);
+
+        taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+        Set<TaxonDescription> descriptions = taxon.getDescriptions();
+        assertTrue(descriptions.contains(description));
+
+
+    }
+
+    @Test
+    public void testSaveSynonym(){
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonomist", "test4"));
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        taxonService.saveOrUpdate(syn);
+
+    }
+
+    @Test(expected= EvaluationFailedException.class)
+    public void testEditPartOfClassification(){
+
+
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        TaxonNode node = taxonNodeService.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
+
+        node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
+        taxonNodeService.saveOrUpdate(node);
+
+        node = taxonNodeService.load(UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9"));
+        node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
+        taxonNodeService.saveOrUpdate(node);
+
+    }
+
+    public static void main(String[] args){
+        Md5PasswordEncoder encoder =new Md5PasswordEncoder();
+
+        ReflectionSaltSource saltSource = new ReflectionSaltSource();
+        saltSource.setUserPropertyToUse("getUsername");
+        User user = User.NewInstance("taxonomist", "test4");
+        System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
+    }
+
+
+
+
 }
