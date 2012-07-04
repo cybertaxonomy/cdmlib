@@ -9,10 +9,10 @@
     http://www.springframework.org/schema/security
     http://www.springframework.org/schema/security/spring-security-3.0.4.xsd">
 
-     <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.xml" />
- 
- 
- 	 <import resource="classpath:/eu/etaxonomy/cdm/services_security.xml"/>
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.xml" />
+
+
+    <import resource="classpath:/eu/etaxonomy/cdm/services_security.xml"/>
    <!--
         authenticationManager, ... already configured in applicationContext-test.xml or in services.xml
         so we only need to add additional beans here:
@@ -35,6 +35,4 @@
 
     <bean id="groupServiceImpl" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl">
     </bean>
-
-
 </beans>

@@ -73,14 +73,19 @@ import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 
-
-
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 @DataSet
 public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
-private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
+
+private static final UUID ACHERONTIA_NODE_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
+
+private static final UUID ACHERONTIINI_NODE_UUID = UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9");
+
+private static final UUID ACHERONTIA_LACHESIS_UUID = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
+
+private static final Logger logger = Logger.getLogger(SecurityTest.class);
 
 /**
  * The transaction manager to use
@@ -150,8 +155,8 @@ PlatformTransactionManager transactionManager;
         expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
         taxonService.saveOrUpdate(actualTaxon);
 
-
     }
+
     @Test
     public void testUpdateUser(){
 
@@ -168,6 +173,7 @@ PlatformTransactionManager transactionManager;
         userService.updateUser(user);
         userService.update(user);
         userService.saveOrUpdate(user);
+
     }
 
     @Test
@@ -194,8 +200,6 @@ PlatformTransactionManager transactionManager;
 
     }
 
-
-
     @Test
     public void testCascadingInSpringSecurityAccesDenied(){
         /*authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
@@ -208,7 +212,7 @@ PlatformTransactionManager transactionManager;
         context.setAuthentication(authentication);
         CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
 
-        Taxon taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+        Taxon taxon =(Taxon) taxonService.load(ACHERONTIA_LACHESIS_UUID);
         taxon.setDoubtful(false);
         assertTrue(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
         taxonService.save(taxon);
@@ -226,17 +230,14 @@ PlatformTransactionManager transactionManager;
 
         //taxonService.saveOrUpdate(taxon);
 
-        taxon =(Taxon) taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+        taxon =(Taxon) taxonService.load(ACHERONTIA_LACHESIS_UUID);
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("test");
         descriptionService.saveOrUpdate(description);
         commitAndStartNewTransaction(null);
-        taxon = (Taxon)taxonService.load(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+        taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         assertTrue(taxon.getDescriptions().contains(description));
-
-
-
     }
 
     @Test
@@ -257,7 +258,6 @@ PlatformTransactionManager transactionManager;
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
         assertTrue(descriptions.contains(description));
 
-
     }
 
     @Test
@@ -268,23 +268,18 @@ PlatformTransactionManager transactionManager;
 
         Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         taxonService.saveOrUpdate(syn);
-
     }
 
     @Test(expected= EvaluationFailedException.class)
     public void testEditPartOfClassification(){
 
-
         authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-
-        TaxonNode node = taxonNodeService.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
-
+        TaxonNode node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
         taxonNodeService.saveOrUpdate(node);
-
-        node = taxonNodeService.load(UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9"));
+        node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
         node = node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
         taxonNodeService.saveOrUpdate(node);
 
