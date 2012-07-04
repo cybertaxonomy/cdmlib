@@ -2034,8 +2034,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadat
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-securityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.unused.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
