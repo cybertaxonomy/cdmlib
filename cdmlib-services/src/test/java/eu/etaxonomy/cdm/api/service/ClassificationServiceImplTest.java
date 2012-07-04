@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
  * @version 1.0
  */
 public class ClassificationServiceImplTest extends CdmIntegrationTest{
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ClassificationServiceImplTest.class);
 
     @SpringBeanByType
