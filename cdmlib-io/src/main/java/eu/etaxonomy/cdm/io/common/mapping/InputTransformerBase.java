@@ -213,7 +213,7 @@ public class InputTransformerBase implements IInputTransformer {
 	
 	@Override
 	public ReferenceSystem getReferenceSystemByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (CdmUtils.isBlank(key)){return null;
 		}else if (key.matches("(?i)(wgs84)")){return ReferenceSystem.WGS84();
 		}else if (key.matches("(?i)(googleearth)")){return ReferenceSystem.GOOGLE_EARTH();
 		}else if (key.matches("(?i)(gazetteer)")){return ReferenceSystem.GAZETTEER();
