@@ -13,7 +13,6 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
