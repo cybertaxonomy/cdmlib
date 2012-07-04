@@ -9,14 +9,13 @@
 
 package eu.etaxonomy.cdm.test.suite;
 
+import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
 import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
-import eu.etaxonomy.cdm.test.integration.CreateDataTest;
 import eu.etaxonomy.cdm.test.integration.TermLoaderIntegrationTest;
 
 
