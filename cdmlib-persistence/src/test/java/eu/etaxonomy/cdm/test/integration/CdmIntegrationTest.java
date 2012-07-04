@@ -124,7 +124,8 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     protected IDatabaseConnection getConnection() throws SQLException {
         IDatabaseConnection connection = null;
         try {
-            connection = new DatabaseConnection(dataSource.getConnection());
+            /// FIXME must use unitils.properties: database.schemaNames
+            connection = new DatabaseConnection(dataSource.getConnection(), "PUBLIC");
 
             DatabaseConfig config = connection.getConfig();
 
