@@ -6,8 +6,8 @@
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-    <version>3.0.12-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+	    <version>3.0.12-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
   <modelVersion>4.0.0</modelVersion>
