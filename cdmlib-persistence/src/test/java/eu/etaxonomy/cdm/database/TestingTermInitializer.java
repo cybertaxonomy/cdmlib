@@ -66,8 +66,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 
     @Override
 	public void doInitialize(){
-
-		logger.info("TestingTermInitializer initialize start ...");
+    	logger.info("TestingTermInitializer initialize start ...");
 		if (isOmit()){
 			logger.info("TestingTermInitializer.omit == true, returning without initializing terms");
 			return;
