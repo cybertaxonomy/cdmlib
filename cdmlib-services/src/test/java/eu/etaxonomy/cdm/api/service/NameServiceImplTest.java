@@ -240,8 +240,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //                "DescriptionElementBase",
 //                "AGENTBASE", "USERACCOUNT", "PERMISSIONGROUP", "USERACCOUNT_PERMISSIONGROUP", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL"});
 
-        printDataSetWithNull(System.err, true, null);
-
         NonViralName<?> name1 = BotanicalName.NewInstance(getSpeciesRank());
         name1.setTitleCache("Name1", true);
         TaxonNameBase<?,?> nameWithBasionym = BotanicalName.NewInstance(getSpeciesRank());
