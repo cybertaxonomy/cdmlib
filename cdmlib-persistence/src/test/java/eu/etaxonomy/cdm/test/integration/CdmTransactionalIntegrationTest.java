@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.test.integration;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
@@ -145,6 +146,12 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
                 throw ex;
             }
         }
+    }
+
+    @After
+    @Before
+    public void clearAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     /**

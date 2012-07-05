@@ -9,11 +9,5 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTransactionalIntegrationTest {
 
 
-    @After
-    @Before
-    public void clearAuthentication() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-    }
-
 
 }
