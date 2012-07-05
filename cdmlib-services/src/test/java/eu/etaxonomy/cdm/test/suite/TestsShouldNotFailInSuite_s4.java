@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategyTest;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldObservationCacheStrategyTest;
+import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
 
 
 
@@ -22,7 +23,8 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldObservationCacheStrateg
 		{
 			DerivedUnitFacadeCacheStrategyTest.class,
 			DerivedUnitFacadeCacheStrategyTest.class,
-			DerivedUnitFacadeFieldObservationCacheStrategyTest.class
+			DerivedUnitFacadeFieldObservationCacheStrategyTest.class,
+			NameServiceImplTest.class
 		}
 	)
 public class TestsShouldNotFailInSuite_s4 {
