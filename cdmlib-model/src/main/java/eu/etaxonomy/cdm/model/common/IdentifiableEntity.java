@@ -40,6 +40,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -105,7 +107,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
     @Size(max = 255)
-    @Field(store=Store.YES)
+    @Fields({
+        @Field(store=Store.YES),
+        @Field(name = "titleCache__sort", index = Index.UN_TOKENIZED, store=Store.YES)
+    })
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;
 

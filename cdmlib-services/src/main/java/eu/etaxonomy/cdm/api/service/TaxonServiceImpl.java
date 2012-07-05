@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1133,10 +1134,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         String luceneQueryStr = String.format(luceneQueryTemplate.toString(), queryString);
 
+        // --- sort fields
+        SortField[] sortFields = new  SortField[]{new SortField("inDescription.taxon.titleCache__sort", false)};
+
         // ---- execute criteria
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
 
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQueryStr, clazz, pageSize, pageNumber);
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQueryStr, clazz, pageSize, pageNumber, sortFields);
 
         // initialize taxa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSetFromIds(luceneSearch, topDocsResultSet, dao, "inDescription.taxon.id", propertyPaths);

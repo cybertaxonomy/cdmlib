@@ -58,6 +58,9 @@ public class DescriptionBaseClassBridge implements FieldBridge {
                     Field titleCachefield = new Field(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES, Index.ANALYZED,
                             luceneOptions.getTermVector());
                     document.add(titleCachefield);
+                    Field titleCacheSortfield = new Field(name + "taxon.titleCache__sort", taxon.getTitleCache(), Store.YES, Index.NOT_ANALYZED,
+                            luceneOptions.getTermVector());
+                    document.add(titleCacheSortfield);
                     Field uuidfield = new Field(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES, Index.ANALYZED,
                             luceneOptions.getTermVector());
                     document.add(uuidfield);

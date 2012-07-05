@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.search;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -24,6 +25,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocCollector;
 import org.apache.lucene.search.TopDocs;
@@ -117,12 +120,12 @@ public class LuceneSearch {
      * @throws IOException
      */
     public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz, Integer pageSize,
-            Integer pageNumber) throws ParseException, IOException {
+            Integer pageNumber, SortField[] sortFields) throws ParseException, IOException {
 
         logger.debug("luceneQueryString to be parsed: " + luceneQueryString);
         Query luceneQuery = getQueryParser().parse(luceneQueryString);
 
-        return executeSearch(luceneQuery, clazz, pageSize, pageNumber);
+        return executeSearch(luceneQuery, clazz, pageSize, pageNumber, sortFields);
     }
 
     /**
@@ -135,7 +138,7 @@ public class LuceneSearch {
      * @throws IOException
      */
     public TopDocs executeSearch(Query luceneQuery, Class<? extends CdmBase> clazz, Integer pageSize,
-            Integer pageNumber) throws ParseException, IOException {
+            Integer pageNumber, SortField[] sortFields) throws ParseException, IOException {
 
         if(pageNumber == null || pageNumber < 0){
             pageNumber = 0;
@@ -167,14 +170,19 @@ public class LuceneSearch {
 
         logger.debug("start: " + start + "; limit:" + limit);
 
-        TopDocCollector hitCollector = new TopDocCollector(limit);
-        getSearcher().search(query, null, hitCollector);
+        TopDocs topDocs;
+        if(sortFields != null && sortFields.length > 0){
+            Sort sort = new Sort(sortFields);
+            topDocs = getSearcher().search(query, null, limit, sort);
+        } else {
+            topDocs = getSearcher().search(query, null, limit);
+        }
 
 
         //TODO when switched to Lucene 3.x which is included in hibernate 4.x
         //     use TopDocCollector.topDocs(int start, int howMany);
         //     since this method might be more memory save than our own implementation
-        TopDocs topDocs = hitCollector.topDocs();
+//        TopDocs topDocs = hitCollector.topDocs();
         ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 
         int docsAvailableInPage = Math.min(scoreDocs.length - start, pageSize);
