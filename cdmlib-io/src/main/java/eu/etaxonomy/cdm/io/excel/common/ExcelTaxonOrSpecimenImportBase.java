@@ -263,6 +263,20 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected boolean analyzeFeatures(STATE state, KeyValue keyValue) {
 		String key = keyValue.key;
 		Pager<DefinedTermBase> features = getTermService().findByTitle(Feature.class, key, null, null, null, null, null, null);
+		
+		// FOR DEBUGGING ONLY
+		System.out.println("XXX ANALYSE feature: " + key);
+		if (key != null && key.equals("Description")){
+			Feature desc = (Feature)getTermService().find(UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493"));
+			if (desc != null){
+				desc.setProtectedTitleCache(true);
+				System.out.println("XXXXXXXXXXXXX Description feature title cache is: " + desc.getTitleCache());
+			}else{
+				System.out.println("XXXXXXXXXXXXXXX No description feature found.");
+			}
+		}
+		//************************
+		
 		if (features.getCount() > 1){
 			String message = "More than one feature found matching key " + key;
 			fireWarningEvent(message, state, 4);
