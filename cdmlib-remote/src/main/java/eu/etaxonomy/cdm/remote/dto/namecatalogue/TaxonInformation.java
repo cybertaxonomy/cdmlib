@@ -82,7 +82,7 @@ public class TaxonInformation implements RemoteResponse {
 			this.taxon.setTitle(name);
 			this.taxon.setTaxonStatus(taxonStatus);
 			this.taxon.setFlags(flags);
-			this.taxon.setClassificationMap(classificationMap);
+			this.taxon.setClassification(classificationMap);
 		}
 			
 		public TaxonInformationResponse.TaxonInfo getTaxon() {
@@ -107,14 +107,13 @@ public class TaxonInformation implements RemoteResponse {
 			private String title;
 			private String taxonStatus;
 			private Map<String, String> flags;
-			private Map<String, Map> classificationMap;
-			
+			private Map<String, Map> classification;			
 			
 			public TaxonInfo() {
 				title = "";
 				taxonStatus = "";
 				flags = new Hashtable<String,String>();
-				classificationMap = new Hashtable<String,Map>();				
+				classification = null;		
 			}
 			
 			public void setTitle(String title) {
@@ -144,15 +143,15 @@ public class TaxonInformation implements RemoteResponse {
 				return this.flags;
 			}
 			
-			public void setClassificationMap(Map<String, Map> classificationMap) {
+			public void setClassification(Map<String, Map> classificationMap) {
 				
-				if(classificationMap != null) {
-					this.classificationMap = classificationMap;
+				if(classificationMap != null && !classificationMap.isEmpty()) {
+					this.classification = classificationMap;
 				}
 			}
 			
-			public Map<String, Map> getClassificationMap() {
-				return this.classificationMap;
+			public Map<String, Map> getClassification() {
+				return this.classification;
 			}
 		}
 		
