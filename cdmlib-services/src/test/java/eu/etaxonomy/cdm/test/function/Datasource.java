@@ -167,11 +167,11 @@ public class Datasource {
 	}
 	
 	private void testLocalHsql() throws DataSourceNotFoundException{
-
-		CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
+		CdmApplicationController appCtr = null;
 		try {
-			List l = appCtr.getNameService().list(null,5, 1,null,null);
+			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
+			appCtr = CdmApplicationController.NewInstance(ds);
+			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
 			System.out.println(l);
 			//Agent agent = new Agent();
 			//appCtr.getAgentService().saveAgent(agent);
@@ -181,6 +181,9 @@ public class Datasource {
 			e.printStackTrace();
 			appCtr.close();
 			
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Runtime Exception");
+			e.printStackTrace();
 		}
 	}
 	
