@@ -103,9 +103,10 @@ public class TeamOrPersonMapper extends DbObjectMapper {
 
 
 	@Override
-	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase state, String tableName) {
+	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase<?, IExportTransformer> state, String tableName) {
 		super.initialize(stmt, index, state, tableName);
-		Source db = ((BerlinModelExportState)this.getState()).getConfig().getDestination();
+		
+		Source db = this.getState().getConfig().getDestination();
 		try {
 			String insertAuthorTeam = "INSERT INTO authorTeam (AuthorTeamId, FullAuthorTeamCache,AuthorTeamCache, PreliminaryFlag ) " +
 							" Values (?, ?,?,0)";
