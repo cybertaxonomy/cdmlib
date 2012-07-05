@@ -17,15 +17,19 @@ import java.net.URI;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
+import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -118,7 +122,7 @@ public class TermServiceImplTest extends CdmIntegrationTest {
         UUID rankUuid = UUID.fromString(rankVocabularyUuid);
         TermVocabulary<Rank> voc = vocabularyService.find(rankUuid);
         assertNotNull(voc);
-        assertEquals(66, voc.getTerms().size());
+        assertEquals(62, voc.getTerms().size());
         //Null
         String nullVocabularyUuid = "00000000-26e3-4e83-b47b-ca74eed40b1b";
         UUID nullUuid = UUID.fromString(nullVocabularyUuid);
@@ -149,4 +153,7 @@ public class TermServiceImplTest extends CdmIntegrationTest {
         Pager<SpecimenTypeDesignationStatus> results = (Pager)service.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
         assertNotNull("Results should not be null",results);
     }
+	
+
+	
 }
