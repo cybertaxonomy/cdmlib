@@ -1203,8 +1203,7 @@ public class DerivedUnitFacade {
 	// exact location
 	@Transient
 	public Point getExactLocation() {
-		return (hasGatheringEvent() ? getGatheringEvent(true)
-				.getExactLocation() : null);
+		return (hasGatheringEvent() ? getGatheringEvent(true).getExactLocation() : null);
 	}
 
 	/**
@@ -1350,8 +1349,7 @@ public class DerivedUnitFacade {
 		if (!hasFieldObservation() && !createIfNotExists) {
 			return null;
 		}
-		if (createIfNotExists
-				&& getFieldObservation(true).getGatheringEvent() == null) {
+		if (createIfNotExists && getFieldObservation(true).getGatheringEvent() == null) {
 			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 			getFieldObservation(true).setGatheringEvent(gatheringEvent);
 		}
