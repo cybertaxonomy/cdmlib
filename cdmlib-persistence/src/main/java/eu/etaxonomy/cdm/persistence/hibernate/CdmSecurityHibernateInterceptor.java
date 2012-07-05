@@ -50,6 +50,11 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             String[] propertyNames,
             Type[] types) {
 
+        if( !(entity instanceof CdmBase) ){
+            return true;
+        }
+        CdmBase cdmEntity = (CdmBase)entity;
+
         CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
         String permission = null;;
         if (SecurityContextHolder.getContext().getAuthentication() != null){
@@ -83,14 +88,14 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
             if (!equals){
                 if (permission != null){
-                    if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, permission)){
-                        throw new EvaluationFailedException("Permission evaluation failed for " + entity);
+                    if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), cdmEntity, permission)){
+                        throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), cdmEntity, permission);
                     }else {
                         return true;
                     }
                 }
-                if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, CdmPermission.UPDATE)){
-                    throw new EvaluationFailedException("Permission evaluation failed for " + entity);
+                if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), cdmEntity, CdmPermission.UPDATE)){
+                    throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), cdmEntity, CdmPermission.UPDATE);
                 }else {
                     return true;
                 }

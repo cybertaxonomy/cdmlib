@@ -21,7 +21,12 @@ public class EvaluationFailedException extends HibernateException {
 
     public EvaluationFailedException(Authentication autherntication, CdmBase entity, CdmPermission permission) {
         super(permission.name() + " not permitted for '" + autherntication.getName()
-                + "' on " + entity.getClass().getSimpleName() + "[" + entity.getUuid() + "':'" + entity.toString() + "']");
+                + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
+    }
+
+    public EvaluationFailedException(Authentication autherntication, CdmBase entity, String permission) {
+        super(permission + " not permitted for '" + autherntication.getName()
+                + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
     /**
