@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldObservationCacheStrateg
 		{
 			DerivedUnitFacadeCacheStrategyTest.class,
 			DerivedUnitFacadeCacheStrategyTest.class,
-			DerivedUnitFacadeFieldObservationCacheStrategyTest.class,
+			DerivedUnitFacadeFieldObservationCacheStrategyTest.class
 		}
 	)
 public class TestsShouldNotFailInSuite_s4 {
