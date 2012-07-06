@@ -1141,7 +1141,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String luceneQueryStr = String.format(luceneQueryTemplate.toString(), queryString);
 
         // --- sort fields
-        SortField[] sortFields = new  SortField[]{new SortField("inDescription.taxon.titleCache__sort", false)};
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", false)};
 
         // ---- execute criteria
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);

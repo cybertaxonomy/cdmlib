@@ -39,7 +39,13 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * @see eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder#createResultSetFromIds(eu.etaxonomy.cdm.search.LuceneSearch, org.apache.lucene.search.TopDocs, eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao, java.lang.String)
      */
     private Query query;
-    private int fragmentNumber = 5;
+    /**
+     * fragmentNumber - max number of sentence fragments to return
+     */
+    private int fragmentNumber = 2;
+    /**
+     * fragmentSize - the max number of characters for each fragment
+     */
     private int fragmentSize = 100;
     private LuceneSearch luceneSearch;
 
@@ -76,10 +82,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
         }
 
+
         for (ScoreDoc scoreDoc : topDocsResultSet.scoreDocs) {
             Document doc = luceneSearch.getSearcher().doc(scoreDoc.doc);
             String[] idStrings = doc.getValues(idField);
             SearchResult<T> searchResult = new SearchResult<T>(doc);
+            searchResult.setScore(scoreDoc.score);
 
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
             //      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented

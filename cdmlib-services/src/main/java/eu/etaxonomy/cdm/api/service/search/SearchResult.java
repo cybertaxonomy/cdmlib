@@ -27,15 +27,28 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  */
 public class SearchResult<T extends CdmBase> {
 
+    private float score = 0;
+
     private Document doc;
 
     private T entity;
 
     private Map<String,String[]> fieldHighlightMap;
 
+
+    public double getScore() {
+        return score;
+    }
+
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
     public Document getDoc() {
         return doc;
     }
+
 
     public void setDoc(Document doc) {
         this.doc = doc;

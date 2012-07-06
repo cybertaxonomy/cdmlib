@@ -107,7 +107,7 @@
         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
         </entry>
-          <entry key="org.apache.lucene.document.Document">
+        <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
         </entry>
       </map>
@@ -313,25 +313,28 @@
           </bean>
         </entry>
         <entry key="eu.etaxonomy.cdm.model.reference.Reference">
-                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
-              </entry>
-              <entry key="eu.etaxonomy.cdm.model.description.TaxonNameDescription">
-                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameDescriptionBeanProcessor">
-                    <property name="excludes">
-                      <set value-type="java.lang.String">
-                        <value>taxonName</value>
-                      </set>
-                    </property>
-                </bean>
-              </entry>
-              <entry key="eu.etaxonomy.cdm.api.facade.DerivedUnitFacade">
-                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DerivedUnitFacadeBeanProcessor"/>
-              </entry>
-              <entry key="eu.etaxonomy.cdm.model.location.Point">
-                <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
-              </entry>
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.TaxonNameDescription">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameDescriptionBeanProcessor">
+              <property name="excludes">
+                <set value-type="java.lang.String">
+                  <value>taxonName</value>
+                </set>
+              </property>
+          </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.facade.DerivedUnitFacade">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DerivedUnitFacadeBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.location.Point">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
+        </entry>
         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+        </entry>
+        <entry key="org.apache.lucene.document.Document">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
         </entry>
       </map>
     </property>
