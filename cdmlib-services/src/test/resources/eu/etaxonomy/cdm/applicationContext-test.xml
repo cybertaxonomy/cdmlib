@@ -24,11 +24,7 @@
         use TestingTermInitializer
      -->
     <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-        <!--
-            TermsDataSet-with_auditing_info.cdmlib-services.xml has different IDs than TermsDataSet-with_auditing_info.xml
-            which is used in persistence !!
-        -->
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.cdmlib-services.xml"/>
+        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
         <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
         <property name="omit" value="false"/>
     </bean>
