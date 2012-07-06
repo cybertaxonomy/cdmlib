@@ -448,6 +448,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
             @RequestParam(value = "languages", required = false) List<Language> languages,
+            @RequestParam(value = "hl", required = false) Boolean highlighting,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
@@ -460,11 +461,15 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
 
+         if(highlighting == null){
+             highlighting = false;
+         }
+
          Classification classification = null;
         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
         }
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, languages, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
         return pager;
     }
 

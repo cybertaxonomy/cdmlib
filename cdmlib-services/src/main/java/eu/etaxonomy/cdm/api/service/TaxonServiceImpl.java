@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.hibernate.criterion.Criterion;
@@ -39,7 +40,10 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.SearchResultHighligther;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -84,7 +88,6 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.search.LuceneSearch;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
@@ -107,9 +110,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private ITaxonNameDao nameDao;
-
-    @Autowired
-    private ISearchResultBuilder searchResultBuilder;
 
     @Autowired
     private INameService nameService;
@@ -1094,19 +1094,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
             Class<? extends DescriptionElementBase> clazz, String queryString,
-            Classification classification, List<Language> languages, Integer pageSize,
-            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            Classification classification, List<Language> languages, boolean highlightFragments,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
         if(clazz != null){
             directorySelectClass = clazz;
         }
 
+        Set<String> freetextFields = new HashSet<String>();
         // ---- search criteria
+        freetextFields.add("titleCache");
         StringBuilder luceneQueryTemplate = new StringBuilder();
         luceneQueryTemplate.append("+(");
         luceneQueryTemplate.append("titleCache:%1$s ");
         // common name
+        freetextFields.add("name");
         if(languages == null || languages.size() == 0){
             luceneQueryTemplate.append("name:%1$s ");
         } else {
@@ -1117,10 +1120,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             luceneQueryTemplate.append(")");
         }
         // text field from TextData
+        freetextFields.add("text.ALL");
         appendLocalizedFieldQuery("text", languages, luceneQueryTemplate).append(" ");
         // state field from CategoricalData
+        freetextFields.add("states.state.representation.ALL");
         appendLocalizedFieldQuery("states.state.representation", languages, luceneQueryTemplate).append(" ");
         // state field from CategoricalData
+        freetextFields.add("states.modifyingText.ALL");
         appendLocalizedFieldQuery("states.modifyingText", languages, luceneQueryTemplate).append(" ");
         luceneQueryTemplate.append(") ");
 
@@ -1140,10 +1146,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // ---- execute criteria
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
 
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQueryStr, clazz, pageSize, pageNumber, sortFields);
+        Query luceneQuery = luceneSearch.parse(luceneQueryStr);
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(luceneQuery, clazz, pageSize, pageNumber, sortFields);
 
-        // initialize taxa
-        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSetFromIds(luceneSearch, topDocsResultSet, dao, "inDescription.taxon.id", propertyPaths);
+        String[] highlightFields = null;
+        if(highlightFragments){
+            highlightFields = freetextFields.toArray(new String[freetextFields.size()]);
+        }
+
+        // initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneQuery);
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, highlightFields, dao, "inDescription.taxon.id", propertyPaths);
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
 

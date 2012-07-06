@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.util.Map;
+
 import org.apache.lucene.document.Document;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -29,6 +31,8 @@ public class SearchResult<T extends CdmBase> {
 
     private T entity;
 
+    private Map<String,String[]> fieldHighlightMap;
+
     public Document getDoc() {
         return doc;
     }
@@ -45,6 +49,14 @@ public class SearchResult<T extends CdmBase> {
         this.entity = entity;
     }
 
+    public Map<String,String[]> getFieldHighlightMap() {
+        return fieldHighlightMap;
+    }
+
+    public void setFieldHighlightMap(Map<String,String[]> fieldHighlightMap) {
+        this.fieldHighlightMap = fieldHighlightMap;
+    }
+
     /**
      * @param doc
      * @param entity
@@ -52,6 +64,7 @@ public class SearchResult<T extends CdmBase> {
     public SearchResult(Document doc) {
         this.doc = doc;
     }
+
 
 
 

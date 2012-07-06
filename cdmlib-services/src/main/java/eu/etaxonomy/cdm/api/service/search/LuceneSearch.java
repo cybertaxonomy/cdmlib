@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.search;
+package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
 import java.util.List;
@@ -103,11 +103,19 @@ public class LuceneSearch {
     /**
      * @return
      */
-    private QueryParser getQueryParser() {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-        Analyzer analyzer = searchFactory.getAnalyzer(type);
+    public QueryParser getQueryParser() {
+        Analyzer analyzer = getAnalyzer();
         QueryParser parser = new QueryParser("titleCache", analyzer);
         return parser;
+    }
+
+    /**
+     * @return
+     */
+    public Analyzer getAnalyzer() {
+        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
+        Analyzer analyzer = searchFactory.getAnalyzer(type);
+        return analyzer;
     }
 
     /**
@@ -122,10 +130,20 @@ public class LuceneSearch {
     public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz, Integer pageSize,
             Integer pageNumber, SortField[] sortFields) throws ParseException, IOException {
 
-        logger.debug("luceneQueryString to be parsed: " + luceneQueryString);
-        Query luceneQuery = getQueryParser().parse(luceneQueryString);
+        Query luceneQuery = parse(luceneQueryString);
 
         return executeSearch(luceneQuery, clazz, pageSize, pageNumber, sortFields);
+    }
+
+    /**
+     * @param luceneQueryString
+     * @return
+     * @throws ParseException
+     */
+    public Query parse(String luceneQueryString) throws ParseException {
+        logger.debug("luceneQueryString to be parsed: " + luceneQueryString);
+        Query luceneQuery = getQueryParser().parse(luceneQueryString);
+        return luceneQuery;
     }
 
     /**

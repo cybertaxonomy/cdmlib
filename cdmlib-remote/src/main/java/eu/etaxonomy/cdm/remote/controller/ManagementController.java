@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.search.CdmMassIndexer;
+import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
-import eu.etaxonomy.cdm.search.CdmMassIndexer;
-import eu.etaxonomy.cdm.search.ICdmMassIndexer;
 
 @Controller
 @RequestMapping(value = {"/manage"})

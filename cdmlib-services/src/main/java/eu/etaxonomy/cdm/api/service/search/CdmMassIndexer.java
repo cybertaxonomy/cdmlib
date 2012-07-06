@@ -7,10 +7,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.search;
+package eu.etaxonomy.cdm.api.service.search;
 
 import org.apache.log4j.Logger;
-import org.hibernate.*;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +25,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 /**
  * @author Andreas Kohlbecker

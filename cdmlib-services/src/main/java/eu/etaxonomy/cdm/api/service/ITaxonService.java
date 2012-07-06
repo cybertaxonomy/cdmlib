@@ -458,6 +458,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *            model are multilingual, thus this setting will only apply to
      *            the multilingiual fields. Other fields are searched
      *            nevertheless if this parameter is set or not.
+     * @param highlightFragments TODO
      * @param pageSize
      *            The maximum number of objects returned (can be null for all
      *            objects)
@@ -476,7 +477,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws CorruptIndexException
      * @throws ParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Language> languages, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
 
     /**

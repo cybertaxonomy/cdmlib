@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.search;
+package eu.etaxonomy.cdm.api.service.search;
 
 /**
  * @author andreas
