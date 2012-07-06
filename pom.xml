@@ -25,6 +25,7 @@
 		<hibernate.version>3.4.0-SNAPSHOT</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <unitils.version>3.3</unitils.version>
+        <lucene.version>2.4.0</lucene.version>
         <hsqldb.version>1.8.0.10</hsqldb.version><!-- 1.8.0.10, 1.9.0-rc6 (manualy build only for debugging) -->
     </properties>
     <scm>
@@ -905,12 +906,17 @@
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>
-                <version>2.4.0</version>
+                <version>${lucene.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-spellchecker</artifactId>
-                <version>2.4.0</version>
+                <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.lucene</groupId>
+               <artifactId>lucene-highlighter</artifactId>
+               <version>${lucene.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springmodules</groupId>
