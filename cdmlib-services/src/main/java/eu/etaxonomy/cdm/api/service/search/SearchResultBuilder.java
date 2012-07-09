@@ -42,7 +42,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
     /**
      * fragmentNumber - max number of sentence fragments to return
      */
-    private int fragmentNumber = 2;
+    private int fragmentNumber = 5;
     /**
      * fragmentSize - the max number of characters for each fragment
      */
