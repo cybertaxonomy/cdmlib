@@ -196,10 +196,8 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			UUID uuidExtensionTypeVocabulary = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
 			IVocabularyService vocService = currentImport.getVocabularyService();
 			TermVocabulary voc = vocService.find(uuidExtensionTypeVocabulary);
-			//NEW
 			TransactionStatus tx = currentImport.startTransaction();
 			currentImport.getVocabularyService().saveOrUpdate(voc);
-			//END NEW
 			if (voc != null){
 				voc.addTerm(extensionType);
 			}else{
@@ -207,9 +205,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			}
 			//save
 			termService.save(extensionType);
-			//NEW 
 			currentImport.commitTransaction(tx);
-			//END NEW
 		}
 		return extensionType;
 	}
