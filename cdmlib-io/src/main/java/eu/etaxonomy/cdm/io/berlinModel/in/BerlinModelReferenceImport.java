@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMarkerMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -103,8 +104,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	protected void initializeMappers(BerlinModelImportState state){
 		for (CdmAttributeMapperBase mapper: classMappers){
-			if (mapper instanceof DbImportExtensionMapper){
-				((DbImportExtensionMapper)mapper).initialize(state, Reference.class);
+			if (mapper instanceof DbSingleAttributeImportMapperBase){
+				DbSingleAttributeImportMapperBase singleMapper = (DbSingleAttributeImportMapperBase)mapper;
+				singleMapper.initialize(state, Reference.class);
 			}
 		}
 		return;
