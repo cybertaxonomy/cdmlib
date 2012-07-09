@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.mail.MethodNotSupportedException;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -196,6 +197,7 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 			//set vocabulary //TODO allow user defined vocabularies
 			UUID uuidMarkerTypeVocabulary = UUID.fromString("19dffff7-e142-429c-a420-5d28e4ebe305");
 			IVocabularyService vocService = currentImport.getVocabularyService();
+			TransactionStatus tx = currentImport.startTransaction();
 			TermVocabulary voc = vocService.find(uuidMarkerTypeVocabulary);
 			if (voc != null){
 				voc.addTerm(markerType);
@@ -204,6 +206,7 @@ public class DbImportMarkerMapper extends DbSingleAttributeImportMapperBase<DbIm
 			}
 			//save
 			termService.save(markerType);
+			currentImport.commitTransaction(tx);
 		}
 		return markerType;
 	}
