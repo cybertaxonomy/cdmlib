@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -42,6 +45,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * TODO write controller documentation
@@ -74,6 +78,10 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
     @Autowired
     private IClassificationService classificationService;
+
+    @Autowired
+    private ITermService termService;
+
 
     /**
      * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
@@ -174,6 +182,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             @RequestParam(value = "clazz", required = false) Class clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "features", required = false) UuidList featureUuids,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -196,7 +205,16 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
         }
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), initializationStrategy);
+
+        List<Feature> features = null;
+        if(featureUuids != null){
+            features = new ArrayList<Feature>(featureUuids.size());
+            for(UUID uuid : featureUuids){
+                features.add((Feature) termService.find(uuid));
+            }
+        }
+
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, features, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), initializationStrategy);
         return pager;
     }
 }

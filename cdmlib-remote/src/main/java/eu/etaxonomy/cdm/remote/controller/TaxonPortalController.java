@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -131,11 +132,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     private ITaxonService taxonService;
 
     @Autowired
-    private ITermService markerTypeService;
-
-    @Autowired
-    private IMarkerService markerService;
-    //private IService<MarkerType> markerTypeService;
+    private ITermService termService;
 
     @Autowired
     private IFeatureTreeService featureTreeService;
@@ -432,8 +429,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     /**
      * @param clazz
      * @param queryString
-     * @param treeUuid TODO unimplemented in TaxonServiceImpl !!!!
+     * @param treeUuid
      * @param languages
+     * @param features one or more feature uuids
      * @param pageNumber
      * @param pageSize
      * @param request
@@ -447,6 +445,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "clazz", required = false) Class clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "features", required = false) UuidList featureUuids,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -469,7 +468,16 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         if(treeUuid != null){
             classification = classificationService.find(treeUuid);
         }
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
+
+        List<Feature> features = null;
+        if(featureUuids != null){
+            features = new ArrayList<Feature>(featureUuids.size());
+            for(UUID uuid : featureUuids){
+                features.add((Feature) termService.find(uuid));
+            }
+        }
+
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, features, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
         return pager;
     }
 
@@ -750,7 +758,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         if(markerTypeUUIDs != null && !markerTypeUUIDs.isEmpty()){
             sMarkerTypeUUIDs = new HashSet<UUID>(markerTypeUUIDs);
-            markerTypeTerms = markerTypeService.find(sMarkerTypeUUIDs);
+            markerTypeTerms = termService.find(sMarkerTypeUUIDs);
         } else if(markerTypeUUIDs != null && markerTypeUUIDs.isEmpty()){
             markerTypeTerms = new ArrayList<DefinedTermBase>();
         }
@@ -799,7 +807,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
        //MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
-        MarkerType useMarkerType = (MarkerType) markerTypeService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
+        MarkerType useMarkerType = (MarkerType) termService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
 
        //find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
        Set<MarkerType> markerTypes =  new HashSet<MarkerType>();

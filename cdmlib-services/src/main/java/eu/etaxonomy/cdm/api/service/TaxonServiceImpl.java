@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -1094,8 +1095,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
             Class<? extends DescriptionElementBase> clazz, String queryString,
-            Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            Classification classification, List<Feature> features, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
         if(clazz != null){
@@ -1133,6 +1134,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(classification != null){
             luceneQueryTemplate.append("+inDescription.taxon.taxonNodes.classification.id:").append(classification.getId()).append(" ");
         }
+
+        if(features != null && features.size() > 0 ){
+            luceneQueryTemplate.append("+feature.uuid:(");
+            for(Feature feature : features){
+                luceneQueryTemplate.append(feature.getUuid()).append(" ");
+            }
+            luceneQueryTemplate.append(") ");
+        }
+
         // the description must be associated with a taxon
         // TODO open range queries [0 TO *] not working in the current version of lucene (https://issues.apache.org/jira/browse/LUCENE-995)
         //       so we are using integer maximum as workaround

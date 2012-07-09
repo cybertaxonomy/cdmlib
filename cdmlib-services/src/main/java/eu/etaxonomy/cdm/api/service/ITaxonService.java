@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -453,6 +454,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param classification
      *            If a taxonomic classification three is specified here the
      *            result set will only contain taxa of the given classification
+     * @param features TODO
      * @param languages
      *            Search only in these languages. Not all text fields in the cdm
      *            model are multilingual, thus this setting will only apply to
@@ -477,7 +479,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws CorruptIndexException
      * @throws ParseException
      */
-    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+    public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(Class<? extends DescriptionElementBase> clazz, String queryString, Classification classification, List<Feature> features, List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
 
     /**
