@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 
 
 /**
- * walkaround for enumerations, base type according to TDWG.  For linear ordering
+ * workaround for enumerations, base type according to TDWG.  For linear ordering
  * use partOf relation and BreadthFirst. Default iterator order should therefore
  * be BreadthFirst (not DepthFirst)
  * @author m.doering
