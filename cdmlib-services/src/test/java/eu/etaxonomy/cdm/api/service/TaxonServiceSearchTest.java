@@ -36,8 +36,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import com.mchange.util.AssertException;
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -116,7 +116,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     /**
      * Test method for
-     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)}
+     * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator)}
      * .
      */
     @Test
@@ -124,7 +124,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNames() {
 
         // pass 1
-        ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
         configurator.setTitleSearchString("Abies*");
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(true);
@@ -475,7 +475,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 
-        ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
         configurator.setTitleSearchString("Weiß%");
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(false);

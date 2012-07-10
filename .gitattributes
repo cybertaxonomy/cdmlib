@@ -1899,15 +1899,15 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBas
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/DeleteConfiguratorBase.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/FindTaxaAndNamesConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IFindTaxaAndNamesConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/MatchingTaxonConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text

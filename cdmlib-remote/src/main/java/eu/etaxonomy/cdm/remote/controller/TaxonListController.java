@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -141,7 +141,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
 
         config.setTaxonPropertyPath(initializationStrategy);
 

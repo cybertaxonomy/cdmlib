@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 20.01.2009
  * @version 1.0
  */
-public interface ITaxonServiceConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
+public interface IFindTaxaAndNamesConfigurator<T extends TaxonBase> extends IIdentifiableEntityServiceConfigurator<T>{
 
     public boolean isDoTaxa();
 

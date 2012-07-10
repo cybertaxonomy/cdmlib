@@ -18,7 +18,7 @@ import java.util.UUID;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
@@ -442,7 +442,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param configurator
      * @return
      */
-    public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator);
+    public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * <h4>This is an experimental feature, it may be moved, modified, or even
@@ -571,7 +571,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCacheSynonym();
 
-    public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(ITaxonServiceConfigurator configurator);
+    public List<UuidAndTitleCache<TaxonBase>> findTaxaAndNamesForEditor(IFindTaxaAndNamesConfigurator configurator);
 
     /**
      * Creates the specified inferred synonyms for the taxon in the classification, but do not insert it to the database

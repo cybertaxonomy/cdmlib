@@ -24,12 +24,12 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @created 20.01.2009
  * @version 1.0
  */
-public class TaxonServiceConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
-			implements ITaxonServiceConfigurator<T> {
+public class FindTaxaAndNamesConfiguratorImpl<T extends TaxonBase<?>> extends IdentifiableServiceConfiguratorImpl<T>
+			implements IFindTaxaAndNamesConfigurator<T> {
 
 
-	public static TaxonServiceConfiguratorImpl NewInstance() {
-		return new TaxonServiceConfiguratorImpl();
+	public static FindTaxaAndNamesConfiguratorImpl NewInstance() {
+		return new FindTaxaAndNamesConfiguratorImpl();
 	}
 
 	
