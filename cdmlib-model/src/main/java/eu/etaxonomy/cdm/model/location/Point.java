@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -399,14 +400,29 @@ public class Point implements Cloneable, Serializable {
 			if (tertiers == null || removeTertiers){
 				return "";
 			}else{
-				String result = String.valueOf(tertiers);
+				if (tertiers >= 1.0 || tertiers < 0.0){
+					throw new IllegalStateException("Tertiers should be 0.0 <= tertiers < 1.0 but are '" + tertiers + "'");
+				}
+				String result = tertiers.toString();
+				int pos = result.indexOf("E");
+				if (pos > -1){
+					int exp = - Integer.valueOf(result.substring(pos + 1));
+					result = result.substring(0, pos).replace(".", "");
+					result = "0." + StringUtils.leftPad("", exp - 1, "0") +  result;
+					
+				}
+				
 				if (result.length() > 5){
 					result = result.substring(0, 5);
 				}
 				while (result.endsWith("0")){
 					result = result.substring(0, result.length() -1);
 				}
-				return result.substring(1);
+				result = result.substring(1);
+				if (result.equals(".")){
+					result = "";
+				}
+				return result;
 			}
 			
 		}
