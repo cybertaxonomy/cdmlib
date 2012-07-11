@@ -254,6 +254,38 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    public final void testFindByDescriptionElementFullText_MultipleWords() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        // Pflanzenart aus der Gattung der Tannen
+
+        Pager<SearchResult<TaxonBase>> pager;
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Tannen", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("OR search : Expecting one entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Wespen", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("OR search : Expecting one entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Tannen", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("AND search : Expecting one entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Wespen", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("AND search : Expecting no entity", Integer.valueOf(0), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Tannen\"", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("Phrase search : Expecting one entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Wespen\"", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("Phrase search : Expecting one entity", Integer.valueOf(0), pager.getCount());
+
+
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
     public final void testFindByDescriptionElementFullText_modify_DescriptionElement() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
