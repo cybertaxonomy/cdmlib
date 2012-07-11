@@ -485,6 +485,26 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting one entity when searching for any TextData", Integer.valueOf(1), pager.getCount());
         SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
         Assert.assertTrue("the map of highlighted fragments should contain at least one item", searchResult.getFieldHighlightMap().size() > 0);
+        String[] fragments = searchResult.getFieldHighlightMap().values().iterator().next();
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Abies</B>"));
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Pflanzenart Tannen", null, null, null, true, null, null, null, null);
+        searchResult = pager.getRecords().get(0);
+        Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
+        fragments = searchResult.getFieldHighlightMap().values().iterator().next();
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B>") || fragments[0].contains("<B>Tannen</B>"));
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "+Pflanzenart +Tannen", null, null, null, true, null, null, null, null);
+        searchResult = pager.getRecords().get(0);
+        Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
+        fragments = searchResult.getFieldHighlightMap().values().iterator().next();
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B>") && fragments[0].contains("<B>Tannen</B>"));
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "\"Pflanzenart aus der Gattung der Tannen\"", null, null, null, true, null, null, null, null);
+        searchResult = pager.getRecords().get(0);
+        Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
+        fragments = searchResult.getFieldHighlightMap().values().iterator().next();
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart aus der Gattung der Tannen</B>"));
     }
 
     /**
