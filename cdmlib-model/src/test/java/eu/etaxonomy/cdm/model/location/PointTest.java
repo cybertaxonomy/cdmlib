@@ -176,6 +176,17 @@ public class PointTest {
 		} catch (ParseException e) {
 			Assert.assertTrue("Longitude can not be S", true);
 		}
+		//#2962 (rounding of tertiers)
+		try {
+			point1.setLatitudeByParsing("37\u00B07'44\"N");
+			Assert.assertEquals("Result should be 37°7'44\"N not 37°7'44.999\"N", "37°7'44\"N", point1.getLatitudeSexagesimal().toString());
+			
+			point1.setLatitudeByParsing("37\u00B07'45\"N");
+			Assert.assertEquals("Result should be 37°7'45\"N not 37°7'45.\"N", "37°7'45\"N", point1.getLatitudeSexagesimal().toString());
+			
+		} catch (ParseException e) {
+			Assert.fail("No parsing error should occur");
+		}
 		
 		
 		 
