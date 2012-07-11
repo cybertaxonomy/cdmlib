@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-  <HIBERNATE_SEQUENCES SEQUENCE_NAME="definedtermbase" NEXT_VAL="1"/>
   <DEFINEDTERMBASE DTYPE="Language" ID="1" CREATED="2009-01-28 17:07:03.0" UUID="ae787603-3070-4298-9ca6-4cbe73378122" URI="" ISO639_1="" ISO639_2="khi" VOCABULARY_ID="1"/>
   <DEFINEDTERMBASE DTYPE="Language" ID="2" CREATED="2009-01-28 17:07:03.0" UUID="b40cc17a-b05e-4f7b-a3a1-cbf396b79c5e" URI="" ISO639_1="" ISO639_2="sai" VOCABULARY_ID="1"/>
   <DEFINEDTERMBASE DTYPE="Language" ID="3" CREATED="2009-01-28 17:07:03.0" UUID="45d05a7a-ee78-462c-a177-6fd743cf4d03" URI="" ISO639_1="ca" ISO639_2="cat" VOCABULARY_ID="1"/>
@@ -6463,5 +6462,15 @@
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="25" REPRESENTATIONS_ID="2082"/>
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="26" REPRESENTATIONS_ID="2086"/>
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="27" REPRESENTATIONS_ID="2087"/>
-  
+
+  <!--
+       need to set some hibernate_sequences here, thus the initial_value of
+       eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride is set to 1000
+       in applicationContext-test.xml
+       DefinedTermBase and Representation initally have already more that 1000 entities.
+  -->
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="DefinedTermBase" NEXT_VAL="3000"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="Representation" NEXT_VAL="3000"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="TermVocabulary" NEXT_VAL="41"/><!-- not needed: TODO delete -->
+
 </dataset>
