@@ -1108,13 +1108,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         freetextFields.add("titleCache");
         StringBuilder luceneQueryTemplate = new StringBuilder();
         luceneQueryTemplate.append("+(");
-        luceneQueryTemplate.append("titleCache:%1$s ");
+        luceneQueryTemplate.append("titleCache:(%1$s) ");
         // common name
         freetextFields.add("name");
         if(languages == null || languages.size() == 0){
-            luceneQueryTemplate.append("name:%1$s ");
+            luceneQueryTemplate.append("name:(%1$s) ");
         } else {
-            luceneQueryTemplate.append("(+name:%1$s ");
+            luceneQueryTemplate.append("(+name:(%1$s) ");
             for(Language lang : languages){
                 luceneQueryTemplate.append(" +language.uuid:" + lang.getUuid().toString());
             }
@@ -1192,10 +1192,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             stringBuilder = new StringBuilder();
         }
         if(languages == null || languages.size() == 0){
-            stringBuilder.append(name + ".ALL:%1$s ");
+            stringBuilder.append(name + ".ALL:(%1$s) ");
         } else {
             for(Language lang : languages){
-                stringBuilder.append(name + "." + lang.getUuid().toString() + ":%1$s ");
+                stringBuilder.append(name + "." + lang.getUuid().toString() + ":(%1$s) ");
             }
         }
         return stringBuilder;
