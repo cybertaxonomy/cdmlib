@@ -23,17 +23,27 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.TermPositionVector;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.highlight.Fragmenter;
 import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.Scorer;
+import org.apache.lucene.search.highlight.SimpleFragmenter;
 import org.apache.lucene.search.highlight.SimpleSpanFragmenter;
 import org.apache.lucene.search.highlight.SpanScorer;
 import org.apache.lucene.search.highlight.TokenSources;
 
 /**
+ * This SearchResultHighligther is using the QueryScorer by default even if the SpanScorer is meant to be the new default scorer in Lucene,
+ * see https://issues.apache.org/jira/browse/LUCENE-1685 and https://issues.apache.org/jira/browse/LUCENE-2013.
+ * The SpanScorer was causing problems with phrase queries (see https://dev.e-taxonomy.eu/trac/ticket/2961)
+ * whereas the QueryScorer was returning good results.
+ * <p>
+ * This SearchResultHighligther can be switched to use the SpanScorer: {@link #setUseSpanScorer(boolean)}
+ * <p>
  * Based on work of Nicholas Hrycan
  * see http://code.google.com/p/hrycan-blog/source/browse/trunk/lucene-highlight/src/com/hrycan/search/HighlighterUtil.java
+ *
  *
  * @author Andreas Kohlbecker
  *
@@ -42,7 +52,15 @@ public class SearchResultHighligther {
 
     public static final Logger logger = Logger.getLogger(SearchResultHighligther.class);
 
-    private Searcher searcher;
+    private boolean useSpanScorer = true;
+
+    public boolean isUseSpanScorer() {
+        return useSpanScorer;
+    }
+
+    public void setUseSpanScorer(boolean useSpanScorer) {
+        this.useSpanScorer = useSpanScorer;
+    }
 
     public Map<String,String[]> getFragmentsWithHighlightedTerms(Analyzer analyzer, Query query, String[] fieldNames,  Document doc,  int fragmentNumber, int fragmentSize){
 
@@ -86,14 +104,7 @@ public class SearchResultHighligther {
                     String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException {
 
             TokenStream stream = TokenSources.getTokenStream(fieldName, fieldContents, analyzer);
-            SpanScorer scorer = new SpanScorer(query, fieldName, new CachingTokenFilter(stream));
-            Fragmenter fragmenter = new SimpleSpanFragmenter(scorer, fragmentSize);
-
-            Highlighter highlighter = new Highlighter(scorer);
-            highlighter.setTextFragmenter(fragmenter);
-            highlighter.setMaxDocCharsToAnalyze(Integer.MAX_VALUE);
-
-            String[] fragments = highlighter.getBestFragments(stream, fieldContents, fragmentNumber);
+            String[] fragments = getFragmentsWithHighlightedTerms(stream, query, fieldName, fieldContents, fragmentNumber, fragmentSize);
 
             return fragments;
     }
@@ -115,15 +126,40 @@ public class SearchResultHighligther {
                     String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException  {
 
             TokenStream stream = TokenSources.getTokenStream(termPosVector);
-            SpanScorer scorer = new SpanScorer(query, fieldName, new CachingTokenFilter(stream));
-            Fragmenter fragmenter = new SimpleSpanFragmenter(scorer, fragmentSize);
-            Highlighter highlighter = new Highlighter(scorer);
-            highlighter.setTextFragmenter(fragmenter);
-            highlighter.setMaxDocCharsToAnalyze(Integer.MAX_VALUE);
-
-            String[] fragments = highlighter.getBestFragments(stream, fieldContents, fragmentNumber);
+            String[] fragments = getFragmentsWithHighlightedTerms(stream, query, fieldName, fieldContents, fragmentNumber, fragmentSize);
 
             return fragments;
+    }
+
+    /**
+     * @param stream
+     * @param query - query object created from user's input
+     * @param fieldName - name of the field containing the text to be fragmented
+     * @param fieldContents - contents of fieldName
+     * @param fragmentNumber - max number of sentence fragments to return
+     * @param fragmentSize - the max number of characters for each fragment
+     * @return
+     * @throws IOException
+     */
+    private String[] getFragmentsWithHighlightedTerms(TokenStream stream, Query query, String fieldName, String fieldContents, int fragmentNumber,
+            int fragmentSize) throws IOException {
+
+        Fragmenter fragmenter;
+        Scorer scorer;
+        if(useSpanScorer){
+            scorer = new QueryScorer(query, fieldName);
+            fragmenter = new SimpleFragmenter(fragmentSize);
+        } else {
+            scorer = new SpanScorer(query, fieldName, new CachingTokenFilter(stream));
+            fragmenter = new SimpleSpanFragmenter((SpanScorer)scorer, fragmentSize);
+        }
+
+        Highlighter highlighter = new Highlighter(scorer);
+        highlighter.setTextFragmenter(fragmenter);
+        highlighter.setMaxDocCharsToAnalyze(Integer.MAX_VALUE);
+
+        String[] fragments = highlighter.getBestFragments(stream, fieldContents, fragmentNumber);
+        return fragments;
     }
 
 }

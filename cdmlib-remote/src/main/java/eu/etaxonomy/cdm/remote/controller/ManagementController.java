@@ -38,7 +38,7 @@ public class ManagementController
       private DataSourceReloader datasoucrceLoader;
 
     @Autowired
-    public ICdmMassIndexer indexer = new CdmMassIndexer();
+    public ICdmMassIndexer indexer;
 
 
     private static final int DEFAULT_PAGE_SIZE = 25;

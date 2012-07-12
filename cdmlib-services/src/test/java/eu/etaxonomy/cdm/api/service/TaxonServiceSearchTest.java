@@ -476,7 +476,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    @Ignore // FIXME see https://dev.e-taxonomy.eu/trac/ticket/2961
     public final void testFindByDescriptionElementFullText_Highlighting() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
@@ -505,7 +504,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         searchResult = pager.getRecords().get(0);
         Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
         fragments = searchResult.getFieldHighlightMap().values().iterator().next();
-        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart aus der Gattung der Tannen</B>"));
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B> <B>aus</B> <B>der</B> <B>Gattung</B> <B>der</B> <B>Tannen</B>"));
     }
 
     /**
