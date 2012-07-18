@@ -10,21 +10,27 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ibm.wsdl.extensions.http.HTTPConstants;
+
 import eu.etaxonomy.cdm.api.service.search.CdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
+import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
 
@@ -39,6 +45,9 @@ public class ManagementController
 
     @Autowired
     public ICdmMassIndexer indexer;
+
+    @Autowired
+    public ProgressMonitorController progressMonitorController;
 
 
     private static final int DEFAULT_PAGE_SIZE = 25;
@@ -79,15 +88,26 @@ public class ManagementController
      * @throws Exception
      */
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
-    public ModelAndView doReindex(HttpServletRequest request, HttpServletResponse respone) throws Exception {
+    public ModelAndView doReindex(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         ModelAndView mv = new ModelAndView();
 
-        indexer.reindex(null);
+        final RestServiceProgressMonitor monitor = new RestServiceProgressMonitor();
+        UUID monitorUuid = progressMonitorController.registerMonitor(monitor);
+        String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
 
-        mv.addObject("done!");
-        mv.setViewName("text");
+        Thread subThread = new Thread(){
+            public void run(){
+                indexer.reindex(monitor);
+            }
+        };
+        subThread.start();
 
+        // send redirect "see other"
+        response.setHeader("Location", monitorPath);
+        response.sendError(303, "Reindexing started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
+//        mv.addObject(monitorPath);
+//        mv.setViewName("text");
         return mv;
     }
 
@@ -111,6 +131,7 @@ public class ManagementController
 
         return mv;
     }
+
 
 
 

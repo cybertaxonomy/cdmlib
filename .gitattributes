@@ -21,8 +21,10 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/MediaInfo.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/MimeType.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/DefaultProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/IProgressMonitor.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/IRestServiceProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/NullProgressMonitor.java -text svneol=unset#text/plain
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/ProgressMonitorWrapper.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/RestServiceProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/SubProgressMonitor.java -text
 cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
@@ -1608,6 +1610,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyList
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyNodeController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyNodeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyPortalController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ProgressMonitorController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text

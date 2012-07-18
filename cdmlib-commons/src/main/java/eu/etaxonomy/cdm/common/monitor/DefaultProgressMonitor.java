@@ -9,9 +9,12 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
+ * This is a console style progress monitor with prints the progress information to configured {@link Logger} with level {@link Level#INFO}
+ *
  * @author a.mueller
  * @date 14.09.2010
  *
@@ -24,13 +27,13 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     }
 
     private boolean isCanceled = false;
-    private String taskName = "No task name";
-    private int totalWork = 0;
-    private double workDone = 0;
-    private String subTask = "No subtask name";
+    protected String taskName = "No task name";
+    protected int totalWork = 0;
+    protected double workDone = 0;
+    protected String subTask = "No subtask name";
 
 
-    private DefaultProgressMonitor(){
+    protected DefaultProgressMonitor(){
 
     }
 

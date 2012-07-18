@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -77,20 +78,27 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
         long index = 0;
         int batchesWorked = 0;
-        while (results.next()) {
-            index++;
-            fullTextSession.index(results.get(0)); // index each element
-            if (index % BATCH_SIZE == 0 || index == countResult) {
-                batchesWorked++;
-                fullTextSession.flushToIndexes(); // apply changes to indexes
-                fullTextSession.clear(); // clear since the queue is processed
-//                calculateNumOfBatches(index == countResult ? countResult : index);
-                logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
-                subMonitor.worked(batchesWorked);
-                //if(index / BATCH_SIZE > 10 ) break;
-            }
-        }
 
+        try {
+            while (results.next()) {
+                index++;
+                fullTextSession.index(results.get(0)); // index each element
+                if (index % BATCH_SIZE == 0 || index == countResult) {
+                    batchesWorked++;
+                    fullTextSession.flushToIndexes(); // apply changes to indexes
+                    fullTextSession.clear(); // clear since the queue is processed
+                    //                calculateNumOfBatches(index == countResult ? countResult : index);
+                    logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
+                    subMonitor.internalWorked(1);
+                    //if(index / BATCH_SIZE > 10 ) break;
+                }
+            }
+        } catch (RuntimeException e) {
+            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
+            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
+            monitor.done();
+            throw	e;
+        }
         //transaction.commit(); // no need to commit, transaction will be committed automatically
         logger.info("end indexing " + type.getName());
         subMonitor.done();
@@ -145,6 +153,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         for(Class type : indexedClasses()){
             reindex(type, monitor);
         }
+        monitor.done();
     }
 
     /* (non-Javadoc)
