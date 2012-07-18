@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -513,8 +514,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private void refreshLuceneIndex() {
 
         commitAndStartNewTransaction(null);
-        indexer.purge();
-        indexer.reindex();
+        indexer.purge(null);
+        indexer.reindex(DefaultProgressMonitor.NewInstance());
         commitAndStartNewTransaction(null);
     }
 

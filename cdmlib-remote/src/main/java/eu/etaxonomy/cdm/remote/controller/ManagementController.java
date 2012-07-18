@@ -83,7 +83,7 @@ public class ManagementController
 
         ModelAndView mv = new ModelAndView();
 
-        indexer.reindex();
+        indexer.reindex(null);
 
         mv.addObject("done!");
         mv.setViewName("text");
@@ -104,7 +104,7 @@ public class ManagementController
 
         ModelAndView mv = new ModelAndView();
 
-        indexer.purge();
+        indexer.purge(null);
 
         mv.addObject("done!");
         mv.setViewName("text");

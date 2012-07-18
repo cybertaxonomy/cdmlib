@@ -24,6 +24,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -53,7 +56,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return session;
     }
 
-    protected <T extends CdmBase>void reindex(Class<T> type) {
+    protected <T extends CdmBase>void reindex(Class<T> type, IProgressMonitor monitor) {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
@@ -61,31 +64,58 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.setCacheMode(CacheMode.IGNORE);
 
         logger.info("start indexing " + type.getName());
+        monitor.subTask("indexing " + type.getName());
         Transaction transaction = fullTextSession.beginTransaction();
 
-        Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
-        Long countResult = (Long)countResultObj;
-        Long numOfBatches = countResult > 0 ? ((countResult-1)/BATCH_SIZE)+1 : 0;
+        Long countResult = countEntities(type);
+        int numOfBatches = calculateNumOfBatches(countResult);
+
+        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, numOfBatches);
+        subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
         // Scrollable results will avoid loading too many objects in memory
         ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(BATCH_SIZE).scroll(ScrollMode.FORWARD_ONLY);
-        int index = 0;
+        long index = 0;
+        int batchesWorked = 0;
         while (results.next()) {
             index++;
             fullTextSession.index(results.get(0)); // index each element
             if (index % BATCH_SIZE == 0 || index == countResult) {
+                batchesWorked++;
                 fullTextSession.flushToIndexes(); // apply changes to indexes
                 fullTextSession.clear(); // clear since the queue is processed
-                logger.info("\tbatch " + (((index-1)/BATCH_SIZE)+1) + "/" + numOfBatches + " processed");
+//                calculateNumOfBatches(index == countResult ? countResult : index);
+                logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
+                subMonitor.worked(batchesWorked);
                 //if(index / BATCH_SIZE > 10 ) break;
             }
         }
 
         //transaction.commit(); // no need to commit, transaction will be committed automatically
         logger.info("end indexing " + type.getName());
+        subMonitor.done();
     }
 
-    protected <T extends CdmBase>void purge(Class<T> type) {
+    /**
+     * @param countResult
+     * @return
+     */
+    private int calculateNumOfBatches(Long countResult) {
+        Long numOfBatches =  countResult > 0 ? ((countResult-1)/BATCH_SIZE)+1 : 0;
+        return numOfBatches.intValue();
+    }
+
+    /**
+     * @param type
+     * @return
+     */
+    private <T> Long countEntities(Class<T> type) {
+        Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
+        Long countResult = (Long)countResultObj;
+        return countResult;
+    }
+
+    protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
@@ -99,10 +129,21 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * @see eu.etaxonomy.cdm.database.IMassIndexer#reindex()
      */
     @Override
-    public void reindex(){
+    public void reindex(IProgressMonitor monitor){
 
+        if(monitor == null){
+            monitor = new NullProgressMonitor();
+        }
+
+        monitor.setTaskName("CdmMassIndexer");
+        // retrieve total count of batches
+        int totalNumOfBatches = 0;
         for(Class type : indexedClasses()){
-            reindex(type);
+            totalNumOfBatches += calculateNumOfBatches(countEntities(type));
+        }
+        monitor.beginTask("Reindexing " + indexedClasses().length + " classes", totalNumOfBatches);
+        for(Class type : indexedClasses()){
+            reindex(type, monitor);
         }
     }
 
@@ -110,10 +151,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * @see eu.etaxonomy.cdm.database.IMassIndexer#purge()
      */
     @Override
-    public void purge(){
+    public void purge(IProgressMonitor monitor){
 
         for(Class type : indexedClasses()){
-            purge(type);
+            purge(type, monitor);
         }
     }
 
