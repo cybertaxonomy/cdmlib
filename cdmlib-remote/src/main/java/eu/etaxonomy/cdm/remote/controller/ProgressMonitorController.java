@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
@@ -38,7 +36,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@RequestMapping(value="/status/")
+@RequestMapping(value="/progress/")
 public class ProgressMonitorController {
 
     private Map<UUID, IRestServiceProgressMonitor> monitors = new HashMap<UUID, IRestServiceProgressMonitor>();
