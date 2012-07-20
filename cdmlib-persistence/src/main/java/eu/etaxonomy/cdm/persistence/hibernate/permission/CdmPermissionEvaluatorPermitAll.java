@@ -22,8 +22,7 @@ import org.springframework.security.core.Authentication;
  * @version 1.0
  */
 public class CdmPermissionEvaluatorPermitAll implements PermissionEvaluator {
-	private static final Logger logger = Logger
-			.getLogger(CdmPermissionEvaluatorPermitAll.class);
+	private static final Logger logger = Logger.getLogger(CdmPermissionEvaluatorPermitAll.class);
 
 	/* (non-Javadoc)
 	 * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
