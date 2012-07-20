@@ -50,8 +50,9 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 		if (!(permission instanceof CdmPermission)){
 			String permissionString = (String)permission;
 			if (permissionString.equals("changePassword")){
-				if (targetDomainObject.equals(((User)authentication.getPrincipal())))return true;
-				else{
+				if (targetDomainObject.equals(((User)authentication.getPrincipal()))){
+					return true;
+				}else{
 					cdmPermission = CdmPermission.ADMIN;
 				}
 			}else{
