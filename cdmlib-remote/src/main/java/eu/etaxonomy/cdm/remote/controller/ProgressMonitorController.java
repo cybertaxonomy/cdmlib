@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -125,12 +126,9 @@ public class ProgressMonitorController {
     }
 
     public String pathFor(HttpServletRequest request, UUID uuid){
-        String requestUrl = request.getRequestURL().toString();
-        String fileExtension = "";
-        if(requestUrl.lastIndexOf('.') > 0){
-            fileExtension = requestUrl.substring(requestUrl.lastIndexOf('.'));
-        }
-        return request.getContextPath() + "/progress/" + uuid.toString() + fileExtension;
+        String servletPath = request.getServletPath();
+        String fileExtension = FilenameUtils.getExtension(servletPath);
+        return request.getContextPath() + "/progress/" + uuid.toString() + (fileExtension.length() > 0 ? '.': "") + fileExtension;
     }
 
     @RequestMapping(value = "{uuid}", method = RequestMethod.GET)
