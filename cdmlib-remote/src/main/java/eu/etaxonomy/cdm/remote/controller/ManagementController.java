@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
+import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 
 @Controller
 @RequestMapping(value = {"/manage"})
@@ -105,7 +106,15 @@ public class ManagementController
 
         // send redirect "see other"
         response.setHeader("Location", monitorPath);
-        response.sendError(303, "Reindexing started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
+//        response.sendError(303, null);
+        boolean isJSONP = request.getParameter("callback") != null;
+        if(isJSONP){
+            JsonpRedirect jsonpRedirect = new JsonpRedirect(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +  monitorPath);
+            mv.addObject(jsonpRedirect);
+//            response.sendError(303, "{\"redirect\":  \""+ monitorPath + "\"}");
+        } else {
+            response.sendError(303, "Reindexing started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
+        }
 //        mv.addObject(monitorPath);
 //        mv.setViewName("text");
         return mv;

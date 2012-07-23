@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -124,7 +125,12 @@ public class ProgressMonitorController {
     }
 
     public String pathFor(HttpServletRequest request, UUID uuid){
-        return request.getContextPath() + "/progress/" + uuid.toString();
+        String requestUrl = request.getRequestURL().toString();
+        String fileExtension = "";
+        if(requestUrl.lastIndexOf('.') > 0){
+            fileExtension = requestUrl.substring(requestUrl.lastIndexOf('.'));
+        }
+        return request.getContextPath() + "/progress/" + uuid.toString() + fileExtension;
     }
 
     @RequestMapping(value = "{uuid}", method = RequestMethod.GET)

@@ -65,7 +65,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.setCacheMode(CacheMode.IGNORE);
 
         logger.info("start indexing " + type.getName());
-        monitor.subTask("indexing " + type.getName());
+        monitor.subTask("indexing " + type.getSimpleName());
         Transaction transaction = fullTextSession.beginTransaction();
 
         Long countResult = countEntities(type);
