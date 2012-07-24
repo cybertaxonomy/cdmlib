@@ -231,6 +231,26 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         List<TaxonDescription> results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         return results;
     }
+    
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#listTaxonDescriptionMedia(UUID, boolean, Set, Integer, Integer, List)
+     */
+    @Override
+    public List<Media> listTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths){
+    	return this.dao.listTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes, pageSize, pageNumber, propertyPaths);
+    }
+    
+	/*
+	 * @see IDescriptionService#countTaxonDescriptionMedia(UUID, boolean, Set)
+	 */
+	@Override
+    public int countTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes){
+		return this.dao.countTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes);
+	}
+	
+
+
 
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,

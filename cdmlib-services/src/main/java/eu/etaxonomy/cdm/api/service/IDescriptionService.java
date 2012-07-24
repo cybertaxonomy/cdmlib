@@ -222,6 +222,28 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 */
 	public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths); 
 
+	/**
+	 * Returns all {@link Media} attached to a taxon via TaxonDescription.elements.media.
+	 * @param taxonUuid the taxons uuid, if null media for all taxa are returned
+	 * @param limitToGalleries if true only media in TaxonDescriptions with imageGallery flag=true are returned
+	 * @param markerTypes only media for TaxonDescriptions with marker of type markerType and marker.flag=true are returned, one matching marker type is sufficient
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return
+	 */
+	public List<Media> listTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	/**
+	 * Returns count for all {@link Media} attached to a taxon via TaxonDescription.elements.media.
+	 * @param taxonUuid the taxons uuid, if null media for all taxa are returned
+	 * @param limitToGalleries if true only media in TaxonDescriptions with imageGallery flag=true are returned
+	 * @param markerTypes only media for TaxonDescriptions with marker of type markerType and marker.flag=true are returned, one matching marker type is sufficient
+	 * @return
+	 */
+	public int countTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes);
+	
+
 	
 	/**
 	 * Returns a List of TaxonNameDescription instances, optionally filtered by the name which they refer to
@@ -235,6 +257,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * FIXME candidate for harmonization - rename to pageTaxonNameDescriptions
 	 */
 	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+		  
 	
 	/**
 	 * Returns a List of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
