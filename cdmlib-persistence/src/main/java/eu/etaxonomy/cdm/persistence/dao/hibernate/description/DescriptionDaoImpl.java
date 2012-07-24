@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -225,8 +228,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
      *
      */
     //TODO move to AnnotatableEntityDao(?)
-    private void addMarkerTypesCriterion(Set<MarkerType> markerTypes,
-            Criteria criteria) {
+    private void addMarkerTypesCriterion(Set<MarkerType> markerTypes, Criteria criteria) {
 
         if(markerTypes != null && !markerTypes.isEmpty()) {
             Set<Integer> markerTypeIds = new HashSet<Integer>();
@@ -662,4 +664,115 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         return results;
     }
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
+	@Override
+	public List<Media> listTaxonDescriptionMedia(UUID taxonUuid,
+			Boolean limitToGalleries, Set<MarkerType> markerTypes,
+			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		
+	       	AuditEvent auditEvent = getAuditEventFromContext();
+	        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+	            String queryString = " SELECT media " +
+					getTaxonDescriptionMediaQueryString(
+						taxonUuid, limitToGalleries,  markerTypes);
+
+	            Query query = getSession().createQuery(queryString);
+
+	            setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
+	            
+	            
+//	            addMarkerTypesCriterion(markerTypes, hql);
+
+	            if(pageSize != null) {
+	            	query.setMaxResults(pageSize);
+	                if(pageNumber != null) {
+	                	query.setFirstResult(pageNumber * pageSize);
+	                }
+	            }
+
+	            List<Media> results = (List<Media>)query.list();
+
+	            defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+	            return results;
+	        } else {
+	        	throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid, boolean restrictToGalleries)");
+	        }
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#countTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set)
+	 */
+	@Override
+	public int countTaxonDescriptionMedia(UUID taxonUuid,
+			Boolean limitToGalleries, Set<MarkerType> markerTypes) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+        	String queryString = " SELECT count(DISTINCT media) " +
+	        	getTaxonDescriptionMediaQueryString(
+					taxonUuid, limitToGalleries, markerTypes);
+	    
+        	Query query = getSession().createQuery(queryString);
+        	setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
+        	return ((Long)query.uniqueResult()).intValue();
+		}else{
+        	throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
+		}
+		
+	}
+
+	private void setTaxonDescriptionMediaParameters(Query query, UUID taxonUuid, Boolean limitToGalleries, Set<MarkerType> markerTypes) {
+		if(taxonUuid != null){
+		    query.setParameter("uuid", taxonUuid);
+		}
+		
+	}
+
+	/**
+	 * @param taxonUuid
+	 * @param restrictToGalleries
+	 * @param markerTypes 
+	 * @return
+	 */
+	private String getTaxonDescriptionMediaQueryString(UUID taxonUuid,
+			Boolean restrictToGalleries, Set<MarkerType> markerTypes) {
+		String fromQueryString =
+			" FROM DescriptionElementBase as deb INNER JOIN " +
+				" deb.inDescription as td " 
+				+ " INNER JOIN td.taxon as t " 
+				+ " JOIN deb.media as media " 
+				+ " LEFT JOIN td.markers marker ";
+
+		String whereQueryString = " WHERE (1=1) ";
+		if (taxonUuid != null){
+			whereQueryString += " AND t.uuid = :uuid ";
+		}
+		if (restrictToGalleries){
+			whereQueryString += " AND td.imageGallery is true ";
+		}
+		if (markerTypes != null && !markerTypes.isEmpty()){
+			whereQueryString += " AND (1=0";
+			for (MarkerType markerType : markerTypes){
+				whereQueryString += " OR ( marker.markerType.id = " + markerType.getId() + " AND marker.flag is true)";
+				
+			}
+			whereQueryString += ") ";
+		}
+		
+		String byQueryString = 
+			" GROUP BY media " 
+//						" ORDER BY index(media) "  //not functional
+			;
+		
+		
+		return fromQueryString + whereQueryString + byQueryString;
+		
+	}
+	
+    
+    
 }

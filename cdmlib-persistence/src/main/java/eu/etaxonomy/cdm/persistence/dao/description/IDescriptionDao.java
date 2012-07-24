@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -22,10 +23,12 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -93,6 +96,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 */
 	List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
+	
 	/**
 	 * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
 	 * 
@@ -103,6 +107,35 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @return a count of TaxonDescription instances
 	 */
 	int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
+	
+	
+	/**
+	 * Returns a List of Media instances, optionally filtered by parameters passed to this method.
+	 * Maybe in future a similar method is implemented in {@link IMediaDao} which allows more
+	 * media sources to be included.
+	 * 
+	 * @param taxonUuid The taxon uuid of the taxon which the description refers to (can be null for all TaxonDescription instances)
+	 * @param restrictToGalleries if true, only returns media from TaxonDescriptions with isImageGallery = true
+	 * @param markerTypes Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a List of Media instances
+	 */
+	List<Media> listTaxonDescriptionMedia(UUID taxonUuid, Boolean restrictToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	/**
+	 * Returns a count of Media instances, optionally filtered by parameters passed to this method
+	 * Maybe in future a similar method is implemented in {@link IMediaDao} which allows more
+	 * media sources to be included.
+	 * 
+	 * @param taxonUuid The taxon uuid of the taxon which the description refers to (can be null for all TaxonDescription instances)
+	 * @param restrictToGalleries if true, only returns media from TaxonDescriptions with isImageGallery = true
+	 * @param markerTypes Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+	 * @return a count of Media instances
+	 */
+	int countTaxonDescriptionMedia(UUID taxonUuid, Boolean restrictToGalleries, Set<MarkerType> markerTypes);
+
 	
 	/**
 	 * Returns a List of TaxonNameDescription instances, optionally filtered by the name which they refer to

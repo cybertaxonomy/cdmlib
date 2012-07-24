@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -432,6 +433,115 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 		boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);
 		Assert.assertTrue("The only description should have a negative marker on 'imported'", hasMarkerImportedAsFalse);
 		
+	}
+	
+
+	@Test
+	@DataSet("DescriptionDaoHibernateImplTest.testListTaxonDescriptionMedia.xml")
+	public void testListTaxonDescriptionMedia(){
+		//init
+		Taxon firstTaxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2"));
+		Taxon secondTaxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46"));
+		Taxon thirdTaxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
+		MarkerType markerType890 = (MarkerType)this.definedTermDao.findById(890);
+		MarkerType markerType892 = (MarkerType)this.definedTermDao.findById(892);
+		
+		Assert.assertNotNull("First taxon should exist", firstTaxon);
+		Assert.assertNotNull("Second taxon should exist", secondTaxon);
+		Assert.assertNotNull("Third taxon should exist", thirdTaxon);
+		Assert.assertEquals("There should be 6 descriptions in the database", 6, this.descriptionDao.count());
+	
+		
+		//set parameter
+		Set<MarkerType> markerTypes = null;
+		Integer pageSize = null;
+		Integer pageNumber = null;
+		List<String> propertyPaths = null;
+		
+		//test
+		//first Taxon gallery filter
+		List<Media> mediaList = this.descriptionDao.listTaxonDescriptionMedia(firstTaxon.getUuid(), true, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("media list size for first taxon and filter on image galleries should be 1", 1, mediaList.size());
+		
+		//first taxon all descriptions
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(firstTaxon.getUuid(), false, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("media list size for first taxon without filter on image galleries should be 2", 2, mediaList.size());
+		
+		//second taxon
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(secondTaxon.getUuid(), true, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("media list size for second taxon and filter on image galleries should be 2", 2, mediaList.size());
+		
+		//all taxa
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(null, true, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("media list size for any taxon and filter on image galleries should be 3", 3, mediaList.size());
+		//with marker
+		markerTypes = new HashSet<MarkerType>();
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(null, true, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("Empty marker type set should give same result as before: 3", 3, mediaList.size());
+		markerTypes.add(markerType890);
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(null, true, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("markerType890 should only give 1 result", 1, mediaList.size());
+		markerTypes.add(markerType892);
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(null, true, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("markerType892 should not give additional result as the markers value is false", 1, mediaList.size());
+		markerTypes = null;
+		
+		//check deduplication
+		mediaList = this.descriptionDao.listTaxonDescriptionMedia(null, false, markerTypes, pageSize, pageNumber, propertyPaths);
+		Assert.assertEquals("media list size for any taxon without filter on image galleries should be 3", 3, mediaList.size());
+		
+		
+		System.out.println(mediaList);
+	}
+	
+	@Test
+	@DataSet("DescriptionDaoHibernateImplTest.testListTaxonDescriptionMedia.xml")
+	public void testcountTaxonDescriptionMedia(){
+		//init
+		Taxon firstTaxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2"));
+		Taxon secondTaxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46"));
+		Taxon thirdTaxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
+		MarkerType markerType890 = (MarkerType)this.definedTermDao.findById(890);
+		MarkerType markerType892 = (MarkerType)this.definedTermDao.findById(892);
+		
+		Assert.assertNotNull("First taxon should exist", firstTaxon);
+		Assert.assertNotNull("Second taxon should exist", secondTaxon);
+		Assert.assertNotNull("Third taxon should exist", thirdTaxon);
+		Assert.assertEquals("There should be 6 descriptions in the database", 6, this.descriptionDao.count());
+	
+		//set parameter
+		Set<MarkerType> markerTypes = null;
+		
+		//test
+		//first Taxon gallery filter
+		int mediaCount = this.descriptionDao.countTaxonDescriptionMedia(firstTaxon.getUuid(), true, markerTypes);
+		Assert.assertEquals("media list size for first taxon and filter on image galleries should be 1", 1, mediaCount);
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(firstTaxon.getUuid(), false, markerTypes);
+		Assert.assertEquals("media list size for first taxon without filter on image galleries should be 2", 2, mediaCount);
+
+		//second taxon
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(secondTaxon.getUuid(), true, markerTypes);
+		Assert.assertEquals("media list size for second taxon and filter on image galleries should be 2", 2, mediaCount);
+		
+		//all taxa
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(null, true, markerTypes);
+		Assert.assertEquals("media list size for any taxon and filter on image galleries should be 3", 3, mediaCount);
+		//with marker
+		markerTypes = new HashSet<MarkerType>();
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(null, true, markerTypes);
+		Assert.assertEquals("Empty marker type set should give same result as before: 3", 3, mediaCount);
+		markerTypes.add(markerType890);
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(null, true, markerTypes);
+		Assert.assertEquals("markerType890 should only give 1 result", 1, mediaCount);
+		markerTypes.add(markerType892);
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(null, true, markerTypes);
+		Assert.assertEquals("markerType892 should not give additional result as the markers value is false", 1, mediaCount);
+		markerTypes = null;
+		
+		//check deduplication
+		mediaCount = this.descriptionDao.countTaxonDescriptionMedia(null, false, markerTypes);
+		Assert.assertEquals("media list size for any taxon without filter on image galleries should be 3", 3, mediaCount);
+
 	}
 	
 
