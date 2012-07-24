@@ -6,9 +6,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.media;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.description.MediaKey;
