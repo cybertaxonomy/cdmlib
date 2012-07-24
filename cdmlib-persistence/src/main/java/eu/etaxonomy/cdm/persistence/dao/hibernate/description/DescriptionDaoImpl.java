@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -678,7 +677,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	            String queryString = " SELECT media " +
 					getTaxonDescriptionMediaQueryString(
 						taxonUuid, limitToGalleries,  markerTypes);
-
+	            queryString += 
+	    			" GROUP BY media " 
+//	    						" ORDER BY index(media) "  //not functional
+	    			;
+	            
 	            Query query = getSession().createQuery(queryString);
 
 	            setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
@@ -763,13 +766,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			whereQueryString += ") ";
 		}
 		
-		String byQueryString = 
-			" GROUP BY media " 
-//						" ORDER BY index(media) "  //not functional
-			;
-		
-		
-		return fromQueryString + whereQueryString + byQueryString;
+		return fromQueryString + whereQueryString;
 		
 	}
 	
