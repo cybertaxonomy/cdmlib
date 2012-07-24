@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -494,6 +495,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * FIXME candidate for harmonization - rename to listMedia()
      */
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
+
+
+    /**
+     * Lists all Media found in an any TaxonDescription associated with this taxon.
+     * @param taxon
+     * @param limitToGalleries whether to take only TaxonDescription into account which are marked as gallery
+     * @return
+     */
+    public List<Media> listTaxonDescriptionMedia(Taxon taxon, boolean limitToGalleries, List<String> propertyPath);
 
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);

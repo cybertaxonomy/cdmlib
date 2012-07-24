@@ -982,6 +982,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     private List<Media> getMediaForTaxon(Taxon taxon, Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
             Integer widthOrDuration, Integer height, Integer size){
 
+        List<Media> taxonGalleryMedia = service.listTaxonDescriptionMedia(taxon, false, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
+
+        List<Media> returnMedia = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
+                mimeTypes, null, widthOrDuration, height, size);
+
+        return returnMedia;
+    }
+
+    /**
+     * @param taxon
+     * @return
+    private List<Media> listTaxonDescriptionMedia(Taxon taxon, boolean limitToGalleries) {
         Pager<TaxonDescription> p =
             descriptionService.getTaxonDescriptions(taxon, null, null, null, null, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 
@@ -989,7 +1001,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
 
         // collect all media of the given taxon
-        boolean limitToGalleries = false;
         List<Media> taxonMedia = new ArrayList<Media>();
         List<Media> taxonGalleryMedia = new ArrayList<Media>();
         for(TaxonDescription desc : p.getRecords()){
@@ -1011,12 +1022,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         }
 
         taxonGalleryMedia.addAll(taxonMedia);
-
-        List<Media> returnMedia = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
-                mimeTypes, null, widthOrDuration, height, size);
-
-        return returnMedia;
+        return taxonGalleryMedia;
     }
+     */
 
 
 // ---------------------- code snippet preserved for possible later use --------------------
