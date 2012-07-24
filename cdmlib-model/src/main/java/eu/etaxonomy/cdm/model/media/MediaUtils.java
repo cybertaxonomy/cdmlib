@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,6 +94,17 @@ public class MediaUtils {
         List<Media> returnMediaList = new ArrayList<Media>(mediaList.size());
         if(mediaList != null){
             for(Media media : mediaList){
+
+                // media objects will modifies by this method, so
+                // we clone the medias in order to prevent them
+                // from being stores accidentally
+                // cloning will remove the id
+                try {
+                    media = (Media) media.clone();
+                } catch (CloneNotSupportedException e) {
+                    // should never happen
+                    logger.error(e);
+                }
 
                 Set<MediaRepresentation> candidateRepresentations = new HashSet<MediaRepresentation>();
                 candidateRepresentations.addAll(media.getRepresentations());
