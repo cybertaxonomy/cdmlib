@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.model.media;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,6 +61,15 @@ public class MediaUtilsTest {
 
     }
 
+    private Media findMediaByUUID(List<Media> mediaList, UUID uuid){
+        for(Media media : mediaList){
+            if(media.getUuid().equals(uuid)){
+                return media;
+            }
+        }
+        return null;
+    }
+
     @Test
     public void testFindPreferredMedia(){
 
@@ -69,17 +79,29 @@ public class MediaUtilsTest {
         imageList.add(mediaImage3);
 
         List<Media> filteredList = MediaUtils.findPreferredMedia(imageList, ImageFile.class, null, null, null, null, null);
-        Assert.assertTrue(filteredList.contains(mediaImage1));
-        Assert.assertTrue(filteredList.contains(mediaImage2));
-        Assert.assertTrue(filteredList.contains(mediaImage3));
 
-        ArrayList<Media> mixedMediaList = (ArrayList<Media>) imageList.clone();
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage1.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage2.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage3.getUuid()));
+
+        ArrayList<Media> mixedMediaList =  new ArrayList<Media>();
+        mixedMediaList.add(mediaImage1);
+        mixedMediaList.add(mediaImage2);
+        mixedMediaList.add(mediaImage3);
         mixedMediaList.add(mediaAudio1);
+        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, null, null, null, null, null, null);
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage1.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage2.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage3.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaAudio1.getUuid()));
+
+        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, AudioFile.class, null, null, null, null, null);
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaAudio1.getUuid()));
+
         filteredList = MediaUtils.findPreferredMedia(mixedMediaList, ImageFile.class, null, null, null, null, null);
-        Assert.assertTrue(filteredList.contains(mediaImage1));
-        Assert.assertTrue(filteredList.contains(mediaImage2));
-        Assert.assertTrue(filteredList.contains(mediaImage3));
-        Assert.assertFalse(filteredList.contains(mediaAudio1));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage1.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage2.getUuid()));
+        Assert.assertNotNull(findMediaByUUID(filteredList, mediaImage3.getUuid()));
 
     }
 

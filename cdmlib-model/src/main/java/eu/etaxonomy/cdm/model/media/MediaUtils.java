@@ -47,9 +47,17 @@ public class MediaUtils {
         }
 
     /**
+     * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
+     * <code>mimeTypes</code>, <code>sizeTokens</code>, <code>widthOrDuration</code>, <code>height</code>, <code>size</code>.
+     * Only best matching MediaRepresentation remains attached to the Media entities.
+     * A Media entity may be completely omitted in the resulting list if  {@link #filterAndOrderMediaRepresentations(Set, Class, String[], Integer, Integer, Integer)}
+     * is not returning any matching representation. This can be the case if a <code>representationPartType</code> is supplied.
+     * <p>
+     * In order to prevent the media entities returned by this method from being persisted accidentally the resulting list contains cloned versions of the originally
+     * supplied media entities, which have the same UUIDs as the original ones.
      *
      * @param mediaList
-     * @param representationPartType TODO
+     * @param representationPartType any subclass of {@link MediaRepresentationPart}
      * @param mimeTypes
      * @param sizeTokens
      * @param widthOrDuration
@@ -93,17 +101,20 @@ public class MediaUtils {
 
         List<Media> returnMediaList = new ArrayList<Media>(mediaList.size());
         if(mediaList != null){
+            Media mediaClone = null;
             for(Media media : mediaList){
 
-                // media objects will modifies by this method, so
+                // media objects will be modified by this method, so
                 // we clone the medias in order to prevent them
                 // from being stores accidentally
                 // cloning will remove the id
                 try {
-                    media = (Media) media.clone();
+                    mediaClone = (Media) media.clone();
+                    mediaClone.setUuid(media.getUuid());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     logger.error(e);
+                    continue;
                 }
 
                 Set<MediaRepresentation> candidateRepresentations = new HashSet<MediaRepresentation>();
@@ -117,9 +128,9 @@ public class MediaUtils {
                         // so it cannot retain the sorting which has been found by filterAndOrderMediaRepresentations()
                         // thus we take first one and remove all other representations
 
-                        media.getRepresentations().clear();
-                        media.addRepresentation(prefRepresentations.get(prefRepresentations.firstKey()));
-                        returnMediaList.add(media);
+                        mediaClone.getRepresentations().clear();
+                        mediaClone.addRepresentation(prefRepresentations.get(prefRepresentations.firstKey()));
+                        returnMediaList.add(mediaClone);
                     }
                 } catch (NoSuchElementException nse) {
                     logger.debug(nse);
