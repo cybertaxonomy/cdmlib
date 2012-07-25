@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -984,10 +985,16 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         List<Media> taxonGalleryMedia = service.listTaxonDescriptionMedia(taxon, false, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 
-        List<Media> returnMedia = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
+        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
                 mimeTypes, null, widthOrDuration, height, size);
 
-        return returnMedia;
+        List<Media> filteredMedia = new ArrayList<Media>(mediaRepresentationMap.size());
+        for(Media media : mediaRepresentationMap.keySet()){
+            media.getRepresentations().clear();
+            media.addRepresentation(mediaRepresentationMap.get(media));
+        }
+
+        return filteredMedia;
     }
 
 
