@@ -990,42 +990,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return returnMedia;
     }
 
-    /**
-     * @param taxon
-     * @return
-    private List<Media> listTaxonDescriptionMedia(Taxon taxon, boolean limitToGalleries) {
-        Pager<TaxonDescription> p =
-            descriptionService.getTaxonDescriptions(taxon, null, null, null, null, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
-
-        // pars the media and quality parameters
-
-
-        // collect all media of the given taxon
-        List<Media> taxonMedia = new ArrayList<Media>();
-        List<Media> taxonGalleryMedia = new ArrayList<Media>();
-        for(TaxonDescription desc : p.getRecords()){
-
-            if(desc.isImageGallery()){
-                for(DescriptionElementBase element : desc.getElements()){
-                    for(Media media : element.getMedia()){
-                        taxonGalleryMedia.add(media);
-                    }
-                }
-            } else if(!limitToGalleries){
-                for(DescriptionElementBase element : desc.getElements()){
-                    for(Media media : element.getMedia()){
-                        taxonMedia.add(media);
-                    }
-                }
-            }
-
-        }
-
-        taxonGalleryMedia.addAll(taxonMedia);
-        return taxonGalleryMedia;
-    }
-     */
-
 
 // ---------------------- code snippet preserved for possible later use --------------------
 //	@RequestMapping(
