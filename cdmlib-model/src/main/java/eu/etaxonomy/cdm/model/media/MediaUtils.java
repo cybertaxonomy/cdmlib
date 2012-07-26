@@ -103,8 +103,25 @@ public class MediaUtils {
 
         Map<Media, MediaRepresentation> returnMediaList = new HashMap<Media, MediaRepresentation>(mediaList.size());
         if(mediaList != null){
+            Media mediaClone = null;
             for(Media media : mediaList){
 
+<<<<<<< HEAD
+=======
+                // media objects will be modified by this method, so
+                // we clone the medias in order to prevent them
+                // from being stores accidentally
+                // cloning will remove the id
+                try {
+                    mediaClone = (Media) media.clone();
+                    mediaClone.setUuid(media.getUuid());
+                } catch (CloneNotSupportedException e) {
+                    // should never happen
+                    logger.error(e);
+                    continue;
+                }
+
+>>>>>>> prevent media from being corrupted - fixing bugs in test and utils class
                 Set<MediaRepresentation> candidateRepresentations = new HashSet<MediaRepresentation>();
                 candidateRepresentations.addAll(media.getRepresentations());
 
@@ -112,7 +129,17 @@ public class MediaUtils {
                     = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType, mimeTypes, size, widthOrDuration, height);
                 try {
                     if(prefRepresentations.size() > 0){
+<<<<<<< HEAD
                         returnMediaList.put(media, prefRepresentations.get(prefRepresentations.firstKey()));
+=======
+                        // Media.representations is a set
+                        // so it cannot retain the sorting which has been found by filterAndOrderMediaRepresentations()
+                        // thus we take first one and remove all other representations
+
+                        mediaClone.getRepresentations().clear();
+                        mediaClone.addRepresentation(prefRepresentations.get(prefRepresentations.firstKey()));
+                        returnMediaList.add(mediaClone);
+>>>>>>> prevent media from being corrupted - fixing bugs in test and utils class
                     }
                 } catch (NoSuchElementException nse) {
                     logger.debug(nse);
