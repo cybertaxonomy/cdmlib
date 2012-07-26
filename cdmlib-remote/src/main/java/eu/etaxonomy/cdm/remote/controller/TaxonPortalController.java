@@ -992,6 +992,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         for(Media media : mediaRepresentationMap.keySet()){
             media.getRepresentations().clear();
             media.addRepresentation(mediaRepresentationMap.get(media));
+            filteredMedia.add(media);
         }
 
         return filteredMedia;
