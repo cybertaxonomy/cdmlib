@@ -1310,7 +1310,6 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGen
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGeneratorGlobalOverride.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/UpdateEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/AuthorityPermission.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CRUDPermissions.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermission.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionClass.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionEvaluator.java -text

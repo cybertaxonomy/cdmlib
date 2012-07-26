@@ -1,70 +1,56 @@
-/**
-* Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
 
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
 
-/**
- *
- * @author k.luther
- * @date 06.07.2011
- *
- */
 public class AuthorityPermission{
-    CdmPermissionClass className;
-    CdmPermission permission;
-    UUID targetUuid;
-
-    public AuthorityPermission(Object targetDomainObject, CdmPermission permission, UUID uuid){
-        this.className = CdmPermissionClass.getValueOf(targetDomainObject);
-        this.permission = permission;
-        targetUuid = uuid;
-    }
-
-    public CdmPermissionClass getClassName(){
-        return className;
-    }
-
-    public CdmPermission getPermission(){
-        return permission;
-    }
-
-    public UUID getTargetUUID(){
-        return targetUuid;
-    }
-    public AuthorityPermission (String authority){
-        String permissionString;
-        int firstPoint = authority.indexOf(".");
-        if (firstPoint == -1){
-            className = CdmPermissionClass.valueOf(authority);
-        }else{
-            className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
-            int bracket = authority.indexOf("{");
-            permissionString = getPermissionString(authority);
-            if (bracket != -1){
-                int secondBracket = authority.indexOf("}");
-                String uuid = authority.substring(bracket+1, secondBracket);
-                targetUuid = UUID.fromString(uuid);
-            }
-            permission = CdmPermission.valueOf(permissionString.toUpperCase());
-        }
-    }
-
-    private static String getPermissionString(String authority){
-        int lastPoint = authority.lastIndexOf(".");
-        int bracket = authority.indexOf("{");
-        if (bracket == -1){
-            return authority.substring(lastPoint+1);
-        }else{
-            return authority.substring(lastPoint+1, bracket);
-        }
-    }
-
+	CdmPermissionClass className;
+	CdmPermission permission;
+	UUID targetUuid;
+	
+	public AuthorityPermission(Object targetDomainObject, CdmPermission permission, UUID uuid){
+		this.className = CdmPermissionClass.getValueOf(targetDomainObject);
+		this.permission = permission;
+		targetUuid = uuid;
+	}
+	
+	public CdmPermissionClass getClassName(){
+		return className;
+	}
+	
+	public CdmPermission getPermission(){
+		return permission;
+	}
+	
+	public UUID getTargetUUID(){
+		return targetUuid;
+	}
+	public AuthorityPermission (String authority){
+		String permissionString;
+		int firstPoint = authority.indexOf(".");
+		if (firstPoint == -1){
+			className = CdmPermissionClass.valueOf(authority);
+		}else{
+			className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
+			int bracket = authority.indexOf("{");
+			permissionString = getPermissionString(authority);
+			if (bracket != -1){
+				int secondBracket = authority.indexOf("}");
+				String uuid = authority.substring(bracket+1, secondBracket);
+				targetUuid = UUID.fromString(uuid);
+			}
+			permission = CdmPermission.valueOf(permissionString.toUpperCase());
+		}
+	}
+	
+	private static String getPermissionString(String authority){
+		int lastPoint = authority.lastIndexOf(".");
+		int bracket = authority.indexOf("{");
+		if (bracket == -1){
+			return authority.substring(lastPoint+1);
+		}else{
+			return authority.substring(lastPoint+1, bracket);
+		}
+	}
+	
 }
