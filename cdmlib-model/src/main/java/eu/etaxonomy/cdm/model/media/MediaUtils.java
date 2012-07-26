@@ -3,9 +3,11 @@ package eu.etaxonomy.cdm.model.media;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
@@ -65,7 +67,7 @@ public class MediaUtils {
      * @param size
      * @return
      */
-    public static List<Media> findPreferredMedia(List<Media> mediaList,
+    public static Map<Media, MediaRepresentation> findPreferredMedia(List<Media> mediaList,
             Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, String[] sizeTokens,
             Integer widthOrDuration, Integer height, Integer size) {
 
@@ -99,23 +101,9 @@ public class MediaUtils {
             }
         }
 
-        List<Media> returnMediaList = new ArrayList<Media>(mediaList.size());
+        Map<Media, MediaRepresentation> returnMediaList = new HashMap<Media, MediaRepresentation>(mediaList.size());
         if(mediaList != null){
-            Media mediaClone = null;
             for(Media media : mediaList){
-
-                // media objects will be modified by this method, so
-                // we clone the medias in order to prevent them
-                // from being stores accidentally
-                // cloning will remove the id
-                try {
-                    mediaClone = (Media) media.clone();
-                    mediaClone.setUuid(media.getUuid());
-                } catch (CloneNotSupportedException e) {
-                    // should never happen
-                    logger.error(e);
-                    continue;
-                }
 
                 Set<MediaRepresentation> candidateRepresentations = new HashSet<MediaRepresentation>();
                 candidateRepresentations.addAll(media.getRepresentations());
@@ -127,10 +115,7 @@ public class MediaUtils {
                         // Media.representations is a set
                         // so it cannot retain the sorting which has been found by filterAndOrderMediaRepresentations()
                         // thus we take first one and remove all other representations
-
-                        mediaClone.getRepresentations().clear();
-                        mediaClone.addRepresentation(prefRepresentations.get(prefRepresentations.firstKey()));
-                        returnMediaList.add(mediaClone);
+                        returnMediaList.put(media, prefRepresentations.get(prefRepresentations.firstKey()));
                     }
                 } catch (NoSuchElementException nse) {
                     logger.debug(nse);
