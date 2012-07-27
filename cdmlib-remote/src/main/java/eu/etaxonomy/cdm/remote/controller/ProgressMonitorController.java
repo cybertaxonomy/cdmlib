@@ -125,10 +125,14 @@ public class ProgressMonitorController {
         return uuid;
     }
 
+    /**
+     * @param request the request for which to create he path for, is needed to read the file extension from.
+     * @param uuid the uuid key of the monitor
+     * @return
+     */
     public String pathFor(HttpServletRequest request, UUID uuid){
-        String servletPath = request.getServletPath();
-        String fileExtension = FilenameUtils.getExtension(servletPath);
-        return request.getContextPath() + "/progress/" + uuid.toString() + (fileExtension.length() > 0 ? '.': "") + fileExtension;
+        String fileExtension = FilenameUtils.getExtension(request.getServletPath());
+        return "/progress/" + uuid.toString() + (fileExtension.length() > 0 ? '.': "") + fileExtension;
     }
 
     @RequestMapping(value = "{uuid}", method = RequestMethod.GET)

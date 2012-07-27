@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
@@ -75,14 +77,18 @@ public class ManagementController
      *
      * Reindex all cdm entities litest in {@link ICdmMassIndexer#indexedClasses()}.
      * Re-indexing will not purge the index.
-     *
+     * @param frontendBaseUrl if the CDM server is running behind a reverse proxy you need
+     *            to supply the base URL of web service front-end which is
+     *            provided by the proxy server.
      * @param request
      * @param respone
      * @return
      * @throws Exception
      */
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
-    public ModelAndView doReindex(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView doReindex(
+             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         ModelAndView mv = new ModelAndView();
 
@@ -99,17 +105,19 @@ public class ManagementController
 
         // send redirect "see other"
         response.setHeader("Location", monitorPath);
-//        response.sendError(303, null);
         boolean isJSONP = request.getParameter("callback") != null;
         if(isJSONP){
-            JsonpRedirect jsonpRedirect = new JsonpRedirect(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +  monitorPath);
+            JsonpRedirect jsonpRedirect;
+            if(frontendBaseUrl != null){
+                jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
+            } else {
+                jsonpRedirect = new JsonpRedirect(request, monitorPath);
+            }
             mv.addObject(jsonpRedirect);
-//            response.sendError(303, "{\"redirect\":  \""+ monitorPath + "\"}");
+
         } else {
             response.sendError(303, "Reindexing started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
         }
-//        mv.addObject(monitorPath);
-//        mv.setViewName("text");
         return mv;
     }
 

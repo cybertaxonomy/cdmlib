@@ -9,6 +9,10 @@
 */
 package eu.etaxonomy.cdm.remote.json;
 
+import java.net.URL;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * The JsonpRedirect is used to mimic redirects when using json ajax requests.
  *
@@ -22,6 +26,17 @@ public class JsonpRedirect {
 
     public JsonpRedirect(String redirectURL) {
         this.redirectURL = redirectURL;
+    }
+
+    public JsonpRedirect(HttpServletRequest request, String path){
+        this.redirectURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + path;
+    }
+
+    public JsonpRedirect(String frontendBaseUrl, String path){
+        if(frontendBaseUrl.endsWith("/")){
+            frontendBaseUrl = frontendBaseUrl.substring(0, frontendBaseUrl.length() -1);
+        }
+        this.redirectURL = frontendBaseUrl + path;
     }
 
     public String getRedirectURL() {
