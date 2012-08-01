@@ -1,0 +1,36 @@
+			------
+			Name Catalogue REST API
+			------
+			------
+			2012-07-31
+			------
+
+
+Name Catalogue REST API
+
+	This web service namespace is an add-on to the already existing CDM REST API and provides information relating to 
+	scientific names as well as taxa present in the underlying datasource.
+	
+	The services include,
+		
+		*** {{{./remote/name-catalogue-default.html} name search}} 		: This web service endpoint serves as a search engine for 
+	scientific name-related taxonomic information.
+	
+		*** {{{./remote/name-catalogue-name-info.html} name information}}	: This web service endpoint provides information related a specific name uuid.
+	
+		*** {{{./remote/name-catalogue-taxon-info.html} taxon information}} 	: This web service endpoint provides information related a specific taxon uuid.
+	
+	[]
+	
+	These web services have been developed within the i4Life project ({{{http://www.i4life.eu}http://www.i4life.eu}}) using data imported from the 
+	Catalogue of Life ({{{http://www.catalogueoflife.org}http://www.catalogueoflife.org}}).
+	
+* CDM - Catalogue of Life
+		
+	The name catalogue services (and related documentation) which correspond to Catalogue of Life data can be found at,
+	
+	*** name search 		: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue}} 
+		
+	*** name information 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name}} 	
+	
+	*** taxon information 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon}} 	
