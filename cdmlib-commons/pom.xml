@@ -62,5 +62,18 @@
       <artifactId>httpclient</artifactId>
     </dependency>
    
+    <!-- AptView -->
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-module-apt</artifactId>
+      <version>1.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.doxia</groupId>
+      <artifactId>doxia-module-xhtml</artifactId>
+      <version>1.2</version>
+    </dependency>
+
   </dependencies>
 </project>
