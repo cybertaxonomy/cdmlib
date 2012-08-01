@@ -59,6 +59,10 @@
       <artifactId>cdmlib-io</artifactId>
     </dependency>
     <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
@@ -229,6 +233,18 @@
         <artifactId>p6spy</artifactId>
     </dependency>
   </dependencies>
+    
+     <build>    
+      <resources>
+        <resource>
+          <targetPath>eu/etaxonomy/cdm/doc/remote/apt</targetPath>
+          <directory>../src/site/apt/remote</directory>
+           <includes>
+             <include>*.apt</include>
+           </includes>
+        </resource>
+      </resources>
+    </build>
 
 </project>
 
