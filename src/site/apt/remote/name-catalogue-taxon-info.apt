@@ -1,0 +1,83 @@
+
+
+CDM Taxonomic Taxon Information API
+
+	This web service endpoint provides information related a specific taxon uuid.
+	
+	The request parameters are :	
+	
+	* '<<taxonUuid>>' [mandatory] : uuid of the scientific name.
+	
+	* '<<classification>>' [optional, default value = <<<default>>>] 	: this parameter could have the values,
+	
+									* <<<<any of the classification keys present in the database>>>>	: to be used to retrieve the corresponding classification.
+									
+									* <<<default>>>	: to be used to retrieve the first in the alphabetically sorted list of classifications available in the database (currently this is 'CatalogueOfLife').
+									
+									* <<<default>>>	: to be used to retrieve all classifications as a ('key','classification') map.
+			
+					
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response returned by this web service endpoint is described as,
+			  
+		* <<<request>>>
+		
+			* <<<taxonUuid>>> : taxon uuid provided as input.
+			
+		* <<<response>>>
+			
+			* <<<taxon>>> : taxon information corresponding to the requested taxon uuid, which includes,
+				
+				* <<<title>>> : complete scientific name of taxon.
+				
+				* <<<taxonStatus>>> : taxonomic status of taxon.
+				
+				* <<<flags>>> : list of flags related to the taxon and their values.
+				
+				* <<<classification>>> : classification of the requested taxon.
+							
+			* <<<relatedTaxa>>> : list of taxa related to the requested taxon, each of which has the following elements,
+					
+				* <<<title>>> : complete scientific name of related taxon.
+				
+				* <<<taxonUuid>>> : uuid of related taxon.
+					
+				* <<<taxonStatus>>> : taxonomic status of related taxon.
+					
+				* <<<sourceUrl>>> : stable url which represents the related taxon.
+					
+				* <<<relationshipType>>> : type of relationship the requested taxon has with the related taxa.
+			
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Examples :
+		
+		* Single taxon uuid request : 	
+				
+			* {{{../name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751d9} /{datasource-name}/name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751d9}}
+			
+		* Single taxon uuid request with all possible classifications :
+		
+			* {{{../name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751d9&classification=all} /{datasource-name}/name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751d9&classification=all}}
+
+			
+		* Multiple taxon uuid request : 
+		
+			* {{{../name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751d9&taxonUuid=1e331521-8db2-4da0-926a-fe7e0425ae03} /{datasource-name}/name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751d9&taxonUuid=1e331521-8db2-4da0-926a-fe7e0425ae03}}
+			
+		* Errors :
+		
+			* {{{../name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751} /{datasource-name}/name_catalogue/taxon.json?taxonUuid=6d2a61d0-3167-4f19-840a-4280dc3751}}
+		
+			
+			
+
+	

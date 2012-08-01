@@ -1,0 +1,69 @@
+
+
+CDM Taxonomic Name Search API
+
+	This web service endpoint serves as a search engine for scientific name-related taxonomic information.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : this could either be the base scientific name or the complete scientific name.
+	
+	* '<<type>>' [optional, default value = <<<name>>>] 	: this parameter could have the values,
+	
+									* <<<name>>>	: to be used in the case of scientific names without authorship strings other other markers (e.g. Abies Alba).
+									
+									* <<<title>>>	: to be used in the case of scientific names with authorship strings other other markers (e.g. Abies alba Mill.).
+						
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response returned by this web service endpoint is described as,
+			  
+		* <<<request>>>
+		
+			* <<<query>>> : scientific name provided as input.
+			
+		* <<<response>>>
+		
+			* <<<name>>> : base scientific name.
+			
+			* <<<title>>> : complete scientific name.
+			
+			* <<<taxonConceptUuids>>> : list of uuids of all taxa corresponding to this name.
+			
+			* <<<acceptedTaxonUuids>>> : list of uuids of all accepted taxa related to the taxa corresponding to the taxonConceptUuids list.
+			
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Examples :
+		
+		* Base scientific name search : 	
+				
+			* {{{./name_catalogue.json?query=Abies Alba} /{datasource-name}/name_catalogue.json?query=Abies Alba}}
+			
+		* Complete scientific name search : 
+		
+			* {{{./name_catalogue.json?query=Abies Alba Mill.&type=title} /{datasource-name}/name_catalogue.json?query=Abies Alba Mill.&type=title}}
+			
+		* Multiple queries :
+			
+			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot esculenta} /{datasource-name}/name_catalogue.json?query=Abies Alba&query=Manihot esculenta}}
+			
+			* {{{./name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title} /{datasource-name}/name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title}}
+			
+		* Errors :
+		
+			* {{{./name_catalogue.json?query=Abies Alb} /{datasource-name}/name_catalogue.json?query=Abies Alb}}
+			
+			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot escenta} /{datasource-name}/name_catalogue.json?query=Abies Alba&query=Manihot escenta}}
+		
+			
+			
+
+	

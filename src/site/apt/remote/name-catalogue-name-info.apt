@@ -1,0 +1,64 @@
+
+
+CDM Taxonomic Name Information API
+
+	This web service endpoint provides information related a specific name uuid.
+	
+	The request parameters are :	
+	
+	* '<<nameUuid>>' [mandatory] : uuid of the scientific name .
+	
+					
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response returned by this web service endpoint is described as,
+			  
+		* <<<request>>>
+		
+			* <<<nameUuid>>> : scientific name uuid provided as input.
+			
+		* <<<response>>>
+			
+			* <<<name>>> : base scientific name of requested name uuid.
+							
+			* <<<title>>> : complete scientific name.
+			
+			* <<<citation>>> : citation related to requested name uuid.
+			
+			* <<<nameRelationships>>> : list of relationships that the name corresponding to the requested name uuid has with other names.
+			 
+			* <<<nomenclatureStatus>>> : list of nomenclature status related to the name corresponding to the requested name uuid.
+			
+			* <<<rank>>> : rank of name corresponding to the requested name uuid.
+			
+			* <<<taxonLsids>>> : list of lsids of taxa related to the name corresponding to the requested name uuid.
+			
+			* <<<taxonUuids>>> : list of uuids of taxa related to the name corresponding to the requested name uuid.
+			
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Examples :
+		
+		* Single name uuid request : 	
+				
+			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf} /{datasource-name}/name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf}}
+			
+		* Multiple name uuid request : 
+		
+			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf&nameUuid=0d5e07b6-2646-4210-80e0-fcd449e26b57} /{datasource-name}/name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf&nameUuid=0d5e07b6-2646-4210-80e0-fcd449e26b57}}
+			
+		* Errors :
+		
+			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02} /{datasource-name}/name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02}}
+		
+			
+			
+
+	

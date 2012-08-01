@@ -2078,6 +2078,9 @@ src/site/apt/index.apt -text
 src/site/apt/oai-pmh.apt -text
 src/site/apt/overview.apt -text
 src/site/apt/reference.apt -text
+src/site/apt/remote/name-catalogue-default.apt -text
+src/site/apt/remote/name-catalogue-name-info.apt -text
+src/site/apt/remote/name-catalogue-taxon-info.apt -text
 src/site/apt/rest-api.apt -text
 src/site/fml/faq.fml -text
 src/site/fml/troubleshooting.fml -text
