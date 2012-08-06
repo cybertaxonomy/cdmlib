@@ -214,7 +214,7 @@
     </dependency>
   </dependencies>
     
-     <!--build>    
+     <build>    
       <resources>
         <resource>
           <targetPath>eu/etaxonomy/cdm/doc/remote/apt</targetPath>
@@ -228,7 +228,7 @@
           <directory>./src/main/resources/eu/etaxonomy/cdm</directory>       
         </resource>
       </resources>
-    </build-->
+    </build>
 
 </project>
 
