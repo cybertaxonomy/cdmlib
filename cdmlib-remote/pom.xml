@@ -223,6 +223,10 @@
              <include>*.apt</include>
            </includes>
         </resource>
+        <resource>
+          <targetPath>eu/etaxonomy/cdm</targetPath>
+          <directory>./src/main/resources/eu/etaxonomy/cdm</directory>       
+        </resource>
       </resources>
     </build-->
 
