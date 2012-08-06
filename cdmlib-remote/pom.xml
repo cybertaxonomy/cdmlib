@@ -38,23 +38,7 @@
   </scm>
 
   <dependencies>
-    <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-ext</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-persistence</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-services</artifactId>
-    </dependency>
-    <dependency>
+   <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-io</artifactId>
     </dependency>
@@ -230,7 +214,7 @@
     </dependency>
   </dependencies>
     
-     <build>    
+     <!--build>    
       <resources>
         <resource>
           <targetPath>eu/etaxonomy/cdm/doc/remote/apt</targetPath>
@@ -240,7 +224,7 @@
            </includes>
         </resource>
       </resources>
-    </build>
+    </build-->
 
 </project>
 
