@@ -214,21 +214,31 @@
     </dependency>
   </dependencies>
     
-     <build>    
-      <resources>
-        <resource>
-          <targetPath>eu/etaxonomy/cdm/doc/remote/apt</targetPath>
-          <directory>../src/site/apt/remote</directory>
-           <includes>
-             <include>*.apt</include>
-           </includes>
-        </resource>
-        <resource>
-          <targetPath>eu/etaxonomy/cdm</targetPath>
-          <directory>./src/main/resources/eu/etaxonomy/cdm</directory>       
-        </resource>
-      </resources>
-    </build>
-
+    <build>    
+     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>            
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>../src/site/apt/remote</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>      
+   </build>
 </project>
 
