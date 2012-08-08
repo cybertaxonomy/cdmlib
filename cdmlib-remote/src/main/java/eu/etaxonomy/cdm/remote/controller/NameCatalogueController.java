@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -168,16 +169,18 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     public ModelAndView doGetNameSearchDocumentation(
             HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        ModelAndView mv = new ModelAndView();
+        ModelAndView mv = new ModelAndView();               
         // Read apt documentation file.
-        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-default.apt");
-        File inputFile = resource.getFile();
+        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-default.apt");        
+        // using input stream as this works for both files in the classes directory
+        // as well as files inside jars
+        InputStream aptInputStream = resource.getInputStream();
         // Build Html View
         HtmlView hv = new HtmlView();
         Map<String, String> modelMap = new HashMap<String, String>();
         modelMap.put("title", "Name Search API");
         // Convert Apt to Html
-        modelMap.put("body", DocUtils.convertAptToHtml(inputFile));
+        modelMap.put("body", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
         mv.setView(hv);
 
@@ -333,13 +336,15 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
         Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-name-info.apt");
-        File inputFile = resource.getFile();
+        // using input stream as this works for both files in the classes directory
+        // as well as files inside jars
+        InputStream aptInputStream = resource.getInputStream();
         // Build Html View
         HtmlView hv = new HtmlView();
         Map<String, String> modelMap = new HashMap<String, String>();
         modelMap.put("title", "Name Information API");
         // Convert Apt to Html
-        modelMap.put("body", DocUtils.convertAptToHtml(inputFile));
+        modelMap.put("body", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
         mv.setView(hv);
 
@@ -418,13 +423,15 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
         Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-taxon-info.apt");
-        File inputFile = resource.getFile();
+        // using input stream as this works for both files in the classes directory
+        // as well as files inside jars
+        InputStream aptInputStream = resource.getInputStream();
         // Build Html View
         HtmlView hv = new HtmlView();
         Map<String, String> modelMap = new HashMap<String, String>();
         modelMap.put("title", "Taxon Information API");
         // Convert Apt to Html
-        modelMap.put("body", DocUtils.convertAptToHtml(inputFile));
+        modelMap.put("body", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
         mv.setView(hv);
 
