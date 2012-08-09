@@ -70,14 +70,14 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 
         //if a taxon has nomenclatural status "nom. inval." or "nom. nud."
         //TODO: Überprüfen!!!
-        Set status = taxonBase1.getName().getStatus();
-        Iterator iterator = status.iterator();
+        Set<NomenclaturalStatus> status = taxonBase1.getName().getStatus();
+        Iterator<NomenclaturalStatus> iterator = status.iterator();
         if (iterator.hasNext()){
             NomenclaturalStatus nomStatus1 = (NomenclaturalStatus) iterator.next();
-            Set status2 = taxonBase2.getName().getStatus();
+            Set<NomenclaturalStatus> status2 = taxonBase2.getName().getStatus();
             iterator = status2.iterator(); // is that right? or better iterator = status2.iterator(); ???
             if (iterator.hasNext()){
-                NomenclaturalStatus nomStatus2 = (NomenclaturalStatus)iterator.next();
+                NomenclaturalStatus nomStatus2 = iterator.next();
 /*
                 if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM()) ||
                         nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
@@ -96,16 +96,16 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
                 }
 */
                 // #####
-                if (nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
+                if (nomStatus1.getType() != null && nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
                     invalTaxon1 = true;
                 }
-                if (nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM())){
+                if (nomStatus1.getType() != null && nomStatus1.getType().equals(NomenclaturalStatusType.NUDUM())){
                     nudumTaxon1 = true;
                 }
-                if (nomStatus2.getType().equals(NomenclaturalStatusType.INVALID())){
+                if (nomStatus2.getType() != null && nomStatus2.getType().equals(NomenclaturalStatusType.INVALID())){
                     invalTaxon2 = true;
                 }
-                if (nomStatus2.getType().equals(NomenclaturalStatusType.NUDUM())){
+                if (nomStatus2.getType() != null && nomStatus2.getType().equals(NomenclaturalStatusType.NUDUM())){
                     nudumTaxon2 = true;
                 }
                 if (nudumTaxon1 && !nudumTaxon2){
