@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -22,7 +21,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -67,21 +65,17 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
     public int compare(TaxonBase taxonBase1, TaxonBase taxonBase2) {
         int result;
 
-        int statusCompareWeight = 0;
-
+        
         //set to end if a taxon has nomenclatural status "nom. inval." or "nom. nud."
+        int statusCompareWeight = 0;
         statusCompareWeight += computeStatusCompareWeight(taxonBase1);
         statusCompareWeight -= computeStatusCompareWeight(taxonBase2);
         
         if (statusCompareWeight != 0){
-        	if (statusCompareWeight > 1){
-        		return 1;
-        	}else{
-        		return -1;
-        	}
+        	return Integer.signum(statusCompareWeight);
         }
         
-
+        //dates
         Integer intDate1 = getIntegerDate(taxonBase1);
         Integer intDate2 = getIntegerDate(taxonBase2);
 
@@ -138,9 +132,12 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	 * @param statusCompareWeight
 	 * @return
 	 */
-	private int computeStatusCompareWeight(TaxonBase taxonBase1) {
+	private int computeStatusCompareWeight(TaxonBase<?> taxonBase) {
 		int result = 0;
-		Set<NomenclaturalStatus> status1 = taxonBase1.getName().getStatus();
+		if (taxonBase == null || taxonBase.getName() == null || taxonBase.getName().getStatus() == null){
+			return 0;
+		}
+		Set<NomenclaturalStatus> status1 = taxonBase.getName().getStatus();
         for (NomenclaturalStatus nomStatus1 : status1){
             if (nomStatus1.getType() != null){
             	if (nomStatus1.getType().equals(NomenclaturalStatusType.INVALID())){
@@ -154,13 +151,13 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	}
 
 
-    private Integer getIntegerDate(TaxonBase taxonBase){
+    private Integer getIntegerDate(TaxonBase<?> taxonBase){
         Integer result;
 
         if (taxonBase == null){
             result = null;
         }else{
-            TaxonNameBase name = taxonBase.getName();
+            TaxonNameBase<?,?> name = taxonBase.getName();
            if (name == null){
                 result = null;
             }else{
@@ -168,12 +165,12 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 
                     result = (((ZoologicalName)name).getPublicationYear());
                 }else{
-                    Reference ref = (Reference) name.getNomenclaturalReference();
+                    Reference<?> ref = (Reference<?>) name.getNomenclaturalReference();
                     if (ref == null){
                         result = null;
                     }else{
                         if (ref.getDatePublished() == null){
-                        	Reference inRef = ref.getInReference();
+                        	Reference<?> inRef = ref.getInReference();
                         	if (inRef == null){
                                 result = null;
                             }else{
@@ -194,37 +191,5 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    private String getDate(TaxonBase taxonBase){
-        String result = null;
-        if (taxonBase == null){
-            result = null;
-        }else{
-            TaxonNameBase name = taxonBase.getName();
-            if (name == null){
-                result = null;
-            }else{
-                if (name instanceof ZoologicalName){
-
-                    result = String.valueOf(((ZoologicalName)name).getPublicationYear());
-                }else{
-                     INomenclaturalReference ref = name.getNomenclaturalReference();
-                    if (ref == null){
-                        result = null;
-                    }else{
-                        result = ref.getYear();
-                    }
-                }
-            }
-        }
-        if (result != null){
-            result = result.trim();
-        }
-        if ("".equals(result)){
-            result = null;
-        }
-        return result;
-    }
 
 }
