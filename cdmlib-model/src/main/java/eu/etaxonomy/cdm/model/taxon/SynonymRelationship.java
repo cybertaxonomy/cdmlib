@@ -180,7 +180,8 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
-	@Transient
+	
+	@Transient 
 	public Taxon getAcceptedTaxon(){
 		return this.getRelatedTo();
 	}
@@ -208,7 +209,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
-	@Transient
+	@Transient 
 	public Synonym getSynonym(){
 		return this.getRelatedFrom();
 	}
@@ -228,11 +229,15 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 		this.setRelatedFrom(synonym);
 	}
 
-	protected Synonym getRelatedFrom() {
+	//FIXME Why was this protected - especially since setSynonym is public,
+    // making relatedFrom inaccessible outside the package
+	public Synonym getRelatedFrom() {
 		return relatedFrom;
 	}
-
-	protected Taxon getRelatedTo() {
+	
+	//FIXME Why was this protected - especially since setAcceptedTaxon is public,
+    // making relatedTo inaccessible outside the package
+	public Taxon getRelatedTo() {
 		return relatedTo;
 	}
 
