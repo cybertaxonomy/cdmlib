@@ -119,15 +119,20 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "basionymAuthorTeam.$", 
             "exBasionymAuthorTeam.$", 
             "relationsToThisName.$",
-    "relationsFromThisName.$" });
+            "relationsFromThisName.$" });
 
     /** Hibernate taxon information initialisation strategy */
     private static final List<String> TAXON_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
+            "name.rank.titleCache",
+            "synonymRelations.synonym.name.rank.titleCache",
             "synonymRelations.type.$", 
+            "synonymRelations.relatedTo.name.rank.titleCache",
             "relationsFromThisTaxon.type.$", 
+            "relationsFromThisTaxon.relatedTo.name.rank.titleCache",
             "relationsToThisTaxon.type.$",
+            "relationsToThisTaxon.relatedFrom.name.rank.titleCache",
             "taxonNodes", 
-    "taxonNodes.classification" });
+            "taxonNodes.classification" });
 
     /** Hibernate taxon node initialisation strategy */
     private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] { 
@@ -135,7 +140,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "taxon.name", 
             "classification", 
             "classification.reference.$",
-    "classification.reference.authorTeam.$" });
+            "classification.reference.authorTeam.$" });
 
     public NameCatalogueController() {
         super();
@@ -379,7 +384,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     + nameUuid + "\"");
             // find name by uuid
             NonViralName nvn = (NonViralName) service.findNameByUuid(UUID.fromString(nameUuid),
-                    NAME_INFORMATION_INIT_STRATEGY);
+                        NAME_INFORMATION_INIT_STRATEGY);
             
             // if search is successful then get related information, else return error
             if (nvn != null) {
@@ -512,33 +517,30 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     Taxon taxon = (Taxon) tb;
                     // build classification map
                     Map classificationMap = buildClassificationMap(taxon, classificationType);
-                    if (classificationMap == null) {
-                        ErrorResponse er = new ErrorResponse();
-                        er.setErrorMessage("Invalid classification type");
-                        mv.addObject(er);
-                        return mv;
-                    }
-
-                    if (classificationMap.isEmpty()) {
-                        ErrorResponse er = new ErrorResponse();
-                        er.setErrorMessage("No classification available for requested type");
-                        mv.addObject(er);
-                        return mv;
-                    }
+                    
                     // update taxon information object with taxon related data
-                    ti.setResponseTaxon(tb.getTitleCache(), ACCEPTED_NAME_STATUS, buildFlagMap(tb),
+                    NonViralName nvn = (NonViralName) tb.getName();
+                    ti.setResponseTaxon(tb.getTitleCache(),
+                            nvn.getTitleCache(),
+                            nvn.getRank().getTitleCache(),
+                            ACCEPTED_NAME_STATUS, 
+                            buildFlagMap(tb),
                             classificationMap);
+                    
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
                     // add synonyms (if exists) to taxon information object
                     for (SynonymRelationship sr : synRelationships) {
                         Synonym syn = sr.getSynonym();
-                        String uuid = syn.getUuid().toString();
+                        String uuid = syn.getUuid().toString();                        
                         String title = syn.getTitleCache();
+                        NonViralName synnvn = (NonViralName) syn.getName();
+                        String name = synnvn.getTitleCache();
+                        String rank = synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
                         String relLabel = sr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, title, status, "", relLabel);
+                        ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
                     }
 
                     // build relationship information as,
@@ -546,39 +548,53 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();                   
                     for (TaxonRelationship tr : trFromSet) {
                         String titleTo = tr.getRelatedTo().getTitleCache();
+                        NonViralName tonvn = (NonViralName) tr.getRelatedTo().getName();
+                        String name = tonvn.getTitleCache();
+                        String rank = tonvn.getRank().getTitleCache();                        
                         String uuid = tr.getRelatedTo().getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, titleTo, status, "", relLabel);
+                        ti.addToResponseRelatedTaxa(uuid, titleTo, name, rank, status, "", relLabel);
                     }
 
                     // - relationships from the requested taxon
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
                         String titleFrom = tr.getRelatedFrom().getTitleCache();
+                        NonViralName fromnvn = (NonViralName) tr.getRelatedTo().getName();
+                        String name = fromnvn.getTitleCache();
+                        String rank = fromnvn.getRank().getTitleCache();                            
                         String uuid = tr.getRelatedFrom().getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, titleFrom, status, "", relLabel);
+                        ti.addToResponseRelatedTaxa(uuid, titleFrom, name, rank, status, "", relLabel);
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
+                    NonViralName nvn = (NonViralName) synonym.getName();
                  // update taxon information object with synonym related data
-                    ti.setResponseTaxon(synonym.getTitleCache(), SYNONYM_STATUS,
-                            buildFlagMap(synonym), null);
+                    ti.setResponseTaxon(synonym.getTitleCache(),
+                            nvn.getTitleCache(),
+                            nvn.getRank().getTitleCache(),
+                            SYNONYM_STATUS,
+                            buildFlagMap(synonym), 
+                            new TreeMap<String,Map>());
                     // add accepted taxa (if exists) to taxon information object
                     Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                     for (SynonymRelationship sr : synRelationships) {
-                        Taxon accTaxon = sr.getAcceptedTaxon();
+                        Taxon accTaxon = sr.getRelatedTo();
                         String uuid = accTaxon.getUuid().toString();
                         String title = accTaxon.getTitleCache();
+                        NonViralName accnvn = (NonViralName) accTaxon.getName();
+                        String name = accnvn.getTitleCache();
+                        String rank = accnvn.getRank().getTitleCache();                          
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, title, status, "", relLabel);
+                        ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
                     }
                 }
                 tiList.add(ti);
@@ -653,6 +669,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
         Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
         //loop through taxon nodes and build classification map for each classification key
+        logger.info("Loop through taxon nodes ");
         for (TaxonNode tn : taxonNodes) {
             Map<String, String> classificationMap = new LinkedHashMap<String, String>();
             List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
@@ -672,6 +689,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 builder.append(word);
             }
             cname = builder.toString();
+            logger.info("Building classification map " + cname);
             sourceClassificationMap.put(cname, classificationMap);
         }
 
@@ -685,7 +703,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         } else if(classificationType.equals(CLASSIFICATION_ALL)) {
             return sourceClassificationMap;
         } else {
-            return null;
+            return new TreeMap<String,Map>();
         }
     }
 
