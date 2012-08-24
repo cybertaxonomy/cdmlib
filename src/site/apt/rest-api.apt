@@ -197,7 +197,7 @@ In the following the generic URIs are documented first followed by type specific
 "$"
 ----
 
-*** /\{datasource-name\}/\{base-type\}/
+*** /\{base-type\}/
 
 	Depending on the URI parameters used, this service returns either a Pager on or a List of the \{base-type\} entities identified by the \{uuid\}. 
 The returned \{base-type\} instances are initialized by the <default initialisation strategy>. 
@@ -221,7 +221,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 	* <type> Further restricts the type of entities to return. If null the type mapped by \{base-type\} is being used. - <optional parameter>
 
 
-*** /\{datasource-name\}/\{base-type\}/name/\{uuid\}
+*** /\{base-type\}/name/\{uuid\}
 
 	Get the \{base-type\} entity identified by the \{uuid\}. 
 
@@ -229,7 +229,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 
 	The returned \{base-type\} entity is initialized by the <default initialisation strategy>. 
 
-*** /\{datasource-name\}/\{base-type\}/name/\{uuid\}/annotation
+*** /\{base-type\}/name/\{uuid\}/annotation
 
 	Get the a Pager on the Annotations for the \{base-type\} entity identified by the \{uuid\}. 
 
@@ -240,7 +240,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 
 
 
-*** /\{datasource-name\}/name/\{name-uuid\}/typeDesignations
+*** /name/\{name-uuid\}/typeDesignations
 
 	Get the list of TypeDesignationBases of the TaxonNameBase instance identified by the \{name-uuid\}. 
 
@@ -254,7 +254,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "typifiedNames.taggedName"
 ----
 
-*** /\{datasource-name\}/taxon/\{taxon-uuid\}/accepted
+*** /taxon/\{taxon-uuid\}/accepted
 
 	Get the set of accepted Taxon entities for a given \{@link TaxonBase\} entity identified by the <code>\{taxon-uuid\}</code>.
 
@@ -264,13 +264,13 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 
 ** Portal Service
 
-*** /\{datasource-name\}/portal/name/\{name-uuid\} 
+*** /portal/name/\{name-uuid\} 
 
 	The TaxonNameBase instance identified by the \{name-uuid\}. 
 	The returned TaxonNameBase is initialized by the following strategy 
 
 
-*** /\{datasource-name\}/portal/name/\{name-uuid\}/descriptions
+*** /portal/name/\{name-uuid\}/descriptions
 
 	Get the list of TaxonNameDescriptions of the Name associated with the TaxonNameBase instance identified by the \{name-uuid\}.
 
@@ -286,7 +286,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "elements.media.representations.parts"
 ----
 
-*** /\{datasource-name\}/portal/name/\{name-uuid\}/typeDesignations
+*** /portal/name/\{name-uuid\}/typeDesignations
 
 	Get the list of TypeDesignationBases of the TaxonNameBase instance identified by the \{name-uuid\}. 
 
@@ -303,7 +303,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 ----
 
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}
+*** /portal/taxon/\{taxon-uuid\}
 
 	Get the TaxonBase instance identified by the \{taxon-uuid\}. 
 	The returned Taxon is initialized by the following strategy TAXON_INIT_STRATEGY 
@@ -322,7 +322,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "descriptions.elements.media.representations.parts",
 ----
 
-*** /\{datasource-name\\}/portal/taxon/find 
+*** /portal/taxon/find 
 
 	Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area. 
 
@@ -359,7 +359,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "name.status.type.representations"
 ----
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/synonymy
+*** /portal/taxon/\{taxon-uuid\}/synonymy
 
 	Get the synonymy for a taxon identified by the \{taxon-uuid\}. The synonymy consists of two parts: The group of homotypic synonyms of the taxon and the heterotypic synonymy groups of the taxon. The synonymy is ordered historically by the type designations and by the publication date of the nomenclatural reference 
 
@@ -387,7 +387,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
 ----
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/accepted
+*** /portal/taxon/\{taxon-uuid\}/accepted
 
 	Get the set of accepted Taxon entities for a given \{@link TaxonBase\} entity identified by the <code>\{taxon-uuid\}</code>.
 
@@ -415,7 +415,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
 ----
 
-***  /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/taxonRelationships 
+***  /portal/taxon/\{taxon-uuid\}/taxonRelationships 
 
 	Get the list of TaxonRelationships for the given TaxonBase instance identified by the \{taxon-uuid\}. 
 
@@ -430,7 +430,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "fromTaxon.name.taggedName"
 ----
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/nameRelationships
+*** /portal/taxon/\{taxon-uuid\}/nameRelationships
 
 	Get the list of NameRelationships of the Name associated with the TaxonBase instance identified by the \{taxon-uuid\}. 
 
@@ -444,7 +444,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "fromName.taggedName"
 ----
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/nameTypeDesignations
+*** /portal/taxon/\{taxon-uuid\}/nameTypeDesignations
 
 	Get the list of TypeDesignationBases of the TaxonBase instance identified by the \{taxon-uuid\}. 
 
@@ -459,7 +459,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "typeName.taggedName"
 ----
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/descriptions
+*** /portal/taxon/\{taxon-uuid\}/descriptions
 
 	Get the list of TaxonDescriptions of the Taxon instance identified by the \{taxon-uuid\}. 
 
@@ -475,13 +475,13 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "elements.media.representations.parts"
 ----
 
-*** /\{datasource-name\}/portal/taxon/\{taxon-uuid\}/media/\{mime type list\}/\{size\}[,[widthOrDuration\}][,\{height\}]/
+*** /portal/taxon/\{taxon-uuid\}/media/\{mime type list\}/\{size\}[,[widthOrDuration\}][,\{height\}]/
 
 	Get the list of TaxonDescriptions of the Taxon instance identified by the \{taxon-uuid\}. 
 
 	<Usage:>
 
- 	/\{datasource-name\}/portal/taxon/\{taxon-uuid\}/media/\{mime type list\}/\{size\}[,[widthOrDuration\}][,\{height\}]/ 
+ 	/portal/taxon/\{taxon-uuid\}/media/\{mime type list\}/\{size\}[,[widthOrDuration\}][,\{height\}]/ 
  
 	<Whereas>
 	
@@ -503,7 +503,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "elements.media.representations.parts"
 ----
 
-*** datasource-name\}/portal/taxontree
+*** /portal/taxontree
 
 	Lists all available TaxonomicTrees. 
 
@@ -515,7 +515,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "reference.authorTeam.titleCache"
 ----
 
-*** /\{datasource-name\}/portal/taxontree/\{tree-uuid\},\{rank-uuid\}
+*** /portal/taxontree/\{tree-uuid\},\{rank-uuid\}
 
 	Lists all TaxonNodes of the specified TaxonomicTree for a given Rank. If a branch does not contain a TaxonNode with a TaxonName at the given Rank the node associated with the next lower Rank is taken as root node. If the rank is null the absolute root nodes will be returned. 
 
@@ -536,7 +536,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "taxon.name.taggedName"
 ----
 
-***  /\{datasource-name\}/portal/taxontree/\{tree-uuid\},\{rank- uuid\}/\{taxon-uuid\}
+***  /portal/taxontree/\{tree-uuid\},\{rank- uuid\}/\{taxon-uuid\}
 
 	Lists all child-TaxonNodes of the specified Taxon in the TaxonomicTree. The a given Rank is ignored in this method but for consistency reasons it has been allowed to included it into the URI. 
 
@@ -559,7 +559,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 "taxon.name.taggedName"
 ----
 
-***  /\{datasource-name\}/portal/taxontree/\{tree-uuid\},\{rank-uuid\}/\{taxon-uuid\}/path
+***  /portal/taxontree/\{tree-uuid\},\{rank-uuid\}/\{taxon-uuid\}/path
 
 	Provides path of TaxonNodes from the base node to the node of the specified taxon. 
 
@@ -584,7 +584,7 @@ The returned \{base-type\} instances are initialized by the <default initialisat
 
 ** External Service
 
-*** /\{datasource-name\}/geo/map/distribution/\{taxon-uuid\}
+*** /geo/map/distribution/\{taxon-uuid\}
 
 	Assembles and returns URI parameter Strings for the EDIT Map Service. 
 The distribution areas for the Taxon instance identified by the \{taxon-uuid\} are found and are translated into an valid URI parameter String. 

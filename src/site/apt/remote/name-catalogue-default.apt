@@ -18,7 +18,7 @@ CDM Taxonomic Name Search API
 									
 	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
 	
-	The response returned by this web service endpoint is described as,
+	The response objects returned by this web service endpoint have the following structure:
 			  
 		* <<<request>>>
 		
@@ -45,23 +45,23 @@ CDM Taxonomic Name Search API
 		
 		* Base scientific name search : 	
 				
-			* {{{./name_catalogue.json?query=Abies Alba} /{datasource-name}/name_catalogue.json?query=Abies Alba}}
+			* {{{./name_catalogue.json?query=Abies Alba} /name_catalogue.json?query=Abies Alba}}
 			
 		* Complete scientific name search : 
 		
-			* {{{./name_catalogue.json?query=Abies Alba Mill.&type=title} /{datasource-name}/name_catalogue.json?query=Abies Alba Mill.&type=title}}
+			* {{{./name_catalogue.json?query=Abies Alba Mill.&type=title} /name_catalogue.json?query=Abies Alba Mill.&type=title}}
 			
 		* Multiple queries :
 			
-			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot esculenta} /{datasource-name}/name_catalogue.json?query=Abies Alba&query=Manihot esculenta}}
+			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot esculenta} /name_catalogue.json?query=Abies Alba&query=Manihot esculenta}}
 			
-			* {{{./name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title} /{datasource-name}/name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title}}
+			* {{{./name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title} /name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title}}
 			
 		* Errors :
 		
-			* {{{./name_catalogue.json?query=Abies Alb} /{datasource-name}/name_catalogue.json?query=Abies Alb}}
+			* {{{./name_catalogue.json?query=Abies Alb} /name_catalogue.json?query=Abies Alb}}
 			
-			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot escenta} /{datasource-name}/name_catalogue.json?query=Abies Alba&query=Manihot escenta}}
+			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot escenta} /name_catalogue.json?query=Abies Alba&query=Manihot escenta}}
 		
 			
 			

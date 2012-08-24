@@ -13,7 +13,7 @@ CDM Taxonomic Name Information API
 									
 	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
 	
-	The response returned by this web service endpoint is described as,
+	The response objects returned by this web service endpoint have the following structure:
 			  
 		* <<<request>>>
 		
@@ -48,15 +48,15 @@ CDM Taxonomic Name Information API
 		
 		* Single name uuid request : 	
 				
-			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf} /{datasource-name}/name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf}}
+			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf} /name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf}}
 			
 		* Multiple name uuid request : 
 		
-			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf&nameUuid=0d5e07b6-2646-4210-80e0-fcd449e26b57} /{datasource-name}/name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf&nameUuid=0d5e07b6-2646-4210-80e0-fcd449e26b57}}
+			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf&nameUuid=0d5e07b6-2646-4210-80e0-fcd449e26b57} /name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02-4301fd78debf&nameUuid=0d5e07b6-2646-4210-80e0-fcd449e26b57}}
 			
 		* Errors :
 		
-			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02} /{datasource-name}/name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02}}
+			* {{{../name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02} /name_catalogue/name.json?nameUuid=cd4bc51f-ddcd-4e9c-aa02}}
 		
 			
 			
