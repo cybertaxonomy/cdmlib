@@ -33,7 +33,6 @@ public class PaddedIntegerBridge implements TwoWayStringBridge {
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.StringBridge#objectToString(java.lang.Object)
      */
-    @Override
     public String objectToString(Object object) {
         if(object == null){
             return NULL_STRING;
@@ -61,7 +60,6 @@ public class PaddedIntegerBridge implements TwoWayStringBridge {
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.TwoWayStringBridge#stringToObject(java.lang.String)
      */
-    @Override
     public Object stringToObject(String stringValue) {
         if(stringValue.equals(NULL_STRING)){
             return null;
