@@ -604,6 +604,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClas
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/LanguageFieldBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PaddedIntegerBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PartialBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/StripHtmlBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/UuidBridge.java -text

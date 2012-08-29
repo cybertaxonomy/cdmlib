@@ -49,10 +49,13 @@ public class DescriptionBaseClassBridge implements FieldBridge {
      * org.hibernate.search.bridge.LuceneOptions)
      */
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
+
+            PaddedIntegerBridge idFieldBridge = new PaddedIntegerBridge();
+
             if (entity instanceof TaxonDescription) {
                 Taxon taxon = ((TaxonDescription) entity).getTaxon();
                 if (taxon != null) {
-                    Field idfield = new Field(name + "taxon.id", String.valueOf(taxon.getId()), Store.YES, Index.ANALYZED,
+                    Field idfield = new Field(name + "taxon.id", idFieldBridge.objectToString(taxon.getId()), Store.YES, Index.ANALYZED,
                             luceneOptions.getTermVector());
                     document.add(idfield);
                     Field titleCachefield = new Field(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES, Index.ANALYZED,
@@ -66,7 +69,7 @@ public class DescriptionBaseClassBridge implements FieldBridge {
                     document.add(uuidfield);
                     for(TaxonNode node : taxon.getTaxonNodes()){
                         if(node.getClassification() != null){
-                        Field taxonNodeField = new Field(name + "taxon.taxonNodes.classification.id", String.valueOf(node.getClassification().getId()), Store.YES, Index.ANALYZED,
+                        Field taxonNodeField = new Field(name + "taxon.taxonNodes.classification.id", idFieldBridge.objectToString(node.getClassification().getId()), Store.YES, Index.ANALYZED,
                                 luceneOptions.getTermVector());
                         document.add(taxonNodeField);
                         }
@@ -77,7 +80,7 @@ public class DescriptionBaseClassBridge implements FieldBridge {
             if (entity instanceof TaxonNameDescription) {
                 TaxonNameBase taxonName = ((TaxonNameDescription) entity).getTaxonName();
                 if (taxonName != null) {
-                    Field field = new Field(name + "taxonName.id", String.valueOf(taxonName.getId()), luceneOptions.getStore(), luceneOptions.getIndex(),
+                    Field field = new Field(name + "taxonName.id", idFieldBridge.objectToString(taxonName.getId()), luceneOptions.getStore(), luceneOptions.getIndex(),
                             luceneOptions.getTermVector());
                     document.add(field);
                 }

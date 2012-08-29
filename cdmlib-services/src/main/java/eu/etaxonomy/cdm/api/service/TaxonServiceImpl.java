@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResultHighligther;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.PaddedIntegerBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -1168,7 +1169,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         luceneQueryTemplate.append(") ");
 
         if(classification != null){
-            luceneQueryTemplate.append("+inDescription.taxon.taxonNodes.classification.id:").append(classification.getId()).append(" ");
+            luceneQueryTemplate.append("+inDescription.taxon.taxonNodes.classification.id:").append(PaddedIntegerBridge.paddInteger(classification.getId())).append(" ");
         }
 
         if(features != null && features.size() > 0 ){
@@ -1182,7 +1183,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // the description must be associated with a taxon
         // TODO open range queries [0 TO *] not working in the current version of lucene (https://issues.apache.org/jira/browse/LUCENE-995)
         //       so we are using integer maximum as workaround
-        luceneQueryTemplate.append("+inDescription.taxon.id:[0 TO " + Integer.MAX_VALUE + "] ");
+        luceneQueryTemplate.append("+inDescription.taxon.id:[ " + PaddedIntegerBridge.paddInteger(0) + " TO " + PaddedIntegerBridge.paddInteger(Integer.MAX_VALUE) + "] ");
+        //luceneQueryTemplate.append("-inDescription.taxon.id:" + PaddedIntegerBridge.NULL_STRING);
 
         String luceneQueryStr = String.format(luceneQueryTemplate.toString(), queryString);
 

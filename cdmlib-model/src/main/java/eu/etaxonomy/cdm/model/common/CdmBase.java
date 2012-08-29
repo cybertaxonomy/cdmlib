@@ -49,6 +49,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.PaddedIntegerBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -93,6 +94,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 //	@GeneratedValue(generator = "enhanced-table")
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
+    @FieldBridge(impl=PaddedIntegerBridge.class)
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)

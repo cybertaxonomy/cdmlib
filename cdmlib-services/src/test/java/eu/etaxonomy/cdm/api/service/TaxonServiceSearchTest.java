@@ -82,7 +82,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
 
-    private static final String CLASSIFICATION_UUID =     "2a5ceebb-4830-4524-b330-78461bf8cb6b";
+    private static final String CLASSIFICATION_UUID = "2a5ceebb-4830-4524-b330-78461bf8cb6b";
 
     private static final String CLASSIFICATION_ALT_UUID = "d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce";
 

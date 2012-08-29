@@ -37,12 +37,13 @@ public class DefinedTermBaseClassBridge implements FieldBridge {
         if(value == null){
             return;
         }
+        PaddedIntegerBridge idFieldBridge = new PaddedIntegerBridge();
 
         DefinedTermBase term = (DefinedTermBase)value;
         for(Representation representation : term.getRepresentations()){
 
             Field idField = new Field(name + "id",
-                    String.valueOf(term.getId()),
+                    idFieldBridge.objectToString(term.getId()),
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
                     luceneOptions.getTermVector());

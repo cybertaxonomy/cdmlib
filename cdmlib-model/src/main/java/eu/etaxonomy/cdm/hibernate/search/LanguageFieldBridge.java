@@ -46,8 +46,10 @@ public class LanguageFieldBridge implements FieldBridge {
 
         Language language = (Language)value;
 
+        PaddedIntegerBridge idFieldBridge = new PaddedIntegerBridge();
+
         Field idField = new Field(name + ".id",
-                String.valueOf(language.getId()),
+                idFieldBridge.objectToString(language.getId()),
                 luceneOptions.getStore(),
                 luceneOptions.getIndex(),
                 luceneOptions.getTermVector());
