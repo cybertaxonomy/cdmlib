@@ -4,10 +4,12 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -52,6 +55,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
  * The controller class for the namespace 'name_catalogue'. This web service namespace 
@@ -142,6 +147,11 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "classification.reference.$",
             "classification.reference.authorTeam.$" });
 
+    /** Hibernate classification vocabulary initialisation strategy */
+    private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] { 
+            "classification", 
+            "classification.reference.$",
+            "classification.reference.authorTeam.$" });
     public NameCatalogueController() {
         super();
         setInitializationStrategy(Arrays.asList(new String[] { "$" })); 
@@ -180,15 +190,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
-        // Build Html View
-        HtmlView hv = new HtmlView();
-        Map<String, String> modelMap = new HashMap<String, String>();
-        modelMap.put("title", "Name Search API");
-        // Convert Apt to Html
-        modelMap.put("body", DocUtils.convertAptToHtml(aptInputStream));
+        // Build Html View        
+        Map<String, String> modelMap = new HashMap<String, String>();        
+        // Convert Apt to Html                
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
-        mv.setView(hv);
-
+        
+        HtmlView hv = new HtmlView();
+        mv.setView(hv);        
         return mv;
     }
 
@@ -344,15 +353,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
-        // Build Html View
-        HtmlView hv = new HtmlView();
-        Map<String, String> modelMap = new HashMap<String, String>();
-        modelMap.put("title", "Name Information API");
-        // Convert Apt to Html
-        modelMap.put("body", DocUtils.convertAptToHtml(aptInputStream));
+        // Build Html View        
+        Map<String, String> modelMap = new HashMap<String, String>();        
+        // Convert Apt to Html                
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
-        mv.setView(hv);
-
+        
+        HtmlView hv = new HtmlView();
+        mv.setView(hv);        
         return mv;
     }
     
@@ -401,9 +409,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         nvn.getStatus(), citation, nvn.getRelationsFromThisName(),
                         nvn.getRelationsToThisName(), nvn.getTaxonBases());
                 niList.add(ni);
-            } else {
+            } else {                
                 ErrorResponse re = new ErrorResponse();
-                re.setErrorMessage("No Taxon Name for given UUID : " + nameUuid);
+                
+                if(isValid(nameUuid)) {
+                    re.setErrorMessage("No Name for given UUID : " + nameUuid);
+                } else {
+                    re.setErrorMessage(nameUuid + " not a valid UUID");
+                }
                 niList.add(re);
             }
         }
@@ -431,15 +444,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
-        // Build Html View
-        HtmlView hv = new HtmlView();
-        Map<String, String> modelMap = new HashMap<String, String>();
-        modelMap.put("title", "Taxon Information API");
-        // Convert Apt to Html
-        modelMap.put("body", DocUtils.convertAptToHtml(aptInputStream));
+        // Build Html View        
+        Map<String, String> modelMap = new HashMap<String, String>();        
+        // Convert Apt to Html                
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
-        mv.setView(hv);
-
+        
+        HtmlView hv = new HtmlView();
+        mv.setView(hv);        
         return mv;
     }
     
@@ -516,7 +528,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 if (tb.isInstanceOf(Taxon.class)) {
                     Taxon taxon = (Taxon) tb;
                     // build classification map
-                    Map classificationMap = buildClassificationMap(taxon, classificationType);
+                    Map classificationMap = getClassification(taxon, classificationType);
                     
                     // update taxon information object with taxon related data
                     NonViralName nvn = (NonViralName) tb.getName();
@@ -600,11 +612,63 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 tiList.add(ti);
             } else {
                 ErrorResponse re = new ErrorResponse();
-                re.setErrorMessage("No Taxon for given UUID : " + taxonUuid);
+                if(isValid(taxonUuid)) {
+                    re.setErrorMessage("No Taxon for given UUID : " + taxonUuid);
+                } else {
+                    re.setErrorMessage(taxonUuid + " not a valid UUID");
+                }
                 tiList.add(re);
             }
         }
         mv.addObject(tiList);
+        return mv;
+    }
+    
+    /**
+     * Returns a list of all available classifications (with associated referenc information) and the default classification.
+     * <p>
+     * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-classification-info.html">here</a>
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/voc/classification</b>
+     *                    
+     * @param request Http servlet request.
+     * @param response Http servlet response.
+     * @return a List of {@link Classification} objects represebted as strings. 
+     *         These are initialized using the {@link #VOC_CLASSIFICATION_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(value = { "voc/classification" }, method = RequestMethod.GET, params = {})
+    public ModelAndView doGetClassificationMap(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<Map> cmapList = new ArrayList<Map>();
+        Map<String, String> classifications = new HashMap<String, String>();
+        ModelAndView mv = new ModelAndView();
+        List<Classification> clist = getClassificationList(100);        
+        boolean isFirst = true;
+        Iterator itr = clist.iterator();
+        // loop through all classifications and populate map with
+        // (classificationKey, reference) elements
+        while(itr.hasNext()) {
+            Classification c = (Classification) itr.next();
+            String refTitleCache = "";
+            String classificationKey = removeInternalWhitespace(c.getTitleCache());
+            if(c.getReference() != null) {
+                refTitleCache = c.getReference().getTitleCache();
+            }
+            // default is the first element of the list
+            // always created with the same sorting (DESCENDING)
+            if(isFirst) {
+                Map<String, String> defaultMap = new HashMap<String, String>();                
+                defaultMap.put("default", classificationKey);                
+                cmapList.add(defaultMap);
+                isFirst = false;
+            }
+            classifications.put(classificationKey, refTitleCache);
+
+        }
+        Map<String, Map> cmap = new HashMap<String, Map>();
+        cmap.put("classification",classifications);
+        cmapList.add(cmap);
+        mv.addObject(cmapList);
         return mv;
     }
 
@@ -663,39 +727,16 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /**
      * Build classification map.
      */
-    private Map<String, Map> buildClassificationMap(Taxon taxon, String classificationType) {
+    private Map<String, Map> getClassification(Taxon taxon, String classificationType) {
         // Using TreeMap is important, because we need the sorting of the classification keys 
         // in the map to be stable.
-        TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
-        Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
-        //loop through taxon nodes and build classification map for each classification key
-        logger.info("Loop through taxon nodes ");
-        for (TaxonNode tn : taxonNodes) {
-            Map<String, String> classificationMap = new LinkedHashMap<String, String>();
-            List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
-                    tn.getClassification(), null, TAXON_NODE_INIT_STRATEGY);
-            for (TaxonNode classificationtn : tnList) {
+        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, classificationType);
 
-                classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
-                        classificationtn.getTaxon().getName().getTitleCache());
-            }
-
-            String cname = tn.getClassification().getTitleCache();
-            String[] words = cname.split("\\s+");
-            // "\\s+" in regular expression language meaning one or
-            // more spaces
-            StringBuilder builder = new StringBuilder();
-            for (String word : words) {
-                builder.append(word);
-            }
-            cname = builder.toString();
-            logger.info("Building classification map " + cname);
-            sourceClassificationMap.put(cname, classificationMap);
-        }
-
-        // if classification key is 'default' then return the first element of the map
+        // if classification key is 'default' then return the default element of the map
         if(classificationType.equals(CLASSIFICATION_DEFAULT) && !sourceClassificationMap.isEmpty()) {
-            return sourceClassificationMap.firstEntry().getValue();
+            List<Classification> clist = getClassificationList(1);
+            String defaultKey = removeInternalWhitespace(clist.get(0).getTitleCache());
+            return sourceClassificationMap.get(defaultKey);
             // if classification key is provided then return the classification corresponding to the key
         } else if(sourceClassificationMap.containsKey(classificationType)) {
             return sourceClassificationMap.get(classificationType);
@@ -707,6 +748,63 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         }
     }
 
+    /**
+     * Build classification map.
+     */
+    private TreeMap<String, Map> buildClassificationMap(Taxon taxon, String classificationType) {
+        // Using TreeMap is important, because we need the sorting of the classification keys 
+        // in the map to be stable.
+        TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
+        Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
+        //loop through taxon nodes and build classification map for each classification key        
+        for (TaxonNode tn : taxonNodes) {
+            Map<String, String> classificationMap = new LinkedHashMap<String, String>();
+            List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
+                    tn.getClassification(), null, TAXON_NODE_INIT_STRATEGY);
+            for (TaxonNode classificationtn : tnList) {
+                classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
+                        classificationtn.getTaxon().getName().getTitleCache());
+            }
+            String cname = removeInternalWhitespace(tn.getClassification().getTitleCache());
+            logger.info("Building classification map " + cname);
+            sourceClassificationMap.put(cname, classificationMap);
+        }
+        return sourceClassificationMap;
+    }
+    
+    private String removeInternalWhitespace(String withWSpace) {
+        String[] words = withWSpace.split("\\s+");
+        // "\\s+" in regular expression language meaning one or
+        // more spaces
+        StringBuilder builder = new StringBuilder();
+        for (String word : words) {
+            builder.append(word);
+        }
+        return builder.toString();
+    }
+    
+    private List<Classification> getClassificationList(int limit) {
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+        List<Classification> clist = classificationService.listClassifications(limit, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
+        return clist;
+    }
+    
+    private boolean isValid(String uuid){
+        if( uuid == null) return false;
+        try {
+            // we have to convert to object and back to string because the built in fromString does not have 
+            // good validation logic.
+
+            UUID fromStringUUID = UUID.fromString(uuid);
+            String toStringUUID = fromStringUUID.toString();
+            
+            System.out.println("input uuid : " + uuid + " , parsed uuid : " + toStringUUID);
+            return toStringUUID.equals(uuid);
+        } catch(IllegalArgumentException e) {
+            return false;
+        }
+    }
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

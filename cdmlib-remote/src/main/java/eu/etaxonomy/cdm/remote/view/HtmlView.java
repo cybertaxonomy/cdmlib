@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.View;
 
+import eu.etaxonomy.cdm.common.DocUtils;
+
 public class HtmlView implements View{
 
 
@@ -21,9 +23,13 @@ public class HtmlView implements View{
 		response.setContentType(getContentType());
 		response.setCharacterEncoding("UTF-8");
 		Writer out = response.getWriter();
-		out.append("<html><head><title>").append(arg0.get("title").toString()).append("</title></head><body>");
-		out.append(arg0.get("body").toString());
-		out.append("<body></html>");
+		if(arg0.get("html") != null) {		    
+		    out.append(arg0.get("html").toString());
+		} else {		
+		    out.append("<html><head><title>").append(arg0.get("title").toString()).append("</title></head><body>");		
+		    out.append(arg0.get("body").toString());
+		    out.append("<body></html>");
+		}
 		response.flushBuffer();
 	}
 
