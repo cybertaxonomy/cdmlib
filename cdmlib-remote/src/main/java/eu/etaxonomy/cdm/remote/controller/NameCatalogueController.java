@@ -59,10 +59,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
- * The controller class for the namespace 'name_catalogue'. This web service namespace 
- * is an add-on to the already existing CDM REST API and provides information relating 
+ * The controller class for the namespace 'name_catalogue'. This web service namespace
+ * is an add-on to the already existing CDM REST API and provides information relating
  * to scientific names as well as taxa present in the underlying datasource.
- * 
+ *
  * @author c.mathew
  * @version 1.1.0
  * @created 15-Apr-2012
@@ -76,7 +76,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Taxonomic status 'accepted' string */
     public static final String ACCEPTED_NAME_STATUS = "accepted";
-    
+
     /** Taxonpmic status 'synonym' string */
     public static final String SYNONYM_STATUS = "synonym";
 
@@ -85,16 +85,16 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Base scientific name search type */
     public static final String NAME_SEARCH = "name";
-    
+
     /** Complete scientific name search type */
     public static final String TITLE_SEARCH = "title";
-    
+
     /** Default name search type */
     public static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
 
     /** Classifcation 'default' key */
     public static final String CLASSIFICATION_DEFAULT = "default";
-    
+
     /** Classifcation 'all' key */
     public static final String CLASSIFICATION_ALL = "all";
 
@@ -106,23 +106,23 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Hibernate name search initialisation strategy */
     private static final List<String> NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
-            "combinationAuthorTeam.$", 
-            "exCombinationAuthorTeam.$", 
+            "combinationAuthorTeam.$",
+            "exCombinationAuthorTeam.$",
             "basionymAuthorTeam.$",
-            "exBasionymAuthorTeam.$", 
-            "nameCache", 
+            "exBasionymAuthorTeam.$",
+            "nameCache",
             "taxonBases",
     "taxonBases.synonymRelations.type.$"});
 
     /** Hibernate name information initialisation strategy */
-    private static final List<String> NAME_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] { 
+    private static final List<String> NAME_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "taxonBases",
-            "status", 
-            "nomenclaturalReference.$", 
-            "combinationAuthorTeam.$", 
+            "status",
+            "nomenclaturalReference.$",
+            "combinationAuthorTeam.$",
             "exCombinationAuthorTeam.$",
-            "basionymAuthorTeam.$", 
-            "exBasionymAuthorTeam.$", 
+            "basionymAuthorTeam.$",
+            "exBasionymAuthorTeam.$",
             "relationsToThisName.$",
             "relationsFromThisName.$" });
 
@@ -130,36 +130,36 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     private static final List<String> TAXON_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "name.rank.titleCache",
             "synonymRelations.synonym.name.rank.titleCache",
-            "synonymRelations.type.$", 
+            "synonymRelations.type.$",
             "synonymRelations.relatedTo.name.rank.titleCache",
-            "relationsFromThisTaxon.type.$", 
+            "relationsFromThisTaxon.type.$",
             "relationsFromThisTaxon.relatedTo.name.rank.titleCache",
             "relationsToThisTaxon.type.$",
             "relationsToThisTaxon.relatedFrom.name.rank.titleCache",
-            "taxonNodes", 
+            "taxonNodes",
             "taxonNodes.classification" });
 
     /** Hibernate taxon node initialisation strategy */
-    private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] { 
+    private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] {
             "taxon.sec",
-            "taxon.name", 
-            "classification", 
+            "taxon.name",
+            "classification",
             "classification.reference.$",
             "classification.reference.authorTeam.$" });
 
     /** Hibernate classification vocabulary initialisation strategy */
-    private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] { 
-            "classification", 
+    private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {
+            "classification",
             "classification.reference.$",
             "classification.reference.authorTeam.$" });
     public NameCatalogueController() {
         super();
-        setInitializationStrategy(Arrays.asList(new String[] { "$" })); 
+        setInitializationStrategy(Arrays.asList(new String[] { "$" }));
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu
      * .etaxonomy.cdm.api.service.IService)
@@ -174,7 +174,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Returns a documentation page for the Name Search API.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
-     * 
+     *
      * @param request
      * @param response
      * @return Html page describing the Name Search API
@@ -184,20 +184,20 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     public ModelAndView doGetNameSearchDocumentation(
             HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        ModelAndView mv = new ModelAndView();               
+        ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
-        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-default.apt");        
+        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-default.apt");
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
-        // Build Html View        
-        Map<String, String> modelMap = new HashMap<String, String>();        
-        // Convert Apt to Html                
+        // Build Html View
+        Map<String, String> modelMap = new HashMap<String, String>();
+        // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
-        
+
         HtmlView hv = new HtmlView();
-        mv.setView(hv);        
+        mv.setView(hv);
         return mv;
     }
 
@@ -209,7 +209,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-default.html">here</a>
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
-     * 
+     *
      * @param queries
      *                The base scientific name pattern(s) to query for. The query can
      *                contain wildcard characters ('*'). The query can be
@@ -237,20 +237,20 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-default.html">here</a>
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
-     * 
+     *
      * @param query
      *                The scientific name pattern(s) to query for. The query can
      *                contain wildcard characters ('*'). The query can be
      *                performed with no wildcard or with the wildcard at the
      *                begin and / or end depending on the search pattern.
      * @param type
-     *                The type of name to query. This be either 
+     *                The type of name to query. This be either
      *                "name" : scientific name corresponding to 'name cache' in CDM or
      *                "title" : complete name corresponding to 'title cache' in CDM
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
-     *         single query. These are built from {@link TaxonNameBase} entities 
+     *         single query. These are built from {@link TaxonNameBase} entities
      *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
      * @throws IOException
      */
@@ -278,7 +278,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             logger.info("doGetNameSearch()" + request.getServletPath() + " for query \"" + query
                     + "\" without wild cards : " + queryWOWildcards + " and match mode : " + mm);
             List<NonViralName> nameList = new ArrayList<NonViralName>();
-            
+
             // if "name" search then find by name cache
             if (searchType.equals(NAME_SEARCH)) {
                 nameList = (List<NonViralName>) service.findNamesByNameCache(queryWOWildcards, mm,
@@ -290,16 +290,16 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 nameList = (List<NonViralName>) service.findNamesByTitleCache(queryWOWildcards, mm,
                         NAME_SEARCH_INIT_STRATEGY);
             }
-            
+
             // if search is successful then get related information , else return error
             if (nameList == null || !nameList.isEmpty()) {
                 NameSearch ns = new NameSearch();
                 ns.setRequest(query);
 
                 for (NonViralName nvn : nameList) {
-                    // we need to retrieve both taxon uuid of name queried and 
+                    // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
-                    // reason to return accepted taxa also, is to be able to get from 
+                    // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
                     Set<TaxonBase> tbSet = nvn.getTaxonBases();
                     Set<TaxonBase> accTbSet = new HashSet<TaxonBase>();
@@ -309,7 +309,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             Synonym synonym = (Synonym) tb;
                             Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                             for (SynonymRelationship sr : synRelationships) {
-                                Taxon accTaxon = sr.getAcceptedTaxon();                                                                
+                                Taxon accTaxon = sr.getAcceptedTaxon();
                                 accTbSet.add(accTaxon);
                             }
                         } else {
@@ -332,12 +332,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         return mv;
     }
 
-    
+
     /**
      * Returns a documentation page for the Name Information API.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/name</b>
-     * 
+     *
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return Html page describing the Name Information API
@@ -353,17 +353,17 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
-        // Build Html View        
-        Map<String, String> modelMap = new HashMap<String, String>();        
-        // Convert Apt to Html                
+        // Build Html View
+        Map<String, String> modelMap = new HashMap<String, String>();
+        // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
-        
+
         HtmlView hv = new HtmlView();
-        mv.setView(hv);        
+        mv.setView(hv);
         return mv;
     }
-    
+
     /**
      * Returns information related to the scientific name matching the given
      * <code>{nameUuid}</code>. The information includes the name string,
@@ -372,12 +372,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-name-info.html">here</a>
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/name</b>
-     * 
+     *
      * @param nameUuids uuid(s) of the scientific name to search for.
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameInformation} objects each corresponding to a
-     *         single name uuid. These are built from {@link TaxonNameBase} entities 
+     *         single name uuid. These are built from {@link TaxonNameBase} entities
      *         which are in turn initialized using the {@link #NAME_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
@@ -393,7 +393,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             // find name by uuid
             NonViralName nvn = (NonViralName) service.findNameByUuid(UUID.fromString(nameUuid),
                         NAME_INFORMATION_INIT_STRATEGY);
-            
+
             // if search is successful then get related information, else return error
             if (nvn != null) {
                 NameInformation ni = new NameInformation();
@@ -409,9 +409,9 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         nvn.getStatus(), citation, nvn.getRelationsFromThisName(),
                         nvn.getRelationsToThisName(), nvn.getTaxonBases());
                 niList.add(ni);
-            } else {                
+            } else {
                 ErrorResponse re = new ErrorResponse();
-                
+
                 if(isValid(nameUuid)) {
                     re.setErrorMessage("No Name for given UUID : " + nameUuid);
                 } else {
@@ -428,7 +428,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Returns a documentation page for the Taxon Information API.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/taxon</b>
-     * 
+     *
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return Html page describing the Taxon Information API
@@ -444,35 +444,35 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
-        // Build Html View        
-        Map<String, String> modelMap = new HashMap<String, String>();        
-        // Convert Apt to Html                
+        // Build Html View
+        Map<String, String> modelMap = new HashMap<String, String>();
+        // Convert Apt to Html
         modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
-        
+
         HtmlView hv = new HtmlView();
-        mv.setView(hv);        
+        mv.setView(hv);
         return mv;
     }
-    
+
     /**
      * Returns information related to the taxon matching the given
-     * <code>{taxonUuid}</code>. The information includes the name cache, title cache 
+     * <code>{taxonUuid}</code>. The information includes the name cache, title cache
      * relationship type, taxonomic status, information , etc.
      * <p>
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-taxon-info.html">here</a>
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
-     * 
+     *
      * @param taxonUuid
-     *                 The taxon uuid to query for. The classification returned corresponds 
-     *                 to the first in the alphabetically sorted list of classifications 
-     *                 currently available in the database.  
-     *                
+     *                 The taxon uuid to query for. The classification returned corresponds
+     *                 to the first in the alphabetically sorted list of classifications
+     *                 currently available in the database.
+     *
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link TaxonInformation} objects each corresponding to a
-     *         single query. These are built from {@TaxonBase} entities which are 
+     *         single query. These are built from {@TaxonBase} entities which are
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
@@ -480,29 +480,29 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     public ModelAndView doGetTaxonInformation(
             @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
-        return doGetTaxonInformation(taxonUuids,CLASSIFICATION_DEFAULT, request, response);    
+        return doGetTaxonInformation(taxonUuids,CLASSIFICATION_DEFAULT, request, response);
     }
-    
+
     /**
      * Returns information related to the taxon matching the given
-     * <code>{taxonUuid}</code>. The information includes the name cache, title cache 
+     * <code>{taxonUuid}</code>. The information includes the name cache, title cache
      * relationship type, taxonomic status, information , etc.
      * <p>
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-taxon-info.html">here</a>
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/taxon</b>
-     * 
+     *
      * @param taxonUuid
      *                 The taxon uuid to query for.
-     * @param classification 
-     *                 [Optional] String representing the taxonomic classification to use for 
-     *                 building the classification tree. Defaults to the first in the alphabetically 
-     *                 sorted list of classifications currently available in the database.  
-     *                
+     * @param classification
+     *                 [Optional] String representing the taxonomic classification to use for
+     *                 building the classification tree. Defaults to the first in the alphabetically
+     *                 sorted list of classifications currently available in the database.
+     *
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link TaxonInformation} objects each corresponding to a
-     *         single query. These are built from {@TaxonBase} entities which are 
+     *         single query. These are built from {@TaxonBase} entities which are
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
@@ -529,21 +529,22 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     Taxon taxon = (Taxon) tb;
                     // build classification map
                     Map classificationMap = getClassification(taxon, classificationType);
-                    
+
+
                     // update taxon information object with taxon related data
                     NonViralName nvn = (NonViralName) tb.getName();
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
-                            ACCEPTED_NAME_STATUS, 
+                            ACCEPTED_NAME_STATUS,
                             buildFlagMap(tb),
                             classificationMap);
-                    
+
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
                     // add synonyms (if exists) to taxon information object
                     for (SynonymRelationship sr : synRelationships) {
                         Synonym syn = sr.getSynonym();
-                        String uuid = syn.getUuid().toString();                        
+                        String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
                         NonViralName synnvn = (NonViralName) syn.getName();
                         String name = synnvn.getTitleCache();
@@ -557,12 +558,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
                     // build relationship information as,
                     // - relationships from the requested taxon
-                    Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();                   
+                    Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
                     for (TaxonRelationship tr : trFromSet) {
                         String titleTo = tr.getRelatedTo().getTitleCache();
                         NonViralName tonvn = (NonViralName) tr.getRelatedTo().getName();
                         String name = tonvn.getTitleCache();
-                        String rank = tonvn.getRank().getTitleCache();                        
+                        String rank = tonvn.getRank().getTitleCache();
                         String uuid = tr.getRelatedTo().getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
@@ -576,7 +577,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String titleFrom = tr.getRelatedFrom().getTitleCache();
                         NonViralName fromnvn = (NonViralName) tr.getRelatedTo().getName();
                         String name = fromnvn.getTitleCache();
-                        String rank = fromnvn.getRank().getTitleCache();                            
+                        String rank = fromnvn.getRank().getTitleCache();
                         String uuid = tr.getRelatedFrom().getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType()
@@ -592,22 +593,25 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
                             SYNONYM_STATUS,
-                            buildFlagMap(synonym), 
+                            buildFlagMap(synonym),
                             new TreeMap<String,Map>());
                     // add accepted taxa (if exists) to taxon information object
-                    Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
+
+                    //FIXME commenting out below line in order to allow fixing the bug #3064 (portal synonymy service produces massive response for Crepis tectorum)
+/*                    Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                     for (SynonymRelationship sr : synRelationships) {
                         Taxon accTaxon = sr.getRelatedTo();
                         String uuid = accTaxon.getUuid().toString();
                         String title = accTaxon.getTitleCache();
                         NonViralName accnvn = (NonViralName) accTaxon.getName();
                         String name = accnvn.getTitleCache();
-                        String rank = accnvn.getRank().getTitleCache();                          
+                        String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
                         ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
                     }
+*/
                 }
                 tiList.add(ti);
             } else {
@@ -623,17 +627,17 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         mv.addObject(tiList);
         return mv;
     }
-    
+
     /**
      * Returns a list of all available classifications (with associated referenc information) and the default classification.
      * <p>
      * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-classification-info.html">here</a>
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/voc/classification</b>
-     *                    
+     *
      * @param request Http servlet request.
      * @param response Http servlet response.
-     * @return a List of {@link Classification} objects represebted as strings. 
+     * @return a List of {@link Classification} objects represebted as strings.
      *         These are initialized using the {@link #VOC_CLASSIFICATION_INIT_STRATEGY}
      * @throws IOException
      */
@@ -642,7 +646,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         List<Map> cmapList = new ArrayList<Map>();
         Map<String, String> classifications = new HashMap<String, String>();
         ModelAndView mv = new ModelAndView();
-        List<Classification> clist = getClassificationList(100);        
+        List<Classification> clist = getClassificationList(100);
         boolean isFirst = true;
         Iterator itr = clist.iterator();
         // loop through all classifications and populate map with
@@ -657,8 +661,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             // default is the first element of the list
             // always created with the same sorting (DESCENDING)
             if(isFirst) {
-                Map<String, String> defaultMap = new HashMap<String, String>();                
-                defaultMap.put("default", classificationKey);                
+                Map<String, String> defaultMap = new HashMap<String, String>();
+                defaultMap.put("default", classificationKey);
                 cmapList.add(defaultMap);
                 isFirst = false;
             }
@@ -674,10 +678,10 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /**
      * Returns the match mode by parsing the input string of wildcards.
-     * 
+     *
      * @param query
      *             String to parse.
-     *                
+     *
      * @return {@link MatchMode} depending on the the position of the wildcard (*)
      */
     private MatchMode getMatchModeFromQuery(String query) {
@@ -694,10 +698,10 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /**
      * Removes wildcards from the input string.
-     * 
+     *
      * @param query
      *             String to parse.
-     *                
+     *
      * @return input string with wildcards removed
      */
     private String getQueryWithoutWildCards(String query) {
@@ -716,7 +720,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     }
 
     /**
-     * Build map with taxon flag key-value pairs.    
+     * Build map with taxon flag key-value pairs.
      */
     private Map<String, String> buildFlagMap(TaxonBase tb) {
         Map<String, String> flags = new Hashtable<String, String>();
@@ -728,7 +732,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Build classification map.
      */
     private Map<String, Map> getClassification(Taxon taxon, String classificationType) {
-        // Using TreeMap is important, because we need the sorting of the classification keys 
+        // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
         TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, classificationType);
 
@@ -752,11 +756,11 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * Build classification map.
      */
     private TreeMap<String, Map> buildClassificationMap(Taxon taxon, String classificationType) {
-        // Using TreeMap is important, because we need the sorting of the classification keys 
+        // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
         TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
         Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
-        //loop through taxon nodes and build classification map for each classification key        
+        //loop through taxon nodes and build classification map for each classification key
         for (TaxonNode tn : taxonNodes) {
             Map<String, String> classificationMap = new LinkedHashMap<String, String>();
             List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
@@ -771,7 +775,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         }
         return sourceClassificationMap;
     }
-    
+
     private String removeInternalWhitespace(String withWSpace) {
         String[] words = withWSpace.split("\\s+");
         // "\\s+" in regular expression language meaning one or
@@ -782,23 +786,23 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         }
         return builder.toString();
     }
-    
+
     private List<Classification> getClassificationList(int limit) {
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         List<Classification> clist = classificationService.listClassifications(limit, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
         return clist;
     }
-    
+
     private boolean isValid(String uuid){
         if( uuid == null) return false;
         try {
-            // we have to convert to object and back to string because the built in fromString does not have 
+            // we have to convert to object and back to string because the built in fromString does not have
             // good validation logic.
 
             UUID fromStringUUID = UUID.fromString(uuid);
             String toStringUUID = fromStringUUID.toString();
-            
+
             System.out.println("input uuid : " + uuid + " , parsed uuid : " + toStringUUID);
             return toStringUUID.equals(uuid);
         } catch(IllegalArgumentException e) {
