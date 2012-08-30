@@ -1,6 +1,8 @@
+                                    ---------------
+                                    Name Search API
+                                    ---------------
 
-
-CDM Taxonomic Name Search API
+{CDM Taxonomic Name Search API}
 
 	This web service endpoint serves as a search engine for scientific name-related taxonomic information.
 	
@@ -10,9 +12,9 @@ CDM Taxonomic Name Search API
 	
 	* '<<type>>' [optional, default value = <<<name>>>] 	: this parameter could have the values,
 	
-									* <<<name>>>	: to be used in the case of scientific names without authorship strings other other markers (e.g. Abies Alba).
+									* <<<name>>>	: to be used in the case of scientific names without authorship strings other other markers (e.g. Abies alba).
 									
-									* <<<title>>>	: to be used in the case of scientific names with authorship strings other other markers (e.g. Abies alba Mill.).
+									* <<<title>>>	: to be used in the case of scientific names with authorship strings and other markers (e.g. Abies alba Mill.).
 						
 	[]
 									
@@ -26,14 +28,15 @@ CDM Taxonomic Name Search API
 			
 		* <<<response>>>
 		
+			* <<<acceptedTaxonUuids>>> : list of uuids of all accepted taxa related to the taxa corresponding to the taxonConceptUuids list.
+		
 			* <<<name>>> : base scientific name.
 			
-			* <<<title>>> : complete scientific name.
+			* <<<nameUuids>>> : list of uuids of all scientific names corresponding to this name.
 			
-			* <<<taxonConceptUuids>>> : list of uuids of all taxa corresponding to this name.
+			* <<<taxonConceptUuids>>> : list of uuids of all taxa corresponding to this name.	
 			
-			* <<<acceptedTaxonUuids>>> : list of uuids of all accepted taxa related to the taxa corresponding to the taxonConceptUuids list.
-			
+			* <<<title>>> : complete scientific name.									
 	
 	Features:
 	
@@ -41,29 +44,156 @@ CDM Taxonomic Name Search API
 		
 		* Standardised and structured error messages.
 	
-	Examples :
+	Example Requests :
 		
 		* Base scientific name search : 	
 				
-			* {{{./name_catalogue.json?query=Abies Alba} /name_catalogue.json?query=Abies Alba}}
+			* {{{queryPlatalea_leucorodia} /name_catalogue.json?query=Platalea leucorodia}}
 			
 		* Complete scientific name search : 
 		
-			* {{{./name_catalogue.json?query=Abies Alba Mill.&type=title} /name_catalogue.json?query=Abies Alba Mill.&type=title}}
+			* {{{queryPlatalea_leucorodia_Linnaeus_1758typetitle} /name_catalogue.json?query=Platalea leucorodia Linnaeus, 1758&type=title}}
 			
 		* Multiple queries :
 			
-			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot esculenta} /name_catalogue.json?query=Abies Alba&query=Manihot esculenta}}
+			* {{{queryPlatalea_leucorodiaqueryTara_spinosa} /name_catalogue.json?query=Platalea leucorodia&query=Tara spinosa}}
 			
-			* {{{./name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title} /name_catalogue.json?query=Abies Alba Mill.&query=Manihot esculenta Crantz&type=title}}
+			* {{{queryPlatalea_leucorodia_Linnaeus_1758queryTara_spinosa_Molina_ritton__Rosetypetitle} /name_catalogue.json?query=Platalea leucorodia Linnaeus, 1758&query=Tara spinosa (Molina) ritton & Rose&type=title}}
 			
 		* Errors :
 		
-			* {{{./name_catalogue.json?query=Abies Alb} /name_catalogue.json?query=Abies Alb}}
+			* {{{queryPlatalea_leucorod} /name_catalogue.json?query=Platalea leucorod}}
 			
-			* {{{./name_catalogue.json?query=Abies Alba&query=Manihot escenta} /name_catalogue.json?query=Abies Alba&query=Manihot escenta}}
+			* {{{queryPlatalea_leucorodiaqueryTara_spin} /name_catalogue.json?query=Platalea leucorodia&query=Tara spin}}
 		
 			
-			
+	Example Responses :
+		
+		* Base scientific name search : {query=Platalea leucorodia} [{{{CDM_Taxonomic_Name_Search_API}back}}]
+										
+---
 
+[{
+    "request": {
+        "query": "Platalea leucorodia"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "name": "Platalea leucorodia",
+        "nameUuids": ["711f436d-aea6-4b19-b024-c51fad00afd1"],
+        "taxonConceptUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }]
+}]
+
+---		
+		* Complete scientific name search : {query=Platalea leucorodia Linnaeus, 1758&type=title} [{{{CDM_Taxonomic_Name_Search_API}back}}]
+				
+---
+
+[{
+    "request": {
+        "query": "Platalea leucorodia Linnaeus, 1758"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "name": "Platalea leucorodia",
+        "nameUuids": ["711f436d-aea6-4b19-b024-c51fad00afd1"],
+        "taxonConceptUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }]
+}]
+
+---		
+
+		* Multiple queries : {query=Platalea leucorodia&query=Tara spinosa} [{{{CDM_Taxonomic_Name_Search_API}back}}]
+		
+---
+
+[{
+    "request": {
+        "query": "Platalea leucorodia"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "name": "Platalea leucorodia",
+        "nameUuids": ["711f436d-aea6-4b19-b024-c51fad00afd1"],
+        "taxonConceptUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }]
+}, {
+    "request": {
+        "query": "Tara spinosa"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["b1f44778-45bb-4537-8eb5-d2bd8ce698aa"],
+        "name": "Tara spinosa",
+        "nameUuids": ["44b0d888-68ae-42e3-b44a-ab66c59e4423"],
+        "taxonConceptUuids": ["d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe"],
+        "title": "Tara spinosa (Molina) ritton & Rose"
+    }]
+}]
+
+---		
+
+		* Multiple queries : {query=Platalea leucorodia Linnaeus, 1758&query=Tara spinosa (Molina) ritton & Rose&type=title} [{{{CDM_Taxonomic_Name_Search_API}back}}]
+		
+---
+
+[{
+    "request": {
+        "query": "Platalea leucorodia Linnaeus, 1758"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "name": "Platalea leucorodia",
+        "nameUuids": ["711f436d-aea6-4b19-b024-c51fad00afd1"],
+        "taxonConceptUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }]
+}, {
+    "request": {
+        "query": "Tara spinosa (Molina) ritton & Rose"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["b1f44778-45bb-4537-8eb5-d2bd8ce698aa"],
+        "name": "Tara spinosa",
+        "nameUuids": ["44b0d888-68ae-42e3-b44a-ab66c59e4423"],
+        "taxonConceptUuids": ["d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe"],
+        "title": "Tara spinosa (Molina) ritton & Rose"
+    }]
+}]
+
+---		
+
+		* Error : {query=Platalea leucorod} [{{{CDM_Taxonomic_Name_Search_API}back}}]
+		
+---
+
+[{
+    "errorMessage": "No Taxon Name for given query : Platalea leucorod"
+}]
+
+---		
 	
+		* Error : {query=Platalea leucorodia&query=Tara spin} [{{{CDM_Taxonomic_Name_Search_API}back}}]
+
+---
+
+[{
+    "request": {
+        "query": "Platalea leucorodia"
+    },
+    "response": [{
+        "acceptedTaxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "name": "Platalea leucorodia",
+        "nameUuids": ["711f436d-aea6-4b19-b024-c51fad00afd1"],
+        "taxonConceptUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }]
+}, {
+    "errorMessage": "No Taxon Name for given query : Tara spin"
+}]
+
+---		
+
