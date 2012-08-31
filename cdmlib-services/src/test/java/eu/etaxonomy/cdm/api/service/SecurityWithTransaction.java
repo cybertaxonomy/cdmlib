@@ -50,8 +50,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 @Transactional
 @Ignore
 public class SecurityWithTransaction {
-    private static final Logger logger = Logger
-            .getLogger(SecurityWithTransaction.class);
+    private static final Logger logger = Logger.getLogger(SecurityWithTransaction.class);
 
     @SpringBeanByName
     private ITaxonService taxonService;
@@ -148,7 +147,9 @@ public class SecurityWithTransaction {
         CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
         assertFalse(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
         node = node.getChildNodes().iterator().next();
+
         System.err.println(node.getUuid());
+
         assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
         node = node.getChildNodes().iterator().next();
         assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
