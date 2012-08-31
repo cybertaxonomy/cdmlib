@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 
 
@@ -44,12 +45,13 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
  * Test class only for development purposes, must be run in suite.
  *
  */
-@RunWith(UnitilsJUnit4TestClassRunner.class)
-@SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
+//@RunWith(UnitilsJUnit4TestClassRunner.class)
+//@SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
+//@Transactional
+//@Ignore
 @DataSet("SecurityTest.xml")
-@Transactional
-@Ignore
-public class SecurityWithTransaction {
+public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWithSecurity {
+
     private static final Logger logger = Logger.getLogger(SecurityWithTransaction.class);
 
     @SpringBeanByName
