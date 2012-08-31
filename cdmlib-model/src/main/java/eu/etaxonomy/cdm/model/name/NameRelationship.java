@@ -193,13 +193,13 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		this.ruleConsidered = ruleConsidered;
 	}
 
-	//FIXME:changed from protected to public for controller access. Is that ok?
-	public TaxonNameBase getRelatedFrom() {
+	// for extra-package access to relatedFrom use getFromName instead
+	protected TaxonNameBase getRelatedFrom() {
 		return relatedFrom;
 	}
 	
-	//FIXME:changed from protected to public for controller access. Is that ok?
-	public TaxonNameBase getRelatedTo() {
+    // for extra-package access to relatedFrom use getToName instead
+	protected TaxonNameBase getRelatedTo() {
 		return relatedTo;
 	}
 
