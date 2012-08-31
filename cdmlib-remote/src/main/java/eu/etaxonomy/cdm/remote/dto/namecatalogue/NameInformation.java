@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -73,15 +75,20 @@ public class NameInformation implements RemoteResponse {
 			
 			NameRelationship nr = (NameRelationship)it.next();
 			if(nr.getType() != null) {
-				typeString = nr.getType().toString();
+				typeString = nr.getType()
+				        .getRepresentation(Language.DEFAULT())
+                        .getLabel();
 			}
-			if(nr.getRelatedFrom() != null) {
-				relatednameCache = nr.getRelatedFrom().getTitleCache();
-				Reference ref = (Reference) nr.getRelatedFrom().getNomenclaturalReference();
-				relatedCitation = ref.getTitleCache();
+			TaxonNameBase tnbRelatedTo = nr.getToName();
+			if(tnbRelatedTo != null) {
+			    System.out.println("tnbRelatedTo not null");
+				relatednameCache = tnbRelatedTo.getTitleCache();
+				Reference ref = (Reference) tnbRelatedTo.getNomenclaturalReference();
+				if(ref !=null) {
+				    relatedCitation = ref.getTitleCache();
+				}
 			}
-			response.addToNameRelationships(typeString, 
-					NameInformationResponse.NameRelationshipInfo.DIRECTION_FROM, 
+			response.addNameRelationships(typeString,
 					relatednameCache, 
 					relatedCitation);
 		}	
@@ -95,15 +102,21 @@ public class NameInformation implements RemoteResponse {
 			
 			NameRelationship nr = (NameRelationship)it.next();
 			if(nr.getType() != null) {
-				typeString = nr.getType().toString();
+				typeString = nr.getType()
+				        .getInverseRepresentation(Language.DEFAULT())
+                        .getLabel();
 			}
-			if(nr.getRelatedTo() != null) {
-				relatednameCache = nr.getRelatedTo().getTitleCache();
-				Reference ref = (Reference) nr.getRelatedTo().getNomenclaturalReference();
-				relatedCitation = ref.getTitleCache();
+			
+			TaxonNameBase tnbRelatedFrom = nr.getFromName();
+			if(tnbRelatedFrom != null) {
+			    System.out.println("tnbRelatedTo not null");
+				relatednameCache = tnbRelatedFrom.getTitleCache();
+				Reference ref = (Reference) tnbRelatedFrom.getNomenclaturalReference();
+				if(ref !=null) {
+				    relatedCitation = ref.getTitleCache();
+				}
 			}
-			response.addToNameRelationships(typeString, 
-					NameInformationResponse.NameRelationshipInfo.DIRECTION_TO, 
+			response.addNameRelationships(typeString,
 					relatednameCache, 
 					relatedCitation);
 		}	
@@ -212,10 +225,10 @@ public class NameInformation implements RemoteResponse {
 			return this.citation;					
 		}
 		
-		public void addToNameRelationships(String type, String direction, String relatedName, String citation) {
+		public void addNameRelationships(String type, String relatedName, String citation) {
 			NameInformation.NameInformationResponse.NameRelationshipInfo nr = 
 					new NameInformation.NameInformationResponse.NameRelationshipInfo();
-			nr.setRelationInfo(type, direction, relatedName, citation);
+			nr.setRelationInfo(type, relatedName, citation);
 			nameRelationships.add(nr);
 		}
 		
@@ -241,20 +254,17 @@ public class NameInformation implements RemoteResponse {
 		
 		public class NameRelationshipInfo {
 			private String type;
-			private String direction;
 			private String relatedName;
 			private String citation;
 				
-			public final static String DIRECTION_TO = "TO";
-			public final static String DIRECTION_FROM = "FROM";
+
 			
 			public NameRelationshipInfo() {
 				
 			}
 			
-			public void setRelationInfo(String type, String direction, String relatedName, String citation) {
+			public void setRelationInfo(String type, String relatedName, String citation) {
 				this.type = type;
-				this.direction = direction;
 				this.relatedName = relatedName;
 				this.citation = citation;			
 			}

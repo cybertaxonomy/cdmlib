@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -112,7 +113,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "exBasionymAuthorTeam.$",
             "nameCache",
             "taxonBases",
-    "taxonBases.synonymRelations.type.$"});
+            "taxonBases.synonymRelations.type.$"});
 
     /** Hibernate name information initialisation strategy */
     private static final List<String> NAME_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
@@ -123,14 +124,23 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "exCombinationAuthorTeam.$",
             "basionymAuthorTeam.$",
             "exBasionymAuthorTeam.$",
-            "relationsToThisName.$",
-            "relationsFromThisName.$" });
+            "relationsToThisName.fromName.$",
+            "relationsToThisName.nomenclaturalReference.$",
+            "relationsToThisName.type.$",
+            "relationsFromThisName.toName.$",
+            "relationsFromThisName.nomenclaturalReference.$",
+            "relationsFromThisName.type.$"});
 
     /** Hibernate taxon information initialisation strategy */
     private static final List<String> TAXON_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
+            "name.titleCache",
             "name.rank.titleCache",
             "synonymRelations.synonym.name.rank.titleCache",
+            "synonymRelations.acceptedTaxon.name.rank.titleCache",
             "synonymRelations.type.$",
+            "taxonRelations.toTaxon.$",
+            "taxonRelations.fromTaxon.$",
+            "taxonRelations.type.$",            
             "synonymRelations.relatedTo.name.rank.titleCache",
             "relationsFromThisTaxon.type.$",
             "relationsFromThisTaxon.relatedTo.name.rank.titleCache",
@@ -530,9 +540,9 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     // build classification map
                     Map classificationMap = getClassification(taxon, classificationType);
 
-
+                    logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
-                    NonViralName nvn = (NonViralName) tb.getName();
+                    NonViralName nvn = (NonViralName) taxon.getName();
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
@@ -559,12 +569,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     // build relationship information as,
                     // - relationships from the requested taxon
                     Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
-                    for (TaxonRelationship tr : trFromSet) {
-                        String titleTo = tr.getRelatedTo().getTitleCache();
-                        NonViralName tonvn = (NonViralName) tr.getRelatedTo().getName();
+                    for (TaxonRelationship tr : trFromSet) {                        
+                        String titleTo = tr.getToTaxon().getTitleCache();
+                        NonViralName tonvn = (NonViralName) tr.getToTaxon().getName();
                         String name = tonvn.getTitleCache();
                         String rank = tonvn.getRank().getTitleCache();
-                        String uuid = tr.getRelatedTo().getUuid().toString();
+                        String uuid = tr.getToTaxon().getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
@@ -574,11 +584,11 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     // - relationships from the requested taxon
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
-                        String titleFrom = tr.getRelatedFrom().getTitleCache();
-                        NonViralName fromnvn = (NonViralName) tr.getRelatedTo().getName();
+                        String titleFrom = tr.getFromTaxon().getTitleCache();
+                        NonViralName fromnvn = (NonViralName) tr.getToTaxon().getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
-                        String uuid = tr.getRelatedFrom().getUuid().toString();
+                        String uuid = tr.getFromTaxon().getUuid().toString();
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
@@ -598,12 +608,15 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     // add accepted taxa (if exists) to taxon information object
 
                     //FIXME commenting out below line in order to allow fixing the bug #3064 (portal synonymy service produces massive response for Crepis tectorum)
-/*                    Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
+                    Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                     for (SynonymRelationship sr : synRelationships) {
-                        Taxon accTaxon = sr.getRelatedTo();
+                        Taxon accTaxon = sr.getAcceptedTaxon();                        
                         String uuid = accTaxon.getUuid().toString();
+                        logger.info("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();
-                        NonViralName accnvn = (NonViralName) accTaxon.getName();
+                        logger.info("taxon title cache : " + accTaxon.getTitleCache());
+                        //NonViralName accnvn = CdmBase.deproxy(accTaxon.getName(), NonViralName.class);                        
+                        NonViralName accnvn = (NonViralName)accTaxon.getName();
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
@@ -611,7 +624,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                                 .getLabel();
                         ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
                     }
-*/
+
                 }
                 tiList.add(ti);
             } else {
