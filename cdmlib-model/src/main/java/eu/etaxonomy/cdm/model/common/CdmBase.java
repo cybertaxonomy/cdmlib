@@ -328,16 +328,30 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 
     /**
      * Overrides {@link java.lang.Object#toString()}.
-     * This returns an String that identifies the object well without beeing necessarily unique.
-     * Specification: This method should never call other object' methods so it can be well used for debugging
+     * This returns an String that identifies the object well without being necessarily unique. Internally the method is delegating the
+     * call to {link {@link #instanceToString()}.<br>
+     * <b>Specification:</b> This method should never call other object' methods so it can be well used for debugging
      * without problems like lazy loading, unreal states etc.
-     * Note: If overriding this method's javadoc always copy or link the above requirement.
+     * <p>
+     * <b>Note</b>: If overriding this method's javadoc always copy or link the above requirement.
      * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object.
-     * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
+     * <p>
+     * <b>For example</b>: Taxon#13&lt;b5938a98-c1de-4dda-b040-d5cc5bfb3bc0&gt;
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
+        return instanceToString();
+    }
+
+    /**
+     * This returns an String that identifies the cdm instacne well without being necessarily unique.
+     * The string representation combines the class name the {@link #id} and {@link #uuid}.
+     * <p>
+     * <b>For example</b>: Taxon#13&lt;b5938a98-c1de-4dda-b040-d5cc5bfb3bc0&gt;
+     * @return
+     */
+    private String instanceToString() {
         return this.getClass().getSimpleName()+"#"+this.getId()+"<"+this.getUuid()+">";
     }
 
