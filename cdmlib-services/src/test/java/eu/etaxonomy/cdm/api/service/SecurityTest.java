@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2011 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -272,7 +280,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-    @Ignore //FIXME test must not fail !!!!!
+//    @Ignore //FIXME test must not fail !!!!!
     public void testEditPartOfClassification(){
         /*
          * the user 'partEditor' has the following authorities:
@@ -297,6 +305,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             evaluationFailedException = findEvaluationFailedExceptionIn(e);
+            logger.debug("Unexpected failure of evaluation.", evaluationFailedException);
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + evaluationFailedException.getMessage(), evaluationFailedException);
         Assert.assertEquals("the acherontia_node must now have one more child node ", numOfChildNodes + 1 , acherontia_node.getChildNodes().size());

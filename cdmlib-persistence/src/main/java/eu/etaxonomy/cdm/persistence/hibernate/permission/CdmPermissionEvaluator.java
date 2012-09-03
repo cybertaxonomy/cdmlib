@@ -28,25 +28,40 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 06.07.2011
  */
 public class CdmPermissionEvaluator implements PermissionEvaluator {
+
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
 
-
-
-
+    /* (non-Javadoc)
+     * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.io.Serializable, java.lang.String, java.lang.Object)
+     */
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
-        logger.info("hasPermission returns false");
+        logger.info("UNINMPLEMENTED: hasPermission always returns false");
         // TODO Auto-generated method stub
         return false;
     }
 
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
+     */
     public boolean hasPermission(Authentication authentication,
             Object targetDomainObject, Object permission) {
 
 
         AuthorityPermission evalPermission;
         CdmPermission cdmPermission;
+        if(logger.isDebugEnabled()){
+            StringBuilder grantedAuthoritiesTxt = new StringBuilder();
+            for(GrantedAuthority ga : authentication.getAuthorities()){
+                grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
+                logger.debug("evaluating:\n"
+                        + "  User '" + authentication.getName() + "':\n"
+                        + grantedAuthoritiesTxt
+                        + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
+                        + "  Permission: " + permission);
+            }
+        }
         if (!(permission instanceof CdmPermission)){
             String permissionString = (String)permission;
             if (permissionString.equals("changePassword")){

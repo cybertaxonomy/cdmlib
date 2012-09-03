@@ -351,7 +351,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
      * <b>For example</b>: Taxon#13&lt;b5938a98-c1de-4dda-b040-d5cc5bfb3bc0&gt;
      * @return
      */
-    private String instanceToString() {
+    public String instanceToString() {
         return this.getClass().getSimpleName()+"#"+this.getId()+"<"+this.getUuid()+">";
     }
 
