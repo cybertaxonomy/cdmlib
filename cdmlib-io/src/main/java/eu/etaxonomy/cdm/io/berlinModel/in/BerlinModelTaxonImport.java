@@ -184,7 +184,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 					
 				if(! config.isIgnoreNull()){
 					if (taxonName == null ){
-						logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
+						logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be imported");
 						success = false;
 						continue; //next taxon
 					}else if (reference == null ){
