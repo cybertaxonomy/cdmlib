@@ -153,7 +153,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
+	protected BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
 	   super(defaultTransformer);
 	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(berlinModelSource);
