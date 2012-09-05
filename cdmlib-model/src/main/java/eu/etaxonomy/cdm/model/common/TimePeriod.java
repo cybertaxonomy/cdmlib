@@ -168,6 +168,18 @@ public class TimePeriod implements Cloneable, Serializable {
 		}
 		return new TimePeriod(startDate, endDate);
 	}
+	
+	/**
+	 * Factory method to create a TimePeriod from a starting and an ending <code>Date</code>   
+	 * @return TimePeriod
+	 */
+	public static TimePeriod NewInstance(Date startDate, Date endDate){
+		Calendar calStart = Calendar.getInstance();
+		calStart.setTime(startDate);
+		Calendar calEnd = Calendar.getInstance();
+		calEnd.setTime(endDate);
+		return NewInstance(calStart, calEnd);
+	}
 
 	
 	/**
