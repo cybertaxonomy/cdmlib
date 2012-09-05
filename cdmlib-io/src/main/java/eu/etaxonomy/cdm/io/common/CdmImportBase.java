@@ -900,6 +900,24 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 		}
 	}
+	
+
+	/**
+	 * Retrieves an Integer value from a result set. If the value is NULL null is returned.
+	 * ResultSet.getInt() returns 0 therefore we need a special handling for this case. 
+	 * @param rs
+	 * @param columnName
+	 * @return
+	 * @throws SQLException
+	 */
+	protected Integer nullSafeInt(ResultSet rs, String columnName) throws SQLException {
+		Object intObject = rs.getObject(columnName);
+		if (intObject == null){
+			return null;
+		}else{
+			return Integer.valueOf(intObject.toString());
+		}
+	}
 
 	
 }
