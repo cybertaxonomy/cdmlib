@@ -185,7 +185,7 @@ public class Source {
             return rs;
         }catch(Exception e){
             logger.error("Problems when creating Resultset for query \n  " + query + " \n" + "Exception: " + e);
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
