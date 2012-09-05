@@ -280,7 +280,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-//    @Ignore //FIXME test must not fail !!!!!
+    @Ignore //FIXME test must not fail !!!!!
     public void testEditPartOfClassification(){
         /*
          * the user 'partEditor' has the following authorities:
