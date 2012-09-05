@@ -174,10 +174,17 @@ public class TimePeriod implements Cloneable, Serializable {
 	 * @return TimePeriod
 	 */
 	public static TimePeriod NewInstance(Date startDate, Date endDate){
-		Calendar calStart = Calendar.getInstance();
-		calStart.setTime(startDate);
-		Calendar calEnd = Calendar.getInstance();
-		calEnd.setTime(endDate);
+		//TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
+		Calendar calStart = null;
+		Calendar calEnd = null;
+		if (startDate != null){
+			calStart = Calendar.getInstance();
+			calStart.setTime(startDate);
+		}
+		if (endDate != null){
+			calEnd = Calendar.getInstance();
+			calEnd.setTime(endDate);
+		}
 		return NewInstance(calStart, calEnd);
 	}
 
