@@ -38,6 +38,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -82,7 +83,8 @@ public class WaterbodyOrCountry extends NamedArea {
 	
 	protected static Map<UUID, NamedArea> termMap = null;
 	protected static Map<String, UUID> labelMap = null;
-
+	protected static Map<String, UUID> isoA2Map = null;
+	
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
 	private static final UUID uuidAlbaniaPeoplesSocialistRepublicof = UUID.fromString("238a6a93-8857-4fd6-af9e-6437c90817ac");
 	private static final UUID uuidAlgeriaPeoplesDemocraticRepublicof = UUID.fromString("a14b38ac-e963-4c1a-85c2-de1f17f8c72a");
@@ -698,6 +700,7 @@ public class WaterbodyOrCountry extends NamedArea {
 	private static void initMaps(){
 		labelMap = new HashMap<String, UUID>();
 		termMap = new HashMap<UUID, NamedArea>();
+		isoA2Map = new HashMap<String, UUID>();
 	}
 	
 	/**
@@ -716,8 +719,20 @@ public class WaterbodyOrCountry extends NamedArea {
 			return null;
 		}
 		return (WaterbodyOrCountry)termMap.get(uuid); 
-		
 	}
+
+	public static WaterbodyOrCountry getWaterbodyOrCountryByIso3166A2(String isoA2) {
+		if (isoA2Map == null){
+			initMaps();
+		}
+		UUID uuid = isoA2Map.get(isoA2);
+		if (uuid == null){
+			logger.info("Unknown country: " + CdmUtils.Nz(isoA2));
+			return null;
+		}
+		return (WaterbodyOrCountry)termMap.get(uuid); 
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
@@ -738,6 +753,10 @@ public class WaterbodyOrCountry extends NamedArea {
 		}
 		for (NamedArea term : termVocabulary.getTerms()){
 			labelMap.put(term.getLabel(), term.getUuid());  
+		}
+		for (NamedArea term : termVocabulary.getTerms()){
+			WaterbodyOrCountry country = CdmBase.deproxy(term, WaterbodyOrCountry.class);
+			isoA2Map.put(country.getIso3166_A2(), term.getUuid());  
 		}
 		
 	}
