@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -85,6 +86,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
+	public static final UUID uuidUserDefinedStateVocabulary = UUID.fromString("f7cddb49-8392-4db1-8640-65b48a0e6d13");
 	public static final UUID uuidUserDefinedTaxonRelationshipTypeVocabulary = UUID.fromString("31a324dc-408d-4877-891f-098db21744c6");
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
@@ -437,6 +439,53 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return namedAreaLevel;
 	}
 	
+	/**
+	 * Returns a {@link State} if it exists. <code>null</code> otherwise.
+	 * @param state
+	 * @param uuid
+	 * @return {@link State}
+	 */
+	protected State getStateTerm(STATE state, UUID uuid){
+		return getStateTerm(state, uuid, null, null, null, null);
+	}
+
+	
+	/**
+	 * Returns a {@link State} for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the state exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no state is created.
+	 * @param importState
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @param voc
+	 * @return
+	 */
+	protected State getStateTerm(STATE importState, UUID uuid, String label, String text, String labelAbbrev, OrderedTermVocabulary<State> voc) {
+		if (uuid == null){
+			return null;
+		}
+		State stateTerm = importState.getStateTerm(uuid);
+		if (stateTerm == null){
+			stateTerm = CdmBase.deproxy(getTermService().find(uuid), State.class);
+			if (stateTerm == null && ! hasNoLabel(label, text, labelAbbrev)){
+				stateTerm = State.NewInstance(text, label, labelAbbrev);
+				stateTerm.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = true;
+					TermVocabulary<State> orderedVoc = getVocabulary(uuidUserDefinedFeatureVocabulary, "User defined vocabulary for states used by Categorical Data", "User Defined States", null, null, isOrdered, stateTerm);
+					voc = CdmBase.deproxy(orderedVoc, OrderedTermVocabulary.class);
+				}
+				voc.addTerm(stateTerm);
+				getTermService().save(stateTerm);
+			}else{
+				logger.warn("No label provided for new state with uuid " + uuid);
+			}
+			importState.putStateTerm(stateTerm);
+		}
+		return stateTerm;
+	}
 	
 	/**
 	 * Returns a feature if it exists, null otherwise.
@@ -460,15 +509,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param labelAbbrev
 	 * @return
 	 */
-	protected Feature getFeature(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<Feature> voc){
+	protected Feature getFeature(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc){
 		if (uuid == null){
 			return null;
 		}
 		Feature feature = state.getFeature(uuid);
 		if (feature == null){
 			feature = (Feature)getTermService().find(uuid);
-			if (feature == null && ! hasNoLabel(label, text, labelAbbrev)){
-				feature = Feature.NewInstance(text, label, labelAbbrev);
+			if (feature == null && ! hasNoLabel(label, description, labelAbbrev)){
+				feature = Feature.NewInstance(description, label, labelAbbrev);
 				feature.setUuid(uuid);
 				feature.setSupportsTextData(true);
 //				UUID uuidFeatureVoc = UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"); 

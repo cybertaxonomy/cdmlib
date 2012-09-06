@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -67,6 +68,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
 	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
+	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
+	
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
 	private Map<UUID, TaxonRelationshipType> taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
@@ -237,7 +240,13 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		rankMap.put(rank.getUuid(), rank);
 	}
 
-
+	public State getStateTerm(UUID uuid){
+		return stateTermMap.get(uuid);
+	}
+	
+	public void putStateTerm(State stateTerm){
+		stateTermMap.put(stateTerm.getUuid(), stateTerm);
+	}
 	
 	public Feature getFeature(UUID uuid){
 		return featureMap.get(uuid);
