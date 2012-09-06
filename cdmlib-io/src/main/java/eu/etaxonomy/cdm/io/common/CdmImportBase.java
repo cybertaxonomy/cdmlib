@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -916,6 +915,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return null;
 		}else{
 			return Integer.valueOf(intObject.toString());
+		}
+	}
+	
+	protected Double nullSafeDouble(ResultSet rs, String columnName) throws SQLException {
+		Object doubleObject = rs.getObject(columnName);
+		if (doubleObject == null){
+			return null;
+		}else{
+			return Double.valueOf(doubleObject.toString());
 		}
 	}
 
