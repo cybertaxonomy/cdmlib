@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -299,10 +299,10 @@ public class UserServiceImplTest extends CdmIntegrationTest {
 	@DataSet
 	public void testHasPermission(){
 		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
-		boolean hasPermission = taxonService.hasPermission(authentication, taxon, CdmPermission.UPDATE);
+		boolean hasPermission = taxonService.hasPermission(authentication, taxon, Operation.UPDATE);
 		assertFalse(hasPermission);
 		User testUser = User.NewInstance("username123", "1234");
-		hasPermission = userService.hasPermission(authentication, testUser, CdmPermission.UPDATE);
+		hasPermission = userService.hasPermission(authentication, testUser, Operation.UPDATE);
 		assertTrue(hasPermission);
 	}
 

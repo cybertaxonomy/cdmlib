@@ -280,11 +280,14 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     public void printDataSet(OutputStream out, String[] tableNames) {
         IDatabaseConnection connection = null;
 
+        if(tableNames == null){
+            return;
+        }
+
         try {
             connection = getConnection();
             IDataSet actualDataSet = connection.createDataSet(tableNames);
             FlatXmlDataSet.write(actualDataSet, out);
-
 
         } catch (Exception e) {
             logger.error(e);

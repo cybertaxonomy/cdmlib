@@ -25,6 +25,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 @Transactional(TransactionMode.DISABLED) // NOTE: we are handling transaction by ourself in this class, thus we prevent unitils from creating transactions
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
+
     protected static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTest.class);
 
     /**
@@ -281,6 +282,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 
         if (this.transactionStatus != null) {
             try {
+                logger.debug("Trying to commit or rollback");
                 if (commit) {
                     this.transactionManager.commit(this.transactionStatus);
                     logger.debug("Committed transaction after execution of test");
@@ -291,6 +293,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
                 }
             }
             finally {
+                logger.debug("Clearing transactionStatus");
                 this.transactionStatus = null;
             }
         }
@@ -300,10 +303,12 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 
         if (this.transactionStatus != null) {
             try {
+                logger.debug("trying to rollback");
                 this.transactionManager.rollback(this.transactionStatus);
                 logger.debug("Rolled back transaction after execution of test.");
             }
             finally {
+                logger.debug("Clearing transactionStatus");
                 this.transactionStatus = null;
             }
         }
@@ -347,12 +352,19 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      * </pre>
      */
     protected void commitAndStartNewTransaction(final String[] tableNames) {
-        setComplete();
-        endTransaction();
+        commit();
         if(logger.isDebugEnabled()){
             printDataSet(System.out, tableNames);
         }
         startNewTransaction();
+    }
+
+    /**
+     *
+     */
+    protected void commit() {
+        setComplete();
+        endTransaction();
     }
 
 }

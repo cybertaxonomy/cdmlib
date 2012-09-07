@@ -10,15 +10,19 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -27,9 +31,20 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author k.luther
  * @date 06.07.2011
  */
+@Component
 public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
+
+    private AccessDecisionManager accessDecisionManager;
+
+    public AccessDecisionManager getAccessDecisionManager() {
+        return accessDecisionManager;
+    }
+
+    public void setAccessDecisionManager(AccessDecisionManager accessDecisionManager) {
+        this.accessDecisionManager = accessDecisionManager;
+    }
 
     /* (non-Javadoc)
      * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.io.Serializable, java.lang.String, java.lang.Object)
@@ -45,58 +60,65 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     /* (non-Javadoc)
      * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
      */
-    public boolean hasPermission(Authentication authentication,
-            Object targetDomainObject, Object permission) {
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
 
-        AuthorityPermission evalPermission;
-        CdmPermission cdmPermission;
+        CdmAuthority evalPermission;
+        EnumSet<CRUD> requiredOperation;
+
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
             for(GrantedAuthority ga : authentication.getAuthorities()){
                 grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
-                logger.debug("evaluating:\n"
-                        + "  User '" + authentication.getName() + "':\n"
-                        + grantedAuthoritiesTxt
-                        + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
-                        + "  Permission: " + permission);
             }
-        }
-        if (!(permission instanceof CdmPermission)){
-            String permissionString = (String)permission;
-            if (permissionString.equals("changePassword")){
-                if (targetDomainObject.equals(((User)authentication.getPrincipal()))){
-                    return true;
-                }else{
-                    cdmPermission = CdmPermission.ADMIN;
-                }
-            }else{
-                cdmPermission = CdmPermission.valueOf(permissionString);
+            if(grantedAuthoritiesTxt.length() == 0){
+                grantedAuthoritiesTxt.append("    - ").append("<No GrantedAuthority given>").append("\n");
             }
-        }else {
-            cdmPermission = (CdmPermission)permission;
+            logger.debug("hasPermission()\n"
+                    + "  User '" + authentication.getName() + "':\n"
+                    + grantedAuthoritiesTxt
+                    + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
+                    + "  Permission: " + permission);
         }
+        try {
+            // FIXME refactor into Operation ======
+            if (Operation.isOperation(permission)){
+                requiredOperation = (EnumSet<CRUD>)permission;
+            } else {
+                // try to treat as string
+                requiredOperation = Operation.fromString(permission.toString());
+            }
+            // =======================================
 
-        Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
+        } catch (IllegalArgumentException e) {
+            logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
+            return true; // it might be wrong to return true
+        }
 
         try{
-            //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-            evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, requiredOperation, ((CdmBase)targetDomainObject).getUuid());
         }catch(NullPointerException e){
-            //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
-            evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, null);
+            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
+            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, requiredOperation, null);
         }
 
 
-        if (evalPermission.className != null) {
-            return evalPermission(authorities, evalPermission, (CdmBase) targetDomainObject);
-
+        if (evalPermission.permissionClass != null) {
+            logger.debug("starting evaluation => ...");
+            return evalPermission(authentication, evalPermission, (CdmBase) targetDomainObject);
         }else{
+            logger.debug("skipping evaluation => true");
             return true;
         }
 
     }
 
+    /**
+     * @param targetUuid
+     * @param node
+     * @return
+     */
     private TaxonNode findTargetUuidInTree(UUID targetUuid, TaxonNode node){
         if (targetUuid.equals(node.getUuid()))
             return node;
@@ -107,55 +129,31 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     }
 
 
-    public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
+    /**
+     * @param authorities
+     * @param evalPermission
+     * @param targetDomainObject
+     * @return
+     */
+    private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, CdmBase targetDomainObject){
 
         //if user has administrator rights return true;
-         for (GrantedAuthority authority: authorities){
-             if (authority.getAuthority().equals("ALL.ADMIN"))return true;
+         for (GrantedAuthority authority: authentication.getAuthorities()){
+             if (authority.getAuthority().equals("ROLE_ADMIN")){
+                 logger.debug("ROLE_ADMIN found => true");
+                 return true;
+             }
          }
 
-        //if targetDomainObject is instance of DescriptionBase or DescriptionElementBase use the DescriptionPermissionEvaluator
-        if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionBase){
-            return DescriptionPermissionEvaluator.hasPermission(authorities, targetDomainObject, evalPermission);
-        }
+        // === run voters
+        Collection<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();
+        attributes.add(evalPermission);
 
-        for (GrantedAuthority authority: authorities){
-            AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
-            //evaluate authorities
-           //if classnames match or the authorityClassName is ALL, AND the permission matches or is ADMIN the evaluation is successful
-            if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))
-                    && (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
-               /* if (authorityPermission.targetUuid != null){
-                    //TODO
+        // decide() throws AccessDeniedException, InsufficientAuthenticationException
+        logger.debug("AccessDecisionManager will decide ...");
+        accessDecisionManager.decide(authentication, targetDomainObject, attributes);
 
-                }else{*/
-                    return true;
-                //}
-
-            }
-            //if authority is restricted to only one object (and the cascaded objects???)
-            if (authorityPermission.targetUuid != null){
-                if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
-                    if (authorityPermission.permission.equals(evalPermission.permission)){
-                        return true;
-                    }
-                }
-            }
-            //if the user has the rights for a subtree
-            if (authorityPermission.className.equals(CdmPermissionClass.TAXONBASE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals("TaxonNode")){
-
-                TaxonNode node = (TaxonNode)targetDomainObject;
-                TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
-                if (targetNode != null){
-                    if (evalPermission.permission.equals(authorityPermission.permission) ){
-                        return true;
-                    }
-                }
-            }
-
-
-        }
-        return false;
+        return true;
     }
 
 }
