@@ -66,6 +66,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private boolean doRelTaxa = true;
 
 	private boolean useSingleClassification = false;
+	private boolean includeFlatClassifications = false;  //concepts with no taxon relationship (even no misapplied name or synonym rel)
 	
 	//occurrences
 	private boolean isSplitTdwgCodes = true;
@@ -720,6 +721,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	public void setRemoveHttpMapsAnchor(boolean removeHttpMapsAnchor) {
 		this.removeHttpMapsAnchor = removeHttpMapsAnchor;
+	}
+
+
+
+	public boolean isIncludeFlatClassifications() {
+		return includeFlatClassifications;
+	}
+
+
+
+	public void setIncludeFlatClassifications(boolean includeFlatClassifications) {
+		this.includeFlatClassifications = includeFlatClassifications;
 	}
 
 

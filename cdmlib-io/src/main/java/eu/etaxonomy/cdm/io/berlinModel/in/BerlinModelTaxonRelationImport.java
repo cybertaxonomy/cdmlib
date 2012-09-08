@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
@@ -82,7 +83,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 */
 	private void makeClassifications(BerlinModelImportState state) throws SQLException{
 		logger.info("start make classification ...");
-		
 		
 		Set<String> idSet = getTreeReferenceIdSet(state);
 		
@@ -178,7 +178,25 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			}
 		}
 		
+		boolean includeFlatClassifications = state.getConfig().isIncludeFlatClassifications();
 		String strQuery = strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
+		
+		//concepts with 
+		if (includeFlatClassifications){
+			String strFlatQuery = 
+					" SELECT pt.PTRefFk AS secRefFk, dbo.Reference.RefCache AS secRef " +
+					" FROM PTaxon AS pt LEFT OUTER JOIN " + 
+					          " Reference ON pt.PTRefFk = dbo.Reference.RefId LEFT OUTER JOIN " +
+					          " RelPTaxon ON pt.PTNameFk = dbo.RelPTaxon.PTNameFk2 AND pt.PTRefFk = dbo.RelPTaxon.PTRefFk2 LEFT OUTER JOIN " +
+					          " RelPTaxon AS RelPTaxon_1 ON pt.PTNameFk = RelPTaxon_1.PTNameFk1 AND pt.PTRefFk = RelPTaxon_1.PTRefFk1 " + 
+					" WHERE (RelPTaxon_1.RelQualifierFk IS NULL) AND (dbo.RelPTaxon.RelQualifierFk IS NULL) " + 
+					" GROUP BY pt.PTRefFk, dbo.Reference.RefCache "
+					;
+			
+			strQuery = strQuery + " UNION " + strFlatQuery;
+		}
+		
+		
 		if (state.getConfig().getClassificationQuery() != null){
 			strQuery = state.getConfig().getClassificationQuery();
 		}
@@ -350,6 +368,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		try {
 			makeClassifications(state);
 			super.doInvoke(state);
+			makeFlatClassificationTaxa(state);
 			return;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -358,6 +377,48 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	}
 	
 	
+	private void makeFlatClassificationTaxa(BerlinModelImportState state) {
+		//Note: this part still does not use partitions
+		logger.info("Flat classifications start");
+		TransactionStatus txStatus = startTransaction();
+		if (! state.getConfig().isIncludeFlatClassifications()){
+			return;
+		}
+		String sql = " SELECT pt.PTRefFk AS secRefFk, pt.RIdentifier " +
+						" FROM PTaxon AS pt " +
+							" LEFT OUTER JOIN RelPTaxon ON pt.PTNameFk = RelPTaxon.PTNameFk2 AND pt.PTRefFk = RelPTaxon.PTRefFk2 " +
+							"  LEFT OUTER JOIN RelPTaxon AS RelPTaxon_1 ON pt.PTNameFk = RelPTaxon_1.PTNameFk1 AND pt.PTRefFk = RelPTaxon_1.PTRefFk1 " +
+						" WHERE (RelPTaxon_1.RelQualifierFk IS NULL) AND (dbo.RelPTaxon.RelQualifierFk IS NULL) " +
+						" ORDER BY pt.PTRefFk "	;
+		ResultSet rs = state.getConfig().getSource().getResultSet(sql);
+		Map<Object, Map<String, ? extends CdmBase>> maps = getRelatedObjectsForFlatPartition(rs);
+		
+		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) maps.get(BerlinModelTaxonImport.NAMESPACE);
+		Map<Integer, Classification> classificationMap = new HashMap<Integer, Classification>();
+				
+		rs = state.getConfig().getSource().getResultSet(sql);
+		try {
+			while (rs.next()){
+				Integer treeRefFk = rs.getInt("secRefFk");
+				String taxonId = rs.getString("RIdentifier");
+				Classification classification = getClassificationTree(state, classificationMap, treeRefFk);
+				TaxonBase<?> taxon = taxonMap.get(taxonId);
+				if (taxon.isInstanceOf(Taxon.class)){
+					classification.addChildTaxon(CdmBase.deproxy(taxon, Taxon.class), null, null, null);
+				}else{
+					String message = "TaxonBase for taxon is not of class Taxon but %s (RIdentifier %s)";
+					logger.warn(String.format(message, taxon.getClass(), taxonId));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		commitTransaction(txStatus);
+		logger.info("Flat classifications end");
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
@@ -421,6 +482,47 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			idSet = referenceIdSet;
 			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, biblioReferenceMap);
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	 */
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForFlatPartition( ResultSet rs) {
+		String nameSpace;
+		Class cdmClass;
+		Set<String> idSet;
+		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
+		
+		try{
+			Set<String> taxonIdSet = new HashSet<String>();
+			Set<String> referenceIdSet = new HashSet<String>();
+//			Set<String> classificationIdSet = new HashSet<String>();
+			while (rs.next()){
+				handleForeignKey(rs, taxonIdSet, "RIdentifier");
+//				handleForeignKey(rs, classificationIdSet, "treeRefFk");
+	}
+	
+			//taxon map
+			nameSpace = BerlinModelTaxonImport.NAMESPACE;
+			cdmClass = TaxonBase.class;
+			idSet = taxonIdSet;
+			Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, taxonMap);
+
+//			//tree map
+//			nameSpace = "Classification";
+//			cdmClass = Classification.class;
+//			idSet = classificationIdSet;
+//			Map<String, Classification> treeMap = (Map<String, Classification>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+//			result.put(cdmClass, treeMap);
+//			Set<UUID> treeUuidSet = state
+//			getClassificationService().find(uuidSet);
+//			
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

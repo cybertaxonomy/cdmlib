@@ -474,7 +474,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				stateTerm.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = true;
-					TermVocabulary<State> orderedVoc = getVocabulary(uuidUserDefinedFeatureVocabulary, "User defined vocabulary for states used by Categorical Data", "User Defined States", null, null, isOrdered, stateTerm);
+					TermVocabulary<State> orderedVoc = getVocabulary(uuidUserDefinedStateVocabulary, "User defined vocabulary for states used by Categorical Data", "User Defined States", null, null, isOrdered, stateTerm);
 					voc = CdmBase.deproxy(orderedVoc, OrderedTermVocabulary.class);
 				}
 				voc.addTerm(stateTerm);

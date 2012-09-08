@@ -39,6 +39,7 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 		result &= checkSynonymRelationsWithAcceptedTaxa(state);
 		result &= checkConceptRelationsWithSynonymTaxa(state);
 		result &= checkRelPTaxonWithNotes(state);
+		result &= checkTaxaWithNoRelations(state);
 		return result;
 	}
 	
@@ -243,7 +244,61 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 		}
 		return success;
 	}
+	
+	/**
+	 * @param state
+	 * @return
+	 */
+	private boolean checkTaxaWithNoRelations(BerlinModelImportState state) {
+		boolean success = true;
+		try {
+			BerlinModelImportConfigurator config = state.getConfig();
+			
+			Source source = config.getSource();
+			String strQuery = 
+				" SELECT pt.PTRefFk AS secRefFk, dbo.Reference.RefCache AS secRef, dbo.Name.FullNameCache, Name.NameId, Status.Status " +
+				" FROM PTaxon AS pt LEFT OUTER JOIN " +
+                      	" Status ON pt.StatusFk = Status.StatusId LEFT OUTER JOIN " + 
+				        " Reference ON pt.PTRefFk = dbo.Reference.RefId LEFT OUTER JOIN " + 
+				        " Name ON pt.PTNameFk = dbo.Name.NameId LEFT OUTER JOIN " +
+				        " RelPTaxon ON pt.PTNameFk = dbo.RelPTaxon.PTNameFk2 AND pt.PTRefFk = dbo.RelPTaxon.PTRefFk2 LEFT OUTER JOIN " +
+				        " RelPTaxon AS RelPTaxon_1 ON pt.PTNameFk = RelPTaxon_1.PTNameFk1 AND pt.PTRefFk = RelPTaxon_1.PTRefFk1 " + 
+				" WHERE (RelPTaxon_1.RelQualifierFk IS NULL) AND (dbo.RelPTaxon.RelQualifierFk IS NULL) " + 
+				" ORDER BY Reference.RefCache, pt.PTRefFk, Name.FullNameCache, statusFK";
 
+			//project filter
+//			if (StringUtils.isNotBlank(config.getRelTaxaIdQuery())){
+//				strQuery += String.format(" AND (RelPTaxon.RelPTaxonId IN " +
+//                        " ( %s ) )" , config.getRelTaxaIdQuery()) ; 
+//			}
+			
+			ResultSet rs = source.getResultSet(strQuery);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					System.out.println("There are taxa without any taxon relationship!");
+					System.out.println("========================================================");
+				}
+
+				int secRefFk = rs.getInt("secRefFk");
+				String secRef = rs.getString("secRef");
+				String nameCache = rs.getString("FullNameCache");
+				int nameId = rs.getInt("NameId");
+				String status = rs.getString("Status");
+				
+				System.out.println("SecRef:" + secRefFk + 
+						"\n secRef: " + secRef + "\n name: " + nameCache + "\n nameId: " + nameId 
+						+ "\n status: " + status 
+					);
+				success = (firstRow = false);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return success;
+	}
+	
 
 
 }

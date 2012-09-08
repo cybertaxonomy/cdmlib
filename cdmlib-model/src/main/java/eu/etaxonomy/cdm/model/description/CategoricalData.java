@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -87,6 +88,13 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     public static CategoricalData NewInstance(){
         return new CategoricalData();
     }
+    
+    /**
+     * Creates a new empty categorical data instance.
+     */
+    public static CategoricalData NewInstance(State state, Feature feature){
+        return new CategoricalData( Arrays.asList( new State[]{state}) , feature);
+    }
 
 //*******************  CONSTRUCTOR *********************************************/
 
@@ -95,6 +103,17 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      */
     protected CategoricalData() {
         super(null);
+    }
+
+    /**
+     * Class constructor: creates a new empty categorical data instance.
+     */
+    protected CategoricalData(List<State> states, Feature feature) {
+        super(feature);
+        for (State state : states){
+        	addState(state);
+        }
+        
     }
 
 // ****************** GETTER / SETTER *********************************************/
