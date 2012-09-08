@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -144,7 +143,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                     nameCache = ((NonViralName<?>) list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
                     TaxonNameBase taxonNameBase = ((TaxonBase) list.get(i)).getName();
-                    nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+                    nameCache = ((NonViralName) taxonNameBase).getNameCache();
                 } else {
                 }
                 logger.debug(list.get(i).getClass() + "(" + i + ")" + ": Name Cache = " + nameCache + ", Title Cache = "

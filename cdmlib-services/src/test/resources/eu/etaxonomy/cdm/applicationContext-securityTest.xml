@@ -18,27 +18,21 @@
         so we only need to add additional beans here:
      -->
 
-    <!--
-        we need to repeat the security configuration here only for test since it is disabled in
-        cdmlib-services/src/main/resources !!!
-     -->
     <security:global-method-security pre-post-annotations="enabled">
         <security:expression-handler ref="expressionHandler" />
     </security:global-method-security>
 
-    <!--
-        To use "hasPermission()" in the Spring EL method annotations like @PreAuthorize we explicitly configure the permissionEvaluator
-        the cdmPermissionEvaluator is already defined in the persistence security context
-    -->
-    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+    <bean id="expressionHandler"
+        class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
     </bean>
 
 
+    <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator" />
     <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
     </bean>
 
+
     <bean id="groupServiceImpl" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl">
     </bean>
-
 </beans>

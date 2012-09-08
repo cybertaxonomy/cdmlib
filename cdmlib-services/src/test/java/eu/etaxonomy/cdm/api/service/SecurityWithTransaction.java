@@ -80,7 +80,7 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
 
     @Before
     public void setUp(){
-        token = new UsernamePasswordAuthenticationToken("admin", "sPePhAz6");
+        token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
     }
 
     @Test
