@@ -1,6 +1,7 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
+import java.util.EnumSet;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,17 +55,17 @@ public class CdmAuthority implements ConfigAttribute {
 
     CdmPermissionClass permissionClass;
     String property;
-    Operation operation;
+    EnumSet<Operation> operation;
      UUID targetUuid;
 
-    public CdmAuthority(CdmBase targetDomainObject, Operation operation, UUID uuid){
+    public CdmAuthority(CdmBase targetDomainObject, EnumSet<Operation> operation, UUID uuid){
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         this.operation = operation;
         this.targetUuid = uuid;
     }
 
-     public CdmAuthority(CdmBase targetDomainObject, String property, Operation operation, UUID uuid){
+     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<Operation> operation, UUID uuid){
        this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = property;
         this.operation = operation;
@@ -72,7 +73,7 @@ public class CdmAuthority implements ConfigAttribute {
     }
 
 
-    public CdmAuthority(CdmPermissionClass permissionClass, String property, Operation operation, UUID uuid){
+    public CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<Operation> operation, UUID uuid){
         this.permissionClass = permissionClass;
         this.property = property;
         this.operation = operation;
@@ -96,7 +97,12 @@ public class CdmAuthority implements ConfigAttribute {
         permissionClass = CdmPermissionClass.valueOf(tokens[0]);
         property = tokens[1];
         if(tokens[2] != null){
-            operation = Operation.valueOf(tokens[2]);
+            try {
+                operation = Operation.fromString(tokens[2]);
+            } catch (IllegalArgumentException e) {
+                logger.warn("cannot parse Operation " + tokens[2]);
+                throw e;
+            }
         }
         if(tokens[3] != null){
             targetUuid = UUID.fromString(tokens[3]);
@@ -111,7 +117,7 @@ public class CdmAuthority implements ConfigAttribute {
         return property;
     }
 
-    public Operation getOperation(){
+    public EnumSet<Operation> getOperation(){
         return operation;
     }
 

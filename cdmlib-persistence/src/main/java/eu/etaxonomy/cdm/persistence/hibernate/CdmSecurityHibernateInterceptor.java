@@ -93,12 +93,12 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * Throws an {@link EvaluationFailedException} if the evaluation fails.
      *
      * @param entity
-     * @param expectedPermission
+     * @param expectedOperation
      */
-    private void checkPermissions(CdmBase entity, Operation expectedPermission) {
+    private void checkPermissions(CdmBase entity, Operation expectedOperation) {
 
-        if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, expectedPermission)){
-            throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), entity, expectedPermission);
+        if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, expectedOperation)){
+            throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), entity, expectedOperation);
         }
     }
 

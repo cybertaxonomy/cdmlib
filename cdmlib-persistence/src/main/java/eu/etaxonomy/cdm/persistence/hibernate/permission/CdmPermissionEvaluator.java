@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
 
         CdmAuthority evalPermission;
-        Operation cdmPermission;
+        EnumSet<Operation> requiredOperation;
 
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
@@ -76,25 +77,36 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                     + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
                     + "  Permission: " + permission);
         }
-
-        if (!(permission instanceof Operation)){
-            String permissionString = permission.toString();
-            try {
-                cdmPermission = Operation.valueOf(permission.toString());
-            } catch (IllegalArgumentException e) {
-                logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
-                return true; // it might be wrong to return true
+        try {
+            // FIXME refactor into Operation ======
+            if (permission instanceof Operation){
+                requiredOperation = ((Operation)permission).asEnumSet();
+            } else if (permission instanceof EnumSet) {
+                requiredOperation = (EnumSet<Operation>)permission;
+                // perform some checks
+                if(requiredOperation.isEmpty()){
+                    throw new IllegalArgumentException("empty EnumSets not acceptable");
+                }
+                if(!(requiredOperation.iterator().next() instanceof Operation)){
+                    throw new IllegalArgumentException("EnumSet can only contain Operation");
+                }
+            } else {
+                // try to treat as string
+                    requiredOperation = Operation.valueOf(permission.toString()).asEnumSet();
             }
-        }else {
-            cdmPermission = (Operation)permission;
+            // =======================================
+
+        } catch (IllegalArgumentException e) {
+            logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
+            return true; // it might be wrong to return true
         }
 
         try{
             //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, requiredOperation, ((CdmBase)targetDomainObject).getUuid());
         }catch(NullPointerException e){
             //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
-            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, cdmPermission, null);
+            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, requiredOperation, null);
         }
 
 

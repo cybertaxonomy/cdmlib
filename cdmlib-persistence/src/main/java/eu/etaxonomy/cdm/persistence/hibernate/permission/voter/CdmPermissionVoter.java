@@ -118,10 +118,9 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                 ValidationResult vr = new ValidationResult();
 
                 boolean isALL = ap.getPermissionClass().equals(CdmPermissionClass.ALL);
-                boolean isADMIN = ap.getOperation().equals(Operation.ADMIN);
 
                 vr.isClassMatch = isALL || ap.getPermissionClass().equals(evalPermission.getPermissionClass());
-                vr.isPermissionMatch = isADMIN || ap.getOperation().equals(evalPermission.getOperation());
+                vr.isPermissionMatch = ap.getOperation().containsAll(evalPermission.getOperation());
                 vr.isUuidMatch = ap.hasTargetUuid() && ap.getTargetUUID().equals(((CdmBase)object).getUuid());
 
                 //

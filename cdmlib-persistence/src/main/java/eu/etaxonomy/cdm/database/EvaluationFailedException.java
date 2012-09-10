@@ -1,6 +1,8 @@
 
 package eu.etaxonomy.cdm.database;
 
+import java.util.EnumSet;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.security.core.Authentication;
@@ -27,13 +29,18 @@ public class EvaluationFailedException extends HibernateException {
         super(message);
     }
 
-    public EvaluationFailedException(Authentication autherntication, CdmBase entity, Operation permission) {
-        super(permission.name() + " not permitted for '" + autherntication.getName()
+    public EvaluationFailedException(Authentication authentication, CdmBase entity, Operation requiredOperation) {
+        super(requiredOperation.name() + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
-    public EvaluationFailedException(Authentication autherntication, CdmBase entity, String permission) {
-        super(permission + " not permitted for '" + autherntication.getName()
+    public EvaluationFailedException(Authentication authentication, CdmBase entity, EnumSet<Operation> requiredOperation) {
+        super(Operation.namesOf(requiredOperation) + " not permitted for '" + authentication.getName()
+                + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
+    }
+
+    public EvaluationFailedException(Authentication authentication, CdmBase entity, String requiredOperation) {
+        super(requiredOperation + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
