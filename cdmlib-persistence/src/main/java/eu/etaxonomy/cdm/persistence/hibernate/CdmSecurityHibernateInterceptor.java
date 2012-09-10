@@ -83,6 +83,24 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         return true;
     }
 
+
+
+    /* (non-Javadoc)
+     * @see org.hibernate.EmptyInterceptor#onDelete(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
+     */
+    @Override
+    public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+
+        if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase)) {
+            return;
+        }
+        CdmBase cdmEntity = (CdmBase) entity;
+        // evaluate throws EvaluationFailedException
+        checkPermissions(cdmEntity, Operation.DELETE);
+        logger.debug("permission check suceeded - object update granted");
+        return;
+    }
+
     /**
      * checks if the current authentication has the <code>expectedPermission</code> on the supplied <code>entity</code>.
      * Throws an {@link EvaluationFailedException} if the evaluation fails.

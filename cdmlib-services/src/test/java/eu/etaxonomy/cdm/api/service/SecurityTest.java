@@ -64,6 +64,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     private static final UUID UUID_ACHERONTIA_STYX = UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331");
 
+    private static final UUID UUID_LACTUCA = UUID.fromString("b2b007a4-9c8c-43a1-8da4-20ed85464cf2");
+
     private static final UUID PART_EDITOR_UUID = UUID.fromString("38a251bd-0ba4-426f-8fcb-5c09560749a7");
 
     private static final String PASSWORD_TAXON_EDITOR = "test2";
@@ -326,7 +328,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      * test with admin account - should succeed
      */
     @Test
-    public final void testSaveOrUpdateTaxonAllow_1() {
+    public final void testTaxonSaveOrUpdateAllow_1() {
 
         SecurityContext context = SecurityContextHolder.getContext();
 
@@ -359,7 +361,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      * test with taxonEditor account - should succeed
      */
     @Test
-    public final void testSaveOrUpdateTaxonAllow_2() {
+    public final void testTaxonSaveOrUpdateAllow_2() {
 
 
         RuntimeException securityException= null;
@@ -395,7 +397,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      * test with tokenForDescriptionEditor account - should fail
      */
     @Test
-    public final void testSaveOrUpdateTaxonDeny_2() {
+    public final void testTaxonSaveOrUpdateDeny_2() {
 
         SecurityContext context = SecurityContextHolder.getContext();
         RuntimeException securityException = null;
@@ -420,12 +422,112 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             startNewTransaction();
         }
 
-//        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
         taxon = taxonService.load(UUID_ACHERONTIA_STYX);
         Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
-
     }
+
+    /**
+     * test with admin account - should succeed
+     */
+    @Test
+    public final void testTaxonDeleteAllow_1() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        authentication = authenticationManager.authenticate(tokenForAdmin);
+        context.setAuthentication(authentication);
+        RuntimeException securityException= null;
+
+        TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
+        try{
+            taxonService.delete(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException  = findSecurityRuntimeException(e);
+            logger.error("Unexpected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        // reload taxon
+        taxon = taxonService.load(UUID_LACTUCA);
+        Assert.assertNull("The taxon must be deleted", taxon);
+    }
+
+    /**
+     * test with admin account - should succeed
+     */
+    @Test
+    @Ignore
+    /*FIXME fails due to org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade (remove deleted object from associations)
+     *       see ticket #3086
+     */
+    public final void testTaxonDeleteAllow_2() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        authentication = authenticationManager.authenticate(tokenForAdmin);
+        context.setAuthentication(authentication);
+        RuntimeException securityException= null;
+
+        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTINII);
+        try{
+            taxonService.delete(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException  = findSecurityRuntimeException(e);
+            logger.error("Unexpected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        // reload taxon
+        taxon = taxonService.load(UUID_ACHERONTINII);
+        Assert.assertNull("The taxon must be deleted", taxon);
+    }
+
+
+    /**
+     * test with tokenForDescriptionEditor account - should fail
+     */
+    @Test
+    public final void testTaxonDeleteDeny() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        RuntimeException securityException = null;
+
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+        context.setAuthentication(authentication);
+
+        TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
+
+        try {
+            taxonService.delete(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+
+        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        // reload taxon
+        taxon = taxonService.load(UUID_LACTUCA);
+        Assert.assertNotNull("The change must still exist", taxon);
+    }
+
 
     @Test
     @Ignore //FIXME: adding taxa to a description must be protected at the side of the Description itself!!
