@@ -285,7 +285,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             IDataSet actualDataSet = connection.createDataSet(tableNames);
             FlatXmlDataSet.write(actualDataSet, out);
 
-
         } catch (Exception e) {
             logger.error(e);
         } finally {

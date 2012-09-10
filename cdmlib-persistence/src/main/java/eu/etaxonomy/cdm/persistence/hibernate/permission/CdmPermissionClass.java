@@ -24,6 +24,7 @@ public enum CdmPermissionClass {
      * @return the CdmPermissionClass or null
      */
     public static CdmPermissionClass getValueOf(Object s){
+
         String permissionClassString ;
         if (s instanceof String){
             permissionClassString = (String)s;
@@ -35,6 +36,7 @@ public enum CdmPermissionClass {
 
             return null;
         }
+
         try{
             return CdmPermissionClass.valueOf(permissionClassString);
         }catch(IllegalArgumentException e){
@@ -45,6 +47,7 @@ public enum CdmPermissionClass {
             }
 
         }
+
         return null;
     }
 }

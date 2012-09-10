@@ -12,10 +12,14 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
 import java.util.Collection;
 
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.core.Authentication;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
- * This voter always returns {@link n #ACCESS_GRANTED}
+ * This voter always returns {@link #ACCESS_GRANTED}.
+ * It is needed as default voter when using the {@link UnanimousBased}
  * @author andreas kohlbecker
  * @date Sep 4, 2012
  *
@@ -28,6 +32,11 @@ public class GrantAlwaysVoter extends CdmPermissionVoter {
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
         return ACCESS_GRANTED;
+    }
+
+    @Override
+    public Class<? extends CdmBase> getResponsibilityClass() {
+        return CdmBase.class;
     }
 
 }

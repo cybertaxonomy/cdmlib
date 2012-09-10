@@ -281,6 +281,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 
         if (this.transactionStatus != null) {
             try {
+                logger.debug("Trying to commit or rollback");
                 if (commit) {
                     this.transactionManager.commit(this.transactionStatus);
                     logger.debug("Committed transaction after execution of test");
@@ -291,6 +292,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
                 }
             }
             finally {
+                logger.debug("Clearing transactionStatus");
                 this.transactionStatus = null;
             }
         }
@@ -300,10 +302,12 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
 
         if (this.transactionStatus != null) {
             try {
+                logger.debug("trying to rollback");
                 this.transactionManager.rollback(this.transactionStatus);
                 logger.debug("Rolled back transaction after execution of test.");
             }
             finally {
+                logger.debug("Clearing transactionStatus");
                 this.transactionStatus = null;
             }
         }
@@ -347,12 +351,19 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      * </pre>
      */
     protected void commitAndStartNewTransaction(final String[] tableNames) {
-        setComplete();
-        endTransaction();
+        commit();
         if(logger.isDebugEnabled()){
             printDataSet(System.out, tableNames);
         }
         startNewTransaction();
+    }
+
+    /**
+     *
+     */
+    protected void commit() {
+        setComplete();
+        endTransaction();
     }
 
 }
