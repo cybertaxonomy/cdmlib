@@ -38,7 +38,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
     /* (non-Javadoc)
      * @see org.springframework.security.access.AccessDecisionVoter#supports(org.springframework.security.access.ConfigAttribute)
      */
-    @Override
     public boolean supports(ConfigAttribute attribute) {
         // all CdmPermissionVoter support AuthorityPermission
         return attribute instanceof AuthorityPermission;
@@ -47,7 +46,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
     /* (non-Javadoc)
      * @see org.springframework.security.access.AccessDecisionVoter#supports(java.lang.Class)
      */
-    @Override
     public boolean supports(Class<?> clazz) {
         /* NOTE!!!
          * Do not change this, all CdmPermissionVoters must support CdmBase.class
@@ -80,7 +78,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
     /* (non-Javadoc)
      * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
      */
-    @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
 
         if(!isResponsibleFor(object)){
@@ -131,9 +128,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                 // only vote if no property is defined.
                 // Authorities with properties must be voted by type specific voters.
                 //
-                // If the authority contains a property we must change the fallThroughVote
-                // to ABSTAIN, since no decision can be made in this case
-                //
                 if(!ap.hasProperty()){
                     if ( !ap.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
                         logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
@@ -144,11 +138,19 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                         return ACCESS_GRANTED;
                     }
                 } else {
-                    fallThroughVote = ACCESS_ABSTAIN;
+                    //
+                    // If the authority contains a property AND the voter is responsible for this class
+                    // we must change the fallThroughVote
+                    // to ABSTAIN, since no decision can be made in this case at this point
+                    //
+                    if(vr.isClassMatch){
+                        fallThroughVote = ACCESS_ABSTAIN;
+                    }
                 }
 
                 //
-                // ask subclasses for further voting decisions which will vote on specific Cdm Types
+                // ask subclasses for further voting decisions
+                // subclasses will cast votes for specific Cdm Types
                 //
                 Integer furtherVotingResult = furtherVotingDescisions(ap, object, attributes, vr);
                 if(furtherVotingResult != null && furtherVotingResult != ACCESS_ABSTAIN){
@@ -160,7 +162,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
         } // END attributes loop
 
         // the value of fallThroughVote depends on whether the authority had an property or not, see above
-        logger.debug(fallThroughVote);
+        logger.debug("fallThroughVote => " + fallThroughVote);
         return fallThroughVote;
     }
 
