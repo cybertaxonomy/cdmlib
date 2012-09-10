@@ -44,5 +44,3 @@ fi
 
 Instructions on how to set this up for Windows can be found here: http://maven.apache.org/plugins/maven-deploy-plugin/examples/deploy-ssh-external.html
 
-
-
