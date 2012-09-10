@@ -57,25 +57,25 @@ public class CdmAuthority implements ConfigAttribute {
     Operation operation;
      UUID targetUuid;
 
-    public CdmAuthority(CdmBase targetDomainObject, Operation permission, UUID uuid){
+    public CdmAuthority(CdmBase targetDomainObject, Operation operation, UUID uuid){
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
-        this.operation = permission;
+        this.operation = operation;
         this.targetUuid = uuid;
     }
 
-     public CdmAuthority(CdmBase targetDomainObject, String property, Operation permission, UUID uuid){
+     public CdmAuthority(CdmBase targetDomainObject, String property, Operation operation, UUID uuid){
        this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = property;
-        this.operation = permission;
+        this.operation = operation;
         this.targetUuid = uuid;
     }
 
 
-    public CdmAuthority(CdmPermissionClass permissionClass, String property, Operation permission, UUID uuid){
+    public CdmAuthority(CdmPermissionClass permissionClass, String property, Operation operation, UUID uuid){
         this.permissionClass = permissionClass;
         this.property = property;
-        this.operation = permission;
+        this.operation = operation;
         this.targetUuid = uuid;
     }
 
