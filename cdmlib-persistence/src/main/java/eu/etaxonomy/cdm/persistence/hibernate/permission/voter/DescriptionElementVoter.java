@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.AuthorityPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 
 public class DescriptionElementVoter extends CdmPermissionVoter {
 
@@ -19,7 +19,7 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
     }
 
     @Override
-    protected Integer furtherVotingDescisions(AuthorityPermission ap, Object object, Collection<ConfigAttribute> attributes,
+    protected Integer furtherVotingDescisions(CdmAuthority ap, Object object, Collection<ConfigAttribute> attributes,
             ValidationResult vr) {
 
         // we only need to implement the case where a property is contained in the authority

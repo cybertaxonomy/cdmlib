@@ -24,7 +24,7 @@ import org.springframework.security.core.Authentication;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -300,6 +300,6 @@ public interface IService<T extends ICdmBase>{
      * @param permission
      * @return
      */
-	public boolean hasPermission(Authentication authentication, T target, CdmPermission permission);
+	public boolean hasPermission(Authentication authentication, T target, Operation permission);
 
 }

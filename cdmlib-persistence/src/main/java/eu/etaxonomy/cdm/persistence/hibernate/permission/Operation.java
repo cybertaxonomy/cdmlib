@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
  * @date 06.07.2011
  *
  */
-public enum CdmPermission {
+public enum Operation {
 	CREATE, READ, UPDATE, DELETE, DENYALL, ADMIN;
 }
 

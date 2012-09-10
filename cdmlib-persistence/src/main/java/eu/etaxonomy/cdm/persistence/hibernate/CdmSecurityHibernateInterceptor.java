@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 /**
  * @author k.luther
@@ -59,7 +59,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return true;
         }
         // evaluate throws EvaluationFailedException
-        checkPermissions((CdmBase)entity, CdmPermission.CREATE);
+        checkPermissions((CdmBase)entity, Operation.CREATE);
         logger.debug("permission check suceeded - object creation granted");
         return true;
     }
@@ -82,7 +82,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
         if (isModified(currentState, previousState)){
             // evaluate throws EvaluationFailedException
-            checkPermissions(cdmEntity, CdmPermission.UPDATE);
+            checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("permission check suceeded - object update granted");
         }
         return true;
@@ -95,7 +95,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * @param entity
      * @param expectedPermission
      */
-    private void checkPermissions(CdmBase entity, CdmPermission expectedPermission) {
+    private void checkPermissions(CdmBase entity, Operation expectedPermission) {
 
         if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, expectedPermission)){
             throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), entity, expectedPermission);

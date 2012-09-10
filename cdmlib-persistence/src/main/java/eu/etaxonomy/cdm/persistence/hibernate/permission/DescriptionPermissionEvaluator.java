@@ -32,10 +32,10 @@ import eu.etaxonomy.cdm.model.description.Feature;
 public class DescriptionPermissionEvaluator {
 
     public static boolean hasPermission(Collection<GrantedAuthority> authorities,
-            Object targetDomainObject, AuthorityPermission evalPermission) {
+            Object targetDomainObject, CdmAuthority evalPermission) {
         Feature feature = null;
         String authorityString;
-        AuthorityPermission authorityPermission;
+        CdmAuthority CdmAuthority;
 
 
         if (targetDomainObject instanceof DescriptionElementBase){
@@ -46,7 +46,7 @@ public class DescriptionPermissionEvaluator {
 
             authorityString = authority.getAuthority();
             try {
-                authorityPermission = new AuthorityPermission(authorityString);
+                CdmAuthority = new CdmAuthority(authorityString);
             } catch (ParsingException e1) {
                 continue;
             }
@@ -55,12 +55,12 @@ public class DescriptionPermissionEvaluator {
                 try{
                     //check for a special feature
                     if (feature != null){
-                        if (authorityString.contains(feature.getLabel()) && (evalPermission.permission.equals(authorityPermission.permission) || authorityPermission.equals(CdmPermission.ADMIN))){
+                        if (authorityString.contains(feature.getLabel()) && (evalPermission.operation.equals(CdmAuthority.operation) || CdmAuthority.equals(Operation.ADMIN))){
                             return true;
-                        } else if (authorityPermission.className.equals(CdmPermissionClass.DESCRIPTIONBASE)) {
-                            if (evalPermission.permission.equals(authorityPermission.permission) ){
+                        } else if (CdmAuthority.permissionClass.equals(CdmPermissionClass.DESCRIPTIONBASE)) {
+                            if (evalPermission.operation.equals(CdmAuthority.operation) ){
                                 return true;
-                            } else if (authorityPermission.permission.equals(CdmPermission.ADMIN)){
+                            } else if (CdmAuthority.operation.equals(Operation.ADMIN)){
                                 return true;
                             }
                         }
@@ -68,7 +68,7 @@ public class DescriptionPermissionEvaluator {
                 }catch(Exception e){
                     //in tests the initialisation of terms like features fails...
                     if (org.hibernate.ObjectNotFoundException.class.isInstance(e)){
-                        if (evalPermission.permission.equals(authorityPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN)){
+                        if (evalPermission.operation.equals(CdmAuthority.operation)|| CdmAuthority.operation.equals(Operation.ADMIN)){
                             return true;
                         }
                     }else {
@@ -77,14 +77,14 @@ public class DescriptionPermissionEvaluator {
 
                 }
                 //the user has the general right for descriptions
-                if (authorityPermission.className.equals(CdmPermissionClass.DESCRIPTIONBASE)){
+                if (CdmAuthority.permissionClass.equals(CdmPermissionClass.DESCRIPTIONBASE)){
                     //no special feature
-                    if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && (authorityPermission.className.equals(evalPermission.permission) || authorityPermission.equals(CdmPermission.ADMIN))){
+                    if (authority.getAuthority().lastIndexOf(".") == authority.getAuthority().indexOf(".") && (CdmAuthority.permissionClass.equals(evalPermission.operation) || CdmAuthority.equals(Operation.ADMIN))){
                         return true;
                     }
                 }
             } else{
-                if (authorityPermission.getClassName().equals(CdmPermissionClass.DESCRIPTIONBASE) && authorityPermission.permission.equals(evalPermission.permission)){
+                if (CdmAuthority.getPermissionClass().equals(CdmPermissionClass.DESCRIPTIONBASE) && CdmAuthority.operation.equals(evalPermission.operation)){
                     return true;
                 }
             }
@@ -95,7 +95,7 @@ public class DescriptionPermissionEvaluator {
 
 
     /*public static boolean hasPermission (Collection<GrantedAuthority> authorities,
-            DescriptionBase targetDomainObject, AuthorityPermission evalPermission){
+            DescriptionBase targetDomainObject, CdmAuthority evalPermission){
         Set<DescriptionElementBase> elements = targetDomainObject.getElements();
 
         for (GrantedAuthority authority :authorities){

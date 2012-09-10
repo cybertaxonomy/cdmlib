@@ -20,8 +20,8 @@ import org.springframework.security.core.GrantedAuthority;
 import sun.security.provider.PolicyParser.ParsingException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.AuthorityPermission;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
@@ -39,8 +39,8 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
      * @see org.springframework.security.access.AccessDecisionVoter#supports(org.springframework.security.access.ConfigAttribute)
      */
     public boolean supports(ConfigAttribute attribute) {
-        // all CdmPermissionVoter support AuthorityPermission
-        return attribute instanceof AuthorityPermission;
+        // all CdmPermissionVoter support CdmAuthority
+        return attribute instanceof CdmAuthority;
     }
 
     /* (non-Javadoc)
@@ -86,7 +86,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
         }
 
         if (logger.isDebugEnabled()){
-            logger.debug("authentication: " + authentication.getName() + ", object : " + object.toString() + ", attribute[0]:" + ((AuthorityPermission)attributes.iterator().next()).getAttribute());
+            logger.debug("authentication: " + authentication.getName() + ", object : " + object.toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());
         }
 
         int fallThroughVote = ACCESS_DENIED;
@@ -94,34 +94,34 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
         // loop over all attributes = permissions of which at least one must match
         // usually there is only one element in the collection!
         for(ConfigAttribute attribute : attributes){
-            if(!(attribute instanceof AuthorityPermission)){
-                throw new RuntimeException("attributes must contain only AuthorityPermission");
+            if(!(attribute instanceof CdmAuthority)){
+                throw new RuntimeException("attributes must contain only CdmAuthority");
             }
-            AuthorityPermission evalPermission = (AuthorityPermission)attribute;
+            CdmAuthority evalPermission = (CdmAuthority)attribute;
 
             for (GrantedAuthority authority: authentication.getAuthorities()){
 
-                AuthorityPermission ap;
+                CdmAuthority ap;
                 try {
-                    ap = new AuthorityPermission(authority.getAuthority());
+                    ap = new CdmAuthority(authority.getAuthority());
                 } catch (ParsingException e) {
                     logger.debug("skipping " + authority.getAuthority() + " due to ParsingException");
                     continue;
                 }
 
                 // check if the voter is responsible for the permission to be evaluated
-                if( ! isResponsibleFor(evalPermission.getClassName())){
-                    logger.debug(getResponsibility() + " not responsible for " + evalPermission.getClassName() + " -> skipping");
+                if( ! isResponsibleFor(evalPermission.getPermissionClass())){
+                    logger.debug(getResponsibility() + " not responsible for " + evalPermission.getPermissionClass() + " -> skipping");
                     continue;
                 }
 
                 ValidationResult vr = new ValidationResult();
 
-                boolean isALL = ap.getClassName().equals(CdmPermissionClass.ALL);
-                boolean isADMIN = ap.getPermission().equals(CdmPermission.ADMIN);
+                boolean isALL = ap.getPermissionClass().equals(CdmPermissionClass.ALL);
+                boolean isADMIN = ap.getOperation().equals(Operation.ADMIN);
 
-                vr.isClassMatch = isALL || ap.getClassName().equals(evalPermission.getClassName());
-                vr.isPermissionMatch = isADMIN || ap.getPermission().equals(evalPermission.getPermission());
+                vr.isClassMatch = isALL || ap.getPermissionClass().equals(evalPermission.getPermissionClass());
+                vr.isPermissionMatch = isADMIN || ap.getOperation().equals(evalPermission.getOperation());
                 vr.isUuidMatch = ap.hasTargetUuid() && ap.getTargetUUID().equals(((CdmBase)object).getUuid());
 
                 //
@@ -170,13 +170,13 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
      * Override this method to implement specific decisions.
      * Implementations of this method will be executed in {@link #vote(Authentication, Object, Collection)}.
      *
-     * @param authorityPermission
+     * @param CdmAuthority
      * @param object
      * @param attributes
      * @param validationResult
      * @return A return value of ACCESS_ABSTAIN or null will be ignored in {@link #vote(Authentication, Object, Collection)}
      */
-    protected Integer furtherVotingDescisions(AuthorityPermission authorityPermission, Object object, Collection<ConfigAttribute> attributes,
+    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, Object object, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
         return null;
     }
@@ -185,7 +185,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
      * Holds various flags with validation results.
      * Is used to pass this information from
      * {@link CdmPermissionVoter#vote(Authentication, Object, Collection)}
-     * to {@link CdmPermissionVoter#furtherVotingDescisions(AuthorityPermission, Object, Collection, ValidationResult)}
+     * to {@link CdmPermissionVoter#furtherVotingDescisions(CdmAuthority, Object, Collection, ValidationResult)}
      *
      * @author andreas kohlbecker
      * @date Sep 5, 2012

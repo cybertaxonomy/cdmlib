@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -194,7 +194,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	@Transactional(readOnly = true)
-	public boolean hasPermission(Authentication authentication, T target, CdmPermission permission) {
+	public boolean hasPermission(Authentication authentication, T target, Operation permission) {
 		CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
 		return permissionEvaluator.hasPermission(authentication, target, permission);
 		

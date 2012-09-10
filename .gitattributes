@@ -1309,11 +1309,11 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUp
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGeneratorGlobalOverride.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/UpdateEntityListener.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/AuthorityPermission.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermission.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmAuthority.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionClass.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionEvaluator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/DescriptionPermissionEvaluator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/Operation.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/CdmPermissionVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/DescriptionBaseVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/DescriptionElementVoter.java -text

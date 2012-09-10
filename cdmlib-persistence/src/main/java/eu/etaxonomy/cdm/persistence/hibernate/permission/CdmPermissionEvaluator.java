@@ -62,8 +62,8 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
 
-        AuthorityPermission evalPermission;
-        CdmPermission cdmPermission;
+        CdmAuthority evalPermission;
+        Operation cdmPermission;
 
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
@@ -77,28 +77,28 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                     + "  Permission: " + permission);
         }
 
-        if (!(permission instanceof CdmPermission)){
+        if (!(permission instanceof Operation)){
             String permissionString = permission.toString();
             try {
-                cdmPermission = CdmPermission.valueOf(permission.toString());
+                cdmPermission = Operation.valueOf(permission.toString());
             } catch (IllegalArgumentException e) {
                 logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
                 return true; // it might be wrong to return true
             }
         }else {
-            cdmPermission = (CdmPermission)permission;
+            cdmPermission = (Operation)permission;
         }
 
         try{
-            //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-            evalPermission = new AuthorityPermission((CdmBase)targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
         }catch(NullPointerException e){
-            //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
-            evalPermission = new AuthorityPermission((CdmBase)targetDomainObject, cdmPermission, null);
+            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
+            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, cdmPermission, null);
         }
 
 
-        if (evalPermission.className != null) {
+        if (evalPermission.permissionClass != null) {
             logger.debug("starting evaluation => ...");
             return evalPermission(authentication, evalPermission, (CdmBase) targetDomainObject);
         }else{
@@ -129,7 +129,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
      * @param targetDomainObject
      * @return
      */
-    private boolean evalPermission(Authentication authentication, AuthorityPermission evalPermission, CdmBase targetDomainObject){
+    private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, CdmBase targetDomainObject){
 
         //if user has administrator rights return true;
          for (GrantedAuthority authority: authentication.getAuthorities()){

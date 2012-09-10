@@ -13,24 +13,21 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import sun.security.provider.PolicyParser.ParsingException;
 
 /**
- * A <code>AuthorityPermission</code> consists of two parts which are separated
- * by a dot character '.' in the permissionString which can retrieved by
- * {@link #getPermissionString(String)}:
+ * A <code>CdmAuthority</code> consists basically of two parts which are separated
+ * by a dot character '.'.
  *
  * <ul>
- * <li><code>className</code>: an {@link CdmPermissionClass} instance with represents a cdm
+ * <li><code>permissionClass</code>: an {@link CdmPermissionClass} instance with represents a cdm
  * type or a part of the cdm type hierarchy. The className is always represented
  * as an upper case string.</li>
- * <li><code>permission</code>: a string which specifies a {@link CdmPermission} on that set of cdm
+ * <li><code>property</code>: The <code>CdmAuthority</code> only applies to instances
+ * which satisfy the specified property. Interpretation is up to type specific voters.</li>
+ * <li><code>operation</code>: a string which specifies a {@link Operation} on that set of cdm
  * types</li>
- * <li><code>targetUuid</code>: The permission may be restricted to a specific cdm entity by adding
- * the entity uuid to the permission. The uuid string is enclosed in curly brackets '<code>{</code>'
- * , '<code>}</code>' and appended to the end of the permission.</li>
- * <li><code>property</code>: TODO</li>
+ * <li><code>targetUuid</code>: The <code>operation</code> may be restricted to a specific cdm entity by adding
+ * the entity uuid to the <code>operation</code>. The uuid string is enclosed in curly brackets '<code>{</code>'
+ * , '<code>}</code>' and appended to the end of the <code>operation</code>.</li>
  * </ul>
- * The authority string syntax looks like:<br>
- * <pre>CLASSNAME.PERMISSION[{UUID}]</pre>
- * Whereas the square brackets are indicating an optional element.
  *
  * <h3>Examples for permissionStrings</h3>
  *
@@ -44,77 +41,78 @@ import sun.security.provider.PolicyParser.ParsingException;
  * </pre>
  *
  * The method {@link #getPermissionString(String)} parses a full authority and returns  permissionString and
- * the {@link AuthorityPermission} from the <code>authority</code>.
- *
+ * the {@link CdmAuthority} from the <code>authority</code>.
  *
  *
  * @author k.luther
  */
-public class AuthorityPermission implements ConfigAttribute {
+public class CdmAuthority implements ConfigAttribute {
 
-    public static final Logger logger = Logger.getLogger(AuthorityPermission.class);
+    private static final long serialVersionUID = 1L;
 
-    CdmPermissionClass className;
+    public static final Logger logger = Logger.getLogger(CdmAuthority.class);
+
+    CdmPermissionClass permissionClass;
     String property;
-    CdmPermission permission;
+    Operation operation;
      UUID targetUuid;
 
-    public AuthorityPermission(CdmBase targetDomainObject, CdmPermission permission, UUID uuid){
-        this.className = CdmPermissionClass.getValueOf(targetDomainObject);
+    public CdmAuthority(CdmBase targetDomainObject, Operation permission, UUID uuid){
+        this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
-        this.permission = permission;
+        this.operation = permission;
         this.targetUuid = uuid;
     }
 
-     public AuthorityPermission(CdmBase targetDomainObject, String property, CdmPermission permission, UUID uuid){
-       this.className = CdmPermissionClass.getValueOf(targetDomainObject);
+     public CdmAuthority(CdmBase targetDomainObject, String property, Operation permission, UUID uuid){
+       this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = property;
-        this.permission = permission;
+        this.operation = permission;
         this.targetUuid = uuid;
     }
 
 
-    public AuthorityPermission(CdmPermissionClass permissionClass, String property, CdmPermission permission, UUID uuid){
-        this.className = permissionClass;
+    public CdmAuthority(CdmPermissionClass permissionClass, String property, Operation permission, UUID uuid){
+        this.permissionClass = permissionClass;
         this.property = property;
-        this.permission = permission;
+        this.operation = permission;
         this.targetUuid = uuid;
     }
 
     /**
-     * Constructs a new AuthorityPermission by parsing the contents of an
+     * Constructs a new CdmAuthority by parsing the contents of an
      * authority string. For details on the syntax please refer to the class
      * documentation above.
      *
-     * TODO usually one would not use a constructor but a valueOf(String method for this)
+     * TODO usually one would not use a constructor but a valueOf(String) or fromSting() method for this
      *
      * @param authority
      * @throws ParsingException
      */
-    public AuthorityPermission (String authority) throws ParsingException{
+    public CdmAuthority (String authority) throws ParsingException{
 
         String[] tokens = parse(authority);
         // className must never be null
-        className = CdmPermissionClass.valueOf(tokens[0]);
+        permissionClass = CdmPermissionClass.valueOf(tokens[0]);
         property = tokens[1];
         if(tokens[2] != null){
-            permission = CdmPermission.valueOf(tokens[2]);
+            operation = Operation.valueOf(tokens[2]);
         }
         if(tokens[3] != null){
             targetUuid = UUID.fromString(tokens[3]);
         }
     }
 
-    public CdmPermissionClass getClassName(){
-        return className;
+    public CdmPermissionClass getPermissionClass(){
+        return permissionClass;
     }
 
     public String getProperty(){
         return property;
     }
 
-    public CdmPermission getPermission(){
-        return permission;
+    public Operation getOperation(){
+        return operation;
     }
 
     public UUID getTargetUUID(){
@@ -132,12 +130,12 @@ public class AuthorityPermission implements ConfigAttribute {
     /**
      * Parses the given <code>authority</code> and returns an array of tokens.
      * The array has a length of four elements whereas the elements can be null.
-     * The elements in the array correspond to the fields of {@link AuthorityPermission}:
+     * The elements in the array correspond to the fields of {@link CdmAuthority}:
      * <ol>
-     * <li>{@link AuthorityPermission#className}</li>
-     * <li>{@link AuthorityPermission#property}</li>
-     * <li>{@link AuthorityPermission#permission}</li>
-     * <li>{@link AuthorityPermission#targetUuid}</li>
+     * <li>{@link CdmAuthority#permissionClass}</li>
+     * <li>{@link CdmAuthority#property}</li>
+     * <li>{@link CdmAuthority#operation}</li>
+     * <li>{@link CdmAuthority#targetUuid}</li>
      * </ol>
      * @param authority
      * @return an array of tokens
@@ -178,11 +176,11 @@ public class AuthorityPermission implements ConfigAttribute {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(className.toString());
+        sb.append(permissionClass.toString());
         if(property != null){
             sb.append('(').append(property).append(')');
         }
-        sb.append('.').append(permission.toString());
+        sb.append('.').append(operation.toString());
         if(targetUuid != null){
             sb.append('{').append(targetUuid.toString()).append('}');
         }
