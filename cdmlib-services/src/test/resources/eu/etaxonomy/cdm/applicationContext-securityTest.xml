@@ -18,9 +18,15 @@
         so we only need to add additional beans here:
      -->
 
+    <!--
+        we need to repeat the security configuration here only for test since it is disabled in
+        src/main/resources !!!
+     -->
     <security:global-method-security pre-post-annotations="enabled">
         <security:expression-handler ref="expressionHandler" />
     </security:global-method-security>
+
+    <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator" />
 
     <bean id="expressionHandler"
         class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
@@ -28,11 +34,10 @@
     </bean>
 
 
-    <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator" />
     <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
     </bean>
 
-
     <bean id="groupServiceImpl" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl">
     </bean>
+
 </beans>

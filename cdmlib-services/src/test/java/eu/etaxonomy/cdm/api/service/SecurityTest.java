@@ -90,6 +90,12 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 @DataSet
 public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
+    private static final UUID PART_EDITOR_UUID = UUID.fromString("38a251bd-0ba4-426f-8fcb-5c09560749a7");
+
+    private static final String PASSWORD_TAXON_EDITOR = "test2";
+
+    private static final String PASSWORD_ADMIN = "sPePhAz6";
+
     private static final UUID ACHERONTIA_NODE_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
 
     private static final UUID ACHERONTIINI_NODE_UUID = UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9");
@@ -125,20 +131,31 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     @SpringBeanByType
     private AuthenticationManager authenticationManager;
 
-
-
-    private UsernamePasswordAuthenticationToken tokenForAdmin;
-
     @SpringBeanByType
     private SaltSource saltSource;
 
     @SpringBeanByType
     private PasswordEncoder passwordEncoder;
 
+    private UsernamePasswordAuthenticationToken tokenForAdmin;
+
+    private UsernamePasswordAuthenticationToken tokenForTaxonEditor;
+
+    private UsernamePasswordAuthenticationToken tokenForDescriptionEditor;
+
+    private UsernamePasswordAuthenticationToken tokenForPartEditor;
+
+    private UsernamePasswordAuthenticationToken tokenForTaxonomist;
+
+
 
     @Before
     public void setUp(){
-        tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", "sPePhAz6");
+        tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", PASSWORD_ADMIN);
+        tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
+        tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
+        tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
+        tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
 
     /**
@@ -147,7 +164,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     @Test
     public void testEncryptPassword(){
 
-        String password = "sPePhAz6";
+        String password = PASSWORD_ADMIN;
         User user = User.NewInstance("admin", "");
 
         Object salt = this.saltSource.getSalt(user);
@@ -178,8 +195,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         TaxonBase<?> actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
-        tokenForAdmin = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
-        authentication = authenticationManager.authenticate(tokenForAdmin);
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
@@ -188,23 +204,65 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-    public void testChangePassword(){
+    public void testChangeOwnPassword(){
 
-        authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
+        // authenticate as admin
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         context.setAuthentication(authentication);
 
-        String username = "standardUser";
-        String password = "pw";
-        User user = User.NewInstance(username, password);
+//        User currentUser =  (User) context.getAuthentication().getPrincipal();
 
-        userService.createUser(user);
-        user.setEmailAddress("test@bgbm.org");
+        String newPass = "poiweorijo";
+        userService.changePassword(PASSWORD_TAXON_EDITOR, newPass);
+        commitAndStartNewTransaction(null);
 
-        userService.updateUser(user);
-        userService.update(user);
-        userService.saveOrUpdate(user);
+        // try to re-authenticate user with changed password
+        UsernamePasswordAuthenticationToken newTokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", newPass);
+        authentication = authenticationManager.authenticate(newTokenForTaxonEditor);
+    }
 
+    @Test
+    @Ignore // second part fails; changePasswordForUser seems unprotected !!
+    public void testChangeOthersPassword(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        // (1) authenticate as admin
+        authentication = authenticationManager.authenticate(tokenForAdmin);
+        context.setAuthentication(authentication);
+
+        EvaluationFailedException evaluationFailedException = null;
+        try{
+            userService.changePasswordForUser("taxonomist", "zuaisd");
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            evaluationFailedException = findEvaluationFailedExceptionIn(e);
+            logger.debug("Unexpected failure of evaluation.", evaluationFailedException);
+        }
+        Assert.assertNull("must not fail here!", evaluationFailedException);
+
+        // ok, now try authenticating partEditor with new password
+        UsernamePasswordAuthenticationToken newToken = new UsernamePasswordAuthenticationToken("partEditor", "poiweorijo");
+        authentication = authenticationManager.authenticate(newToken);
+
+        // (2) authenticate as under privileged user - not an admin !!!
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+        context.setAuthentication(authentication);
+
+        // check test preconditions user name and authorities
+        Assert.assertEquals("descriptionEditor", context.getAuthentication().getName());
+        Collection<GrantedAuthority> authorities = context.getAuthentication().getAuthorities();
+        for(GrantedAuthority authority: authorities){
+            Assert.assertNotSame("user must not have authority 'ALL.ADMIN'", "ALL.ADMIN", authority.getAuthority());
+        }
+        // finally perform the test :
+        try{
+            userService.changePasswordForUser("partEditor", "poiweorijo");
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            evaluationFailedException = findEvaluationFailedExceptionIn(e);
+        }
+        Assert.assertNotNull("must fail here!", evaluationFailedException);
     }
 
     @Test
@@ -239,8 +297,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
         taxonService.saveOrUpdate(actualTaxon);
 
-        tokenForAdmin = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
-        authentication = authenticationManager.authenticate(tokenForAdmin);
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         actualTaxon = taxonService.load(uuid);
@@ -256,8 +313,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         */
-
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonEditor", "test2"));
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
@@ -273,8 +329,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         //when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
         //taxonService.saveOrUpdate(taxon);
 
-
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
@@ -292,7 +347,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Test
     public void testCascadingInSpring(){
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
@@ -312,7 +367,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Test
     public void testSaveSynonym(){
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("taxonomist", "test4"));
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
@@ -332,7 +387,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
          *  that is 'partEditor' is granted to edit the subtree of
          *  which ACHERONTIA_NODE_UUID [20c8f083-5870-4cbd-bf56-c5b2b98ab6a7] is the root node.
          */
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+
+        authentication = authenticationManager.authenticate(tokenForPartEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
