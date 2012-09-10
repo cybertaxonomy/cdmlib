@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.AuthorityPermission;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
@@ -29,8 +30,8 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
      */
     @Override
     public boolean supports(ConfigAttribute attribute) {
-        // the CdmPermissionVoter is not supporting any ConfigAttribute
-        return false;
+        // all CdmPermissionVoter support AuthorityPermission
+        return attribute instanceof AuthorityPermission;
     }
 
     /* (non-Javadoc)
@@ -38,6 +39,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
      */
     @Override
     public boolean supports(Class<?> clazz) {
+        // all CdmPermissionVoters must support CdmBase.class
         return clazz.isInstance(CdmBase.class);
     }
 

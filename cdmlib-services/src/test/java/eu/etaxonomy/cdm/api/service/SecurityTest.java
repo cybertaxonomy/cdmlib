@@ -9,31 +9,20 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateSystemException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
@@ -44,48 +33,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.ExpectedException;
 import org.springframework.transaction.PlatformTransactionManager;
-
-
-import org.unitils.database.annotations.Transactional;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.database.annotations.TestDataSource;
-import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByName;
+import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-
-import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
-import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
-
-
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
-
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 
 @DataSet
@@ -137,6 +102,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @SpringBeanByType
     private PasswordEncoder passwordEncoder;
+
+    @SpringBean("cdmPermissionEvaluator")
+    private CdmPermissionEvaluator permissionEvaluator;
 
     private UsernamePasswordAuthenticationToken tokenForAdmin;
 
@@ -192,6 +160,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         UUID uuid = taxonService.save(expectedTaxon);
+        commitAndStartNewTransaction(null);
         //taxonService.getSession().flush();
         TaxonBase<?> actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
@@ -201,6 +170,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
         taxonService.saveOrUpdate(actualTaxon);
+        commitAndStartNewTransaction(null);
 
     }
 
@@ -291,29 +261,35 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         userService.updateUser(user);
         userService.update(user);
         userService.saveOrUpdate(user);
+        commitAndStartNewTransaction(null);
 
     }
 
     @Test
     public final void testSaveOrUpdateTaxon() {
-        authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
+
+        // 1) test with admin account - should succeed
+        authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         UUID uuid = taxonService.save(expectedTaxon);
+        commitAndStartNewTransaction(null);
         TaxonBase<?> actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
         actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
         taxonService.saveOrUpdate(actualTaxon);
+        commitAndStartNewTransaction(null);
 
+        // 2) test with taxonEditor account - should succeed
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
-        context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         actualTaxon = taxonService.load(uuid);
 
         actualTaxon.setDoubtful(true);
         taxonService.saveOrUpdate(actualTaxon);
+        commitAndStartNewTransaction(null);
 
     }
 
@@ -326,14 +302,13 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-        CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
 
         Taxon taxon =(Taxon) taxonService.load(ACHERONTIA_LACHESIS_UUID);
         taxon.setDoubtful(false);
         assertTrue(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
         taxonService.save(taxon);
-        taxon = null;
         commitAndStartNewTransaction(null);
+        taxon = null;
 
         //during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it,
         //when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
@@ -383,6 +358,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         taxonService.saveOrUpdate(syn);
+        commitAndStartNewTransaction(null);
     }
 
     @Test
@@ -406,29 +382,33 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
         TaxonNode childNode = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
-        EvaluationFailedException evaluationFailedException = null;
+        RuntimeException securityException = null;
         try{
             taxonNodeService.saveOrUpdate(acherontia_node);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
-            evaluationFailedException = findEvaluationFailedExceptionIn(e);
-            logger.debug("Unexpected failure of evaluation.", evaluationFailedException);
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Unexpected failure of evaluation.", securityException);
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + evaluationFailedException.getMessage(), evaluationFailedException);
+        acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
+        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         Assert.assertEquals("the acherontia_node must now have one more child node ", numOfChildNodes + 1 , acherontia_node.getChildNodes().size());
 
         // test for denial
-        evaluationFailedException = null;
+        securityException = null;
         TaxonNode acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
         numOfChildNodes = acherontiini_node.getCountChildren();
         acherontiini_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
         try{
+            logger.debug("==============================");
             taxonNodeService.saveOrUpdate(acherontiini_node);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
-            evaluationFailedException = findEvaluationFailedExceptionIn(e);
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
         }
-        Assert.assertNotNull("evaluation must fail since the user is not permitted", evaluationFailedException);
+        acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
+        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         Assert.assertEquals("the number of child nodes must be unchanged ", numOfChildNodes , acherontiini_node.getChildNodes().size());
 
     }

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.test.integration;
 
 import org.junit.After;
 import org.junit.Before;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
@@ -11,18 +12,20 @@ import eu.etaxonomy.cdm.database.EvaluationFailedException;
 public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTransactionalIntegrationTest {
 
     /**
-     * Finds a nested {@link EvaluationFailedException} or returns <code>null</code>
+     * Finds a nested RuntimeExceptions of the types {@link EvaluationFailedException}, {@link AccessDeniedException}
+     * or returns <code>null</code>
      * @param exception
      * @return
      */
-    public static EvaluationFailedException findEvaluationFailedExceptionIn(Throwable exception) {
-        if( EvaluationFailedException.class.isInstance(exception) ){
-            return (EvaluationFailedException)exception;
+    public static RuntimeException findSecurityRuntimeException(Throwable exception) {
+        if( EvaluationFailedException.class.isInstance(exception) || AccessDeniedException.class.isInstance(exception) ){
+            return (RuntimeException) exception;
         } else if(exception != null ){
-            return findEvaluationFailedExceptionIn(exception.getCause());
+            return findSecurityRuntimeException(exception.getCause());
         }
         return null;
     }
+
 
     /**
      * find in the nested <code>exception</code> the exception of type <code>clazz</code>

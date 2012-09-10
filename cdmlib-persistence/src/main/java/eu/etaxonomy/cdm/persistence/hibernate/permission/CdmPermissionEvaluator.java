@@ -10,17 +10,18 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -68,7 +69,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
             for(GrantedAuthority ga : authentication.getAuthorities()){
                 grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
-                logger.debug("evaluating:\n"
+                logger.debug("hasPermission()\n"
                         + "  User '" + authentication.getName() + "':\n"
                         + grantedAuthoritiesTxt
                         + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
@@ -81,14 +82,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             try {
                 cdmPermission = CdmPermission.valueOf(permission.toString());
             } catch (IllegalArgumentException e) {
+                logger.debug("permission string '"+ permission.toString() + "' not parsable => true");
                 return true; // it might be wrong to return true
             }
         }else {
             cdmPermission = (CdmPermission)permission;
         }
-
-
-        Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
 
         try{
             //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
@@ -100,9 +99,10 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
 
         if (evalPermission.className != null) {
-            return evalPermission(authorities, evalPermission, (CdmBase) targetDomainObject);
-
+            logger.debug("starting evaluation => ...");
+            return evalPermission(authentication, evalPermission, (CdmBase) targetDomainObject);
         }else{
+            logger.debug("skipping evaluation => true");
             return true;
         }
 
@@ -129,55 +129,32 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
      * @param targetDomainObject
      * @return
      */
-    public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
+    private boolean evalPermission(Authentication authentication, AuthorityPermission evalPermission, CdmBase targetDomainObject){
 
         //if user has administrator rights return true;
-         for (GrantedAuthority authority: authorities){
-             if (authority.getAuthority().equals("ALL.ADMIN"))return true;
+         for (GrantedAuthority authority: authentication.getAuthorities()){
+             if (authority.getAuthority().equals("ROLE_ADMIN")){
+                 logger.debug("ROLE_ADMIN found => true");
+                 return true;
+             }
          }
 
+        // === DescriptionPermissionEvaluator
         //if targetDomainObject is instance of DescriptionBase or DescriptionElementBase use the DescriptionPermissionEvaluator
         if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionBase){
-            return DescriptionPermissionEvaluator.hasPermission(authorities, targetDomainObject, evalPermission);
+            logger.debug("running DescriptionPermissionEvaluator ...");
+            return DescriptionPermissionEvaluator.hasPermission(authentication.getAuthorities(), targetDomainObject, evalPermission);
         }
 
-        for (GrantedAuthority authority: authorities){
-            AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
-            //evaluate authorities
-           //if classnames match or the authorityClassName is ALL, AND the permission matches or is ADMIN the evaluation is successful
-            if ((authorityPermission.className.equals(evalPermission.className) || authorityPermission.className.equals(CdmPermissionClass.ALL))
-                    && (authorityPermission.permission.equals(evalPermission.permission)|| authorityPermission.permission.equals(CdmPermission.ADMIN))){
-               /* if (authorityPermission.targetUuid != null){
-                    //TODO
+        // === run voters
+        Collection<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();
+        attributes.add(evalPermission);
 
-                }else{*/
-                    return true;
-                //}
+        // decide() throws AccessDeniedException, InsufficientAuthenticationException
+        logger.debug("AccessDecisionManager will decide ...");
+        accessDecisionManager.decide(authentication, targetDomainObject, attributes);
 
-            }
-            //if authority is restricted to only one object (and the cascaded objects???)
-            if (authorityPermission.targetUuid != null){
-                if (authorityPermission.targetUuid.equals(((CdmBase)targetDomainObject).getUuid())){
-                    if (authorityPermission.permission.equals(evalPermission.permission)){
-                        return true;
-                    }
-                }
-            }
-            //if the user has the rights for a subtree
-            if (authorityPermission.className.equals(CdmPermissionClass.TAXONBASE) && targetDomainObject.getClass().getSimpleName().toUpperCase().equals("TaxonNode")){
-
-                TaxonNode node = (TaxonNode)targetDomainObject;
-                TaxonNode targetNode = findTargetUuidInTree(authorityPermission.targetUuid, node);
-                if (targetNode != null){
-                    if (evalPermission.permission.equals(authorityPermission.permission) ){
-                        return true;
-                    }
-                }
-            }
-
-
-        }
-        return false;
+        return true;
     }
 
 }

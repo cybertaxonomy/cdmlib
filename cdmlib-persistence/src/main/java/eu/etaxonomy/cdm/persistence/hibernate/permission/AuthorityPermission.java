@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import org.springframework.security.access.ConfigAttribute;
 
 /**
  * A <code>AuthorityPermission</code> consists of two parts which are separated
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
  *
  * @author k.luther
  */
-public class AuthorityPermission{
+public class AuthorityPermission implements ConfigAttribute {
     CdmPermissionClass className;
     CdmPermission permission;
     UUID targetUuid;
@@ -111,6 +111,23 @@ public class AuthorityPermission{
         }else{
             return authority.substring(lastPoint+1, bracket);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(className.toString()).append('.').append(permission.toString());
+        if(targetUuid != null){
+            sb.append('{').append(targetUuid.toString()).append('}');
+        }
+        return sb.toString() ;
+    }
+
+
+
+    @Override
+    public String getAttribute() {
+        return toString();
     }
 
 }

@@ -33,6 +33,8 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 8477758472369568074L;
 
+    public static final Logger logger = Logger.getLogger(CdmSecurityHibernateInterceptor.class);
+
     private CdmPermissionEvaluator permissionEvaluator;
 
     public CdmPermissionEvaluator getPermissionEvaluator() {
@@ -57,7 +59,8 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return true;
         }
         // evaluate throws EvaluationFailedException
-        evaluate((CdmBase)entity, CdmPermission.CREATE);
+        checkPermissions((CdmBase)entity, CdmPermission.CREATE);
+        logger.debug("permission check suceeded - object creation granted");
         return true;
     }
 
@@ -79,7 +82,8 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
         if (isModified(currentState, previousState)){
             // evaluate throws EvaluationFailedException
-            evaluate(cdmEntity, CdmPermission.UPDATE);
+            checkPermissions(cdmEntity, CdmPermission.UPDATE);
+            logger.debug("permission check suceeded - object update granted");
         }
         return true;
     }
@@ -91,7 +95,8 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * @param entity
      * @param expectedPermission
      */
-    private void evaluate(CdmBase entity, CdmPermission expectedPermission) {
+    private void checkPermissions(CdmBase entity, CdmPermission expectedPermission) {
+
         if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, expectedPermission)){
             throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), entity, expectedPermission);
         }
