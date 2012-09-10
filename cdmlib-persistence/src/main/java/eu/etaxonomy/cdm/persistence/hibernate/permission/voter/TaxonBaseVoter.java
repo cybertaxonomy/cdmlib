@@ -28,8 +28,4 @@ public class TaxonBaseVoter extends CdmPermissionVoter {
         return TaxonBase.class;
     }
 
-//    public TaxonBaseVoter(){
-////        implicitPermissionClasses.add(new TaxonNodeVoter()); //FIXME springify !!
-//    }
-
 }

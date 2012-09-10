@@ -34,61 +34,6 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
     }
 
     /* (non-Javadoc)
-     * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
-     */
-    /*
-    @Override
-    public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
-        if(!(object instanceof TaxonNode)){
-            logger.debug("class missmatch => ACCESS_ABSTAIN");
-            return ACCESS_ABSTAIN;
-        }
-        TaxonNode node = (TaxonNode)object;
-
-        if (logger.isDebugEnabled()){
-            logger.debug("authentication: " + authentication.getName() + ", object : " + object.toString() + ", attribute[0]:" + ((AuthorityPermission)attributes.iterator().next()).getAttribute());
-        }
-
-        for(ConfigAttribute attribute : attributes){
-            if(!(attribute instanceof AuthorityPermission)){
-                throw new RuntimeException("attributes must contain only AuthorityPermission");
-            }
-            AuthorityPermission evalPermission = (AuthorityPermission)attribute;
-
-            for (GrantedAuthority authority: authentication.getAuthorities()){
-                AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
-
-                boolean isALL = authorityPermission.getClassName().equals(CdmPermissionClass.ALL);
-                boolean isClassMatch = isALL || authorityPermission.getClassName().equals(evalPermission.getClassName());
-
-                boolean isADMIN = authorityPermission.getPermission().equals(CdmPermission.ADMIN);
-                boolean isPermissionMatch = isADMIN || authorityPermission.getPermission().equals(evalPermission.getPermission());
-
-                boolean hasTargetUuid = authorityPermission.getTargetUUID() != null;
-
-                boolean isUuidMatch = hasTargetUuid && authorityPermission.getTargetUUID().equals(((CdmBase)object).getUuid());
-
-                if ( !hasTargetUuid && isClassMatch && isPermissionMatch){
-                    logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
-                    return ACCESS_GRANTED;
-                }
-                if ( isUuidMatch  && isClassMatch && isPermissionMatch){
-                    logger.debug("permission, class and uuid are matching => ACCESS_GRANTED");
-                    return ACCESS_GRANTED;
-                }
-                if ( isUuidMatchInParentNodes  && isClassMatch && isPermissionMatch){
-                    logger.debug("permission, class and uuid in parent nodes are matching => ACCESS_GRANTED");
-                    return ACCESS_GRANTED;
-                }
-            } // END Authorities loop
-        } // END attributes loop
-
-        logger.debug("ACCESS_DENIED");
-        return ACCESS_DENIED; // or Abstain???
-    }
-    */
-
-    /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#furtherVotingDescisions(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection, eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter.ValidationResult)
      */
     @Override

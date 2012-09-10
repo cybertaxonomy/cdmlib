@@ -53,7 +53,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
         return clazz.isInstance(CdmBase.class);
     }
 
-
     /**
      * Sets the Cdm type, or super type this Voter is responsible for.
      */
@@ -103,15 +102,11 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                 AuthorityPermission authorityPermission= new AuthorityPermission(authority.getAuthority());
 
                 // check if the voter is responsible for the permission to be evaluated
-                if(!evalPermission.getClassName().equals(getResponsibility())){
-                    logger.debug("not responsible for " + evalPermission.getClassName() + " -> skipping");
+                if( ! isResponsibleFor(evalPermission.getClassName())){
+                    logger.debug(getResponsibility() + " not responsible for " + evalPermission.getClassName() + " -> skipping");
                     continue;
                 }
 
-//                CdmPermissionVoter impliedVoter = findImpliedVoter(authorityPermission.getClassName());
-//                if(impliedVoter != null){
-//                    Set<CdmBase> targetObjects = findTargetObjectsForVoter(impliedVoter, (CdmBase) object);
-//                }
                 ValidationResult validationResult = new ValidationResult();
 
                 boolean isALL = authorityPermission.getClassName().equals(CdmPermissionClass.ALL);
@@ -134,7 +129,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
 
                 // ask subclasses for further voting decisions
                 Integer furtherVotingResult = furtherVotingDescisions(authorityPermission, object, attributes, validationResult);
-                if(furtherVotingResult != null){
+                if(furtherVotingResult != null && furtherVotingResult != ACCESS_ABSTAIN){
                     return furtherVotingResult;
                 }
 
@@ -147,84 +142,34 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
 
     /**
      * Override this method to implement specific decisions.
+     * Implementations of this method will be executed in {@link #vote(Authentication, Object, Collection)}.
      *
      * @param authorityPermission
      * @param object
      * @param attributes
      * @param validationResult
-     * @return
+     * @return A return value of ACCESS_ABSTAIN or null will be ignored in {@link #vote(Authentication, Object, Collection)}
      */
     protected Integer furtherVotingDescisions(AuthorityPermission authorityPermission, Object object, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
         return null;
     }
 
+    /**
+     * Holds various flags with validation results.
+     * Is used to pass this information from
+     * {@link CdmPermissionVoter#vote(Authentication, Object, Collection)}
+     * to {@link CdmPermissionVoter#furtherVotingDescisions(AuthorityPermission, Object, Collection, ValidationResult)}
+     *
+     * @author andreas kohlbecker
+     * @date Sep 5, 2012
+     *
+     */
     protected class ValidationResult {
         boolean isPermissionMatch = false;
         boolean isUuidMatch = false;
         boolean isClassMatch = false;
         boolean hasTargetUuid = false;
     }
-
-    /* ===================== implicitPermission a nd voters disabled ================ */
-    /*implicitPermission
-    protected Set<CdmPermissionVoter> implicitPermissionClasses = new HashSet<CdmPermissionVoter>();
-    */
-    /**
-     * see {@link #setImplicitPermissionClasses(Set)}
-     *
-     * @return
-    public Set<CdmPermissionVoter> getImplicitPermissionClasses() {
-        return implicitPermissionClasses;
-    }
-     */
-
-    /**
-     * If the {@link GrantedAuthority} of an authentication contains {@link CdmPermission}s with
-     * at least one of the CdmPermissionClass in {@link #implicitPermissionClasses}, this means that
-     * this CdmPermission is treated as if it was a permission for the class this voter is responsible
-     * for (see {@link #responsibilityClass}).
-     * <p>
-     * <h4>Schematic example<h4>
-     * <ol>
-     * <li>required CdmPermission: TAXON.UPDATE => requited CdmPermission class is TAXON</li>
-     * <li>implicitPermissionClasses: {TAXONNODE}</li>
-     * <li>user has CdmPermission: TAXONNODE.UPDATE</li>
-     * <li>=> thus user also has implied permission TAXON.UPDATE</li>
-     * </ol>
-     *
-     *
-     * @param implicitPermissionClasses
-    public void setImplicitPermissionClasses(Set<CdmPermissionVoter> implicitPermissionClasses) {
-        this.implicitPermissionClasses = implicitPermissionClasses;
-    }
-     */
-
-    /*
-    protected CdmPermissionVoter findImpliedVoter(CdmPermissionClass assigned) {
-        for(CdmPermissionVoter impliedVoter : implicitPermissionClasses){
-            if(impliedVoter.isResponsibleFor(assigned)){
-                if(logger.isDebugEnabled()){
-                    logger.debug("* implicitClassMatch of " + assigned);
-                }
-                return impliedVoter;
-            }
-        }
-        return null;
-    }
-
-    protected Set<CdmBase> findTargetObjectsForVoter(CdmPermissionVoter impliedVoter, CdmBase object){
-
-        Set<CdmBase> targetObjects = new HashSet<CdmBase>();
-        if(impliedVoter.isResponsibleFor(Taxon.class)){
-            targetObjects.addAll(Taxon.class.cast(object).getTaxonNodes());
-        } else {
-            throw new RuntimeException("Not implemented for " + impliedVoter.getClass());
-        }
-        return targetObjects;
-    }
-    */
-
-
 
 }
