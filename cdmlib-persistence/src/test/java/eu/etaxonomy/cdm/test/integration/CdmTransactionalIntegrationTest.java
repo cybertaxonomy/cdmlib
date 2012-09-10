@@ -25,6 +25,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 @Transactional(TransactionMode.DISABLED) // NOTE: we are handling transaction by ourself in this class, thus we prevent unitils from creating transactions
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
+
     protected static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTest.class);
 
     /**

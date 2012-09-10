@@ -2,8 +2,13 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
+
+import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * A <code>AuthorityPermission</code> consists of two parts which are separated
@@ -19,6 +24,7 @@ import org.springframework.security.access.ConfigAttribute;
  * <li><code>targetUuid</code>: The permission may be restricted to a specific cdm entity by adding
  * the entity uuid to the permission. The uuid string is enclosed in curly brackets '<code>{</code>'
  * , '<code>}</code>' and appended to the end of the permission.</li>
+ * <li><code>property</code>: TODO</li>
  * </ul>
  * The authority string syntax looks like:<br>
  * <pre>CLASSNAME.PERMISSION[{UUID}]</pre>
@@ -43,18 +49,59 @@ import org.springframework.security.access.ConfigAttribute;
  * @author k.luther
  */
 public class AuthorityPermission implements ConfigAttribute {
+
+    public static final Logger logger = Logger.getLogger(AuthorityPermission.class);
+
     CdmPermissionClass className;
+    String property;
     CdmPermission permission;
-    UUID targetUuid;
+     UUID targetUuid;
 
     public AuthorityPermission(Object targetDomainObject, CdmPermission permission, UUID uuid){
         this.className = CdmPermissionClass.getValueOf(targetDomainObject);
+        this.property = null;
         this.permission = permission;
-        targetUuid = uuid;
+        this.targetUuid = uuid;
+    }
+
+    public AuthorityPermission(Object targetDomainObject, String property, CdmPermission permission, UUID uuid){
+        this.className = CdmPermissionClass.getValueOf(targetDomainObject);
+        this.property = property;
+        this.permission = permission;
+        this.targetUuid = uuid;
+    }
+
+
+    /**
+     * Constructs a new AuthorityPermission by parsing the contents of an
+     * authority string. For details on the syntax please refer to the class
+     * documentation above.
+     *
+     * TODO usually one would not use a constructor but a valueOf(String method for this)
+     *
+     * @param authority
+     * @throws ParsingException
+     */
+    public AuthorityPermission (String authority) throws ParsingException{
+
+        String[] tokens = parse(authority);
+        // className must never be null
+        className = CdmPermissionClass.valueOf(tokens[0]);
+        property = tokens[1];
+        if(tokens[2] != null){
+            permission = CdmPermission.valueOf(tokens[2]);
+        }
+        if(tokens[3] != null){
+            targetUuid = UUID.fromString(tokens[3]);
+        }
     }
 
     public CdmPermissionClass getClassName(){
         return className;
+    }
+
+    public String getProperty(){
+        return property;
     }
 
     public CdmPermission getPermission(){
@@ -65,65 +112,73 @@ public class AuthorityPermission implements ConfigAttribute {
         return targetUuid;
     }
 
-    /**
-     * Constructs a new AuthorityPermission by parsing the contents of an
-     * authority string. For details on the syntax please refer to the class
-     * documentation above.
-     *
-     * @param authority
-     */
-    public AuthorityPermission (String authority){
-        String permissionString;
-        int firstPoint = authority.indexOf(".");
-        if (firstPoint == -1){
-            // no dot: the authorityString only holds a CdmPermissionClass
-            className = CdmPermissionClass.valueOf(authority);
-        }else{
-            // has a dot: the authorityString only holds a CdmPermissionClass and a permissionString
-            className = CdmPermissionClass.valueOf((authority.substring(0, firstPoint)));
-            int bracket = authority.indexOf("{");
-            permissionString = getPermissionString(authority);
-            if (bracket != -1){
-                // having a bracket means the permissionString contains a uuid !!!
-                int secondBracket = authority.indexOf("}");
-                String uuid = authority.substring(bracket+1, secondBracket);
-                targetUuid = UUID.fromString(uuid);
-            }
-            permission = CdmPermission.valueOf(permissionString.toUpperCase());
-        }
+    public boolean hasTargetUuid() {
+        return targetUuid != null;
+    }
+
+    public boolean hasProperty() {
+        return property != null;
     }
 
     /**
-     * The method {@link #getPermissionString(String)} parses a full authority
-     * string like
-     * "<code>TAXONNODE.READ{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}</code>"and
-     * returns the string representation of the CdmPermission "<code>READ</code>"
-     * contained in the authority string
-     *
+     * Parses the given <code>authority</code> and returns an array of tokens.
+     * The array has a length of four elements whereas the elements can be null.
+     * The elements in the array correspond to the fields of {@link AuthorityPermission}:
+     * <ol>
+     * <li>{@link AuthorityPermission#className}</li>
+     * <li>{@link AuthorityPermission#property}</li>
+     * <li>{@link AuthorityPermission#permission}</li>
+     * <li>{@link AuthorityPermission#targetUuid}</li>
+     * </ol>
      * @param authority
-     * @return
+     * @return an array of tokens
+     * @throws ParsingException
      */
-    private static String getPermissionString(String authority){
-        int lastPoint = authority.lastIndexOf(".");
-        int bracket = authority.indexOf("{");
-        if (bracket == -1){
-            return authority.substring(lastPoint+1);
-        }else{
-            return authority.substring(lastPoint+1, bracket);
+    protected String[] parse(String authority) throws ParsingException {
+        //
+        // regex pattern explained:
+        //  (\\w*)             -> classname
+        //  (?:\\((\\w*)\\))?  -> (property)
+        //  \\.?               -> .
+        //  (?:(\\w*))(?:\\{([\\da-z\\-]+)\\})? -> Permmission and targetUuid
+        //
+        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:(\\w*))(?:\\{([\\da-z\\-]+)\\})?";
+        Pattern pattern = Pattern.compile(regex);
+        String[] tokens = new String[4];
+        logger.debug("parsing '" + authority + "'");
+        Matcher m = pattern.matcher(authority);
+
+        if (m.find() && m.groupCount() == 4 ) {
+            for (int i = 0; i < m.groupCount(); i++) {
+                tokens[i] = m.group(i+1);
+                // normalize empty strings to null
+                if(tokens[i] != null && tokens[i].length() == 0){
+                    tokens[i] = null;
+                }
+                logger.debug("[" + i + "]: " + tokens[i]+ "\n");
+            }
+        } else {
+            logger.debug("no match");
+            throw new ParsingException("Unsupported authority string: '" + authority + "'");
         }
+
+        return tokens;
     }
+
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(className.toString()).append('.').append(permission.toString());
+        sb.append(className.toString());
+        if(property != null){
+            sb.append('(').append(property).append(')');
+        }
+        sb.append('.').append(permission.toString());
         if(targetUuid != null){
             sb.append('{').append(targetUuid.toString()).append('}');
         }
         return sb.toString() ;
     }
-
-
 
     @Override
     public String getAttribute() {

@@ -1,0 +1,60 @@
+package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
+
+import java.util.Collection;
+import java.util.UUID;
+
+import org.springframework.security.access.ConfigAttribute;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.AuthorityPermission;
+
+public class DescriptionBaseVoter extends CdmPermissionVoter {
+
+    @Override
+    public Class<? extends CdmBase> getResponsibilityClass() {
+        return DescriptionBase.class;
+    }
+
+    @Override
+    protected Integer furtherVotingDescisions(AuthorityPermission ap, Object object, Collection<ConfigAttribute> attributes,
+            ValidationResult vr) {
+
+        // we only need to implement the case where a property is contained in the authority
+        // the other case is covered by the CdmPermissionVoter
+        if(ap.hasProperty() && object instanceof DescriptionElementBase){
+
+            Feature feature = ((DescriptionElementBase)object).getFeature();
+
+            if(feature == null){
+                // if the user is granted for a specific feature
+                // he should not be granted for DescriptoinElements without a feature
+                return ACCESS_DENIED;
+            }
+            boolean isPropertyMatch = false;
+
+            try {
+                UUID featureUUID = UUID.fromString(ap.getProperty());
+                isPropertyMatch = featureUUID.equals(feature.getUuid());
+                // FIXME uuids as property not yes supported in AuhorityPermission !!!!
+            } catch (IllegalArgumentException e) {
+                // Property is not a uuid, so treat is as Label:
+                isPropertyMatch = ap.getProperty().equals(feature.getLabel());
+            }
+
+            if ( !ap.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch && isPropertyMatch){
+                logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
+                return ACCESS_GRANTED;
+            }
+            if ( vr.isUuidMatch  && vr.isClassMatch && vr.isPermissionMatch && isPropertyMatch){
+                logger.debug("permission, class and uuid are matching => ACCESS_GRANTED");
+                return ACCESS_GRANTED;
+            }
+        }
+
+        return ACCESS_DENIED;
+    }
+
+}

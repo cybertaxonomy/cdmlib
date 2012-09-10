@@ -14,6 +14,8 @@ import java.util.Set;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import sun.security.provider.PolicyParser.ParsingException;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -43,7 +45,11 @@ public class DescriptionPermissionEvaluator {
         for (GrantedAuthority authority: authorities){
 
             authorityString = authority.getAuthority();
-            authorityPermission = new AuthorityPermission(authorityString);
+            try {
+                authorityPermission = new AuthorityPermission(authorityString);
+            } catch (ParsingException e1) {
+                continue;
+            }
 
             if (targetDomainObject instanceof DescriptionElementBase){
                 try{

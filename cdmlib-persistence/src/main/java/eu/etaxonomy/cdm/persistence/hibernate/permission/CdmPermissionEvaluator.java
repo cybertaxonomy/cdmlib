@@ -69,12 +69,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
             for(GrantedAuthority ga : authentication.getAuthorities()){
                 grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
-                logger.debug("hasPermission()\n"
-                        + "  User '" + authentication.getName() + "':\n"
-                        + grantedAuthoritiesTxt
-                        + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
-                        + "  Permission: " + permission);
             }
+            logger.debug("hasPermission()\n"
+                    + "  User '" + authentication.getName() + "':\n"
+                    + grantedAuthoritiesTxt
+                    + "  Object: " + ((CdmBase)targetDomainObject).instanceToString() + "\n"
+                    + "  Permission: " + permission);
         }
 
         if (!(permission instanceof CdmPermission)){
@@ -138,13 +138,6 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                  return true;
              }
          }
-
-        // === DescriptionPermissionEvaluator
-        //if targetDomainObject is instance of DescriptionBase or DescriptionElementBase use the DescriptionPermissionEvaluator
-        if (targetDomainObject instanceof DescriptionElementBase || targetDomainObject instanceof DescriptionBase){
-            logger.debug("running DescriptionPermissionEvaluator ...");
-            return DescriptionPermissionEvaluator.hasPermission(authentication.getAuthorities(), targetDomainObject, evalPermission);
-        }
 
         // === run voters
         Collection<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();

@@ -122,10 +122,43 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Before
     public void setUp(){
+        /* User 'admin':
+            - ROLE_ADMIN
+            - TAXONBASE.READ
+            - TAXONBASE.CREATE
+            - TAXONBASE.DELETE
+            - ALL.ADMIN
+            - TAXONBASE.UPDATE
+        */
         tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", PASSWORD_ADMIN);
+
+        /* User 'taxonEditor':
+            - TAXONBASE.CREATE
+            - TAXONBASE.UPDATE
+        */
         tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
+
+        /*  User 'descriptionEditor':
+            - DESCRIPTIONBASE(Ecology).CREATE
+            - DESCRIPTIONBASE.CREATE
+            - DESCRIPTIONBASE.UPDATE
+            - DESCRIPTIONBASE(Ecology).UPDATE
+         */
         tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
+
+        /* User 'partEditor':
+            - TAXONNODE.CREATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - TAXONBASE.ADMIN
+            - TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+         */
         tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
+
+        /* User 'taxonomist':
+            - TAXONBASE.READ
+            - TAXONBASE.CREATE
+            - TAXONBASE.DELETE
+            - TAXONBASE.UPDATE
+         */
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
 
@@ -340,39 +373,43 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     }
 
+    /**
+     * during cascading the permissions are not evaluated, but with hibernate
+     * listener every database transaction can be interrupted, but how to manage
+     * it, when someone has the rights to save descriptions, but not taxa (the
+     * editor always saves everything by saving the taxon)
+     * taxonService.saveOrUpdate(taxon);
+     */
     @Test
     public void testCascadingInSpringSecurityAccesDenied(){
-        /*authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("partEditor", "test4"));
+
         SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-        */
-        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-
-        Taxon taxon =(Taxon) taxonService.load(ACHERONTIA_LACHESIS_UUID);
-        taxon.setDoubtful(false);
-        assertTrue(permissionEvaluator.hasPermission(authentication, taxon, "UPDATE"));
-        taxonService.save(taxon);
-        commitAndStartNewTransaction(null);
-        taxon = null;
-
-        //during cascading the permissions are not evaluated, but with hibernate listener every database transaction can be interrupted, but how to manage it,
-        //when someone has the rights to save descriptions, but not taxa (the editor always saves everything by saving the taxon)
-        //taxonService.saveOrUpdate(taxon);
-
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
-        context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        //taxonService.saveOrUpdate(taxon);
+        RuntimeException securityException = null;
 
-        taxon =(Taxon) taxonService.load(ACHERONTIA_LACHESIS_UUID);
+        Taxon taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("test");
-        descriptionService.saveOrUpdate(description);
-        commitAndStartNewTransaction(null);
+        try {
+            descriptionService.saveOrUpdate(description);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        /*
+         * Expectation:
+         * The user should not be granted to add the Description to a taxon
+         */
+        Assert.assertNotNull("evaluation should fail since the user is not permitted to Taxa", securityException);
         taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         assertTrue(taxon.getDescriptions().contains(description));
     }
@@ -386,7 +423,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.addElement(Distribution.NewInstance());
-        CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
+
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
 
         descriptionService.saveOrUpdate(description);
@@ -416,7 +453,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
-            logger.debug("Unexpected failure of evaluation.", securityException);
+            logger.debug("Unexpected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException

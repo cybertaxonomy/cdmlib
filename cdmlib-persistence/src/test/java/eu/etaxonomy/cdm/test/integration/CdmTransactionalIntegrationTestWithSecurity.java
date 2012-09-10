@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.test.integration;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,19 +12,23 @@ import eu.etaxonomy.cdm.database.EvaluationFailedException;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-securityTest.xml")
 public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTransactionalIntegrationTest {
 
+    public static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTestWithSecurity.class);
+
     /**
      * Finds a nested RuntimeExceptions of the types {@link EvaluationFailedException}, {@link AccessDeniedException}
-     * or returns <code>null</code>
+     * or returns null.
      * @param exception
      * @return
      */
     public static RuntimeException findSecurityRuntimeException(Throwable exception) {
+
         if( EvaluationFailedException.class.isInstance(exception) || AccessDeniedException.class.isInstance(exception) ){
             return (RuntimeException) exception;
         } else if(exception != null ){
             return findSecurityRuntimeException(exception.getCause());
         }
         return null;
+
     }
 
 

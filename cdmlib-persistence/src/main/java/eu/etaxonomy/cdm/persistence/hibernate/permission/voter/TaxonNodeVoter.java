@@ -40,7 +40,7 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
     protected Integer furtherVotingDescisions(AuthorityPermission authorityPermission, Object object, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
 
-        boolean isUuidMatchInParentNodes = validationResult.hasTargetUuid && findTargetUuidInParentNodes(authorityPermission.getTargetUUID(), (TaxonNode)object);
+        boolean isUuidMatchInParentNodes = authorityPermission.hasTargetUuid() && findTargetUuidInParentNodes(authorityPermission.getTargetUUID(), (TaxonNode)object);
         if ( isUuidMatchInParentNodes  && validationResult.isClassMatch && validationResult.isPermissionMatch){
             logger.debug("permission, class and uuid in parent nodes are matching => ACCESS_GRANTED");
             return ACCESS_GRANTED;
