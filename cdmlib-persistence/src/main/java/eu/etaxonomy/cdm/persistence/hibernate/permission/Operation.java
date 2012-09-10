@@ -9,9 +9,6 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.EnumSet;
-import java.util.Iterator;
-
-import com.sun.xml.internal.ws.api.pipe.NextAction;
 
 
 /**
@@ -19,16 +16,27 @@ import com.sun.xml.internal.ws.api.pipe.NextAction;
  * @date 06.07.2011
  *
  */
-public enum Operation {
-    CREATE, READ, UPDATE, DELETE;
+public class Operation {
 
-    final static public EnumSet<Operation> ALL = EnumSet.allOf(Operation.class);
+    private Operation(){
 
-    final static public EnumSet<Operation> ADMIN = ALL; // FIXME remove
+    }
 
-    final static public EnumSet<Operation> NONE = EnumSet.noneOf(Operation.class);
+    final static public EnumSet<CRUD> CREATE = EnumSet.of(CRUD.CREATE);
 
-    public static EnumSet<Operation> fromString(String string){
+    final static public EnumSet<CRUD> READ = EnumSet.of(CRUD.READ);
+
+    final static public EnumSet<CRUD> UPDATE = EnumSet.of(CRUD.UPDATE);
+
+    final static public EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
+
+    final static public EnumSet<CRUD> ALL = EnumSet.allOf(CRUD.class);
+
+    final static public EnumSet<CRUD> ADMIN = ALL; // FIXME remove
+
+    final static public EnumSet<CRUD> NONE = EnumSet.noneOf(CRUD.class);
+
+    public static EnumSet<CRUD> fromString(String string){
         if(string.equals("ALL")){
             return ALL;
         }
@@ -38,24 +46,17 @@ public enum Operation {
         if(string.equals("NONE")){
             return NONE;
         }
-        return EnumSet.of(Operation.valueOf(string));
+        return EnumSet.of(CRUD.valueOf(string));
     }
 
-    public EnumSet<Operation> asEnumSet(){
-        return EnumSet.of(this);
-    }
-
-    public static String namesOf(EnumSet<Operation> operation){
-        StringBuilder names = new StringBuilder();
-
-        for(Iterator<Operation> it = operation.iterator(); it.hasNext();){
-            if(names.length() > 0){
-                names.append(", ");
-            }
-            names.append(it.next().name());
+    public static boolean isOperation(Object o){
+        try {
+        return o instanceof EnumSet<?> && ALL.containsAll((EnumSet<?>)o);
+        } catch (Throwable e){
+            return false;
         }
-        return names.toString();
     }
+
 }
 
 

@@ -55,17 +55,17 @@ public class CdmAuthority implements ConfigAttribute {
 
     CdmPermissionClass permissionClass;
     String property;
-    EnumSet<Operation> operation;
+    EnumSet<CRUD> operation;
      UUID targetUuid;
 
-    public CdmAuthority(CdmBase targetDomainObject, EnumSet<Operation> operation, UUID uuid){
+    public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation, UUID uuid){
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         this.operation = operation;
         this.targetUuid = uuid;
     }
 
-     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<Operation> operation, UUID uuid){
+     public CdmAuthority(CdmBase targetDomainObject, String property, EnumSet<CRUD> operation, UUID uuid){
        this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = property;
         this.operation = operation;
@@ -73,7 +73,7 @@ public class CdmAuthority implements ConfigAttribute {
     }
 
 
-    public CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<Operation> operation, UUID uuid){
+    public CdmAuthority(CdmPermissionClass permissionClass, String property, EnumSet<CRUD> operation, UUID uuid){
         this.permissionClass = permissionClass;
         this.property = property;
         this.operation = operation;
@@ -117,7 +117,7 @@ public class CdmAuthority implements ConfigAttribute {
         return property;
     }
 
-    public EnumSet<Operation> getOperation(){
+    public EnumSet<CRUD> getOperation(){
         return operation;
     }
 

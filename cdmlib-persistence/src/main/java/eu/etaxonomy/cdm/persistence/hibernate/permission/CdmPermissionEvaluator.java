@@ -64,7 +64,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
 
         CdmAuthority evalPermission;
-        EnumSet<Operation> requiredOperation;
+        EnumSet<CRUD> requiredOperation;
 
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
@@ -79,20 +79,11 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         }
         try {
             // FIXME refactor into Operation ======
-            if (permission instanceof Operation){
-                requiredOperation = ((Operation)permission).asEnumSet();
-            } else if (permission instanceof EnumSet) {
-                requiredOperation = (EnumSet<Operation>)permission;
-                // perform some checks
-                if(requiredOperation.isEmpty()){
-                    throw new IllegalArgumentException("empty EnumSets not acceptable");
-                }
-                if(!(requiredOperation.iterator().next() instanceof Operation)){
-                    throw new IllegalArgumentException("EnumSet can only contain Operation");
-                }
+            if (Operation.isOperation(permission)){
+                requiredOperation = (EnumSet<CRUD>)permission;
             } else {
                 // try to treat as string
-                    requiredOperation = Operation.valueOf(permission.toString()).asEnumSet();
+                requiredOperation = Operation.fromString(permission.toString());
             }
             // =======================================
 

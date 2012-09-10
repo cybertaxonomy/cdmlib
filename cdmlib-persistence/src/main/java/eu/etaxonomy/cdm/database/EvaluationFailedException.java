@@ -8,6 +8,7 @@ import org.hibernate.HibernateException;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 
 
@@ -30,12 +31,12 @@ public class EvaluationFailedException extends HibernateException {
     }
 
     public EvaluationFailedException(Authentication authentication, CdmBase entity, Operation requiredOperation) {
-        super(requiredOperation.name() + " not permitted for '" + authentication.getName()
+        super(requiredOperation + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
-    public EvaluationFailedException(Authentication authentication, CdmBase entity, EnumSet<Operation> requiredOperation) {
-        super(Operation.namesOf(requiredOperation) + " not permitted for '" + authentication.getName()
+    public EvaluationFailedException(Authentication authentication, CdmBase entity, EnumSet<CRUD> requiredOperation) {
+        super(requiredOperation + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 

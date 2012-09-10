@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 
 import java.io.Serializable;
+import java.util.EnumSet;
 
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 /**
@@ -95,7 +97,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * @param entity
      * @param expectedOperation
      */
-    private void checkPermissions(CdmBase entity, Operation expectedOperation) {
+    private void checkPermissions(CdmBase entity, EnumSet<CRUD> expectedOperation) {
 
         if (!permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), entity, expectedOperation)){
             throw new EvaluationFailedException(SecurityContextHolder.getContext().getAuthentication(), entity, expectedOperation);
