@@ -91,10 +91,10 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
         try{
             //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-            evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
+            evalPermission = new AuthorityPermission((CdmBase)targetDomainObject, cdmPermission, ((CdmBase)targetDomainObject).getUuid());
         }catch(NullPointerException e){
             //evalPermission = new AuthorityPermission(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
-            evalPermission = new AuthorityPermission(targetDomainObject, cdmPermission, null);
+            evalPermission = new AuthorityPermission((CdmBase)targetDomainObject, cdmPermission, null);
         }
 
 

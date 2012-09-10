@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 import sun.security.provider.PolicyParser.ParsingException;
 
 /**
@@ -57,20 +59,27 @@ public class AuthorityPermission implements ConfigAttribute {
     CdmPermission permission;
      UUID targetUuid;
 
-    public AuthorityPermission(Object targetDomainObject, CdmPermission permission, UUID uuid){
+    public AuthorityPermission(CdmBase targetDomainObject, CdmPermission permission, UUID uuid){
         this.className = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = null;
         this.permission = permission;
         this.targetUuid = uuid;
     }
 
-    public AuthorityPermission(Object targetDomainObject, String property, CdmPermission permission, UUID uuid){
-        this.className = CdmPermissionClass.getValueOf(targetDomainObject);
+     public AuthorityPermission(CdmBase targetDomainObject, String property, CdmPermission permission, UUID uuid){
+       this.className = CdmPermissionClass.getValueOf(targetDomainObject);
         this.property = property;
         this.permission = permission;
         this.targetUuid = uuid;
     }
 
+
+    public AuthorityPermission(CdmPermissionClass permissionClass, String property, CdmPermission permission, UUID uuid){
+        this.className = permissionClass;
+        this.property = property;
+        this.permission = permission;
+        this.targetUuid = uuid;
+    }
 
     /**
      * Constructs a new AuthorityPermission by parsing the contents of an

@@ -41,8 +41,11 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -55,6 +58,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 
 @DataSet
 public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
+
+    private static final UUID UUID_ACHERONTINII = UUID.fromString("928a0167-98cd-4555-bf72-52116d067625");
 
     private static final UUID UUID_ACHERONTIA_STYX = UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331");
 
@@ -119,15 +124,14 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     private UsernamePasswordAuthenticationToken tokenForTaxonomist;
 
 
-
     @Before
     public void setUp(){
         /* User 'admin':
             - ROLE_ADMIN
+            - ALL.ADMIN
             - TAXONBASE.READ
             - TAXONBASE.CREATE
             - TAXONBASE.DELETE
-            - ALL.ADMIN
             - TAXONBASE.UPDATE
         */
         tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", PASSWORD_ADMIN);
@@ -139,16 +143,16 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
 
         /*  User 'descriptionEditor':
-            - DESCRIPTIONBASE(Ecology).CREATE
             - DESCRIPTIONBASE.CREATE
             - DESCRIPTIONBASE.UPDATE
-            - DESCRIPTIONBASE(Ecology).UPDATE
+            - DESCRIPTIONELEMENT(Ecology).CREATE
+            - DESCRIPTIONELEMENT(Ecology).UPDATE
          */
         tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
 
         /* User 'partEditor':
-            - TAXONNODE.CREATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
             - TAXONBASE.ADMIN
+            - TAXONNODE.CREATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
             - TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
          */
         tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
@@ -373,15 +377,10 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     }
 
-    /**
-     * during cascading the permissions are not evaluated, but with hibernate
-     * listener every database transaction can be interrupted, but how to manage
-     * it, when someone has the rights to save descriptions, but not taxa (the
-     * editor always saves everything by saving the taxon)
-     * taxonService.saveOrUpdate(taxon);
-     */
     @Test
-    public void testCascadingInSpringSecurityAccesDenied(){
+    @Ignore //FIXME: adding taxa to a description must be protected at the side of the Description itself!!
+            //        => protecting method TaxonDescription.setTaxon() ?
+    public void testAddDescriptionToTaxon(){
 
         SecurityContext context = SecurityContextHolder.getContext();
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
@@ -409,28 +408,97 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
          * Expectation:
          * The user should not be granted to add the Description to a taxon
          */
-        Assert.assertNotNull("evaluation should fail since the user is not permitted to Taxa", securityException);
+        Assert.assertNotNull("evaluation should fail since the user is not permitted to edit Taxa", securityException);
         taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         assertTrue(taxon.getDescriptions().contains(description));
     }
 
     @Test
-    public void testCascadingInSpring(){
+    public void testCreateDescriptionWithElement(){
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Taxon taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
-        TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        description.addElement(Distribution.NewInstance());
+        Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
+        Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
 
+        TaxonDescription description = null;
+
+        // 1) test for failure - description element but no feature
+        description = TaxonDescription.NewInstance(taxon);
+        DescriptionElementBase textdataNoFeature = TextData.NewInstance();
+        description.addElement(textdataNoFeature);
+
+        RuntimeException securityException = null;
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+        try{
+            descriptionService.saveOrUpdate(description);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
 
-        descriptionService.saveOrUpdate(description);
-
-        taxon = (Taxon)taxonService.load(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
+        Assert.assertNotNull("evaluation should fail", securityException);
+        taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
-        assertTrue(descriptions.contains(description));
+        assertTrue("taxon must not have any description", descriptions.size() == 0);
+
+        // 2) test for failure  - description element but not granted feature
+        description = TaxonDescription.NewInstance(taxon);
+        DescriptionElementBase descriptionText = TextData.NewInstance(Feature.DESCRIPTION());
+        description.addElement(descriptionText);
+
+        securityException = null;
+        assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+        try{
+            descriptionService.saveOrUpdate(description);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+
+        Assert.assertNotNull("evaluation should fail", securityException);
+        taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
+        descriptions = taxon.getDescriptions();
+        assertTrue("taxon must not have any description", descriptions.size() == 0);
+
+        // 3) test for failure
+        description = TaxonDescription.NewInstance(taxon);
+        DescriptionElementBase ecologyText = TextData.NewInstance(Feature.ECOLOGY());
+        description.addElement(ecologyText);
+
+        securityException = null;
+        assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
+        try{
+            descriptionService.saveOrUpdate(description);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Unexpected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+
+        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
+        descriptions = taxon.getDescriptions();
+        assertTrue("taxon must now have one description", descriptions.size() == 1);
+        assertTrue("description should have one description element", descriptions.iterator().next().getElements().size() == 1);
 
     }
 

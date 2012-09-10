@@ -152,6 +152,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                 //
                 Integer furtherVotingResult = furtherVotingDescisions(ap, object, attributes, vr);
                 if(furtherVotingResult != null && furtherVotingResult != ACCESS_ABSTAIN){
+                    logger.debug("furtherVotingResult => " + furtherVotingResult);
                     return furtherVotingResult;
                 }
 
