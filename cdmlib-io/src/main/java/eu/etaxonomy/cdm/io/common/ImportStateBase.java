@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -69,6 +70,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, NamedAreaLevel> namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
+	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
+	
 	
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
@@ -254,6 +257,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putFeature(Feature feature){
 		featureMap.put(feature.getUuid(), feature);
+	}
+	
+	public MeasurementUnit getMeasurementUnit(UUID uuid){
+		return measurementUnitMap.get(uuid);
+	}
+	
+	public void putMeasurementUnit(MeasurementUnit unit){
+		measurementUnitMap.put(unit.getUuid(), unit);
 	}
 	
 	public TaxonRelationshipType getTaxonRelationshipType(UUID uuid){

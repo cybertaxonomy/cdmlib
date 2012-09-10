@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -531,6 +532,28 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putFeature(feature);
 		}
 		return feature;
+	}
+	
+	protected MeasurementUnit getMeasurementUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MeasurementUnit> voc){
+		if (uuid == null){
+			return null;
+		}
+		MeasurementUnit unit = state.getMeasurementUnit(uuid);
+		if (unit == null){
+			unit = (MeasurementUnit)getTermService().find(uuid);
+			if (unit == null && ! hasNoLabel(label, description, labelAbbrev)){
+				unit = MeasurementUnit.NewInstance(description, label, labelAbbrev);
+				unit.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedFeatureVocabulary, "User defined vocabulary for measurement units", "User Defined Measurement Units", null, null, isOrdered, unit);
+				}
+				voc.addTerm(unit);
+				getTermService().save(unit);
+			}
+			state.putMeasurementUnit(unit);
+		}
+		return unit;
 	}
 	
 	/**
