@@ -91,6 +91,17 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 		return new StatisticalMeasurementValue();
 	}
 	
+	
+	/** 
+	 * Creates a new empty statistical measurement value instance.
+	 */
+	public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, float value){
+		StatisticalMeasurementValue result = new StatisticalMeasurementValue();
+		result.setValue(value);
+		result.setType(type);
+		return result;
+	}
+	
 	/** 
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
 	 * <i>this</i> statistical measurement value.
