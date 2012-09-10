@@ -71,6 +71,9 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             for(GrantedAuthority ga : authentication.getAuthorities()){
                 grantedAuthoritiesTxt.append("    - ").append(ga.getAuthority()).append("\n");
             }
+            if(grantedAuthoritiesTxt.length() == 0){
+                grantedAuthoritiesTxt.append("    - ").append("<No GrantedAuthority given>").append("\n");
+            }
             logger.debug("hasPermission()\n"
                     + "  User '" + authentication.getName() + "':\n"
                     + grantedAuthoritiesTxt

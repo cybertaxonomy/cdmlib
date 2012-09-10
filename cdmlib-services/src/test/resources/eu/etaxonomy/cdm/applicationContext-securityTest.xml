@@ -20,24 +20,11 @@
 
     <!--
         we need to repeat the security configuration here only for test since it is disabled in
-        src/main/resources !!!
+        cdmlib-services/src/main/resources !!!
      -->
     <security:global-method-security pre-post-annotations="enabled">
         <security:expression-handler ref="expressionHandler" />
     </security:global-method-security>
-
-    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
-        <property name="decisionVoters">
-            <list>
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNodeVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
-            </list>
-        </property>
-    </bean>
-
 
     <!--
         To use "hasPermission()" in the Spring EL method annotations like @PreAuthorize we explicitly configure the permissionEvaluator

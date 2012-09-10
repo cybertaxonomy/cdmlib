@@ -32,7 +32,7 @@ public class Operation {
 
     final static public EnumSet<CRUD> ALL = EnumSet.allOf(CRUD.class);
 
-    final static public EnumSet<CRUD> ADMIN = ALL; // FIXME remove
+    final static public EnumSet<CRUD> ADMIN = ALL; // FIXME remove?
 
     final static public EnumSet<CRUD> NONE = EnumSet.noneOf(CRUD.class);
 

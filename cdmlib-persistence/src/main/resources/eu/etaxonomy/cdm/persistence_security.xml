@@ -13,7 +13,21 @@
       <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-     <!-- CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}  -->
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
+        <property name="decisionVoters">
+            <list>
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNodeVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
+            </list>
+        </property>
+    </bean>
+
+    <!--
+        CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+    -->
     <bean id="cdmPermissionEvaluator" class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator">
         <property name="accessDecisionManager" ref="accessDecisionManager" />
     </bean>
