@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.Parameterized.Parameters;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -233,14 +234,15 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-    public void testChangeOthersPassword(){
+    public void testChangeOthersPasswordAllow(){
 
         SecurityContext context = SecurityContextHolder.getContext();
+        RuntimeException exception = null;
+
         // (1) authenticate as admin
         authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
 
-        RuntimeException exception = null;
 
         try{
             userService.changePasswordForUser("taxonomist", "zuaisd");
@@ -250,7 +252,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             exception = e;
         } catch (RuntimeException e){
             exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
-            logger.debug("Unexpected failure of evaluation.", exception);
+            logger.error("Unexpected failure of evaluation.", exception);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -262,6 +264,13 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         // ok, now try authenticating taxonomist with new password
         UsernamePasswordAuthenticationToken newToken = new UsernamePasswordAuthenticationToken("taxonomist", "zuaisd");
         authentication = authenticationManager.authenticate(newToken);
+    }
+
+    @Test
+    public void testChangeOthersPasswordDeny(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        RuntimeException exception = null;
 
         // (2) authenticate as under privileged user - not an admin !!!
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
@@ -313,23 +322,27 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     }
 
+    /**
+     * test with admin account - should succeed
+     */
     @Test
-    public final void testSaveOrUpdateTaxon() {
+    public final void testSaveOrUpdateTaxonAllow_1() {
+
         SecurityContext context = SecurityContextHolder.getContext();
 
-        // 1) test with admin account - should succeed
         authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
+        RuntimeException securityException= null;
 
         TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
-        RuntimeException securityException= null;
         try{
             taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
-            logger.error("Unexpected failure of evaluation.", securityException);
+            logger.error("Unexpected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -340,20 +353,32 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         // reload taxon
         taxon = taxonService.load(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
+    }
 
-        // 2) test with taxonEditor account - should succeed
+    /**
+     * test with taxonEditor account - should succeed
+     */
+    @Test
+    public final void testSaveOrUpdateTaxonAllow_2() {
+
+
+        RuntimeException securityException= null;
+        SecurityContext context = SecurityContextHolder.getContext();
+
+         // taxonEditor account - should succeed
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+
         context.setAuthentication(authentication);
 
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
-        taxon.setDoubtful(false);
-        securityException= null;
+        TaxonBase<?>  taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        Assert.assertFalse(taxon.isDoubtful());
+        taxon.setDoubtful(true);
         try{
             taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
-            logger.debug("Unexpected failure of evaluation.", securityException);
+            logger.error("Unexpected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -363,16 +388,42 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
         taxon = taxonService.load(UUID_ACHERONTIA_STYX);
-        Assert.assertFalse("The change must be persited", taxon.isDoubtful());
+        Assert.assertTrue("The change must be persited", taxon.isDoubtful());
+    }
 
-        // 3) test with tokenForDescriptionEditor account - should fail
-//        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
-//        context.setAuthentication(authentication);
-//        taxon = taxonService.load(uuid);
-//
-//        taxon.setDoubtful(true);
-//        taxonService.saveOrUpdate(taxon);
-//        commitAndStartNewTransaction(null);
+    /**
+     * test with tokenForDescriptionEditor account - should fail
+     */
+    @Test
+    public final void testSaveOrUpdateTaxonDeny_2() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        RuntimeException securityException = null;
+
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+        context.setAuthentication(authentication);
+
+        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+
+        Assert.assertFalse(taxon.isDoubtful());
+        taxon.setDoubtful(true);
+        try {
+            taxonService.saveOrUpdate(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+
+//        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        // reload taxon
+        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
 
     }
 
@@ -414,21 +465,22 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Test
     public void testCreateDescriptionWithElement(){
-        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+
         SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
+        TaxonDescription description = null;
+        RuntimeException securityException = null;
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
 
-        TaxonDescription description = null;
 
         // 1) test for failure - description element but no feature
         description = TaxonDescription.NewInstance(taxon);
         DescriptionElementBase textdataNoFeature = TextData.NewInstance();
         description.addElement(textdataNoFeature);
 
-        RuntimeException securityException = null;
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
         try{
             descriptionService.saveOrUpdate(description);
@@ -447,6 +499,20 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
         assertTrue("taxon must not have any description", descriptions.size() == 0);
+
+    }
+
+    @Test
+    public void testCreateDescriptionWithElementDeny_1(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+        context.setAuthentication(authentication);
+
+        TaxonDescription description = null;
+        RuntimeException securityException = null;
+        Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
+        Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
 
         // 2) test for failure  - description element but not granted feature
         description = TaxonDescription.NewInstance(taxon);
@@ -470,8 +536,22 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Assert.assertNotNull("evaluation should fail", securityException);
         taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
-        descriptions = taxon.getDescriptions();
+        Set<TaxonDescription> descriptions = taxon.getDescriptions();
         assertTrue("taxon must not have any description", descriptions.size() == 0);
+
+    }
+
+    @Test
+    public void testCreateDescriptionWithElementDeny_2(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+        context.setAuthentication(authentication);
+
+        TaxonDescription description = null;
+        RuntimeException securityException = null;
+        Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
+        Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
 
         // 3) test for failure
         description = TaxonDescription.NewInstance(taxon);
@@ -485,7 +565,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
-            logger.debug("Unexpected failure of evaluation.", e);
+            logger.error("Unexpected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -495,22 +575,21 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
-        descriptions = taxon.getDescriptions();
+        Set<TaxonDescription> descriptions = taxon.getDescriptions();
         assertTrue("taxon must now have one description", descriptions.size() == 1);
         assertTrue("description should have one description element", descriptions.iterator().next().getElements().size() == 1);
-
     }
 
     @Test
-    public void testSaveSynonym(){
+    public void testSaveSynonymAllow(){
 
         SecurityContext context = SecurityContextHolder.getContext();
+        RuntimeException securityException = null;
 
         // 1) test for success
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
         context.setAuthentication(authentication);
 
-        RuntimeException securityException = null;
         Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
         UUID synUuid = UUID.randomUUID();
         syn.setUuid(synUuid);
@@ -520,7 +599,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
-            logger.debug("Unexpected failure of evaluation.", e);
+            logger.error("Unexpected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -529,13 +608,19 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         Assert.assertNotNull("The new Synonym must be persited", taxonService.find(synUuid));
+    }
 
+    @Test
+    public void testSaveSynonymDenial(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        RuntimeException securityException = null;
         // 2) test for denial
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
         securityException = null;
-        syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
-        synUuid = syn.getUuid();
+        Synonym syn = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        UUID synUuid = syn.getUuid();
         try{
             taxonService.saveOrUpdate(syn);
             logger.debug("will commit ...");
@@ -555,23 +640,14 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-    public void testEditPartOfClassification(){
-        /*
-         * the user 'partEditor' has the following authorities:
-         *
-         *  - TAXONNODE.CREATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
-         *  - TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
-         *
-         *  that is 'partEditor' is granted to edit the subtree of
-         *  which ACHERONTIA_NODE_UUID [20c8f083-5870-4cbd-bf56-c5b2b98ab6a7] is the root node.
-         */
+    public void testEditPartOfClassificationAllow(){
 
         authentication = authenticationManager.authenticate(tokenForPartEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
+        RuntimeException securityException = null;
 
         // test for success
-        RuntimeException securityException = null;
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
         TaxonNode childNode = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
@@ -581,7 +657,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
-            logger.debug("Unexpected failure of evaluation.", securityException);
+            logger.error("Unexpected failure of evaluation.", securityException);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -592,11 +668,20 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         Assert.assertEquals("the acherontia_node must now have one more child node ", numOfChildNodes + 1 , acherontia_node.getChildNodes().size());
+    }
+
+    @Test
+    public void testEditPartOfClassificationDeny(){
+
+        authentication = authenticationManager.authenticate(tokenForPartEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        RuntimeException securityException = null;
 
         // test for denial
         securityException = null;
         TaxonNode acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
-        numOfChildNodes = acherontiini_node.getCountChildren();
+        int numOfChildNodes = acherontiini_node.getCountChildren();
         acherontiini_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
 
         try{
@@ -618,17 +703,5 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertEquals("the number of child nodes must be unchanged ", numOfChildNodes , acherontiini_node.getChildNodes().size());
 
     }
-
-    public static void main(String[] args){
-        Md5PasswordEncoder encoder =new Md5PasswordEncoder();
-
-        ReflectionSaltSource saltSource = new ReflectionSaltSource();
-        saltSource.setUserPropertyToUse("getUsername");
-        User user = User.NewInstance("taxonomist", "test4");
-        System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
-    }
-
-
-
 
 }

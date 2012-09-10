@@ -38,6 +38,7 @@ import sun.security.provider.PolicyParser.ParsingException;
  * TAXONBASE.UPDATE
  * TAXONBASE.DELETE
  * DESCRIPTIONBASE.UPDATE
+ * DESCRIPTIONELEMENTBASE(Ecology).UPDATE
  * TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
  * </pre>
  *
