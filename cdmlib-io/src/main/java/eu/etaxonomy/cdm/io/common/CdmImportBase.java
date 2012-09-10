@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -95,6 +96,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
 	public static final UUID uuidUserDefinedMarkerTypeVocabulary = UUID.fromString("5f02a261-fd7d-4fce-bbe4-21472de8cd51");
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
+	
+	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
+	
 	
 	
 	private static final String UuidOnly = "UUIDOnly";
@@ -601,6 +605,39 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putStatisticalMeasure(statisticalMeasure);
 		}
 		return statisticalMeasure;
+	}
+	
+	/**
+	 * Returns a {@link Modifier} for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the {@link Modifier} exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no {@link Modifier} is created.
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected Modifier getModifier(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Modifier> voc){
+		if (uuid == null){
+			return null;
+		}
+		Modifier modifier = state.getModifier(uuid);
+		if (modifier == null){
+			modifier = (Modifier)getTermService().find(uuid);
+			if (modifier == null && ! hasNoLabel(label, description, labelAbbrev)){
+				modifier = Modifier.NewInstance(description, label, labelAbbrev);
+				modifier.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedModifierVocabulary, "User defined vocabulary for modifier", "User Defined Modifier", null, null, isOrdered, modifier);
+				}
+				voc.addTerm(modifier);
+				getTermService().save(modifier);
+			}
+			state.putModifier(modifier);
+		}
+		return modifier;
 	}
 	
 	/**

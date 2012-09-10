@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -73,7 +74,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
 	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
 	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
-	
+	private Map<UUID, Modifier> modifierMap = new HashMap<UUID, Modifier>();
 	
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
@@ -275,6 +276,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public void putMeasurementUnit(MeasurementUnit unit){
 		measurementUnitMap.put(unit.getUuid(), unit);
+	}
+	
+	public Modifier getModifier(UUID uuid){
+		return modifierMap.get(uuid);
+	}
+	
+	public void putModifier(Modifier unit){
+		modifierMap.put(unit.getUuid(), unit);
 	}
 	
 	public TaxonRelationshipType getTaxonRelationshipType(UUID uuid){
