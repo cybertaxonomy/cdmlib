@@ -214,7 +214,6 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-    @Ignore //FIXME no need to test this, no access controll needed for userService.changePassword
     public void testChangeOwnPassword(){
 
         SecurityContext context = SecurityContextHolder.getContext();
