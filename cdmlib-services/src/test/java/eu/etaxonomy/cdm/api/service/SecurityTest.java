@@ -36,7 +36,9 @@ import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.ReflectionSaltSource;
+import org.springframework.security.authentication.dao.SaltSource;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -125,14 +127,33 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
 
 
-    private UsernamePasswordAuthenticationToken token;
+    private UsernamePasswordAuthenticationToken tokenForAdmin;
+
+    @SpringBeanByType
+    private SaltSource saltSource;
+
+    @SpringBeanByType
+    private PasswordEncoder passwordEncoder;
 
 
     @Before
     public void setUp(){
-        token = new UsernamePasswordAuthenticationToken("ben", "sPePhAz6");
+        tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", "sPePhAz6");
     }
 
+    /**
+     * no assertions in this test, since it is only used to create password hashes for test data
+     */
+    @Test
+    public void testEncryptPassword(){
+
+        String password = "sPePhAz6";
+        User user = User.NewInstance("admin", "");
+
+        Object salt = this.saltSource.getSalt(user);
+        String passwordEncrypted = passwordEncoder.encodePassword(password, salt);
+        logger.info("encrypted password: " + passwordEncrypted );
+    }
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
@@ -147,7 +168,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
 
         */
-        authentication = authenticationManager.authenticate(token);
+        authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
@@ -157,8 +178,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         TaxonBase<?> actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
-        token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
-        authentication = authenticationManager.authenticate(token);
+        tokenForAdmin = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
+        authentication = authenticationManager.authenticate(tokenForAdmin);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
@@ -167,9 +188,29 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
+    public void testChangePassword(){
+
+        authentication = authenticationManager.authenticate(tokenForAdmin);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        String username = "standardUser";
+        String password = "pw";
+        User user = User.NewInstance(username, password);
+
+        userService.createUser(user);
+        user.setEmailAddress("test@bgbm.org");
+
+        userService.updateUser(user);
+        userService.update(user);
+        userService.saveOrUpdate(user);
+
+    }
+
+    @Test
     public void testUpdateUser(){
 
-        authentication = authenticationManager.authenticate(token);
+        authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         String username = "standardUser";
@@ -187,7 +228,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Test
     public final void testSaveOrUpdateTaxon() {
-        authentication = authenticationManager.authenticate(token);
+        authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
@@ -198,8 +239,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         actualTaxon.setName(BotanicalName.NewInstance(Rank.SPECIES()));
         taxonService.saveOrUpdate(actualTaxon);
 
-        token = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
-        authentication = authenticationManager.authenticate(token);
+        tokenForAdmin = new UsernamePasswordAuthenticationToken("taxonEditor", "test2");
+        authentication = authenticationManager.authenticate(tokenForAdmin);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         actualTaxon = taxonService.load(uuid);
