@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -87,6 +88,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedExtensionTypeVocabulary = UUID.fromString("e28c1394-1be8-4847-8b81-ab44eb6d5bc8");
 	public static final UUID uuidUserDefinedReferenceSystemVocabulary = UUID.fromString("467591a3-10b4-4bf1-9239-f06ece33e90a");
 	public static final UUID uuidUserDefinedFeatureVocabulary = UUID.fromString("fe5fccb3-a2f2-4b97-b199-6e2743cf1627");
+	public static final UUID uuidUserDefinedMeasurementUnitVocabulary = UUID.fromString("d5e72bb7-f312-4080-bb86-c695d04a6e66");
+	public static final UUID uuidUserDefinedStatisticalMeasureVocabulary = UUID.fromString("62a89836-c730-4b4f-a904-3d859dbfc400");
 	public static final UUID uuidUserDefinedStateVocabulary = UUID.fromString("f7cddb49-8392-4db1-8640-65b48a0e6d13");
 	public static final UUID uuidUserDefinedTaxonRelationshipTypeVocabulary = UUID.fromString("31a324dc-408d-4877-891f-098db21744c6");
 	public static final UUID uuidUserDefinedAnnotationTypeVocabulary = UUID.fromString("cd9ecdd2-9cae-4890-9032-ad83293ae883");
@@ -534,6 +537,17 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return feature;
 	}
 	
+	/**
+	 * Returns a {@link MeasurementUnit} for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the {@link MeasurementUnit} exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no {@link MeasurementUnit} is created.
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
 	protected MeasurementUnit getMeasurementUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<MeasurementUnit> voc){
 		if (uuid == null){
 			return null;
@@ -546,7 +560,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				unit.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = false;
-					voc = getVocabulary(uuidUserDefinedFeatureVocabulary, "User defined vocabulary for measurement units", "User Defined Measurement Units", null, null, isOrdered, unit);
+					voc = getVocabulary(uuidUserDefinedMeasurementUnitVocabulary, "User defined vocabulary for measurement units", "User Defined Measurement Units", null, null, isOrdered, unit);
 				}
 				voc.addTerm(unit);
 				getTermService().save(unit);
@@ -554,6 +568,39 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putMeasurementUnit(unit);
 		}
 		return unit;
+	}
+	
+	/**
+	 * Returns a {@link StatisticalMeasure} for a given uuid by first checking if the uuid has already been used in this import, if not
+	 * checking if the {@link StatisticalMeasure} exists in the database, if not creating it anew (with vocabulary etc.).
+	 * If label, text and labelAbbrev are all <code>null</code> no {@link StatisticalMeasure} is created.
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @return
+	 */
+	protected StatisticalMeasure getStatisticalMeasure(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<StatisticalMeasure> voc){
+		if (uuid == null){
+			return null;
+		}
+		StatisticalMeasure statisticalMeasure = state.getStatisticalMeasure(uuid);
+		if (statisticalMeasure == null){
+			statisticalMeasure = (StatisticalMeasure)getTermService().find(uuid);
+			if (statisticalMeasure == null && ! hasNoLabel(label, description, labelAbbrev)){
+				statisticalMeasure = StatisticalMeasure.NewInstance(description, label, labelAbbrev);
+				statisticalMeasure.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(uuidUserDefinedStatisticalMeasureVocabulary, "User defined vocabulary for statistical measures", "User Defined Statistical Measures", null, null, isOrdered, statisticalMeasure);
+				}
+				voc.addTerm(statisticalMeasure);
+				getTermService().save(statisticalMeasure);
+			}
+			state.putStatisticalMeasure(statisticalMeasure);
+		}
+		return statisticalMeasure;
 	}
 	
 	/**

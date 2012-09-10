@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -71,6 +72,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
 	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
+	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
 	
 	
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
@@ -261,6 +263,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	
 	public MeasurementUnit getMeasurementUnit(UUID uuid){
 		return measurementUnitMap.get(uuid);
+	}
+	
+	public void putStatisticalMeasure(StatisticalMeasure unit){
+		statisticalMeasureMap.put(unit.getUuid(), unit);
+	}
+	
+	public StatisticalMeasure getStatisticalMeasure(UUID uuid){
+		return statisticalMeasureMap.get(uuid);
 	}
 	
 	public void putMeasurementUnit(MeasurementUnit unit){
