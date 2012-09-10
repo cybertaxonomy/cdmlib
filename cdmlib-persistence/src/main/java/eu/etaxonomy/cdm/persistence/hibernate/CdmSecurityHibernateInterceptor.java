@@ -51,17 +51,14 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     /* (non-Javadoc)
      * @see org.hibernate.EmptyInterceptor#onSave(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
      */
-    public boolean onSave(Object entity,
-            Serializable id,
-            Object[] state,
-            String[] propertyNames,
-            Type[] type) {
+    @Override
+    public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] type) {
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase) ) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase)) {
             return true;
         }
         // evaluate throws EvaluationFailedException
-        checkPermissions((CdmBase)entity, Operation.CREATE);
+        checkPermissions((CdmBase) entity, Operation.CREATE);
         logger.debug("permission check suceeded - object creation granted");
         return true;
     }
@@ -70,19 +67,15 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     /* (non-Javadoc)
      * @see org.hibernate.EmptyInterceptor#onFlushDirty(java.lang.Object, java.io.Serializable, java.lang.Object[], java.lang.Object[], java.lang.String[], org.hibernate.type.Type[])
      */
-    public boolean onFlushDirty(Object entity,
-            Serializable id,
-            Object[] currentState,
-            Object[] previousState,
-            String[] propertyNames,
-            Type[] types) {
+    @Override
+    public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase) ) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase)) {
             return true;
         }
-        CdmBase cdmEntity = (CdmBase)entity;
+        CdmBase cdmEntity = (CdmBase) entity;
 
-        if (isModified(currentState, previousState)){
+        if (isModified(currentState, previousState)) {
             // evaluate throws EvaluationFailedException
             checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("permission check suceeded - object update granted");
@@ -112,17 +105,17 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * @return true if the currentState and previousState differ.
      */
     private boolean isModified(Object[] currentState, Object[] previousState) {
-        boolean equals = true;
+        boolean isModified = false;
         for (int i = 0; i<currentState.length; i++){
             if (currentState[i]== null ) {
                 if ( previousState[i]!= null) {
-                    equals = false;
+                    isModified = true;
                     break;
                 }
             }
             if (currentState[i]!= null ){
                 if (previousState == null){
-                    equals = false;
+                    isModified = true;
                     break;
                 }
             }
@@ -130,12 +123,12 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
                 Object a = currentState[i];
                 Object b = previousState[i];
                 if (!currentState[i].equals(previousState[i])) {
-                    equals = false;
+                    isModified = true;
                     break;
                 }
             }
         }
-        return equals;
+        return isModified;
     }
 
 
