@@ -26,12 +26,27 @@
         <security:expression-handler ref="expressionHandler" />
     </security:global-method-security>
 
-    <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator" />
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
+        <property name="decisionVoters">
 
+        </property>
+    </bean>
+
+    <!-- CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}  -->
+    <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator">
+        <property name="accessDecisionManager" ref="accessDecisionManager" />
+    </bean>
+
+    <!-- To use "hasPermission()" in the Spring EL method annotations like @PreAuthorize we explicitly configure the permissionEvaluator  -->
     <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
     </bean>
 
+    <!-- The CdmSecurityHibernateInterceptor checks onSave() and on flushDirty() if the currently authenticated principal or token  has
+    sufficient permissions on the entity to be persisted -->
+    <bean id="securityHibernateInterceptor" class="eu.etaxonomy.cdm.persistence.hibernate.CdmSecurityHibernateInterceptor">
+        <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
+    </bean>
 
     <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
     </bean>

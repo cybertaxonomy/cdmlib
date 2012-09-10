@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +33,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
+
+    private AccessDecisionManager accessDecisionManager;
+
+    public AccessDecisionManager getAccessDecisionManager() {
+        return accessDecisionManager;
+    }
+
+    public void setAccessDecisionManager(AccessDecisionManager accessDecisionManager) {
+        this.accessDecisionManager = accessDecisionManager;
+    }
 
     /* (non-Javadoc)
      * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.io.Serializable, java.lang.String, java.lang.Object)
@@ -67,17 +78,6 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
         if (!(permission instanceof CdmPermission)){
             String permissionString = permission.toString();
-            /*
-             * if (permissionString.equals("changePassword")){
-                if (targetDomainObject.equals(((User)authentication.getPrincipal()))){
-                    return true;
-                }else{
-                    cdmPermission = CdmPermission.ADMIN;
-                }
-            }else{
-                cdmPermission = CdmPermission.valueOf(permissionString);
-            }
-            */
             try {
                 cdmPermission = CdmPermission.valueOf(permission.toString());
             } catch (IllegalArgumentException e) {
@@ -86,6 +86,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         }else {
             cdmPermission = (CdmPermission)permission;
         }
+
 
         Collection<GrantedAuthority> authorities = ((User)authentication.getPrincipal()).getAuthorities();
 
@@ -107,6 +108,11 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     }
 
+    /**
+     * @param targetUuid
+     * @param node
+     * @return
+     */
     private TaxonNode findTargetUuidInTree(UUID targetUuid, TaxonNode node){
         if (targetUuid.equals(node.getUuid()))
             return node;
@@ -117,6 +123,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     }
 
 
+    /**
+     * @param authorities
+     * @param evalPermission
+     * @param targetDomainObject
+     * @return
+     */
     public boolean evalPermission(Collection<GrantedAuthority> authorities, AuthorityPermission evalPermission, CdmBase targetDomainObject){
 
         //if user has administrator rights return true;

@@ -258,6 +258,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertEquals("descriptionEditor", context.getAuthentication().getName());
         Collection<GrantedAuthority> authorities = context.getAuthentication().getAuthorities();
         for(GrantedAuthority authority: authorities){
+            // role prefix 'ROLE_' is defined in org.springframework.security.access.vote.RoleVoter !!!
             Assert.assertNotSame("user must not have authority 'ROLE_ADMIN'", "ROLE_ADMIN", authority.getAuthority());
         }
         // finally perform the test :

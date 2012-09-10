@@ -33,7 +33,15 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     private static final long serialVersionUID = 8477758472369568074L;
 
-    private CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator(); //FIXME use injection instead
+    private CdmPermissionEvaluator permissionEvaluator;
+
+    public CdmPermissionEvaluator getPermissionEvaluator() {
+        return permissionEvaluator;
+    }
+
+    public void setPermissionEvaluator(CdmPermissionEvaluator permissionEvaluator) {
+        this.permissionEvaluator = permissionEvaluator;
+    }
 
 
     /* (non-Javadoc)
