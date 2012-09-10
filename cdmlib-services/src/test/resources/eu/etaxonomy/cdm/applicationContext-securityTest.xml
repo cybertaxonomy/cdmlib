@@ -28,8 +28,7 @@
 
     <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator" />
 
-    <bean id="expressionHandler"
-        class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
     </bean>
 

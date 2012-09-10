@@ -8,6 +8,14 @@ import org.springframework.security.core.Authentication;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermission;
 
+
+/**
+ * FIXME Rename to PermissionDeniedException ???
+ *
+ * @author andreas
+ * @date Sep 4, 2012
+ *
+ */
 public class EvaluationFailedException extends HibernateException {
     private static final Logger logger = Logger
             .getLogger(EvaluationFailedException.class);

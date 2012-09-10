@@ -118,7 +118,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @Transactional(readOnly=false)
-
     public void changePassword(String oldPassword, String newPassword) {
         Assert.hasText(oldPassword);
         Assert.hasText(newPassword);
@@ -143,6 +142,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @Transactional(readOnly=false)
+    @PreAuthorize("#username == authentication.name or hasRole('ROLE_ADMIN')")
     public void changePasswordForUser(String username, String newPassword) {
         Assert.hasText(username);
         Assert.hasText(newPassword);

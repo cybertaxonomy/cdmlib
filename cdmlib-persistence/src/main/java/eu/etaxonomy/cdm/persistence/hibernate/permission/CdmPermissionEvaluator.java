@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author k.luther
  * @date 06.07.2011
  */
+@Component
 public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
@@ -45,12 +47,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     /* (non-Javadoc)
      * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
      */
-    public boolean hasPermission(Authentication authentication,
-            Object targetDomainObject, Object permission) {
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
 
         AuthorityPermission evalPermission;
         CdmPermission cdmPermission;
+
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
             for(GrantedAuthority ga : authentication.getAuthorities()){
@@ -62,9 +64,11 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                         + "  Permission: " + permission);
             }
         }
+
         if (!(permission instanceof CdmPermission)){
-            String permissionString = (String)permission;
-            if (permissionString.equals("changePassword")){
+            String permissionString = permission.toString();
+            /*
+             * if (permissionString.equals("changePassword")){
                 if (targetDomainObject.equals(((User)authentication.getPrincipal()))){
                     return true;
                 }else{
@@ -72,6 +76,12 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
                 }
             }else{
                 cdmPermission = CdmPermission.valueOf(permissionString);
+            }
+            */
+            try {
+                cdmPermission = CdmPermission.valueOf(permission.toString());
+            } catch (IllegalArgumentException e) {
+                return true; // it might be wrong to return true
             }
         }else {
             cdmPermission = (CdmPermission)permission;

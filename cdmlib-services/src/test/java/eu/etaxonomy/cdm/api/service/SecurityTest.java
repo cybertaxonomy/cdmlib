@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateSystemException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -204,6 +205,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
+    @Ignore //FIXME no need to test this, no access controll needed for userService.changePassword
     public void testChangeOwnPassword(){
 
         SecurityContext context = SecurityContextHolder.getContext();
@@ -223,7 +225,6 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     }
 
     @Test
-    @Ignore // second part fails; changePasswordForUser seems unprotected !!
     public void testChangeOthersPassword(){
 
         SecurityContext context = SecurityContextHolder.getContext();
@@ -231,18 +232,22 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
 
-        EvaluationFailedException evaluationFailedException = null;
+        RuntimeException exception = null;
+
         try{
             userService.changePasswordForUser("taxonomist", "zuaisd");
             commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.debug("Unexpected failure of evaluation.", e);
+            exception = e;
         } catch (RuntimeException e){
-            evaluationFailedException = findEvaluationFailedExceptionIn(e);
-            logger.debug("Unexpected failure of evaluation.", evaluationFailedException);
+            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            logger.debug("Unexpected failure of evaluation.", exception);
         }
-        Assert.assertNull("must not fail here!", evaluationFailedException);
+        Assert.assertNull("must not fail here!", exception);
 
-        // ok, now try authenticating partEditor with new password
-        UsernamePasswordAuthenticationToken newToken = new UsernamePasswordAuthenticationToken("partEditor", "poiweorijo");
+        // ok, now try authenticating taxonomist with new password
+        UsernamePasswordAuthenticationToken newToken = new UsernamePasswordAuthenticationToken("taxonomist", "zuaisd");
         authentication = authenticationManager.authenticate(newToken);
 
         // (2) authenticate as under privileged user - not an admin !!!
@@ -253,16 +258,20 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertEquals("descriptionEditor", context.getAuthentication().getName());
         Collection<GrantedAuthority> authorities = context.getAuthentication().getAuthorities();
         for(GrantedAuthority authority: authorities){
-            Assert.assertNotSame("user must not have authority 'ALL.ADMIN'", "ALL.ADMIN", authority.getAuthority());
+            Assert.assertNotSame("user must not have authority 'ROLE_ADMIN'", "ROLE_ADMIN", authority.getAuthority());
         }
         // finally perform the test :
         try{
             userService.changePasswordForUser("partEditor", "poiweorijo");
             commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.debug("Expected failure of evaluation.", e);
+            exception = e;
         } catch (RuntimeException e){
-            evaluationFailedException = findEvaluationFailedExceptionIn(e);
+            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            logger.debug("Expected failure of evaluation.", exception);
         }
-        Assert.assertNotNull("must fail here!", evaluationFailedException);
+        Assert.assertNotNull("must fail here!", exception);
     }
 
     @Test
