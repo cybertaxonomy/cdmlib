@@ -1316,6 +1316,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permissi
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/DescriptionPermissionEvaluator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/CdmPermissionVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/DescriptionBaseVoter.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/DescriptionElementVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/GrantAlwaysVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/TaxonBaseVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/TaxonNodeVoter.java -text
