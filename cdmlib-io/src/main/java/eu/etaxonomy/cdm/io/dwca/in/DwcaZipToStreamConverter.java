@@ -249,7 +249,12 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	 * @throws IOException
 	 */
 	private InputStream makeInputStream(String name) throws IOException {
-		ZipFile zip = new ZipFile(new File(dwcaZip), ZipFile.OPEN_READ);
+		File file = new File(dwcaZip);
+		if (! file.isFile() || ! file.exists()){
+			String message = "URI is not a file: %s";
+			throw new IOException(String.format(message, dwcaZip.toString()));
+		}
+		ZipFile zip = new ZipFile(file, ZipFile.OPEN_READ);
 		ZipEntry metaEntry = zip.getEntry(name);
 		if (metaEntry == null){
 			String message = "Zip entry for %s not available";
