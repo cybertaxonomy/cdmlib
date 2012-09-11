@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,14 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 /**
  * 
  * @author a.mueller
@@ -297,6 +300,17 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		throw new IllegalArgumentException(warning);
 	}
 	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmImportBase#getFeature(eu.etaxonomy.cdm.io.common.ImportStateBase, java.util.UUID, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+	//Make public to allow to use by converters
+	@Override
+	public Feature getFeature(DwcaImportState state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<Feature> voc) {
+		return super.getFeature(state, uuid, label, description, labelAbbrev, voc);
+	}
 
 	@Override
 	protected boolean doCheck(DwcaImportState state) {
