@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-	<import resource="classpath:/eu/etaxonomy/cdm/services.xml"/>
-	<import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/>
-	<!-- <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> -->
+  <import resource="classpath:/eu/etaxonomy/cdm/services_security.xml"/>
+  <!-- <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> -->
 
+  <context:component-scan base-package="eu/etaxonomy/cdm/api/service">
+  </context:component-scan>
 
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
-		<!--  <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/> -->
-	</context:component-scan>
+  <context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
 
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
+  <!-- EditGeoService was moved to ext. It is no longer available here -->
 
-	<!-- EditGeoService was moved to ext. It is no longer available here -->
+  <bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder" scope="prototype"/>
 
-	<bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder"
-		scope="prototype"/>
+  <!-- TODO move to io -->
+  <context:component-scan base-package="eu/etaxonomy/cdm/io">
+    <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
+  </context:component-scan>
 
-	<!-- TODO move to io -->
-	<context:component-scan base-package="eu/etaxonomy/cdm/io">
-		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
-	</context:component-scan>
-
-	<!-- enable the configuration of transactional behavior based on annotations -->
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+  <!-- enable the configuration of transactional behavior based on annotations -->
+  <tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans>
