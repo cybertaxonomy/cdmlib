@@ -26,6 +26,8 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportTransformer.class);
 
+	private static final UUID uuidFeatureBiology = UUID.fromString("daf92173-a262-49f1-9a45-923941d9c557");
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
 	 */
@@ -33,10 +35,28 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		if (key == null){
 			return null;
-		}else if (key.equalsIgnoreCase("morphology")){
-			return Feature.ANATOMY();
+		}else if (key.equalsIgnoreCase("ecology")){
+			return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("general_description")){
+			return Feature.DESCRIPTION();
+		}else if (key.equalsIgnoreCase("diagnostic_description")){
+			return Feature.DIAGNOSIS();
+		}else if (key.equalsIgnoreCase("conservation_status")){
+			return Feature.CONSERVATION();
+		}else if (key.equalsIgnoreCase("associations")){
+			return Feature.INDIVIDUALS_ASSOCIATION();   //correct ?
+		}else if (key.equalsIgnoreCase("distribution")){
+			return Feature.DISTRIBUTION();
+		}else if (key.equalsIgnoreCase("habitat")){
+			return Feature.HABITAT();
+		}else if (key.equalsIgnoreCase("uses")){
+			return Feature.USES();
 		}
-		return super.getFeatureByKey(key);
+		
+
+
+		
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +64,41 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 	 */
 	@Override
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
-		return super.getFeatureUuid(key);
+		if (key == null){
+			return null;
+		}else if (key.equalsIgnoreCase("biology")){
+			return uuidFeatureBiology;
+		}
+
+		//TODO from eMonocots scratchpad
+//		morphology
+//		behavious
+//		diseases
+//		dispersal
+//		legislation
+//		management
+//		threats
+//		cyclicity
+//		management
+//		
+//		evolution
+//		genetics
+//		growth
+//		life_cycle
+//		life_expectancy
+//		look_alikes
+//		migration
+//		molecular_biology
+//		physiology
+//		population_biology
+//		reproduction
+//		risk_statement
+//		size
+//		taxon_biology
+//		trophic_strategy
+
+		
+		return null;
 	}
 	
 	
