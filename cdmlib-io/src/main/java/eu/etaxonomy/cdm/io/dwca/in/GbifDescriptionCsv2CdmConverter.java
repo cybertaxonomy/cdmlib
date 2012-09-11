@@ -21,13 +21,20 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
  * @date 22.11.2011
+ *
+ */
+/**
+ * @author pesiimport
  *
  */
 public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
@@ -54,6 +61,15 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		String id = getSourceId(item);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
+			Feature feature = getFeatureByDcType(item);
+			
+			String description = item.get(TermUri.DC_DESCRIPTION);
+			TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+			TextData descElement = TextData.NewInstance(feature);
+			Language language = null;
+			descElement.putText(language,description);
+			taxonDescription.addElement(descElement);
+			
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
 		}else{
@@ -61,18 +77,20 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			fireWarningEvent(message, item, 12);
 		}
 		
-		Feature feature = getFeatureByDcType(item);
-
-		
-		String message = "Not yet implemented"; 
-		fireWarningEvent(message, item, 15);
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
 	
+	/**
+	 * Determines the feature by the dc:type attribute. Tries to reuse existing
+	 * features.
+	 * @param item
+	 * @return
+	 */
 	private Feature getFeatureByDcType(CsvStreamItem item) {
 		String type = item.get(TermUri.DC_TYPE);
-
+		item.remove(TermUri.DC_TYPE);
+		
 		Feature feature;
 		try {
 			feature = state.getTransformer().getFeatureByKey(type);
