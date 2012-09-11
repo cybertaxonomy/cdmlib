@@ -16,8 +16,10 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -118,20 +120,6 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
     }
 
-    /**
-     * @param targetUuid
-     * @param node
-     * @return
-     */
-    private TaxonNode findTargetUuidInTree(UUID targetUuid, TaxonNode node){
-        if (targetUuid.equals(node.getUuid()))
-            return node;
-        else if (node.getParent()!= null){
-             return findTargetUuidInTree(targetUuid, node.getParent());
-        }
-        return null;
-    }
-
 
     /**
      * @param authorities
@@ -153,9 +141,16 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         Collection<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();
         attributes.add(evalPermission);
 
-        // decide() throws AccessDeniedException, InsufficientAuthenticationException
         logger.debug("AccessDecisionManager will decide ...");
-        accessDecisionManager.decide(authentication, targetDomainObject, attributes);
+        try {
+            accessDecisionManager.decide(authentication, targetDomainObject, attributes);
+        } catch (InsufficientAuthenticationException e) {
+            logger.debug("AccessDecisionManager denied by " + e, e);
+            return false;
+        } catch (AccessDeniedException e) {
+            logger.debug("AccessDecisionManager denied by " + e, e);
+            return false;
+        }
 
         return true;
     }

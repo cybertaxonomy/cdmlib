@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 
@@ -182,6 +184,34 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         String passwordEncrypted = passwordEncoder.encodePassword(password, salt);
         logger.info("encrypted password: " + passwordEncrypted );
     }
+
+    @Test
+    @DataSet
+    public void testHasPermission(){
+
+        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.UPDATE);
+        assertTrue(hasPermission);
+
+        authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
+        hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.UPDATE);
+        assertFalse(hasPermission);
+    }
+
+    @Test
+    @DataSet
+    @Ignore
+    public void testHasPermissions(){
+
+        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.ALL);
+        assertTrue(hasPermission);
+    }
+
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.

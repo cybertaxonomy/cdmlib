@@ -279,7 +279,7 @@ public class UserServiceImplTest extends CdmIntegrationTest {
 
     @Test
     @DataSet
-    public void testHasRole(){
+    public void testChangePassword(){
         String username = "useradmin";
         String newPassword = "password2";
         userService.changePasswordForUser(username, newPassword);
@@ -294,18 +294,5 @@ public class UserServiceImplTest extends CdmIntegrationTest {
             Assert.fail();
         }
     }
-
-
-    @Test
-    @DataSet
-    public void testHasPermission(){
-        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
-        boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.UPDATE);
-        assertFalse(hasPermission);
-        User testUser = User.NewInstance("username123", "1234");
-        hasPermission = permissionEvaluator.hasPermission(authentication, testUser, Operation.UPDATE);
-        assertTrue(hasPermission);
-    }
-
 
 }

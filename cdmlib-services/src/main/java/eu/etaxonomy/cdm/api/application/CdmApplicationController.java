@@ -11,6 +11,7 @@
 
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
@@ -64,6 +67,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 
 
 /**
@@ -494,7 +499,17 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         return configuration.getPermissionEvaluator();
     }
 
-
+    /**
+     * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
+     *
+     * @param targetDomainObject
+     * @param permission
+     * @return
+     */
+    public boolean currentAuthentiationHasPermissions(CdmBase targetDomainObject, EnumSet<CRUD> permission){
+        SecurityContext context = SecurityContextHolder.getContext();
+        return getPermissionEvaluator().hasPermission(context.getAuthentication(), targetDomainObject, permission);
+    }
 
 
     @Override
