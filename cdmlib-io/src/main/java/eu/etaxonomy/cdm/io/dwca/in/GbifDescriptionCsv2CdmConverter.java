@@ -14,11 +14,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -58,12 +61,47 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			fireWarningEvent(message, item, 12);
 		}
 		
+		Feature feature = getFeatureByDcType(item);
+
+		
 		String message = "Not yet implemented"; 
 		fireWarningEvent(message, item, 15);
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
 	
+	private Feature getFeatureByDcType(CsvStreamItem item) {
+		String type = item.get(TermUri.DC_TYPE);
+
+		Feature feature;
+		try {
+			feature = state.getTransformer().getFeatureByKey(type);
+			if (feature != null){
+				return feature;
+			}
+			String namespace = Feature.class.getSimpleName();
+			List<Feature> features = state.get(namespace, type, Feature.class);
+			if (features.size() > 1){
+				String message = "There is more than 1 cdm entity matching given locationId '%s'. I take an arbitrary one.";
+				fireWarningEvent(String.format(message, item), item, 4);
+				return features.iterator().next();
+			}	
+			UUID featureUuid = state.getTransformer().getFeatureUuid(type);
+			feature = state.getCurrentIO().getFeature(state, featureUuid, type, type, null, null);
+			if (feature == null){
+				feature = Feature.NewInstance(type, type, null);
+				feature.setSupportsTextData(true);
+				state.putMapping(namespace, type, feature);
+			}
+			return feature;
+		} catch (UndefinedTransformerMethodException e) {
+			String message = "GetFeature not yet supported by DwcA-Transformer. This should not have happend. Please contact your application developer.";
+			fireWarningEvent(message, item, 8);
+			return null;
+		}
+		
+	}
+
 	@Override
 	public String getSourceId(CsvStreamItem item) {
 		String id = item.get(CORE_ID);
