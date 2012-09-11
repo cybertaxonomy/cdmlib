@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
@@ -61,14 +62,21 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		String id = getSourceId(item);
 		Taxon taxon = getTaxonBase(id, item, Taxon.class, state);
 		if (taxon != null){
-			Feature feature = getFeatureByDcType(item);
 			
 			String description = item.get(TermUri.DC_DESCRIPTION);
-			TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
-			TextData descElement = TextData.NewInstance(feature);
-			Language language = null;
-			descElement.putText(language,description);
-			taxonDescription.addElement(descElement);
+			if (StringUtils.isNotBlank(description)){
+				Feature feature = getFeatureByDcType(item);
+
+				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+				TextData descElement = TextData.NewInstance(feature);
+				Language language = null;
+				descElement.putText(language,description);
+				taxonDescription.addElement(descElement);
+			}else{
+				String message = "Description is empty. Description item will not be imported.";
+				fireWarningEvent(message, item, 4);
+			}
+			
 			
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
