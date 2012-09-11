@@ -84,27 +84,30 @@ public class CsvStream extends ObservableBase implements INamespaceReader<CsvStr
 				for (Field field : archiveEntry.getField()){
 				        int index = field.getIndex();
 				        if (index > next.length -1){
-				                String message = "Missing value for archive entry %s in line %d";
-				                message = String.format(message, field.getTerm(), line);
+			        		int missingFields = archiveEntry.getField().size() -  (next.length -1);
+			        		String message = "Missing value for archive entry %s %s in line %d of input %s.";
+			                String msgMoreLines = missingFields <= 1? "": "and %d more fields" ;
+			        		msgMoreLines = String.format(msgMoreLines,(missingFields - 1) );
+			                message = String.format(message, field.getTerm(), msgMoreLines, line, archiveEntry.getFiles().getLocation());
 
-				                if (countObservers() == 0){
-				                        throw new RuntimeException(message);
-				                } else {
-				                        StringBuilder messageSB = new StringBuilder(message);
-				                        messageSB.append(". Line is only partly imported. Csv-Array is [");// + next.toString();
+			                if (countObservers() == 0){
+			                        throw new RuntimeException(message);
+			                } else {
+			                        StringBuilder messageSB = new StringBuilder(message);
+			                        messageSB.append(" Line is only partly imported. Csv-Array is [");// + next.toString();
 
-				                        for(int i=0;i<next.length;i++) {
-				                                messageSB.append(next[i]);
-				                                if(i < next.length-1){
-				                                        messageSB.append(",");
-				                                } else {
-				                                        messageSB.append("]");
-				                                }
-				                        }
-				                        message = messageSB.toString();
-				                        fireWarningEvent(message, resultItem.getLocation(), 4);
-				                        break;
-				                }
+			                        for(int i=0;i<next.length;i++) {
+			                                messageSB.append(next[i]);
+			                                if(i < next.length-1){
+			                                        messageSB.append(",");
+			                                } else {
+			                                        messageSB.append("]");
+			                                }
+			                        }
+			                        message = messageSB.toString();
+			                        fireWarningEvent(message, resultItem.getLocation(), 4);
+			                        break;
+			                }
 				        }
 					String value = next[index];
 					String term = field.getTerm();
