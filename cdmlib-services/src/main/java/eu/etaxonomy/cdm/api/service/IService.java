@@ -295,14 +295,4 @@ public interface IService<T extends ICdmBase>{
      */
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     * Evaluates whether the authenticated user has the rights to perform an specific action on the target object
-     * @param authentication
-     * @param target
-     * @param permission
-     * @return
-     */
-    @Deprecated // FIXME hasPermission(Authentication authentication, T target, EnumSet<CRUD> operation); should be in the CdmApplicationController
-    public boolean hasPermission(Authentication authentication, T target, EnumSet<CRUD> operation);
-
 }

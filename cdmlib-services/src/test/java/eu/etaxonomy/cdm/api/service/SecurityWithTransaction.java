@@ -75,6 +75,9 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
     @SpringBeanByName
     private AuthenticationManager authenticationManager;
 
+    @SpringBeanByName
+    private CdmPermissionEvaluator permissionEvaluator;
+
     private UsernamePasswordAuthenticationToken token;
 
 
@@ -146,7 +149,6 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         Iterator<TaxonNode> it = tribe.getTaxonNodes().iterator();
         TaxonNode node = it.next();
 
-        CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
         assertFalse(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
         node = node.getChildNodes().iterator().next();
 

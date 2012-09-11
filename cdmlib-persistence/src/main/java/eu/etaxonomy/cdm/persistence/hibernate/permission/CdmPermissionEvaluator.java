@@ -42,6 +42,10 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         return accessDecisionManager;
     }
 
+    private CdmPermissionEvaluator() {
+
+    }
+
     public void setAccessDecisionManager(AccessDecisionManager accessDecisionManager) {
         this.accessDecisionManager = accessDecisionManager;
     }

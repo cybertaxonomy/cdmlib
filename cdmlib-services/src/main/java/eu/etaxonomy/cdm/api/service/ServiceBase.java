@@ -197,11 +197,4 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
     }
 
-    @Transactional(readOnly = true)
-    public boolean hasPermission(Authentication authentication, T target, EnumSet<CRUD> operation) {
-        throw new RuntimeException("hasPermissio() is umimplemented - do not use");
-//        CdmPermissionEvaluator permissionEvaluator = new CdmPermissionEvaluator();
-//        return permissionEvaluator.hasPermission(authentication, target, operation);
-
-    }
 }

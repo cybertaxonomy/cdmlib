@@ -68,19 +68,22 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-testSecurity.xml")
 public class UserServiceImplTest extends CdmIntegrationTest {
 
-	protected static final Logger logger = Logger.getLogger(UserServiceImplTest.class);
+    protected static final Logger logger = Logger.getLogger(UserServiceImplTest.class);
 
-	@SpringBeanByType
-	private AuthenticationManager authenticationManager;
+    @SpringBeanByType
+    private AuthenticationManager authenticationManager;
 
-	@SpringBeanByType
-	private IUserService userService;
+    @SpringBeanByType
+    private IUserService userService;
 
-	@SpringBeanByType
-	private IGroupService groupService;
+    @SpringBeanByType
+    private IGroupService groupService;
 
-	@SpringBeanByType
-	private ITaxonService taxonService;
+    @SpringBeanByType
+    private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private CdmPermissionEvaluator permissionEvaluator;
 
 
 //	@SpringBeanByType
@@ -93,220 +96,216 @@ public class UserServiceImplTest extends CdmIntegrationTest {
 //	@TestDataSource
 //	protected DataSource dataSource;
 
-	private Set<GrantedAuthority> expectedRoles;
-	private UsernamePasswordAuthenticationToken token;
+    private Set<GrantedAuthority> expectedRoles;
+    private UsernamePasswordAuthenticationToken token;
 
-	private Authentication authentication;
+    private Authentication authentication;
 
-	private PermissionEvaluator permissionEvaluator;
-	UUID uuid;
+    UUID uuid;
 
-	@Before
-	public void setUp() {
-		expectedRoles = new HashSet<GrantedAuthority>();
+    @Before
+    public void setUp() {
+        expectedRoles = new HashSet<GrantedAuthority>();
 
-		GrantedAuthorityImpl update = GrantedAuthorityImpl.NewInstance();
-		update.setAuthority("USER.Update");
-		update.setUuid(UUID.fromString("14788361-1a7e-4eed-b22f-fd90a0b424ac"));
-		update.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		GrantedAuthorityImpl annotate = GrantedAuthorityImpl.NewInstance();
-		annotate.setAuthority("USER.Create");
-		annotate.setUuid(UUID.fromString("fa56073c-0ffd-4384-b459-b2f07e35b689"));
-		annotate.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		GrantedAuthorityImpl checkAnnotation = GrantedAuthorityImpl.NewInstance();
-		checkAnnotation.setAuthority("USER.Delete");
-		checkAnnotation.setUuid(UUID.fromString("e5354c0e-657b-4b4d-bb2f-791612199711"));
-		checkAnnotation.setCreated(new DateTime(2009,2,3,17,52,26,0));
-		GrantedAuthorityImpl userAdmin = GrantedAuthorityImpl.NewInstance();
-		userAdmin.setAuthority("USER.Admin");
+        GrantedAuthorityImpl update = GrantedAuthorityImpl.NewInstance();
+        update.setAuthority("USER.Update");
+        update.setUuid(UUID.fromString("14788361-1a7e-4eed-b22f-fd90a0b424ac"));
+        update.setCreated(new DateTime(2009,2,3,17,52,26,0));
+        GrantedAuthorityImpl annotate = GrantedAuthorityImpl.NewInstance();
+        annotate.setAuthority("USER.Create");
+        annotate.setUuid(UUID.fromString("fa56073c-0ffd-4384-b459-b2f07e35b689"));
+        annotate.setCreated(new DateTime(2009,2,3,17,52,26,0));
+        GrantedAuthorityImpl checkAnnotation = GrantedAuthorityImpl.NewInstance();
+        checkAnnotation.setAuthority("USER.Delete");
+        checkAnnotation.setUuid(UUID.fromString("e5354c0e-657b-4b4d-bb2f-791612199711"));
+        checkAnnotation.setCreated(new DateTime(2009,2,3,17,52,26,0));
+        GrantedAuthorityImpl userAdmin = GrantedAuthorityImpl.NewInstance();
+        userAdmin.setAuthority("USER.Admin");
 
-		expectedRoles.add(update);
-		expectedRoles.add(annotate);
-		expectedRoles.add(checkAnnotation);
-		expectedRoles.add(userAdmin);
-		String username = "useradmin";
-		String password = "password";
-		User user = User.NewInstance(username, password);
-		user.setAccountNonExpired(true);
-		user.setGrantedAuthorities(expectedRoles);
-		uuid = userService.save(user);
+        expectedRoles.add(update);
+        expectedRoles.add(annotate);
+        expectedRoles.add(checkAnnotation);
+        expectedRoles.add(userAdmin);
+        String username = "useradmin";
+        String password = "password";
+        User user = User.NewInstance(username, password);
+        user.setAccountNonExpired(true);
+        user.setGrantedAuthorities(expectedRoles);
+        uuid = userService.save(user);
 
-		User standardUser =  User.NewInstance("standardUser", "pw");
-		uuid = userService.save(standardUser);
+        User standardUser =  User.NewInstance("standardUser", "pw");
+        uuid = userService.save(standardUser);
 
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		permissionEvaluator = new CdmPermissionEvaluator();
-	}
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+    }
 
 
-	@Test
-	@DataSet
-	public void testCreateUser() {
-		String username = "user2";
-		String password = "password";
-		User user = User.NewInstance(username, password);
+    @Test
+    @DataSet
+    public void testCreateUser() {
+        String username = "user2";
+        String password = "password";
+        User user = User.NewInstance(username, password);
 
-		userService.createUser(user);
+        userService.createUser(user);
 
-		List<User> userList = userService.listByUsername("user2", MatchMode.EXACT, null, null, null, null, null);
-		Assert.assertNotNull(userList);
+        List<User> userList = userService.listByUsername("user2", MatchMode.EXACT, null, null, null, null, null);
+        Assert.assertNotNull(userList);
 
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		try{
-			userService.createUser(user);
-			Assert.fail();
-		}catch(Exception e){
-			Assert.assertEquals("Access is denied", e.getMessage());
-		}
-	}
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        try{
+            userService.createUser(user);
+            Assert.fail();
+        }catch(Exception e){
+            Assert.assertEquals("Access is denied", e.getMessage());
+        }
+    }
 
 
 
-	@Test
-	@DataSet
-	public void testUpdateUser(){
-		User user= userService.find(uuid);
-		user.setEmailAddress("test@bgbm.org");
-		try{
-		userService.updateUser(user);
-		}catch (Exception e){
-			Assert.fail();
-		}
+    @Test
+    @DataSet
+    public void testUpdateUser(){
+        User user= userService.find(uuid);
+        user.setEmailAddress("test@bgbm.org");
+        try{
+        userService.updateUser(user);
+        }catch (Exception e){
+            Assert.fail();
+        }
 
-		try{
-			userService.update(user);
-			}catch (Exception e){
-				Assert.fail();
-			}
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-		user.setEmailAddress("user@bgbm.org");
-		try{
-		userService.updateUser(user);
-		Assert.fail();
-		}catch (Exception e){
-			Assert.assertEquals("Access is denied", e.getMessage());
-		}
+        try{
+            userService.update(user);
+            }catch (Exception e){
+                Assert.fail();
+            }
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("standardUser", "pw");
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        user.setEmailAddress("user@bgbm.org");
+        try{
+        userService.updateUser(user);
+        Assert.fail();
+        }catch (Exception e){
+            Assert.assertEquals("Access is denied", e.getMessage());
+        }
 
-		try{
-			userService.saveOrUpdate(user);
-			Assert.fail();
-		}catch (Exception e){
-			Assert.assertEquals("Access is denied", e.getMessage());
-		}
-		try{
-			userService.update(user);
-			Assert.fail();
-		}catch (Exception e){
-			Assert.assertEquals("Access is denied", e.getMessage());
-		}
-	}
+        try{
+            userService.saveOrUpdate(user);
+            Assert.fail();
+        }catch (Exception e){
+            Assert.assertEquals("Access is denied", e.getMessage());
+        }
+        try{
+            userService.update(user);
+            Assert.fail();
+        }catch (Exception e){
+            Assert.assertEquals("Access is denied", e.getMessage());
+        }
+    }
 
-	@Test
-	@DataSet
-	public void testIfAnyGranted() {
+    @Test
+    @DataSet
+    public void testIfAnyGranted() {
         Object p = authentication.getPrincipal();
-		Assert.assertTrue(p instanceof User);
-		User principal = (User)p;
+        Assert.assertTrue(p instanceof User);
+        User principal = (User)p;
 
-		Assert.assertEquals(principal.getUsername(),"useradmin");
+        Assert.assertEquals(principal.getUsername(),"useradmin");
 
-		Assert.assertNotNull(expectedRoles);
-		Assert.assertEquals(expectedRoles.size(), authentication.getAuthorities().size());
-	}
-
-
-	@Test
-	@DataSet
-	public void testCreateGroup(){
-
-		GrantedAuthorityImpl userAdminUpdate = GrantedAuthorityImpl.NewInstance();
-		userAdminUpdate.setAuthority("USER.update");
-		GrantedAuthorityImpl userAdminCreate = GrantedAuthorityImpl.NewInstance();
-		userAdminCreate.setAuthority("USER.create");
-		GrantedAuthorityImpl userAdminDelete = GrantedAuthorityImpl.NewInstance();
-		userAdminDelete.setAuthority("USER.delete");
-		List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-		list.add(userAdminUpdate);
-		list.add(userAdminDelete);
-		list.add(userAdminCreate);
+        Assert.assertNotNull(expectedRoles);
+        Assert.assertEquals(expectedRoles.size(), authentication.getAuthorities().size());
+    }
 
 
-		userService.createGroup("UserAdmins", list);
-		String username = "user3";
-		String password = "password";
-		User user = User.NewInstance(username, password);
-		userService.createUser(user);
-		List<String> groups = userService.findAllGroups();
-		Assert.assertEquals("UserAdmins", groups.get(0));
+    @Test
+    @DataSet
+    public void testCreateGroup(){
+
+        GrantedAuthorityImpl userAdminUpdate = GrantedAuthorityImpl.NewInstance();
+        userAdminUpdate.setAuthority("USER.update");
+        GrantedAuthorityImpl userAdminCreate = GrantedAuthorityImpl.NewInstance();
+        userAdminCreate.setAuthority("USER.create");
+        GrantedAuthorityImpl userAdminDelete = GrantedAuthorityImpl.NewInstance();
+        userAdminDelete.setAuthority("USER.delete");
+        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+        list.add(userAdminUpdate);
+        list.add(userAdminDelete);
+        list.add(userAdminCreate);
 
 
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-		authentication = authenticationManager.authenticate(token);
-		SecurityContext context = SecurityContextHolder.getContext();
-		context.setAuthentication(authentication);
-
-		username = "user4";
-		password = "password";
-		user = User.NewInstance(username, password);
-		try{
-			userService.createUser(user);
-			Assert.fail();
-		}catch(Exception e){
-			Assert.assertEquals("Access is denied", e.getMessage());
-		}
-		groupService.addUserToGroup("user3", "UserAdmins");
-
-	//	System.err.println(context.getAuthentication().getName());
-		try{
-			userService.createUser(user);
-		}catch(Exception e){
-			System.err.println(e.getMessage());
-			Assert.fail();
-		}
-
-	}
+        userService.createGroup("UserAdmins", list);
+        String username = "user3";
+        String password = "password";
+        User user = User.NewInstance(username, password);
+        userService.createUser(user);
+        List<String> groups = userService.findAllGroups();
+        Assert.assertEquals("UserAdmins", groups.get(0));
 
 
-	@Test
-	@DataSet
-	public void testHasRole(){
-		String username = "useradmin";
-		String newPassword = "password2";
-		userService.changePasswordForUser(username, newPassword);
-		username = "user4";
-		String password = "password";
-		User user = User.NewInstance(username, password);
-		userService.createUser(user);
-		try{
-			userService.changePasswordForUser(username, "newPassword");
-		}catch (Exception e){
-			System.err.println(e.getMessage());
-			Assert.fail();
-		}
-	}
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+        authentication = authenticationManager.authenticate(token);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        username = "user4";
+        password = "password";
+        user = User.NewInstance(username, password);
+        try{
+            userService.createUser(user);
+            Assert.fail();
+        }catch(Exception e){
+            Assert.assertEquals("Access is denied", e.getMessage());
+        }
+        groupService.addUserToGroup("user3", "UserAdmins");
+
+    //	System.err.println(context.getAuthentication().getName());
+        try{
+            userService.createUser(user);
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+            Assert.fail();
+        }
+
+    }
 
 
-	@Test
-	@DataSet
-	public void testHasPermission(){
-		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
-		boolean hasPermission = taxonService.hasPermission(authentication, taxon, Operation.UPDATE);
-		assertFalse(hasPermission);
-		User testUser = User.NewInstance("username123", "1234");
-		hasPermission = userService.hasPermission(authentication, testUser, Operation.UPDATE);
-		assertTrue(hasPermission);
-	}
+    @Test
+    @DataSet
+    public void testHasRole(){
+        String username = "useradmin";
+        String newPassword = "password2";
+        userService.changePasswordForUser(username, newPassword);
+        username = "user4";
+        String password = "password";
+        User user = User.NewInstance(username, password);
+        userService.createUser(user);
+        try{
+            userService.changePasswordForUser(username, "newPassword");
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+            Assert.fail();
+        }
+    }
 
 
+    @Test
+    @DataSet
+    public void testHasPermission(){
+        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
+        boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.UPDATE);
+        assertFalse(hasPermission);
+        User testUser = User.NewInstance("username123", "1234");
+        hasPermission = permissionEvaluator.hasPermission(authentication, testUser, Operation.UPDATE);
+        assertTrue(hasPermission);
+    }
 
 
 }

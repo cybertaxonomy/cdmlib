@@ -1,15 +1,16 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.api.application;
 
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 
 /**
  * @author a.mueller
@@ -48,163 +50,168 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public interface ICdmApplicationConfiguration {
 
-	public TransactionStatus startTransaction();
-	
-	public TransactionStatus startTransaction(Boolean readOnly);
-	
-	public void commitTransaction(TransactionStatus tx);
+    public TransactionStatus startTransaction();
 
-	public Object getBean(String string);
+    public TransactionStatus startTransaction(Boolean readOnly);
 
-	
-	
-	/**
-	 * @return
-	 */
-	public INameService getNameService();
+    public void commitTransaction(TransactionStatus tx);
 
-	/**
-	 * @return
-	 */
-	public ITaxonService getTaxonService();
+    public Object getBean(String string);
 
-	/**
-	 * @return
-	 */
-	public IClassificationService getClassificationService();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ITaxonNodeService getTaxonNodeService();
-	
-	/**
-	 * @return
-	 */
-	public IReferenceService getReferenceService();
-	
-	/**
-	 * @return
-	 */
-	public IAgentService getAgentService();
-	
-	/**
-	 * @return
-	 */
-	public IDescriptionService getDescriptionService();
-	
-	/**
-	 * @return
-	 */
-	public IOccurrenceService getOccurrenceService();
-	
-	/**
-	 * @return
-	 */
-	public IMediaService getMediaService();
-	
-	/**
-	 * @return
-	 */
-	public IDatabaseService getDatabaseService();
-	
-	/**
-	 * @return
-	 */
-	public ITermService getTermService();
 
-	/**
-	 * @return
-	 */
-	public ICommonService getCommonService();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ILocationService getLocationService();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public IUserService getUserService();
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public IGroupService getGroupService();
-	
-	/**
-	 * @return
-	 */
-	public IService<CdmBase> getMainService();
-	
-	
-	/**
-	 * @return
-	 */
-	public IWorkingSetService getWorkingSetService();
-	
-	/**
-	 * @return
-	 */
-	public PlatformTransactionManager getTransactionManager();
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ProviderManager getAuthenticationManager();
-	
-	/**
-	 * @return
-	 */
-	public ConversationHolder NewConversation();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public ICollectionService getCollectionService();
+    /**
+     * @return
+     */
+    public INameService getNameService();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public IFeatureTreeService getFeatureTreeService();
+    /**
+     * @return
+     */
+    public ITaxonService getTaxonService();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public IFeatureNodeService getFeatureNodeService();
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public IVocabularyService getVocabularyService();
-	
-	/**
-	 * @return
-	 */
-	public IIdentificationKeyService getIdentificationKeyService();
-	
-	/**
-	 * @return
-	 */
-	public IPolytomousKeyService getPolytomousKeyService();
-	
-	/**
-	 * @return
-	 */
-	public IPolytomousKeyNodeService getPolytomousKeyNodeService();
+    /**
+     * @return
+     */
+    public IClassificationService getClassificationService();
 
-	
-	
+    /**
+     *
+     * @return
+     */
+    public ITaxonNodeService getTaxonNodeService();
+
+    /**
+     * @return
+     */
+    public IReferenceService getReferenceService();
+
+    /**
+     * @return
+     */
+    public IAgentService getAgentService();
+
+    /**
+     * @return
+     */
+    public IDescriptionService getDescriptionService();
+
+    /**
+     * @return
+     */
+    public IOccurrenceService getOccurrenceService();
+
+    /**
+     * @return
+     */
+    public IMediaService getMediaService();
+
+    /**
+     * @return
+     */
+    public IDatabaseService getDatabaseService();
+
+    /**
+     * @return
+     */
+    public ITermService getTermService();
+
+    /**
+     * @return
+     */
+    public ICommonService getCommonService();
+
+    /**
+     *
+     * @return
+     */
+    public ILocationService getLocationService();
+
+    /**
+     *
+     * @return
+     */
+    public IUserService getUserService();
+
+
+    /**
+     *
+     * @return
+     */
+    public IGroupService getGroupService();
+
+    /**
+     * @return
+     */
+    public IService<CdmBase> getMainService();
+
+
+    /**
+     * @return
+     */
+    public IWorkingSetService getWorkingSetService();
+
+    /**
+     * @return
+     */
+    public PlatformTransactionManager getTransactionManager();
+
+
+    /**
+     *
+     * @return
+     */
+    public ProviderManager getAuthenticationManager();
+
+    /**
+     * @return
+     */
+    public ConversationHolder NewConversation();
+
+    /**
+     *
+     * @return
+     */
+    public ICollectionService getCollectionService();
+
+    /**
+     *
+     * @return
+     */
+    public IFeatureTreeService getFeatureTreeService();
+
+    /**
+     *
+     * @return
+     */
+    public IFeatureNodeService getFeatureNodeService();
+
+    /**
+     *
+     * @return
+     */
+    public IVocabularyService getVocabularyService();
+
+    /**
+     * @return
+     */
+    public IIdentificationKeyService getIdentificationKeyService();
+
+    /**
+     * @return
+     */
+    public IPolytomousKeyService getPolytomousKeyService();
+
+    /**
+     * @return
+     */
+    public IPolytomousKeyNodeService getPolytomousKeyNodeService();
+
+    /**
+     * @return the configured PermissionEvaluator, usually the {@link CdmPermissionEvaluator}
+     */
+    public PermissionEvaluator getPermissionEvaluator();
+
+
+
 }
