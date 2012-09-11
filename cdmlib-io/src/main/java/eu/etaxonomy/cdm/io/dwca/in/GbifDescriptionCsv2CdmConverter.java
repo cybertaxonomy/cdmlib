@@ -66,18 +66,18 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			
 			String description = item.get(TermUri.DC_DESCRIPTION);
 			if (StringUtils.isNotBlank(description)){
-				Feature feature = getFeatureByDcType(item);
+				Feature feature = getFeatureByDcType(item, resultList);
 
 				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
 				TextData descElement = TextData.NewInstance(feature);
-				Language language = null;
+				
+				Language language = getLanguage(item);  //TODO
 				descElement.putText(language,description);
 				taxonDescription.addElement(descElement);
 			}else{
 				String message = "Description is empty. Description item will not be imported.";
 				fireWarningEvent(message, item, 4);
 			}
-			
 			
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
@@ -90,35 +90,45 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	}
 
 	
+	private Language getLanguage(CsvStreamItem item) {
+		//TODO
+		
+		Language language = Language.DEFAULT();
+		return language;
+	}
+
 	/**
 	 * Determines the feature by the dc:type attribute. Tries to reuse existing
 	 * features.
 	 * @param item
+	 * @param resultList 
 	 * @return
 	 */
-	private Feature getFeatureByDcType(CsvStreamItem item) {
-		String type = item.get(TermUri.DC_TYPE);
+	private Feature getFeatureByDcType(CsvStreamItem item, List<MappedCdmBase> resultList) {
+		String descriptionType = item.get(TermUri.DC_TYPE);
 		item.remove(TermUri.DC_TYPE);
 		
-		Feature feature;
 		try {
-			feature = state.getTransformer().getFeatureByKey(type);
+			Feature feature = state.getTransformer().getFeatureByKey(descriptionType);
 			if (feature != null){
 				return feature;
 			}
-			String namespace = Feature.class.getSimpleName();
-			List<Feature> features = state.get(namespace, type, Feature.class);
+			String namespace = Feature.class.getCanonicalName();
+			List<Feature> features = state.get(namespace, descriptionType, Feature.class);
 			if (features.size() > 1){
 				String message = "There is more than 1 cdm entity matching given locationId '%s'. I take an arbitrary one.";
 				fireWarningEvent(String.format(message, item), item, 4);
 				return features.iterator().next();
 			}	
-			UUID featureUuid = state.getTransformer().getFeatureUuid(type);
-			feature = state.getCurrentIO().getFeature(state, featureUuid, type, type, null, null);
+			UUID featureUuid = state.getTransformer().getFeatureUuid(descriptionType);
+			feature = state.getCurrentIO().getFeature(state, featureUuid, descriptionType, descriptionType, null, null);
 			if (feature == null){
-				feature = Feature.NewInstance(type, type, null);
+				feature = Feature.NewInstance(descriptionType, descriptionType, null);
 				feature.setSupportsTextData(true);
-				state.putMapping(namespace, type, feature);
+//				state.putMapping(namespace, type, feature);
+				state.getCurrentIO().saveNewTerm(feature);
+				MappedCdmBase  mcb = new MappedCdmBase(namespace, descriptionType, feature);
+				resultList.add(mcb);
 			}
 			return feature;
 		} catch (UndefinedTransformerMethodException e) {

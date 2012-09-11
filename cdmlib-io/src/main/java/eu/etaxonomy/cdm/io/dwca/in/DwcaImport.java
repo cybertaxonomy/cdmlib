@@ -196,7 +196,7 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	private void handleResults(DwcaImportState state, IReader<MappedCdmBase> resultReader, String location) {
 		while (resultReader.hasNext()){
 			
-			MappedCdmBase mappedCdmBase = (resultReader.read());
+			MappedCdmBase mappedCdmBase = resultReader.read();
 			CdmBase cdmBase = mappedCdmBase.getCdmBase();
 			save(cdmBase, state, location);
 			if (mappedCdmBase.getSourceId() != null && cdmBase.isInstanceOf(IdentifiableEntity.class)){
@@ -312,6 +312,14 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		return super.getFeature(state, uuid, label, description, labelAbbrev, voc);
 	}
 
+	/**
+	 * Saves a new term. Immediate saving is required to avoid by Transient-Object-Exceptions.
+	 * @param newTerm
+	 */
+	public void saveNewTerm(DefinedTermBase newTerm) {
+		getTermService().save(newTerm);
+	}
+
 	@Override
 	protected boolean doCheck(DwcaImportState state) {
 		return state.isCheck();
@@ -321,5 +329,6 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 	protected boolean isIgnore(DwcaImportState state) {
 		return false;
 	}
+
 	
 }
