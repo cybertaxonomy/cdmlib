@@ -34,7 +34,7 @@ public final class DwcaImportTransformer extends InputTransformerBase {
 		if (key == null){
 			return null;
 		}else if (key.equalsIgnoreCase("morphology")){
-			return Feature.Morphology();
+			return Feature.ANATOMY();
 		}
 		return super.getFeatureByKey(key);
 	}
