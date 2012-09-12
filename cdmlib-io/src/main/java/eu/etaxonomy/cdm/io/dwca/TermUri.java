@@ -139,6 +139,15 @@ public enum TermUri {
 	GBIF_DISTRIBUTION("http://rs.gbif.org/terms/1.0/Distribution"),
 	GBIF_IMAGE("http://rs.gbif.org/terms/1.0/Image"),
 
+	EOL_AGENT("http://eol.org/schema/agent/Agent"),
+	EOL_ORGANIZATION("http://eol.org/schema/agent/organization"),
+	
+	
+	FOAF_FAMILY_NAME("http://xmlns.com/foaf/spec/#term_familyName"),
+	FOAF_FIRST_NAME("http://xmlns.com/foaf/spec/#term_firstName"),
+	FOAF_NAME("http://xmlns.com/foaf/spec/#term_Name"),
+	FOAF_ACCOUNT_NAME("http://xmlns.com/foaf/spec/#term_accountName"),
+	
 	
 	;
 	
