@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 23.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonRelationConverter<STATE extends DwcaImportState> extends PartitionableConverterBase<DwcaImportState> 
-						implements IPartitionableConverter<CsvStreamItem, INamespaceReader<CdmBase>, String>{
+public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverterBase<DwcaImportState> 
+						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
 	private static final String SINGLE_CLASSIFICATION_ID = "1";
 
 	private static final String SINGLE_CLASSIFICATION = "Single Classification";

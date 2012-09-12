@@ -257,6 +257,8 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return new GbifDistributionCsv2CdmConverter(state);
 		}else if (namespace.equals(TermUri.GBIF_REFERENCE)){
 			return new GbifReferenceCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.EOL_AGENT)){
+			return new EolAgent2CdmConverter(state);
 		}else{
 			String message = "No converter available for %s";
 			logger.error(String.format(message, namespace));
