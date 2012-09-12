@@ -46,85 +46,81 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 		DwcaZipToStreamConverter<DwcaImportState> dwcaStreamConverter = DwcaZipToStreamConverter.NewInstance(source);
 		IReader<CsvStream> zipEntryStream = dwcaStreamConverter.getEntriesStream(state);
 		while (zipEntryStream.hasNext()){
-  			CsvStream csvStream = zipEntryStream.read();
-  			csvStream.addObservers(state.getConfig().getObservers());
-  			
-//  			boolean isHot = true;
-//			while (csvStream.hasNext()){
-//				CsvStreamItem item = csvStream.read();
-////				System.out.print("-" + csvStream.getLine());
-//				if ( isHot && (csvStream.getLine() % 100000) == 0){
-//					System.out.println( csvStream.getLine() + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
-//				}
-//				if ((csvStream.getLine() % 2332900) == 0){   //1303304
-//					isHot = true;
-//					System.out.println("Now it becomes interesting ! !" + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
-//				}
-//				if (! csvStream.hasNext()){
-//					System.out.println("Last:" + csvStream.getLine() + "; " +  item.get("http://rs.tdwg.org/dwc/terms/taxonID") );
-//				}
-//				continue;
-//			}
-  			
-  			
-  			if (state.getConfig().isUsePartitions()){
-  				IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
-  				if (partitionConverter == null){
-  					String warning = "No converter available for %s. Continue with next stream.";
-  					warning = String.format(warning, csvStream.getTerm());
-  					fireWarningEvent (warning, csvStream.read().getLocation(), 12);
-  					continue;
-  				}
-  				
-  				int partitionSize = state.getConfig().getDefaultPartitionSize();
-				StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, 
-						partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
-	  			
-				int i = 1;
-	  			while (partitionStream.hasNext()){
-	  				//FIXME more generic handling of transactions
-	  				TransactionStatus tx = startTransaction();
-	  				
-	  				try {
-						IReader<MappedCdmBase> partStream = partitionStream.read();
-
-						fireProgressEvent("Handel " + i + ". partition", i + ". partition");
-						logger.info("Handel " + i++ + ". partition");
-						String location = "Location: partition stream (TODO)";
-						handleResults(state, partStream, location);
-						commitTransaction(tx);
-					} catch (Exception e) {
-						String message = "An exception occurred while handling partition: " + e;
-						String codeLocation;
-						if (e.getStackTrace().length > 0){
-							StackTraceElement el = e.getStackTrace()[0];
-							codeLocation = el.getClassName()+ "." + el.getMethodName() + "(" + el.getLineNumber() + ")";
-						}else{
-							codeLocation = "No stacktrace";
-						}
-						message = message + " in: " +  codeLocation;
-						fireWarningEvent(message , String.valueOf(csvStream.getLine()) , 12);
-						this.rollbackTransaction(tx);
-					}
-	  				
-	  			}
-  				logger.debug("Partition stream is empty");
-			}else {
-		  			
-		  		while (csvStream.hasNext()){
-						TransactionStatus tx = startTransaction();
-						
-						CsvStreamItem item = csvStream.read();
-						handleCsvStreamItem(state, item);
-						
-						commitTransaction(tx);
-				}
+			CsvStream csvStream = zipEntryStream.read();
+			try {
+				handleSingleZipEntry(state, csvStream);
+			} catch (Exception e) {
+				String message = "Exception (%s) occurred while handling zip entry %s";
+				message = String.format(message, e.getMessage(), csvStream.toString());
+				fireWarningEvent (message, csvStream.toString(), 14);
 			}
-
-  			finalizeStream(csvStream, state);
 		}
 		state.finish();
 		return;
+	}
+
+	/**
+	 * @param state
+	 * @param zipEntryStream
+	 */
+	private void handleSingleZipEntry(DwcaImportState state, CsvStream csvStream) {
+		csvStream.addObservers(state.getConfig().getObservers());
+		
+		if (state.getConfig().isUsePartitions()){
+			IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> partitionConverter = getConverter(csvStream.getTerm(), state);
+			if (partitionConverter == null){
+				String warning = "No converter available for %s. Continue with next stream.";
+				warning = String.format(warning, csvStream.getTerm());
+				fireWarningEvent (warning, csvStream.toString(), 12);
+				return;
+			}
+			
+			int partitionSize = state.getConfig().getDefaultPartitionSize();
+			StreamPartitioner<CsvStreamItem> partitionStream = new StreamPartitioner<CsvStreamItem>(csvStream, 
+					partitionConverter, state, partitionSize);//   (csvStream, streamConverter,state 1000);
+			
+			int i = 1;
+			while (partitionStream.hasNext()){
+				//FIXME more generic handling of transactions
+				TransactionStatus tx = startTransaction();
+				
+				try {
+					IReader<MappedCdmBase> partStream = partitionStream.read();
+
+					fireProgressEvent("Handel " + i + ". partition", i + ". partition");
+					logger.info("Handel " + i++ + ". partition");
+					String location = "Location: partition stream (TODO)";
+					handleResults(state, partStream, location);
+					commitTransaction(tx);
+				} catch (Exception e) {
+					String message = "An exception occurred while handling partition: " + e;
+					String codeLocation;
+					if (e.getStackTrace().length > 0){
+						StackTraceElement el = e.getStackTrace()[0];
+						codeLocation = el.getClassName()+ "." + el.getMethodName() + "(" + el.getLineNumber() + ")";
+					}else{
+						codeLocation = "No stacktrace";
+					}
+					message = message + " in: " +  codeLocation;
+					fireWarningEvent(message , String.valueOf(csvStream.getLine()) , 12);
+					this.rollbackTransaction(tx);
+				}
+				
+			}
+			logger.debug("Partition stream is empty");
+		}else {
+				
+			while (csvStream.hasNext()){
+					TransactionStatus tx = startTransaction();
+					
+					CsvStreamItem item = csvStream.read();
+					handleCsvStreamItem(state, item);
+					
+					commitTransaction(tx);
+			}
+		}
+
+		finalizeStream(csvStream, state);
 	}
 
 	private void makeSourceRef(DwcaImportState state) {

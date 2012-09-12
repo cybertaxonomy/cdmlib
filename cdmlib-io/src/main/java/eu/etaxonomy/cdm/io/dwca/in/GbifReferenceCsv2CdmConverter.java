@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -77,11 +76,11 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		String strIdentifier = getValue(item, TermUri.DC_IDENTIFIER);
 		String strType = getValue(item, TermUri.DC_TYPE);
 		
-		Reference reference = ReferenceFactory.newGeneric();
+		Reference<?> reference = ReferenceFactory.newGeneric();
 		resultList.add(new MappedCdmBase<CdmBase>(reference));
 
 		//author
-		TeamOrPersonBase author = handleCreator(strCreator);
+		TeamOrPersonBase<?> author = handleCreator(strCreator);
 		reference.setAuthorTeam(author);
 		//date
 		TimePeriod publicationDate = handleDate(strDate);
@@ -89,7 +88,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		//title
 		reference.setTitle(strTitle);
 		//inreference
-		Reference inRef = handleInRef(strSource);
+		Reference<?> inRef = handleInRef(strSource);
 		if (inRef != null){
 			reference.setInReference(inRef);
 			resultList.add(new MappedCdmBase<CdmBase>(inRef));
@@ -99,14 +98,14 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		handleIdentifier(strIdentifier, reference);
 		
 		//type
-		handleType(reference, strType, taxon, resultList);
+		handleType(reference, strType, taxon, resultList, item);
 		
 		
 		return new ListReader<MappedCdmBase>(resultList);
 	}
 
 	
-	private void handleType(Reference reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList) {
+	private void handleType(Reference<?> reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, CsvStreamItem item) {
 		// TODO handleType not yet implemented
 		
 		//guess a nom ref
@@ -115,7 +114,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			//this information is usually only available for ICZN names
 			if (taxon != null && taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
 				boolean isNomRef = false;
-				NonViralName nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+				NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				String taxonAuthor = nvn.getAuthorshipCache();
 				String refAuthor = reference.getAuthorTeam().getNomenclaturalTitle();
 				Integer combYear = null;
@@ -140,9 +139,12 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 
 			}
 		}
-		
 		if (config.isHandleAllRefsAsCitation()){
-			if (taxon.isInstanceOf(Taxon.class)){
+			if (taxon == null){
+				String message = "Reference entry does not belong to an existing taxon. Reference type can not be determined!";
+				fireWarningEvent(message,item, 4);
+				//do nothing
+			}else if (taxon.isInstanceOf(Taxon.class)){
 				TaxonDescription desc = getTaxonDescription(CdmBase.deproxy(taxon, Taxon.class), false);
 				createCitation(desc, reference, taxon.getName());
 				resultList.add(new MappedCdmBase<CdmBase>(desc));

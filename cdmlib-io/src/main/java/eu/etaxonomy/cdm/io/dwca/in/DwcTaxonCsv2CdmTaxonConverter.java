@@ -185,19 +185,22 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 
 
 	private void handleDataset(CsvStreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
+		TermUri idTerm = TermUri.DWC_DATASET_ID;
+		TermUri strTerm = TermUri.DWC_DATASET_NAME;
+		
 		if (config.isDatasetsAsClassifications()){
-			String datasetId = CdmUtils.Nz(item.get(TermUri.DWC_DATASET_ID)).trim();
-			String datasetName = CdmUtils.Nz(item.get(TermUri.DWC_DATASET_NAME)).trim();
-			if (CdmUtils.areBlank(datasetId, datasetName) ){
+			String datasetId = CdmUtils.Nz(item.get(idTerm)).trim();
+			String datasetName = CdmUtils.Nz(item.get(strTerm)).trim();
+				if (CdmUtils.areBlank(datasetId, datasetName) ){
 				datasetId = NO_DATASET;
 			}
 			
 			//check id
-			boolean classificationExists = state.exists(TermUri.DWC_DATASET_ID.toString() , datasetId, Classification.class);
+			boolean classificationExists = state.exists(idTerm.toString() , datasetId, Classification.class);
 			
 			//check name
 			if (!classificationExists){
-				classificationExists = state.exists(TermUri.DWC_DATASET_NAME.toString() , datasetName, Classification.class);
+				classificationExists = state.exists(strTerm.toString() , datasetName, Classification.class);
 			}
 			
 			//if not exists, create new
@@ -212,36 +215,33 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 				//source
 				IdentifiableSource source = classification.addSource(classificationId, "Dataset", sourceReference, sourceReferecenDetail);
 				//add to result
-				resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_ID, datasetId, classification));
-				resultList.add(new MappedCdmBase(TermUri.DWC_DATASET_NAME, datasetName, classification));
+				resultList.add(new MappedCdmBase(idTerm, datasetId, classification));
+				resultList.add(new MappedCdmBase(strTerm, datasetName, classification));
 				resultList.add(new MappedCdmBase(source));
 				//TODO this is not so nice but currently necessary as classifications are requested in the same partition
-				state.putMapping(TermUri.DWC_DATASET_ID.toString(), classificationId, classification);
-				state.putMapping(TermUri.DWC_DATASET_NAME.toString(), classificationName, classification);
+				state.putMapping(idTerm.toString(), classificationId, classification);
+				state.putMapping(strTerm.toString(), classificationName, classification);
 			}
-		}else if (config.isDatasetsAsSecundumReference()){
-			//dataset as secundum reference
-			TermUri idTerm = TermUri.DWC_DATASET_ID;
-			TermUri strTerm = TermUri.DWC_DATASET_NAME;
+		}else if (config.isDatasetsAsSecundumReference() || config.isDatasetsAsOriginalSource()){
 			MappedCdmBase<Reference> mappedCitation = getReference(item, resultList, idTerm, strTerm, true);
-			Reference<?> sec = mappedCitation.getCdmBase();
-			taxonBase.setSec(sec);
-		
-		}else if (config.isDatasetsAsOriginalSource()){
-			//dataset as original source
-			TermUri idTerm = TermUri.DWC_DATASET_ID;
-			TermUri strTerm = TermUri.DWC_DATASET_NAME;
-			MappedCdmBase<Reference> mappedCitation = getReference(item, resultList, idTerm, strTerm, true);
-//			resultList.add(mappedCitation);
-			taxonBase.addSource(null, null, mappedCitation.getCdmBase(), null);
+			if (mappedCitation != null){
+				Reference<?> ref = mappedCitation.getCdmBase();
+				if (config.isDatasetsAsSecundumReference()){
+					//dataset as secundum reference
+					taxonBase.setSec(ref);
+				}else{
+					//dataset as original source
+					taxonBase.addSource(null, null, ref, null);
+				}
+			}
 		}else{
 			String message = "DatasetUse type not yet implemented. Can't import dataset information.";
 			fireWarningEvent(message, item, 4);
 		}
 		
 		//remove to later check if all attributes were used
-		item.remove(TermUri.DWC_DATASET_ID);
-		item.remove(TermUri.DWC_DATASET_NAME);
+		item.remove(idTerm);
+		item.remove(strTerm);
 		
 	}
 
