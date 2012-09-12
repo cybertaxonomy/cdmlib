@@ -186,4 +186,8 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 		return result;
 	}
 	
+	protected boolean isNotBlank(String str){
+		return StringUtils.isNotBlank(str);
+	}
+	
 }

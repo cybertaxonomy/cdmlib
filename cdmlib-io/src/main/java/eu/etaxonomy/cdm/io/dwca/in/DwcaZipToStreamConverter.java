@@ -54,6 +54,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	protected static final boolean IS_CORE = true;
 	
 	private List<TermUri> extensionList = Arrays.asList(
+			TermUri.EOL_AGENT,
 			TermUri.DWC_RESOURCE_RELATIONSHIP,
 			TermUri.GBIF_TYPES_AND_SPECIMEN,
 			TermUri.GBIF_VERNACULAR_NAMES,
@@ -63,6 +64,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			TermUri.GBIF_DESCRIPTION,
 			TermUri.GBIF_DISTRIBUTION,
 			TermUri.GBIF_IMAGE
+			
 	);
 			
 	
@@ -118,6 +120,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	}
 
 	public IReader<CsvStream> getEntriesStream(STATE state){
+		//core
 		List<CsvStream> streamList = new ArrayList<CsvStream>();
 		try {
 			streamList.add(getCoreStream(state)); //for taxa and names
@@ -126,13 +129,15 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			logger.warn(String.format(message, "taxa", e.getMessage()));
 			state.setSuccess(false);
 		} 
+		//core relationships
 		try {
 			streamList.add(getCoreStream(state));//for taxon and name relations
 		} catch (IOException e) {
 			String message = "Core stream not available for %s: %s";
 			logger.warn(String.format(message, "taxon relations", e.getMessage()));
 			state.setSuccess(false);
-		}  
+		} 
+		//extensions
 		for (TermUri extension : extensionList){
 			CsvStream extensionStream;
 			try {
