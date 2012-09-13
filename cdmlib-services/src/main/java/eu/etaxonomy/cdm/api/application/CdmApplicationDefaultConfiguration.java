@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
@@ -115,6 +116,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     private ProviderManager authenticationManager;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IGrantedAuthorityService grantedAuthorityService;
     @Autowired
     private IGroupService groupService;
     @Autowired
@@ -268,7 +271,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
         return this.userService;
     }
 
-
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
+     */
+    public IGrantedAuthorityService getGrantedAuthorityService() {
+        return this.grantedAuthorityService;
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
@@ -418,5 +426,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
         txManager.commit(txStatus);
         return;
     }
+
+
 
 }

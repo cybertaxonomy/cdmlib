@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
@@ -437,6 +438,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
     public final IUserService getUserService(){
         return configuration.getUserService();
+    }
+
+    public final IGrantedAuthorityService getGrantedAuthorityService(){
+        return configuration.getGrantedAuthorityService();
     }
 
     public IGroupService getGroupService() {

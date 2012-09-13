@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureNodeService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
@@ -139,6 +140,12 @@ public interface ICdmApplicationConfiguration {
      * @return
      */
     public IGroupService getGroupService();
+
+    /**
+    *
+    * @return
+    */
+   public IGrantedAuthorityService getGrantedAuthorityService();
 
     /**
      * @return
