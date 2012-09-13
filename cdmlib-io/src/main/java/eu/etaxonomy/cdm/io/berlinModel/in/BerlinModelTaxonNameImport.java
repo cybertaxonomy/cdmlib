@@ -181,7 +181,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank, config.isSwitchSpeciesGroup());
 					
-					if (rank == null || rank.equals(Rank.UNKNOWN_RANK()) || rank.equals(Rank.INFRASPECIFICTAXON())){
+					boolean allowInfraSpecTaxonRank = state.getConfig().isAllowInfraSpecTaxonRank() ;
+					if (rank == null || rank.equals(Rank.UNKNOWN_RANK()) || (rank.equals(Rank.INFRASPECIFICTAXON()) && ! allowInfraSpecTaxonRank)){
 						rank = handleProlesAndRaceSublusus(state, rs, rank);
 					}
 					

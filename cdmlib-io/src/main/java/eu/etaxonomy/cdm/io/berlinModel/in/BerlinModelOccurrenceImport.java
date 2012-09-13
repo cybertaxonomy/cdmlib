@@ -83,10 +83,11 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
+			String emCode = config.isIncludesAreaEmCode()? ", emArea.EMCode" : "";
 			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
             " SELECT DISTINCT PTaxon.RIdentifier AS taxonId, emOccurrence.OccurrenceId, emOccurrence.Native, emOccurrence.Introduced, " +
             		" emOccurrence.Cultivated, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
-                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.TDWGCode, emArea.EMCode " + 
+                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.TDWGCode " + emCode + 
                 " FROM emOccurrence INNER JOIN " +  
                 	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
                 	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
@@ -126,7 +127,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 int occurrenceId = rs.getInt("OccurrenceId");
                 int newTaxonId = rs.getInt("taxonId");
                 String tdwgCodeString = rs.getString("TDWGCode");
-                String emCodeString = rs.getString("EMCode");
+                String emCodeString = state.getConfig().isIncludesAreaEmCode() ? rs.getString("EMCode") : null;
                 Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
                 
                 try {

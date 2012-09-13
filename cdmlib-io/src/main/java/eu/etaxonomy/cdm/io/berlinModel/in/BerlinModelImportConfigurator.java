@@ -70,6 +70,10 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	
 	//occurrences
 	private boolean isSplitTdwgCodes = true;
+
+	private boolean includesEmCode = true;  // in Campanula we do not have an EMCOde
+	private boolean allowInfraSpecTaxonRank = true; 
+
 	
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
@@ -736,6 +740,27 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	}
 
 
+
+	public boolean isIncludesAreaEmCode() {
+		return includesEmCode;
+	}
+
+
+
+	public void setIncludesEmCode(boolean includesEmCode) {
+		this.includesEmCode = includesEmCode;
+		
+	}
+
+
+
+	public boolean isAllowInfraSpecTaxonRank() {
+		return allowInfraSpecTaxonRank ;
+	}
+
+	public void setAllowInfraSpecTaxonRank(boolean allowInfraSpecTaxonRank) {
+		this.allowInfraSpecTaxonRank = allowInfraSpecTaxonRank;
+	}
 
 
 
