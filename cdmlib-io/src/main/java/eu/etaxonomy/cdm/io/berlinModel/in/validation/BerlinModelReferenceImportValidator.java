@@ -262,9 +262,15 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 			try {
 				boolean result = true;
 				Source source = config.getSource();
-				String strQuery = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, Reference.NomTitleAbbrev as nomTitleAbbrev, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle, InRef.nomTitleAbbrev AS inRefnomTitleAbbrev, InRef.refCache AS inRefCache, InRef.nomRefCache AS inRefnomRefCache " + 
-				" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
-							" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 1) ";
+				String strQuery = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, Reference.NomTitleAbbrev as nomTitleAbbrev, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle, InRef.nomTitleAbbrev AS inRefnomTitleAbbrev, InRef.refCache AS inRefCache, InRef.nomRefCache AS inRefnomRefCache, " +
+						"	InInRefCategory.RefCategoryAbbrev AS InInRefCat, InInRef.refCache AS inInRefCache, InInRef.nomRefCache AS inInRefNomRefCache,	" + 
+						" FROM Reference " + 
+							" INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId " +
+						    " INNER JOIN Reference AS InInRef ON InRef.InRefFk = InInRef.RefId " +
+							" INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId " +
+						    " INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
+						    " INNER JOIN RefCategory AS InInRefCategory ON InInRef.RefCategoryFk = InInRefCategory.RefCategoryId " +
+						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 1) ";
 				
 				if (StringUtils.isNotBlank(config.getReferenceIdTable())){
 					strQuery += String.format(" AND (reference.refId IN " +
@@ -275,7 +281,8 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 				while (rs.next()){
 					if (firstRow){
 						System.out.println("========================================================");
-						System.out.println("There are part-of-references that have an article as in-reference!");
+						System.out.println("There are part-of-references that have an article as in-reference! " +
+								" This is not necessarily wrong if the article is part of journal.");
 						System.out.println("========================================================");
 					}
 					int refId = rs.getInt("RefId");
@@ -292,12 +299,19 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 					String inRefnomTitleAbbrev = rs.getString("inRefnomTitleAbbrev");
 					String inRefnomRefCache = rs.getString("inRefnomRefCache");
 					String inRefCache = rs.getString("inRefCache");
+					String inInRefCat = rs.getString("inInRefCat");
+					String inInRefCache = rs.getString("inInRefCache");
+					String inInRefNomRefCache = rs.getString("inInRefNomRefCache");
+					
 					
 					System.out.println("RefID:" + refId + "\n  cat: " + cat + 
 							"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + "\n  titleAbbrev: " + nomTitleAbbrev + 
 							"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
 							"\n  inRefTitle: " + inRefTitle + "\n  inRefTitleAbbrev: " + inRefnomTitleAbbrev +
-							"\n  inRefnomRefCache: " + inRefnomRefCache + "\n  inRefCache: " + inRefCache 
+							"\n  inRefnomRefCache: " + inRefnomRefCache + "\n  inRefCache: " + inRefCache +
+							"\n  inInRefCat: " + inInRefCat + "\n  inInRefCache: " + inInRefCache +
+							"\n  inInRefNomRefCache: " + inInRefNomRefCache 
+							
 							);
 					result = firstRow = false;
 				}
