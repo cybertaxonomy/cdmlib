@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @created 20.03.2008
  * @version 1.0
  */
-public final class BerlinModelTransformer {
+public class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
 	
 	//ranks
