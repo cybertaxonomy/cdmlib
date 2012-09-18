@@ -1948,6 +1948,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabe
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/CdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneSearch.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/QueryFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResult.java -text

@@ -1139,23 +1139,43 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         // -- set defaults
-        // abstract base classes cannot be used as directorySelectClass but any subclass will do!
-        Class<? extends TaxonBase> directorySelectClass = Taxon.class;
-        if(clazz != null){
-            if(clazz.equals(TaxonBase.class)){
-                clazz = null;
-            } else {
-                directorySelectClass = clazz;
-            }
+        // see LuceneSearch.pushAbstractBaseTypeDown()
+        Class<? extends TaxonBase> directorySelectClass = TaxonBase.class;
+        if(clazz != null && clazz.equals(directorySelectClass)){
+            clazz = null;
         }
 
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(queryString, classification, languages, highlightFragments);
+
+        // --- execute search
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(clazz, pageSize, pageNumber);
+
+        // ---  initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, "taxon.id", propertyPaths);
+
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+    }
+
+    /**
+     * @param queryString
+     * @param classification
+     * @param languages
+     * @param highlightFragments
+     * @param directorySelectClass
+     * @return
+     */
+    public LuceneSearch prepareFindByFullTextSearch(String queryString, Classification classification, List<Language> languages,
+            boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", false)};
+        luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
         textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
@@ -1166,21 +1186,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(classification != null){
             finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
+        luceneSearch.setQuery(finalQuery);
 
-        String[] highlightFields = null;
         if(highlightFragments){
-            highlightFields = queryFactory.getTextFieldNamesAsArray();
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
         }
-
-        // --- execute search
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(finalQuery, clazz, pageSize, pageNumber, sortFields);
-
-        // ---  initialize taxa, thighlight matches ....
-        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, finalQuery);
-        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, highlightFields, dao, "taxon.id", propertyPaths);
-
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+        return luceneSearch;
     }
 
 
@@ -1194,23 +1205,75 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         // -- set defaults
-        // abstract base classes cannot be used as directorySelectClass but any subclass will do!
-        Class<? extends DescriptionElementBase> directorySelectClass = TextData.class;
-        if(clazz != null){
-             if(clazz.equals(TaxonBase.class)){
-                 clazz = null;
-             } else {
-                 directorySelectClass = clazz;
-             }
+        // see LuceneSearch.pushAbstractBaseTypeDown()
+        Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
+        if(clazz != null && clazz.equals(directorySelectClass)){
+            clazz = null;
         }
 
+        LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(queryString, classification, features, languages, highlightFragments);
+
+        // --- execute search
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(clazz, pageSize, pageNumber);
+
+        // --- initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
+
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+
+    }
+
+    public Pager<SearchResult<TaxonBase>> findByEveryThingFullText(
+            Class<? extends DescriptionElementBase> clazz, String queryString,
+            Classification classification, List<Feature> features, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+
+        // -- set defaults
+        // see LuceneSearch.pushAbstractBaseTypeDown()
+        Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
+        if(clazz != null && clazz.equals(directorySelectClass)){
+            clazz = null;
+        }
+
+        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(queryString, classification, features, languages, highlightFragments);
+        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(queryString, classification, languages, highlightFragments);
+
+        //FIXME use MultiSearcher ....
+
+        // --- execute search
+        TopDocs topDocsResultSet = luceneSearchByDescriptionElement.executeSearch(clazz, pageSize, pageNumber);
+
+        // --- initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearchByDescriptionElement, luceneSearchByDescriptionElement.getQuery());
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, luceneSearchByDescriptionElement.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
+
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+
+    }
+
+
+    /**
+     * @param queryString
+     * @param classification
+     * @param features
+     * @param languages
+     * @param highlightFragments
+     * @param directorySelectClass
+     * @return
+     */
+    public LuceneSearch prepareByDescriptionElementFullTextSearch(String queryString, Classification classification, List<Feature> features,
+            List<Language> languages, boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), DescriptionElementBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", false)};
+        luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
         textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
@@ -1256,22 +1319,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // the description must be associated with a taxon
         finalQuery.add(queryFactory.newIdNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
+        luceneSearch.setQuery(finalQuery);
 
-        String[] highlightFields = null;
         if(highlightFragments){
-            highlightFields = queryFactory.getTextFieldNamesAsArray();
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
         }
-
-        // --- execute search
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(finalQuery, clazz, pageSize, pageNumber, sortFields);
-
-        // --- initialize taxa, thighlight matches ....
-        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, finalQuery);
-        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, highlightFields, dao, "inDescription.taxon.id", propertyPaths);
-
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
-
+        return luceneSearch;
     }
 
     /**

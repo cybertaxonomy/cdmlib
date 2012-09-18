@@ -526,7 +526,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByFullText(Synonym.class, "Abies", null, null, true, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByFullText(TaxonBase.class, "sec*", null, null, true, null, null, null, null); // --> 7
+        pager = taxonService.findByFullText(TaxonBase.class, "sec", null, null, true, null, null, null, null); // --> 7
         Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
 
         pager = taxonService.findByFullText(null, "genus", null, null, true, null, null, null, null); // --> 1
