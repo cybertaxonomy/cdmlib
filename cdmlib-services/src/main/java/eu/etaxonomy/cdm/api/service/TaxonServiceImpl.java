@@ -1155,99 +1155,64 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             directorySelectClass = clazz;
         }
 
-//        queryString = queryString.toLowerCase();
 
-        StringBuilder luceneQueryTemplate = new StringBuilder();
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
-        Set<String> freetextFields = new HashSet<String>();
 
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
-        QueryFactory queryBuilder = new QueryFactory(luceneSearch);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
         // ---- search criteria
-
-//        luceneQueryTemplate.append("+(");
-//        luceneQueryTemplate.append("titleCache:(%1$s) ");
-        freetextFields.add("titleCache");
-        textQuery.add(queryBuilder.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
         // common name
-        freetextFields.add("name");
-
         Query nameQuery;
         if(languages == null || languages.size() == 0){
-//            luceneQueryTemplate.append("name:(%1$s) ");
-            nameQuery = queryBuilder.newTermQuery("name", queryString);
+            nameQuery = queryFactory.newTermQuery("name", queryString);
         } else {
             nameQuery = new BooleanQuery();
             BooleanQuery languageSubQuery = new BooleanQuery();
-//            luceneQueryTemplate.append("(+name:(%1$s) ");
             for(Language lang : languages){
-//            	luceneQueryTemplate.append(" +language.uuid:" + lang.getUuid().toString());
-                languageSubQuery.add(queryBuilder.newTermQuery("language.uuid",  lang.getUuid().toString()), Occur.SHOULD);
+                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString()), Occur.SHOULD);
             }
-            ((BooleanQuery) nameQuery).add(queryBuilder.newTermQuery("name", queryString), Occur.MUST);
+            ((BooleanQuery) nameQuery).add(queryFactory.newTermQuery("name", queryString), Occur.MUST);
             ((BooleanQuery) nameQuery).add(languageSubQuery, Occur.MUST);
-//            luceneQueryTemplate.append(")");
         }
         textQuery.add(nameQuery, Occur.SHOULD);
 
 
         // text field from TextData
-        freetextFields.add("text.ALL");
-//        appendLocalizedFieldQuery("text", languages, luceneQueryTemplate).append(" ");
-        textQuery.add(queryBuilder.newLocalizedTermQuery("text", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newLocalizedTermQuery("text", queryString, languages), Occur.SHOULD);
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        freetextFields.add("states.state.representation.ALL");
-//        appendLocalizedFieldQuery("states.state.representation", languages, luceneQueryTemplate).append(" ");
-        textQuery.add(queryBuilder.newLocalizedTermQuery("states.state.representation", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newLocalizedTermQuery("states.state.representation", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        freetextFields.add("states.modifyingText.ALL");
-//        appendLocalizedFieldQuery("states.modifyingText", languages, luceneQueryTemplate).append(" ");
-        textQuery.add(queryBuilder.newLocalizedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
-//        luceneQueryTemplate.append(") ");
+        textQuery.add(queryFactory.newLocalizedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
         // --- classification ----
 
         if(classification != null){
-//            luceneQueryTemplate.append("+inDescription.taxon.taxonNodes.classification.id:").append(PaddedIntegerBridge.paddInteger(classification.getId())).append(" ");
-            finalQuery.add(queryBuilder.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(queryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
         }
 
         // --- IdentifieableEntity fields - by uuid
         if(features != null && features.size() > 0 ){
-            finalQuery.add(queryBuilder.newEntityUuidQuery("feature.uuid", features), Occur.MUST);
-//            luceneQueryTemplate.append("+feature.uuid:(");
-//            for(Feature feature : features){
-//                luceneQueryTemplate.append(feature.getUuid()).append(" ");
-//            }
-//            luceneQueryTemplate.append(") ");
+            finalQuery.add(queryFactory.newEntityUuidQuery("feature.uuid", features), Occur.MUST);
         }
 
         // the description must be associated with a taxon
-//        luceneQueryTemplate.append("+inDescription.taxon.id:[ " + PaddedIntegerBridge.paddInteger(0) + " TO " + PaddedIntegerBridge.paddInteger(Integer.MAX_VALUE) + "] ");
-        //luceneQueryTemplate.append("-inDescription.taxon.id:" + PaddedIntegerBridge.NULL_STRING);
-        finalQuery.add(queryBuilder.newIdNotNullQuery("inDescription.taxon.id"), Occur.MUST);
+        finalQuery.add(queryFactory.newIdNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
-//        String luceneQueryStr = String.format(luceneQueryTemplate.toString(), queryString);
-
-        // --- sort fields
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", false)};
 
-        // ---- execute criteria
-
-
-//        Query luceneQuery = luceneSearch.parse(luceneQueryStr);
         TopDocs topDocsResultSet = luceneSearch.executeSearch(finalQuery, clazz, pageSize, pageNumber, sortFields);
 
         String[] highlightFields = null;
         if(highlightFragments){
-            highlightFields = freetextFields.toArray(new String[freetextFields.size()]);
+            highlightFields = queryFactory.getTextFieldNames().toArray(new String[queryFactory.getTextFieldNames().size()]);
         }
 
         // initialize taxa, thighlight matches ....
