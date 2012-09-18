@@ -600,6 +600,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
 
+    Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+            List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+
 
 
 

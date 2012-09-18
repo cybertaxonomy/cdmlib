@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author Andreas Kohlbecker
@@ -174,7 +175,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return new Class[] {
                 DescriptionElementBase.class,
                 Classification.class,
-//                TaxonBase.class
+                TaxonBase.class
                 };
     }
 }

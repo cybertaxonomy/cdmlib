@@ -169,14 +169,18 @@ public class LuceneSearch {
         Query query;
 
         if(clazz != null){
+            BooleanQuery filteredQuery = new BooleanQuery();
             BooleanQuery classFilter = new BooleanQuery();
-            classFilter.setBoost(0);
+
             Term t = new Term(DocumentBuilder.CLASS_FIELDNAME, clazz.getName());
             TermQuery termQuery = new TermQuery(t);
+
+            classFilter.setBoost(0);
             classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
-            BooleanQuery filteredQuery = new BooleanQuery();
+
             filteredQuery.add(luceneQuery, BooleanClause.Occur.MUST);
             filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+
             query = filteredQuery;
         } else {
             query = luceneQuery;
