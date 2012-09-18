@@ -47,6 +47,10 @@ public class QueryFactory {
         return textFieldNames;
     }
 
+    public String[] getTextFieldNamesAsArray() {
+        return textFieldNames.toArray(new String[textFieldNames.size()]);
+    }
+
 
     public QueryFactory(LuceneSearch luceneSearch){
         this.luceneSearch = luceneSearch;
@@ -96,15 +100,31 @@ public class QueryFactory {
      */
     public Query newLocalizedTermQuery(String name, String queryString, List<Language> languages) {
 
+        BooleanQuery localizedTermQuery = new BooleanQuery();
+        localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
         if(languages == null || languages.size() == 0){
-            return newTermQuery(name + ".ALL", queryString);
+            localizedTermQuery.add(newTermQuery(name + ".ALL", queryString), Occur.SHOULD);
         } else {
-            BooleanQuery localizedTermQuery = new BooleanQuery();
             for(Language lang : languages){
                 localizedTermQuery.add(newTermQuery(name + "." + lang.getUuid().toString(), queryString), Occur.SHOULD);
             }
-            return localizedTermQuery;
         }
+        return localizedTermQuery;
+    }
+
+    /**
+     * convenience method for localized searches on {@link DefinedTermBase}
+     * instances, it adds the field name suffix "representations" to the
+     * <code>name</code> parameter and calls
+     * {@link #newLocalizedTermQuery(String, String, List)}
+     *
+     * @param name
+     * @param queryString
+     * @param languages
+     * @return
+     */
+    public Query newDefinedTermBaseQuery(String name, String queryString, List<Language> languages) {
+        return newLocalizedTermQuery(name + ".representations", queryString, languages);
     }
 
     /**
