@@ -418,9 +418,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteRecordsI
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/IEndnotePlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDTransformer.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/ikeyplus/IkeyPlusImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/ikeyplus/IkeyPlusImportConfigurator.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/ikeyplus/IkeyPlusImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/in/SDDDataSetImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/in/SDDImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportConfigurator.java -text
@@ -534,7 +531,6 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TermTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TestCdmSchemaGenerator.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/URIEncoder.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/reference/EndnoteRecordsImportTest.java -text
-cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/IkeyPlusImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportBenchmark.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
@@ -583,7 +579,6 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TaxonTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/TermTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-fullSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
@@ -594,8 +589,6 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimen
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
-cdmlib-io/src/test/resources/main/resources/conf.properties -text
-cdmlib-io/src/test/resources/main/resources/confOverridable.properties -text
 cdmlib-io/src/test/resources/termCodeCreator.xls -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
@@ -1955,9 +1948,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabe
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/CdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneSearch.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/QueryFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResultHighligther.java -text

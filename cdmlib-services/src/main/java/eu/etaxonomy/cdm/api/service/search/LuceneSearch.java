@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -19,6 +20,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -26,6 +28,7 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocCollector;
 import org.apache.lucene.search.TopDocs;
 import org.hibernate.Session;
 import org.hibernate.search.Search;
@@ -37,8 +40,6 @@ import org.hibernate.search.store.DirectoryProvider;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  *
@@ -50,13 +51,11 @@ public class LuceneSearch {
 
     public static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
-    protected Session session;
+    private Session session;
 
-    protected Searcher searcher;
+    private Searcher searcher;
 
-    private SortField[] sortFields;
-
-    private Class<? extends CdmBase> directorySelectClass;
+    private Class<? extends CdmBase> type;
 
 
     /**
@@ -67,42 +66,21 @@ public class LuceneSearch {
      */
     public final int MAX_HITS_ALLOWED = 10000;
 
-    private Query query;
-
-    private String[] highlightFields;
-
 
     /**
      * @param session
      */
     public LuceneSearch(Session session, Class<? extends CdmBase> type) {
          this.session = session;
-         this.directorySelectClass = pushAbstractBaseTypeDown(type);
-    }
 
-    /**
-     * TODO the abstract base class DescriptionElementBase can not be used, so
-     * we are using an arbitraty subclass to find the DirectoryProvider, future
-     * versions of hibernate search my allow using abstract base classes see
-     * http
-     * ://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of
-     * -a-given-class-in-java
-     *
-     * @param type must not be null
-     * @return
-     */
-    protected Class<? extends CdmBase> pushAbstractBaseTypeDown(Class<? extends CdmBase> type) {
-        if (type.equals(DescriptionElementBase.class)) {
-            type = TextData.class;
-        }
-        if (type.equals(TaxonBase.class)) {
-            type = Taxon.class;
-        }
-        return type;
-    }
-
-    protected LuceneSearch() {
-
+         //TODO the abstract base class DescriptionElementBase can not be used, so we are using an arbitraty
+         ///    subclass to find the DirectoryProvider,
+         //     future versions of hibernate search my allow using abstract base classes
+         // see http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java
+         if(type.equals(DescriptionElementBase.class)) {
+             type = TextData.class;
+         }
+         this.type = type;
     }
 
     /**
@@ -110,23 +88,16 @@ public class LuceneSearch {
      */
     public Searcher getSearcher() {
         if(searcher == null){
-            searcher = new IndexSearcher(getIndexReader());
+            SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
+
+            DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
+            logger.info(directoryProviders[0].getDirectory().toString());
+
+            ReaderProvider readerProvider = searchFactory.getReaderProvider();
+            IndexReader reader = readerProvider.openReader(directoryProviders[0]);
+            searcher = new IndexSearcher(reader);
         }
         return searcher;
-    }
-
-    /**
-     * @return
-     */
-    public IndexReader getIndexReader() {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-
-        DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(directorySelectClass);
-        logger.info(directoryProviders[0].getDirectory().toString());
-
-        ReaderProvider readerProvider = searchFactory.getReaderProvider();
-        IndexReader reader = readerProvider.openReader(directoryProviders[0]);
-        return reader;
     }
 
     /**
@@ -143,7 +114,7 @@ public class LuceneSearch {
      */
     public Analyzer getAnalyzer() {
         SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-        Analyzer analyzer = searchFactory.getAnalyzer(directorySelectClass);
+        Analyzer analyzer = searchFactory.getAnalyzer(type);
         return analyzer;
     }
 
@@ -157,12 +128,11 @@ public class LuceneSearch {
      * @throws IOException
      */
     public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz, Integer pageSize,
-            Integer pageNumber) throws ParseException, IOException {
+            Integer pageNumber, SortField[] sortFields) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
-        this.query = luceneQuery;
 
-        return executeSearch(clazz, pageSize, pageNumber);
+        return executeSearch(luceneQuery, clazz, pageSize, pageNumber, sortFields);
     }
 
     /**
@@ -185,8 +155,8 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(Class<? extends CdmBase> clazz, Integer pageSize,
-            Integer pageNumber) throws ParseException, IOException {
+    public TopDocs executeSearch(Query luceneQuery, Class<? extends CdmBase> clazz, Integer pageSize,
+            Integer pageNumber, SortField[] sortFields) throws ParseException, IOException {
 
         if(pageNumber == null || pageNumber < 0){
             pageNumber = 0;
@@ -196,26 +166,22 @@ public class LuceneSearch {
             logger.info("limiting pageSize to MAX_HITS_ALLOWED = " + MAX_HITS_ALLOWED + " items");
         }
 
-        Query fullQuery;
+        Query query;
 
         if(clazz != null){
-            BooleanQuery filteredQuery = new BooleanQuery();
             BooleanQuery classFilter = new BooleanQuery();
-
+            classFilter.setBoost(0);
             Term t = new Term(DocumentBuilder.CLASS_FIELDNAME, clazz.getName());
             TermQuery termQuery = new TermQuery(t);
-
-            classFilter.setBoost(0);
             classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
-
-            filteredQuery.add(this.query, BooleanClause.Occur.MUST);
+            BooleanQuery filteredQuery = new BooleanQuery();
+            filteredQuery.add(luceneQuery, BooleanClause.Occur.MUST);
             filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
-
-            fullQuery = filteredQuery;
+            query = filteredQuery;
         } else {
-            fullQuery = this.query;
+            query = luceneQuery;
         }
-        logger.info("final query: " + fullQuery.toString());
+        logger.info("final query: " + query.toString());
 
         int start = pageNumber * pageSize;
         int limit = (pageNumber + 1) * pageSize - 1 ;
@@ -225,9 +191,9 @@ public class LuceneSearch {
         TopDocs topDocs;
         if(sortFields != null && sortFields.length > 0){
             Sort sort = new Sort(sortFields);
-            topDocs = getSearcher().search(fullQuery, null, limit, sort);
+            topDocs = getSearcher().search(query, null, limit, sort);
         } else {
-            topDocs = getSearcher().search(fullQuery, null, limit);
+            topDocs = getSearcher().search(query, null, limit);
         }
 
 
@@ -249,31 +215,6 @@ public class LuceneSearch {
         /////////////////////////////////////////////
 
         return pagedTopDocs;
-    }
-
-    public void setQuery(Query finalQuery) {
-        this.query = finalQuery;
-    }
-
-    public Query getQuery() {
-        return query;
-    }
-
-    public SortField[] getSortFields() {
-        return sortFields;
-    }
-
-    public void setSortFields(SortField[] sortFields) {
-        this.sortFields = sortFields;
-    }
-
-    public void setHighlightFields(String[] textFieldNamesAsArray) {
-        this.highlightFields = textFieldNamesAsArray;
-
-    }
-
-    public String[] getHighlightFields() {
-        return this.highlightFields;
     }
 
 
