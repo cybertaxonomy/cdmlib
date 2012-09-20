@@ -44,11 +44,11 @@ public class LuceneMultiSearch extends LuceneSearch {
     /**
      * @param session
      */
-    public LuceneMultiSearch(Session session, Set<Class<? extends CdmBase>> types) {
+    public LuceneMultiSearch(Session session, Set<Class<? extends CdmBase>> directorySelectClass) {
         super();
         this.session = session;
 
-         for(Class<? extends CdmBase> type : types){
+         for(Class<? extends CdmBase> type : directorySelectClass){
              this.directorySelectClasses.add(pushAbstractBaseTypeDown(type));
          }
     }
@@ -94,11 +94,22 @@ public class LuceneMultiSearch extends LuceneSearch {
         Analyzer analyzer = null;
         for(Class<? extends CdmBase> type : directorySelectClasses){
             Analyzer a = searchFactory.getAnalyzer(type);
-            if(analyzer != null && !analyzer.equals(a)){
+            if(isEqual(analyzer, a)){
                 throw new RuntimeException("The LuceneMultiSearch must only be used on indexes which are using the same Analyzer.");
             }
+            analyzer = a;
         }
         return analyzer;
+    }
+
+    /**
+     * @param analyzer
+     * @param a
+     * @return
+     */
+    private boolean isEqual(Analyzer analyzer, Analyzer a) {
+        // FIXME PatternAnalyzers must be compared by Pattern also other analyzers must be compared by their properties
+        return analyzer != null && !analyzer.getClass().equals(a.getClass());
     }
 
 }

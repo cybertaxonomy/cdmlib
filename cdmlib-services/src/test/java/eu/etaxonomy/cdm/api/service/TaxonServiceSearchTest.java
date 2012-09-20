@@ -538,6 +538,28 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // synonym in classification ???
     }
 
+    @Test
+    @DataSet
+    public final void findByEveryThingFullText() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByEveryThingFullText("genus", null, null,  null, false, null, null, null, null); // --> 1
+        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByEveryThingFullText("Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        Assert.assertEquals("expecting to find the GERMAN 'Balsam-Tanne'", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByEveryThingFullText("Abies", null, null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 8 entities", Integer.valueOf(8), pager.getCount());
+        SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
+        Assert.assertTrue("the map of highlighted fragments should contain at least one item", searchResult.getFieldHighlightMap().size() > 0);
+        String[] fragments = searchResult.getFieldHighlightMap().values().iterator().next();
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].toLowerCase().contains("<b>abies</b>"));
+    }
+
     /**
      *
      */

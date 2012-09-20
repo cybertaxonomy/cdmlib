@@ -58,6 +58,19 @@ public class LuceneSearch {
 
     private Class<? extends CdmBase> directorySelectClass;
 
+    /**
+     * classFilter
+     */
+    private Class<? extends CdmBase> clazz;
+
+
+    public Class<? extends CdmBase> getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class<? extends CdmBase> clazz) {
+        this.clazz = clazz;
+    }
 
     /**
      * The MAX_HITS_ALLOWED value must be one less than Integer.MAX_VALUE
@@ -67,17 +80,18 @@ public class LuceneSearch {
      */
     public final int MAX_HITS_ALLOWED = 10000;
 
-    private Query query;
+    protected Query query;
 
-    private String[] highlightFields;
+
+    private String[] highlightFields = new String[0];
 
 
     /**
      * @param session
      */
-    public LuceneSearch(Session session, Class<? extends CdmBase> type) {
+    public LuceneSearch(Session session, Class<? extends CdmBase> directorySelectClass) {
          this.session = session;
-         this.directorySelectClass = pushAbstractBaseTypeDown(type);
+         this.directorySelectClass = pushAbstractBaseTypeDown(directorySelectClass);
     }
 
     /**
@@ -156,13 +170,12 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(String luceneQueryString, Class<? extends CdmBase> clazz, Integer pageSize,
-            Integer pageNumber) throws ParseException, IOException {
+    public TopDocs executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
         this.query = luceneQuery;
 
-        return executeSearch(clazz, pageSize, pageNumber);
+        return executeSearch(pageSize, pageNumber);
     }
 
     /**
@@ -185,8 +198,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(Class<? extends CdmBase> clazz, Integer pageSize,
-            Integer pageNumber) throws ParseException, IOException {
+    public TopDocs executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         if(pageNumber == null || pageNumber < 0){
             pageNumber = 0;
@@ -196,25 +208,8 @@ public class LuceneSearch {
             logger.info("limiting pageSize to MAX_HITS_ALLOWED = " + MAX_HITS_ALLOWED + " items");
         }
 
-        Query fullQuery;
+        Query fullQuery = expandQuery();
 
-        if(clazz != null){
-            BooleanQuery filteredQuery = new BooleanQuery();
-            BooleanQuery classFilter = new BooleanQuery();
-
-            Term t = new Term(DocumentBuilder.CLASS_FIELDNAME, clazz.getName());
-            TermQuery termQuery = new TermQuery(t);
-
-            classFilter.setBoost(0);
-            classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
-
-            filteredQuery.add(this.query, BooleanClause.Occur.MUST);
-            filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
-
-            fullQuery = filteredQuery;
-        } else {
-            fullQuery = this.query;
-        }
         logger.info("final query: " + fullQuery.toString());
 
         int start = pageNumber * pageSize;
@@ -251,11 +246,41 @@ public class LuceneSearch {
         return pagedTopDocs;
     }
 
-    public void setQuery(Query finalQuery) {
-        this.query = finalQuery;
+    /**
+     * @param clazz
+     */
+    protected Query expandQuery() {
+        Query fullQuery;
+        if(clazz != null){
+            BooleanQuery filteredQuery = new BooleanQuery();
+            BooleanQuery classFilter = new BooleanQuery();
+
+            Term t = new Term(DocumentBuilder.CLASS_FIELDNAME, clazz.getName());
+            TermQuery termQuery = new TermQuery(t);
+
+            classFilter.setBoost(0);
+            classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
+
+            filteredQuery.add(this.query, BooleanClause.Occur.MUST);
+            filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+
+            fullQuery = filteredQuery;
+        } else {
+            fullQuery = this.query;
+        }
+        return fullQuery;
+    }
+
+    public void setQuery(Query query) {
+        this.query = query;
     }
 
     public Query getQuery() {
+        return query;
+    }
+
+    public Query getExpandedQuery() {
+        expandQuery();
         return query;
     }
 
@@ -275,12 +300,5 @@ public class LuceneSearch {
     public String[] getHighlightFields() {
         return this.highlightFields;
     }
-
-
-
-
-
-
-
 
 }

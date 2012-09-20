@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -1146,16 +1148,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         LuceneSearch luceneSearch = prepareFindByFullTextSearch(queryString, classification, languages, highlightFragments);
+        luceneSearch.setClazz(clazz);
 
         // --- execute search
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(clazz, pageSize, pageNumber);
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         // ---  initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, "taxon.id", propertyPaths);
 
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
     }
 
     /**
@@ -1214,43 +1217,53 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(queryString, classification, features, languages, highlightFragments);
 
         // --- execute search
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(clazz, pageSize, pageNumber);
+        luceneSearch.setClazz(clazz);
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         // --- initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
 
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
 
     }
 
-    public Pager<SearchResult<TaxonBase>> findByEveryThingFullText(
-            Class<? extends DescriptionElementBase> clazz, String queryString,
-            Classification classification, List<Feature> features, List<Language> languages,
-            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        // -- set defaults
-        // see LuceneSearch.pushAbstractBaseTypeDown()
-        Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
-        if(clazz != null && clazz.equals(directorySelectClass)){
-            clazz = null;
-        }
+    public Pager<SearchResult<TaxonBase>> findByEveryThingFullText(String queryString,
+            Classification classification, List<Feature> features, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints
+            , List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(queryString, classification, features, languages, highlightFragments);
         LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(queryString, classification, languages, highlightFragments);
 
-        //FIXME use MultiSearcher ....
+
+        Set<Class<? extends CdmBase>> classes = new HashSet<Class<? extends CdmBase>>();
+        classes.add(DescriptionElementBase.class);
+        classes.add(TaxonBase.class);
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(getSession(), classes);
+
+        BooleanQuery unionQuery = new BooleanQuery();
+        unionQuery.add(luceneSearchByDescriptionElement.getQuery(), Occur.SHOULD);
+        unionQuery.add(luceneSearchByTaxonBase.getQuery(), Occur.SHOULD);
+        multiSearch.setQuery(unionQuery);
+
+        Set<String> highlightFields = new HashSet<String>();
+        highlightFields.addAll(Arrays.asList(luceneSearchByDescriptionElement.getHighlightFields()));
+        highlightFields.addAll(Arrays.asList(luceneSearchByDescriptionElement.getHighlightFields()));
+        multiSearch.setHighlightFields(highlightFields.toArray(new String[highlightFields.size()]));
 
         // --- execute search
-        TopDocs topDocsResultSet = luceneSearchByDescriptionElement.executeSearch(clazz, pageSize, pageNumber);
+        TopDocs topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+
 
         // --- initialize taxa, thighlight matches ....
-        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearchByDescriptionElement, luceneSearchByDescriptionElement.getQuery());
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, luceneSearchByDescriptionElement.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
+                topDocsResultSet, multiSearch.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
 
-        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
 
     }
 
