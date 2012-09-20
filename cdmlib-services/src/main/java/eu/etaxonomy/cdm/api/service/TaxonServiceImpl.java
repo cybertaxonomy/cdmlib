@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -1128,21 +1129,64 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return dao.getUuidAndTitleCacheSynonym();
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#findByFullText(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List, boolean, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
     @Override
     public Pager<SearchResult<TaxonBase>> findByFullText(
             Class<? extends TaxonBase> clazz, String queryString,
             Classification classification, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-//        // -- set defaults
-//        Class<? extends TaxonBase> directorySelectClass = TaxonBase.class;
-//        if(clazz != null){
-//            directorySelectClass = clazz;
-//        }
-        return null;
+        // -- set defaults
+        // abstract base classes cannot be used as directorySelectClass but any subclass will do!
+        Class<? extends TaxonBase> directorySelectClass = Taxon.class;
+        if(clazz != null){
+            if(clazz.equals(TaxonBase.class)){
+                clazz = null;
+            } else {
+                directorySelectClass = clazz;
+            }
+        }
 
+        BooleanQuery finalQuery = new BooleanQuery();
+        BooleanQuery textQuery = new BooleanQuery();
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", false)};
+
+        // ---- search criteria
+        textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        textQuery.add(queryFactory.newDefinedTermBaseQuery("name.rank", queryString, languages), Occur.SHOULD);
+
+        finalQuery.add(textQuery, Occur.MUST);
+
+        if(classification != null){
+            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+        }
+
+        String[] highlightFields = null;
+        if(highlightFragments){
+            highlightFields = queryFactory.getTextFieldNamesAsArray();
+        }
+
+        // --- execute search
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(finalQuery, clazz, pageSize, pageNumber, sortFields);
+
+        // ---  initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, finalQuery);
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, highlightFields, dao, "taxon.id", propertyPaths);
+
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, searchResults.size(), pageSize, searchResults);
     }
 
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#findByDescriptionElementFullText(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List, java.util.List, boolean, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
     @Override
     public Pager<SearchResult<TaxonBase>> findByDescriptionElementFullText(
             Class<? extends DescriptionElementBase> clazz, String queryString,
@@ -1150,17 +1194,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
         // -- set defaults
-        Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
+        // abstract base classes cannot be used as directorySelectClass but any subclass will do!
+        Class<? extends DescriptionElementBase> directorySelectClass = TextData.class;
         if(clazz != null){
-            directorySelectClass = clazz;
+             if(clazz.equals(TaxonBase.class)){
+                 clazz = null;
+             } else {
+                 directorySelectClass = clazz;
+             }
         }
-
 
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), directorySelectClass);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", false)};
 
         // ---- search criteria
         textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
@@ -1206,16 +1256,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // the description must be associated with a taxon
         finalQuery.add(queryFactory.newIdNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", false)};
-
-        TopDocs topDocsResultSet = luceneSearch.executeSearch(finalQuery, clazz, pageSize, pageNumber, sortFields);
 
         String[] highlightFields = null;
         if(highlightFragments){
-            highlightFields = queryFactory.getTextFieldNames().toArray(new String[queryFactory.getTextFieldNames().size()]);
+            highlightFields = queryFactory.getTextFieldNamesAsArray();
         }
 
-        // initialize taxa, thighlight matches ....
+        // --- execute search
+        TopDocs topDocsResultSet = luceneSearch.executeSearch(finalQuery, clazz, pageSize, pageNumber, sortFields);
+
+        // --- initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, finalQuery);
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, highlightFields, dao, "inDescription.taxon.id", propertyPaths);

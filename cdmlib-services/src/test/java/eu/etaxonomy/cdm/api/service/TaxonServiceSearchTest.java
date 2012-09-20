@@ -509,6 +509,35 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B> <B>aus</B> <B>der</B> <B>Gattung</B> <B>der</B> <B>Tannen</B>"));
     }
 
+
+    @Test
+    @DataSet
+    public final void testFindByFullText() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+//        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
+//        Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
+
+        pager = taxonService.findByFullText(Taxon.class, "Abies", null, null, true, null, null, null, null); // --> 6
+        Assert.assertEquals("Expecting 6 entities", Integer.valueOf(6), pager.getCount());
+
+        pager = taxonService.findByFullText(Synonym.class, "Abies", null, null, true, null, null, null, null); // --> 1
+        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByFullText(TaxonBase.class, "sec*", null, null, true, null, null, null, null); // --> 7
+        Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
+
+        pager = taxonService.findByFullText(null, "genus", null, null, true, null, null, null, null); // --> 1
+        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findByFullText(Taxon.class, "subalpina", null, null, true, null, null, null, null); // --> 0
+        Assert.assertEquals("Expecting 0 entities", Integer.valueOf(0), pager.getCount());
+
+        // synonym in classification ???
+    }
+
     /**
      *
      */
