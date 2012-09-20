@@ -9,8 +9,9 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.Term;
@@ -40,20 +41,30 @@ public class QueryFactory {
 
     private LuceneSearch luceneSearch;
 
+    Set<String> textFieldNames = new HashSet<String>();
+
+    public Set<String> getTextFieldNames() {
+        return textFieldNames;
+    }
+
 
     public QueryFactory(LuceneSearch luceneSearch){
         this.luceneSearch = luceneSearch;
     }
 
     /**
-     *
      * @param fieldName
      * @param queryString
-     * @return a {@link TermQuery} or a {@link WildcardQuery}
+     * @param isTextField whether this field is a field containing free text in contrast to e.g. ID fields.
+     * @return
      */
-    public Query newTermQuery(String fieldName, String queryString){
+    public Query newTermQuery(String fieldName, String queryString, boolean isTextField){
 
-        // in order to support the full query syntax we must use the parser here
+        if(isTextField){
+            textFieldNames.add(fieldName);
+        }
+
+         // in order to support the full query syntax we must use the parser here
         String luceneQueryString = fieldName + ":(" + queryString + ")";
         try {
             return luceneSearch.parse(luceneQueryString);
@@ -61,6 +72,16 @@ public class QueryFactory {
             logger.error(e);
         }
         return null;
+    }
+
+    /**
+     * only to be used for text fields, see {@link #newTermQuery(String, String, boolean)}
+     * @param fieldName
+     * @param queryString
+     * @return a {@link TermQuery} or a {@link WildcardQuery}
+     */
+    public Query newTermQuery(String fieldName, String queryString){
+        return newTermQuery(fieldName, queryString, true);
     }
 
     /**
@@ -92,7 +113,7 @@ public class QueryFactory {
      * @return
      */
     public Query newEntityIdQuery(String idFieldName, CdmBase entitiy){
-        return newTermQuery("inDescription.taxon.taxonNodes.classification.id", PaddedIntegerBridge.paddInteger(entitiy.getId()));
+        return newTermQuery("inDescription.taxon.taxonNodes.classification.id", PaddedIntegerBridge.paddInteger(entitiy.getId()), false);
     }
 
     /**
@@ -122,7 +143,7 @@ public class QueryFactory {
         BooleanQuery uuidInQuery = new BooleanQuery();
         if(entities != null && entities.size() > 0 ){
             for(IdentifiableEntity entity : entities){
-                uuidInQuery.add(newTermQuery(uuidFieldName, entity.getUuid().toString()), Occur.SHOULD);
+                uuidInQuery.add(newTermQuery(uuidFieldName, entity.getUuid().toString(), false), Occur.SHOULD);
             }
         }
         return uuidInQuery;
