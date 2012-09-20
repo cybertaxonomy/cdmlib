@@ -43,6 +43,8 @@ public class QueryFactory {
 
     Set<String> textFieldNames = new HashSet<String>();
 
+    private BooleanQuery finalQuery;
+
     public Set<String> getTextFieldNames() {
         return textFieldNames;
     }
@@ -167,6 +169,18 @@ public class QueryFactory {
             }
         }
         return uuidInQuery;
+    }
+
+    public void setFinalQuery(BooleanQuery finalQuery) {
+        this.finalQuery = finalQuery;
+    }
+
+    public BooleanQuery getFinalQuery(){
+        return finalQuery;
+    }
+
+    public LuceneSearch getLuceneSearch() {
+        return luceneSearch;
     }
 
 }
