@@ -512,6 +512,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
+    @Ignore
     public final void testFindByFullText() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
