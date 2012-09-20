@@ -331,7 +331,7 @@ public class CdmUtils {
      * @return
      */
     static public boolean isCapital(String string){
-        if (isEmpty(string)){
+        if (isBlank(string)){
             return false;
         }else{
             Character firstChar = string.charAt(0);
@@ -358,6 +358,16 @@ public class CdmUtils {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Returns <code>false</code> if string is null, "" or string.trim() is ""
+     * @see isNotEmpty(String string)
+     * @param string
+     * @return
+     */
+    static public boolean isNotBlank(String string){
+        return ! isBlank(string);
     }
     
     /**
@@ -399,12 +409,15 @@ public class CdmUtils {
     /**
      * Returns false if string is null, "" or string.trim() is ""
      * Else true.
-     * @see isEmpty(String string)
+     * @see isBlank(String string)
+     * @see #isNotBlank(String)
+     * @deprecated use {@link #isNotBlank(String)} instead
      * @param string
      * @return
      */
+    @Deprecated
     static public boolean isNotEmpty(String string){
-        return !isEmpty(string);
+        return isNotBlank(string);
     }
 
 
