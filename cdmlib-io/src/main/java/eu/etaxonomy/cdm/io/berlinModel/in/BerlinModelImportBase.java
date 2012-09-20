@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
@@ -205,7 +206,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	 * @param notes
 	 */
 	protected void doNotes(AnnotatableEntity annotatableEntity, String notes) {
-		if (CdmUtils.isNotEmpty(notes) && annotatableEntity != null ){
+		if (StringUtils.isNotBlank(notes) && annotatableEntity != null ){
 			String notesString = String.valueOf(notes);
 			if (notesString.length() > 65530 ){
 				notesString = notesString.substring(0, 65530) + "...";
