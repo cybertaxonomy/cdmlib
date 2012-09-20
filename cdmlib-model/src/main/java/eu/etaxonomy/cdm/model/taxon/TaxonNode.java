@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
@@ -87,6 +88,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
+    @IndexedEmbedded
     private Classification classification;
 
     @XmlElementWrapper(name = "childNodes")
@@ -94,7 +96,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-   @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private Set<TaxonNode> childNodes = new HashSet<TaxonNode>();
 
     @XmlElement(name = "reference")

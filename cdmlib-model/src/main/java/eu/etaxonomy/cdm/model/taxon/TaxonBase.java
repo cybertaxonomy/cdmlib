@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
  * <li> TaxonConcept according to the TDWG ontology
  * <li> TaxonConcept according to the TCS
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
@@ -75,98 +75,98 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
-	private static final long serialVersionUID = -3589185949928938529L;
-	private static final Logger logger = Logger.getLogger(TaxonBase.class);
-	
-	private static Method methodTaxonNameAddTaxonBase;
-	
-	static {
-		try {
-			methodTaxonNameAddTaxonBase = TaxonNameBase.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
-			methodTaxonNameAddTaxonBase.setAccessible(true);
-		} catch (Exception e) {
-			logger.error(e);
-			for(StackTraceElement ste : e.getStackTrace()) {
-				logger.error(ste);
-			}
-		}
-	}
-	
-	//The assignment to the Taxon or to the Synonym class is not definitive
+    private static final long serialVersionUID = -3589185949928938529L;
+    private static final Logger logger = Logger.getLogger(TaxonBase.class);
+
+    private static Method methodTaxonNameAddTaxonBase;
+
+    static {
+        try {
+            methodTaxonNameAddTaxonBase = TaxonNameBase.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
+            methodTaxonNameAddTaxonBase.setAccessible(true);
+        } catch (Exception e) {
+            logger.error(e);
+            for(StackTraceElement ste : e.getStackTrace()) {
+                logger.error(ste);
+            }
+        }
+    }
+
+    //The assignment to the Taxon or to the Synonym class is not definitive
     @XmlAttribute(name = "isDoubtful")
-	private boolean doubtful;
-	
+    private boolean doubtful;
+
     @XmlElement(name = "Name", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name="name_id")
-	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
-	@NotNull(groups = Level2.class)
-	private TaxonNameBase name;
-	
-	// The concept reference
+    @IndexedEmbedded
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @NotNull(groups = Level2.class)
+    private TaxonNameBase name;
+
+    // The concept reference
     @XmlElement(name = "Sec")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
     @NotNull(groups = Level2.class)
-	private Reference sec;
+    @IndexedEmbedded
+    private Reference sec;
 
-	
-	@XmlElement(name = "AppendedPhrase")
-	private String appendedPhrase;
 
-	@XmlAttribute(name= "UseNameCache")
-	private boolean useNameCache = false;
-    
-	
-// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty (abstract) taxon.
-	 * 
-	 * @see 	#TaxonBase(TaxonNameBase, Reference)
-	 */
-	protected TaxonBase(){
-		super();
-	}
-	
-	/** 
-	 * Class constructor: creates a new (abstract) taxon with the
-	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
-	 * using it.
-	 * 
-	 * @param  taxonNameBase	the taxon name used
-	 * @param  sec				the reference using the taxon name
-	 * @see    #TaxonBase()
-	 */
-	protected TaxonBase(TaxonNameBase taxonNameBase, Reference sec){
-		super();
-		if (taxonNameBase != null){
-			this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);  
-		}
-		this.setSec(sec);
-	}
+    @XmlElement(name = "AppendedPhrase")
+    private String appendedPhrase;
+
+    @XmlAttribute(name= "UseNameCache")
+    private boolean useNameCache = false;
+
+
+// ************* CONSTRUCTORS *************/
+    /**
+     * Class constructor: creates a new empty (abstract) taxon.
+     *
+     * @see 	#TaxonBase(TaxonNameBase, Reference)
+     */
+    protected TaxonBase(){
+        super();
+    }
+
+    /**
+     * Class constructor: creates a new (abstract) taxon with the
+     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * using it.
+     *
+     * @param  taxonNameBase	the taxon name used
+     * @param  sec				the reference using the taxon name
+     * @see    #TaxonBase()
+     */
+    protected TaxonBase(TaxonNameBase taxonNameBase, Reference sec){
+        super();
+        if (taxonNameBase != null){
+            this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);
+        }
+        this.setSec(sec);
+    }
 
 //********* METHODS **************************************/
 
-	/**
-	 * Generates and returns the string with the full scientific name (including
-	 * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i>
-	 * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} using
-	 * this taxon name. This string may be stored in the inherited
-	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
-	 * This method overrides the generic and inherited generateTitle() method
-	 * from {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity IdentifiableEntity}.
-	 *
-	 * @return  the string with the full scientific name of the taxon name
-	 *			and with the title of the reference involved in <i>this</i> (abstract) taxon
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-	 */
+    /**
+     * Generates and returns the string with the full scientific name (including
+     * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i>
+     * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} using
+     * this taxon name. This string may be stored in the inherited
+     * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+     * This method overrides the generic and inherited generateTitle() method
+     * from {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity IdentifiableEntity}.
+     *
+     * @return  the string with the full scientific name of the taxon name
+     *			and with the title of the reference involved in <i>this</i> (abstract) taxon
+     * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+     * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+     */
 //	@Override
 //	public String generateTitle() {
 //		String title;
@@ -182,130 +182,130 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 //		}
 //		return title;
 //	}
-	
-	/** 
-	 * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
-	 */
-	public TaxonNameBase getName(){
-		return this.name;
-	}
-	
-	/* 
-	 * @see #getName
-	 */
-	public void setName(TaxonNameBase name) {
-		if (this.name != null){
-			this.name.getTaxonBases().remove(this);
-		}
-		if(name != null) {
-			name.getTaxonBases().add(this);
-		}
-		this.name = name;
-	}
-	
-	/** 
-	 * Returns the {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} of the
-	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
-	 */
-	@Transient
-	public HomotypicalGroup getHomotypicGroup(){
-		if (this.getName() == null){
-			return null;
-		}else{
-			return this.getName().getHomotypicalGroup();
-		}
-	}
 
-	/**
-	 * Returns the boolean value indicating whether the assignment of <i>this</i>
-	 * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class is definitive
-	 * (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
-	 * taxon as an "accepted/correct" name or as a (junior) "synonym" might
-	 * still change in the course of taxonomical working process. 
-	 */
-	public boolean isDoubtful(){
-		return this.doubtful;
-	}
-	/**
-	 * @see  #isDoubtful()
-	 */
-	public void setDoubtful(boolean doubtful){
-		this.doubtful = doubtful;
-	}
+    /**
+     * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
+     */
+    public TaxonNameBase getName(){
+        return this.name;
+    }
 
-	/** 
-	 * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
-	 * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
-	 * in <i>this</i> (abstract) taxon.
-	 */
-	public Reference getSec() {
-		return sec;
-	}
+    /*
+     * @see #getName
+     */
+    public void setName(TaxonNameBase name) {
+        if (this.name != null){
+            this.name.getTaxonBases().remove(this);
+        }
+        if(name != null) {
+            name.getTaxonBases().add(this);
+        }
+        this.name = name;
+    }
 
-	/**
-	 * @see  #getSec()
-	 */
-	public void setSec(Reference sec) {
-		this.sec = sec;
-	}
-	
-	
-	
-	/**
-	 * An appended phrase is a phrase that is added to the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
-	 * 's title cache to be used just in this taxon. E.g. the phrase "sensu latu" may be added
-	 * to the name to describe this taxon more precisely.
-	 * If {@link #isUseNameCache()} 
-	 * @return the appendedPhrase
-	 */
-	public String getAppendedPhrase() {
-		return appendedPhrase;
-	}
+    /**
+     * Returns the {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} of the
+     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
+     */
+    @Transient
+    public HomotypicalGroup getHomotypicGroup(){
+        if (this.getName() == null){
+            return null;
+        }else{
+            return this.getName().getHomotypicalGroup();
+        }
+    }
 
-	/**
-	 * @param appendedPhrase the appendedPhrase to set
-	 */
-	public void setAppendedPhrase(String appendedPhrase) {
-		this.appendedPhrase = appendedPhrase;
-	}
+    /**
+     * Returns the boolean value indicating whether the assignment of <i>this</i>
+     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class is definitive
+     * (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
+     * taxon as an "accepted/correct" name or as a (junior) "synonym" might
+     * still change in the course of taxonomical working process.
+     */
+    public boolean isDoubtful(){
+        return this.doubtful;
+    }
+    /**
+     * @see  #isDoubtful()
+     */
+    public void setDoubtful(boolean doubtful){
+        this.doubtful = doubtful;
+    }
 
-	/**
-	 * @return the useNameCache
-	 */
-	public boolean isUseNameCache() {
-		return useNameCache;
-	}
+    /**
+     * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
+     * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
+     * in <i>this</i> (abstract) taxon.
+     */
+    public Reference getSec() {
+        return sec;
+    }
 
-	/**
-	 * @param useNameCache the useNameCache to set
-	 */
-	public void setUseNameCache(boolean useNameCache) {
-		this.useNameCache = useNameCache;
-	}
+    /**
+     * @see  #getSec()
+     */
+    public void setSec(Reference sec) {
+        this.sec = sec;
+    }
+
+
+
+    /**
+     * An appended phrase is a phrase that is added to the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
+     * 's title cache to be used just in this taxon. E.g. the phrase "sensu latu" may be added
+     * to the name to describe this taxon more precisely.
+     * If {@link #isUseNameCache()}
+     * @return the appendedPhrase
+     */
+    public String getAppendedPhrase() {
+        return appendedPhrase;
+    }
+
+    /**
+     * @param appendedPhrase the appendedPhrase to set
+     */
+    public void setAppendedPhrase(String appendedPhrase) {
+        this.appendedPhrase = appendedPhrase;
+    }
+
+    /**
+     * @return the useNameCache
+     */
+    public boolean isUseNameCache() {
+        return useNameCache;
+    }
+
+    /**
+     * @param useNameCache the useNameCache to set
+     */
+    public void setUseNameCache(boolean useNameCache) {
+        this.useNameCache = useNameCache;
+    }
 //*********************** CLONE ********************************************************/
-	
-	/** 
-	 * Clones <i>this</i> taxon. This is a shortcut that enables to create
-	 * a new instance with empty taxon name and sec reference.
-	 *  
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone() {
-		TaxonBase result;
-		try {
-			result = (TaxonBase)super.clone();
-			result.setSec(null);
-			
-			return result;
-		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
-		}
-		
-		
-	}
+
+    /**
+     * Clones <i>this</i> taxon. This is a shortcut that enables to create
+     * a new instance with empty taxon name and sec reference.
+     *
+     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() {
+        TaxonBase result;
+        try {
+            result = (TaxonBase)super.clone();
+            result.setSec(null);
+
+            return result;
+        } catch (CloneNotSupportedException e) {
+            logger.warn("Object does not implement cloneable");
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
 
 }

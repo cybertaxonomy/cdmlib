@@ -168,7 +168,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
+    @JoinTable(
         name="TaxonNameBase_TypeDesignationBase",
         joinColumns=@javax.persistence.JoinColumn(name="TaxonNameBase_id"),
         inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
@@ -212,6 +212,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @OneToMany(fetch= FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
     @NotNull
+    @IndexedEmbedded(depth=3)
     private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
     @XmlElementWrapper(name = "TaxonBases")
@@ -228,6 +229,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @ManyToOne(fetch = FetchType.EAGER)
     @CacheUpdate(value ="nameCache")
     @NotNull
+    @IndexedEmbedded(depth=3)
     private Rank rank;
 
     @XmlElement(name = "NomenclaturalReference")
@@ -942,7 +944,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @param  typeDesignation  the type designation which should be deleted
      */
     @SuppressWarnings("deprecation")
-	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
+    public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
         this.typeDesignations.remove(typeDesignation);
         typeDesignation.removeTypifiedName(this);
     }
