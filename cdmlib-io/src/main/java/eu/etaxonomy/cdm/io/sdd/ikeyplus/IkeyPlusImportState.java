@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.io.sdd.ikeyplus;
 
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
@@ -17,11 +16,10 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @date Sep 18, 2012
  *
  */
-public class IkeyPlusImportState extends ImportStateBase {
+public class IkeyPlusImportState extends ImportStateBase<IkeyPlusImportConfigurator,IkeyPlusImport> {
 
-    protected IkeyPlusImportState(ImportConfiguratorBase config) {
+    protected IkeyPlusImportState(IkeyPlusImportConfigurator config) {
         super(config);
-        // TODO Auto-generated constructor stub
     }
 
 }

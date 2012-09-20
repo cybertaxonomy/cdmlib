@@ -9,39 +9,70 @@
 */
 package eu.etaxonomy.cdm.io.sdd.ikeyplus;
 
+import java.net.URI;
+import java.net.URL;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.sdd.in.SDDImport;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author andreas
  * @date Sep 18, 2012
  *
  */
-public class IkeyPlusImportConfigurator extends ImportConfiguratorBase {
+public class IkeyPlusImportConfigurator extends ImportConfiguratorBase<IkeyPlusImportState, URI> {
+    public static final Logger logger = Logger.getLogger(IkeyPlusImportConfigurator.class);
 
-    public IkeyPlusImportConfigurator(IInputTransformer transformer) {
-        super(transformer);
-        // TODO Auto-generated constructor stub
+    private static IInputTransformer defaultTransformer = null;
+
+
+    public static IkeyPlusImportConfigurator NewInstance(URI uri,
+            ICdmDataSource destination){
+        return new IkeyPlusImportConfigurator(uri, destination);
+    }
+
+
+    /**
+     * @param berlinModelSource
+     * @param sourceReference
+     * @param destination
+     */
+    private IkeyPlusImportConfigurator(URI uri, ICdmDataSource destination) {
+        super(defaultTransformer);
+        setSource(uri);
+        setDestination(destination);
     }
 
     @Override
-    public <STATE extends ImportStateBase> STATE getNewState() {
-        // TODO Auto-generated method stub
-        return null;
+    public IkeyPlusImportState getNewState() {
+        return new IkeyPlusImportState(this);
     }
+
 
     @Override
     protected void makeIoClassList() {
-        // TODO Auto-generated method stub
-
+        ioClassList = new Class[]{
+                IkeyPlusImport.class
+        };
     }
 
     @Override
     public Reference getSourceReference() {
-        // TODO Auto-generated method stub
-        return null;
+        //TODO
+        if (this.sourceReference == null){
+            logger.warn("getSource Reference not yet fully implemented");
+            sourceReference = ReferenceFactory.newDatabase();
+            sourceReference.setTitleCache("KeyImport", true);
+        }
+        return sourceReference;
     }
 
 }

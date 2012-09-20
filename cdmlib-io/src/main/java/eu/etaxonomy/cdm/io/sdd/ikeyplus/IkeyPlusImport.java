@@ -112,13 +112,13 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
         // TODO idInSource for any cdm entity
 
-        cdmKey = PolytomousKey.NewTitledInstance(singleAccessKey.getLabel());
+        cdmKey = PolytomousKey.NewTitledInstance(singleAccessKey.getLabel() + "_1");
 
         termVoc = TermVocabulary.NewInstance(singleAccessKey.getLabel(), singleAccessKey.getLabel(), null, null);
 
-        Set<PolytomousKeyNode> rootNode = recursivlyCreateKeyNodes(singleAccessKey.getRoot());
-        Assert.assertEquals(1, rootNode.size());
-        cdmKey.setRoot(rootNode.iterator().next());
+        Set<PolytomousKeyNode> rootNode = recursivlyCreateKeyNodes(singleAccessKey.getRoot(), null);
+//        Assert.assertEquals(1, rootNode.size());
+//        cdmKey.setRoot(rootNode.iterator().next());
 
         persistNewEntities();
 
@@ -143,9 +143,12 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
     /**
      * @param node
+     * @param parentNode may be null if node is the root node
      * @return
      */
-    private Set<PolytomousKeyNode> recursivlyCreateKeyNodes(SingleAccessKeyNode node) {
+    private Set<PolytomousKeyNode> recursivlyCreateKeyNodes(SingleAccessKeyNode node, SingleAccessKeyNode parentNode) {
+
+        boolean isRootNode = (parentNode == null);
 
 
         Set<PolytomousKeyNode> pkNodeSet = new HashSet<PolytomousKeyNode>();
@@ -153,15 +156,12 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
             return pkNodeSet;
         }
 
-        Feature feature = null;
-        if(node.getCharacter() != null){
-            feature = getFeatureFrom(node.getCharacter());
-        }
         KeyStatement statement = getKeyStatementFrom(node);
 
 
         //node.getNodeDescription(); // not needed here, contains warnings etc
 
+        // ---- do the children or taxa
         List<SingleAccessKeyNode> childNodes = node.getChildren();
         PolytomousKeyNode pkNode;
         if(childNodes == null || childNodes.size() == 0 ){
@@ -169,30 +169,37 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
             List<Taxon> taxa = node.getRemainingTaxa();
             for(Taxon taxon : taxa){
 
-                pkNode = createPkNode(feature, statement);
+                pkNode = createPkNode(null, statement);
 
                 NonViralName nonViralName = NonViralName.NewInstance(null);
                 nonViralName.setTitleCache(taxon.getName(), true);
                 eu.etaxonomy.cdm.model.taxon.Taxon cdmTaxon = eu.etaxonomy.cdm.model.taxon.Taxon.NewInstance(
                         nonViralName, null); //FIXME !!!!!!
                 // TODO add taxon to covered taxa
-                // TODO media
+                // TODO media: get media from the parent node
 
                 pkNode.setTaxon(cdmTaxon);
                 pkNodeSet.add(pkNode);
             }
         } else {
             // do the children
+            Feature feature = getFeatureFrom(childNodes.iterator().next().getCharacter());
+
+
             pkNode = createPkNode(feature, statement);
             for(SingleAccessKeyNode childNode : childNodes){
 
-                Set<PolytomousKeyNode> nodesToAdd = recursivlyCreateKeyNodes(childNode);
+                Set<PolytomousKeyNode> nodesToAdd = recursivlyCreateKeyNodes(childNode, node);
                 for(PolytomousKeyNode nodeToAdd : nodesToAdd){
                     pkNode.addChild(nodeToAdd);
                 }
 
             }
             pkNodeSet.add(pkNode);
+
+            if(isRootNode) {
+                cdmKey.setRoot(pkNode);
+            }
         }
 
 
@@ -255,9 +262,14 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
     @Override
     protected void doInvoke(IkeyPlusImportState state) {
-        // TODO Auto-generated method stub
-
+        Utils utils = null;
+        try {
+            this.getKey(state.getConfig().getSource(), utils);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     protected boolean doCheck(IkeyPlusImportState state) {
