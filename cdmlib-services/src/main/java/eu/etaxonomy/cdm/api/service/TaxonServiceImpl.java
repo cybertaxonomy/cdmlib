@@ -1140,15 +1140,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Classification classification, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        // -- set defaults
-        // see LuceneSearch.pushAbstractBaseTypeDown()
-        Class<? extends TaxonBase> directorySelectClass = TaxonBase.class;
-        if(clazz != null && clazz.equals(directorySelectClass)){
-            clazz = null;
-        }
 
-        LuceneSearch luceneSearch = prepareFindByFullTextSearch(queryString, classification, languages, highlightFragments);
-        luceneSearch.setClazz(clazz);
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments);
 
         // --- execute search
         TopDocs topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
@@ -1162,6 +1155,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
     /**
+     * @param clazz
      * @param queryString
      * @param classification
      * @param languages
@@ -1169,7 +1163,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param directorySelectClass
      * @return
      */
-    public LuceneSearch prepareFindByFullTextSearch(String queryString, Classification classification, List<Language> languages,
+    protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Language> languages,
             boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
@@ -1181,6 +1175,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
+        luceneSearch.setClazz(clazz);
+
         textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
         textQuery.add(queryFactory.newDefinedTermBaseQuery("name.rank", queryString, languages), Occur.SHOULD);
 
@@ -1207,17 +1203,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Classification classification, List<Feature> features, List<Language> languages,
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        // -- set defaults
-        // see LuceneSearch.pushAbstractBaseTypeDown()
-        Class<? extends DescriptionElementBase> directorySelectClass = DescriptionElementBase.class;
-        if(clazz != null && clazz.equals(directorySelectClass)){
-            clazz = null;
-        }
 
-        LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(queryString, classification, features, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(clazz, queryString, classification, features, languages, highlightFragments);
 
         // --- execute search
-        luceneSearch.setClazz(clazz);
         TopDocs topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         // --- initialize taxa, thighlight matches ....
@@ -1235,28 +1224,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints
             , List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(queryString, classification, features, languages, highlightFragments);
-        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(queryString, classification, languages, highlightFragments);
+        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, features, languages, highlightFragments);
+        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);
 
-
-        Set<Class<? extends CdmBase>> classes = new HashSet<Class<? extends CdmBase>>();
-        classes.add(DescriptionElementBase.class);
-        classes.add(TaxonBase.class);
-        LuceneMultiSearch multiSearch = new LuceneMultiSearch(getSession(), classes);
-
-        BooleanQuery unionQuery = new BooleanQuery();
-        unionQuery.add(luceneSearchByDescriptionElement.getQuery(), Occur.SHOULD);
-        unionQuery.add(luceneSearchByTaxonBase.getQuery(), Occur.SHOULD);
-        multiSearch.setQuery(unionQuery);
-
-        Set<String> highlightFields = new HashSet<String>();
-        highlightFields.addAll(Arrays.asList(luceneSearchByDescriptionElement.getHighlightFields()));
-        highlightFields.addAll(Arrays.asList(luceneSearchByDescriptionElement.getHighlightFields()));
-        multiSearch.setHighlightFields(highlightFields.toArray(new String[highlightFields.size()]));
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
         // --- execute search
         TopDocs topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
-
 
         // --- initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
@@ -1269,6 +1243,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
     /**
+     * @param clazz
      * @param queryString
      * @param classification
      * @param features
@@ -1277,7 +1252,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param directorySelectClass
      * @return
      */
-    public LuceneSearch prepareByDescriptionElementFullTextSearch(String queryString, Classification classification, List<Feature> features,
+    protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Feature> features,
             List<Language> languages, boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
@@ -1289,6 +1264,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
+        luceneSearch.setClazz(clazz);
         textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
         // common name

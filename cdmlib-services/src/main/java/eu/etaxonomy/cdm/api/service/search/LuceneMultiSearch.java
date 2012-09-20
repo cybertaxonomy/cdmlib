@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,8 +19,10 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.hibernate.Session;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -29,6 +32,8 @@ import org.hibernate.search.store.DirectoryProvider;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * A LuceneSearch which allow to run a union like search on multiple indexes at once.
+ * Internally a {@link MultiReader} is being used.
  *
  * @author Andreas Kohlbecker
  * @date Dec 21, 2011
@@ -42,15 +47,25 @@ public class LuceneMultiSearch extends LuceneSearch {
 
 
     /**
-     * @param session
+     * @param luceneSearch the searches to execute together as a union like search
      */
-    public LuceneMultiSearch(Session session, Set<Class<? extends CdmBase>> directorySelectClass) {
-        super();
-        this.session = session;
+    public LuceneMultiSearch(LuceneSearch... luceneSearch) {
+        session = luceneSearch[0].session;
 
-         for(Class<? extends CdmBase> type : directorySelectClass){
-             this.directorySelectClasses.add(pushAbstractBaseTypeDown(type));
-         }
+        BooleanQuery query = new BooleanQuery();
+
+        Set<String> highlightFields = new HashSet<String>();
+        for(LuceneSearch search : luceneSearch){
+
+            this.directorySelectClasses.add(search.directorySelectClass);
+            query.add(search.getQuery(), Occur.SHOULD);
+            highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
+
+        }
+
+        this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
+        this.query = query;
+
     }
 
     /**

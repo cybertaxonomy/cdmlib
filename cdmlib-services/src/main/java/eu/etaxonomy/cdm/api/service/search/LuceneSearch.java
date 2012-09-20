@@ -56,7 +56,7 @@ public class LuceneSearch {
 
     private SortField[] sortFields;
 
-    private Class<? extends CdmBase> directorySelectClass;
+    protected Class<? extends CdmBase> directorySelectClass;
 
     /**
      * classFilter
@@ -68,7 +68,17 @@ public class LuceneSearch {
         return clazz;
     }
 
+    /**
+     * Sets the Class to use as filter criterion, in case the supplied Class equals the
+     * <code>directorySelectClass</code> the Class is set to <code>null</code>
+     * @param clazz
+     */
     public void setClazz(Class<? extends CdmBase> clazz) {
+//    	see LuceneSearch.pushAbstractBaseTypeDown()
+
+        if(clazz != null && clazz.equals(directorySelectClass)){
+            clazz = null;
+        }
         this.clazz = clazz;
     }
 
@@ -82,8 +92,7 @@ public class LuceneSearch {
 
     protected Query query;
 
-
-    private String[] highlightFields = new String[0];
+    protected String[] highlightFields = new String[0];
 
 
     /**
