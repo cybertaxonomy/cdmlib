@@ -512,14 +512,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    @Ignore
     public final void testFindByFullText() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
 
         Pager<SearchResult<TaxonBase>> pager;
-//        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
-//        Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
+
+        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
+        Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
 
         pager = taxonService.findByFullText(Taxon.class, "Abies", null, null, true, null, null, null, null); // --> 6
         Assert.assertEquals("Expecting 6 entities", Integer.valueOf(6), pager.getCount());

@@ -56,7 +56,11 @@ public class LuceneSearch {
 
     private SortField[] sortFields;
 
-    protected Class<? extends CdmBase> directorySelectClass;
+    private Class<? extends CdmBase> directorySelectClass;
+
+    protected Class<? extends CdmBase> getDirectorySelectClass() {
+        return pushAbstractBaseTypeDown(directorySelectClass);
+    }
 
     /**
      * classFilter
@@ -74,8 +78,12 @@ public class LuceneSearch {
      * @param clazz
      */
     public void setClazz(Class<? extends CdmBase> clazz) {
-//    	see LuceneSearch.pushAbstractBaseTypeDown()
 
+        /*
+         * NOTE:
+         * we must not use the getter of directorySelectClass
+         * since we need the abstract base classes here!!!!
+         */
         if(clazz != null && clazz.equals(directorySelectClass)){
             clazz = null;
         }
@@ -100,7 +108,7 @@ public class LuceneSearch {
      */
     public LuceneSearch(Session session, Class<? extends CdmBase> directorySelectClass) {
          this.session = session;
-         this.directorySelectClass = pushAbstractBaseTypeDown(directorySelectClass);
+         this.directorySelectClass = directorySelectClass;
     }
 
     /**
@@ -144,7 +152,7 @@ public class LuceneSearch {
     public IndexReader getIndexReader() {
         SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
 
-        DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(directorySelectClass);
+        DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(getDirectorySelectClass());
         logger.info(directoryProviders[0].getDirectory().toString());
 
         ReaderProvider readerProvider = searchFactory.getReaderProvider();
@@ -166,7 +174,7 @@ public class LuceneSearch {
      */
     public Analyzer getAnalyzer() {
         SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-        Analyzer analyzer = searchFactory.getAnalyzer(directorySelectClass);
+        Analyzer analyzer = searchFactory.getAnalyzer(getDirectorySelectClass());
         return analyzer;
     }
 

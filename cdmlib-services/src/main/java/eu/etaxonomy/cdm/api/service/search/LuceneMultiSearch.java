@@ -55,12 +55,11 @@ public class LuceneMultiSearch extends LuceneSearch {
         BooleanQuery query = new BooleanQuery();
 
         Set<String> highlightFields = new HashSet<String>();
-        for(LuceneSearch search : luceneSearch){
 
-            this.directorySelectClasses.add(search.directorySelectClass);
+        for(LuceneSearch search : luceneSearch){
+            this.directorySelectClasses.add(search.getDirectorySelectClass());
             query.add(search.getQuery(), Occur.SHOULD);
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
-
         }
 
         this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
