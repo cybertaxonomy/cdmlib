@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -65,6 +66,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -843,11 +845,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param childTaxon
 	 */
 	protected void fillMissingEpithets(NonViralName parentName, NonViralName childName) {
-		if (CdmUtils.isEmpty(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
+		if (StringUtils.isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
 		
-		if (CdmUtils.isEmpty(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
+		if (StringUtils.isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
 		if (childName.isAutonym() && childName.getCombinationAuthorTeam() == null && childName.getBasionymAuthorTeam() == null ){
@@ -891,6 +893,49 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		if (result == null && createNewIfNotExists){
 			result = TaxonDescription.NewInstance(taxon);
+			result.setImageGallery(isImageGallery);
+			if (ref != null){
+				result.addSource(null, null, ref, null);
+			}
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Returns the {@link SpecimenDescription specimen description} for a {@link SpecimenOrObservationBase specimen or observation}. 
+	 * If there are multiple specimen descriptions an arbitrary one is chosen.
+	 * If no specimen description exists, a new one is created if <code>createNewIfNotExists</code> is <code>true</code>.
+	 * @param createNewIfNotExists
+	 * @param isImageGallery if true only specimen description being image galleries are considered.
+	 * If false only specimen description being no image galleries are considered.
+	 * @return
+	 */
+	public SpecimenDescription getSpecimenDescription(SpecimenOrObservationBase specimen, boolean isImageGallery, boolean createNewIfNotExists) {
+		Reference ref = null;
+		return getSpecimenDescription(specimen, ref, isImageGallery, createNewIfNotExists);
+	}
+	
+	/**
+	 * Like {@link #getSpecimenDescription(SpecimenOrObservationBase, boolean, boolean)}
+	 * Only matches a description if the given reference is a source of the description.<BR>
+	 * If a new description is created the given reference will be added as a source.
+	 * 
+	 * @see #getTaxonDescription(Taxon, boolean, boolean)
+	 */
+	public SpecimenDescription getSpecimenDescription(SpecimenOrObservationBase specimen, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+		SpecimenDescription result = null;
+		Set<SpecimenDescription> descriptions= specimen.getDescriptions();
+		for (SpecimenDescription description : descriptions){
+			if (description.isImageGallery() == isImageGallery){
+				if (hasCorrespondingSource(ref, description)){
+					result = description;
+					break;
+				}
+			}
+		}
+		if (result == null && createNewIfNotExists){
+			result = SpecimenDescription.NewInstance(specimen);
 			result.setImageGallery(isImageGallery);
 			if (ref != null){
 				result.addSource(null, null, ref, null);
@@ -954,7 +999,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param ref
 	 * @param description
 	 */
-	private boolean hasCorrespondingSource(Reference ref, TaxonDescription description) {
+	private boolean hasCorrespondingSource(Reference<?> ref, DescriptionBase<?> description) {
 		if (ref != null){
 			for (IdentifiableSource source : description.getSources()){
 				if (ref.equals(source.getCitation())){
@@ -1026,6 +1071,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		} else {
 			ImageInfo imageInfo = null;
 			URI uri;
+			uriString = uriString.replace(" ", "%20");  //replace whitespace
 			try {
 				uri = new URI(uriString);
 				try {
