@@ -17,30 +17,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import main.java.IO.SDDSaxParser;
-import main.java.model.DataSet;
-import main.java.model.ICharacter;
-import main.java.model.QuantitativeCharacter;
-import main.java.model.QuantitativeMeasure;
-import main.java.model.SingleAccessKeyNode;
-import main.java.model.SingleAccessKeyTree;
-import main.java.model.Taxon;
-import main.java.services.IdentificationKeyGenerator;
-import main.java.utils.Utils;
-
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import fr.lis.ikeyplus.IO.SDDSaxParser;
+import fr.lis.ikeyplus.model.DataSet;
+import fr.lis.ikeyplus.model.ICharacter;
+import fr.lis.ikeyplus.model.QuantitativeCharacter;
+import fr.lis.ikeyplus.model.QuantitativeMeasure;
+import fr.lis.ikeyplus.model.SingleAccessKeyNode;
+import fr.lis.ikeyplus.model.SingleAccessKeyTree;
+import fr.lis.ikeyplus.model.Taxon;
+import fr.lis.ikeyplus.services.IdentificationKeyGenerator;
+import fr.lis.ikeyplus.utils.Utils;
 
 /**
  * @author andreas
@@ -88,7 +86,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         utils = new Utils();
 //        utils.setErrorMessage("foobar"); // Don't do it !!!! risk of NPE
         utils.setFewStatesCharacterFirst(false);
-        utils.setMergeCharacterStatesIfSameDiscimination(false);
+        utils.setMergeCharacterStatesIfSameDiscrimination(false);
         utils.setPruning(false);
         utils.setWeightContext("");
         utils.setWeightType(Utils.GLOBAL_CHARACTER_WEIGHT);

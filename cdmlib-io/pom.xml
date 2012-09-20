@@ -141,11 +141,9 @@
          </exclusion>
        </exclusions>
      </dependency>
-     <!--  for ikey-plus  -->
-      <dependency>
-          <groupId>com.itextpdf</groupId>
-          <artifactId>itextpdf</artifactId>
-          <scope>compile</scope>
+     <dependency>
+          <groupId>identificationKeyAPI</groupId>
+          <artifactId>identificationKeyAPI</artifactId>
       </dependency>
   </dependencies>
 </project>
