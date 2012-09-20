@@ -1219,12 +1219,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
 
-    public Pager<SearchResult<TaxonBase>> findByEveryThingFullText(String queryString,
-            Classification classification, List<Feature> features, List<Language> languages,
-            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints
-            , List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+    public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
+            Classification classification, List<Language> languages, boolean highlightFragments,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
-        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, features, languages, highlightFragments);
+        LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
         LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearchByDescriptionElement, luceneSearchByTaxonBase);

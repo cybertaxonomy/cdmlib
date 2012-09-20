@@ -604,10 +604,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
-    public Pager<SearchResult<TaxonBase>> findByEveryThingFullText(String queryString,
-            Classification classification, List<Feature> features, List<Language> languages,
-            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints
-            , List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+    public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
+            Classification classification, List<Language> languages, boolean highlightFragments,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
 
 

@@ -179,7 +179,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByDescriptionElementFullText"})
     public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
-            @RequestParam(value = "clazz", required = false) Class clazz,
+            @RequestParam(value = "clazz", required = false) Class<? extends DescriptionElementBase> clazz,
             @RequestParam(value = "query", required = true) String queryString,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
             @RequestParam(value = "features", required = false) UuidList featureUuids,
@@ -214,7 +214,79 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             }
         }
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, features, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), initializationStrategy);
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(
+                clazz, queryString, classification, features, languages, highlighting,
+                pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null),
+                initializationStrategy);
+        return pager;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
+    public Pager<SearchResult<TaxonBase>> dofindByFullText(
+            @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
+            @RequestParam(value = "query", required = true) String queryString,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "languages", required = false) List<Language> languages,
+            @RequestParam(value = "hl", required = false) Boolean highlighting,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException {
+
+         logger.info("findByFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         pagerParams.normalizeAndValidate(response);
+
+         if(highlighting == null){
+             highlighting = false;
+         }
+
+         Classification classification = null;
+        if(treeUuid != null){
+            classification = classificationService.find(treeUuid);
+        }
+
+        Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, languages,
+                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null),
+                initializationStrategy);
+        return pager;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value={"findByEverythingFullText"})
+    public Pager<SearchResult<TaxonBase>> dofindByEverythingFullText(
+            @RequestParam(value = "clazz", required = false) Class<? extends TaxonBase> clazz,
+            @RequestParam(value = "query", required = true) String queryString,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "languages", required = false) List<Language> languages,
+            @RequestParam(value = "hl", required = false) Boolean highlighting,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException {
+
+         logger.info("findByEverythingFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         pagerParams.normalizeAndValidate(response);
+
+         if(highlighting == null){
+             highlighting = false;
+         }
+
+         Classification classification = null;
+        if(treeUuid != null){
+            classification = classificationService.find(treeUuid);
+        }
+
+        Pager<SearchResult<TaxonBase>> pager = service.findByEverythingFullText(
+                queryString, classification, languages, highlighting,
+                pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                ((List<OrderHint>)null), initializationStrategy);
         return pager;
     }
 }

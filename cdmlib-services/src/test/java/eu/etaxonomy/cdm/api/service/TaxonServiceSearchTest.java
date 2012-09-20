@@ -547,13 +547,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByEveryThingFullText("genus", null, null,  null, false, null, null, null, null); // --> 1
+        pager = taxonService.findByEverythingFullText("genus", null, null,  false, null, null, null, null); // --> 1
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByEveryThingFullText("Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Balsam-Tanne", null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the GERMAN 'Balsam-Tanne'", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByEveryThingFullText("Abies", null, null, null, true, null, null, null, null);
+        pager = taxonService.findByEverythingFullText("Abies", null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 8 entities", Integer.valueOf(8), pager.getCount());
         SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
         Assert.assertTrue("the map of highlighted fragments should contain at least one item", searchResult.getFieldHighlightMap().size() > 0);
