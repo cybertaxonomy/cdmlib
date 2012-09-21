@@ -1954,6 +1954,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/QueryFactory.j
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResultHighligther.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/Statistics.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsPartEnum.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsTypeEnum.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
