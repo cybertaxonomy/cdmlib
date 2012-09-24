@@ -19,14 +19,14 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
-import eu.etaxonomy.cdm.hibernate.search.PaddedIntegerBridge;
+import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -135,23 +135,16 @@ public class QueryFactory {
      * @return
      */
     public Query newEntityIdQuery(String idFieldName, CdmBase entitiy){
-        return newTermQuery("inDescription.taxon.taxonNodes.classification.id", PaddedIntegerBridge.paddInteger(entitiy.getId()), false);
+        return newTermQuery("inDescription.taxon.taxonNodes.classification.id", String.valueOf(entitiy.getId()), false);
     }
 
     /**
-     *  TODO open range queries [0 TO *] not working in the current version of lucene (https://issues.apache.org/jira/browse/LUCENE-995)
-     *  so we are using integer maximum as workaround
      * @param idFieldName
-     * @param entitiy
      * @return
      */
-    public Query newIdNotNullQuery(String idFieldName){
-        return new RangeQuery(
-                    new Term(idFieldName, PaddedIntegerBridge.paddInteger(0)),
-                    new Term(idFieldName, PaddedIntegerBridge.paddInteger(Integer.MAX_VALUE)),
-                    false
-            );
-    }
+    public Query newIsNotNullQuery(String idFieldName){
+        return new TermQuery(new Term(NotNullAwareIdBridge.notNullField(idFieldName), NotNullAwareIdBridge.NOT_NULL_VALUE));
+  }
 
     /**
      * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the uuid

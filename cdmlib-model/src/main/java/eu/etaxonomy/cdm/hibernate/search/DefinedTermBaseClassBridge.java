@@ -9,17 +9,11 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
@@ -27,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
  * @date Jun 4, 2012
  *
  */
-public class DefinedTermBaseClassBridge implements FieldBridge {
+public class DefinedTermBaseClassBridge extends AbstractClassBridge {
 
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
@@ -37,24 +31,28 @@ public class DefinedTermBaseClassBridge implements FieldBridge {
         if(value == null){
             return;
         }
-        PaddedIntegerBridge idFieldBridge = new PaddedIntegerBridge();
+        NotNullAwareIdBridge idFieldBridge = new NotNullAwareIdBridge();
 
         DefinedTermBase term = (DefinedTermBase)value;
+
+        idFieldBridge.set(name + "id", term.getId(), document, idFieldOptions);
+
+        Field uuidField = new Field(name + "uuid",
+                term.getUuid().toString(),
+                luceneOptions.getStore(),
+                luceneOptions.getIndex(),
+                luceneOptions.getTermVector());
+        document.add(uuidField);
+
+        Field langLabelField = new Field(name + ".label",
+                term.getLabel(),
+                luceneOptions.getStore(),
+                luceneOptions.getIndex(),
+                luceneOptions.getTermVector());
+        langLabelField.setBoost(luceneOptions.getBoost());
+        document.add(langLabelField);
+
         for(Representation representation : term.getRepresentations()){
-
-            Field idField = new Field(name + "id",
-                    idFieldBridge.objectToString(term.getId()),
-                    luceneOptions.getStore(),
-                    luceneOptions.getIndex(),
-                    luceneOptions.getTermVector());
-            document.add(idField);
-
-            Field uuidField = new Field(name + "uuid",
-                    term.getUuid().toString(),
-                    luceneOptions.getStore(),
-                    luceneOptions.getIndex(),
-                    luceneOptions.getTermVector());
-            document.add(uuidField);
 
             Field allField = new Field(name + "representation.ALL",
                     representation.getText(),
@@ -71,6 +69,7 @@ public class DefinedTermBaseClassBridge implements FieldBridge {
                     luceneOptions.getTermVector());
                     allField.setBoost(luceneOptions.getBoost());
             document.add(langField);
+
         }
 
     }

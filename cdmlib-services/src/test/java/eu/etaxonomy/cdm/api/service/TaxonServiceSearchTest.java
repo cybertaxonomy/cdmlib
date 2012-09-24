@@ -188,11 +188,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
 
+        // the description containing the Nulltanne has no taxon attached, taxon.id = null
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("Expecting no entity when searching for 'Nulltanne' ", Integer.valueOf(0), pager.getCount());
+
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching in German", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
+
     }
 
     @SuppressWarnings("rawtypes")

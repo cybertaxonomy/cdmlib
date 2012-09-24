@@ -37,19 +37,20 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.annotations.TermVector;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
-import eu.etaxonomy.cdm.hibernate.search.PaddedIntegerBridge;
+import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -94,7 +95,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 //	@GeneratedValue(generator = "enhanced-table")
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
-    @FieldBridge(impl=PaddedIntegerBridge.class)
+    @FieldBridge(impl=NotNullAwareIdBridge.class)
+    @Field(store=Store.YES, termVector=TermVector.NO)
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)

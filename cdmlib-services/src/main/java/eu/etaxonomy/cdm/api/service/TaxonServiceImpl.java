@@ -1305,7 +1305,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         // the description must be associated with a taxon
-        finalQuery.add(queryFactory.newIdNotNullQuery("inDescription.taxon.id"), Occur.MUST);
+        finalQuery.add(queryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
         luceneSearch.setQuery(finalQuery);
 

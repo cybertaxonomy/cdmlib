@@ -25,17 +25,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
-import eu.etaxonomy.cdm.hibernate.search.LanguageFieldBridge;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * This class represents common or vernacular names for {@link Taxon taxa}.
@@ -72,19 +70,14 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Field
-    @FieldBridge(impl=LanguageFieldBridge.class)
+    @IndexedEmbedded(depth=3)
     private Language language;
 
     @XmlElement(name = "Area")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    //UNDER CONSTRUCION
-//    @Field
-//    @FieldBridge(impl=DefinedTermBaseBridge.class)
-    // FIXME we need a special field bridge for this type?
-    @IndexedEmbedded
+    @IndexedEmbedded(depth=3) // FIXME do we need a special field bridge for this type?
     private NamedArea area;
 
 

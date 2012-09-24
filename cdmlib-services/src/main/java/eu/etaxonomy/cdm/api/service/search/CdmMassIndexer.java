@@ -171,6 +171,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public void purge(IProgressMonitor monitor){
 
+        if(monitor == null){
+            monitor = new NullProgressMonitor();
+        }
+
         monitor.setTaskName("CdmMassIndexer");
         monitor.beginTask("Purging " + indexedClasses().length + " classes", indexedClasses().length);
 

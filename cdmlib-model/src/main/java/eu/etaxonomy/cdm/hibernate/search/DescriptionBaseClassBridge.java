@@ -16,8 +16,6 @@ import org.apache.lucene.document.Field.Store;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -39,7 +37,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Dec 19, 2011
  *
  */
-public class DescriptionBaseClassBridge implements FieldBridge {
+public class DescriptionBaseClassBridge extends AbstractClassBridge {
+
 
     /*
      * (non-Javadoc)
@@ -50,28 +49,29 @@ public class DescriptionBaseClassBridge implements FieldBridge {
      */
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
 
-            PaddedIntegerBridge idFieldBridge = new PaddedIntegerBridge();
 
             if (entity instanceof TaxonDescription) {
                 Taxon taxon = ((TaxonDescription) entity).getTaxon();
+
                 if (taxon != null) {
-                    Field idfield = new Field(name + "taxon.id", idFieldBridge.objectToString(taxon.getId()), Store.YES, Index.ANALYZED,
-                            luceneOptions.getTermVector());
-                    document.add(idfield);
+
+                    idFieldBridge.set(name + "taxon.id", taxon.getId(), document, idFieldOptions);
+
                     Field titleCachefield = new Field(name + "taxon.titleCache", taxon.getTitleCache(), Store.YES, Index.ANALYZED,
                             luceneOptions.getTermVector());
                     document.add(titleCachefield);
-                    Field titleCacheSortfield = new Field(name + "taxon.titleCache__sort", taxon.getTitleCache(), Store.YES, Index.NOT_ANALYZED,
+
+                    Field titleCacheSortfield = new Field(name + "taxon.titleCache__sort", taxon.getTitleCache(), sortFieldOptions.getStore(), sortFieldOptions.getIndex(),
                             luceneOptions.getTermVector());
                     document.add(titleCacheSortfield);
+
                     Field uuidfield = new Field(name + "taxon.uuid", taxon.getUuid().toString(), Store.YES, Index.ANALYZED,
                             luceneOptions.getTermVector());
                     document.add(uuidfield);
+
                     for(TaxonNode node : taxon.getTaxonNodes()){
                         if(node.getClassification() != null){
-                        Field taxonNodeField = new Field(name + "taxon.taxonNodes.classification.id", idFieldBridge.objectToString(node.getClassification().getId()), Store.YES, Index.ANALYZED,
-                                luceneOptions.getTermVector());
-                        document.add(taxonNodeField);
+                            idFieldBridge.set(name + "taxon.taxonNodes.classification.id", node.getClassification().getId(), document, idFieldOptions);
                         }
                     }
                 }
@@ -80,9 +80,7 @@ public class DescriptionBaseClassBridge implements FieldBridge {
             if (entity instanceof TaxonNameDescription) {
                 TaxonNameBase taxonName = ((TaxonNameDescription) entity).getTaxonName();
                 if (taxonName != null) {
-                    Field field = new Field(name + "taxonName.id", idFieldBridge.objectToString(taxonName.getId()), luceneOptions.getStore(), luceneOptions.getIndex(),
-                            luceneOptions.getTermVector());
-                    document.add(field);
+                    idFieldBridge.set(name + "taxonName.id", taxonName.getId(), document, idFieldOptions);
                 }
             }
     }

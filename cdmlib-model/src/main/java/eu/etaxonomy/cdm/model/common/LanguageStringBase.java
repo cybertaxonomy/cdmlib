@@ -15,7 +15,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,14 +25,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.hibernate.search.LanguageFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
@@ -69,8 +67,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.EAGER)
     @Cascade({CascadeType.MERGE})
-    @Field
-    @FieldBridge(impl=LanguageFieldBridge.class)
+    @IndexedEmbedded
     protected Language language;
 
     protected LanguageStringBase() {

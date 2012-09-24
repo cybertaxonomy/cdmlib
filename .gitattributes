@@ -600,13 +600,15 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AbstractClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/LanguageFieldBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IdFieldOptions.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PaddedIntegerBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NotNullAwareIdBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PartialBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/SortFieldOptions.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/StripHtmlBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/UuidBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmAccessor.java -text
