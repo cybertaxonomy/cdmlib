@@ -125,6 +125,21 @@ public class ProgressMonitorController {
         return uuid;
     }
 
+    public IRestServiceProgressMonitor getMonitor(UUID uuid) {
+        return monitors.get(uuid);
+    }
+
+    /**
+     * returns true if the {@link IRestServiceProgressMonitor} identified by the <code>uuid</code>
+     * exists and if it is still indicating a running thread
+     * @param uuid
+     * @return
+     */
+    public boolean isMonitorRunning(UUID uuid) {
+        IRestServiceProgressMonitor monitor = getMonitor(uuid);
+        return monitor != null && !monitor.isCanceled() && !monitor.isDone() && !monitor.isFailed();
+    }
+
     /**
      * @param request the request for which to create he path for, is needed to read the file extension from.
      * @param uuid the uuid key of the monitor

@@ -145,16 +145,24 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        // retrieve total count of batches
+        monitor.beginTask("Reindexing " + indexedClasses().length + " classes", totalBatchCount());
+
+        for(Class type : indexedClasses()){
+            reindex(type, monitor);
+        }
+
+        monitor.done();
+    }
+
+    /**
+     * @return
+     */
+    private int totalBatchCount() {
         int totalNumOfBatches = 0;
         for(Class type : indexedClasses()){
             totalNumOfBatches += calculateNumOfBatches(countEntities(type));
         }
-        monitor.beginTask("Reindexing " + indexedClasses().length + " classes", totalNumOfBatches);
-        for(Class type : indexedClasses()){
-            reindex(type, monitor);
-        }
-        monitor.done();
+        return totalNumOfBatches;
     }
 
     /* (non-Javadoc)
@@ -163,9 +171,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public void purge(IProgressMonitor monitor){
 
+        monitor.setTaskName("CdmMassIndexer");
+        monitor.beginTask("Purging " + indexedClasses().length + " classes", indexedClasses().length);
+
         for(Class type : indexedClasses()){
             purge(type, monitor);
+            monitor.worked(1);
         }
+        monitor.done();
     }
 
     /**

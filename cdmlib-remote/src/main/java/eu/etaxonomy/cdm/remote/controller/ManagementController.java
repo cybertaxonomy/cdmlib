@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
+import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 
 @Controller
@@ -37,13 +39,20 @@ public class ManagementController
     public static final Logger logger = Logger.getLogger(ManagementController.class);
 
 //    @Autowired
-      private DataSourceReloader datasoucrceLoader;
+    private DataSourceReloader datasoucrceLoader;
 
     @Autowired
     public ICdmMassIndexer indexer;
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
+
+    /**
+     * There should only be one processes operating on the lucene index
+     * therefore the according progress monitor uuid is stored in
+     * this static field.
+     */
+    private static UUID indexMonitorUuid = null;
 
 
     private static final int DEFAULT_PAGE_SIZE = 25;
@@ -75,7 +84,7 @@ public class ManagementController
 
     /**
      *
-     * Reindex all cdm entities litest in {@link ICdmMassIndexer#indexedClasses()}.
+     * Reindex all cdm entities listed in {@link ICdmMassIndexer#indexedClasses()}.
      * Re-indexing will not purge the index.
      * @param frontendBaseUrl if the CDM server is running behind a reverse proxy you need
      *            to supply the base URL of web service front-end which is
@@ -90,35 +99,21 @@ public class ManagementController
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        ModelAndView mv = new ModelAndView();
 
-        final RestServiceProgressMonitor monitor = new RestServiceProgressMonitor();
-        UUID monitorUuid = progressMonitorController.registerMonitor(monitor);
-        String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
+        String processLabel = "Re-indexing";
+        ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
 
-        Thread subThread = new Thread(){
-            public void run(){
-                indexer.reindex(monitor);
-            }
-        };
-        subThread.start();
-
-        // send redirect "see other"
-        response.setHeader("Location", monitorPath);
-        boolean isJSONP = request.getParameter("callback") != null;
-        if(isJSONP){
-            JsonpRedirect jsonpRedirect;
-            if(frontendBaseUrl != null){
-                jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
-            } else {
-                jsonpRedirect = new JsonpRedirect(request, monitorPath);
-            }
-            mv.addObject(jsonpRedirect);
-
-        } else {
-            response.sendError(303, "Reindexing started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
+        if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+            indexMonitorUuid = progressUtil.registerNewMonitor();
+            Thread subThread = new Thread(){
+                public void run(){
+                    indexer.reindex(progressMonitorController.getMonitor(indexMonitorUuid));
+                }
+            };
+            subThread.start();
         }
-        return mv;
+        // send redirect "see other"
+        return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
     }
 
     /**
@@ -130,20 +125,28 @@ public class ManagementController
      * @throws Exception
      */
     @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
-    public ModelAndView doPurge(HttpServletRequest request, HttpServletResponse respone) throws Exception {
+    public ModelAndView doPurge(
+            @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        ModelAndView mv = new ModelAndView();
 
-        indexer.purge(null);
+        String processLabel = "Purging";
 
-        mv.addObject("done!");
-        mv.setViewName("text");
+        ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
 
-        return mv;
+        if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+            indexMonitorUuid = progressUtil.registerNewMonitor();
+            Thread subThread = new Thread(){
+                public void run(){
+                    indexer.purge(progressMonitorController.getMonitor(indexMonitorUuid));
+                }
+            };
+            subThread.start();
+        }
+
+        // send redirect "see other"
+        return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
     }
-
-
-
 
 }
 

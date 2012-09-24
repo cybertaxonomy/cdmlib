@@ -127,8 +127,11 @@ public class DefaultProgressMonitor implements IProgressMonitor {
         exception.printStackTrace();
     }
 
-    public double getPercentage(){
-        double result = this.workDone * 100 /this.totalWork ;
+    public Double getPercentage(){
+        if(totalWork == 0 ){
+            return null;
+        }
+        double result = this.workDone * 100 / this.totalWork ;
         return result;
     }
 

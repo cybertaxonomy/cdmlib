@@ -6,7 +6,10 @@ public interface IRestServiceProgressMonitor extends IProgressMonitor{
 
     public String getSubTask();
 
-    public double getPercentage();
+    /**
+     * @return the percentage of the work done, or <code>null</code> in case the <code>totalWork</code> was <code>0</code>.
+     */
+    public Double getPercentage();
 
     public int getTotalWork();
 
