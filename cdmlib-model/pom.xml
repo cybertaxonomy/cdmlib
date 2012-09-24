@@ -3,7 +3,7 @@
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
     <version>3.0.13-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
+  <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
@@ -19,7 +19,6 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-
           <execution>
             <id>aspectj-main</id>
             <phase>process-sources</phase>
@@ -35,7 +34,7 @@
                 <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
                 </taskdef>
-                <iajc verbose="false" source="1.5" destDir="target/classes" aspectPathRef="aspectPath">
+                <iajc verbose="false" source="${java.codelevel}" destDir="target/classes" aspectPathRef="aspectPath">
                   <classpath refid="maven.plugin.classpath" />
                   <classpath refid="maven.compile.classpath" />
                   <sourceroots>
@@ -56,7 +55,7 @@
                 <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
                 </taskdef>
-                <iajc verbose="false" source="1.5" destDir="target/test-classes">
+                <iajc verbose="false" source="${java.codelevel}" destDir="target/test-classes">
                   <classpath refid="maven.plugin.classpath" />
                   <classpath refid="maven.compile.classpath" />
                   <classpath refid="maven.test.classpath" />
@@ -201,7 +200,7 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
     </dependency>
-	<dependency>
+  <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
@@ -249,9 +248,9 @@
       <version>2.1</version>
     </dependency>
     <dependency>
-	  <groupId>jdom</groupId>
-	  <artifactId>jdom</artifactId>
-	</dependency>
+    <groupId>jdom</groupId>
+    <artifactId>jdom</artifactId>
+  </dependency>
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -265,8 +264,8 @@
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
     <dependency>
-	  <groupId>jdom</groupId>
-	  <artifactId>jdom</artifactId>
+    <groupId>jdom</groupId>
+    <artifactId>jdom</artifactId>
     </dependency>
   </dependencies>
 </project>
