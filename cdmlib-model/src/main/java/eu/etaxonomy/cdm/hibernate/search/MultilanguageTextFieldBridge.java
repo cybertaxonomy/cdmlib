@@ -50,7 +50,7 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
                     luceneOptions.getTermVector());
-                    allField.setBoost(luceneOptions.getBoost());
+            allField.setBoost(luceneOptions.getBoost());
             document.add(allField);
 
             Field langField = new Field(name + "." + languageString.getLanguage().getUuid(),
@@ -58,7 +58,7 @@ public class MultilanguageTextFieldBridge implements FieldBridge {
                     luceneOptions.getStore(),
                     luceneOptions.getIndex(),
                     luceneOptions.getTermVector());
-                    allField.setBoost(luceneOptions.getBoost());
+            allField.setBoost(luceneOptions.getBoost());
             document.add(langField);
         }
 

@@ -44,7 +44,7 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge {
                 luceneOptions.getTermVector());
         document.add(uuidField);
 
-        Field langLabelField = new Field(name + ".label",
+        Field langLabelField = new Field(name + "label",
                 term.getLabel(),
                 luceneOptions.getStore(),
                 luceneOptions.getIndex(),
@@ -53,25 +53,35 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge {
         document.add(langLabelField);
 
         for(Representation representation : term.getRepresentations()){
-
-            Field allField = new Field(name + "representation.ALL",
-                    representation.getText(),
-                    luceneOptions.getStore(),
-                    luceneOptions.getIndex(),
-                    luceneOptions.getTermVector());
-                    allField.setBoost(luceneOptions.getBoost());
-            document.add(allField);
-
-            Field langField = new Field(name + "representation." + representation.getLanguage().getUuid().toString(),
-                    representation.getText(),
-                    luceneOptions.getStore(),
-                    luceneOptions.getIndex(),
-                    luceneOptions.getTermVector());
-                    allField.setBoost(luceneOptions.getBoost());
-            document.add(langField);
-
+            addRepresentationField(name, representation, "text", representation.getText(), document, luceneOptions);
+            addRepresentationField(name, representation, "label", representation.getLabel(), document, luceneOptions);
+            addRepresentationField(name, representation, "abbreviatedLabel", representation.getAbbreviatedLabel(), document, luceneOptions);
         }
+    }
 
+    /**
+     * @param name
+     * @param representation
+     * @param text
+     * @param document
+     * @param luceneOptions
+     */
+    private void addRepresentationField(String name, Representation representation, String representationField, String text, Document document, LuceneOptions luceneOptions) {
+        Field allField = new Field(name + "representation." + representationField + ".ALL",
+                text,
+                luceneOptions.getStore(),
+                luceneOptions.getIndex(),
+                luceneOptions.getTermVector());
+        allField.setBoost(luceneOptions.getBoost());
+        document.add(allField);
+
+        Field langField = new Field(name + "representation." + representationField + "."+ representation.getLanguage().getUuid().toString(),
+                text,
+                luceneOptions.getStore(),
+                luceneOptions.getIndex(),
+                luceneOptions.getTermVector());
+        allField.setBoost(luceneOptions.getBoost());
+        document.add(langField);
     }
 
 }

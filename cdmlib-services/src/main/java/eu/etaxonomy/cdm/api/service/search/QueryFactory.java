@@ -91,16 +91,58 @@ public class QueryFactory {
     }
 
     /**
-     * DefinedTerm representations and MultilanguageString maps are stored in the Lucene index by the {@link DefinedTermBaseClassBridge}
-     * and {@link MultilanguageTextFieldBridge } in a consistent way. One field per language and also in one additional field for all languages.
-     * This method is a convenient means to retrieve a Lucene query string for such the fields.
+     * DefinedTerms are stored in the Lucene index by the
+     * {@link DefinedTermBaseClassBridge} in a consistent way. One field per
+     * language and also in one additional field for all languages. This method
+     * is a convenient means to retrieve a Lucene query string for such the
+     * fields.
      *
-     * @param name name of the term field as in the Lucene index. Must be field created by {@link DefinedTermBaseClassBridge}
-     * or {@link MultilanguageTextFieldBridge }
-     * @param languages the languages to search for exclusively. Can be <code>null</code> to search in all languages
+     * @param name
+     *            name of the term field as in the Lucene index. The field must
+     *            have been written to Lucene document by
+     *            {@link DefinedTermBaseClassBridge}
+     *
+     * @param languages
+     *            the languages to search for exclusively. Can be
+     *            <code>null</code> to search in all languages
      * @return
      */
-    public Query newLocalizedTermQuery(String name, String queryString, List<Language> languages) {
+    public Query newDefinedTermQuery(String name, String queryString, List<Language> languages) {
+
+        BooleanQuery localizedTermQuery = new BooleanQuery();
+        localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
+        if(languages == null || languages.size() == 0){
+            localizedTermQuery.add(newTermQuery(name + ".representation.text.ALL", queryString), Occur.SHOULD);
+            localizedTermQuery.add(newTermQuery(name + ".representation.label.ALL", queryString), Occur.SHOULD);
+            localizedTermQuery.add(newTermQuery(name + ".representation.abbreviatedLabel.ALL", queryString), Occur.SHOULD);
+
+        } else {
+            for(Language lang : languages){
+                localizedTermQuery.add(newTermQuery(name + ".representation.text." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQuery.add(newTermQuery(name + ".representation.label." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+                localizedTermQuery.add(newTermQuery(name + ".representation.abbreviatedLabel." + lang.getUuid().toString(), queryString), Occur.SHOULD);
+            }
+        }
+        return localizedTermQuery;
+    }
+
+    /**
+     * MultilanguageString maps are stored in the Lucene index by the
+     * {@link MultilanguageTextFieldBridge } in a consistent way. One field per
+     * language and also in one additional field for all languages. This method
+     * is a convenient means to retrieve a Lucene query string for such the
+     * fields.
+     *
+     * @param name
+     *            name of the term field as in the Lucene index. The field must
+     *            have been written to Lucene document by
+     *            {@link DefinedTermBaseClassBridge}
+     * @param languages
+     *            the languages to search for exclusively. Can be
+     *            <code>null</code> to search in all languages
+     * @return
+     */
+    public Query newMultilanguageTextQuery(String name, String queryString, List<Language> languages) {
 
         BooleanQuery localizedTermQuery = new BooleanQuery();
         localizedTermQuery.add(newTermQuery(name + ".label", queryString), Occur.SHOULD);
@@ -114,20 +156,6 @@ public class QueryFactory {
         return localizedTermQuery;
     }
 
-    /**
-     * convenience method for localized searches on {@link DefinedTermBase}
-     * instances, it adds the field name suffix "representations" to the
-     * <code>name</code> parameter and calls
-     * {@link #newLocalizedTermQuery(String, String, List)}
-     *
-     * @param name
-     * @param queryString
-     * @param languages
-     * @return
-     */
-    public Query newDefinedTermBaseQuery(String name, String queryString, List<Language> languages) {
-        return newLocalizedTermQuery(name + ".representations", queryString, languages);
-    }
 
     /**
      * @param idFieldName

@@ -1178,7 +1178,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         luceneSearch.setClazz(clazz);
 
         textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-        textQuery.add(queryFactory.newDefinedTermBaseQuery("name.rank", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
 
@@ -1283,14 +1283,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         // text field from TextData
-        textQuery.add(queryFactory.newLocalizedTermQuery("text", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        textQuery.add(queryFactory.newLocalizedTermQuery("states.state.representation", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newDefinedTermQuery("states.state", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        textQuery.add(queryFactory.newLocalizedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newDefinedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
+
+        // area field from Distribution
+        textQuery.add(queryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
         // --- classification ----
