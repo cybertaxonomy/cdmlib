@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.swing.border.EmptyBorder;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -71,27 +72,35 @@ public abstract class DwcaExportBase extends CdmExportBase<DwcaTaxExportConfigur
 	
 	
 	/**
-	 * Returns the list of taxon nodes that are part in one of the given classifications 
-	 * and do have a taxon attached (empty taxon nodes should not but do exist in CDM databases).
+	 * Returns the list of {@link TaxonNode taxon nodes} that are part in one of the given {@link Classification classifications} 
+	 * and do have a {@link Taxon} attached (empty taxon nodes should not but do exist in CDM databases).
+	 * If <code>classificationList</code> is <code>null</code> or empty then all {@link TaxonNode taxon nodes} of all 
+	 * {@link Classification classifications} are returned.<BR>
 	 * Preliminary implementation. Better implement API method for this.
 	 * @return
 	 */
 	protected List<TaxonNode> getAllNodes(Set<Classification> classificationList) {
+		//handle empty list as no filter defined
+		if (classificationList != null && classificationList.isEmpty()){
+			classificationList = null;
+		}
+		
 		List<TaxonNode> allNodes =  getClassificationService().getAllNodes();
 		List<TaxonNode> result = new ArrayList<TaxonNode>();
 		for (TaxonNode node : allNodes){
 			if (node.getClassification() == null ){
 				continue;
-			}else if (classificationList != null && classificationList.contains(node.getClassification())){
+			}else if (classificationList != null && ! classificationList.contains(node.getClassification())){
 				continue;
+			}else{
+				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+				if (taxon == null){
+					String message = "There is a taxon node without taxon: " + node.getId();
+					logger.warn(message);
+					continue;
+				}
+				result.add(node);
 			}
-			Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-			if (taxon == null){
-				String message = "There is a taxon node without taxon: " + node.getId();
-				logger.warn(message);
-				continue;
-			}
-			result.add(node);
 		}
 		return result;
 	}

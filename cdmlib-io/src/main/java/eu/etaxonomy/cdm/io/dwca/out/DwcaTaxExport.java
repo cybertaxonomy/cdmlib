@@ -13,8 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -75,12 +77,18 @@ public class DwcaTaxExport extends DwcaExportBase {
 		DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 		
+		Set<UUID> classificationUuidSet = config.getClassificationUuids();
+		List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
+		Set<Classification> classificationSet = new HashSet<Classification>();
+		classificationSet.addAll(classificationList);
+		
+		
 		PrintWriter writer = null;
 		try {
 			
 			writer = createPrintWriter(fileName, state);
 
-			List<TaxonNode> allNodes =  getAllNodes(null);
+			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
 			int i = 0;
 			for (TaxonNode node : allNodes){
 				i++;

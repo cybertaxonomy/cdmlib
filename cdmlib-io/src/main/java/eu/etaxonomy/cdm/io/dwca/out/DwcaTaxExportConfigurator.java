@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -59,6 +61,9 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
+
+	//filter on the classifications to be exported
+	private Set<UUID> classificationUuids = new HashSet<UUID>();   
 
 	private String defaultTaxonSource;
 
@@ -362,6 +367,15 @@ public class DwcaTaxExportConfigurator extends XmlExportConfiguratorBase<DwcaTax
 
 	public String getFieldsTerminatedBy() {
 		return fieldsTerminatedBy;
+	}
+
+	public Set<UUID> getClassificationUuids() {
+		return classificationUuids;
+	}
+
+
+	public void setClassificationUuids(Set<UUID> classificationUuids) {
+		this.classificationUuids = classificationUuids;
 	}
 
 
