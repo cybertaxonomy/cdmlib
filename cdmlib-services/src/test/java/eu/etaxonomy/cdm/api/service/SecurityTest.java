@@ -135,7 +135,6 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     public void setUp(){
         /* User 'admin':
             - ROLE_ADMIN
-            - ALL.ADMIN
             - TAXONBASE.READ
             - TAXONBASE.CREATE
             - TAXONBASE.DELETE
