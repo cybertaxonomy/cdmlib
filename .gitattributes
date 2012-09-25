@@ -891,6 +891,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IIdentifiableE
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IdentifiableEntityDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/TermDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/description/PolytomousKeyDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/description/SpecimenDescriptionDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/description/TaxonDescriptionDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/media/MediaDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BacterialNameDefaultCacheStrategy.java -text
