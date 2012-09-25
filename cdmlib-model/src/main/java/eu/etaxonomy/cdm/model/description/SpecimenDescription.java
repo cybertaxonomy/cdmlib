@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCacheStrategy;
 
 /**
  * This class represents descriptions for {@link SpecimenOrObservationBase specimens or observations}.
@@ -51,7 +52,7 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 	 */
 	public SpecimenDescription() {
 		super();
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<SpecimenDescription>();
+		this.cacheStrategy = new SpecimenDescriptionDefaultCacheStrategy();
 	}
 	
 
