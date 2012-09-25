@@ -56,15 +56,15 @@
                          </div>
 
                          <div id="RDF-main">
-                              
+
                               <p style="color: red;">We are currently changing the way the TDWG
                                    ontology is managed. This copy may therefore be out of date.</p>
-                              
+
                               <p style="color: red;">The current development version is available
                                    here: <a href="http://code.google.com/p/tdwg-ontology/"
                                         >http://code.google.com/p/tdwg-ontology/</a>
                               </p>
-                              
+
                               <p style="color: red;"> The HTTP URIs of key concepts will be
                                    maintained and moved across to the new environment soon. </p>
 

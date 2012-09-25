@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <description>EDIT CDM Community Server</description>
     <display-name>CDM Community Server</display-name>
 
-	<!-- ==================================================================
-   		  load /WEB-INF/applicationContext.xml
-   		  
-   		  org.springframework.web.context.ContextLoaderListener defaults 
-   		  to /WEB-INF/applicationContext.xml if contextConfigLocation 
-   		  not set
-    	 ================================================================== -->
-    <!-- 
+  <!-- ==================================================================
+         load /WEB-INF/applicationContext.xml
+
+         org.springframework.web.context.ContextLoaderListener defaults
+         to /WEB-INF/applicationContext.xml if contextConfigLocation
+         not set
+       ================================================================== -->
+    <!--
      -->
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
-	<context-param>
-		  <param-name>contextConfigLocation</param-name>
-		  <param-value>/WEB-INF/applicationContext.xml</param-value>
-	</context-param>
-	
-	<!-- ==================================================================
-   		  load other log4j.properties than that found in WEB-INF/classes/
-    	 ================================================================== -->
-    <!-- 
-   	 <listener>
-    	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-	</listener>
-	<context-param>
-	    <param-name>log4jConfigLocation</param-name>
-	    <param-value>/WEB-INF/classes/eu/etaxonomy/cdm/remote/log4j.properties</param-value>
-  	</context-param>
+  <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/applicationContext.xml</param-value>
+  </context-param>
+
+  <!-- ==================================================================
+         load other log4j.properties than that found in WEB-INF/classes/
+       ================================================================== -->
+    <!--
+      <listener>
+      <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  <context-param>
+      <param-name>log4jConfigLocation</param-name>
+      <param-value>/WEB-INF/classes/eu/etaxonomy/cdm/remote/log4j.properties</param-value>
+    </context-param>
      -->
 
     <servlet>
         <description>CDM Remote API</description>
-        <servlet-name>cdmlib-remote</servlet-name> 
+        <servlet-name>cdmlib-remote</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <!-- 
+        <!--
         <init-param>
             <param-name>logVerbosityLevel</param-name>
             <param-value>DEBUG</param-value>
-        </init-param> 
+        </init-param>
         -->
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -54,7 +54,7 @@
         <servlet-name>cdmlib-remote</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.xsl</url-pattern>
@@ -79,33 +79,37 @@
         <servlet-name>default</servlet-name>
         <url-pattern>*.css</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.js</url-pattern>
+    </servlet-mapping>
 
-    <!-- 
-        The welcome-file-list will be ignored since the cdmlib-remote servlet is mapped to the root path 
+    <!--
+        The welcome-file-list will be ignored since the cdmlib-remote servlet is mapped to the root path
     <welcome-file-list>
     </welcome-file-list>
      -->
 
-	<filter>
-		<filter-name>charsetFilter</filter-name>
-		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-		<init-param>
-			<param-name>encoding</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
-		<init-param>
-			<param-name>forceEncoding</param-name>
-			<param-value>true</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>charsetFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	
-	<!-- 
-		Security 
-	-->
+  <filter>
+    <filter-name>charsetFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>charsetFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--
+    Security
+  -->
 <!--	<filter>-->
 <!--        <filter-name>springSecurityFilterChain</filter-name>-->
 <!--        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
@@ -114,6 +118,6 @@
 <!--      <filter-name>springSecurityFilterChain</filter-name>-->
 <!--      <url-pattern>/*</url-pattern>-->
 <!--    </filter-mapping>-->
-   
-    
+
+
 </web-app>

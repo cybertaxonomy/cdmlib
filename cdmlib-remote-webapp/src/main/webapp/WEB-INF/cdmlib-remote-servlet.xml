@@ -133,10 +133,10 @@
         <property name="order" value="2" />
         <property name="mediaTypes">
            <map>
-          <entry key="xml" value="application/xml" />
-        <entry key="dc" value="application/xml" />
-        <entry key="rdf" value="application/xml" />
-        <entry key="json" value="application/json" />
+            <entry key="xml" value="application/xml" />
+            <entry key="dc" value="application/xml" />
+            <entry key="rdf" value="application/xml" />
+            <entry key="json" value="application/json" />
            </map>
         </property>
         <property name="viewResolvers">
