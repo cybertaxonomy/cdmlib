@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.NonUniqueResultException;
@@ -50,6 +52,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+// NOTE: no type level @PreAuthorize annotation for this class!
 public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
 
     protected IGroupDao groupDao;
@@ -114,6 +117,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @Transactional(readOnly=false)
+    @PreAuthorize("isAuthenticated()")
     public void changePassword(String oldPassword, String newPassword) {
         Assert.hasText(oldPassword);
         Assert.hasText(newPassword);
@@ -136,9 +140,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IUserService#changePasswordForUser(java.lang.String, java.lang.String)
+     */
     @Override
     @Transactional(readOnly=false)
-    @PreAuthorize("#username == authentication.name or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("#username == authentication.name or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void changePasswordForUser(String username, String newPassword) {
         Assert.hasText(username);
         Assert.hasText(newPassword);
@@ -161,8 +168,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.UserDetailsManager#createUser(org.springframework.security.core.userdetails.UserDetails)
+     */
     @Override
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void createUser(UserDetails user) {
         Assert.isInstanceOf(User.class, user);
 
@@ -175,8 +186,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         dao.save((User)user);
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.UserDetailsManager#deleteUser(java.lang.String)
+     */
     @Override
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void deleteUser(String username) {
         Assert.hasLength(username);
 
@@ -188,8 +203,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(username);
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.UserDetailsManager#updateUser(org.springframework.security.core.userdetails.UserDetails)
+     */
     @Override
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void updateUser(UserDetails user) {
         Assert.isInstanceOf(User.class, user);
 
@@ -197,6 +216,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(user.getUsername());
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.UserDetailsManager#userExists(java.lang.String)
+     */
     @Override
     public boolean userExists(String username) {
         Assert.hasText(username);
@@ -206,9 +228,13 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     /**
-     * DO NOT CALL THIS METHOD IN LONG RUNNING SESSIONS OR CONVERSATIONS
-     * A THROWN UsernameNotFoundException WILL RENDER THE CONVERSATION UNUSABLE
+     * <b>DO NOT CALL THIS METHOD IN LONG RUNNING SESSIONS OR CONVERSATIONS
+     * A THROWN UsernameNotFoundException WILL RENDER THE CONVERSATION UNUSABLE</b>
+     *
+     * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
      */
+    // NOTE: this method must not be secured since it is being used during the
+    //       authentication process
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException, DataAccessException {
         Assert.hasText(username);
@@ -225,6 +251,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void addGroupAuthority(String groupName, GrantedAuthority authority) {
         Assert.hasText(groupName);
         Assert.notNull(authority);
@@ -237,6 +264,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void addUserToGroup(String username, String groupName) {
         Assert.hasText(username);
         Assert.hasText(groupName);
@@ -252,6 +280,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void createGroup(String groupName, List<GrantedAuthority> authorities) {
         Assert.hasText(groupName);
         Assert.notNull(authorities);
@@ -267,6 +296,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void deleteGroup(String groupName) {
         Assert.hasText(groupName);
 
@@ -275,11 +305,13 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Deprecated // use GroupService instead
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public List<String> findAllGroups() {
         return groupDao.listNames(null,null);
     }
 
     @Deprecated // use GroupService instead
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public List<GrantedAuthority> findGroupAuthorities(String groupName) {
         Assert.hasText(groupName);
         Group group = groupDao.findGroupByName(groupName);
@@ -288,6 +320,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Deprecated // use GroupService instead
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public List<String> findUsersInGroup(String groupName) {
         Assert.hasText(groupName);
         Group group = groupDao.findGroupByName(groupName);
@@ -299,6 +332,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void removeGroupAuthority(String groupName,	GrantedAuthority authority) {
         Assert.hasText(groupName);
         Assert.notNull(authority);
@@ -312,6 +346,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void removeUserFromGroup(String username, String groupName) {
         Assert.hasText(username);
         Assert.hasText(groupName);
@@ -327,6 +362,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void renameGroup(String oldName, String newName) {
         Assert.hasText(oldName);
         Assert.hasText(newName);
@@ -338,6 +374,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID save(User user) {
         if(user.getId() == 0 || dao.load(user.getUuid()) == null){
             createUser(user);
@@ -348,6 +385,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID update(User user) {
         updateUser(user);
         return user.getUuid();
@@ -355,16 +393,21 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
         return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
     }
 
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveGroup(Group group) {
         return groupDao.save(group);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IUserService#listByUsername(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
     @Override
     @Transactional(readOnly = true)
     public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -377,7 +420,33 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
          return results;
     }
 
+    /* ================================================
+     *  overriding methods to secure them
+     *  via the type level annotation @PreAuthorize
+     * ================================================ */
 
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    public UUID delete(User persistentObject) {
+        return super.delete(persistentObject);
+    }
 
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    public Map<UUID, User> save(Collection<User> newInstances) {
+        return super.save(newInstances);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    public UUID saveOrUpdate(User transientObject) {
+        return super.saveOrUpdate(transientObject);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    public Map<UUID, User> saveOrUpdate(Collection<User> transientInstances) {
+        return super.saveOrUpdate(transientInstances);
+    }
 
 }

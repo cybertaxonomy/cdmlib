@@ -13,6 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 
@@ -202,7 +204,19 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Test
     @DataSet
-    @Ignore
+    public void testListByUsernameAllow(){
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        List<User> userList = userService.listByUsername("Editor", MatchMode.ANYWHERE, null, null, 0, null, null);
+        Assert.assertTrue("The user list must have elements", userList.size() > 0 );
+    }
+
+    @Test
+    @DataSet
+    @Ignore // TODO should work now => check it out
     public void testHasPermissions(){
 
         Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);
@@ -218,14 +232,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      */
     @Test
     public final void testSaveTaxon() {
-        /*
-        Md5PasswordEncoder encoder =new Md5PasswordEncoder();
-        ReflectionSaltSource saltSource = new ReflectionSaltSource();
-        saltSource.setUserPropertyToUse("getUsername");
-        User user = User.NewInstance("partEditor", "test4");
-        System.err.println(encoder.encodePassword("test4", saltSource.getSalt(user)));
 
-        */
         authentication = authenticationManager.authenticate(tokenForAdmin);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
