@@ -68,6 +68,11 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		
 		String id = getSourceId(item);
 		TaxonBase<?> taxon = getTaxonBase(id, item, TaxonBase.class, state);
+		if (isNotBlank(id) && taxon == null){
+			String message = "Taxon for id %s could not be found";
+			message = String.format(message, id);
+			fireWarningEvent(message, item, 8);
+		}
 		
 		String strCreator = getValue(item, TermUri.DC_CREATOR);
 		String strDate = getValue(item, TermUri.DC_DATE);
@@ -108,58 +113,71 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	private void handleType(Reference<?> reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, CsvStreamItem item) {
 		// TODO handleType not yet implemented
 		
-		//guess a nom ref
-		if (config.isGuessNomenclaturalReferences()){
-			//if reference equals in author and year we assume that it is the nom ref
-			//this information is usually only available for ICZN names
-			if (taxon != null && taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
-				boolean isNomRef = false;
-				NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-				String taxonAuthor = nvn.getAuthorshipCache();
-				String refAuthor = reference.getAuthorTeam().getNomenclaturalTitle();
-				Integer combYear = null;
-				Integer origYear = null;
-				if (nvn.isInstanceOf(ZoologicalName.class)){
-					ZoologicalName zooName = CdmBase.deproxy(nvn, ZoologicalName.class);
-					combYear = zooName.getPublicationYear();
-					origYear = zooName.getOriginalPublicationYear();
-				}
-				String refYear = reference.getYear();
-				
-				//combination compare
-				if (taxonAuthor != null && taxonAuthor.equals(refAuthor)){
-					if (combYear != null && String.valueOf(combYear).equals(refYear)){
-						//is nom Ref
-						isNomRef = true;
+		if (taxon == null){
+			String message = "Taxon is null. Reference not imported.";
+			fireWarningEvent(message,item, 4);
+			//do nothing
+		}else{
+			boolean isNomRef = false;
+			if (isNotBlank(strType)){
+				if (strType.matches("Botanical Protologue")){
+					if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
+						NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 						nvn.setNomenclaturalReference(reference);
-					}else if (origYear != null && String.valueOf(origYear).equals(refYear)){
-						//TODO not yet handled by CDM
+						isNomRef = true;
+					}else{
+						//TODO
 					}
-				}
-
-			}
-		}
-		if (config.isHandleAllRefsAsCitation()){
-			if (taxon == null){
-				String message = "Reference entry does not belong to an existing taxon. Reference type can not be determined!";
-				fireWarningEvent(message,item, 4);
-				//do nothing
-			}else if (taxon.isInstanceOf(Taxon.class)){
-				TaxonDescription desc = getTaxonDescription(CdmBase.deproxy(taxon, Taxon.class), false);
-				createCitation(desc, reference, taxon.getName());
-				resultList.add(new MappedCdmBase<CdmBase>(desc));
-			}else if (taxon.isInstanceOf(Synonym.class)){
-				Synonym syn = CdmBase.deproxy(taxon, Synonym.class);
-				for (Taxon tax: syn.getAcceptedTaxa()){
-					TaxonDescription desc = getTaxonDescription(tax, false);
-					createCitation(desc, reference, syn.getName());
-					resultList.add(new MappedCdmBase<CdmBase>(desc));
 				}
 			}
 			
-		}
+			//guess a nom ref
+			if (isNomRef == false && config.isGuessNomenclaturalReferences()){
+				//if reference equals in author and year we assume that it is the nom ref
+				//this information is usually only available for ICZN names
+				if (taxon.getName() != null && reference != null && taxon.getName().isInstanceOf(NonViralName.class)){
+					NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+					String taxonAuthor = nvn.getAuthorshipCache();
+					String refAuthor = reference.getAuthorTeam().getNomenclaturalTitle();
+					Integer combYear = null;
+					Integer origYear = null;
+					if (nvn.isInstanceOf(ZoologicalName.class)){
+						ZoologicalName zooName = CdmBase.deproxy(nvn, ZoologicalName.class);
+						combYear = zooName.getPublicationYear();
+						origYear = zooName.getOriginalPublicationYear();
+					}
+					String refYear = reference.getYear();
+					
+					//combination compare
+					if (taxonAuthor != null && taxonAuthor.equals(refAuthor)){
+						if (combYear != null && String.valueOf(combYear).equals(refYear)){
+							//is nom Ref
+							isNomRef = true;
+							nvn.setNomenclaturalReference(reference);
+						}else if (origYear != null && String.valueOf(origYear).equals(refYear)){
+							//TODO not yet handled by CDM
+						}
+					}
+	
+				}
+			}
+			if (config.isHandleAllRefsAsCitation()){
+				if (taxon.isInstanceOf(Taxon.class)){
+					TaxonDescription desc = getTaxonDescription(CdmBase.deproxy(taxon, Taxon.class), false);
+					createCitation(desc, reference, taxon.getName());
+					resultList.add(new MappedCdmBase<CdmBase>(desc));
+				}else if (taxon.isInstanceOf(Synonym.class)){
+					Synonym syn = CdmBase.deproxy(taxon, Synonym.class);
+					for (Taxon tax: syn.getAcceptedTaxa()){
+						TaxonDescription desc = getTaxonDescription(tax, false);
+						createCitation(desc, reference, syn.getName());
+						resultList.add(new MappedCdmBase<CdmBase>(desc));
+					}
+				}
+				
+			}
 		
-		
+		}		
 		
 		
 	}

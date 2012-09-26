@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
 						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifDistributionCsv2CdmConverter.class);
 
 	private static final String CORE_ID = "coreId";

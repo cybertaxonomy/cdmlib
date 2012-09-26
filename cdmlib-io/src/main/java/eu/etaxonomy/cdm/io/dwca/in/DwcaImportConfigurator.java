@@ -44,6 +44,7 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private boolean scientificNameIdAsOriginalSourceId = false;
 	private DatasetUse datasetUse = DatasetUse.CLASSIFICATION;
 	private boolean useSourceReferenceAsSec = false;
+	private boolean useParentAsAcceptedIfAcceptedNotExists = true;
 
 
 	//distribution
@@ -225,13 +226,21 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 		this.useSourceReferenceAsSec = useSourceReferenceAsSec;
 	}
 
-        public boolean isNoQuotes() {
-                return isNoQuotes;
-        }
+    public boolean isNoQuotes() {
+            return isNoQuotes;
+    }
 
-        public void setNoQuotes(boolean isNoQuotes) {
-                this.isNoQuotes = isNoQuotes;
-        }
+    public void setNoQuotes(boolean isNoQuotes) {
+            this.isNoQuotes = isNoQuotes;
+    }
+
+	public boolean isUseParentAsAcceptedIfAcceptedNotExists() {
+		return useParentAsAcceptedIfAcceptedNotExists;
+	}
+
+	public void setUseParentAsAcceptedIfAcceptedNotExists(boolean useParentAsAcceptedIfAcceptedNotExists) {
+		this.useParentAsAcceptedIfAcceptedNotExists = useParentAsAcceptedIfAcceptedNotExists;
+	}
 	
 	
 }

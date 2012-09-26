@@ -63,7 +63,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 		String id = csvRecord.get(ID);
 		TaxonBase<?> taxonBase = getTaxonBase(id, item, null, state);
 		if (taxonBase == null){
-			String warning = "Taxon not available for id %s.";
+			String warning = "Taxon not available for id '%s'.";
 			warning = String.format(warning, id);
 			fireWarningEvent(warning, item, 8);
 		}else{
@@ -73,7 +73,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 			
 			handleAcceptedNameUsage(item, state, taxonBase, id);
 			
-			handleParentNameUsage(item, state, taxonBase, resultList);
+			handleParentNameUsage(item, state, taxonBase, id, resultList);
 			
 			handleKingdom(item, state);
 			
@@ -170,11 +170,12 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	}
 
 
-	private void handleParentNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList) {
+	private void handleParentNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase<?> taxonBase, String id, List<MappedCdmBase> resultList) {
 		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
+			String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
+			
 			if (taxonBase.isInstanceOf(Taxon.class)){
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-				String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
 				Taxon parentTaxon = getTaxonBase(parentId, item, Taxon.class,state);
 				if (parentTaxon == null){
 					String message = "Can't find parent taxon with id '%s' and NON-ID parent Name Usage not yet implemented.";
@@ -189,10 +190,18 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 					}
 					classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
 				}
+			}else if (taxonBase.isInstanceOf(Synonym.class)){
+				if (! acceptedNameUsageExists(item) && state.getConfig().isUseParentAsAcceptedIfAcceptedNotExists()){
+					handleAcceptedNameUsageParam(item, state, taxonBase, id, parentId);
+				}else{
+					String message = "PARENT_NAME_USAGE given for Synonym and ACCEPTED_NAME_USAGE also exists or configuration does not allow" +
+							"to use ACCEPTED_NAME_USAGE as parent. This is not allowed in CDM.";
+					//TODO check "is this Taxon"
+					fireWarningEvent(message, item, 4);
+				}
 			}else{
-				String message = "PARENT_NAME_USAGE given for Synonym. This is not allowed in CDM.";
-				//TODO check "is this Taxon"
-				fireWarningEvent(message, item, 4);
+				String message = "Unhandled case";
+				fireWarningEvent(message, item, 12);
 			}
 		}
 
@@ -239,12 +248,30 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 
 
 	private void handleAcceptedNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase taxonBase, String id) {
-		if (exists(TermUri.DWC_ACCEPTED_NAME_USAGE_ID, item) || exists(TermUri.DWC_ACCEPTED_NAME_USAGE, item)){
+		if (acceptedNameUsageExists(item)){
 			String accId = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
+			handleAcceptedNameUsageParam(item, state, taxonBase, id, accId);
+		}else{
+			if (logger.isDebugEnabled()){logger.debug("No accepted name usage");}
+		}
+	}
+
+
+	/**
+	 * @param item
+	 * @param state
+	 * @param taxonBase
+	 * @param id
+	 * @param accId
+	 * @param taxStatus
+	 */
+	private void handleAcceptedNameUsageParam(CsvStreamItem item,
+			DwcaImportState state, TaxonBase<?> taxonBase, String id, String accId) {
+		if (id.equals(accId)){
+			//mapping to itself needs no further handling
+		}else{
 			String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
-			if (id.equals(accId)){
-				return;   //mapping to itself needs no further handling
-			}
+			
 			Taxon accTaxon = getTaxonBase(accId, item, Taxon.class, state);
 			if (taxonBase.isInstanceOf(Synonym.class)){
 				Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
@@ -268,9 +295,16 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 				//TODO check "is this Taxon"
 				fireWarningEvent(message, item, 4);
 			}
-		}else{
-			if (logger.isDebugEnabled()){logger.debug("");}
 		}
+	}
+
+
+	/**
+	 * @param item
+	 * @return
+	 */
+	private boolean acceptedNameUsageExists(CsvStreamItem item) {
+		return exists(TermUri.DWC_ACCEPTED_NAME_USAGE_ID, item) || exists(TermUri.DWC_ACCEPTED_NAME_USAGE, item);
 	}
 
 

@@ -82,7 +82,8 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			MappedCdmBase  mcb = new MappedCdmBase(item.term, csv.get(CORE_ID), taxon);
 			resultList.add(mcb);
 		}else{
-			String message = "Taxon is null";
+			String message = "Taxon is not available for id '%s'";
+			message = String.format(message, id);
 			fireWarningEvent(message, item, 12);
 		}
 		

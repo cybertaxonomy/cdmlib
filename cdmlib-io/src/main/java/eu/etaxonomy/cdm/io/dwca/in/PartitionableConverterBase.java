@@ -157,7 +157,7 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 		}
 		List<T> taxonList = state.get(TermUri.DWC_TAXON.toString(), id, clazz);
 		if (taxonList.size() > 1){
-			String message = "Undefined taxon mapping for id %s.";
+			String message = "Ambigous taxon mapping for id %s. There is more than 1 matching taxon.";
 			message = String.format(message, id);
 			fireWarningEvent(message, item, 8);
 			logger.warn(message);  //TODO remove when events are handled correctly
