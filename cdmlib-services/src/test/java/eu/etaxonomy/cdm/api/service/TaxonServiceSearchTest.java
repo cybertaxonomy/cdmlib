@@ -252,6 +252,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
     }
 
+    /**
+     * Regression test for #3113 (hibernate search: wildcard query can cause BooleanQuery$TooManyClauses: maxClauseCount is set to 1024)
+     *
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
