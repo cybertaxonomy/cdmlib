@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.Query;
@@ -87,7 +88,10 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             Document doc = luceneSearch.getSearcher().doc(scoreDoc.doc);
             String[] idStrings = doc.getValues(idField);
             SearchResult<T> searchResult = new SearchResult<T>(doc);
-            searchResult.setScore(scoreDoc.score);
+
+            if(!Double.isNaN(scoreDoc.score) && !Double.isInfinite(scoreDoc.score)){
+                searchResult.setScore(scoreDoc.score);
+            }
 
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
             //      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented
