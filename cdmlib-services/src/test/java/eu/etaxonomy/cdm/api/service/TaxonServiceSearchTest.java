@@ -547,6 +547,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("Phrase search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
         fragments = searchResult.getFieldHighlightMap().values().iterator().next();
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Pflanzenart</B> <B>aus</B> <B>der</B> <B>Gattung</B> <B>der</B> <B>Tannen</B>"));
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Gatt*", null, null, null, true, null, null, null, null);
+        searchResult = pager.getRecords().get(0);
+        Assert.assertTrue("Wildcard search : Expecting at least one item in highlighted fragments", searchResult.getFieldHighlightMap().size() > 0);
+        fragments = searchResult.getFieldHighlightMap().values().iterator().next();
+        Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Gatt"));
     }
 
 

@@ -52,7 +52,7 @@ public class SearchResultHighligther {
 
     public static final Logger logger = Logger.getLogger(SearchResultHighligther.class);
 
-    private boolean useSpanScorer = true;
+    private boolean useSpanScorer = false;
 
     public boolean isUseSpanScorer() {
         return useSpanScorer;
@@ -147,11 +147,11 @@ public class SearchResultHighligther {
         Fragmenter fragmenter;
         Scorer scorer;
         if(useSpanScorer){
-            scorer = new QueryScorer(query, fieldName);
-            fragmenter = new SimpleFragmenter(fragmentSize);
-        } else {
             scorer = new SpanScorer(query, fieldName, new CachingTokenFilter(stream));
             fragmenter = new SimpleSpanFragmenter((SpanScorer)scorer, fragmentSize);
+        } else {
+            scorer = new QueryScorer(query, fieldName);
+            fragmenter = new SimpleFragmenter(fragmentSize);
         }
 
         Highlighter highlighter = new Highlighter(scorer);
