@@ -131,8 +131,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         logger.info("purging " + type.getName());
 
         fullTextSession.purgeAll(type);
+        fullTextSession.getSearchFactory().optimize();
         //transaction.commit(); // no need to commit, transaction will be committed automatically
     }
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.database.IMassIndexer#reindex()
@@ -145,13 +147,26 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        monitor.beginTask("Reindexing " + indexedClasses().length + " classes", totalBatchCount());
+        int steps = totalBatchCount() + 1; // +1 for optimize
+        monitor.beginTask("Reindexing " + indexedClasses().length + " classes", steps);
 
         for(Class type : indexedClasses()){
             reindex(type, monitor);
         }
-
+        optimize(monitor);
         monitor.done();
+    }
+
+    protected void optimize(IProgressMonitor monitor) {
+
+        monitor.subTask("optimizing");
+        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+
+        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        fullTextSession.getSearchFactory().optimize();
+
+        subMonitor.beginTask("optimizing", 1);
+        subMonitor.done();
     }
 
     /**
@@ -176,12 +191,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        monitor.beginTask("Purging " + indexedClasses().length + " classes", indexedClasses().length);
+        int steps = indexedClasses().length + 1; // +1 for optimize
+        monitor.beginTask("Purging " + indexedClasses().length + " classes", steps);
 
         for(Class type : indexedClasses()){
             purge(type, monitor);
             monitor.worked(1);
         }
+        optimize(monitor);
+
         monitor.done();
     }
 
