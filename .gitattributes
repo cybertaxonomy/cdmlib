@@ -1570,6 +1570,7 @@ cdmlib-remote-webapp/src/main/webapp/oai2.xsl -text
 cdmlib-remote-webapp/src/main/webapp/vibrant-name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/vibrant-taxon.xsl -text
 cdmlib-remote-webapp/src/main/webapp/vibrant.css -text
+cdmlib-remote-webapp/src/main/webapp/vibrant_fulltext.html -text
 cdmlib-remote-webapp/src/main/webapp/vibrant_names.html -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
 cdmlib-remote-webapp/src/test/resources/log4j.properties -text
