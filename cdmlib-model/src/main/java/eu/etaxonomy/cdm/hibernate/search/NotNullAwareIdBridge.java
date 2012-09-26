@@ -58,9 +58,22 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
 
+        /*
+         * DocumentBuilderIndexedEntity<T>.buildDocumentFields(Object, Document, PropertiesMetadata, Map<String,String>, Set<String>)
+         * is adding the idField a second time even if it has already been set by an idFieldBrige. this might be fixed in a
+         * more recent version of hibernate! TODO after hibernate update: check if we can remove this extra condition.
+         * We are avoiding this by checking the document:
+         *
+         */
+        if(name.endsWith("id") && document.getField(name) != null) { // id already set?
+            return;
+        }
+
+
         Field field = new Field(name,
                 String.valueOf(value.toString()),
-                luceneOptions.getStore(), luceneOptions.getIndex(),
+                luceneOptions.getStore(),
+                luceneOptions.getIndex(),
                 luceneOptions.getTermVector());
         field.setBoost(luceneOptions.getBoost());
         document.add(field);
