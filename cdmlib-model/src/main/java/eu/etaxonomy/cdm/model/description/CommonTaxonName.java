@@ -70,14 +70,14 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=3)
+    @IndexedEmbedded(depth=1)
     private Language language;
 
     @XmlElement(name = "Area")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=3) // FIXME do we need a special field bridge for this type?
+    @IndexedEmbedded(depth=1) // FIXME do we need a special field bridge for this type?
     private NamedArea area;
 
 

@@ -69,7 +69,6 @@ public class NotNullAwareIdBridge implements TwoWayFieldBridge {
             return;
         }
 
-
         Field field = new Field(name,
                 String.valueOf(value.toString()),
                 luceneOptions.getStore(),

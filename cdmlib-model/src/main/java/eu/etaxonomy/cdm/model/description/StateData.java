@@ -79,14 +79,14 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
+    @IndexedEmbedded(depth=1)
     private State state;
 
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @IndexedEmbedded
+    @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<Modifier> modifiers = new HashSet<Modifier>();
 

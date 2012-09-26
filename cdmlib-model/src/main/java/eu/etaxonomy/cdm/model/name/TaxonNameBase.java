@@ -212,7 +212,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @OneToMany(fetch= FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
     @NotNull
-    @IndexedEmbedded(depth=3)
+    @IndexedEmbedded(depth=1)
     private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
     @XmlElementWrapper(name = "TaxonBases")
@@ -229,7 +229,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @ManyToOne(fetch = FetchType.EAGER)
     @CacheUpdate(value ="nameCache")
     @NotNull
-    @IndexedEmbedded(depth=3)
+    @IndexedEmbedded(depth=1)
     private Rank rank;
 
     @XmlElement(name = "NomenclaturalReference")

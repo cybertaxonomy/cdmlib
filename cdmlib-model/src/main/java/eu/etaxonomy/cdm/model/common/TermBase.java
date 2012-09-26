@@ -67,7 +67,7 @@ public abstract class TermBase extends IdentifiableEntity{
     @XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
-    @IndexedEmbedded(depth = 2)
+    // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 
     public TermBase(){

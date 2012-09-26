@@ -100,7 +100,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @ManyToOne(fetch = FetchType.LAZY)
     //@Cascade(CascadeType.SAVE_UPDATE)
     @Cascade(CascadeType.MERGE)
-    @IndexedEmbedded(depth=3)
+    @IndexedEmbedded // no depth for terms
     private Feature feature;
 
     @XmlElementWrapper(name = "Modifiers")
@@ -109,7 +109,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionElementBase_Modifier")
-    @IndexedEmbedded(depth=3)
+    @IndexedEmbedded(depth=1)
     private Set<Modifier> modifiers = new HashSet<Modifier>();
 
     @XmlElement(name = "ModifyingText")
