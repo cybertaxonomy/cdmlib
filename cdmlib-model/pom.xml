@@ -132,6 +132,10 @@
       <artifactId>hibernate-search</artifactId>
     </dependency>
     <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-core</artifactId>
       <scope>test</scope>
