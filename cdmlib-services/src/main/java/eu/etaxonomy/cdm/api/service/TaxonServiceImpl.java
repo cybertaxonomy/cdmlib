@@ -1295,6 +1295,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // area field from Distribution
         textQuery.add(queryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
 
+        // status field from Distribution
+        textQuery.add(queryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
+
         finalQuery.add(textQuery, Occur.MUST);
         // --- classification ----
 

@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -65,6 +66,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(groups = Level2.class)
+    @IndexedEmbedded(depth=1)
     private NamedArea area;
 
     @XmlElement(name = "PresenceAbsenceStatus")
@@ -72,6 +74,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(groups = Level2.class)
+    @IndexedEmbedded(depth=1)
     private PresenceAbsenceTermBase<?> status;
 
 

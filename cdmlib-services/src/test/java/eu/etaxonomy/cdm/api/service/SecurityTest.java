@@ -172,6 +172,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
 
+
     /**
      * no assertions in this test, since it is only used to create password hashes for test data
      */
@@ -215,7 +216,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     @Test
     @DataSet
-    @Ignore // TODO should work now => check it out
+    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/3098
     public void testHasPermissions(){
 
         Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()),null);

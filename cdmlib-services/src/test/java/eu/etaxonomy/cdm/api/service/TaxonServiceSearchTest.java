@@ -179,6 +179,25 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    public final void testPurgeIndex() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
+        Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
+
+        indexer.purge(null);
+        commitAndStartNewTransaction(null);
+
+        pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 0
+        Assert.assertEquals("Expecting no entities since the index has been purged", Integer.valueOf(0), pager.getCount());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
     public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
@@ -198,6 +217,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
 
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
+    public final void testFindByDescriptionElementFullText_Distribution() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+        // by Area
+        pager = taxonService.findByDescriptionElementFullText(null, "America", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for arae 'America'", Integer.valueOf(1), pager.getCount());
+        // by Status
+        pager = taxonService.findByDescriptionElementFullText(null, "present", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for status 'present'", Integer.valueOf(1), pager.getCount());
     }
 
     @SuppressWarnings("rawtypes")

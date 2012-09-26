@@ -31,7 +31,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * &author=&sc=1&sf=all&sk=t&sd=d&sr=posts&st=0&ch=300&t=0&submit=Search</li>
  *</ol>
  * DEVELOPER NOTE: the problem is in {@link org.hibernate.search.engine.DocumentBuilderContainedEntity#initializeClass()} which
- * is not taking subclasses into account, so the <code>taxon</code> field defined in {@link TaxonDescription} is not registered in the <code>propertiesMetdata</code>
+ * is not taking subclasses into account, so the <code>taxon</code> field defined in {@link TaxonDescription} is not
+ * registered in the <code>propertiesMetdata</code>
  *
  * @author Andreas Kohlbecker
  * @date Dec 19, 2011
