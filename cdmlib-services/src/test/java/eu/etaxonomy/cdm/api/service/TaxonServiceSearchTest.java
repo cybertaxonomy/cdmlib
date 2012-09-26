@@ -18,11 +18,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -87,7 +89,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String CLASSIFICATION_ALT_UUID = "d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce";
 
-    private static final String D_ABIES_ALBA_UUID = "900108d8-e6ce-495e-b32e-7aad3099135e";
+    private static final String D_ABIES_BALSAMEA_UUID = "900108d8-e6ce-495e-b32e-7aad3099135e";
+
+    private static final String D_ABIES_ALBA_UUID = "ec8bba03-d993-4c85-8472-18b14942464b";
 
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
@@ -251,6 +255,31 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    public final void testFindByDescriptionElementFullText_TooManyClauses() throws CorruptIndexException, IOException, ParseException {
+
+        // generate 1024 terms to reproduce the bug
+        TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        Set<String> uniqueRandomStrs = new HashSet<String>(1024);
+        while(uniqueRandomStrs.size() < 1024){
+            uniqueRandomStrs.add(RandomStringUtils.random(10, true, false));
+        }
+        for(String rndStr: uniqueRandomStrs){
+            description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
+        }
+        descriptionService.saveOrUpdate(description);
+        commitAndStartNewTransaction(null);
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1024), pager.getCount());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
     public final void testFindByDescriptionElementFullText_TextData() throws CorruptIndexException, IOException, ParseException {
 
         refreshLuceneIndex();
@@ -386,7 +415,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
         Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
-        TaxonDescription d_abies_balsamea = (TaxonDescription)descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        TaxonDescription d_abies_balsamea = (TaxonDescription)descriptionService.find(UUID.fromString(D_ABIES_BALSAMEA_UUID));
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("expecting to find the GERMAN 'Balsam-Tanne'", Integer.valueOf(1), pager.getCount());
@@ -474,7 +503,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindByDescriptionElementFullText_CategoricalData() throws CorruptIndexException, IOException, ParseException {
 
         // add CategoricalData
-        DescriptionBase d_abies_balsamea = descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        DescriptionBase d_abies_balsamea = descriptionService.find(UUID.fromString(D_ABIES_BALSAMEA_UUID));
         // Categorical data
         CategoricalData cdata = CategoricalData.NewInstance();
         cdata.setFeature(Feature.DESCRIPTION());
@@ -736,7 +765,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //
         TaxonDescription d_abies_alba = TaxonDescription.NewInstance(t_abies_alba);
 
-        d_abies_alba.setUuid(UUID.fromString(D_ABIES_ALBA_UUID));
+        d_abies_alba.setUuid(UUID.fromString(D_ABIES_BALSAMEA_UUID));
         // CommonTaxonName
         d_abies_alba.addElement(CommonTaxonName.NewInstance("Weißtanne", Language.GERMAN()));
         d_abies_alba.addElement(CommonTaxonName.NewInstance("silver fir", Language.ENGLISH()));

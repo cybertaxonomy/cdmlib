@@ -67,6 +67,9 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge {
      * @param luceneOptions
      */
     private void addRepresentationField(String name, Representation representation, String representationField, String text, Document document, LuceneOptions luceneOptions) {
+        if(text == null){
+            return;
+        }
         Field allField = new Field(name + "representation." + representationField + ".ALL",
                 text,
                 luceneOptions.getStore(),
