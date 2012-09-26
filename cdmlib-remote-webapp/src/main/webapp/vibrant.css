@@ -12,6 +12,10 @@ body{
     background-position:0% 0%;
 }
 
+a, img { 
+    border:none; 
+} 
+
 
 
 a:active,
@@ -412,4 +416,14 @@ ul.pager li.pager-last a:focus{
     border-right:1px solid #5F5F5F;
     border-top:1px solid #444;
 }
+
+/* Bars */
+.bars {position:relative; width:45px; height:8px; background:#eee; margin:0 60px}
+.bar {line-height:25px; height:8px; position:absolute; top:0; left:0}
+.bar-1 {background:#FFE6E6;}
+.bar-2 {background:#66C266;}
+/* Bar Value */
+.value {position:absolute; top:0; white-space:nowrap}
+.bar-1 .value {color:#c00; right:-20px; font-size:75%}
+.bar-2 .value {color:green; left:-20px; font-size:75%}
 

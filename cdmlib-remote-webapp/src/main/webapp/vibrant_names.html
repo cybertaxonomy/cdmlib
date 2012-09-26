@@ -4,8 +4,9 @@
 
         <title>VIBRANT names search</title>
         <link type="text/css" rel="stylesheet" media="all" href="vibrant.css" />
-        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-        <script type="text/javascript">
+
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
+        <script type="text/javascript" language="javascript">
 
 
 $(document).ready(function(){
@@ -16,7 +17,7 @@ if( $('#query').val().contains('*')){
 if( $('#query').val().indexOf('*') == -1){
     $('#matchModeId').val("EXACT");
 }
-        </script>
+  });      </script>
 
     </head>
 
@@ -29,7 +30,7 @@ if( $('#query').val().indexOf('*') == -1){
                 <td width="5%"></td>
 
                 <td valign="top">
-                    <h2>ViBRANT Common Data Model names search</h2>
+                    <h2>ViBRANT index name search</h2>
                     <br></br>
                     <p> Fill in the empty field in order to query the database for a specific
                         name.</p>
@@ -60,8 +61,16 @@ if( $('#query').val().indexOf('*') == -1){
                                 <td colspan="2"><input type="submit" value="Query"
                                         style="FONT: 12px Verdana,Geneva,sans-serif;" /></td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    Or <a href="vibrant_fulltext.html">search</a> all fields including descriptive data.
+                                        <!--a href="vibrant_fulltext.html">Full text search</a-->
+                                </td>
+                            </tr>
                         </table>
                     </form>
+
                     <span></span>
                 </td>
             </tr>
