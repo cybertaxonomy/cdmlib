@@ -12,11 +12,16 @@
 $(document).ready(function(){
 
 if( $('#query').val().contains('*')){
-    $('#matchModeId').val("LIKE");
+    $('#matchMode').val("BEGINNING");
+}
+if( $('#query').val().indexOf('*') >= 0){
+    $('#matchMode').val("BEGINNING");
 }
 if( $('#query').val().indexOf('*') == -1){
-    $('#matchModeId').val("EXACT");
+    $('#matchMode').val("EXACT");
 }
+alert($(this).html); 
+console.log(this);
   });      </script>
 
     </head>
@@ -48,7 +53,7 @@ if( $('#query').val().indexOf('*') == -1){
                                     <input name="query" type="text" id="query" size="50"></input>
                                     <input type="hidden" name="pageSize" id="pageSizeId" value="25"></input>
                                     <input type="hidden" name="pageNumber" value="0"></input>
-                                    <input type="hidden" name="matchMode" id="matchModeId" value="LIKE"></input><!-- TODO Depending on what -->
+                                    <input type="hidden" name="matchMode" id="matchModeId" value="BEGINNING"></input><!-- TODO Depending on what -->
                                     <input type="hidden" name="doTaxa" value="1"></input>
                                     <input type="hidden" name="doSynonyms" value="1"></input>
                                     <input type="hidden" name="doMisappliedNames" value="1"></input>
