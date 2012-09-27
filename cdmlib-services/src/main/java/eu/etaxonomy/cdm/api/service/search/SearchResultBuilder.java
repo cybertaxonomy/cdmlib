@@ -11,20 +11,15 @@ package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.search.MultiTermQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.hibernate.criterion.Criterion;
-import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -69,8 +64,14 @@ public class SearchResultBuilder implements ISearchResultBuilder {
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder#createResultSetFromIds(org.apache.lucene.search.TopDocs, java.lang.String[], eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao, java.lang.String, java.util.List)
+    /**
+     * {@inheritDoc}
+     *
+     * <h3>NOTE:</h3> All {@link MultiTermQuery} like {@link WildcardQuery} are
+     * constant score by default since Lucene 2.9, you can change that back to
+     * scoring mode: <code>WildcardQuery.setRewriteMethod(MultiTermQuery.SCORING_BOOLEAN_QUERY_REWRITE)</code>
+     * This slows down the query immense or throws TooManyClauses exceptions if
+     * too many terms match the wildcard.
      */
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
             String[] highlightFields, ICdmEntityDao<T> dao, String idField, List<String> propertyPaths) throws CorruptIndexException, IOException {
@@ -80,9 +81,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         SearchResultHighligther highlighter = null;
         if(highlightFields  != null && highlightFields.length > 0){
             highlighter = new SearchResultHighligther();
-
         }
-
 
         for (ScoreDoc scoreDoc : topDocsResultSet.scoreDocs) {
             Document doc = luceneSearch.getSearcher().doc(scoreDoc.doc);
