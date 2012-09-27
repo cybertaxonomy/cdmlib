@@ -96,10 +96,10 @@
                         <td width="5%"/>
                         <td valign="top">
 
-                            <h2>ViBRANT Common Data Model names search</h2>
+                            <h2>ViBRANT index Common Data Model search</h2>
                             <br/>
                             <BR/>
-                            <H4>Source(s) using this name: </H4>
+                            <H4>Source(s) using this search term: </H4>
                             <br/>
 
 
@@ -129,9 +129,16 @@
                                                   style="width:{$score * 100}%">
                                                   <!--div class="value"><xsl:value-of select="score"/></div-->
                                                   <div class="value">
+                                                      <xsl:variable name="percentscore">
                                                   <xsl:value-of
-                                                  select="substring(substring-after($score,'.'), 1,2)"
+                                                  select="number(substring(substring-after($score,'.'), 1,2))"
                                                   />%
+                                                      </xsl:variable>
+                                                      <xsl:value-of
+                                                          select="string($percentscore)"
+                                                      />
+                                                      <!--xsl:value-of select="translate($percentscore, '^0', '')"></xsl:value-of-->
+                                                      <!--xsl:value-of select="format-number($percentscore, '#')"></xsl:value-of-->
                                                   <!--xsl:value-of select="concat('0.', substring(substring-after($score,'.'), 1,2))"-->
                                                   </div>
                                                   </div>
