@@ -40,7 +40,7 @@
                         
                         var fullurl = '../taxon/' + $(this).attr('ref') + '/extensions.json';
                         //$(this).html(fullurl);
-                        var source_url = 'lorna testing';
+                        var source_url = location.href;
                         
                         //alert($(this).html); 
                         // this is td class="source-url" ref="c51e9c56-3761-4e3b-aef6-db446fa8748c"
