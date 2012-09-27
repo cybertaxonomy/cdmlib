@@ -26,7 +26,7 @@
 		<hibernate.version>3.4.0-SNAPSHOT</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <unitils.version>3.3</unitils.version>
-        <lucene.version>2.9.0</lucene.version><!-- lucene.version in hibernate-search 3.4.0-SNAPSHOT is 2.4.0-->
+        <lucene.version>2.9.4</lucene.version><!-- lucene.version in hibernate-search 3.4.0-SNAPSHOT is 2.4.0-->
         <hsqldb.version>1.8.0.10</hsqldb.version><!-- 1.8.0.10, 1.9.0-rc6 (manualy build only for debugging) -->
     </properties>
     <scm>
