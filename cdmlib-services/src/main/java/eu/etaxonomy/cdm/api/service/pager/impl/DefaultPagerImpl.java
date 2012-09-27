@@ -14,6 +14,8 @@ import java.util.List;
 
 public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructor
      *

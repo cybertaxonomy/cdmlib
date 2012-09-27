@@ -19,6 +19,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -217,6 +218,7 @@ public class LuceneSearch {
      */
     public TopDocs executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
+
         if(pageNumber == null || pageNumber < 0){
             pageNumber = 0;
         }
@@ -246,6 +248,9 @@ public class LuceneSearch {
         //TODO when switched to Lucene 3.x which is included in hibernate 4.x
         //     use TopDocCollector.topDocs(int start, int howMany);
         //     since this method might be more memory save than our own implementation
+        //
+        //     ALSO READ http://dev.e-taxonomy.eu/trac/ticket/3118 !!!
+        //
 //        TopDocs topDocs = hitCollector.topDocs();
         ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 
@@ -256,7 +261,7 @@ public class LuceneSearch {
         for(int i = 0; i < docsAvailableInPage; i++){
             pagedDocs[i] = scoreDocs[start + i];
         }
-        TopDocs pagedTopDocs = new TopDocs(docsAvailableInPage, pagedDocs, topDocs.getMaxScore());
+        TopDocs pagedTopDocs = new TopDocs(topDocs.totalHits, pagedDocs, topDocs.getMaxScore());
         //
         /////////////////////////////////////////////
 

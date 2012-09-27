@@ -299,7 +299,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
         }
         descriptionService.saveOrUpdate(description);
-        commitAndStartNewTransaction(null);
+        commitAndStartNewTransaction(new String[]{"DESCRIPTIONELEMENTBASE"});
 
         refreshLuceneIndex();
 

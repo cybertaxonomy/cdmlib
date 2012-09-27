@@ -1229,7 +1229,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // --- execute search
         TopDocs topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
-        // --- initialize taxa, thighlight matches ....
+        // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
