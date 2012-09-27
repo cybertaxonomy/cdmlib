@@ -143,6 +143,7 @@ public class LuceneSearch {
     public Searcher getSearcher() {
         if(searcher == null){
             searcher = new IndexSearcher(getIndexReader());
+            ((IndexSearcher)searcher).setDefaultFieldSortScoring(true, true);
         }
         return searcher;
     }

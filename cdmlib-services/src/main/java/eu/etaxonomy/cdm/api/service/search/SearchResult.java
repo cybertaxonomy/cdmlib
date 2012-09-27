@@ -29,6 +29,8 @@ public class SearchResult<T extends CdmBase> {
 
     private float score = 0;
 
+    private float maxScore = 0;
+
     private Document doc;
 
     private T entity;
@@ -76,6 +78,16 @@ public class SearchResult<T extends CdmBase> {
      */
     public SearchResult(Document doc) {
         this.doc = doc;
+    }
+
+
+    public float getMaxScore() {
+        return maxScore;
+    }
+
+
+    public void setMaxScore(float maxScore) {
+        this.maxScore = maxScore;
     }
 
 

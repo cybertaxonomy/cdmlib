@@ -88,8 +88,11 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             String[] idStrings = doc.getValues(idField);
             SearchResult<T> searchResult = new SearchResult<T>(doc);
 
-            if(!Double.isNaN(scoreDoc.score) && !Double.isInfinite(scoreDoc.score)){
+            if(isNumber(scoreDoc.score)){
                 searchResult.setScore(scoreDoc.score);
+            }
+            if(isNumber(topDocsResultSet.getMaxScore())){
+                searchResult.setMaxScore(topDocsResultSet.getMaxScore());
             }
 
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
@@ -108,6 +111,14 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         }
 
         return searchResults;
+    }
+
+    /**
+     * @param scoreDoc
+     * @return
+     */
+    private boolean isNumber(Float number) {
+        return !Double.isNaN(number) && !Double.isInfinite(number);
     }
 
 }
