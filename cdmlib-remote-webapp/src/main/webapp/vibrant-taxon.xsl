@@ -162,10 +162,20 @@ $('.page-url').each(function(index) {
                                                   <!--div class="value"><xsl:value-of select="score"/></div-->
                                                   <div class="value">
                                                       <xsl:variable name="percentscore">
-                                                  <xsl:value-of
-                                                  select="number(substring(substring-after($score,'.'), 1,2))"
-                                                  />%
+                                                          <xsl:choose>
+                                                              <xsl:when test="starts-with($score, '0')">
+                                                                  <xsl:value-of
+                                                                      select="number(substring(substring-after($score,'.'), 1,2))"
+                                                                  />%
+                                                              </xsl:when>
+                                                              <xsl:otherwise>
+                                                                  <xsl:value-of select="100"/>%
+                                                              </xsl:otherwise>
+                                                          </xsl:choose>
+                                                         
+                                                          
                                                       </xsl:variable>
+                                                      
                                                       <xsl:value-of
                                                           select="string($percentscore)"
                                                       />
@@ -420,23 +430,5 @@ $('.page-url').each(function(index) {
             </tr>
         </table>
     </xsl:template>
-    
-    
-    
-    <xsl:template name="pagesAvailable">
-        <xsl:param name="index" select="1"/>
-        <xsl:if test="$index > 0">
-            <xsl:value-of select="../currentIndex"/>
-            <xsl:value-of select="$index"/>
-            <xsl:text>.</xsl:text>
-            <xsl:call-template name="pagesAvailable">
-                <xsl:with-param name="index" select="$index - 1"/>
-            </xsl:call-template>
-        </xsl:if>
-    </xsl:template>
-
-    <!--xsl:template match=".">
-        <xsl:value-of select="text()"/>
-    </xsl:template-->
 
 </xsl:stylesheet>
