@@ -34,6 +34,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -273,7 +274,46 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager;
 
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, null, null, null, null);
-        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1024), pager.getCount());
+        Assert.assertEquals("Expecting 1024 entities when searching for Rot*", Integer.valueOf(1024), pager.getCount());
+    }
+
+    /**
+     * Regression test for #3116 (fulltext search: always only one page of results)
+     *
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
+    public final void testFindByDescriptionElementFullText_Paging() throws CorruptIndexException, IOException, ParseException {
+
+        TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        Set<String> uniqueRandomStrs = new HashSet<String>(1024);
+        int numOfItems = 100;
+        while(uniqueRandomStrs.size() < numOfItems){
+            uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
+        }
+        for(String rndStr: uniqueRandomStrs){
+            description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
+        }
+        descriptionService.saveOrUpdate(description);
+        commitAndStartNewTransaction(null);
+
+        refreshLuceneIndex();
+
+        int pageSize = 10;
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, null, null, null);
+        Assert.assertEquals("unexpeted number of pages", Integer.valueOf(numOfItems / pageSize), pager.getPagesAvailable());
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, 9, null, null);
+        Assert.assertNotNull("last page must have records", pager.getRecords());
+        Assert.assertNotNull("last item on last page must exist", pager.getRecords().get(0));
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, 10, null, null);
+        Assert.assertNotNull("last page + 1 must not have any records", pager.getRecords());
     }
 
     @SuppressWarnings("rawtypes")
