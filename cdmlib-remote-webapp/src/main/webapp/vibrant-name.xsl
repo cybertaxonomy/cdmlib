@@ -188,7 +188,7 @@ $('.source-url').each(function(index) {
 
 
 
-    <xsl:template name="pagesAvailable">
+    <!--xsl:template name="pagesAvailable">
         <xsl:param name="index" select="1"/>
         <xsl:if test="$index > 0">
             <xsl:value-of select="../currentIndex"/>
@@ -198,6 +198,6 @@ $('.source-url').each(function(index) {
                 <xsl:with-param name="index" select="$index - 1"/>
             </xsl:call-template>
         </xsl:if>
-    </xsl:template>
+    </xsl:template-->
 
 </xsl:stylesheet>

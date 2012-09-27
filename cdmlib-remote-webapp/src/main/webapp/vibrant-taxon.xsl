@@ -4,7 +4,9 @@
     <xsl:param name="query"/>
     <!-- pass this in as a parameter? -->
 
-    <xsl:variable name="url_webservice">../taxon/findTaxaAndNames</xsl:variable>
+    <!--xsl:variable name="url_webservice">../taxon/findTaxaAndNames</xsl:variable-->
+    <xsl:variable name="url_webservice">../taxon/findByEverythingFullText</xsl:variable>
+    
     <xsl:variable name="url_start">"../taxon/</xsl:variable>
     <xsl:variable name="url_end">/extensions.json"</xsl:variable>
 
@@ -84,6 +86,36 @@
                     function open(url)
                     {window.open(url);}
   
+  (function($){
+	$.getQuery = function( query ) {
+		query = query.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		var expr = "[\\?&amp;]"+query+"=([^&amp;#]*)";
+		var regex = new RegExp( expr );
+		var results = regex.exec( window.location.href );
+		if( results !== null ) {
+			return results[1];
+			return decodeURIComponent(results[1].replace(/\+/g, " "));
+		} else {
+			return false;
+		}
+	};
+})(jQuery);
+ 
+// Document load
+$(document).ready(function() {
+
+//$('#content').append('Showing page ' + parseInt($.getQuery('pageNumber') + 1) + ':');
+	var test_query = $.getQuery('query');
+
+$('.page-url').each(function(index) {
+	//alert(test_query); 
+	//$('#content').append(test_query);
+	var displayPage = parseInt($(this).attr('ref')) + 1;
+	
+    $(this).html('&lt;a href="../taxon/findByEverythingFullText?query=' + test_query + '&amp;hl=1&amp;pageNumber=' + $(this).attr('ref') + '"&gt;' + displayPage + '&lt;/a&gt;');
+
+});
+});
             </script>
 
 
@@ -331,6 +363,13 @@
                             </TABLE>
                         </td>
                     </tr>
+                    <TR>
+                        <TD/>
+                        <TD>
+                            <xsl:apply-templates select="indices"/>
+                        </TD>
+                        
+                    </TR>
                 </table>
 
             </BODY>
@@ -358,6 +397,42 @@
                 <xsl:value-of select="$str"/>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    
+    <xsl:template match="indices">
+        
+        <table>
+            <tr>
+                
+                <xsl:variable name="query_string"><xsl:value-of select="$url_webservice"/>?query=&amp;hl=1</xsl:variable>
+                <!-- If there is more than one page show links to other pages -->
+                <xsl:if test="count(e) > 1">              
+                    <xsl:for-each select="e">                      
+                        <xsl:variable name="page_number"><xsl:value-of select="."/></xsl:variable>
+                        
+                        <TD class="page-url" ref="{$page_number}">               
+                        </TD>
+                        
+                    </xsl:for-each>
+                </xsl:if>
+                
+            </tr>
+        </table>
+    </xsl:template>
+    
+    
+    
+    <xsl:template name="pagesAvailable">
+        <xsl:param name="index" select="1"/>
+        <xsl:if test="$index > 0">
+            <xsl:value-of select="../currentIndex"/>
+            <xsl:value-of select="$index"/>
+            <xsl:text>.</xsl:text>
+            <xsl:call-template name="pagesAvailable">
+                <xsl:with-param name="index" select="$index - 1"/>
+            </xsl:call-template>
+        </xsl:if>
     </xsl:template>
 
     <!--xsl:template match=".">
