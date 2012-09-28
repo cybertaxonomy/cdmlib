@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 
 /**
  * 
@@ -259,6 +261,8 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return new GbifDistributionCsv2CdmConverter(state);
 		}else if (namespace.equals(TermUri.GBIF_REFERENCE)){
 			return new GbifReferenceCsv2CdmConverter(state);
+		}else if (namespace.equals(TermUri.GBIF_TYPES_AND_SPECIMEN)){
+			return new GbifTypesAndSpecimen2CdmConverter(state);
 		}else if (namespace.equals(TermUri.EOL_AGENT)){
 			return new EolAgent2CdmConverter(state);
 		}else{
@@ -294,6 +298,10 @@ public class DwcaImport extends CdmImportBase<DwcaImportConfigurator, DwcaImport
 			return this.getTermService();
 		}else if (DescriptionBase.class.isAssignableFrom(clazz)){
 			return this.getDescriptionService();
+		}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
+			return this.getOccurrenceService();
+		}else if (Collection.class.isAssignableFrom(clazz)){
+			return this.getCollectionService();
 		}else if (AgentBase.class.isAssignableFrom(clazz)){
 			return this.getDescriptionService();
 		}

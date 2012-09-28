@@ -305,7 +305,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverter.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/EolAgent2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifDescriptionCsv2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifDistributionCsv2CdmConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifImageCsv2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifReferenceCsv2CdmConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifTypesAndSpecimen2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/GbifVernacularNameCsv2CdmConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/IConverterInput.java -text

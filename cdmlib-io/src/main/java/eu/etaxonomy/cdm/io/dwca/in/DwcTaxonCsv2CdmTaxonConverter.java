@@ -420,6 +420,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		if (! nvName.isProtectedTitleCache()){
 			if (StringUtils.isBlank(nvName.getAuthorshipCache())){
 				if (nvName.isInstanceOf(BotanicalName.class) || nvName.isInstanceOf(ZoologicalName.class)){
+					//TODO can't we also parse NonViralNames correctly ?
 					try {
 						parser.parseAuthors(nvName, strAuthors);
 					} catch (StringNotParsableException e) {
@@ -484,12 +485,11 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 		String status = "";
-		boolean isMissaplied = false;
 		
 		if (taxStatus != null){
 			if (taxStatus.matches("accepted.*|valid")){
 				status += "A";
-			} else if (taxStatus.matches(".*synonym|invalid")){
+			} else if (taxStatus.matches(".*synonym|invalid|not accepted")){   //not accepted comes from scratchpads
 				status += "S";
 			} else if (taxStatus.matches("misapplied.*")){
 				status += "M";

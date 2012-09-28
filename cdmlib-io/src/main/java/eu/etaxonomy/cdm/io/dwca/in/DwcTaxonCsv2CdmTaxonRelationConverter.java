@@ -173,8 +173,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	private void handleParentNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase<?> taxonBase, String id, List<MappedCdmBase> resultList) {
 		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
 			String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
-			
-			if (taxonBase.isInstanceOf(Taxon.class)){
+			if (id.equals(parentId)){
+				//taxon can't be it's own child
+				//TODO log
+				return;
+			}else if (taxonBase.isInstanceOf(Taxon.class)){
 				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 				Taxon parentTaxon = getTaxonBase(parentId, item, Taxon.class,state);
 				if (parentTaxon == null){
@@ -188,7 +191,13 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 						String warning = "Classification not found. Can't create parent-child relationship";
 						fireWarningEvent(warning, item, 12);
 					}
-					classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
+					try {
+						classification.addParentChild(parentTaxon, taxon, citationForParentChild, null);
+					} catch (IllegalStateException e) {
+						String message = "Exception occurred when trying to add a child to a parent in a classification: %s";
+						message = String.format(message, e.getMessage());
+						fireWarningEvent(message, item, 12);
+					}
 				}
 			}else if (taxonBase.isInstanceOf(Synonym.class)){
 				if (! acceptedNameUsageExists(item) && state.getConfig().isUseParentAsAcceptedIfAcceptedNotExists()){
