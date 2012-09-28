@@ -675,10 +675,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
 
         // via DescriptionElement
-        pager = taxonService.findByEverythingFullText("America", null, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting one entity when searching for arae 'America'", Integer.valueOf(1), pager.getCount());
+        // via DescriptionElement
+        pager = taxonService.findByEverythingFullText("present", null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for arae 'present'", Integer.valueOf(1), pager.getCount());
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
+        Assert.assertEquals("Expecting Taxon ", ABIES_BALSAMEA_UUID, pager.getRecords().get(0).getEntity().getUuid().toString());
+
     }
 
 

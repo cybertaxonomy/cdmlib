@@ -89,6 +89,12 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
 
+    /**
+     * The file to load the {@link DataSource} beans from.
+     * This file is usually {@code ./.cdmLibrary/datasources.xml}
+     *
+     * @param filename
+     */
     public void setBeanDefinitionFile(String filename){
         beanDefinitionFile = filename;
     }
@@ -167,7 +173,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         JndiTemplate jndiTemplate = new JndiTemplate();
         jndiFactory.setJndiTemplate(jndiTemplate); no need to use a JndiTemplate
         if I try using JndiTemplate I get an org.hibernate.AnnotationException: "Unknown Id.generator: system-increment"
-        when running multiple intances via the Bootloader
+        when running multiple instances via the Bootloader
         */
         jndiFactory.setResourceRef(true);
         jndiFactory.setJndiName(jndiName);
@@ -182,6 +188,13 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         return (DataSource)obj;
     }
 
+    /**
+     * Loads the {@link DataSource} bean from the cdm bean definition file.
+     * This file is usually {@code ./.cdmLibrary/datasources.xml}
+     *
+     * @param beanName
+     * @return
+     */
     private DataSource loadDataSourceBean(String beanName) {
 
         String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);

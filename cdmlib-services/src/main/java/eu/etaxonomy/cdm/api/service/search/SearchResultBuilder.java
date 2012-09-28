@@ -14,14 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.MultiTermQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.hibernate.search.engine.DocumentBuilder;
 
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
@@ -31,6 +36,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  *
  */
 public class SearchResultBuilder implements ISearchResultBuilder {
+
+    public static final Logger logger = Logger.getLogger(SearchResultBuilder.class);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder#createResultSetFromIds(eu.etaxonomy.cdm.search.LuceneSearch, org.apache.lucene.search.TopDocs, eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao, java.lang.String)
@@ -66,15 +73,6 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
     /**
      * {@inheritDoc}
-     * also see {@link #createResultSet(TopDocs, String[], ICdmEntityDao, String, List)}
-     */
-    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
-            String[] highlightFields, ICdmEntityDao<T> dao, String idField, List<String> propertyPaths) throws CorruptIndexException, IOException {
-        return createResultSet(topDocsResultSet, highlightFields, dao, new String[]{idField}, propertyPaths);
-    }
-
-    /**
-     * {@inheritDoc}
      *
      * <h3>NOTE:</h3> All {@link MultiTermQuery} like {@link WildcardQuery} are
      * constant score by default since Lucene 2.9, you can change that back to
@@ -83,7 +81,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * too many terms match the wildcard.
      */
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
-                String[] highlightFields, ICdmEntityDao<T> dao, String[] idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
+                String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
         List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
 
@@ -125,25 +123,34 @@ public class SearchResultBuilder implements ISearchResultBuilder {
     }
 
     /**
+     * find the entity id
+     *
      * @param idFields
      * @param doc
      * @return
      */
-    private String findId(String[] idFields, Document doc) {
-        // find and load the entity
+    private String findId(Map<CdmBaseType,String> idFieldMap, Document doc) {
+
+        String docClassName = doc.getValues(DocumentBuilder.CLASS_FIELDNAME)[0];
+
         String id = null;
-        String[] idStrings;
-        for(String idField : idFields){
-            idStrings = doc.getValues(idField);
-            if(idStrings.length > 0 && StringUtils.isNotBlank(idStrings[0])){
-                id = idStrings[0];
+        for(CdmBaseType baseType  : idFieldMap.keySet()){
+            if(baseType.getSubClassNames().contains(docClassName)){
+                String[] idStrings = doc.getValues(idFieldMap.get(baseType));
+                if(idStrings.length > 0 && StringUtils.isNotBlank(idStrings[0])){
+                    id = idStrings[0];
+                    break;
+                }
             }
+        }
+        if(id == null){
+            throw new RuntimeException("No id field name given for " + docClassName);
         }
         return id;
     }
 
     /**
-     * @param scoreDoc
+     * @param number
      * @return
      */
     private boolean isNumber(Float number) {

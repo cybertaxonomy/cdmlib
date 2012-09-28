@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date Sep 28, 2012
  *
  */
-public enum CdmBaseTypes {
+public enum CdmBaseType {
 
     TAXON(TaxonBase.class),
     DESCRIPTION_ELEMENT(DescriptionElementBase.class),
@@ -40,7 +40,7 @@ public enum CdmBaseTypes {
 
     private Set<Class<? extends CdmBase>> subClasses;
 
-    CdmBaseTypes(Class<? extends CdmBase> baseClass){
+    CdmBaseType(Class<? extends CdmBase> baseClass){
         this.baseClass = baseClass;
         try {
             subClasses = subclassesFor(baseClass);

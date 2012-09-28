@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -1144,10 +1146,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // --- execute search
         TopDocs topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.TAXON, "id");
+
         // ---  initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, luceneSearch.getHighlightFields(), dao, "taxon.id", propertyPaths);
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
     }
@@ -1207,10 +1212,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // --- execute search
         TopDocs topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
+
         // --- initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, luceneSearch.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
 
@@ -1231,8 +1239,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
+
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.TAXON, "id");
+        idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
+
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, multiSearch.getHighlightFields(), dao, new String[]{"inDescription.taxon.id","taxon.id"}, propertyPaths);
+                topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
 
