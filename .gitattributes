@@ -629,6 +629,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesElement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseTypes.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
