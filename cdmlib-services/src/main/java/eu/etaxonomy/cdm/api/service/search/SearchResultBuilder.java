@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.MultiTermQuery;
@@ -63,6 +64,14 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         this.query = query;
     }
 
+    /**
+     * {@inheritDoc}
+     * also see {@link #createResultSet(TopDocs, String[], ICdmEntityDao, String, List)}
+     */
+    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
+            String[] highlightFields, ICdmEntityDao<T> dao, String idField, List<String> propertyPaths) throws CorruptIndexException, IOException {
+        return createResultSet(topDocsResultSet, highlightFields, dao, new String[]{idField}, propertyPaths);
+    }
 
     /**
      * {@inheritDoc}
@@ -74,7 +83,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * too many terms match the wildcard.
      */
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
-            String[] highlightFields, ICdmEntityDao<T> dao, String idField, List<String> propertyPaths) throws CorruptIndexException, IOException {
+                String[] highlightFields, ICdmEntityDao<T> dao, String[] idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
         List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
 
@@ -84,10 +93,11 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         }
 
         for (ScoreDoc scoreDoc : topDocsResultSet.scoreDocs) {
+
             Document doc = luceneSearch.getSearcher().doc(scoreDoc.doc);
-            String[] idStrings = doc.getValues(idField);
             SearchResult<T> searchResult = new SearchResult<T>(doc);
 
+            // set score values
             if(isNumber(scoreDoc.score)){
                 searchResult.setScore(scoreDoc.score);
             }
@@ -97,8 +107,9 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
             //      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented
-            if(idStrings.length > 0){
-                T entity = dao.load(Integer.valueOf(idStrings[0]), propertyPaths);
+            String id = findId(idFields, doc);
+            if(id != null){
+                T entity = dao.load(Integer.valueOf(id), propertyPaths);
                 searchResult.setEntity(entity);
             }
 
@@ -111,6 +122,24 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         }
 
         return searchResults;
+    }
+
+    /**
+     * @param idFields
+     * @param doc
+     * @return
+     */
+    private String findId(String[] idFields, Document doc) {
+        // find and load the entity
+        String id = null;
+        String[] idStrings;
+        for(String idField : idFields){
+            idStrings = doc.getValues(idField);
+            if(idStrings.length > 0 && StringUtils.isNotBlank(idStrings[0])){
+                id = idStrings[0];
+            }
+        }
+        return id;
     }
 
     /**

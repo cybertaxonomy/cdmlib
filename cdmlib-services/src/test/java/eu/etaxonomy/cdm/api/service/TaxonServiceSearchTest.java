@@ -653,6 +653,35 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // synonym in classification ???
     }
 
+    /**
+     * Regression test for #3119: fulltext search: Entity always null whatever search
+     *
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    @Test
+    @DataSet
+    public final void testFindByEverythingFullText() throws CorruptIndexException, IOException, ParseException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        // via Taxon
+        pager = taxonService.findByEverythingFullText("Abies", null, null, true, null, null, null, null);
+        Assert.assertTrue("Expecting at least 7 entities for 'Abies'", pager.getCount() > 7);
+        Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
+        Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
+
+        // via DescriptionElement
+        pager = taxonService.findByEverythingFullText("America", null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for arae 'America'", Integer.valueOf(1), pager.getCount());
+        Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
+        Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
+    }
+
+
     @Test
     @DataSet
     public final void findByEveryThingFullText() throws CorruptIndexException, IOException, ParseException {

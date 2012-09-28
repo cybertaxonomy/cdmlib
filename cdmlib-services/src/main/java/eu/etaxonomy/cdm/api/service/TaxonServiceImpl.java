@@ -1232,7 +1232,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
-                topDocsResultSet, multiSearch.getHighlightFields(), dao, "inDescription.taxon.id", propertyPaths);
+                topDocsResultSet, multiSearch.getHighlightFields(), dao, new String[]{"inDescription.taxon.id","taxon.id"}, propertyPaths);
 
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, topDocsResultSet.totalHits, pageSize, searchResults);
 
