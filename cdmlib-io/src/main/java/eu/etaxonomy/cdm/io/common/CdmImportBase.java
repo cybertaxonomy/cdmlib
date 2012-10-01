@@ -1036,7 +1036,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}else if (acceptedTaxa.size() == 1){
 				return acceptedTaxa.iterator().next();
 			}else{
-				Reference sec = synonym.getSec();
+				Reference<?> sec = synonym.getSec();
 				if (sec != null){
 					Set<Taxon> taxaWithSameSec = new HashSet<Taxon>();
 					for (Taxon taxon: acceptedTaxa){
