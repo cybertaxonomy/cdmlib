@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -222,4 +223,17 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 			return null;
 		}
 	}
+
+
+	
+// *********************** toString() **************************************
+	
+	@Override
+	public String toString() {
+		if (StringUtils.isNotBlank(code) || StringUtils.isNotBlank(name)){
+			return "Collection [id= "+ getId() +", + code=" + code + ", name=" + name + "]";
+		}else{
+			return super.toString();
+		}
+	}	
 }
