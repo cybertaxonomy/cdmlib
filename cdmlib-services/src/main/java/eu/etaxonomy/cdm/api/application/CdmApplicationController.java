@@ -12,7 +12,9 @@
 package eu.etaxonomy.cdm.api.application;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -26,6 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -67,6 +70,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
@@ -265,6 +269,13 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     protected void createAdminUser(){
         User firstUser = User.NewInstance("admin", "00000");
         getUserService().save(firstUser);
+
+        GrantedAuthorityImpl role_admin = GrantedAuthorityImpl.NewInstance();
+        role_admin.setAuthority("ROLE_ADMIN");
+        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+        authorities.add(role_admin);
+        firstUser.setGrantedAuthorities(authorities);
+
         logger.info("Admin user created.");
     }
 
