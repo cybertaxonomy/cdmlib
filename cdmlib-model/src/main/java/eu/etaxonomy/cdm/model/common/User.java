@@ -122,7 +122,7 @@ public class User extends CdmBase implements UserDetails {
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@NotAudited
-	protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+	protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
 	
 	@XmlElementWrapper(name = "Groups")
 	@XmlElement(name = "Group")
@@ -155,7 +155,7 @@ public class User extends CdmBase implements UserDetails {
 	
 	@XmlTransient
 	@Transient
-	private Set<GrantedAuthority> authorities;
+	private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
 	
 	private void initAuthorities() {
 		authorities = new HashSet<GrantedAuthority>();
