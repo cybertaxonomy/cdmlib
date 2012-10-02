@@ -268,14 +268,14 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
     protected void createAdminUser(){
         User firstUser = User.NewInstance("admin", "00000");
-        getUserService().save(firstUser);
-
         GrantedAuthorityImpl role_admin = GrantedAuthorityImpl.NewInstance();
         role_admin.setAuthority("ROLE_ADMIN");
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
         authorities.add(role_admin);
         firstUser.setGrantedAuthorities(authorities);
+        getUserService().save(firstUser);
 
+        
         logger.info("Admin user created.");
     }
 
