@@ -168,8 +168,9 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		if (archiveEntry == null){
 			return null;
 		}
-		//CsvReader does not allow empty fieldsEnclosed, need to think about own implementation which allows empty fields)
+				 
 		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVReader.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
+		// default is a kind of 'null' quote, which tells opencsv to ignore the enclosing quotes
 		char fieldsEnclosedBy = CSVWriter.NO_QUOTE_CHARACTER;
 		if(state == null || !state.getConfig().isNoQuotes()) {
 		        fieldsEnclosedBy= StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
