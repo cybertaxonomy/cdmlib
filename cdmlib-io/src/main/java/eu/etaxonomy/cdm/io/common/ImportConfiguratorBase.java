@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -40,7 +41,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	
 	//editor
 	static EDITOR editor = EDITOR.EDITOR_AS_ANNOTATION;
-	
 	
 	/**
 	 * The transformer class to be used for Input
@@ -427,6 +427,10 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	@Override
 	public boolean isCreateNew(){
 		return false;
+	}
+	
+	public UsernamePasswordAuthenticationToken getAuthenticationToken(){
+		return this.authenticationToken;
 	}
 
 }

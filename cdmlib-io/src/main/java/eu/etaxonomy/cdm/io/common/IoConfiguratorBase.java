@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -33,6 +34,9 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
 	protected CdmApplicationController cdmApp = null;
+	
+	//authentification token
+	UsernamePasswordAuthenticationToken authenticationToken;
 	
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	
@@ -90,4 +94,23 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		return progressMonitor != null ? progressMonitor : new NullProgressMonitor();
 	}
 
+	@Override
+	public UsernamePasswordAuthenticationToken getAuthenticationToken() {
+		return this.authenticationToken;
+	}
+
+	@Override
+	public void setAuthenticationToken(UsernamePasswordAuthenticationToken authenticationToken) {
+		this.authenticationToken = authenticationToken;
+		
+	}
+
+	@Override
+	public void setAuthentication(String login, String password) {
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
+		this.authenticationToken = token;
+	}
+	
+	
+	
 }

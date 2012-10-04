@@ -8,6 +8,8 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.Set;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -90,5 +92,11 @@ public interface IIoConfigurator extends IIoObservable{
 	 * @param observers
 	 */
 	public void setObservers(Set<IIoObserver> observers);
+	
+	public UsernamePasswordAuthenticationToken getAuthenticationToken();
 
+	public void setAuthenticationToken(UsernamePasswordAuthenticationToken token);
+	
+	public void setAuthentication(String login, String password);
+	
 }

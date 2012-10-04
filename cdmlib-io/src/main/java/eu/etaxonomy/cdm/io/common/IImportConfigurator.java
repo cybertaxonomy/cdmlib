@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.UUID;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -205,4 +207,5 @@ public interface IImportConfigurator extends IIoConfigurator {
      * @return
      */
     public boolean isCreateNew();
+
 }

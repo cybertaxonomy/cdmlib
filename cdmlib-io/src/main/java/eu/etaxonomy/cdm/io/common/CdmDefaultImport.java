@@ -35,6 +35,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 			return false;
 		}else{
 			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)getCdmAppController().getBean("defaultImport");
+			defaultImport.authenticate(config);
 			return defaultImport.invoke(config);
 		}
 	}

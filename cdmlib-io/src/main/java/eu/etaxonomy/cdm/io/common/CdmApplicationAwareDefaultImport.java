@@ -16,6 +16,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
@@ -27,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 
 /**
  * @author a.mueller
@@ -162,9 +168,10 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		config.getSourceReference();
 		logger.info("Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'");
 		
-		
 		ImportStateBase state = config.getNewState();
 		state.initialize(config);
+		
+		CdmPermissionEvaluator permissionEval = applicationContext.getBean("cdmPermissionEvaluator", CdmPermissionEvaluator.class);
 
 		state.setSuccess(true);
 		//do invoke for each class
@@ -230,6 +237,18 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 			ioBean = ioBean.substring(0, 1).toLowerCase() + ioBean.substring(1); //make camelcase
 		}
 		return ioBean;
+	}
+
+	public void authenticate(IImportConfigurator config) {
+ 		UsernamePasswordAuthenticationToken token = config.getAuthenticationToken();
+		if (token != null){
+			SecurityContext context = SecurityContextHolder.getContext();
+			
+			AuthenticationManager authenticationManager = applicationContext.getBean("authenticationManager", AuthenticationManager.class);;
+			Authentication authentication = authenticationManager.authenticate(token);
+			context.setAuthentication(authentication);
+		}
+		
 	}
 
 }
