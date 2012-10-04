@@ -21,9 +21,6 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -66,21 +63,8 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 	@Autowired
 	private IEditGeoService editGeoService;
 	
-	// TODO remove preliminary
-	@Autowired
-	private AuthenticationManager authenticationManager;
-	private Authentication authentication;
-	private PermissionEvaluator permissionEvaluator;
-
 	public MarkupDocumentImport() {
 		super();
-		System.out.println("TODO remove preliminary authentication");
-		// UsernamePasswordAuthenticationToken token = new
-		// UsernamePasswordAuthenticationToken("admin", "0000");
-		// authentication = authenticationManager.authenticate(token);
-		// SecurityContext context = SecurityContextHolder.getContext();
-		// context.setAuthentication(authentication);
-		// permissionEvaluator = new CdmPermissionEvaluator();
 	}
 
 	@Override
