@@ -90,4 +90,19 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
             return null;
         }
     }
+
+    /**
+     * The role prefix 'ROLE_' is defined in
+     * the spring security <code>RoleVoter</code>
+     *
+     * @author a.kohlbecker
+     * @date Oct 5, 2012
+     *
+     */
+    public enum Role {
+
+        ROLE_ADMIN,
+        ROLE_USER_MANAGER
+
+    }
 }

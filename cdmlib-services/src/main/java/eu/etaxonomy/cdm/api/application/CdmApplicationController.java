@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl.Role;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 
@@ -269,13 +270,13 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     protected void createAdminUser(){
         User firstUser = User.NewInstance("admin", "00000");
         GrantedAuthorityImpl role_admin = GrantedAuthorityImpl.NewInstance();
-        role_admin.setAuthority("ROLE_ADMIN");
+        role_admin.setAuthority(Role.ROLE_ADMIN.name());
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
         authorities.add(role_admin);
         firstUser.setGrantedAuthorities(authorities);
         getUserService().save(firstUser);
 
-        
+
         logger.info("Admin user created.");
     }
 

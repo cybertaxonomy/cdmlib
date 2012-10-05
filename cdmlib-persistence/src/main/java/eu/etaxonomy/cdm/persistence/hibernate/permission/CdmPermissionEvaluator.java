@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.access.AccessDecisionManager;
@@ -25,9 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import static eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl.Role;
 
 /**
  * @author k.luther
@@ -131,7 +128,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
         //if user has administrator rights return true;
          for (GrantedAuthority authority: authentication.getAuthorities()){
-             if (authority.getAuthority().equals("ROLE_ADMIN")){
+             if (authority.getAuthority().equals(Role.ROLE_ADMIN.name())){
                  logger.debug("ROLE_ADMIN found => true");
                  return true;
              }
