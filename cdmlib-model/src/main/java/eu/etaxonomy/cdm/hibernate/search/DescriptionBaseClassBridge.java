@@ -50,9 +50,9 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
      */
     public void set(String name, Object entity, Document document, LuceneOptions luceneOptions) {
 
-
             if (entity instanceof TaxonDescription) {
-                Taxon taxon = ((TaxonDescription) entity).getTaxon();
+
+                Taxon taxon = ((TaxonDescription)entity).getTaxon();
 
                 if (taxon != null) {
 
@@ -85,5 +85,6 @@ public class DescriptionBaseClassBridge extends AbstractClassBridge {
                 }
             }
     }
+
 
 }

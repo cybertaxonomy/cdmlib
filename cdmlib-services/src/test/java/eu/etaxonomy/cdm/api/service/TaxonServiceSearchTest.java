@@ -275,7 +275,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager;
 
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, null, null, null, null);
-        Assert.assertEquals("Expecting 1024 entities when searching for Rot*", Integer.valueOf(1024), pager.getCount());
+        Assert.assertEquals("Expecting all 1024 entities grouped into one SearchResult item when searching for Rot*", 1, pager.getCount().intValue());
     }
 
     /**
@@ -356,7 +356,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, highlightFragments, pageSize, null, null, null);
         Assert.assertEquals("All matches should be grouped in one page", 1, pager.getPagesAvailable().intValue());
         Map<String, String[]> highlightMap = pager.getRecords().get(0).getFieldHighlightMap();
-        Assert.assertEquals("expecting " + numOfItems+ " highlighted fragments of field 'name'", numOfItems, highlightMap.get("name").length);
+        // maxDocsPerGroup is defined in LuceneSearch and defaults to 10
+        int maxDocsPerGroup = 10;
+        Assert.assertEquals("expecting 10 highlighted fragments of field 'name'", maxDocsPerGroup, highlightMap.get("name").length);
 
     }
 

@@ -42,6 +42,7 @@ import org.hibernate.search.engine.DocumentBuilder;
 import org.hibernate.search.reader.ReaderProvider;
 import org.hibernate.search.store.DirectoryProvider;
 
+import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -56,7 +57,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    private static final String GROUP_BY_FIELD = "id";
+    private static final String GROUP_BY_FIELD = GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD;
 
     public static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
@@ -112,6 +113,16 @@ public class LuceneSearch {
 
     protected String[] highlightFields = new String[0];
 
+    private int maxDocsPerGroup = 10;
+
+
+    public int getMaxDocsPerGroup() {
+        return maxDocsPerGroup;
+    }
+
+    public void setMaxDocsPerGroup(int maxDocsPerGroup) {
+        this.maxDocsPerGroup = maxDocsPerGroup;
+    }
 
     /**
      * @param session
@@ -238,27 +249,21 @@ public class LuceneSearch {
         }
 
         Query fullQuery = expandQuery();
-
         logger.info("final query: " + fullQuery.toString());
 
         int offset = pageNumber * pageSize;
         int limit = (pageNumber + 1) * pageSize - 1 ;
-
         logger.debug("start: " + offset + "; limit:" + limit);
 
-//        TopDocs topDocs = null;
-
-        // sort must be non null default: Sort.RELEVANCE
         Sort groupSort = null;
         Sort withinGroupSort = Sort.RELEVANCE;
         if(sortFields != null && sortFields.length > 0){
             Sort sort = new Sort(sortFields);
             groupSort = new Sort(sortFields);
-//            topDocs = getSearcher().search(fullQuery, null, limit, sort);
         } else {
             groupSort = Sort.RELEVANCE; // == SortField.FIELD_SCORE !!
-//            topDocs = getSearcher().search(fullQuery, null, limit);
         }
+
         FirstPassGroupingCollector groupingCollector_1 = new FirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
         getSearcher().search(fullQuery, groupingCollector_1);
 
@@ -272,7 +277,7 @@ public class LuceneSearch {
         boolean getMaxScores = true;
         boolean fillFields = true;
         AllGroupsCollector c3 = new AllGroupsCollector(GROUP_BY_FIELD);
-        SecondPassGroupingCollector c2 = new SecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, limit, getScores, getMaxScores, fillFields);
+        SecondPassGroupingCollector c2 = new SecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
         getSearcher().search(fullQuery, MultiCollector.wrap(c2, c3));
 
         TopGroups groupsResult = c2.getTopGroups(offset);

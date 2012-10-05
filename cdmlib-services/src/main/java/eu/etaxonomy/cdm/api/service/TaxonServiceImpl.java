@@ -1217,7 +1217,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
 
-        // --- initialize taxa, thighlight matches ....
+        // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
         @SuppressWarnings("rawtypes")
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(

@@ -17,6 +17,7 @@ public abstract class AbstractClassBridge implements FieldBridge {
     protected final static NotNullAwareIdBridge idFieldBridge = new NotNullAwareIdBridge();
 
     public static LuceneOptions idFieldOptions = new IdFieldOptions();
+
     public static LuceneOptions sortFieldOptions = new SortFieldOptions();
 
 

@@ -40,12 +40,14 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -82,6 +84,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 @Configurable
+@ClassBridge(impl=GroupByTaxonClassBridge.class)
 public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
