@@ -23,11 +23,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -288,7 +290,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_Paging() throws CorruptIndexException, IOException, ParseException {
+    public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
 
         Set<String> uniqueRandomStrs = new HashSet<String>(1024);
@@ -325,13 +327,106 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     /**
+     * test for max score and sort by score of hit groups
+     * with all matches per taxon in a single TextData  element
+     * see {@link #testFullText_ScoreAndOrder_2()} for the complement
+     * test with matches in multiple TextData per taxon
+     *
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
+    @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
+    public final void testFullText_ScoreAndOrder_1() throws CorruptIndexException, IOException, ParseException {
+
+        int numOfTaxa = 3;
+
+        UUID[] taxonUuids = new UUID[numOfTaxa];
+        StringBuilder text = new StringBuilder();
+
+        for(int i = 0; i < numOfTaxa; i++){
+
+            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+            taxon.setTitleCache("Taxon_" + i, true);
+            taxonUuids[i] = taxon.getUuid();
+            taxonService.save(taxon);
+
+            text.append(" ").append("Rot");
+            TaxonDescription description = TaxonDescription.NewInstance(taxon);
+            description.addElement(TextData.NewInstance(text.toString(), Language.DEFAULT(), null));
+            descriptionService.saveOrUpdate(description);
+        }
+
+        commitAndStartNewTransaction(null);
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Rot", null, null, null, false, null, null, null, null);
+        for(int i = 0; i < numOfTaxa; i++){
+            Assert.assertEquals("taxa should be orderd by relevance (= score)", taxonUuids[numOfTaxa - i - 1], pager.getRecords().get(i).getEntity().getUuid());
+        }
+        Assert.assertEquals("max score should be equal to the score of the first element", pager.getRecords().get(0).getMaxScore(), pager.getRecords().get(0).getScore(), 0);
+    }
+
+    /**
+     * test for max score and sort by score of hit groups
+     * with all matches per taxon in a multiple TextData elements
+     * see {@link #testFullText_ScoreAndOrder_1()} for the complement
+     * test with matches in a single TextData per taxon
+     *
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    @SuppressWarnings("rawtypes")
+    @Test
+    @DataSet
+    @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
+    public final void testFullText_ScoreAndOrder_2() throws CorruptIndexException, IOException, ParseException {
+
+        int numOfTaxa = 3;
+
+        UUID[] taxonUuids = new UUID[numOfTaxa];
+
+        for(int i = 0; i < numOfTaxa; i++){
+
+            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+            taxon.setTitleCache("Taxon_" + i, true);
+            taxonUuids[i] = taxon.getUuid();
+            taxonService.save(taxon);
+
+            TaxonDescription description = TaxonDescription.NewInstance(taxon);
+            for(int k = 0; k < i; k++){
+                description.addElement(TextData.NewInstance("Rot", Language.DEFAULT(), null));
+            }
+            descriptionService.saveOrUpdate(description);
+        }
+
+        commitAndStartNewTransaction(null);
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "Rot", null, null, null, false, null, null, null, null);
+        for(int i = 0; i < numOfTaxa; i++){
+            Assert.assertEquals("taxa should be orderd by relevance (= score)", taxonUuids[numOfTaxa - i - 1], pager.getRecords().get(i).getEntity().getUuid());
+        }
+        Assert.assertEquals("max score should be equal to the score of the first element", pager.getRecords().get(0).getMaxScore(), pager.getRecords().get(0).getScore(), 0);
+    }
+
+
+    /**
      * @throws CorruptIndexException
      * @throws IOException
      * @throws ParseException
      */
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_Grouping() throws CorruptIndexException, IOException, ParseException {
+    public final void testFullText_Grouping() throws CorruptIndexException, IOException, ParseException {
 
         TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
         Set<String> uniqueRandomStrs = new HashSet<String>(1024);

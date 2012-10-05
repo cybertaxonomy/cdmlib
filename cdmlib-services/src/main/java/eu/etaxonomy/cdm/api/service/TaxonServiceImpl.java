@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
@@ -1145,7 +1146,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments);
 
         // --- execute search
-        TopGroups topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.TAXON, "id");
@@ -1155,7 +1156,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -1212,7 +1213,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = prepareByDescriptionElementFullTextSearch(clazz, queryString, classification, features, languages, highlightFragments);
 
         // --- execute search
-        TopGroups topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
@@ -1223,7 +1224,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
 
     }
@@ -1239,7 +1240,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
         // --- execute search
-        TopGroups topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+        TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
@@ -1251,7 +1252,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
 
     }

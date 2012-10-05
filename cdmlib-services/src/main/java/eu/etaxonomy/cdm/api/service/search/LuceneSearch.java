@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service.search;
 import java.io.IOException;
 import java.util.Collection;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
@@ -20,18 +22,16 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.AllGroupsCollector;
 import org.apache.lucene.search.grouping.FirstPassGroupingCollector;
+import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
 import org.apache.lucene.search.grouping.SecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
@@ -211,7 +211,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopGroups executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroupsWithMaxScore executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
         this.query = luceneQuery;
@@ -239,7 +239,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopGroups executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroupsWithMaxScore executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
 
         if(pageNumber == null || pageNumber < 0){
@@ -257,35 +257,42 @@ public class LuceneSearch {
         int limit = (pageNumber + 1) * pageSize - 1 ;
         logger.debug("start: " + offset + "; limit:" + limit);
 
+        // sorting
         Sort groupSort = null;
         Sort withinGroupSort = Sort.RELEVANCE;
         if(sortFields != null && sortFields.length > 0){
-            Sort sort = new Sort(sortFields);
+            if(sortFields[0] != SortField.FIELD_SCORE){
+                throw new RuntimeException("Fist sort field must be SortField.FIELD_SCORE");
+            }
             groupSort = new Sort(sortFields);
         } else {
             groupSort = Sort.RELEVANCE; // == SortField.FIELD_SCORE !!
         }
 
-        FirstPassGroupingCollector groupingCollector_1 = new FirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
-        getSearcher().search(fullQuery, groupingCollector_1);
-
-        Collection<SearchGroup> topGroups = groupingCollector_1.getTopGroups(offset, true);
+        // perform the search (needs two passes for grouping)
+        // - first pass
+        FirstPassGroupingCollector firstPassCollector = new FirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
+        getSearcher().search(fullQuery, firstPassCollector);
+        Collection<SearchGroup> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
               return null;
         }
-
+        // - second pass
         boolean getScores = true;
         boolean getMaxScores = true;
         boolean fillFields = true;
-        AllGroupsCollector c3 = new AllGroupsCollector(GROUP_BY_FIELD);
-        SecondPassGroupingCollector c2 = new SecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
-        getSearcher().search(fullQuery, MultiCollector.wrap(c2, c3));
+        AllGroupsCollector allGroupsCollector = new AllGroupsCollector(GROUP_BY_FIELD);
+        SecondPassGroupingCollector secondPassCollector = new SecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
+        getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
-        TopGroups groupsResult = c2.getTopGroups(offset);
-        groupsResult = new TopGroups(groupsResult, c3.getGroupCount());
+        TopGroups groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
-        return groupsResult;
+        // get max score from very first result
+        float maxScore = groupsResult.groups[0].maxScore;
+        TopGroupsWithMaxScore topGroupsWithMaxScore = new TopGroupsWithMaxScore(groupsResult, offset, allGroupsCollector.getGroupCount(), maxScore);
+
+        return topGroupsWithMaxScore;
     }
 
     /**
@@ -341,6 +348,39 @@ public class LuceneSearch {
 
     public String[] getHighlightFields() {
         return this.highlightFields;
+    }
+
+    /**
+     * may become obsolete with lucene 4.x when the TopGroups has a field for maxScore.
+     *
+     * @author a.kohlbecker
+     * @date Oct 4, 2012
+     *
+     */
+    public class TopGroupsWithMaxScore{
+        public TopGroups topGroups;
+        public float maxScore = Float.NaN;
+
+        TopGroupsWithMaxScore(TopGroups topGroups, int offset, int totalGroupCount, float maxScore){
+            this.maxScore = maxScore;
+            TopGroups newTopGroups;
+            if(offset > 0){
+                GroupDocs[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
+                for(int i = offset; i < topGroups.groups.length; i++){
+                    newGroupDocs[i - offset] = topGroups.groups[i];
+                }
+                newTopGroups = new TopGroups(
+                            topGroups.groupSort,
+                            topGroups.withinGroupSort,
+                            topGroups.totalHitCount,
+                            topGroups.totalGroupedHitCount,
+                            newGroupDocs);
+            } else {
+                newTopGroups = topGroups;
+            }
+            this.topGroups = new TopGroups(newTopGroups, totalGroupCount);
+        }
+
     }
 
 }

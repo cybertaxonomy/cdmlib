@@ -8,6 +8,7 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.TopGroups;
 
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -36,7 +37,7 @@ public interface ISearchResultBuilder {
      * @throws CorruptIndexException
      * @throws IOException
      */
-    public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroups topGroupsResultSet,
+    public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
             String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
 
 }

@@ -30,6 +30,7 @@ import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.hibernate.search.engine.DocumentBuilder;
 
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -84,7 +85,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * This slows down the query immense or throws TooManyClauses exceptions if
      * too many terms match the wildcard.
      */
-    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroups topGroupsResultSet,
+    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
         List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
@@ -98,7 +99,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             highlighter = new SearchResultHighligther();
         }
 
-        for (GroupDocs groupDoc : topGroupsResultSet.groups) {
+        for (GroupDocs groupDoc : topGroupsResultSet.topGroups.groups) {
 
             String cdmEntityId = null;
             SearchResult<T> searchResult = new SearchResult<T>();
@@ -116,10 +117,10 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             if(isNumber(groupDoc.maxScore)){
                 searchResult.setScore(groupDoc.maxScore);
             }
-            //FIXME get max score
-//            if(isNumber(topGroupsResultSet.getMaxScore())){
-//                searchResult.setMaxScore(topGroupsResultSet.getMaxScore());
-//            }
+
+            if(isNumber(topGroupsResultSet.maxScore)){
+                searchResult.setMaxScore(topGroupsResultSet.maxScore);
+            }
 
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
             //      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented
