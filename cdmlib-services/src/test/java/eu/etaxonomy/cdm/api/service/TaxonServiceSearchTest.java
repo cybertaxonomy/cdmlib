@@ -373,7 +373,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for any TextData", Integer.valueOf(1), pager.getCount());
         Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getEntity().getTitleCache());
-        Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getDoc().get("inDescription.taxon.titleCache"));
+        Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
+        Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
 
 
         pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, null, null, false, null, null, null, null);
@@ -450,7 +451,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         //
         // modify the DescriptionElement
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
-        Document indexDocument = pager.getRecords().get(0).getDoc();
+        Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
+        Document indexDocument = pager.getRecords().get(0).getDocs().iterator().next();
         String[] descriptionElementUuidStr = indexDocument.getValues("uuid");
         String[] inDescriptionUuidStr = indexDocument.getValues("inDescription.uuid");
         // is only one uuid!
@@ -613,7 +615,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByDescriptionElementFullText(CategoricalData.class, "green", null, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", Integer.valueOf(1), pager.getCount());
         Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getEntity().getTitleCache());
-        Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getDoc().get("inDescription.taxon.titleCache"));
+        Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
+        Assert.assertEquals("Abies balsamea sec. ", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
 
 
         //TODO modify the StateData

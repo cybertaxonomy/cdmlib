@@ -31,6 +31,7 @@ public class SearchResult<T extends CdmBase> {
 
     private float maxScore = 0;
 
+    //FIXME move to somewhere else
     private final String ID_FIELD = "id";
 
     /**
@@ -51,16 +52,6 @@ public class SearchResult<T extends CdmBase> {
 
     public void setScore(float score) {
         this.score = score;
-    }
-
-    @Deprecated
-    public Document getDoc() {
-        return docs.values().iterator().next();
-    }
-
-    @Deprecated
-    public void setDoc(Document doc) {
-        addDoc(doc);
     }
 
     public T getEntity() {

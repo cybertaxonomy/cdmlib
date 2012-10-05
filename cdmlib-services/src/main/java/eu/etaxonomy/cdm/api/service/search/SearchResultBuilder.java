@@ -103,7 +103,6 @@ public class SearchResultBuilder implements ISearchResultBuilder {
             String cdmEntityId = null;
             SearchResult<T> searchResult = new SearchResult<T>();
             for(ScoreDoc scoreDoc : groupDoc.scoreDocs) {
-                //FIXME should we group on taxon id ?????
                 Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
                 searchResult.addDoc(document);
 
