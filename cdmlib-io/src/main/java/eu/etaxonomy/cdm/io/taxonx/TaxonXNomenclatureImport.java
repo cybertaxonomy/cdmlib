@@ -303,7 +303,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 							result.add(nameType);
 							success &= doNameTypeDesignation(taxonName, nameType, status/*, isLectoType*/);
 						}else{
-							success = success;
+							//TODO ?
 						}
 					}
 					if (result.size() > 1){
