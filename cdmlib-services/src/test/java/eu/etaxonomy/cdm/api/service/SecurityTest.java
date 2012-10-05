@@ -24,13 +24,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.ReflectionSaltSource;
 import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,7 +42,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -130,6 +126,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     private UsernamePasswordAuthenticationToken tokenForTaxonomist;
 
+    private UsernamePasswordAuthenticationToken tokenForUserManager;
+
 
     @Before
     public void setUp(){
@@ -141,6 +139,15 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             - TAXONBASE.UPDATE
         */
         tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", PASSWORD_ADMIN);
+
+        /* User 'userManager':
+            - ROLE_ADMIN
+            - TAXONBASE.READ
+            - TAXONBASE.CREATE
+            - TAXONBASE.DELETE
+            - TAXONBASE.UPDATE
+        */
+        tokenForUserManager = new UsernamePasswordAuthenticationToken("userManager", PASSWORD_ADMIN);
 
         /* User 'taxonEditor':
             - TAXONBASE.CREATE
@@ -180,7 +187,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     public void testEncryptPassword(){
 
         String password = PASSWORD_ADMIN;
-        User user = User.NewInstance("admin", "");
+        User user = User.NewInstance("userManager", "");
 
         Object salt = this.saltSource.getSalt(user);
         String passwordEncrypted = passwordEncoder.encodePassword(password, salt);
@@ -213,6 +220,63 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         List<User> userList = userService.listByUsername("Editor", MatchMode.ANYWHERE, null, null, 0, null, null);
         Assert.assertTrue("The user list must have elements", userList.size() > 0 );
     }
+
+    @Test
+    @DataSet
+    public void testUserService_CreateDeny(){
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        RuntimeException exception = null;
+        try {
+            userService.createUser(User.NewInstance("new guy", "alkjdsfalkj"));
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = e;
+        } catch (RuntimeException e){
+            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            logger.debug("Expected failure of evaluation.", exception);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNotNull("Must fail here!", exception);
+
+    }
+
+    @Test
+    @DataSet
+    public void testUserService_CreateAllow(){
+
+        authentication = authenticationManager.authenticate(tokenForUserManager);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        RuntimeException exception = null;
+        try {
+            userService.createUser(User.NewInstance("new guy", "alkjdsfalkj"));
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = e;
+        } catch (RuntimeException e){
+            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            logger.error("unexpected failure of evaluation.", exception);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("Must not fail here!", exception);
+
+    }
+
 
     @Test
     @DataSet

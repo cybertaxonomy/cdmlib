@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
  */
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
 public class GrantedAuthorityServiceImpl extends ServiceBase<GrantedAuthorityImpl, IGrantedAuthorityDao> implements IGrantedAuthorityService {
 
     @Override
