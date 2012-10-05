@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -289,18 +290,25 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFindByDescriptionElementFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
-        TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+
         Set<String> uniqueRandomStrs = new HashSet<String>(1024);
         int numOfItems = 100;
         while(uniqueRandomStrs.size() < numOfItems){
             uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
         }
-        for(String rndStr: uniqueRandomStrs){
-            description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
-        }
-        descriptionService.saveOrUpdate(description);
-        commitAndStartNewTransaction(new String[]{"DESCRIPTIONELEMENTBASE"});
 
+        for(String rndStr: uniqueRandomStrs){
+
+            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+            taxon.setTitleCache("Tax" + rndStr, true);
+            taxonService.save(taxon);
+
+            TaxonDescription description = TaxonDescription.NewInstance(taxon);
+            description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
+            descriptionService.saveOrUpdate(description);
+        }
+
+        commitAndStartNewTransaction(new String[]{"TAXONBASE"});
         refreshLuceneIndex();
 
         int pageSize = 10;
@@ -314,6 +322,42 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("last item on last page must exist", pager.getRecords().get(0));
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, false, pageSize, 10, null, null);
         Assert.assertNotNull("last page + 1 must not have any records", pager.getRecords());
+    }
+
+    /**
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    @Test
+    @DataSet
+    public final void testFindByDescriptionElementFullText_Grouping() throws CorruptIndexException, IOException, ParseException {
+
+        TaxonDescription description = (TaxonDescription) descriptionService.find(UUID.fromString(D_ABIES_ALBA_UUID));
+        Set<String> uniqueRandomStrs = new HashSet<String>(1024);
+        int numOfItems = 100;
+        while(uniqueRandomStrs.size() < numOfItems){
+            uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
+        }
+        for(String rndStr: uniqueRandomStrs){
+            description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
+        }
+        descriptionService.saveOrUpdate(description);
+
+        commitAndStartNewTransaction(new String[]{"DESCRIPTIONELEMENTBASE"});
+
+        refreshLuceneIndex();
+
+        int pageSize = 10;
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        boolean highlightFragments = true;
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, highlightFragments, pageSize, null, null, null);
+        Assert.assertEquals("All matches should be grouped in one page", 1, pager.getPagesAvailable().intValue());
+        Map<String, String[]> highlightMap = pager.getRecords().get(0).getFieldHighlightMap();
+        Assert.assertEquals("expecting " + numOfItems+ " highlighted fragments of field 'name'", numOfItems, highlightMap.get("name").length);
+
     }
 
     @SuppressWarnings("rawtypes")

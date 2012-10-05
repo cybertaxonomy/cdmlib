@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -21,6 +22,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
@@ -28,6 +30,11 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.grouping.AllGroupsCollector;
+import org.apache.lucene.search.grouping.FirstPassGroupingCollector;
+import org.apache.lucene.search.grouping.SearchGroup;
+import org.apache.lucene.search.grouping.SecondPassGroupingCollector;
+import org.apache.lucene.search.grouping.TopGroups;
 import org.hibernate.Session;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -49,11 +56,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
+    private static final String GROUP_BY_FIELD = "id";
+
     public static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
     protected Session session;
 
-    protected Searcher searcher;
+    protected IndexSearcher searcher;
 
     private SortField[] sortFields;
 
@@ -143,7 +152,7 @@ public class LuceneSearch {
     public Searcher getSearcher() {
         if(searcher == null){
             searcher = new IndexSearcher(getIndexReader());
-            ((IndexSearcher)searcher).setDefaultFieldSortScoring(true, true);
+            searcher.setDefaultFieldSortScoring(true, true);
         }
         return searcher;
     }
@@ -189,7 +198,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroups executeSearch(String luceneQueryString, Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
         Query luceneQuery = parse(luceneQueryString);
         this.query = luceneQuery;
@@ -217,7 +226,7 @@ public class LuceneSearch {
      * @throws ParseException
      * @throws IOException
      */
-    public TopDocs executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
+    public TopGroups executeSearch(Integer pageSize, Integer pageNumber) throws ParseException, IOException {
 
 
         if(pageNumber == null || pageNumber < 0){
@@ -232,18 +241,44 @@ public class LuceneSearch {
 
         logger.info("final query: " + fullQuery.toString());
 
-        int start = pageNumber * pageSize;
+        int offset = pageNumber * pageSize;
         int limit = (pageNumber + 1) * pageSize - 1 ;
 
-        logger.debug("start: " + start + "; limit:" + limit);
+        logger.debug("start: " + offset + "; limit:" + limit);
 
-        TopDocs topDocs;
+//        TopDocs topDocs = null;
+
+        // sort must be non null default: Sort.RELEVANCE
+        Sort groupSort = null;
+        Sort withinGroupSort = Sort.RELEVANCE;
         if(sortFields != null && sortFields.length > 0){
             Sort sort = new Sort(sortFields);
-            topDocs = getSearcher().search(fullQuery, null, limit, sort);
+            groupSort = new Sort(sortFields);
+//            topDocs = getSearcher().search(fullQuery, null, limit, sort);
         } else {
-            topDocs = getSearcher().search(fullQuery, null, limit);
+            groupSort = Sort.RELEVANCE; // == SortField.FIELD_SCORE !!
+//            topDocs = getSearcher().search(fullQuery, null, limit);
         }
+        FirstPassGroupingCollector groupingCollector_1 = new FirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
+        getSearcher().search(fullQuery, groupingCollector_1);
+
+        Collection<SearchGroup> topGroups = groupingCollector_1.getTopGroups(offset, true);
+
+        if (topGroups == null) {
+              return null;
+        }
+
+        boolean getScores = true;
+        boolean getMaxScores = true;
+        boolean fillFields = true;
+        AllGroupsCollector c3 = new AllGroupsCollector(GROUP_BY_FIELD);
+        SecondPassGroupingCollector c2 = new SecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, limit, getScores, getMaxScores, fillFields);
+        getSearcher().search(fullQuery, MultiCollector.wrap(c2, c3));
+
+        TopGroups groupsResult = c2.getTopGroups(offset);
+        groupsResult = new TopGroups(groupsResult, c3.getGroupCount());
+
+        return groupsResult;
 
 
         //TODO when switched to Lucene 3.x which is included in hibernate 4.x
@@ -253,20 +288,20 @@ public class LuceneSearch {
         //     ALSO READ http://dev.e-taxonomy.eu/trac/ticket/3118 !!!
         //
 //        TopDocs topDocs = hitCollector.topDocs();
-        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
+//        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 
-        int docsAvailableInPage = Math.min(scoreDocs.length - start, pageSize);
-        logger.debug("docsAvailableInPage:" + docsAvailableInPage);
-
-        ScoreDoc[] pagedDocs = new ScoreDoc[docsAvailableInPage];
-        for(int i = 0; i < docsAvailableInPage; i++){
-            pagedDocs[i] = scoreDocs[start + i];
-        }
-        TopDocs pagedTopDocs = new TopDocs(topDocs.totalHits, pagedDocs, topDocs.getMaxScore());
+//        int docsAvailableInPage = Math.min(scoreDocs.length - offset, pageSize);
+//        logger.debug("docsAvailableInPage:" + docsAvailableInPage);
+//
+//        ScoreDoc[] pagedDocs = new ScoreDoc[docsAvailableInPage];
+//        for(int i = 0; i < docsAvailableInPage; i++){
+//            pagedDocs[i] = scoreDocs[offset + i];
+//        }
+//        TopDocs pagedTopDocs = new TopDocs(topDocs.totalHits, pagedDocs, topDocs.getMaxScore());
         //
         /////////////////////////////////////////////
 
-        return pagedTopDocs;
+//        return pagedTopDocs;
     }
 
     /**

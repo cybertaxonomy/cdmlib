@@ -1969,6 +1969,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/Statistics
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsTypeEnum.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
+cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/grouping/AllGroupsCollector.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/grouping/FirstPassGroupingCollector.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/grouping/GroupDocs.java -text

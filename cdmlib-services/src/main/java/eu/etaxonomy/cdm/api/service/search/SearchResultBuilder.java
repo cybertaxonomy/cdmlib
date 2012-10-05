@@ -11,11 +11,12 @@ package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -24,6 +25,9 @@ import org.apache.lucene.search.MultiTermQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.grouping.GroupDocs;
+import org.apache.lucene.search.grouping.TopGroups;
 import org.hibernate.search.engine.DocumentBuilder;
 
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -80,46 +84,85 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * This slows down the query immense or throws TooManyClauses exceptions if
      * too many terms match the wildcard.
      */
-    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
+    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroups topGroupsResultSet,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
         List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
+
+        if(topGroupsResultSet == null){
+            return searchResults;
+        }
 
         SearchResultHighligther highlighter = null;
         if(highlightFields  != null && highlightFields.length > 0){
             highlighter = new SearchResultHighligther();
         }
 
-        for (ScoreDoc scoreDoc : topDocsResultSet.scoreDocs) {
+        for (GroupDocs groupDoc : topGroupsResultSet.groups) {
 
-            Document doc = luceneSearch.getSearcher().doc(scoreDoc.doc);
-            SearchResult<T> searchResult = new SearchResult<T>(doc);
+            String cdmEntityId = null;
+            SearchResult<T> searchResult = new SearchResult<T>();
+            for(ScoreDoc scoreDoc : groupDoc.scoreDocs) {
+                //FIXME should we group on taxon id ?????
+                Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
+                searchResult.addDoc(document);
+
+                if(cdmEntityId == null){
+                    // IMPORTANT: here we assume that all documents refer to the same cdm entity
+                    cdmEntityId = findId(idFields, document);
+                }
+            }
 
             // set score values
-            if(isNumber(scoreDoc.score)){
-                searchResult.setScore(scoreDoc.score);
+            if(isNumber(groupDoc.maxScore)){
+                searchResult.setScore(groupDoc.maxScore);
             }
-            if(isNumber(topDocsResultSet.getMaxScore())){
-                searchResult.setMaxScore(topDocsResultSet.getMaxScore());
-            }
+            //FIXME get max score
+//            if(isNumber(topGroupsResultSet.getMaxScore())){
+//                searchResult.setMaxScore(topGroupsResultSet.getMaxScore());
+//            }
 
             //TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
             //      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented
-            String id = findId(idFields, doc);
-            if(id != null){
-                T entity = dao.load(Integer.valueOf(id), propertyPaths);
+            if(cdmEntityId != null){
+                T entity = dao.load(Integer.valueOf(cdmEntityId), propertyPaths);
                 searchResult.setEntity(entity);
             }
 
+            // add highlight fragments
             if(highlighter != null){
-                Map<String, String[]> fieldFragmentMap = highlighter.getFragmentsWithHighlightedTerms(luceneSearch.getAnalyzer(), query, highlightFields, doc, fragmentNumber, fragmentSize);
+                Map<String, String[]> fieldFragmentMap = null;
+                for(Document doc: searchResult.getDocs()){
+                    fieldFragmentMap = merge(fieldFragmentMap, highlighter.getFragmentsWithHighlightedTerms(luceneSearch.getAnalyzer(), query, highlightFields, doc, fragmentNumber, fragmentSize));
+                }
                 searchResult.setFieldHighlightMap(fieldFragmentMap);
             }
 
+            // finally add the final result to the list
             searchResults.add(searchResult);
         }
 
         return searchResults;
+    }
+
+    /**
+     * @param base
+     * @param add
+     * @return
+     */
+    private Map<String, String[]> merge(Map<String, String[]> base, Map<String, String[]> add) {
+        if(base == null){
+            return add;
+        } else {
+            for(String key : add.keySet()) {
+                if (base.containsKey(key)){
+                    base.put(key, (String[]) ArrayUtils.addAll(base.get(key), add.get(key)));
+                } else {
+                    base.put(key, add.get(key));
+                }
+            }
+            return base;
+        }
     }
 
     /**

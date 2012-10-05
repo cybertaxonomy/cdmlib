@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.grouping.TopGroups;
 
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -26,7 +27,7 @@ public interface ISearchResultBuilder {
      * The firts Cdm enitity id found in the specified <code>idFields</code> of the Lucene documents will be used to load
      * the referenced Cdm entities into the <code>SearchResult</code>s.
      *
-     * @param topDocsResultSet
+     * @param topGroupsResultSet
      * @param highlightFields
      * @param dao
      * @param idFields a map of class names as key and entity id fields as values
@@ -35,7 +36,7 @@ public interface ISearchResultBuilder {
      * @throws CorruptIndexException
      * @throws IOException
      */
-    public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocsResultSet,
+    public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroups topGroupsResultSet,
             String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
 
 }

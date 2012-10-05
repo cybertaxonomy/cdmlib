@@ -9,14 +9,14 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.document.Document;
+import org.hibernate.search.engine.DocumentBuilder;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * TODO class description
@@ -31,7 +31,13 @@ public class SearchResult<T extends CdmBase> {
 
     private float maxScore = 0;
 
-    private Document doc;
+    private final String ID_FIELD = "id";
+
+    /**
+     * key will be a combination of DocumentBuilder.CLASS_FIELDNAME and id field: ID_FIELD
+     */
+    private Map<String, Document> docs = new HashMap<String, Document>();
+
 
     private T entity;
 
@@ -47,13 +53,14 @@ public class SearchResult<T extends CdmBase> {
         this.score = score;
     }
 
+    @Deprecated
     public Document getDoc() {
-        return doc;
+        return docs.values().iterator().next();
     }
 
-
+    @Deprecated
     public void setDoc(Document doc) {
-        this.doc = doc;
+        addDoc(doc);
     }
 
     public T getEntity() {
@@ -77,7 +84,10 @@ public class SearchResult<T extends CdmBase> {
      * @param entity
      */
     public SearchResult(Document doc) {
-        this.doc = doc;
+        addDoc(doc);
+    }
+
+    public SearchResult() {
     }
 
 
@@ -88,6 +98,17 @@ public class SearchResult<T extends CdmBase> {
 
     public void setMaxScore(float maxScore) {
         this.maxScore = maxScore;
+    }
+
+
+    public Collection<Document> getDocs() {
+        return docs.values();
+    }
+
+
+    public void addDoc(Document doc) {
+        String key = doc.getValues(DocumentBuilder.CLASS_FIELDNAME)[0] + "." + doc.getValues(ID_FIELD)[0];
+        this.docs.put(key, doc);
     }
 
 
