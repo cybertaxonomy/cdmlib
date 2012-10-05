@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.view;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,12 @@ import net.sf.json.JsonConfig;
 import net.sf.json.xml.XMLSerializer;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.View;
+
+import eu.etaxonomy.cdm.remote.config.DataSourceProperties;
 
 
 public class JsonView extends BaseView implements View{
@@ -33,6 +39,16 @@ public class JsonView extends BaseView implements View{
     public static final Logger logger = Logger.getLogger(JsonView.class);
 
     private JsonConfig jsonConfig;
+
+    private DataSourceProperties dataSourceProperties;
+
+    public DataSourceProperties getDataSourceProperties() {
+        return dataSourceProperties;
+    }
+
+    public void setDataSourceProperties(DataSourceProperties dataSourceProperties) {
+        this.dataSourceProperties = dataSourceProperties;
+    }
 
     public enum Type{
         JSON("application/json"),
@@ -85,7 +101,7 @@ public class JsonView extends BaseView implements View{
         return type.getContentType();
     }
 
-    public void render(Object entity, PrintWriter writer, String documentContextPath, String jsonpCallback) throws Exception {
+    public void render(Object entity, PrintWriter writer, String contextPath, String jsonpCallback) throws Exception {
 
         if(jsonConfig == null){
             logger.error("The jsonConfig must not be null. It must be set in the applicationContext.");
@@ -124,10 +140,13 @@ public class JsonView extends BaseView implements View{
             }
             String xml = xmlSerializer.write( jsonObj );
             if(type.equals(Type.XML) && xsl != null){
-                if(documentContextPath == null){
-                    documentContextPath = "";
+
+                if(contextPath == null){
+                    contextPath = "";
                 }
-                String replace = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"" + documentContextPath + "/" + xsl + "\"?>\r\n";
+                String basepath = dataSourceProperties.getXslBasePath(contextPath + "/xsl");
+
+                String replace = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"" + basepath + "/" + xsl + "\"?>\r\n";
                 xml = xml.replaceFirst("\r\n", replace);
             }
             writer.append(xml);

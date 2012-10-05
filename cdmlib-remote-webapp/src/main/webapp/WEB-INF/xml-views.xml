@@ -18,34 +18,39 @@
     <!-- entity services -->
     <bean name="**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="type" value="XML" />
-      <!--  <property name="xsl" value="humane.xsl" />  -->
       <property name="jsonConfig" ref="jsonConfig" />
+      <!--  <property name="xsl" value="humane.xsl" />  -->
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
     </bean>
 
 
     <bean name="**/name/* **/name" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="type" value="XML" />
-      <property name="xsl" value="vibrant-name.xsl" />
+      <property name="xsl" value="name.xsl" />
       <property name="jsonConfig" ref="jsonConfig" />
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
     </bean>
 
     <bean name="**/taxon/* **/taxon" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="type" value="XML" />
-      <property name="xsl" value="vibrant-taxon.xsl" />
       <property name="jsonConfig" ref="jsonConfig" />
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
+      <property name="xsl" value="taxon.xsl" />
     </bean>
-    
+
      <bean name="**/name_catalogue/* **/name_catalogue" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="type" value="XML" />
       <property name="jsonConfig" ref="nameCatalogueJsonConfig" />
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
     </bean>
-    
+
 
     <!-- taxonomy service -->
     <bean name="**/classification **/classification/* **/classification/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="type" value="XML" />
         <!--  <property name="xsl" value="humane.xsl" />  -->
         <property name="jsonConfig" ref="jsonConfigClassification" />
+        <property name="dataSourceProperties" ref="dataSourceProperties" />
     </bean>
 
     <!-- portal service -->
@@ -53,6 +58,7 @@
         <property name="type" value="XML" />
         <!--  <property name="xsl" value="humane.xsl" />  -->
         <property name="jsonConfig" ref="jsonConfigPortal" />
+        <property name="dataSourceProperties" ref="dataSourceProperties" />
     </bean>
 
     <!-- management service

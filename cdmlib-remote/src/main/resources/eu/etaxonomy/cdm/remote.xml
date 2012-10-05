@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
@@ -25,8 +25,8 @@
         <entry key="com.sun.xml.bind.namespacePrefixMapper">
           <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
         </entry>
-        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/human.xsl'?&gt;"/>
-        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../oai2.xsl'?&gt;"/>
+        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/human.xsl'?&gt;"/>
+        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/oai2.xsl'?&gt;"/>
       </map>
     </property>
   </bean>
@@ -70,12 +70,12 @@
         <entry key="stripTagsConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.StripTagsConverter"/>
         </entry>
-        
+
       </map>
     </property>
   </bean>
 
-  
+
   <bean name="lsidProxyConverter"
     class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidProxyConverter"/>
 

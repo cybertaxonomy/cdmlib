@@ -22,6 +22,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -100,7 +101,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     }
 
 
+    private String dataSourceId = null;
+
     private DataSource dataSource;
+
+    private DataSourceProperties dataSourceProperties;
 
     private Properties getHibernateProperties() {
         Properties hibernateProperties = webApplicationContext.getBean("jndiHibernateProperties", Properties.class);
@@ -119,8 +124,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
             if(jndiName != null){
                 dataSource = useJndiDataSource(jndiName);
+                dataSourceId = jndiName;
             } else {
                 dataSource = loadDataSourceBean(beanName);
+                dataSourceId = beanName;
             }
         }
 
@@ -162,6 +169,18 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
         }
         return dataSource;
+    }
+
+    @Bean
+    public DataSourceProperties dataSourceProperties(){
+        if(this.dataSourceProperties == null){
+            dataSourceProperties = loadDataSourceProperties();
+            if(dataSourceId == null){
+                dataSource();
+            }
+            dataSourceProperties.setCurrentDataSourceId(dataSourceId);
+        }
+        return dataSourceProperties;
     }
 
 
@@ -209,6 +228,31 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             logger.error("DataSourceBean '" + beanName + "' IS NOT a ComboPooledDataSource");
         }
         return dataSource;
+    }
+
+
+    /**
+     * Loads the <code>dataSourceProperties</code> bean from the cdm bean
+     * definition file.
+     * This file is usually {@code ./.cdmLibrary/datasources.xml}
+     *
+     * @return the DataSourceProperties bean or an empty instance if the bean is not found
+     */
+    private DataSourceProperties loadDataSourceProperties() {
+
+        String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
+        String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
+        logger.info("loading dataSourceProperties from: " + path);
+        FileSystemResource file = new FileSystemResource(path);
+        XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+        DataSourceProperties properties = null;
+        try {
+            properties = beanFactory.getBean("dataSourceProperties", DataSourceProperties.class);
+        } catch (BeansException e) {
+            logger.warn("bean 'dataSourceProperties' not found");
+            properties = new DataSourceProperties();
+        }
+        return properties;
     }
 
     @Bean
