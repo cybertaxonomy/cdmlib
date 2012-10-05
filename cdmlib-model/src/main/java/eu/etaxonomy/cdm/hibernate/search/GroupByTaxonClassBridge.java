@@ -4,8 +4,10 @@ import org.apache.lucene.document.Document;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * The <code>GroupByTaxonClassBridge</code> adds the field
@@ -45,11 +47,17 @@ public class GroupByTaxonClassBridge extends AbstractClassBridge {
      */
     protected Taxon getAssociatedTaxon(Object entity) {
 
-        if (entity instanceof TaxonDescription) {
-            return ((TaxonDescription) entity).getTaxon();
+        if (entity instanceof DescriptionBase<?>) {
+            if (entity instanceof TaxonDescription) {
+                return ((TaxonDescription) entity).getTaxon();
+            }
+            return null;
         }
-        if (entity instanceof Taxon) {
-            return (Taxon)entity;
+        if (entity instanceof TaxonBase){
+            if (entity instanceof Taxon) {
+                return (Taxon)entity;
+            }
+            return null;
         }
 
         throw new RuntimeException("CDM class " + entity.getClass() + " not yet supported");
