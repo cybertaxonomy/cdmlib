@@ -59,6 +59,8 @@ public class LuceneSearch {
 
     private static final String GROUP_BY_FIELD = GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD;
 
+    public final static String ID_FIELD = "id";
+
     public static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
     protected Session session;
@@ -284,29 +286,6 @@ public class LuceneSearch {
         groupsResult = new TopGroups(groupsResult, c3.getGroupCount());
 
         return groupsResult;
-
-
-        //TODO when switched to Lucene 3.x which is included in hibernate 4.x
-        //     use TopDocCollector.topDocs(int start, int howMany);
-        //     since this method might be more memory save than our own implementation
-        //
-        //     ALSO READ http://dev.e-taxonomy.eu/trac/ticket/3118 !!!
-        //
-//        TopDocs topDocs = hitCollector.topDocs();
-//        ScoreDoc[] scoreDocs = topDocs.scoreDocs;
-
-//        int docsAvailableInPage = Math.min(scoreDocs.length - offset, pageSize);
-//        logger.debug("docsAvailableInPage:" + docsAvailableInPage);
-//
-//        ScoreDoc[] pagedDocs = new ScoreDoc[docsAvailableInPage];
-//        for(int i = 0; i < docsAvailableInPage; i++){
-//            pagedDocs[i] = scoreDocs[offset + i];
-//        }
-//        TopDocs pagedTopDocs = new TopDocs(topDocs.totalHits, pagedDocs, topDocs.getMaxScore());
-        //
-        /////////////////////////////////////////////
-
-//        return pagedTopDocs;
     }
 
     /**

@@ -31,8 +31,6 @@ public class SearchResult<T extends CdmBase> {
 
     private float maxScore = 0;
 
-    //FIXME move to somewhere else
-    private final String ID_FIELD = "id";
 
     /**
      * key will be a combination of DocumentBuilder.CLASS_FIELDNAME and id field: ID_FIELD
@@ -70,14 +68,6 @@ public class SearchResult<T extends CdmBase> {
         this.fieldHighlightMap = fieldHighlightMap;
     }
 
-    /**
-     * @param doc
-     * @param entity
-     */
-    public SearchResult(Document doc) {
-        addDoc(doc);
-    }
-
     public SearchResult() {
     }
 
@@ -98,7 +88,7 @@ public class SearchResult<T extends CdmBase> {
 
 
     public void addDoc(Document doc) {
-        String key = doc.getValues(DocumentBuilder.CLASS_FIELDNAME)[0] + "." + doc.getValues(ID_FIELD)[0];
+        String key = doc.getValues(DocumentBuilder.CLASS_FIELDNAME)[0] + "." + doc.getValues(LuceneSearch.ID_FIELD)[0];
         this.docs.put(key, doc);
     }
 
