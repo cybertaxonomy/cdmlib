@@ -65,6 +65,16 @@
        <artifactId>lucene-highlighter</artifactId>
     </dependency>
     <dependency>
+       <!--
+            TODO temporarily added,
+            see http://dev.e-taxonomy.eu/trac/ticket/2031
+            Update Hibernate to latest stable 4.1.1
+       -->
+       <groupId>org.apache.lucene</groupId>
+       <artifactId>lucene-grouping</artifactId>
+       <version>3.2.0</version>
+    </dependency>
+    <dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils-core</artifactId>
         <scope>test</scope>

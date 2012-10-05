@@ -1971,14 +1971,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/Statistics
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/AllGroupsCollector.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/FirstPassGroupingCollector.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/GroupDocs.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/SearchGroup.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/SecondPassGroupingCollector.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/SentinelIntSet.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/TopGroups.java -text
-cdmlib-services/src/main/java/org/apache/lucene/search/grouping/package.html -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services_security.xml -text
