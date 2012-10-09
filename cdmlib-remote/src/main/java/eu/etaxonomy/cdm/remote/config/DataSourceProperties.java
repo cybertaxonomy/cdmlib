@@ -25,6 +25,14 @@ public class DataSourceProperties {
 
     private Map<String, Properties> propsMap;
 
+    public Map<String, Properties> getPropsMap() {
+        return propsMap;
+    }
+
+    public void setPropsMap(Map<String, Properties> propsMap) {
+        this.propsMap = propsMap;
+    }
+
     private static final Properties emptyProperties = new Properties();
 
     public String getCurrentDataSourceId() {
@@ -40,6 +48,9 @@ public class DataSourceProperties {
         this.currentDataSourceId = currentDataSourceId;
     }
 
+    public DataSourceProperties() {
+        super();
+    }
 
     /**
      * returns the XslBasePath for the current data source from the cdm bean definition file
@@ -51,7 +62,9 @@ public class DataSourceProperties {
      */
     public String getXslBasePath(String defaultPath) {
 
-        return currentDataSourceProperties().getProperty(CDMLIB_REMOTE_XSL_BASE_PATH, defaultPath);
+        String xslBasePath = currentDataSourceProperties().getProperty(CDMLIB_REMOTE_XSL_BASE_PATH, defaultPath);
+        xslBasePath = xslBasePath.replaceAll("/$", "");
+        return xslBasePath;
 
     }
 

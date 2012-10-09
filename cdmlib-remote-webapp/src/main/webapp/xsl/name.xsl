@@ -18,7 +18,6 @@
         <HTML>
             <HEAD>
                 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
-                <link type="text/css" rel="stylesheet" media="all" href="../vibrant.css"/>
             </HEAD>
             <BODY>
                 
@@ -57,17 +56,13 @@ $('.source-url').each(function(index) {
 
 </script>                   
                 
-                <a href="../vibrant_names.html" title="Home">
-                    <img src="../acquia_prosper_logo.png" alt="Home"/>
-                </a>
-                <br/>
                 <table cellpadding="1" width="100%">
                     <tr>
                         
                         <td width="5%"/>
                         <td valign="top">
 
-                            <h2>ViBRANT Common Data Model names search</h2>
+                            <h2>Names search</h2>
                             <strong>
                                 <xsl:value-of select="$vReps"/>
                             </strong>

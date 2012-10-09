@@ -438,7 +438,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
             PrintWriter writer = new PrintWriter(tmpFile, "UTF-8");
 
-            xmlView.render(HibernateProxyHelper.deproxy(result), writer, null, null);
+            xmlView.render(HibernateProxyHelper.deproxy(result), writer, null, null, null);
 
             document = builder.build(tmpFile);
 

@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
@@ -101,7 +105,12 @@ public class JsonView extends BaseView implements View{
         return type.getContentType();
     }
 
-    public void render(Object entity, PrintWriter writer, String contextPath, String jsonpCallback) throws Exception {
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.view.BaseView#render(java.lang.Object, java.io.PrintWriter, java.lang.String, java.lang.String)
+     */
+    public void render(Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String contextPath = request.getContextPath();
 
         if(jsonConfig == null){
             logger.error("The jsonConfig must not be null. It must be set in the applicationContext.");
@@ -145,7 +154,6 @@ public class JsonView extends BaseView implements View{
                     contextPath = "";
                 }
                 String basepath = dataSourceProperties.getXslBasePath(contextPath + "/xsl");
-
                 String replace = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"" + basepath + "/" + xsl + "\"?>\r\n";
                 xml = xml.replaceFirst("\r\n", replace);
             }
@@ -177,6 +185,17 @@ public class JsonView extends BaseView implements View{
         PrintWriter writer = response.getWriter();
 
         // read jsonp parameter from query string
+        String jsonpCallback = extractJsonpCallback(request);
+
+        // render
+        render(entity, writer, jsonpCallback, request, response);
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    private String extractJsonpCallback(HttpServletRequest request) {
         String jsonpCallback= null;
         String queryString = request.getQueryString();
         if(queryString != null){
@@ -189,8 +208,6 @@ public class JsonView extends BaseView implements View{
                 }
             }
         }
-
-        // render
-        render(entity, writer, request.getContextPath(), jsonpCallback);
+        return jsonpCallback;
     }
 }

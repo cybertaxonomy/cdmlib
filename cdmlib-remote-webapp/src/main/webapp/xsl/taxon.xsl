@@ -16,7 +16,6 @@
 
             <HEAD>
                 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"/>
-                <link type="text/css" rel="stylesheet" media="all" href="../vibrant.css"/>
             </HEAD>
             <BODY>
                 <script type="text/javascript" language="javascript">
@@ -119,16 +118,12 @@ $('.page-url').each(function(index) {
             </script>
 
 
-                <a href="../vibrant_names.html" title="Home">
-                    <img src="../acquia_prosper_logo.png" alt="Home"/>
-                </a>
-                <br/>
                 <table cellpadding="1" width="100%">
                     <tr>
                         <td width="5%"/>
                         <td valign="top">
 
-                            <h2>ViBRANT index Common Data Model search</h2>
+                            <h2>Taxon search</h2>
                             <br/>
                             <BR/>
                             <H4>Source(s) using this search term: </H4>
@@ -363,11 +358,7 @@ $('.page-url').each(function(index) {
                                         </FORM>
                                     </TD>
                                     <TD>
-                                        <!--FORM>
-                                            <INPUT type="button" value="New Search" onClick="javascript:open('../vibrant_names.html');"></INPUT>
-                                            <button><a href="../vibrant_names.html" title="Home"></a></button>
-                                        </FORM -->
-                                        <FORM METHOD="LINK" ACTION="../vibrant_names.html">
+                                        <FORM METHOD="LINK" ACTION="../names.html">
                                             <INPUT TYPE="submit" VALUE="New Search"/>
                                         </FORM>
                                     </TD>

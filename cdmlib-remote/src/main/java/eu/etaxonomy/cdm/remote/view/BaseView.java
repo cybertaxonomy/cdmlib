@@ -31,9 +31,9 @@ public abstract class BaseView {
      * a webapplication context.
      * @param entity
      * @param writer
-     * @param documentContextPath usually <code>request.getContextPath()</code>
-     *
+     * @param request TODO
+     * @param response TODO
      * @throws Exception
      */
-    public abstract void render (Object entity, PrintWriter writer, String documentContextPath, String jsonpCallback) throws Exception;
+    public abstract void render (Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) throws Exception;
 }
