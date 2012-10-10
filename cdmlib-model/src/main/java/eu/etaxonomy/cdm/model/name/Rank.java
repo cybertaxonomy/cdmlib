@@ -625,7 +625,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		}
 		if (abbrev.trim().equals("")){
 			//handle empty abbrev as unknown
-			abbrev = "oijaämöö";
+			abbrev = "oijaï¿½mï¿½ï¿½";
 		}
 		if (abbrevMap == null){
 			return null;
@@ -663,11 +663,13 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * 			unknown or not yet implemented
 	 * @return  the rank
 	 */
-	public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc,  boolean useUnknown) 
-		throws UnknownCdmTypeException{
+	public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc, boolean useUnknown) 
+			throws UnknownCdmTypeException{
+		
+		
 		
 		if (nc != null && nc.equals(NomenclaturalCode.ICZN)) {
-			if (abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION_ZOOLOGY();
+			if (abbrev != null && abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION_ZOOLOGY();
 			} else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION_ZOOLOGY();
 			}
 		}
