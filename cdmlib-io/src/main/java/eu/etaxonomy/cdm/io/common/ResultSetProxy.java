@@ -58,6 +58,8 @@ public class ResultSetProxy implements ResultSet {
 
 	private Map<String, Object> proxyMap;
 	
+	private Object NULL = new Object();
+	
 // ********************** CONSTRUCTORS ****************************************************/
 	
 	public ResultSetProxy(ResultSet resultSet) {
@@ -760,11 +762,21 @@ public class ResultSetProxy implements ResultSet {
 	 */
 	@Override
 	public String getString(String columnLabel) throws SQLException {
-		if (proxyMap.get(columnLabel) != null){
-			return (String)proxyMap.get(columnLabel);
+		Object mapValue = proxyMap.get(columnLabel);
+		if (mapValue != null){
+			if (mapValue == NULL){
+				return null;
+			}else{
+				return (String)mapValue;
+			}
 		}else{
 			String result = resultSet.getString(columnLabel);
-			proxyMap.put(columnLabel, result);
+			if (result == null){
+				mapValue = NULL;
+			}else{
+				mapValue = result;
+			}
+			proxyMap.put(columnLabel, mapValue);
 			return result;
 		}
 	}
