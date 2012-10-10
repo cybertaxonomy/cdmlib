@@ -666,11 +666,13 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc, boolean useUnknown) 
 			throws UnknownCdmTypeException{
 		
-		
-		
 		if (nc != null && nc.equals(NomenclaturalCode.ICZN)) {
-			if (abbrev != null && abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION_ZOOLOGY();
-			} else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION_ZOOLOGY();
+			if (abbrev != null){
+				if (abbrev.equalsIgnoreCase("sect.")) { 
+					return Rank.SECTION_ZOOLOGY();
+				} else if (abbrev.equalsIgnoreCase("subsect.")) { 
+					return Rank.SUBSECTION_ZOOLOGY();
+				}
 			}
 		}
 		return getRankByAbbreviation(abbrev, useUnknown);
