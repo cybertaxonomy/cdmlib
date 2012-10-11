@@ -18,6 +18,8 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
+ * Base class for updating a schema.
+ * 
  * @author a.mueller
  * @date 10.09.2010
  *
