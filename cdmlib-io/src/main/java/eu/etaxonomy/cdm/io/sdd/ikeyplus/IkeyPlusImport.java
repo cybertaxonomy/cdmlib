@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.StringUtils;
-import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
