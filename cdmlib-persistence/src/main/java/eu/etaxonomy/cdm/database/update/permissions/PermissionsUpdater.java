@@ -1,13 +1,11 @@
 package eu.etaxonomy.cdm.database.update.permissions;
 
 import java.sql.SQLException;
-import java.util.List;
 
-import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.v30_31.LanguageLabelUpdater;
+import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 public class PermissionsUpdater extends SchemaUpdaterStepBase implements
 		ISchemaUpdaterStep {
