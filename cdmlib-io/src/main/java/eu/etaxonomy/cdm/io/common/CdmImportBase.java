@@ -1079,7 +1079,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {
-					String message = "An error occurred when trying to read image meta data: " +  e.getMessage();
+					String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();
 					logger.warn(message);
 					fireWarningEvent(message, "unknown location", 2, 0);
 				}
