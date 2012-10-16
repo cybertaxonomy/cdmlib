@@ -556,7 +556,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         Synonym syn = sr.getSynonym();
                         String uuid = syn.getUuid().toString();
                         String title = syn.getTitleCache();
-                        NonViralName synnvn = (NonViralName) syn.getName();
+                        TaxonNameBase synnvn = (TaxonNameBase) syn.getName();
                         String name = synnvn.getTitleCache();
                         String rank = synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
@@ -571,7 +571,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
                     for (TaxonRelationship tr : trFromSet) {                        
                         String titleTo = tr.getToTaxon().getTitleCache();
-                        NonViralName tonvn = (NonViralName) tr.getToTaxon().getName();
+                        TaxonNameBase tonvn = (TaxonNameBase) tr.getToTaxon().getName();
                         String name = tonvn.getTitleCache();
                         String rank = tonvn.getRank().getTitleCache();
                         String uuid = tr.getToTaxon().getUuid().toString();
@@ -585,7 +585,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
                         String titleFrom = tr.getFromTaxon().getTitleCache();
-                        NonViralName fromnvn = (NonViralName) tr.getToTaxon().getName();
+                        TaxonNameBase fromnvn = (TaxonNameBase) tr.getToTaxon().getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
                         String uuid = tr.getFromTaxon().getUuid().toString();
@@ -597,7 +597,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
-                    NonViralName nvn = (NonViralName) synonym.getName();
+                    TaxonNameBase nvn = (TaxonNameBase) synonym.getName();
                  // update taxon information object with synonym related data
                     ti.setResponseTaxon(synonym.getTitleCache(),
                             nvn.getTitleCache(),
@@ -606,8 +606,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             buildFlagMap(synonym),
                             new TreeMap<String,Map>());
                     // add accepted taxa (if exists) to taxon information object
-
-                    //FIXME commenting out below line in order to allow fixing the bug #3064 (portal synonymy service produces massive response for Crepis tectorum)
+                    
                     Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                     for (SynonymRelationship sr : synRelationships) {
                         Taxon accTaxon = sr.getAcceptedTaxon();                        
@@ -615,8 +614,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         logger.info("acc taxon uuid " + accTaxon.getUuid().toString() + " original hash code : " + System.identityHashCode(accTaxon) + ", name class " + accTaxon.getName().getClass().getName());
                         String title = accTaxon.getTitleCache();
                         logger.info("taxon title cache : " + accTaxon.getTitleCache());
-                        //NonViralName accnvn = CdmBase.deproxy(accTaxon.getName(), NonViralName.class);                        
-                        NonViralName accnvn = (NonViralName)accTaxon.getName();
+                                           
+                        TaxonNameBase accnvn = (TaxonNameBase)accTaxon.getName();
                         String name = accnvn.getTitleCache();
                         String rank = accnvn.getRank().getTitleCache();
                         String status = ACCEPTED_NAME_STATUS;
