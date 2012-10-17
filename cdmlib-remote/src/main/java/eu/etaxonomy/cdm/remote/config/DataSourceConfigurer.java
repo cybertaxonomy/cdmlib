@@ -21,6 +21,8 @@ import java.util.Properties;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -124,7 +126,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
             if(jndiName != null){
                 dataSource = useJndiDataSource(jndiName);
-                dataSourceId = jndiName;
+                dataSourceId = FilenameUtils.getName(jndiName);
             } else {
                 dataSource = loadDataSourceBean(beanName);
                 dataSourceId = beanName;
