@@ -55,80 +55,79 @@ public interface IService<T extends ICdmBase>{
      * Refreshes a given object t using the specified lockmode
      *
      * All bean properties given in the <code>propertyPaths</code> parameter are recursively initialized.
-     * <p>
-     * For detailed description and examples <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
-     *
-     * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
-     * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child
-     * were initialized prior to the refresh).
-     *
-     * @param t
-     * @param lockMode
-     */
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths);
-
-    /**
-     * Returns a count of all entities of type <T>  optionally restricted
-     * to objects belonging to a class that that extends <T>
-     *
-     * @param clazz the class of entities to be counted (can be null to count all entities of type <T>)
-     * @return a count of entities
-     */
-    public int count(Class<? extends T> clazz);
-
-    /**
-     * Delete an existing persistent object
-     *
-     * @param persistentObject the object to be deleted
-     * @return the unique identifier of the deleted entity
-     */
-    public UUID delete(T persistentObject);
-
-    /**
-     * Returns true if an entity of type <T> with a unique identifier matching the
-     * identifier supplied exists in the database, or false if no such entity can be
-     * found.
-     * @param uuid the unique identifier of the entity required
-     * @return an entity of type <T> matching the uuid, or null if that entity does not exist
-     */
-    public boolean exists(UUID uuid);
-
-    /**
-     * Return a list of persisted entities that match the unique identifier
-     * set supplied as an argument
-     *
-     * @param uuidSet the set of unique identifiers of the entities required
-     * @return a list of entities of type <T>
-     */
-    public List<T> find(Set<UUID> uuidSet);
-
-    /**
-     * Return a persisted entity that matches the unique identifier
-     * supplied as an argument, or null if the entity does not exist
-     *
-     * @param uuid the unique identifier of the entity required
-     * @return an entity of type <T>, or null if the entity does not exist
-     */
-    public T find(UUID uuid);
-
-    /**
-     * Return a persisted entity that matches the database identifier
-     * supplied as an argument, or null if the entity does not exist
-     *
-     * @param id the database identifier of the entity required
-     * @return an entity of type <T>, or null if the entity does not exist
-     */
-    public T find(int id);
-
-    /**
-     * Returns a set of persisted entities that match the database identifiers.
-     * Returns an empty list if no identifier matches.
-     * @param idSet
-     * @return
-     */
-    public List<T> findById(Set<Integer> idSet);  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
-
+	 * <p>
+	 * For detailed description and examples <b>please refer to:</b> 
+	 * {@link BeanInitializer#initialize(Object, List)}
+	 * 
+	 * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
+	 * child properties to avoid a HibernateLazyInitializationException (even if the properties of the child 
+	 * were initialized prior to the refresh).
+	 * 
+	 * @param t
+	 * @param lockMode
+	 */
+	public void refresh(T t, LockMode lockMode, List<String> propertyPaths);
+	
+	/**
+	 * Returns a count of all entities of type <T>  optionally restricted
+	 * to objects belonging to a class that that extends <T>
+	 * 
+	 * @param clazz the class of entities to be counted (can be null to count all entities of type <T>)
+	 * @return a count of entities
+	 */
+	public int count(Class<? extends T> clazz);
+	
+	/**
+	 * Delete an existing persistent object
+	 * 
+	 * @param persistentObject the object to be deleted
+	 * @return the unique identifier of the deleted entity
+	 */
+	public UUID delete(T persistentObject);
+	
+	/**
+	 * Returns true if an entity of type <T> with a unique identifier matching the 
+	 * identifier supplied exists in the database, or false if no such entity can be 
+	 * found. 
+	 * @param uuid the unique identifier of the entity required
+	 * @return an entity of type <T> matching the uuid, or null if that entity does not exist
+	 */
+	public boolean exists(UUID uuid);
+	
+	/**
+	 * Return a list of persisted entities that match the unique identifier
+	 * set supplied as an argument
+	 * 
+	 * @param uuidSet the set of unique identifiers of the entities required
+	 * @return a list of entities of type <T>
+	 */
+	public List<T> find(Set<UUID> uuidSet);
+	
+	/**
+	 * Return a persisted entity that matches the unique identifier
+	 * supplied as an argument, or null if the entity does not exist
+	 * 
+	 * @param uuid the unique identifier of the entity required
+	 * @return an entity of type <T>, or null if the entity does not exist
+	 */
+	public T find(UUID uuid);
+	
+	/**
+	 * Return a persisted entity that matches the database identifier
+	 * supplied as an argument, or null if the entity does not exist
+	 * 
+	 * @param id the database identifier of the entity required
+	 * @return an entity of type <T>, or null if the entity does not exist
+	 */
+	public T find(int id);
+	
+	/**
+	 * Returns a set of persisted entities that match the database identifiers.
+	 * Returns an empty list if no identifier matches.
+	 * @param idSet
+	 * @return
+	 */
+	public List<T> findById(Set<Integer> idSet);  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
 
     // FIXME should we expose this method?
     public Session getSession();

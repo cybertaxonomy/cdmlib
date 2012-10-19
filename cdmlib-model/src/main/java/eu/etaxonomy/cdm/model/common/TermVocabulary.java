@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,8 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
+
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 
 /**
@@ -137,7 +140,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return termSourceUri;
 	}
 	public void setTermSourceUri(URI vocabularyUri) {
-		this.termSourceUri = vocabularyUri;
+		this.termSourceUri = vocabularyUri;		
 	}
 	
 	
