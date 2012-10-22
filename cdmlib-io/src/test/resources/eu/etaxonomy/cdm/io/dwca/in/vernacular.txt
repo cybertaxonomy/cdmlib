@@ -1,0 +1,3 @@
+/coreId/@/vernacularName/@/language/
+/1/@/Just a name/@/en/
+/1/@/Ein zweiter Name/@/de/
