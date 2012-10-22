@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
+    "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
+<mappings>
+    <!-- 
+        ===============================================
+         Mapping for OAI-PMH Header and OAI-DublinCore
+        ===============================================
+     -->
+    <configuration>
+        <wildcard>false</wildcard>
+    </configuration>
+    <!-- header -->
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.common.IdentifiableEntity</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.Header</class-b>
+        <field custom-converter-id="lsidConverter">
+            <a>lsid</a>
+            <b>identifier</b>
+        </field>
+        <field custom-converter-id="dateTimeConverter">
+            <a>created</a>
+            <b>datestamp</b>
+        </field>
+        <field custom-converter-id="dateTimeConverter">
+            <a>updated</a>
+            <b>datestamp</b>
+        </field>
+    </mapping>
+     
+    <!-- header -->
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.common.IdentifiableEntity</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc</class-b>
+        <field custom-converter-id="lsidConverter">
+            <a>lsid</a>
+            <b>identifier</b>
+        </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc</class-b>
+        <field>
+            <a>created</a>
+            <b>date</b>
+        </field>
+        <field>
+            <a>updated</a>
+            <b>date</b>
+        </field>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="username">
+            <a>createdBy</a>
+            <b>creator</b>
+        </field>
+        <field>
+            <a>titleCache</a>
+            <b>title</b>
+       </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.reference.Reference</class-a>
+        <class-b map-null="false">eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc</class-b>
+        <field custom-converter-id="timePeriodConverter">
+            <a>datePublished</a>
+            <b>date</b>
+        </field>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="titleCache" >
+            <a>authorTeam</a>
+            <b>creator</b>
+        </field>
+        <field>
+            <a>title</a>
+            <b>title</b>
+       </field>
+       <field>
+            <a>publisher</a>
+            <b>publisher</b>
+       </field>
+       <!--  isPartOf only exists in DC
+       <field custom-converter="identifierConverter">
+            <a>inReference</a>
+            <b>isPartOf</b>
+       </field>
+        -->
+       <field>
+            <a>type</a>
+            <b>type</b>
+       </field>
+        <field>
+            <a>referenceAbstract</a>
+            <b>description</b>
+       </field>
+        <field custom-converter-id="identifierConverter">
+            <a>inReference</a>
+            <b>relation</b>
+       </field>
+       
+    </mapping>
+</mappings>

@@ -60,3 +60,16 @@ cdmlib-print/.project
 cdmlib-print/.settings
 cdmlib-print/target
 cdmlib-print/test
+cdmlib-remote/.classpath
+cdmlib-remote/.project
+cdmlib-remote/.settings
+cdmlib-remote/bin
+cdmlib-remote/eu.etaxonomy.cdm.model.common.DefinedTermBase
+cdmlib-remote/eu.etaxonomy.cdm.model.common.LanguageString
+cdmlib-remote/eu.etaxonomy.cdm.model.description.DescriptionBase
+cdmlib-remote/eu.etaxonomy.cdm.model.description.DescriptionElementBase
+cdmlib-remote/eu.etaxonomy.cdm.model.name.TaxonNameBase
+cdmlib-remote/eu.etaxonomy.cdm.model.taxon.TaxonBase
+cdmlib-remote/null
+cdmlib-remote/secret-accounts.diff
+cdmlib-remote/target
