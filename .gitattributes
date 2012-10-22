@@ -1,5 +1,6 @@
 * text=auto !eol
 cdmlib-io/pom.xml -text
 cdmlib-model/pom.xml -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlib-persistence/pom.xml -text
 cdmlib-services/pom.xml -text
