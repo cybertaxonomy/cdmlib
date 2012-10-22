@@ -1,9 +1,3 @@
-cdmlib-commons/.classpath
-cdmlib-commons/.project
-cdmlib-commons/.settings
-cdmlib-commons/bin
-cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
-cdmlib-commons/target
 cdmlib-ext/.classpath
 cdmlib-ext/.project
 cdmlib-ext/.settings
@@ -92,3 +86,9 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd
 cdmlib-services/target
 cdmlib-services/testTaxonNodeByNameComparator-dump.xml
+cdmlib/cdmlib-commons/.classpath
+cdmlib/cdmlib-commons/.project
+cdmlib/cdmlib-commons/.settings
+cdmlib/cdmlib-commons/bin
+cdmlib/cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
+cdmlib/cdmlib-commons/target
