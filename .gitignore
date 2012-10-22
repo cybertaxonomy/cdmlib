@@ -28,3 +28,14 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml.edited
 cdmlib-io/src/test/resources/log4j.properties
 cdmlib-io/target
+cdmlib-model/.classpath
+cdmlib-model/.externalToolBuilders
+cdmlib-model/.project
+cdmlib-model/.settings
+cdmlib-model/ajcore.*.txt
+cdmlib-model/bin
+cdmlib-model/doc
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ParserProblemRange.java
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java
+cdmlib-model/target
