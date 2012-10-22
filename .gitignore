@@ -54,3 +54,9 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.xsd
 cdmlib-persistence/target
 cdmlib-persistence/test.xml
+cdmlib-print/*odf_output.odf
+cdmlib-print/.classpath
+cdmlib-print/.project
+cdmlib-print/.settings
+cdmlib-print/target
+cdmlib-print/test
