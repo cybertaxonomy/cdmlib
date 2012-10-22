@@ -1,2 +1,3 @@
 * text=auto !eol
 cdmlib-io/pom.xml -text
+cdmlib-model/pom.xml -text
