@@ -1,0 +1,234 @@
+
+                                    --------------------
+                                    Taxon Information API
+                                    --------------------
+
+{CDM Taxonomic Taxon Information API}
+
+	This web service endpoint provides information related a specific taxon uuid.
+	
+	The request parameters are :	
+	
+	* '<<taxonUuid>>' [mandatory] : uuid of the scientific name.
+	
+	* '<<classification>>' [optional, default value = <<<default>>>] 	: this parameter could have the values,
+	
+									* <<<<any of the classification keys present in the database>>>>	: to be used to retrieve the corresponding classification.
+									
+									* <<<default>>>	: to be used to retrieve the first in the alphabetically sorted list of classifications available in the database.
+									
+									* <<<all>>>	: to be used to retrieve all classifications as a ('key','classification') map.
+									
+	The current vocabulary for the available classifications (along with the default value) can be found at {{{../name_catalogue/voc/classification.json} /name_catalogue/voc/classification.json}}
+										
+			
+				
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<taxonUuid>>> : taxon uuid provided as input.
+			
+		* <<<response>>>
+			
+			* <<<taxon>>> : taxon information corresponding to the requested taxon uuid, which includes,
+							
+				* <<<classification>>> : classification of the requested taxon.
+				
+				* <<<flags>>> : list of flags related to the taxon and their values.				
+
+				* <<<name>>> : complete scientific name.
+							
+				* <<<rank>>> : rank of taxon.
+				
+				* <<<taxonStatus>>> : taxonomic status of taxon.
+								
+				* <<<title>>> : complete scientific name of taxon.
+															
+							
+			* <<<relatedTaxa>>> : list of taxa related to the requested taxon, each of which has the following elements,		
+			
+				* <<<name>>> : complete scientific name of related taxon.				
+				
+				* <<<rank>>> : rank of related taxon.									
+				
+				* <<<relationshipType>>> : type of relationship the requested taxon has with the related taxon.
+					
+				* <<<sourceUrl>>> : stable url which represents the related taxon.
+					
+				* <<<taxonStatus>>> : taxonomic status of related taxon.
+				
+				* <<<taxonUuid>>> : uuid of related taxon.
+				
+				* <<<title>>> : complete scientific name of related taxon.
+			
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Example Requests :
+		
+		* Single taxon uuid request : 	
+				
+			* {{{taxonUuidf50e5d94-fa75-45a7-905e-091c1cfb3fa8} /name_catalogue/taxon.json?taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8}}
+			
+		* Single taxon uuid request with all possible classifications :
+		
+			* {{{taxonUuidf50e5d94-fa75-45a7-905e-091c1cfb3fa8classificationall} /name_catalogue/taxon.json?taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8&classification=all}}
+
+			
+		* Multiple taxon uuid request : 
+		
+			* {{{taxonUuidf50e5d94-fa75-45a7-905e-091c1cfb3fa8taxonUuidd2afbe0b-9e14-44d6-acbd-d3fd2e426bfe} /name_catalogue/taxon.json?taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8&taxonUuid=d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe}}
+			
+		* Errors :
+		
+			* {{{taxonUuidf50e5d94-fa75-45a7-905e-091c1cfb3fa7} /name_catalogue/taxon.json?taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa7}}
+		
+
+	Example Responses :
+		
+		* Single taxon uuid request : {taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8} [{{{CDM_Taxonomic_Taxon_Information_API}back}}]
+										
+---
+
+[{
+    "request": {
+        "taxonUuid": "f50e5d94-fa75-45a7-905e-091c1cfb3fa8"
+    },
+    "response": {
+        "relatedTaxa": [],
+        "taxon": {
+            "classification": {
+                "Kingdom": "Animalia",
+                "Phylum": "Chordata",
+                "Class": "Aves",
+                "Order": "Ciconiiformes",
+                "Family": "Threskiornithidae",
+                "Genus": "Platalea",
+                "Species": "Platalea leucorodia Linnaeus, 1758"
+            },
+            "flags": {
+                "doubtful": "false"
+            },
+            "name": "Platalea leucorodia Linnaeus, 1758",
+            "rank": "Species",
+            "taxonStatus": "accepted",
+            "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+        }
+    }
+}]
+
+---		
+
+		* Single taxon uuid request with all possible classifications : {taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8&classification=all} [{{{CDM_Taxonomic_Taxon_Information_API}back}}]
+										
+---
+
+[{
+    "request": {
+        "taxonUuid": "f50e5d94-fa75-45a7-905e-091c1cfb3fa8"
+    },
+    "response": {
+        "relatedTaxa": [],
+        "taxon": {
+            "classification": {
+                "CatalogueOfLife": {
+                    "Kingdom": "Animalia",
+                    "Phylum": "Chordata",
+                    "Class": "Aves",
+                    "Order": "Ciconiiformes",
+                    "Family": "Threskiornithidae",
+                    "Genus": "Platalea",
+                    "Species": "Platalea leucorodia Linnaeus, 1758"
+                }
+            },
+            "flags": {
+                "doubtful": "false"
+            },
+            "name": "Platalea leucorodia Linnaeus, 1758",
+            "rank": "Species",
+            "taxonStatus": "accepted",
+            "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+        }
+    }
+}]
+
+---		
+
+		* Multiple taxon uuid request : {taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8&taxonUuid=d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe} [{{{CDM_Taxonomic_Taxon_Information_API}back}}]
+										
+---
+
+[{
+    "request": {
+        "taxonUuid": "f50e5d94-fa75-45a7-905e-091c1cfb3fa8"
+    },
+    "response": {
+        "relatedTaxa": [],
+        "taxon": {
+            "classification": {
+                "Kingdom": "Animalia",
+                "Phylum": "Chordata",
+                "Class": "Aves",
+                "Order": "Ciconiiformes",
+                "Family": "Threskiornithidae",
+                "Genus": "Platalea",
+                "Species": "Platalea leucorodia Linnaeus, 1758"
+            },
+            "flags": {
+                "doubtful": "false"
+            },
+            "name": "Platalea leucorodia Linnaeus, 1758",
+            "rank": "Species",
+            "taxonStatus": "accepted",
+            "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+        }
+    }
+}, {
+    "request": {
+        "taxonUuid": "d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe"
+    },
+    "response": {
+        "relatedTaxa": [{
+            "name": "Caesalpinia spinosa (Molina) untze",
+            "rank": "Species",
+            "relationshipType": "synonym of",
+            "sourceUrl": "",
+            "taxonStatus": "accepted",
+            "taxonUuid": "b1f44778-45bb-4537-8eb5-d2bd8ce698aa",
+            "title": "Caesalpinia spinosa (Molina) untze sec. ILDIS in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+        }],
+        "taxon": {
+            "classification": {},
+            "flags": {
+                "doubtful": "false"
+            },
+            "name": "Tara spinosa (Molina) ritton & Rose",
+            "rank": "Species",
+            "taxonStatus": "synonym",
+            "title": "Tara spinosa (Molina) ritton & Rose sec. ILDIS in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+        }
+    }
+}]
+
+---					
+			
+		* Error : {taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa7} [{{{CDM_Taxonomic_Taxon_Information_API}back}}]
+										
+---
+
+[{
+    "errorMessage": "No Taxon for given UUID : f50e5d94-fa75-45a7-905e-091c1cfb3fa7"
+}]
+
+---					
+
+	

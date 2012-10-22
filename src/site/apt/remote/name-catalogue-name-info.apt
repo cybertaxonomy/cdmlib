@@ -1,0 +1,134 @@
+
+                                    --------------------
+                                    Name Information API
+                                    --------------------
+                                    
+{CDM Taxonomic Name Information API}
+
+	This web service endpoint provides information related to a specific name uuid.
+	
+	The request parameters are :	
+	
+	* '<<nameUuid>>' [mandatory] : uuid of the scientific name .
+	
+					
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<nameUuid>>> : scientific name uuid provided as input.
+			
+		* <<<response>>>
+		
+			* <<<citation>>> : citation related to requested name uuid.		
+			
+			* <<<name>>> : base scientific name of requested name uuid.
+
+			* <<<nameRelationships>>> : list of relationships that the name corresponding to the requested name uuid has with other names.
+			 
+			* <<<nomenclatureStatus>>> : list of nomenclature status related to the name corresponding to the requested name uuid.			
+											
+			* <<<rank>>> : rank of name corresponding to the requested name uuid.
+			
+			* <<<taxonLsids>>> : list of lsids of taxa related to the name corresponding to the requested name uuid.
+			
+			* <<<taxonUuids>>> : list of uuids of taxa related to the name corresponding to the requested name uuid.
+			
+			* <<<title>>> : complete scientific name.
+			
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Example Requests :
+		
+		* Single name uuid request : 	
+				
+			* {{{nameUuid711f436d-aea6-4b19-b024-c51fad00afd1} /name_catalogue/name.json?nameUuid=711f436d-aea6-4b19-b024-c51fad00afd1}}
+			
+		* Multiple name uuid request : 
+		
+			* {{{nameUuid711f436d-aea6-4b19-b024-c51fad00afd1nameUuid44b0d888-68ae-42e3-b44a-ab66c59e4423} /name_catalogue/name.json?nameUuid=711f436d-aea6-4b19-b024-c51fad00afd1&nameUuid=44b0d888-68ae-42e3-b44a-ab66c59e4423}}
+			
+		* Errors :
+		
+			* {{{nameUuid711f436d-aea6-4b19-b024-c51fad00afd2} /name_catalogue/name.json?nameUuid=711f436d-aea6-4b19-b024-c51fad00afd2}}
+		
+		
+	Example Responses :
+		
+		* Single name uuid request : {nameUuid=711f436d-aea6-4b19-b024-c51fad00afd1} [{{{CDM_Taxonomic_Name_Information_API}back}}]
+										
+---
+
+[{
+    "request": {
+        "nameUuid": "711f436d-aea6-4b19-b024-c51fad00afd1"
+    },
+    "response": {
+        "citation": "",
+        "name": "Platalea leucorodia",
+        "nameRelationships": [],
+        "nomenclatureStatus": [],
+        "rank": "Species",
+        "taxonLsids": ["urn:lsid:catalogueoflife.org:taxon:eff8d3f0-29c1-102b-9a4a-00304854f820:col20120518"],
+        "taxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }
+}]
+
+---		
+
+		* Multiple name uuid request : {nameUuid=711f436d-aea6-4b19-b024-c51fad00afd1&nameUuid=44b0d888-68ae-42e3-b44a-ab66c59e4423} [{{{CDM_Taxonomic_Name_Information_API}back}}]
+										
+---
+
+[{
+    "request": {
+        "nameUuid": "711f436d-aea6-4b19-b024-c51fad00afd1"
+    },
+    "response": {
+        "citation": "",
+        "name": "Platalea leucorodia",
+        "nameRelationships": [],
+        "nomenclatureStatus": [],
+        "rank": "Species",
+        "taxonLsids": ["urn:lsid:catalogueoflife.org:taxon:eff8d3f0-29c1-102b-9a4a-00304854f820:col20120518"],
+        "taxonUuids": ["f50e5d94-fa75-45a7-905e-091c1cfb3fa8"],
+        "title": "Platalea leucorodia Linnaeus, 1758"
+    }
+}, {
+    "request": {
+        "nameUuid": "44b0d888-68ae-42e3-b44a-ab66c59e4423"
+    },
+    "response": {
+        "citation": "",
+        "name": "Tara spinosa",
+        "nameRelationships": [],
+        "nomenclatureStatus": [],
+        "rank": "Species",
+        "taxonLsids": [],
+        "taxonUuids": ["d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe"],
+        "title": "Tara spinosa (Molina) ritton & Rose"
+    }
+}]
+			
+---
+
+		* Errors : {nameUuid=711f436d-aea6-4b19-b024-c51fad00afd2} [{{{CDM_Taxonomic_Name_Information_API}back}}]
+										
+---
+
+[{
+    "errorMessage": "No Name for given UUID : 711f436d-aea6-4b19-b024-c51fad00afd2"
+}]
+
+---		
+	

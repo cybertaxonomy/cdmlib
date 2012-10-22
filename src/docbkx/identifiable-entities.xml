@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="identifiable-entities"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <info>
+    <title>Identifiable Entities</title>
+  </info>
+
+  <caution>
+    <title>Likely to change</title>
+
+    <para>Globally unique identifiers, their use and implementation are still
+    an unresolved topic. The implementaton of objects that are identifiable
+    and resolvable in a global sense must, given an open world, reflect the
+    standards and best practices being used by the community as a whole.
+    Consequently this area of the CDM is likely to change to reflect
+    this.</para>
+  </caution>
+
+  <section>
+    <para>Some entities in the CDM extend
+    <classname>IdentifiableEntity</classname>. In general there is one or two
+    abstract base classes that extend
+    <classname>IdentifiableEntity</classname> in each package. These classes
+    represent important objects that an application might want to share with
+    another application (and hence, publish globally unique identifiers
+    for).</para>
+
+    <para>Current implemetation of the GUID in the CDM is based on the <link
+    xlink:href="http://www.omg.org/cgi-bin/doc?dtc/04-05-01">LSID Resolution
+    Service</link> implementation of the <link
+    xlink:href="http://www.cate-project.org">CATE project</link>. Each
+    <classname>IdentifiableEntity</classname> has an <varname>lsid</varname>
+    property. See the section on <link linkend="guid-resolution">GUID
+    Resolution</link> to see how the CDM Java Library makes it easier for you
+    to manage and publish your data.</para>
+  </section>
+
+  <section>
+    <!--ben: I must admit, I think I prefer formatter to cacheStrategyGenerator, because the purpose of the property seems clearer to me-->
+
+    <title><varname>titleCache</varname> and
+    <varname>cacheStrategyGenerator</varname></title>
+
+    <para>Classes that extend <classname>IdentifiableEntity</classname> have a
+    <varname>titleCache</varname> attribute. This property is used represent
+    the object (for example, in a list of objects or the title for a page
+    displaying metadata about that object). The <varname>titleCache</varname>
+    is also used by default when sorting lists of entities. Applications are
+    free to use other properties or combinations of properties in representing
+    objects and can supply their own implementations of the interfaces in the
+    <package>eu.etaxonomy.cdm.strategy.cache</package> package. If you do wish
+    to supply custom cache strategies, you will need to inject them into your
+    data entities, overriding the default strategy (using something like
+    Spring's <emphasis>spring-managed</emphasis> configuration
+    mechanism).</para>
+  </section>
+
+  <section>
+    <title>Recording Provenance using
+    <varname>originalSource</varname></title>
+
+    <!-- ben: I must admit, I don't really understand how OriginalSource is supposed to work, but then I've not needed to use it. Perhaps someone else has a more clear vision for its use.-->
+  </section>
+
+  <section>
+    <title>Indicating ownership and use using <varname>rights</varname>
+    property</title>
+
+    <para>Identifiable entities are significant enough that users may wish to
+    indicate ownership of the copyright of the thing that they represent, or
+    to provide some statement of a licence under which that data may be used.
+    This information is held in the <varname>rights</varname> element as a
+    series of <classname>Right</classname> objects, each representing a single
+    rights statement.</para>
+
+    <para>Note that the assertation of rights in the data is not the same as
+    access rights in terms of application-level security which is dealt with
+    in a <link linkend="security">later section</link>.</para>
+  </section>
+</chapter>
