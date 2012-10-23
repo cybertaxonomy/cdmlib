@@ -11,7 +11,9 @@
 
     <!--
         ======================================================================
-          default service configuration (same as in services.xml)
+          default service configuration (same as in services_security.xml)
+          this config file should soon be removed since the cdmlib should
+          never be without security
         ======================================================================
      -->
     <context:component-scan base-package="eu/etaxonomy/cdm/persistence">

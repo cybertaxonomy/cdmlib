@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
     "accountNonExpired",
     "credentialsNonExpired",
     "accountNonLocked",
-    "person"    
+    "person"
 })
 @XmlRootElement(name = "User")
 @Entity
@@ -65,219 +65,224 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
-	private static final long serialVersionUID = 6582191171369439163L;
-	private static final Logger logger = Logger.getLogger(User.class);
-	
-	protected User(){
-		super();
-	}
-	
-	public static User NewInstance(String username, String pwd){
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(pwd);
-		
-		user.setAccountNonExpired(true);
-		user.setAccountNonLocked(true);
-		user.setCredentialsNonExpired(true);
-		user.setEnabled(true);
-		
-		return user;
-	}
-	
-	public static User NewInstance(String personTitle, String username, String pwd){
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(pwd);
-		
-		user.setAccountNonExpired(true);
-		user.setAccountNonLocked(true);
-		user.setCredentialsNonExpired(true);
-		user.setEnabled(true);
-		Person userPerson = Person.NewTitledInstance(personTitle);
-		user.setPerson(userPerson);
-		
-		return user;
-	}
-	
-	@XmlElement(name = "Username")
-	@NaturalId
-	@Field(index = Index.UN_TOKENIZED)
-	protected String username;
-	
-	/**
-	 * a salted, MD5 encoded hash of the plaintext password
-	 */
-	@XmlElement(name = "Password")
-	@NotAudited
-	protected String password;
-	
-	@XmlElement(name = "EmailAddress")
-	protected String emailAddress;
-	
-	@XmlElementWrapper(name = "GrantedAuthorities")
-	@XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-	@Cascade(CascadeType.SAVE_UPDATE)
-	@NotAudited
-	protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
-	
-	@XmlElementWrapper(name = "Groups")
-	@XmlElement(name = "Group")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToMany(fetch = FetchType.LAZY)
-	@IndexedEmbedded(depth = 1)
-	@NotAudited
-	protected Set<Group> groups = new HashSet<Group>();
-	
-	@XmlElement(name = "Enabled")
-	protected boolean enabled;
-	
-	@XmlElement(name = "AccountNonExpired")
-	protected boolean accountNonExpired;
+    private static final long serialVersionUID = 6582191171369439163L;
+    private static final Logger logger = Logger.getLogger(User.class);
 
-	@XmlElement(name = "CredentialsNonExpired")
-	protected boolean credentialsNonExpired;
-	
-	@XmlElement(name = "AccountNonLocked")
-	protected boolean accountNonLocked;	
-	
-	@XmlElement(name = "Person")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@OneToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@IndexedEmbedded(depth = 1)
-	protected Person person;
-	
-	@XmlTransient
-	@Transient
-	private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
-	
-	private void initAuthorities() {
-		authorities = new HashSet<GrantedAuthority>();
-		authorities.addAll(grantedAuthorities);
-		for(Group group : groups) {
-			authorities.addAll(group.getGrantedAuthorities());
-		}
-	}
-	
-	@Transient
-	public Collection<GrantedAuthority> getAuthorities() {
-		if(authorities == null || authorities.size() == 0) {
-			initAuthorities();
-		}
-		return authorities;
-	}
+    protected User(){
+        super();
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public static User NewInstance(String username, String pwd){
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(pwd);
 
-	public String getUsername() {
-		return username;
-	}
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
 
-	public boolean isAccountNonExpired() {
-		return accountNonExpired;
-	}
+        return user;
+    }
 
-	public boolean isAccountNonLocked() {
-		return accountNonLocked;
-	}
+    public static User NewInstance(String personTitle, String username, String pwd){
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(pwd);
 
-	public boolean isCredentialsNonExpired() {
-		return credentialsNonExpired;
-	}
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
+        Person userPerson = Person.NewTitledInstance(personTitle);
+        user.setPerson(userPerson);
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+        return user;
+    }
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    @XmlElement(name = "Username")
+    @NaturalId
+    @Field(index = Index.UN_TOKENIZED)
+    protected String username;
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    /**
+     * a salted, MD5 encoded hash of the plaintext password
+     */
+    @XmlElement(name = "Password")
+    @NotAudited
+    protected String password;
 
-	public Set<GrantedAuthority> getGrantedAuthorities() {
-		return grantedAuthorities;
-	}
+    @XmlElement(name = "EmailAddress")
+    protected String emailAddress;
 
-	public void setGrantedAuthorities(Set<GrantedAuthority> grantedAuthorities) {
-		this.grantedAuthorities = grantedAuthorities;
-		initAuthorities();
-	}
+    @XmlElementWrapper(name = "GrantedAuthorities")
+    @XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @NotAudited
+    protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    @XmlElementWrapper(name = "Groups")
+    @XmlElement(name = "Group")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @IndexedEmbedded(depth = 1)
+    @NotAudited
+    protected Set<Group> groups = new HashSet<Group>();
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    @XmlElement(name = "Enabled")
+    protected boolean enabled;
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    @XmlElement(name = "AccountNonExpired")
+    protected boolean accountNonExpired;
 
-	public void setAccountNonExpired(boolean accountNonExpired) {
-		this.accountNonExpired = accountNonExpired;
-	}
+    @XmlElement(name = "CredentialsNonExpired")
+    protected boolean credentialsNonExpired;
 
-	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-		this.credentialsNonExpired = credentialsNonExpired;
-	}
+    @XmlElement(name = "AccountNonLocked")
+    protected boolean accountNonLocked;
 
-	public void setAccountNonLocked(boolean accountNonLocked) {
-		this.accountNonLocked = accountNonLocked;
-	}
-	
-	protected void setGroups(Set<Group> groups) {
-		this.groups = groups;
-		initAuthorities();
-	}
-	
-	public Set<Group> getGroups() {
-		return groups;
-	}
-	
-	
-	public Person getPerson() {
-		return person;
-	}
-	
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-	
+    @XmlElement(name = "Person")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE})
+    @IndexedEmbedded(depth = 1)
+    protected Person person;
+
+    @XmlTransient
+    @Transient
+    private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
+
+    private void initAuthorities() {
+        authorities = new HashSet<GrantedAuthority>();
+        authorities.addAll(grantedAuthorities);
+        for(Group group : groups) {
+            authorities.addAll(group.getGrantedAuthorities());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return returns a {@code Set<GrantedAuthority>} as Collection
+     */
+    @Transient
+    public Collection<GrantedAuthority> getAuthorities() {
+        if(authorities == null || authorities.size() == 0) {
+            initAuthorities();
+        }
+        return authorities;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public boolean isAccountNonExpired() {
+        return accountNonExpired;
+    }
+
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public Set<GrantedAuthority> getGrantedAuthorities() {
+        return grantedAuthorities;
+    }
+
+    public void setGrantedAuthorities(Set<GrantedAuthority> grantedAuthorities) {
+        this.grantedAuthorities = grantedAuthorities;
+        initAuthorities();
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    protected void setGroups(Set<Group> groups) {
+        this.groups = groups;
+        initAuthorities();
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
-	 * Clones <i>this</i> User. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> User.
-	 * The corresponding person is cloned. 
-	 * 
-	 * @see eu.etaxonomy.cdm.model.common.CdmBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone() {
-		try{
-			User result = (User)super.clone();
-			result.setPerson((Person)this.person.clone());
-			return result;
-		} catch (CloneNotSupportedException e){
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
-		}
-		
-		
-	}
+
+    /**
+     * Clones <i>this</i> User. This is a shortcut that enables to create
+     * a new instance that differs only slightly from <i>this</i> User.
+     * The corresponding person is cloned.
+     *
+     * @see eu.etaxonomy.cdm.model.common.CdmBase#clone()
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() {
+        try{
+            User result = (User)super.clone();
+            result.setPerson((Person)this.person.clone());
+            return result;
+        } catch (CloneNotSupportedException e){
+            logger.warn("Object does not implement cloneable");
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
 }

@@ -79,6 +79,10 @@
         </property>
     </bean>
 
+
+    <!-- equips a new and empty database with the initial set of meta data and admin user   -->
+    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
+
     <!-- security  -->
     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
     <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
