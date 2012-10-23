@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * <li>cdm metadata</li>
  * <ul>
  * <p>
- * runAsAuthenticationProvider and runAsManger must be set in a security application context, eg:
+ * The <code>runAsAuthenticationProvider</code> must be set in a security application context, eg:
  * {@code
     <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter">
         <property name="runAsAuthenticationProvider" ref="runAsAuthenticationProvider"/>
@@ -203,6 +203,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
                 (authentication != null ? authentication.getClass() : AnonymousAuthenticationToken.class));
 
         Authentication runAsAuthentication = runAsAuthenticationProvider.authenticate(adminToken);
+        SecurityContextHolder.getContext().setAuthentication(runAsAuthentication);
 
         logger.debug("switched to run-as authentication: " + runAsAuthentication);
     }
