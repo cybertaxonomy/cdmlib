@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
  *
  *
  */
-public class Role implements GrantedAuthority {
+public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 
     private static final long serialVersionUID = -2244354513663448504L;
 
@@ -69,6 +69,7 @@ public class Role implements GrantedAuthority {
      * @return a fresh <b>not persisted instance</b> of {@link GrantedAuthorityImpl}
      *         for the Role.
      */
+    @Override
     public GrantedAuthorityImpl asNewGrantedAuthority() {
         GrantedAuthorityImpl grantedAuthority;
         grantedAuthority = GrantedAuthorityImpl.NewInstance();

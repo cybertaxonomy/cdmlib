@@ -1329,6 +1329,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permissi
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmAuthority.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionClass.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/CdmPermissionEvaluator.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/IGrantedAuthorityConverter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/Operation.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/Role.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/CdmPermissionVoter.java -text

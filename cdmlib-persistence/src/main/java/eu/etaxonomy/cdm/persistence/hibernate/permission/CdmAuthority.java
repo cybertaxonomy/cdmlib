@@ -1,4 +1,11 @@
-
+/**
+* Copyright (C) 2012 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.EnumSet;
@@ -50,7 +57,7 @@ import sun.security.provider.PolicyParser.ParsingException;
  *
  * @author k.luther
  */
-public class CdmAuthority implements GrantedAuthority, ConfigAttribute {
+public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGrantedAuthorityConverter {
 
     private static final long serialVersionUID = 1L;
 
@@ -214,15 +221,15 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute {
      * @param authority
      * @throws ParsingException
      */
-    public static CdmAuthority from(GrantedAuthority authority) throws ParsingException {
+    public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws ParsingException {
         return new CdmAuthority(authority.getAuthority());
     }
 
-    /**
-     * @return
-     * @throws ParsingException
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.IGrantedAuthorityConverter#asNewGrantedAuthority()
      */
-    public GrantedAuthorityImpl toGrantedAuthorityImpl() throws ParsingException {
+    @Override
+    public GrantedAuthorityImpl asNewGrantedAuthority() throws ParsingException {
         GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance();
         grantedAuthority.setAuthority(getAuthority());
         return grantedAuthority;

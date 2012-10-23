@@ -103,7 +103,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
 
                 CdmAuthority auth;
                 try {
-                    auth = CdmAuthority.from(authority);
+                    auth = CdmAuthority.fromGrantedAuthority(authority);
                 } catch (ParsingException e) {
                     logger.debug("skipping " + authority.getAuthority() + " due to ParsingException");
                     continue;
