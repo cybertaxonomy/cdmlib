@@ -10,9 +10,12 @@
 package eu.etaxonomy.cdm.api.application;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.security.RunAs;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.security.access.intercept.RunAsManager;
+import org.springframework.security.access.intercept.RunAsManagerImpl;
+import org.springframework.security.access.intercept.RunAsUserToken;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.SaltSource;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -53,11 +70,17 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @date Oct 12, 2012
  *
  */
+@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
 public class FirstDataInserter implements ApplicationListener<ContextRefreshedEvent> {
 
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
     private static final long serialVersionUID = -4738245032655597608L;
+
+    /**
+     * must match the key in eu/etaxonomy/cdm/services_security.xml
+     */
+    private static final String RUN_AS_KEY = "TtlCx3pgKC4l";
 
     @Autowired
     private ICommonService commonService;
@@ -68,6 +91,12 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private IGrantedAuthorityService grantedAuthorityService;
 
+    @Autowired
+    private AuthenticationProvider runAsAuthenticationProvider;
+
+    @Autowired
+    private RunAsManagerImpl runAsManager;
+
     protected PlatformTransactionManager transactionManager;
 
     protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
@@ -75,6 +104,8 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     private IProgressMonitor progressMonitor = null;
 
     private boolean firstDataInserted = false;
+
+    private Authentication authentication;
 
     private ApplicationContext applicationContext;
 
@@ -102,23 +133,65 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
             progressMonitor = new NullProgressMonitor();
         }
         applicationContext = event.getApplicationContext();
-        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
         insertFirstData();
-        transactionManager.commit(txStatus);
     }
 
 
     private void insertFirstData() {
+
         // this ApplicationListener may be called multiple times in nested
         // application contexts like in web applications
         if(!firstDataInserted){
+
+            runAsAuthentication();
+
+            TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+
             logger.info("inserting first data");
             checkAdminUser();
             checkMetadata();
             firstDataInserted = true;
+
+            transactionManager.commit(txStatus);
+
+            restoreAuthentication();
+
         } else {
             logger.debug("insertFirstData() already executed before, skipping this time");
         }
+    }
+
+    /**
+     * needed to work around the broken @RunAs("ROLE_ADMIN") which
+     * seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
+     */
+    private void restoreAuthentication() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+        logger.debug("last authentication restored: " + (authentication != null ? authentication : "NULL"));
+    }
+
+    /**
+     *
+     * needed to work around the broken @RunAs("ROLE_ADMIN") which seems to be
+     * broken in spring see: https://jira.springsource.org/browse/SEC-1671
+     */
+    private SecurityContext runAsAuthentication() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        authentication = securityContext.getAuthentication();
+
+        RunAsUserToken adminToken = new RunAsUserToken(
+                RUN_AS_KEY,
+                "system-admin",
+                null,
+                new Role[]{Role.ROLE_ADMIN},
+                (authentication != null ? authentication.getClass() : AnonymousAuthenticationToken.class));
+
+        Authentication runAsAuthentication = runAsAuthenticationProvider.authenticate(adminToken);
+
+        logger.debug("switched to run-as authentication: " + runAsAuthentication);
+
+        return securityContext;
     }
 
 
@@ -157,6 +230,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     }
 
     private User createAdminUser(){
+
         User admin = User.NewInstance("admin", "00000");
         userService.save(admin);
         logger.info("user 'admin' created.");

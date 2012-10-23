@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
@@ -58,9 +59,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
         if (grantedAuthority == null) {
             grantedAuthority = asNewGrantedAuthority();
         } else {
-            if(!authority.equals(grantedAuthority.getAuthority())){
-                throw new RuntimeException("the persisted Authority with uuid " + uuid + " is not '" + authority + "");
-            }
+            Assert.isTrue(authority.equals(grantedAuthority.getAuthority()), "the persisted Authority with uuid " + uuid + " is not '" + authority + "'" );
         }
         return grantedAuthority;
     }
@@ -79,15 +78,18 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     }
 
     public static Role fromGrantedAuthority(GrantedAuthorityImpl grantedAuthority){
-        if(!grantedAuthority.getAuthority().matches("^" + ROLE_PREFIX +"\\w*$")){
-            throw new RuntimeException("invalid role prefix of authority " + grantedAuthority.getAuthority() + "[" + grantedAuthority.getUuid() + "]");
-        }
+        Assert.isTrue(grantedAuthority.getAuthority().matches("^" + ROLE_PREFIX +"\\w*$"), "invalid role prefix of authority " + grantedAuthority.getAuthority() + "[" + grantedAuthority.getUuid() + "]");
         return new Role(grantedAuthority.getUuid(), grantedAuthority.getAuthority());
     }
 
     @Override
     public String getAuthority() {
         return authority;
+    }
+
+    @Override
+    public String toString(){
+        return getAuthority();
     }
 
 }
