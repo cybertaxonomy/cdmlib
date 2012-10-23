@@ -234,7 +234,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             userService.createUser(User.NewInstance("new guy", "alkjdsfalkj"));
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
-            logger.error("Unexpected failure of evaluation.", e);
+            logger.debug("Expected failure of evaluation.", e);
             exception = e;
         } catch (RuntimeException e){
             exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
@@ -690,6 +690,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
+            logger.error("RuntimeException caught");
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException

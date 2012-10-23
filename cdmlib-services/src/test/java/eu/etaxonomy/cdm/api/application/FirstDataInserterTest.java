@@ -33,7 +33,7 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     public void testBlankDB(){
 
         commitAndStartNewTransaction(null);
-        printDataSet(System.err, tableNames);
+//        printDataSet(System.err, tableNames);
     }
 
 }

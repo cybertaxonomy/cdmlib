@@ -2,8 +2,6 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
@@ -32,6 +30,11 @@ public class Role implements GrantedAuthority {
     public final static Role ROLE_USER_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_USER_MANAGER");
 
     private UUID uuid;
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
     private String authority;
 
     public Role(UUID uuid, String authority) {
@@ -55,8 +58,9 @@ public class Role implements GrantedAuthority {
         if (grantedAuthority == null) {
             grantedAuthority = asNewGrantedAuthority();
         } else {
-            // perform consistency check
-            Assert.assertEquals(authority, grantedAuthority.getAuthority());
+            if(!authority.equals(grantedAuthority.getAuthority())){
+                throw new RuntimeException("the persisted Authority with uuid " + uuid + " is not '" + authority + "");
+            }
         }
         return grantedAuthority;
     }
@@ -74,7 +78,9 @@ public class Role implements GrantedAuthority {
     }
 
     public static Role fromGrantedAuthority(GrantedAuthorityImpl grantedAuthority){
-        Assert.assertTrue("invalid authority " + grantedAuthority.getAuthority() + " for Role", grantedAuthority.getAuthority().matches("^" + ROLE_PREFIX +"\\w*$"));
+        if(!grantedAuthority.getAuthority().matches("^" + ROLE_PREFIX +"\\w*$")){
+            throw new RuntimeException("invalid role prefix of authority " + grantedAuthority.getAuthority() + "[" + grantedAuthority.getUuid() + "]");
+        }
         return new Role(grantedAuthority.getUuid(), grantedAuthority.getAuthority());
     }
 

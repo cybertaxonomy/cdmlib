@@ -9,12 +9,14 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
@@ -25,12 +27,15 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.ICommonService;
+import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * The <code>FirstDataInserter</code> is responsible for equipping a new and empty database with
@@ -60,6 +65,9 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private IGrantedAuthorityService grantedAuthorityService;
+
     protected PlatformTransactionManager transactionManager;
 
     protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
@@ -67,6 +75,8 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     private IProgressMonitor progressMonitor = null;
 
     private boolean firstDataInserted = false;
+
+    private ApplicationContext applicationContext;
 
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
@@ -91,6 +101,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         } else {
             progressMonitor = new NullProgressMonitor();
         }
+        applicationContext = event.getApplicationContext();
         TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
         insertFirstData();
         transactionManager.commit(txStatus);
@@ -120,14 +131,29 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     }
 
     private void checkAdminUser() {
-        // the first user ever created is admin and has the id 10
-        User admin = userService.find(10);
+        User admin = findFirstUser();
+
         if (admin == null){
             progressMonitor.subTask("Creating Admin User");
             admin = createAdminUser();
+        } else {
+            logger.info("Assuming first user '" + admin + "' is admin.");
         }
+
         checkAdminRole(admin);
         progressMonitor.worked(1);
+    }
+
+    /**
+     * @return
+     */
+    private User findFirstUser() {
+        User firstUser = null;
+        List<User> users = userService.list(null, 1, null, Arrays.asList(new OrderHint[]{new OrderHint("id", OrderHint.SortOrder.ASCENDING)}), null);
+        if(users.size() > 0){
+            firstUser = users.get(0);
+        }
+        return firstUser;
     }
 
     private User createAdminUser(){
@@ -140,7 +166,9 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     private void checkAdminRole(User admin) {
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
+
         authorities = (Set<GrantedAuthority>) admin.getAuthorities();
+
         boolean hasRoleAdmin = false;
         for(GrantedAuthority grau : authorities){
             if(grau.getAuthority().contentEquals(Role.ROLE_ADMIN.getAuthority())){
@@ -150,12 +178,23 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         }
 
         if(!hasRoleAdmin){
-            authorities.add(Role.ROLE_ADMIN.asNewGrantedAuthority());
+            authorities.add(getRoleAdmin());
             admin.setGrantedAuthorities(authorities);
             progressMonitor.subTask("Creating Admins Role");
             userService.saveOrUpdate(admin);
             logger.info("Role " + Role.ROLE_ADMIN.getAuthority() + " for user 'admin' created and added");
         }
+    }
+
+    /**
+     * @return
+     */
+    private GrantedAuthorityImpl getRoleAdmin() {
+        GrantedAuthorityImpl role_admin = grantedAuthorityService.find(Role.ROLE_ADMIN.getUuid());
+        if(role_admin == null){
+            role_admin = Role.ROLE_ADMIN.asNewGrantedAuthority();
+        }
+        return role_admin;
     }
 
     private void createMetadata(){
