@@ -140,7 +140,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
         //if user has administrator rights return true;
          for (GrantedAuthority authority: authentication.getAuthorities()){
-             if (authority.getAuthority().equals(Role.ROLE_ADMIN.name())){
+             if (authority.getAuthority().equals(Role.ROLE_ADMIN.getAuthority())){
                  logger.debug("ROLE_ADMIN found => true");
                  return true;
              }

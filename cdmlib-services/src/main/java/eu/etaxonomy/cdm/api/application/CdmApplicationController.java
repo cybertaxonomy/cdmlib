@@ -270,7 +270,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     protected void createAdminUser(){
 
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-        authorities.add(Role.ROLE_ADMIN.asNewGrantedAuthority());
+        authorities.add(Role.ROLE_ADMIN);
 
         User firstUser = User.NewInstance("admin", "00000");
         firstUser.setGrantedAuthorities(authorities);
