@@ -65,12 +65,21 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * <li>User 'admin' and role 'ROLE_ADMIN'</li>
  * <li>cdm metadata</li>
  * <ul>
+ * <p>
+ * runAsAuthenticationProvider and runAsManger must be set in a security application context, eg:
+ * {@code
+    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter">
+        <property name="runAsAuthenticationProvider" ref="runAsAuthenticationProvider"/>
+    </bean>
+    }
+ *
+ *
  *
  * @author a.kohlbecker
  * @date Oct 12, 2012
  *
  */
-@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
+//@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
 public class FirstDataInserter implements ApplicationListener<ContextRefreshedEvent> {
 
     public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
@@ -91,11 +100,8 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
     @Autowired
     private IGrantedAuthorityService grantedAuthorityService;
 
-    @Autowired
-    private AuthenticationProvider runAsAuthenticationProvider;
-
-    @Autowired
-    private RunAsManagerImpl runAsManager;
+    // not to be autowired, since the FirstdataInserter must be usable without security
+    private AuthenticationProvider runAsAuthenticationProvider = null;
 
     protected PlatformTransactionManager transactionManager;
 
@@ -133,6 +139,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
             progressMonitor = new NullProgressMonitor();
         }
         applicationContext = event.getApplicationContext();
+
         insertFirstData();
     }
 
@@ -166,6 +173,9 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
      * seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
      */
     private void restoreAuthentication() {
+        if(runAsAuthenticationProvider == null){
+            logger.debug("no RunAsAuthenticationProvider set, thus nothing to restore");
+        }
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
         logger.debug("last authentication restored: " + (authentication != null ? authentication : "NULL"));
@@ -176,7 +186,12 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
      * needed to work around the broken @RunAs("ROLE_ADMIN") which seems to be
      * broken in spring see: https://jira.springsource.org/browse/SEC-1671
      */
-    private SecurityContext runAsAuthentication() {
+    private void runAsAuthentication() {
+        if(runAsAuthenticationProvider == null){
+            logger.debug("no RunAsAuthenticationProvider set, skipping run-as authentication");
+            return;
+        }
+
         SecurityContext securityContext = SecurityContextHolder.getContext();
         authentication = securityContext.getAuthentication();
 
@@ -190,8 +205,6 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         Authentication runAsAuthentication = runAsAuthenticationProvider.authenticate(adminToken);
 
         logger.debug("switched to run-as authentication: " + runAsAuthentication);
-
-        return securityContext;
     }
 
 
@@ -276,4 +289,20 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         commonService.saveAllMetaData(metaData);
         logger.info("Metadata created.");
     }
+
+    /**
+     * @return the runAsAuthenticationProvider
+     */
+    public AuthenticationProvider getRunAsAuthenticationProvider() {
+        return runAsAuthenticationProvider;
+    }
+
+    /**
+     * @param runAsAuthenticationProvider the runAsAuthenticationProvider to set
+     */
+    public void setRunAsAuthenticationProvider(AuthenticationProvider runAsAuthenticationProvider) {
+        this.runAsAuthenticationProvider = runAsAuthenticationProvider;
+    }
+
+
 }

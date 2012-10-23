@@ -28,7 +28,4 @@
   <!-- enable the configuration of transactional behavior based on annotations -->
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  <!-- equips a new and empty database with the initial set of meta data and admin user   -->
-  <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
-
 </beans>

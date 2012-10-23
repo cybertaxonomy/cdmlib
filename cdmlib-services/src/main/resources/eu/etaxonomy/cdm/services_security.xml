@@ -82,5 +82,9 @@
       <property name="key" value="TtlCx3pgKC4l"/>
     </bean>
 
+    <!-- equips a new and empty database with the initial set of meta data and admin user   -->
+    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter">
+        <property name="runAsAuthenticationProvider" ref="runAsAuthenticationProvider"/>
+    </bean>
 
 </beans>
