@@ -248,11 +248,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         progressMonitor.worked(1);
 
         //initialize user and metaData for new databases
-        int userCount = getUserService().count(User.class);
-        if (userCount == 0 ){
-            progressMonitor.subTask("Creating Admin User");
-            createAdminUser();
-        }
+        //FIXME this is not executed by the webapplication context and by unitils, so it is untestable!
+        //       hook this check during app context lifecycle by  Lifecycle Events like the ContextStartedEvent ?
+        checkAdminUser();
+
         progressMonitor.worked(1);
 
         //CDM Meta Data
@@ -267,16 +266,29 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         return true;
     }
 
-    protected void createAdminUser(){
 
+    private void checkAdminUser() {
+        // the first user ever created is admin and has the id 10
+        User admin = getUserService().find(10);
+        if (admin == null){
+            progressMonitor.subTask("Creating Admin User");
+            admin = createAdminUser();
+        }
+        checkAdminRole(admin);
+    }
+
+    protected User createAdminUser(){
+        User admin = User.NewInstance("admin", "00000");
+        getUserService().save(admin);
+        logger.info("Admin user created.");
+        return admin;
+    }
+
+    private void checkAdminRole(User admin) {
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
         authorities.add(Role.ROLE_ADMIN);
-
-        User firstUser = User.NewInstance("admin", "00000");
-        firstUser.setGrantedAuthorities(authorities);
-        getUserService().save(firstUser);
-
-        logger.info("Admin user created.");
+        admin.setGrantedAuthorities(authorities);
+        getUserService().save(admin);
     }
 
     protected void createMetadata(){
