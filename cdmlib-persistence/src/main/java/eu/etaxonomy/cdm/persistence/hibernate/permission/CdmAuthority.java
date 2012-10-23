@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 
 import sun.security.provider.PolicyParser.ParsingException;
 
@@ -48,7 +50,7 @@ import sun.security.provider.PolicyParser.ParsingException;
  *
  * @author k.luther
  */
-public class CdmAuthority implements ConfigAttribute {
+public class CdmAuthority implements GrantedAuthority, ConfigAttribute {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +59,7 @@ public class CdmAuthority implements ConfigAttribute {
     CdmPermissionClass permissionClass;
     String property;
     EnumSet<CRUD> operation;
-     UUID targetUuid;
+    UUID targetUuid;
 
     public CdmAuthority(CdmBase targetDomainObject, EnumSet<CRUD> operation, UUID uuid){
         this.permissionClass = CdmPermissionClass.getValueOf(targetDomainObject);
@@ -81,17 +83,7 @@ public class CdmAuthority implements ConfigAttribute {
         this.targetUuid = uuid;
     }
 
-    /**
-     * Constructs a new CdmAuthority by parsing the contents of an
-     * authority string. For details on the syntax please refer to the class
-     * documentation above.
-     *
-     * TODO usually one would not use a constructor but a valueOf(String) or fromSting() method for this
-     *
-     * @param authority
-     * @throws ParsingException
-     */
-    public CdmAuthority (String authority) throws ParsingException{
+    private CdmAuthority (String authority) throws ParsingException{
 
         String[] tokens = parse(authority);
         // className must never be null
@@ -179,6 +171,25 @@ public class CdmAuthority implements ConfigAttribute {
         return tokens;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * same as {@link #toString()} and  {@link #getAttribute()}
+     */
+    @Override
+    public String getAuthority() {
+        return toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * same as {@link #toString()} and  {@link #getAuthority()}
+     */
+    @Override
+    public String getAttribute() {
+        return toString();
+    }
 
     @Override
     public String toString() {
@@ -194,9 +205,29 @@ public class CdmAuthority implements ConfigAttribute {
         return sb.toString() ;
     }
 
-    @Override
-    public String getAttribute() {
-        return toString();
+    /**
+     * Constructs a new CdmAuthority by parsing the authority string.
+     * For details on the syntax please refer to the class
+     * documentation above.
+     *
+     *
+     * @param authority
+     * @throws ParsingException
+     */
+    public static CdmAuthority from(GrantedAuthority authority) throws ParsingException {
+        return new CdmAuthority(authority.getAuthority());
     }
+
+    /**
+     * @return
+     * @throws ParsingException
+     */
+    public GrantedAuthorityImpl toGrantedAuthorityImpl() throws ParsingException {
+        GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance();
+        grantedAuthority.setAuthority(getAuthority());
+        return grantedAuthority;
+    }
+
+
 
 }
