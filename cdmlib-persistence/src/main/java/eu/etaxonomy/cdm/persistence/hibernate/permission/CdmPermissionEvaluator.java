@@ -69,6 +69,10 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         CdmAuthority evalPermission;
         EnumSet<CRUD> requiredOperation;
 
+        if(authentication == null) {
+            return false;
+        }
+
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
             for(GrantedAuthority ga : authentication.getAuthorities()){
