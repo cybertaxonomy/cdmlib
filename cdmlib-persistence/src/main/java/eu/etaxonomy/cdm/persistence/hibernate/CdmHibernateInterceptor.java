@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.Serializable;
 import java.util.UUID;
-	
+
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
@@ -29,24 +29,24 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 public class CdmHibernateInterceptor extends EmptyInterceptor {
         private static final long serialVersionUID = 2536017420460052854L;
         private static final Logger logger = Logger.getLogger(CdmHibernateInterceptor.class);
-       
+
         //FIXME problem is circular dependency (see VocabularyStoreImpl.staticInitialized
 //      @Autowired
 //      VocabularyStoreImpl vocabularyStore;
-        
+
         private int updates;
         private int creates;
         private int loads;
 
-	public void onDelete(Object entity,
-	       Serializable id,
-	       Object[] state,
-	       String[] propertyNames,
-	       Type[] types) {
-		// do nothing
-	}
-	       
-	public boolean onFlushDirty(Object entity,
+    public void onDelete(Object entity,
+           Serializable id,
+           Object[] state,
+           String[] propertyNames,
+           Type[] types) {
+        // do nothing
+    }
+
+    public boolean onFlushDirty(Object entity,
             Serializable id,
             Object[] currentState,
             Object[] previousState,
@@ -57,22 +57,22 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
         if ( entity instanceof CdmBase ) {
                 updates++;
                 //result &= checkTransientDefinedTerms(currentState);
-		}
-	    return result;
-	}
-	       
-	public boolean onLoad(Object entity,
-	                Serializable id,
-	                Object[] state,
-	                String[] propertyNames,
-	                Type[] types) {
+        }
+        return result;
+    }
+
+    public boolean onLoad(Object entity,
+                    Serializable id,
+                    Object[] state,
+                    String[] propertyNames,
+                    Type[] types) {
         if ( entity instanceof CdmBase ) {
-            logger.warn("id = " +id);    
-        	loads++;
+            logger.warn("id = " +id);
+            loads++;
         }
         return false;
-	}
-	       
+    }
+
     public boolean onSave(Object entity,
                     Serializable id,
                     Object[] state,
@@ -86,8 +86,8 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
         }
         return result;
     }
-	       
-	       
+
+
     private boolean checkTransientDefinedTerms(Object[] state){
         boolean result = false;
 //	                if (VocabularyStoreImpl.isInitialized()){
@@ -113,15 +113,15 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 // 	                                                        throw new IllegalStateException("UUID is not equal.");
 // 	                                                }
 // 	                                        }
-// 	                                       
+//
 // 	                                }
 // 	                        }
 // 	                }else{ //not initialized
-// 	                        
+//
 // 	                }
             return result;
     }
- 	       
+
     public void afterTransactionCompletion(Transaction tx) {
             if ( tx.wasCommitted() ) {
                     logger.debug("Creations: " + creates + ", Updates: " + updates + ", Loads: " + loads);
@@ -130,7 +130,6 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
             creates=0;
             loads=0;
     }
- 	
+
 }
- 	
- 	       
+

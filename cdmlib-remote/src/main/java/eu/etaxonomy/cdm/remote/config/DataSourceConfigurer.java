@@ -141,26 +141,31 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         try {
 
             Connection connection = dataSource.getConnection();
+            ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, "CdmMetaData", null);
+            if(tables.first()){
+                ResultSet resultSet = connection.createStatement().executeQuery(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                String version = null;
+                if(resultSet.next()){
+                    version = resultSet.getString(1);
+                } else {
+                    throw new RuntimeException("Unable to retrieve version info from data source " + dataSource.toString());
+                }
 
-            ResultSet resultSet = connection.createStatement().executeQuery(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
-            String version = null;
-            if(resultSet.next()){
-                version = resultSet.getString(1);
+                connection.close();
+
+                if(!CdmMetaData.isDbSchemaVersionCompatible(version)){
+                    /*
+                     * any exception thrown here would be nested into a spring
+                     * BeanException which can not be caught in the servlet
+                     * container, so we post the information into the
+                     * ServletContext
+                     */
+                    String errorMessage = "Incompatible version [" + (beanName != null ? beanName : jndiName) + "] expected version: " + CdmMetaData.getDbSchemaVersion() + ",  data base version  " + version;
+                    addErrorMessageToServletContextAttributes(errorMessage);
+                }
             } else {
-                throw new RuntimeException("Unable to retrieve version info from data source " + dataSource.toString());
-            }
-
-            connection.close();
-
-            if(!CdmMetaData.isDbSchemaVersionCompatible(version)){
-                /*
-                 * any exception thrown here would be nested into a spring
-                 * BeanException which can not be caught in the servlet
-                 * container, so we post the information into the
-                 * ServletContext
-                 */
-                String errorMessage = "Incompatible version [" + (beanName != null ? beanName : jndiName) + "] expected version: " + CdmMetaData.getDbSchemaVersion() + ",  data base version  " + version;
-                addErrorMessageToServletContextAttributes(errorMessage);
+//            	throw new RuntimeException("database " + dataSource.toString() + " is empty or not a cdm database");
+                logger.error("database " + dataSource.toString() + " is empty or not a cdm database");
             }
 
 

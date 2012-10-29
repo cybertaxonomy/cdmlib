@@ -374,7 +374,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID save(User user) {
         if(user.getId() == 0 || dao.load(user.getUuid()) == null){
             createUser(user);

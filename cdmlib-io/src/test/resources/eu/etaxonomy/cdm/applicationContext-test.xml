@@ -9,7 +9,7 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
 
-  	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
 
    <!--
         use TestingTermInitializer
@@ -39,7 +39,7 @@
             </props>
         </property>
     </bean>
-    
+
     <bean id="tableGeneratorGlobalOverride"
         class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
         <property name="properties">
@@ -50,7 +50,7 @@
             </props>
         </property>
     </bean>
-    
+
 
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>

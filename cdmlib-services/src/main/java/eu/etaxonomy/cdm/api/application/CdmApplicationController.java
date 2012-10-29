@@ -72,9 +72,9 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl.Role;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 
 /**
@@ -247,44 +247,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         setApplicationContext(applicationContext);
         progressMonitor.worked(1);
 
-        //initialize user and metaData for new databases
-        int userCount = getUserService().count(User.class);
-        if (userCount == 0 ){
-            progressMonitor.subTask("Creating Admin User");
-            createAdminUser();
-        }
-        progressMonitor.worked(1);
-
-        //CDM Meta Data
-        int metaDataCount = getCommonService().getCdmMetaData().size();
-        if (metaDataCount == 0){
-            progressMonitor.subTask("Creating Meta Data");
-            createMetadata();
-        }
-        progressMonitor.worked(1);
-
         progressMonitor.done();
         return true;
     }
 
-    protected void createAdminUser(){
-        User firstUser = User.NewInstance("admin", "00000");
-        GrantedAuthorityImpl role_admin = GrantedAuthorityImpl.NewInstance();
-        role_admin.setAuthority(Role.ROLE_ADMIN.name());
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-        authorities.add(role_admin);
-        firstUser.setGrantedAuthorities(authorities);
-        getUserService().save(firstUser);
 
 
-        logger.info("Admin user created.");
-    }
-
-    protected void createMetadata(){
-        List<CdmMetaData> metaData = CdmMetaData.defaultMetaData();
-        getCommonService().saveAllMetaData(metaData);
-        logger.info("Metadata created.");
-    }
 
 
     /**

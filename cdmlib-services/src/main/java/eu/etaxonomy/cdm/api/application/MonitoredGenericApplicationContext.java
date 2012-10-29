@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,105 +28,112 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
  *
  */
 public class MonitoredGenericApplicationContext extends GenericApplicationContext{
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
-	
-	final int countInvokeBeanFactoryPostProcessors = 10;
-	final int countFinishBeanFactoryInitialization = 90;
-	private final int countTasks = countInvokeBeanFactoryPostProcessors + countFinishBeanFactoryInitialization;
-	private IProgressMonitor currentMonitor;
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 
-	
-	
-	/**
-	 * Constructor.
-	 * @param progressMonitor
-	 */
-	public MonitoredGenericApplicationContext() {
-//		MonitoredListableBeanFactory beanFactory = 
-		super(new MonitoredListableBeanFactory());
-		//taken from empty constructor of GenericApplicationContext
-		((MonitoredListableBeanFactory)getBeanFactory()).setSerializationId(getId());
-		((MonitoredListableBeanFactory)getBeanFactory()).setParameterNameDiscoverer(new LocalVariableTableParameterNameDiscoverer());
-		((MonitoredListableBeanFactory)getBeanFactory()).setAutowireCandidateResolver(new QualifierAnnotationAutowireCandidateResolver());
-	}
+    final int countInvokeBeanFactoryPostProcessors = 10;
+    final int countFinishBeanFactoryInitialization = 90;
+    private final int countTasks = countInvokeBeanFactoryPostProcessors + countFinishBeanFactoryInitialization;
+    private IProgressMonitor currentMonitor;
 
 
-	public int countTasks(){
-		return countTasks;
-	}
 
-	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
-		String task = "Invoke bean factory post processors";
-		checkMonitorCancelled(currentMonitor);
-		currentMonitor.subTask(task);
-		super.invokeBeanFactoryPostProcessors(beanFactory);
-		currentMonitor.worked(countInvokeBeanFactoryPostProcessors);
-		checkMonitorCancelled(currentMonitor);
-	}
-
-	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory){
-		checkMonitorCancelled(currentMonitor);
-		String task = "Finish bean factory initialization";
-		currentMonitor.subTask(task);
-		IProgressMonitor subMonitor	= new SubProgressMonitor(currentMonitor, countFinishBeanFactoryInitialization);
-		getMyBeanFactory().setCurrentMonitor(subMonitor);
-		super.finishBeanFactoryInitialization(beanFactory);
-		checkMonitorCancelled(currentMonitor);
-		
-	}
-
-	/**
-	 * @param progressMonitor the progressMonitor to set
-	 */
-	public void setCurrentMonitor(IProgressMonitor monitor) {
-		this.currentMonitor = monitor;
-	}
+    /**
+     * Constructor.
+     * @param progressMonitor
+     */
+    public MonitoredGenericApplicationContext() {
+//		MonitoredListableBeanFactory beanFactory =
+        super(new MonitoredListableBeanFactory());
+        //taken from empty constructor of GenericApplicationContext
+        ((MonitoredListableBeanFactory)getBeanFactory()).setSerializationId(getId());
+        ((MonitoredListableBeanFactory)getBeanFactory()).setParameterNameDiscoverer(new LocalVariableTableParameterNameDiscoverer());
+        ((MonitoredListableBeanFactory)getBeanFactory()).setAutowireCandidateResolver(new QualifierAnnotationAutowireCandidateResolver());
+    }
 
 
-	/* (non-Javadoc)
-	 * @see org.springframework.context.support.AbstractApplicationContext#refresh()
-	 */
-	public void refresh(IProgressMonitor monitor) throws BeansException, IllegalStateException {
-		checkMonitorCancelled(monitor);
-		String message = "Refresh application context. This might take a while ...";
-		currentMonitor = monitor;
-		beginTask(message, countTasks);
-		super.refresh();
-		taskDone();
-		checkMonitorCancelled(monitor);
-	}
+    public int countTasks(){
+        return countTasks;
+    }
+
+    protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
+        String task = "Invoke bean factory post processors";
+        checkMonitorCancelled(currentMonitor);
+        currentMonitor.subTask(task);
+        super.invokeBeanFactoryPostProcessors(beanFactory);
+        currentMonitor.worked(countInvokeBeanFactoryPostProcessors);
+        checkMonitorCancelled(currentMonitor);
+    }
+
+    protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory){
+        checkMonitorCancelled(currentMonitor);
+        String task = "Finish bean factory initialization";
+        currentMonitor.subTask(task);
+        IProgressMonitor subMonitor	= new SubProgressMonitor(currentMonitor, countFinishBeanFactoryInitialization);
+        getMyBeanFactory().setCurrentMonitor(subMonitor);
+        super.finishBeanFactoryInitialization(beanFactory);
+        checkMonitorCancelled(currentMonitor);
+
+    }
+
+    /**
+     * @param progressMonitor the progressMonitor to set
+     */
+    public void setCurrentMonitor(IProgressMonitor monitor) {
+        this.currentMonitor = monitor;
+    }
+
+    /**
+     *
+     */
+    public IProgressMonitor getCurrentMonitor() {
+        return currentMonitor;
+    }
 
 
-	/**
-	 * 
-	 */
-	private void taskDone() {
-		if (currentMonitor != null){
-			currentMonitor.done();
-		}
-	}
+    /* (non-Javadoc)
+     * @see org.springframework.context.support.AbstractApplicationContext#refresh()
+     */
+    public void refresh(IProgressMonitor monitor) throws BeansException, IllegalStateException {
+        checkMonitorCancelled(monitor);
+        String message = "Refresh application context. This might take a while ...";
+        currentMonitor = monitor;
+        beginTask(message, countTasks);
+        super.refresh();
+        taskDone();
+        checkMonitorCancelled(monitor);
+    }
 
 
-	/**
-	 * @param monitor
-	 * @param message
-	 */
-	private void beginTask(String message, int countTasks) {
-		if (currentMonitor != null){
-			currentMonitor.beginTask(message, countTasks);
-		}
-	}
-	
-	
-	private MonitoredListableBeanFactory getMyBeanFactory(){
-		return (MonitoredListableBeanFactory)getBeanFactory();
-	}
-	
-	
-	private void checkMonitorCancelled(IProgressMonitor monitor) {
-		if (monitor != null && monitor.isCanceled()){
-			throw new CancellationException();
-		}	
-	}
+    /**
+     *
+     */
+    private void taskDone() {
+        if (currentMonitor != null){
+            currentMonitor.done();
+        }
+    }
+
+
+    /**
+     * @param monitor
+     * @param message
+     */
+    private void beginTask(String message, int countTasks) {
+        if (currentMonitor != null){
+            currentMonitor.beginTask(message, countTasks);
+        }
+    }
+
+
+    private MonitoredListableBeanFactory getMyBeanFactory(){
+        return (MonitoredListableBeanFactory)getBeanFactory();
+    }
+
+
+    private void checkMonitorCancelled(IProgressMonitor monitor) {
+        if (monitor != null && monitor.isCanceled()){
+            throw new CancellationException();
+        }
+    }
 }

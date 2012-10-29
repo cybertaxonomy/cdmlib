@@ -222,6 +222,7 @@
                 <configuration>
                     <source>${java.codelevel}</source>
                     <target>${java.codelevel}</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
                 <version>2.3.2</version>
             </plugin>
@@ -618,13 +619,6 @@
                 <artifactId>activation</artifactId>
                 <version>1.1</version>
             </dependency>
-            <!--dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jsr173_api</artifactId>
-                <version>1.0</version>
-                <scope>system</scope>
-				<systemPath>${java.home}/lib/rt.jar</systemPath>
-            </dependency-->
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
@@ -1269,6 +1263,16 @@
                 <artifactId>ojdbc14</artifactId>
                 <version>10.2.0.2</version>
             </dependency>
+            <!--dependency>
+                <groupId>oracle</groupId>
+                <artifactId>ojdbc14</artifactId>
+                <version>9i</version>
+            </dependency>
+            <dependency>
+                <groupId>oracle</groupId>
+                <artifactId>ojdbc14</artifactId>
+                <version>9.2.0.5</version>
+            </dependency-->
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>

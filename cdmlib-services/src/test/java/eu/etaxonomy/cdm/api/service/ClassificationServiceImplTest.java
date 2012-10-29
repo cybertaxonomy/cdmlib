@@ -10,10 +10,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,18 +22,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
-
-import eu.etaxonomy.cdm.model.name.NonViralName;
 
 /**
  * @author n.hoffmann
@@ -45,6 +37,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
  * @version 1.0
  */
 public class ClassificationServiceImplTest extends CdmIntegrationTest{
+
     private static final Logger logger = Logger.getLogger(ClassificationServiceImplTest.class);
 
     @SpringBeanByType
@@ -113,27 +106,27 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
         taxonNodes.remove(index);
         Collections.sort(taxonNodes, taxonNodeComparator);
 
-		/**
-		 * expected order is:
-		 *  Acacia subg. Aculeiferum Pedley
+        /**
+         * expected order is:
+         *  Acacia subg. Aculeiferum Pedley
          *  Acacia sect. Botrycephalae Yuji Sasaki
          *  Acacia subg. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki
          *  Acacia cuspidifolia Maslin
          *  Acacia mearnsii Benth
-		 */
+         */
 
-		logger.setLevel(Level.DEBUG);
-		if(logger.isDebugEnabled()){
-			logger.debug("-------------");
+        logger.setLevel(Level.DEBUG);
+        if(logger.isDebugEnabled()){
+            logger.debug("-------------");
         for (TaxonNode node: taxonNodes){
-				logger.debug(node.getTaxon().getName().getTitleCache() );
+                logger.debug(node.getTaxon().getName().getTitleCache() );
             /*for (TaxonNode child : node.getChildNodes()){
-	    			logger.debug(child.getTaxon().getName().getTitleCache());
+                    logger.debug(child.getTaxon().getName().getTitleCache());
             }*/
         }
-		}
+        }
 
-		Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(0).getTaxon().getName().getTitleCache());
+        Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(0).getTaxon().getName().getTitleCache());
 
         /*
         ((TaxonNodeByNameComparator)taxonNodeComparator).setSortInfraGenericFirst(false);

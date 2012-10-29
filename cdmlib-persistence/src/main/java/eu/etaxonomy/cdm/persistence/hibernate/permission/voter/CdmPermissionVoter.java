@@ -101,9 +101,9 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
 
             for (GrantedAuthority authority: authentication.getAuthorities()){
 
-                CdmAuthority ap;
+                CdmAuthority auth;
                 try {
-                    ap = new CdmAuthority(authority.getAuthority());
+                    auth = CdmAuthority.fromGrantedAuthority(authority);
                 } catch (ParsingException e) {
                     logger.debug("skipping " + authority.getAuthority() + " due to ParsingException");
                     continue;
@@ -117,18 +117,18 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
 
                 ValidationResult vr = new ValidationResult();
 
-                boolean isALL = ap.getPermissionClass().equals(CdmPermissionClass.ALL);
+                boolean isALL = auth.getPermissionClass().equals(CdmPermissionClass.ALL);
 
-                vr.isClassMatch = isALL || ap.getPermissionClass().equals(evalPermission.getPermissionClass());
-                vr.isPermissionMatch = ap.getOperation().containsAll(evalPermission.getOperation());
-                vr.isUuidMatch = ap.hasTargetUuid() && ap.getTargetUUID().equals(((CdmBase)object).getUuid());
+                vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
+                vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
+                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(((CdmBase)object).getUuid());
 
                 //
                 // only vote if no property is defined.
                 // Authorities with properties must be voted by type specific voters.
                 //
-                if(!ap.hasProperty()){
-                    if ( !ap.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
+                if(!auth.hasProperty()){
+                    if ( !auth.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
                         logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
                         return ACCESS_GRANTED;
                     }
@@ -151,7 +151,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                 // ask subclasses for further voting decisions
                 // subclasses will cast votes for specific Cdm Types
                 //
-                Integer furtherVotingResult = furtherVotingDescisions(ap, object, attributes, vr);
+                Integer furtherVotingResult = furtherVotingDescisions(auth, object, attributes, vr);
                 if(furtherVotingResult != null && furtherVotingResult != ACCESS_ABSTAIN){
                     logger.debug("furtherVotingResult => " + furtherVotingResult);
                     return furtherVotingResult;
