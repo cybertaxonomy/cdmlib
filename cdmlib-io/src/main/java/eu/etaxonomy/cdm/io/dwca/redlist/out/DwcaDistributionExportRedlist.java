@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.dwca.redlist.out;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -39,6 +41,7 @@ public class DwcaDistributionExportRedlist extends DwcaExportBaseRedlist {
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/Distribution";
 	private static final String fileName = "distribution.txt";
 
+
 	/**
 	 * Constructor
 	 */
@@ -59,10 +62,13 @@ public class DwcaDistributionExportRedlist extends DwcaExportBaseRedlist {
 	protected void doInvoke(DwcaTaxExportStateRedlist state){
 		DwcaTaxExportConfiguratorRedlist config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
-
+		
 		PrintWriter writer = null;
 		try {
+			
+		
 			writer = createPrintWriter(fileName, state);
+			
 			DwcaMetaDataRecordRedlist metaRecord = new DwcaMetaDataRecordRedlist(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
@@ -101,6 +107,7 @@ public class DwcaDistributionExportRedlist extends DwcaExportBaseRedlist {
 			e.printStackTrace();
 		}finally {
 			closeWriter(writer, state);
+			this.clearExistingRecordIds();
 		}
 		commitTransaction(txStatus);
 		return;

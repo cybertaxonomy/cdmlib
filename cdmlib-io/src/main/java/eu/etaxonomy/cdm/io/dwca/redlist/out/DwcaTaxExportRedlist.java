@@ -9,32 +9,27 @@
 
 package eu.etaxonomy.cdm.io.dwca.redlist.out;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxRecord;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -43,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+
 
 /**
  * @author a.mueller
@@ -54,7 +50,8 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.txt";
-	
+
+
 	/**
 	 * 
 	 */
@@ -86,14 +83,15 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		
 		
 		PrintWriter writer = null;
+		ByteArrayOutputStream byteArrayOutputStream;
 		try {
-			writer = createPrintWriter(fileName, state);
+			byteArrayOutputStream = config.getByteArrayOutputStream();
+			writer = new PrintWriter(byteArrayOutputStream); //createPrintWriter(fileName, state);
 
 			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				DwcaTaxRecordRedlist record = new DwcaTaxRecordRedlist(metaRecord, config);
-				
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
@@ -101,7 +99,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 						record.write(writer);
 						this.addExistingRecord(taxon);
 					}
-				node.getClassification().getName();
 
 				//misapplied names
 				handleMisapplication(taxon, writer, classification, metaRecord, config);
@@ -109,17 +106,13 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 				writer.flush();
 				
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+
 		} catch (ClassCastException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		finally{
-			closeWriter(writer, state);
+			writer.close();
+			this.clearExistingRecordIds();
 		}
 		commitTransaction(txStatus);
 		return;
@@ -165,6 +158,8 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 			boolean isProParte, 
 			boolean isPartial, 
 			DwcaTaxExportConfiguratorRedlist config) {
+		record.setHeadLinePrinted(config.isHasHeaderLines());
+		config.setHasHeaderLines(false);
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 		
@@ -178,6 +173,11 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		
 		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
 
+		//distribution
+		handleDiscriptionData(record, (Taxon) taxonBase);
+		
+		
+		//handleDiscriptons((Taxon) taxonBase);
 		
 		record.setDatasetId(classification);
 		record.setDatasetName(classification.getTitleCache());
@@ -222,22 +222,13 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		}
 	}
 
-	private void handleSynonyms(
-			DwcaTaxRecordRedlist record,
-			Taxon taxon
-//			Classification classification 
-//			DwcaMetaDataRecordRedlist metaRecord, 
-//			DwcaTaxExportConfiguratorRedlist config
-			) {
+	private void handleSynonyms(DwcaTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
 		ArrayList<String> synonyms = new ArrayList<String>(); 
 		for (SynonymRelationship synRel :synRels ){
-//			DwcaTaxRecordRedlist record = new DwcaTaxRecordRedlist(metaRecord, config);
 			Synonym synonym = synRel.getSynonym();
 			SynonymRelationshipType type = synRel.getType();
-//			boolean isProParte = synRel.isProParte();
-//			boolean isPartial = synRel.isPartial();
 			if (type == null){ // should not happen
 				type = SynonymRelationshipType.SYNONYM_OF();
 			}
@@ -245,6 +236,34 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 			synonyms.add(name.getTitleCache());
 		}
 		record.setSynonyms(synonyms);
+	}
+
+
+	private void handleDiscriptionData(DwcaTaxRecordRedlist record, Taxon taxon) {
+		
+		Set<TaxonDescription> descriptions = taxon.getDescriptions();
+		ArrayList<String> distributions = new ArrayList<String>();
+		String rlStatus="";
+		for (TaxonDescription description : descriptions){
+			for (DescriptionElementBase el : description.getElements()){
+				if (el.isInstanceOf(Distribution.class) ){
+						Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+						NamedArea area = distribution.getArea();
+						logger.info("Adding Elements of Distributions..." + area.getTitleCache());
+						distributions.add(area.getTitleCache());
+				}
+				if(el.isInstanceOf(CategoricalData.class)){
+					CategoricalData categoricalData = CdmBase.deproxy(el, CategoricalData.class);
+					for(State state:categoricalData.getStatesOnly()){
+						logger.info("State Element: "+state);
+						rlStatus = state.toString();
+					}
+				}
+				
+			}
+		}
+		record.setCountryCode(distributions);
+		record.setRlStatus(rlStatus);
 	}
 
 
@@ -260,7 +279,5 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	protected boolean isIgnore(DwcaTaxExportStateRedlist state) {
 		return ! state.getConfig().isDoTaxa();
 	}
-
-
 	
 }

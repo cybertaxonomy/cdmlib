@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.dwca.redlist.out;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,9 +22,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.dwca.out.DwcaDistributionExport;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
-import eu.etaxonomy.cdm.io.dwca.out.DwcaTaxExport;
 
 
 /**
@@ -44,8 +43,8 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private boolean doTaxa = true;
 	private boolean doDistributions = true;
 	private boolean doEml = true;
+	private ByteArrayOutputStream baos;
 
-	
 	private boolean isUseIdWherePossible = false;
 	
 	
@@ -72,6 +71,8 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private static IExportTransformer defaultTransformer = null;
 	
 	
+
+	
 	public static DwcaTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
 		return new DwcaTaxExportConfiguratorRedlist(source, destinationFolder, emlRecord);
 	}
@@ -86,18 +87,17 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		};
 	}
 
-
-	
-	
+		
 	/**
 	 * @param url
 	 * @param destination
 	 */
 	private DwcaTaxExportConfiguratorRedlist(ICdmDataSource source, File destination, DwcaEmlRecord emlRecord) {
-		super(destination, source, defaultTransformer);
+	super(destination, source, defaultTransformer);
 		this.emlRecord = emlRecord;
 	}
 	
+		
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
@@ -312,5 +312,12 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		this.classificationUuids = classificationUuids;
 	}
 
+	public ByteArrayOutputStream getByteArrayOutputStream() {
+		return baos;
+	}
+
+	public void setByteArrayOutputStream(ByteArrayOutputStream baos) {
+		this.baos = baos;
+	}
 
 }

@@ -276,4 +276,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 			}
 		}
 	}
+	protected void clearExistingRecordIds(){
+		existingRecordIds.clear();
+	}
 }
