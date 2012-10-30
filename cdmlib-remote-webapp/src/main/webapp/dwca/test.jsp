@@ -263,67 +263,24 @@ ul#icons span.ui-icon {
 
 </head>
 <body>
-	<h1>Test Page</h1>
-
-
-
-
-	
+	<h1>Export TSV Page</h1>
 	<form method="post" action="getDB">
-	
-	<div class="ui-widget" id="classification">
-	
-			<div id="dropDown">
-				<p>
-					<label for="classificationUUID">Classifcation</label> 
-					<input id="classificationUUID" name="classification"  value="" title="type &quot;*&quot; to retrieve all entries" >
-					<!--  <span class="showall ui-icon ui-icon-triangle-1-s" title="Show all">Show all </span> -->
-				</p>
-			</div>
-	</div>
-<div class="ui-widget">
-        
-                                        <label for="combobox">Classification</label> 
-                                        <select id="combobox" name="combobox"  value="" title="type &quot;*&quot; to retrieve all entries"></select>
-                                        <!--  <span class="showall ui-icon ui-icon-triangle-1-s" title="Show all">Show all </span> -->
- 
+	<div class="ui-widget">
+		<label for="combobox">Classification</label> 
+		<select id="combobox" name="combobox"  value="" title="type &quot;*&quot; to retrieve all entries"></select>
+        <!--  <span class="showall ui-icon ui-icon-triangle-1-s" title="Show all">Show all </span> -->
         </div>
-
 		<table id="dwcaOptions">
 			<tr>
 				<td>Download Options:</td>
 			<tr>
-				<td><input type="checkbox" name="dlOptions" value="setDoTaxa">Taxa
-				</td>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoResourceRelation"> Resource Relation</td>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoTypesAndSpecimen"> Type and Specimen</td>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoVernacularNames"> Vernacular Names</td>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoReferences"> References</td>
+				<td><input type="checkbox" name="dlOptions" value="setDoTaxa">Taxa</td>
 			</tr>
 			<tr>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoDescription"> Descriptions</td>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoDistributions"> Distributions</td>
-				<td><input type="checkbox" name="dlOptions" value="setDoImages">
-					Images</td>
-				<td><input type="checkbox" name="dlOptions"
-					value="setDoMetaData"> Meta Data</td>
-				<td><input type="checkbox" name="dlOptions" value="setDoEml">
-					EML Data</td>
-			</tr>
-			
-			<tr>
-				<td colspan="2" align="center"><input type="submit"
-					value="Submit" onclick=""></td>
-				<td colspan="2" align="center"></td>
+				<td><input type="checkbox" name="dlOptions" value="setDoDistributions"> Distributions</td>
 			</tr>
 			<tr>
-				<td><a href="getDB">download</a></td>
+				<td colspan="2" align="center"><input type="submit" value="Submit" onclick=""></td>
 			</tr>
 		</table>
 	</form>
