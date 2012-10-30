@@ -8,8 +8,10 @@
  */
 package eu.etaxonomy.cdm.remote.controller.dwca;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,12 +19,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
-
 import eu.etaxonomy.cdm.io.dwca.redlist.out.DwcaTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -47,52 +47,62 @@ import eu.etaxonomy.cdm.model.agent.Person;
  */
 @Controller
 @RequestMapping(value = { "/dwca" })
-public class DwcaExportController {
+public class DwcaExportController{
 
 	@Autowired
 	private ApplicationContext appContext;
+	private static final Logger logger = Logger.getLogger(DwcaExportController.class);
 
-	private static final Logger logger = Logger
-			.getLogger(DwcaExportController.class);
 
+	
 	@RequestMapping(value = { "getDB" }, method = { RequestMethod.POST })
 	public void doExport(
 			@RequestParam(value = "dlOptions", required = false) String options[],
 			@RequestParam(value = "combobox", required = false) String classificationUUID,
 			HttpServletResponse response) {
 		
-		DwcaTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, options);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		DwcaTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, options, byteArrayOutputStream);
 		logger.info("Selected classification: " +classificationUUID);
+		for(String option:options){
+			logger.info("Selected options: " + option);
+		}
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
 		defaultExport.invoke(config);
 		try {
-			response.sendRedirect("http://localhost:8080/dwca/success.jsp");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			logger.warn("Redirect failed " + e);
-		}
-
+			/*
+			 *  Fetch data from the appContext and forward stream to HttpServleResponse
+			 *  
+			 *  FIXME: Large Data will be out of memory
+			 */
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
+			ServletOutputStream sos = response.getOutputStream();
+			response.setContentType("text/csv");
+			response.setHeader("Content-Disposition", "attachment; filename=\"RedlistCoreTax.txt\"");
+			
+			int i;
+			while((i = isr.read())!= -1){
+				sos.write(i);
+			}
+			byteArrayOutputStream.flush();
+			isr.close();
+			byteArrayOutputStream.close();
+			sos.flush();
+			sos.close();
+	
+		 	} catch (Exception e) {
+			   logger.error("error generating feed", e);
+			}
 	}
-
-	
-	
-	
-	
-	
 	
 
-	private DwcaTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, String options[]) {
+
+	private DwcaTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, String options[], ByteArrayOutputStream byteArrayOutputStream) {
 
 		boolean doTaxa = false;
-		boolean doResourceRelation = false;
-		boolean doTypesAndSpecimen = false;
-		boolean doVernacularNames = false;
-		boolean doReferences = false;
-		boolean doDescription = false;
 		boolean doDistributions = false;
-		boolean doImages = false;
-		boolean doMetaData = false;
 		boolean doEml = false;
 		
 		@SuppressWarnings("unchecked")
@@ -108,7 +118,7 @@ public class DwcaExportController {
 				UUID.fromString("cbf12c6c-94e6-4724-9c48-0f6f10d83e1c"), // Editor
 				// Brackets
 				UUID.fromString("0508114d-4158-48b5-9100-369fa75120d3") // inedited
-				});
+		});
 
 		String destination = System.getProperty("java.io.tmpdir");
 		DwcaEmlRecord emlRecord = getEmlRecord();
@@ -119,49 +129,26 @@ public class DwcaExportController {
 			for (String option : options) {
 				logger.info("... "+option);
 				if(option.equals("setDoTaxa")) doTaxa = true;
-				if(option.equals("setDoResourceRelation")) doResourceRelation= true;
-				if(option.equals("setDoTypesAndSpecimen")) doTypesAndSpecimen = true;
-				if(option.equals("setDoVernacularNames")) doVernacularNames=true;
-				if(option.equals("setDoReferences")) doReferences=true;
-				if(option.equals("setDdoDescription")) doDescription=true;
 				if(option.equals("setDoDistributions"))doDistributions=true;
-				if(option.equals("setDoImages"))doImages=true;
-				if(option.equals("setDoMetaData"))doMetaData=true;
 				if(option.equals("setDoEml"))doEml=true;
 			}
-			
 		}else {
 			logger.info("set standard configurations for export...");
 		}
-		DwcaTaxExportConfiguratorRedlist config = DwcaTaxExportConfiguratorRedlist
-				.NewInstance(null, new File(destination), emlRecord);
+		DwcaTaxExportConfiguratorRedlist config = DwcaTaxExportConfiguratorRedlist.NewInstance(null, new File(destination), emlRecord);
 		config.setHasHeaderLines(true);
 		config.setFieldsTerminatedBy("\t");
-		config.setFieldsEnclosedBy(",");
 		config.setDoTaxa(doTaxa);
-//		config.setDoResourceRelation(doResourceRelation);
-//		config.setDoTypesAndSpecimen(doTypesAndSpecimen);
-//		config.setDoVernacularNames(doVernacularNames);
-//		config.setDoReferences(doReferences);
-//		config.setDoDescription(doDescription);
 		config.setDoDistributions(doDistributions);
-//		config.setDoImages(doImages);
-//		config.setDoMetaData(doMetaData);
 		config.setDoEml(doEml);
-		// config.setCheck(true);
-		// config.setProgressMonitor(true);
-		// config.setDefaultBibliographicCitation(defaultBibliographicCitation);
 		config.setDefaultTaxonSource("http://wp6-cichorieae.e-taxonomy.eu/portal/?q=cdm_dataportal/taxon/{id}");
-		// monitor.beginTask("DwcA-Export", 10);
 		config.setFeatureExclusions(featureExclusions);
 		config.setClassificationUuids(classificationUUIDS);
-
+		config.setByteArrayOutputStream(byteArrayOutputStream);
 		return config;
-
 	}
 
 	
-
 	private DwcaEmlRecord getEmlRecord() {
 		DwcaEmlRecord emlRecord = new DwcaEmlRecord();
 		emlRecord.setIdentifier("My Identifier");
@@ -189,4 +176,5 @@ public class DwcaExportController {
 
 		return emlRecord;
 	}
+	
 }
