@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-	<version>3.0.14-SNAPSHOT</version>
+	<version>3.2-SNAPSHOT</version>
     <name>CDM Library</name>
     <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
     <url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -21,7 +21,7 @@
         <module>cdmlib-remote-webapp</module>
     </modules>
     <properties>
-		<java.codelevel>1.6</java.codelevel>
+		<java.codelevel>1.7</java.codelevel>
         <spring.version>3.0.4.RELEASE</spring.version>
 		<hibernate.version>3.4.0-SNAPSHOT</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
