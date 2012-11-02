@@ -21,7 +21,7 @@
         <module>cdmlib-remote-webapp</module>
     </modules>
     <properties>
-		<java.codelevel>1.7</java.codelevel>
+		<java.codelevel>1.6</java.codelevel>
         <spring.version>3.0.4.RELEASE</spring.version>
 		<hibernate.version>3.4.0-SNAPSHOT</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
