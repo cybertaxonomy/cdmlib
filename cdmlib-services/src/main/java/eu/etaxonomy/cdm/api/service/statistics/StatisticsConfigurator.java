@@ -9,8 +9,11 @@
 */
 package eu.etaxonomy.cdm.api.service.statistics;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * This class configures the statistical request to 
@@ -30,6 +33,8 @@ public class StatisticsConfigurator {
 		return result;
 	}
 	
+	//
+	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
 	private List<StatisticsPartEnum> partList;
 
 	
@@ -46,6 +51,16 @@ public class StatisticsConfigurator {
 	public List<StatisticsPartEnum> getPartList() {
 		return Collections.unmodifiableList(partList);
 	}
+
+
+	public List<IdentifiableEntity> getFilter() {
+		return filter;
+	}
+	
+	public void addFilter(IdentifiableEntity filterItem) {
+		this.filter.add(filterItem);
+	}
+
 	
 	
 	
