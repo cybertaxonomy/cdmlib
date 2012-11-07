@@ -1635,6 +1635,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyPort
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ProgressMonitorController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/StatisticsController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeController.java -text
