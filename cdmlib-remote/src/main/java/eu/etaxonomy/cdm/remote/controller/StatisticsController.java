@@ -8,12 +8,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.IdentifiableServiceBase;
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * @author sybille
@@ -29,12 +36,22 @@ public class StatisticsController extends
 	@Autowired
     private IClassificationService clService;
 	
+	@Autowired
+	private ITaxonDao taxonDao;
+	
+	@Autowired
+	private IClassificationDao classificationDao;
+	
 	@Override
 	@Autowired
 	public void setService(ITaxonService service) {
 		// TODO Auto-generated method stub
 
 	}
+	
+	
+
+	
 	
 	StatisticsConfigurator configurator;
 	
@@ -87,6 +104,7 @@ public class StatisticsController extends
 		for (StatisticsPartEnum part : configurator.getPartList()) {
 			if (part.compareTo(StatisticsPartEnum.ALL)==0){
 				//TODO iterate over filter and call countAll(class type);
+//				System.out.println(taxonDao.cou);
 			}
 			else if (part.compareTo(StatisticsPartEnum.CLASSIFICATION)==0){
 				// TODO get all classifications
@@ -98,5 +116,9 @@ public class StatisticsController extends
 	}
 
 // TODO countAll();
+//	Statistics countAll(IdentifiableServiceBase<IdentifiableEntity, IIdentifiableDao<T>> service){
+//		
+//	}
+	
 
 }
