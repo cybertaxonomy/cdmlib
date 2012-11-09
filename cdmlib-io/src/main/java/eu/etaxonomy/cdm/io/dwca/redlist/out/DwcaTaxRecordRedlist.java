@@ -1,12 +1,12 @@
 // $Id$
 /**
-* Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.dwca.redlist.out;
 
 import java.io.PrintWriter;
@@ -17,12 +17,6 @@ import java.util.Collections;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
@@ -30,30 +24,28 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @date 18.10.2012
  *
  */
-public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist implements IDwcaAreaRecord{
+public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxRecordRedlist.class);
 
-	private DwcaId scientificNameId;
 	private String scientificName;
 	private String taxonomicStatus;
 	private DwcaId datasetId;
 	private String datasetName;
 	private ArrayList<String> synonyms;
-	private DwcaId locationId;
-	private String locationIdString;
-	private String locality;
 	private String threadStatus;
 	private ArrayList<String> countryCodes;
-	private String rlStatus;
+	private ArrayList<String> rlStatus96;
+	private ArrayList<String> rlStatus13;
 	private ArrayList<String> headlines;
 	private boolean isHeadLinePrinted;
-	
+	private boolean printRl96 = false;
+	private boolean printRl13 = false;
 
 
 	public DwcaTaxRecordRedlist(DwcaMetaDataRecordRedlist metaDataRecord, DwcaTaxExportConfiguratorRedlist config){
 		super(metaDataRecord, config);
-		scientificNameId = new DwcaId(config);
+		//scientificNameId = new DwcaId(config);
 		datasetId = new DwcaId(config);
 	}
 
@@ -66,15 +58,15 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist implements IDwca
 			addKnownField(TermUri.DWC_TAXONOMIC_STATUS);
 			addKnownField(TermUri.DWC_DATASET_NAME);
 			addKnownField("countryCode", "http://rs.tdwg.org/dwc/terms/countryCode");
-//			addKnownField("threatStatus", "http://iucn.org/terms/threatStatus");
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void write(PrintWriter writer) {
 		if(isHeadLinePrinted()){
-			printHeadlines(writer);
+			printHeadlines(writer, setHeadlines());
+			isHeadLinePrinted=false;
 		}
 
 		print(datasetName, writer, IS_FIRST, TermUri.DWC_DATASET_NAME);
@@ -82,28 +74,26 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist implements IDwca
 		print(taxonomicStatus, writer, IS_NOT_FIRST, TermUri.DWC_TAXONOMIC_STATUS);
 		prettyPrintRedlist(synonyms, TermUri.DWC_SCIENTIFIC_NAME, writer);
 		prettyPrintRedlist(countryCodes, TermUri.DWC_COUNTRY_CODE, writer);
-		print(rlStatus, writer, IS_NOT_FIRST, TermUri.DWC_LIFESTAGE);
-
+		if(printRl96)prettyPrintRedlist(rlStatus96, TermUri.DWC_LIFESTAGE, writer);
+		if(printRl13)prettyPrintRedlist(rlStatus13, TermUri.DWC_LIFESTAGE, writer);
 		writer.println();
 	}
 	
-
-	private void printHeadlines(PrintWriter writer){
-		setHeadlines();
-		for(String headline:headlines){
-			if(headlines.get(0).equals(headline)){
-				print(headline, writer, IS_FIRST, TermUri.DWC_DATASET_NAME);
+	
+	private void printHeadlines(PrintWriter writer, ArrayList<String> list){
+		for(String element:list){
+			if(list.get(0).equals(element)){
+				print(element, writer, IS_FIRST, TermUri.DWC_DATASET_NAME);
 			}
 			else{
-				print(headline, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_NAME);
+				print(element, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_NAME);
 			}
 		}
 		writer.println();
-		isHeadLinePrinted=false;
 	}
-	
+
 	private void prettyPrintRedlist(ArrayList<String> list, TermUri termUri, PrintWriter writer){
-		if(list.isEmpty()){
+		if(list == null||list.isEmpty()){
 			print("", writer, IS_NOT_FIRST, termUri);
 		}else{
 			for (String element:list){
@@ -122,13 +112,7 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist implements IDwca
 		}
 	}
 	
-
-	public String getScientificNameId() {
-		return scientificNameId.getId();
-	}
-	public void setScientificNameId(TaxonNameBase<?, ?> scientificNameId) {
-		this.scientificNameId.setId(scientificNameId);
-	}
+	
 	public String getDatasetName() {
 		return datasetName;
 	}
@@ -165,51 +149,30 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist implements IDwca
 	public void setThreadStatus(String threadStatus) {
 		this.threadStatus = threadStatus;
 	}
-	
+
 	public void setCountryCode(ArrayList<String> countryCodes) {
 		this.countryCodes = countryCodes;
 	}
 
-	@Override
-	public void setLocationId(NamedArea area) {
-		if (area.isInstanceOf(TdwgArea.class)){
-			String locationId = "TDWG:" + area.getRepresentation(Language.ENGLISH()).getAbbreviatedLabel();
-			this.locationIdString = locationId;
-		}else if (area.isInstanceOf(WaterbodyOrCountry.class)){
-			WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);
-			String locationId = "ISO3166:" + country.getIso3166_A2();
-			this.locationIdString = locationId;
-		}else{
-			this.locationId.setId(area);
-		}
-		
-	}
-	public String getLocationId() {
-		return locationId.getId();
+	public void setRlStatus96(ArrayList<String> rlStatus96) {
+		this.rlStatus96 = rlStatus96;
+		printRl96 = true;
 	}
 
-	@Override
-	public void setLocality(String locality) {
-		this.locality = locality;
-		
+	public void setRlStatus13(ArrayList<String> rlStatus13) {
+		this.rlStatus13 = rlStatus13;
+		printRl13 = true;
 	}
-
-	@Override
-	public void setCountryCode(String iso3166_A2) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void setRlStatus(String rlStatus) {
-		this.rlStatus = rlStatus;
-	}
-	
-	//FIXME: hardcoded headerlines
-	private void setHeadlines(){
+	//FIXME: hard coded header lines
+	private ArrayList<String> setHeadlines(){
 		headlines = new ArrayList<String>(); 
-		Collections.addAll(headlines, "Classification","Taxon","Taxon Status","Synonym","Distribution", "Redlist Status");
+		Collections.addAll(headlines, "Classification","Taxon","Taxon Status","Synonym","Distribution");
+		if(printRl96)headlines.add("Rote Liste Satus 1996");
+		if(printRl13)headlines.add("Rote Liste Satus 2013");
+		
+		return headlines;
 	}
-	
+
 	public boolean isHeadLinePrinted() {
 		return isHeadLinePrinted;
 	}
@@ -217,4 +180,13 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist implements IDwca
 	public void setHeadLinePrinted(boolean isHeadLinePrinted) {
 		this.isHeadLinePrinted = isHeadLinePrinted;
 	}
+
+	public void setPrintRl96(boolean printRl96) {
+		this.printRl96 = printRl96;
+	}
+
+	public void setPrintRl13(boolean printRl13) {
+		this.printRl13 = printRl13;
+	}
+
 }

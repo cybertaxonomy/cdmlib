@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.io.dwca.redlist.out;
 
@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.dwca.out.DwcaEmlRecord;
 
 
 /**
@@ -38,66 +37,44 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private String fieldsEnclosedBy = "\"";
 	private boolean hasHeaderLines = true;
 	private String fieldsTerminatedBy=",";
-
-	
 	private boolean doTaxa = true;
 	private boolean doDistributions = true;
-	private boolean doEml = true;
+	boolean isRl2013 = false;
+	boolean isRl1996 = false;
 	private ByteArrayOutputStream baos;
-
 	private boolean isUseIdWherePossible = false;
-	
-	
 	private boolean includeBasionymsInResourceRelations;
 	private boolean includeMisappliedNamesInResourceRelations;
-	
 	private String defaultBibliographicCitation = null;
-	
-	private DwcaEmlRecord emlRecord;
-
-	
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
-
 	//filter on the classifications to be exported
 	private Set<UUID> classificationUuids = new HashSet<UUID>();   
-
-	private String defaultTaxonSource;
-
 	private boolean withHigherClassification = false;
-
 	private String setSeparator = ";";
-	
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
-	
-	
 
-	
-	public static DwcaTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder, DwcaEmlRecord emlRecord) {
-		return new DwcaTaxExportConfiguratorRedlist(source, destinationFolder, emlRecord);
+	public static DwcaTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) { 
+		return new DwcaTaxExportConfiguratorRedlist(source, destinationFolder);
 	}
 
 
-		@Override
-		@SuppressWarnings("unchecked")
+	@Override
+	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				 DwcaTaxExportRedlist.class
-				,DwcaDistributionExportRedlist.class
+				DwcaTaxExportRedlist.class
+				//,DwcaDistributionExportRedlist.class
 		};
 	}
 
-		
 	/**
 	 * @param url
 	 * @param destination
 	 */
-	private DwcaTaxExportConfiguratorRedlist(ICdmDataSource source, File destination, DwcaEmlRecord emlRecord) {
-	super(destination, source, defaultTransformer);
-		this.emlRecord = emlRecord;
+	private DwcaTaxExportConfiguratorRedlist(ICdmDataSource source, File destination) {
+		super(destination, source, defaultTransformer);
 	}
-	
-		
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
@@ -107,7 +84,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		return super.getDestination();
 	}
 
-	
 	/**
 	 * @param file
 	 */
@@ -115,7 +91,7 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
@@ -129,15 +105,12 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		}
 	}
 
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
 	public DwcaTaxExportStateRedlist getNewState() {
 		return new DwcaTaxExportStateRedlist(this);
 	}
-	
-	
 
 	public boolean isDoTaxa() {
 		return doTaxa;
@@ -163,7 +136,7 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public List<UUID> getFeatureExclusions() {
 		return featureExclusions;
 	}
-	
+
 	public String getEncoding() {
 		return encoding;
 	}
@@ -216,7 +189,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		this.includeMisappliedNamesInResourceRelations = includeMisappliedNamesInResourceRelations;
 	}
 
-
 	public boolean isUseIdWherePossible() {
 		return this.isUseIdWherePossible;
 	}
@@ -224,23 +196,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public void setUseIdWherePossible(boolean isUseIdWherePossible) {
 		this.isUseIdWherePossible = isUseIdWherePossible;
 	}
-
-	public void setEmlRecord(DwcaEmlRecord emlRecord) {
-		this.emlRecord = emlRecord;
-	}
-
-	public DwcaEmlRecord getEmlRecord() {
-		return emlRecord;
-	}
-
-	public void setDoEml(boolean doEml) {
-		this.doEml = doEml;
-	}
-
-	public boolean isDoEml() {
-		return doEml;
-	}
-
 
 	public void setDefaultBibliographicCitation(String defaultBibliographicCitation) {
 		this.defaultBibliographicCitation = defaultBibliographicCitation;
@@ -251,7 +206,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		return defaultBibliographicCitation;
 	}
 
-
 	/**
 	 * The default value for the taxon.source column. This may be a column linking to a url that provides 
 	 * data about the given taxon. The id is replaced by a placeholder, 
@@ -260,19 +214,10 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	 * 
 	 * @return the taxonSourceDefault
 	 */
-	public String getDefaultTaxonSource() {
-		return defaultTaxonSource;
-	}
-	
-	public void setDefaultTaxonSource(String taxonSourceDefault) {
-		this.defaultTaxonSource = taxonSourceDefault;
-	}
-
 
 	public boolean isWithHigherClassification() {
 		return withHigherClassification;
 	}
-
 
 	public void setWithHigherClassification(boolean withHigherClassification) {
 		this.withHigherClassification = withHigherClassification;
@@ -285,7 +230,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		return setSeparator;
 	}
 
-
 	/**
 	 * @param setSeparator the setSeparator to set
 	 */
@@ -293,11 +237,9 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		this.setSeparator = setSeparator;
 	}
 
-
 	public void setFieldsTerminatedBy(String fieldsTerminatedBy) {
 		this.fieldsTerminatedBy = fieldsTerminatedBy;
 	}
-
 
 	public String getFieldsTerminatedBy() {
 		return fieldsTerminatedBy;
@@ -306,7 +248,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public Set<UUID> getClassificationUuids() {
 		return classificationUuids;
 	}
-
 
 	public void setClassificationUuids(Set<UUID> classificationUuids) {
 		this.classificationUuids = classificationUuids;
@@ -319,5 +260,22 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public void setByteArrayOutputStream(ByteArrayOutputStream baos) {
 		this.baos = baos;
 	}
+
+	public boolean isRl2013() {
+		return isRl2013;
+	}
+
+	public void setRl2013(boolean isRl2013) {
+		this.isRl2013 = isRl2013;
+	}
+
+	public boolean isRl1996() {
+		return isRl1996;
+	}
+
+	public void setRl1996(boolean isRl1996) {
+		this.isRl1996 = isRl1996;
+	}
+
 
 }

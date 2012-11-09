@@ -6,36 +6,18 @@
 <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript"
 	src="../js/jquery-ui-1.8.23.custom.min.js"></script>
-	
-    <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" />
-    
+
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" />
+
 <link type="text/css" href="../css/jquery-ui-1.8.23.custom.css"
 	rel="stylesheet" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>CDM Remote API</title>
 <script>
-$(function(){
-	$("#classificationUUID").autocomplete({
-		source: function(request, response){
-			var items=[];
-			var names=[];
-			
-			$.getJSON('../classification.json', function(data) {
-				var count = data.count;
-				for(i=0;i < count ; i++){
-					items.push(data.records[i].uuid);
-					names.push(data.records[i].titleCache );
-				}
-				$
-				response(names, function(){});
-			});
-		}
-	});
-
-});
 $('.showall').click(function() {
 	$(this).prev().focus().autocomplete("search", "", { delay: 0 });
 });
@@ -176,7 +158,7 @@ $(function() {
 });
 </script>
 
-  <script>
+<script>
   $(document).ready(function () {
   
   
@@ -240,48 +222,53 @@ ul#icons span.ui-icon {
 	margin: 0 4px;
 }
 
+.ui-combobox {
+	position: relative;
+	display: inline-block;
+}
 
- .ui-combobox {
-        position: relative;
-        display: inline-block;
-    }
-    .ui-combobox-toggle {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        margin-left: -1px;
-        padding: 0;
-        /* adjust styles for IE 6/7 */
-        *height: 1.7em;
-        *top: 0.1em;
-    }
-    .ui-combobox-input {
-        margin: 0;
-        padding: 0.3em;
-    }
+.ui-combobox-toggle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin-left: -1px;
+	padding: 0;
+	/* adjust styles for IE 6/7 */
+	*height: 1.7em;
+	*top: 0.1em;
+}
+
+.ui-combobox-input {
+	margin: 0;
+	padding: 0.3em;
+}
 </style>
 
 </head>
 <body>
 	<h1>Export TSV Page</h1>
 	<form method="post" action="getDB">
-	<div class="ui-widget">
-		<label for="combobox">Classification</label> 
-		<select id="combobox" name="combobox"  value="" title="type &quot;*&quot; to retrieve all entries"></select>
-        <!--  <span class="showall ui-icon ui-icon-triangle-1-s" title="Show all">Show all </span> -->
-        </div>
+		<div class="ui-widget">
+			<label for="combobox">Classification</label> <select id="combobox" name="combobox" value=""
+				title="type &quot;*&quot; to retrieve all entries"></select>
+			<!--  <span class="showall ui-icon ui-icon-triangle-1-s" title="Show all">Show all </span> -->
+		</div>
 		<table id="dwcaOptions">
 			<tr>
 				<td>Download Options:</td>
+
 			<tr>
-				<td><input type="checkbox" name="dlOptions" value="setDoTaxa">Taxa</td>
+				<td><input type="checkbox" name="dlOptions"
+					value="setRl1996"> Rote Liste Status 1996</td>
 			</tr>
 			<tr>
-				<td><input type="checkbox" name="dlOptions" value="setDoDistributions"> Distributions</td>
+				<td><input type="checkbox" name="dlOptions"
+					value="setRl2013"> Rote Liste Status 2013</td>
 			</tr>
-			<tr>
-				<td colspan="2" align="center"><input type="submit" value="Submit" onclick=""></td>
-			</tr>
+		 	<tr>
+				<td colspan="2" align="center"><input type="submit"
+					value="Submit" onclick=""></td>
+			</tr> 
 		</table>
 	</form>
 </body>

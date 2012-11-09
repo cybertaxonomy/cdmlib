@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.dwca.redlist.out;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

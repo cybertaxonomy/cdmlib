@@ -27,14 +27,6 @@ public class CdmTcsXmlImport extends CdmApplicationAwareDefaultImport<TcsXmlImpo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmTcsXmlImport.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmImport#invoke(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	public boolean invoke(TcsXmlImportConfigurator tcsiConfig) {
-		return super.invoke(tcsiConfig);
-	}
-
-
 	
 
 
