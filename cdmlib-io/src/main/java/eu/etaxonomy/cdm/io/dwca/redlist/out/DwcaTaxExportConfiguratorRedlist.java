@@ -38,9 +38,9 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private boolean hasHeaderLines = true;
 	private String fieldsTerminatedBy=",";
 	private boolean doTaxa = true;
-	private boolean doDistributions = true;
-	boolean isRl2013 = false;
-	boolean isRl1996 = false;
+	private boolean doDistributions = false;
+	private boolean includeRlStaus2013 = false;
+	private boolean includeRlStatus1996 = false;
 	private ByteArrayOutputStream baos;
 	private boolean isUseIdWherePossible = false;
 	private boolean includeBasionymsInResourceRelations;
@@ -64,7 +64,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				DwcaTaxExportRedlist.class
-				//,DwcaDistributionExportRedlist.class
 		};
 	}
 
@@ -261,20 +260,20 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		this.baos = baos;
 	}
 
-	public boolean isRl2013() {
-		return isRl2013;
+	public boolean isIncludedRl2013() {
+		return includeRlStaus2013;
 	}
 
-	public void setRl2013(boolean isRl2013) {
-		this.isRl2013 = isRl2013;
+	public void setIncludeRl2013(boolean isRl2013) {
+		this.includeRlStaus2013 = isRl2013;
 	}
 
-	public boolean isRl1996() {
-		return isRl1996;
+	public boolean isIncludedRl1996() {
+		return includeRlStatus1996;
 	}
 
-	public void setRl1996(boolean isRl1996) {
-		this.isRl1996 = isRl1996;
+	public void setIncludeRl1996(boolean isRl1996) {
+		this.includeRlStatus1996 = isRl1996;
 	}
 
 

@@ -222,6 +222,38 @@ public abstract class DwcaRecordBaseRedlist {
 		}
 	}
 	
+	protected void printHeadlines(PrintWriter writer, ArrayList<String> list, TermUri termUri){
+		for(String element:list){
+			if(list.get(0).equals(element)){
+				print(element, writer, IS_FIRST, termUri);
+			}
+			else{
+				print(element, writer, IS_NOT_FIRST, termUri);
+			}
+		}
+		writer.println();
+	}
+
+	protected void prettyPrintRedlist(ArrayList<String> list, TermUri termUri, PrintWriter writer){
+		if(list == null||list.isEmpty()){
+			print("", writer, IS_NOT_FIRST, termUri);
+		}else{
+			for (String element:list){
+				if(list.get(0).equals(element)){
+					writer.write("\t");
+					print(element, writer, IS_FIRST, termUri);
+					if(list.size()>1)
+						writer.write(",");
+				}else if(list.get(list.size()-1).equals(element)){
+					print(element, writer, IS_FIRST, termUri);
+				}else{
+					print(element, writer, IS_FIRST, termUri);
+					writer.write(",");
+				}
+			}
+		}
+	}
+	
 	private void registerFieldKey(URI key, String defaultValue) {
 		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}

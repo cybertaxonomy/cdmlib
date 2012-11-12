@@ -75,8 +75,8 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	protected void doInvoke(DwcaTaxExportStateRedlist state){
 		DwcaTaxExportConfiguratorRedlist config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
-		doRlStatus13 = config.isRl2013;
-		doRlStatus96 = config.isRl1996;
+		doRlStatus13 = config.isIncludedRl2013();
+		doRlStatus96 = config.isIncludedRl1996();
 		DwcaMetaDataRecordRedlist metaRecord = new DwcaMetaDataRecordRedlist(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 		

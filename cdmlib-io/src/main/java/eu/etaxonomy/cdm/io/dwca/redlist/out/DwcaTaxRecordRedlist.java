@@ -65,7 +65,7 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 
 	public void write(PrintWriter writer) {
 		if(isHeadLinePrinted()){
-			printHeadlines(writer, setHeadlines());
+			printHeadlines(writer, setHeadlines(), TermUri.DWC_DATASET_NAME);
 			isHeadLinePrinted=false;
 		}
 
@@ -78,40 +78,6 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 		if(printRl13)prettyPrintRedlist(rlStatus13, TermUri.DWC_LIFESTAGE, writer);
 		writer.println();
 	}
-	
-	
-	private void printHeadlines(PrintWriter writer, ArrayList<String> list){
-		for(String element:list){
-			if(list.get(0).equals(element)){
-				print(element, writer, IS_FIRST, TermUri.DWC_DATASET_NAME);
-			}
-			else{
-				print(element, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_NAME);
-			}
-		}
-		writer.println();
-	}
-
-	private void prettyPrintRedlist(ArrayList<String> list, TermUri termUri, PrintWriter writer){
-		if(list == null||list.isEmpty()){
-			print("", writer, IS_NOT_FIRST, termUri);
-		}else{
-			for (String element:list){
-				if(list.get(0).equals(element)){
-					writer.write("\t");
-					print(element, writer, IS_FIRST, termUri);
-					if(list.size()>1)
-						writer.write(",");
-				}else if(list.get(list.size()-1).equals(element)){
-					print(element, writer, IS_FIRST, termUri);
-				}else{
-					print(element, writer, IS_FIRST, termUri);
-					writer.write(",");
-				}
-			}
-		}
-	}
-	
 	
 	public String getDatasetName() {
 		return datasetName;

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -66,7 +65,7 @@ public class DwcaExportController{
 			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
 			ServletOutputStream sos = response.getOutputStream();
 			response.setContentType("text/csv");
-			response.setHeader("Content-Disposition", "attachment; filename=\"RedlistCoreTax.csv\"");
+			response.setHeader("Content-Disposition", "attachment; filename=\"RedlistCoreTax.txt\"");
 
 			int i;
 			while((i = isr.read())!= -1){
@@ -85,34 +84,21 @@ public class DwcaExportController{
 
 	private DwcaTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, String[] options, ByteArrayOutputStream byteArrayOutputStream) {
 
-		boolean isRl2013 = false;
-		boolean isRl1996 = false;		
-		boolean doDistributions = false;
+		boolean doRlStatus2013 = false;
+		boolean doRlStatus1996 = false;		
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<UUID> classificationUUIDS = new HashSet
 		(Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
-
-		List<UUID> featureExclusions = Arrays.asList(new UUID[] {
-				UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630"), // occurrences
-				UUID.fromString("8075074c-ace8-496b-ac82-47c14553f7fd"), // Editor_Parenthesis
-				UUID.fromString("c0cc5ebe-1f0c-4c31-af53-d486858ea415"), // Image
-				// Sources
-				UUID.fromString("9f6c551d-0f19-45ea-a855-4946f6fc1093"), // Credits
-				UUID.fromString("cbf12c6c-94e6-4724-9c48-0f6f10d83e1c"), // Editor
-				// Brackets
-				UUID.fromString("0508114d-4158-48b5-9100-369fa75120d3") // inedited
-		});
-
 		String destination = System.getProperty("java.io.tmpdir");
 
 		if (options != null && options.length != 0) {
 			logger.info("set individual configurations for export...");
 			for (String option : options) {
 				logger.info("... "+option);
-				if(option.equals("setRl1996")) isRl1996 = true;
-				if(option.equals("setRl2013")) isRl2013 = true;
-				if(option.equals("setDoDistributions"))doDistributions=true;
+				if(option.equals("setRl1996")) doRlStatus1996 = true;
+				if(option.equals("setRl2013")) doRlStatus2013 = true;
+				//if(option.equals("setDoDistributions"))doDistributions=true;
 			}
 		}else {
 			logger.info("set standard configurations for export...");
@@ -120,12 +106,10 @@ public class DwcaExportController{
 		DwcaTaxExportConfiguratorRedlist config = DwcaTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
 		config.setHasHeaderLines(true);
 		config.setFieldsTerminatedBy("\t");
-		config.setDoDistributions(doDistributions);
-		config.setFeatureExclusions(featureExclusions);
 		config.setClassificationUuids(classificationUUIDS);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
-		config.setRl1996(isRl1996);
-		config.setRl2013(isRl2013);
+		config.setIncludeRl1996(doRlStatus1996);
+		config.setIncludeRl2013(doRlStatus2013);
 		return config;
 	}
 
