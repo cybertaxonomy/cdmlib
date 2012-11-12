@@ -1602,6 +1602,7 @@ cdmlib-remote-webapp/src/main/webapp/css/images/ui-icons_888888_256x240.png -tex
 cdmlib-remote-webapp/src/main/webapp/css/images/ui-icons_cd0a0a_256x240.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui-1.8.23.custom.css -text
 cdmlib-remote-webapp/src/main/webapp/dwca/dwcaExport.jsp -text
+cdmlib-remote-webapp/src/main/webapp/dwca/export.jsp -text
 cdmlib-remote-webapp/src/main/webapp/dwca/success.jsp -text
 cdmlib-remote-webapp/src/main/webapp/dwca/test.jsp -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
