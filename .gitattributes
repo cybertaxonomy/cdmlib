@@ -1601,12 +1601,14 @@ cdmlib-remote-webapp/src/main/webapp/css/images/ui-icons_454545_256x240.png -tex
 cdmlib-remote-webapp/src/main/webapp/css/images/ui-icons_888888_256x240.png -text
 cdmlib-remote-webapp/src/main/webapp/css/images/ui-icons_cd0a0a_256x240.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui-1.8.23.custom.css -text
+cdmlib-remote-webapp/src/main/webapp/css/rl_export.css -text
 cdmlib-remote-webapp/src/main/webapp/dwca/dwcaExport.jsp -text
 cdmlib-remote-webapp/src/main/webapp/dwca/export.jsp -text
 cdmlib-remote-webapp/src/main/webapp/dwca/success.jsp -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-1.7.2.min.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-ui-1.8.23.custom.min.js -text
+cdmlib-remote-webapp/src/main/webapp/js/rl_export.js -text
 cdmlib-remote-webapp/src/main/webapp/xsl/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text

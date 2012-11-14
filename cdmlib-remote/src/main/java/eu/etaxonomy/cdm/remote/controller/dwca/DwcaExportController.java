@@ -122,8 +122,4 @@ public class DwcaExportController{
 		config.setIncludeRl2013(doRlStatus2013);
 		return config;
 	}
-
-
-
-
 }

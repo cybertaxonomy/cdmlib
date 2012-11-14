@@ -46,7 +46,6 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 
 	public DwcaTaxRecordRedlist(DwcaMetaDataRecordRedlist metaDataRecord, DwcaTaxExportConfiguratorRedlist config){
 		super(metaDataRecord, config);
-		//scientificNameId = new DwcaId(config);
 		datasetId = new DwcaId(config);
 	}
 

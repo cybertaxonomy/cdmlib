@@ -56,10 +56,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	private UUID rlUuid1996;
 	private UUID rlUuid2013;
 
-
-	/**
-	 * 
-	 */
 	public DwcaTaxExportRedlist() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
@@ -106,12 +102,9 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 						record.write(writer);
 						this.addExistingRecord(taxon);
 					}
-
 				//misapplied names
 				handleMisapplication(taxon, writer, classification, metaRecord, config);
-				
 				writer.flush();
-				
 			}
 
 		} catch (ClassCastException e) {
@@ -125,8 +118,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		return;
 		
 	}
-
-	
 
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecordRedlist metaRecord, DwcaTaxExportConfiguratorRedlist config) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
@@ -183,8 +174,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		return;
 	}
 
-
-
 	/**
 	 * @param record
 	 * @param name
@@ -236,7 +225,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		}
 		record.setSynonyms(synonyms);
 	}
-
 
 	private void handleDiscriptionData(DwcaTaxRecordRedlist record, Taxon taxon) {
 		
@@ -299,7 +287,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 				handleRedlistStatus(record, relatedTaxon, true);
 			}
 		}
-
 	}
 
 	@Override
@@ -308,7 +295,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
-
 
 	@Override
 	protected boolean isIgnore(DwcaTaxExportStateRedlist state) {

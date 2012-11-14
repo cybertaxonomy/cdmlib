@@ -42,8 +42,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private boolean includeRlStaus2013 = false;
 	private boolean includeRlStatus1996 = false;
 	private UUID rlUuid1996;
-	
-
 	private UUID rlUuid2013;
 	private ByteArrayOutputStream baos;
 	private boolean isUseIdWherePossible = false;
@@ -61,7 +59,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public static DwcaTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) { 
 		return new DwcaTaxExportConfiguratorRedlist(source, destinationFolder);
 	}
-
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -94,7 +91,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getDestinationNameString()
