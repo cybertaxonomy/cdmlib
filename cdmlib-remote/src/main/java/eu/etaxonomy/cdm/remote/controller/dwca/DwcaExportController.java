@@ -86,6 +86,8 @@ public class DwcaExportController{
 
 		boolean doRlStatus2013 = false;
 		boolean doRlStatus1996 = false;		
+		UUID rlUuid1996 = null;
+		UUID rlUuid2013 = null;
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<UUID> classificationUUIDS = new HashSet
@@ -96,8 +98,14 @@ public class DwcaExportController{
 			logger.info("set individual configurations for export...");
 			for (String option : options) {
 				logger.info("... "+option);
-				if(option.equals("setRl1996")) doRlStatus1996 = true;
-				if(option.equals("setRl2013")) doRlStatus2013 = true;
+				if(option.equals("d4ac9c74-06fb-4899-b4b2-52c0ea940161")) {
+					doRlStatus1996 = true;
+					rlUuid1996 = UUID.fromString(option);
+				}
+				if(option.equals("bc0dbe02-56f5-43f9-8649-7a77f27e3563")){
+					doRlStatus2013 = true;
+					rlUuid2013 = UUID.fromString(option);
+				}
 				//if(option.equals("setDoDistributions"))doDistributions=true;
 			}
 		}else {
@@ -108,6 +116,8 @@ public class DwcaExportController{
 		config.setFieldsTerminatedBy("\t");
 		config.setClassificationUuids(classificationUUIDS);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
+		if(doRlStatus1996)config.setRlUuid1996(rlUuid1996);
+		if(doRlStatus2013)config.setRlUuid2013(rlUuid2013);
 		config.setIncludeRl1996(doRlStatus1996);
 		config.setIncludeRl2013(doRlStatus2013);
 		return config;
