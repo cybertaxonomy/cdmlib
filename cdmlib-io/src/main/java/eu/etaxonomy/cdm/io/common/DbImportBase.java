@@ -36,8 +36,13 @@ import eu.etaxonomy.cdm.model.common.User;
 public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE>, CONFIG extends DbImportConfiguratorBase<STATE>> extends CdmImportBase<CONFIG, STATE> implements ICdmIO<STATE>, IPartitionedIO<STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportBase.class);
 	
-	public DbImportBase() {
+	private String dbTableName ;
+	private String pluralString;
+	
+	public DbImportBase(String tableName, String pluralString) {
 		super();
+		this.dbTableName = tableName;
+		this.pluralString = pluralString;
 	}
 	
 	protected void doInvoke(STATE state){
@@ -85,15 +90,21 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	 */
 	protected abstract String getIdQuery(STATE state);
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getPluralString()
-	 */
-	public abstract String getPluralString();
-
+	
 	/**
 	 * @return
 	 */
-	protected abstract String getTableName();
+	protected String getTableName() {
+		return dbTableName;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#getPluralString()
+	 */
+	public String getPluralString() {
+		return pluralString;
+	}
 	
 
 	/**

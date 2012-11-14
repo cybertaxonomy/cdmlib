@@ -51,7 +51,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 	private static final String pluralString = "Authors";
 	
 	public BerlinModelAuthorImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 	
 	/* (non-Javadoc)
@@ -181,23 +181,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
