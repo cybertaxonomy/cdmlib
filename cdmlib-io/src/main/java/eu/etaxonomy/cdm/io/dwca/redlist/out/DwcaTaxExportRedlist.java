@@ -53,6 +53,8 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	private static final String fileName = "RedlistCoreTax.csv";
 	private boolean doRlStatus96;
 	private boolean doRlStatus13;
+	private UUID rlUuid1996;
+	private UUID rlUuid2013;
 
 
 	/**
@@ -77,6 +79,8 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		TransactionStatus txStatus = startTransaction(true);
 		doRlStatus13 = config.isIncludedRl2013();
 		doRlStatus96 = config.isIncludedRl1996();
+		rlUuid1996 = config.getRlUuid1996();
+		rlUuid2013 = config.getRlUuid2013();
 		DwcaMetaDataRecordRedlist metaRecord = new DwcaMetaDataRecordRedlist(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 		
@@ -163,6 +167,7 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 
 		record.setDatasetName(classification.getTitleCache());
 		record.setScientificName(name.getTitleCache());
+		record.setScientificNameId(name.getUuid().toString());
 		handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
 		//synonyms
 		handleSynonyms(record,(Taxon) taxonBase);
@@ -170,7 +175,10 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		handleDiscriptionData(record, (Taxon) taxonBase);
 		if(doRlStatus96||doRlStatus13)handleRedlistStatus(record, (Taxon)taxonBase, false);
 		//handle status data from related Taxa in different classifications
-		if(doRlStatus96||doRlStatus13)handleRelatedRedlistStatus(record, (Taxon) taxonBase);
+		if(doRlStatus96||doRlStatus13){
+			handleRelatedRedlistStatus(record, (Taxon) taxonBase, true);
+			handleRelatedRedlistStatus(record, (Taxon) taxonBase, false);
+		}
 		
 		return;
 	}
@@ -239,7 +247,6 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 				if (el.isInstanceOf(Distribution.class) ){
 						Distribution distribution = CdmBase.deproxy(el, Distribution.class);
 						NamedArea area = distribution.getArea();
-//						logger.info("Adding Elements of Distributions..." + area.getTitleCache());
 						distributions.add(area.getTitleCache());
 				}
 
@@ -259,15 +266,10 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 				if(el.isInstanceOf(CategoricalData.class)){
 					CategoricalData categoricalData = CdmBase.deproxy(el, CategoricalData.class);
 					for(State state:categoricalData.getStatesOnly()){
-						logger.info("Anfang: "+categoricalData.getFeature().toString());
-						if("Rote Liste 1996 Kategorie".equals(categoricalData.getFeature().toString())){
-							logger.info("Feature96: "+categoricalData.getFeature().toString());
-							logger.info("State Element96: "+state);
+						if(doRlStatus96 && rlUuid1996.equals(categoricalData.getFeature().getUuid())){
 							rl96.add(state.toString());
 							isSet96 = true;
-						}else if("Rote Liste 2013 Kategorie".equals(categoricalData.getFeature().toString())){
-							logger.info("Feature13: "+categoricalData.getFeature().toString());
-							logger.info("State Element13: "+state);		
+						}else if(doRlStatus13 && rlUuid2013.equals(categoricalData.getFeature().getUuid())){
 							rl13.add(state.toString());
 							isSet13 = true;
 						}
@@ -279,19 +281,25 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		if(doRlStatus13 && isSet13)record.setRlStatus13(rl13);
 	}
 
-	private void handleRelatedRedlistStatus(DwcaTaxRecordRedlist record, Taxon taxon) {
-		
-		Set<TaxonRelationship> taxRels = taxon.getRelationsFromThisTaxon();
+	private void handleRelatedRedlistStatus(DwcaTaxRecordRedlist record, Taxon taxon, boolean relationFrom) {
+		Set<TaxonRelationship> taxRels;
+		if(relationFrom){
+			taxRels = taxon.getRelationsFromThisTaxon();
+		}else{
+			taxRels = taxon.getRelationsToThisTaxon();
+		}
 		for (TaxonRelationship taxRel:taxRels){
 			if(taxRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO())){
-				Taxon relatedTaxon = taxRel.getToTaxon();
-				logger.info("Original Taxon: " + taxon.getTitleCache());
-				logger.info("Related Taxon: "+relatedTaxon.getTitleCache());
-				
+				Taxon relatedTaxon;
+				if(relationFrom){
+					relatedTaxon = taxRel.getToTaxon();
+				}else{
+					relatedTaxon = taxRel.getFromTaxon();
+				}
 				handleRedlistStatus(record, relatedTaxon, true);
 			}
 		}
-		
+
 	}
 
 	@Override

@@ -41,6 +41,10 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private boolean doDistributions = false;
 	private boolean includeRlStaus2013 = false;
 	private boolean includeRlStatus1996 = false;
+	private UUID rlUuid1996;
+	
+
+	private UUID rlUuid2013;
 	private ByteArrayOutputStream baos;
 	private boolean isUseIdWherePossible = false;
 	private boolean includeBasionymsInResourceRelations;
@@ -274,6 +278,25 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 
 	public void setIncludeRl1996(boolean isRl1996) {
 		this.includeRlStatus1996 = isRl1996;
+	}
+	
+	public UUID getRlUuid1996() {
+		return rlUuid1996;
+	}
+
+
+	public void setRlUuid1996(UUID rlUuid1996) {
+		this.rlUuid1996 = rlUuid1996;
+	}
+
+
+	public UUID getRlUuid2013() {
+		return rlUuid2013;
+	}
+
+
+	public void setRlUuid2013(UUID rlUuid2013) {
+		this.rlUuid2013 = rlUuid2013;
 	}
 
 

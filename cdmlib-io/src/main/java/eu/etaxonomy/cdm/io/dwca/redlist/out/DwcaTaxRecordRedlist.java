@@ -28,6 +28,7 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTaxRecordRedlist.class);
 
+	private String scientificNameId;
 	private String scientificName;
 	private String taxonomicStatus;
 	private DwcaId datasetId;
@@ -71,6 +72,7 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 
 		print(datasetName, writer, IS_FIRST, TermUri.DWC_DATASET_NAME);
 		print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
+		print(scientificNameId, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_ID);
 		print(taxonomicStatus, writer, IS_NOT_FIRST, TermUri.DWC_TAXONOMIC_STATUS);
 		prettyPrintRedlist(synonyms, TermUri.DWC_SCIENTIFIC_NAME, writer);
 		prettyPrintRedlist(countryCodes, TermUri.DWC_COUNTRY_CODE, writer);
@@ -132,7 +134,7 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 	//FIXME: hard coded header lines
 	private ArrayList<String> setHeadlines(){
 		headlines = new ArrayList<String>(); 
-		Collections.addAll(headlines, "Classification","Taxon","Taxon Status","Synonym","Distribution");
+		Collections.addAll(headlines, "Classification","Taxon","Taxon ID","Taxon Status","Synonym","Distribution");
 		if(printRl96)headlines.add("Rote Liste Satus 1996");
 		if(printRl13)headlines.add("Rote Liste Satus 2013");
 		
@@ -153,6 +155,10 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 
 	public void setPrintRl13(boolean printRl13) {
 		this.printRl13 = printRl13;
+	}
+	
+	public void setScientificNameId(String scientificNameId) {
+		this.scientificNameId = scientificNameId;
 	}
 
 }
