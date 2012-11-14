@@ -1604,7 +1604,6 @@ cdmlib-remote-webapp/src/main/webapp/css/jquery-ui-1.8.23.custom.css -text
 cdmlib-remote-webapp/src/main/webapp/dwca/dwcaExport.jsp -text
 cdmlib-remote-webapp/src/main/webapp/dwca/export.jsp -text
 cdmlib-remote-webapp/src/main/webapp/dwca/success.jsp -text
-cdmlib-remote-webapp/src/main/webapp/dwca/test.jsp -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-1.7.2.min.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-ui-1.8.23.custom.min.js -text

@@ -16,7 +16,7 @@
 	rel="stylesheet" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>CDM Remote API</title>
+<title>CDM DWCA Export</title>
 <script>
 $('.showall').click(function() {
 	$(this).prev().focus().autocomplete("search", "", { delay: 0 });
@@ -174,6 +174,21 @@ $(function() {
 			
 		}
 	});
+	var checkbox;
+	$.getJSON('../featureTree.json', function(data) {
+		var count = 2;
+		for(i=0;i < count ; i++){
+			checkbox = document.createElement('input');
+			checkbox.id = "checkbox"+i;
+			checkbox.type = "checkbox";
+			checkbox.name = "dlOptions";
+			checkbox.value = data[0].root.children[i].feature.uuid;
+			var description = data[0].root.children[i].feature.titleCache; 
+			$("#dwcaDlOptions").append(checkbox);
+			$("#dwcaDlOptions").append(document.createTextNode(description));
+			$("#dwcaDlOptions").append("<p>");
+		}
+	});
 });
 
 
@@ -253,23 +268,12 @@ ul#icons span.ui-icon {
 				title="type &quot;*&quot; to retrieve all entries"></select>
 			<!--  <span class="showall ui-icon ui-icon-triangle-1-s" title="Show all">Show all </span> -->
 		</div>
-		<table id="dwcaOptions">
-			<tr>
-				<td>Download Options:</td>
-
-			<tr>
-				<td><input type="checkbox" name="dlOptions"
-					value="setRl1996"> Rote Liste Status 1996</td>
-			</tr>
-			<tr>
-				<td><input type="checkbox" name="dlOptions"
-					value="setRl2013"> Rote Liste Status 2013</td>
-			</tr>
-		 	<tr>
-				<td colspan="2" align="center"><input type="submit"
-					value="Submit" onclick=""></td>
-			</tr> 
-		</table>
+		<div id="dwcaDlOptions">
+			<h4>Download Options:</h4>
+		</div>
+		<div id="button">
+		<input type="submit" value="Submit" onclick="">
+		</div>
 	</form>
 </body>
 </html>
