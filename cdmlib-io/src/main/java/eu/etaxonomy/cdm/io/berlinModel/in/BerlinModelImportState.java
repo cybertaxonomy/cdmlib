@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.User;
 
 /**
  * @author a.mueller
@@ -29,9 +28,7 @@ public class BerlinModelImportState extends DbImportStateBase<BerlinModelImportC
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelImportState.class);
 
-	Map<String, DefinedTermBase> dbCdmDefTermMap = new HashMap<String, DefinedTermBase>();
-	
-	Map<String, User> usernameMap = new HashMap<String, User>();
+	private Map<String, DefinedTermBase> dbCdmDefTermMap = new HashMap<String, DefinedTermBase>();
 	
 	private boolean isReferenceSecondPath = false;
 
@@ -62,14 +59,7 @@ public class BerlinModelImportState extends DbImportStateBase<BerlinModelImportC
 	public void putDefinedTermToMap(String tableName, int id, DefinedTermBase term){
 		putDefinedTermToMap(tableName, String.valueOf(id), term);
 	}
-	
-	public User getUser(String username){
-		return usernameMap.get(username);
-	}
 
-	public void putUser(String username, User user){
-		usernameMap.put(username, user);
-	}
 
 	public boolean isReferenceSecondPath() {
 		return isReferenceSecondPath;

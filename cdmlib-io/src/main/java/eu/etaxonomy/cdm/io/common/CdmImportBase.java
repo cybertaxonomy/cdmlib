@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -856,6 +858,49 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			childName.setCombinationAuthorTeam(parentName.getCombinationAuthorTeam());
 			childName.setBasionymAuthorTeam(parentName.getBasionymAuthorTeam());
 		}	
+	}
+	
+	/**
+	 * Returns the taxon description for a taxon. If there are multiple taxon descriptions
+	 * an arbitrary one is chosen.
+	 * If no taxon description exists, a new one is created if <code>createNewIfNotExists</code>
+	 * is <code>true</code>.
+	 * @param createNewIfNotExists
+	 * @param isImageGallery if true only taxon description being image galleries are considered.
+	 * If false only taxon description being no image galleries are considered.
+	 * @return
+	 */
+	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase name, boolean isImageGallery, boolean createNewIfNotExists) {
+		Reference ref = null;
+		return getTaxonNameDescription(name, ref, isImageGallery, createNewIfNotExists);
+	}
+	
+	/**
+	 * Like {@link #getTaxonDescription(Taxon, boolean, boolean)}
+	 * Only matches a description if the given reference is a source of the description.<BR>
+	 * If a new description is created the given reference will be added as a source.
+	 * 
+	 * @see #getTaxonDescription(Taxon, boolean, boolean)
+	 */
+	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase<?,?> name, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+		TaxonNameDescription result = null;
+		Set<TaxonNameDescription> descriptions= name.getDescriptions();
+		for (TaxonNameDescription description : descriptions){
+			if (description.isImageGallery() == isImageGallery){
+				if (hasCorrespondingSource(ref, description)){
+					result = description;
+					break;
+				}
+			}
+		}
+		if (result == null && createNewIfNotExists){
+			result = TaxonNameDescription.NewInstance(name);
+			result.setImageGallery(isImageGallery);
+			if (ref != null){
+				result.addSource(null, null, ref, null);
+			}
+		}
+		return result;
 	}
 	
 	/**
