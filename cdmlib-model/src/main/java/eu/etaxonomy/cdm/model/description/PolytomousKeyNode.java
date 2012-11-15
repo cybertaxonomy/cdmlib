@@ -359,7 +359,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			maxNodeNumber = children.get(0).getNodeNumber();
 			child.setNodeNumber(maxNodeNumber);
 		}
-		System.out.println("maxNodeNumber : " + maxNodeNumber);
+		
 		children.add(index, child);
 		child.setKey(this.getKey());
 		// TODO workaround (see sortIndex doc)
