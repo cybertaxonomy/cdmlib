@@ -1173,6 +1173,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Double.valueOf(doubleObject.toString());
 		}
 	}
+	
+	protected Float nullSafeFloat(ResultSet rs, String columnName) throws SQLException {
+		Object doubleObject = rs.getObject(columnName);
+		if (doubleObject == null){
+			return null;
+		}else{
+			return Float.valueOf(doubleObject.toString());
+		}
+	}
 
 	
 }
