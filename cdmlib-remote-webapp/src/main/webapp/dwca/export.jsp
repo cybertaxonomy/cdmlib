@@ -15,7 +15,7 @@
 </head>
 <body>
 	<h1>Export TSV Page</h1>
-	<form method="post" action="getDB">
+	<form name="exportForm" method="post" action="getDB" onsubmit="return validateForm()">
 		<div class="ui-widget">
 			<label for="combobox">Classification</label> 
 			<select id="combobox" name="combobox" value="" title="type &quot;*&quot; to retrieve all entries"></select>

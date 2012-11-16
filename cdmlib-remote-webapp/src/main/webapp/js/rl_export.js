@@ -152,17 +152,28 @@ $(document).ready(function () {
 	});
 	var checkbox;
 	$.getJSON('../featureTree.json', function(data) {
-		var count = 2;
-		for(i=0;i < count ; i++){
-			checkbox = document.createElement('input');
-			checkbox.id = "checkbox"+i;
-			checkbox.type = "checkbox";
-			checkbox.name = "dlOptions";
-			checkbox.value = data[0].root.children[i].feature.uuid;
-			var description = data[0].root.children[i].feature.titleCache; 
-			$("#dwcaDlOptions").append(checkbox);
-			$("#dwcaDlOptions").append(document.createTextNode(description));
-			$("#dwcaDlOptions").append("<p>");
+		for(j = 0; j < data.length; j++){
+			for(i=0; i < data[j].root.children.length ; i++){
+				checkbox = document.createElement('input');
+				checkbox.id = "checkbox"+i;
+				checkbox.type = "checkbox";
+				checkbox.name = "dlOptions";
+				checkbox.value = data[j].root.children[i].feature.uuid;
+				var description = data[j].root.children[i].feature.titleCache; 
+				$("#dwcaDlOptions").append(checkbox);
+				$("#dwcaDlOptions").append(document.createTextNode(description));
+				$("#dwcaDlOptions").append("<p>");
+			}
 		}
 	});
 });
+
+function validateForm()
+{
+var x=document.forms["exportForm"]["combobox"].selectedIndex;
+if (x==null || x==-1 || x == "")
+  {
+  alert("Select a classification");
+  return false;
+  }
+}
