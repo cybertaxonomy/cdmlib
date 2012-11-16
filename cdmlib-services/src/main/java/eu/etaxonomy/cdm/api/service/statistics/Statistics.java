@@ -9,8 +9,11 @@
 */
 package eu.etaxonomy.cdm.api.service.statistics;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.map.HashedMap;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
@@ -29,22 +32,26 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  */
 public class Statistics {
 	
-	private StatisticsConfigurator request;
+//	private StatisticsConfigurator request;
 	
 	private Map<StatisticsTypeEnum, Number> countMap;
 	
 	private Map<StatisticsPartEnum, Map<IdentifiableEntity, Statistics>> partList;
 
 	
-	
-	
-	public void setRequest(StatisticsConfigurator request) {
-		this.request = request;
-	}
-
-	public StatisticsConfigurator getRequest() {
-		return request;
-	}
+//	public Statistics(StatisticsConfigurator configurator){
+//		this.request=configurator;
+////		this.countMap= new HashMap<StatisticsTypeEnum, Number>();
+//		
+//	}
+//	
+//	public void setRequest(StatisticsConfigurator request) {
+//		this.request = request;
+//	}
+//
+//	public StatisticsConfigurator getRequest() {
+//		return request;
+//	}
 
 	public Map<StatisticsTypeEnum, Number> getCountMap() {
 		return countMap;

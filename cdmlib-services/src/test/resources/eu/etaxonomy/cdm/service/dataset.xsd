@@ -51,8 +51,8 @@
 				<xsd:element name="REFERENCE_MARKER_AUD" type="dflt:REFERENCE_MARKER_AUD__type" />
 				<xsd:element name="PERMISSIONGROUP" type="dflt:PERMISSIONGROUP__type" />
 				<xsd:element name="TAXONINTERACTION_LANGUAGESTRING_AUD" type="dflt:TAXONINTERACTION_LANGUAGESTRING_AUD__type" />
-				<xsd:element name="ORIGINALSOURCEBASE_ANNOTATION" type="dflt:ORIGINALSOURCEBASE_ANNOTATION__type" />
 				<xsd:element name="HOMOTYPICALGROUP_MARKER_AUD" type="dflt:HOMOTYPICALGROUP_MARKER_AUD__type" />
+				<xsd:element name="ORIGINALSOURCEBASE_ANNOTATION" type="dflt:ORIGINALSOURCEBASE_ANNOTATION__type" />
 				<xsd:element name="COLLECTION_ANNOTATION" type="dflt:COLLECTION_ANNOTATION__type" />
 				<xsd:element name="MEDIAREPRESENTATION" type="dflt:MEDIAREPRESENTATION__type" />
 				<xsd:element name="MEDIA_RIGHTS" type="dflt:MEDIA_RIGHTS__type" />
@@ -387,8 +387,8 @@
 				<xsd:element name="POLYTOMOUSKEYNODE_AUD" type="dflt:POLYTOMOUSKEYNODE_AUD__type" />
 				<xsd:element name="SEQUENCE_ANNOTATION" type="dflt:SEQUENCE_ANNOTATION__type" />
 				<xsd:element name="FEATURENODE_DEFINEDTERMBASE_INAPPLICABLEIF_AUD" type="dflt:FEATURENODE_DEFINEDTERMBASE_INAPPLICABLEIF_AUD__type" />
-				<xsd:element name="AGENTBASE_MEDIA_AUD" type="dflt:AGENTBASE_MEDIA_AUD__type" />
 				<xsd:element name="ORIGINALSOURCEBASE_MARKER" type="dflt:ORIGINALSOURCEBASE_MARKER__type" />
+				<xsd:element name="AGENTBASE_MEDIA_AUD" type="dflt:AGENTBASE_MEDIA_AUD__type" />
 				<xsd:element name="REPRESENTATION_ANNOTATION_AUD" type="dflt:REPRESENTATION_ANNOTATION_AUD__type" />
 				<xsd:element name="POLYTOMOUSKEY_RIGHTS_AUD" type="dflt:POLYTOMOUSKEY_RIGHTS_AUD__type" />
 				<xsd:element name="GATHERINGEVENT_ANNOTATION" type="dflt:GATHERINGEVENT_ANNOTATION__type" />
@@ -446,8 +446,8 @@
 				<xsd:element name="DERIVATIONEVENT_MARKER" type="dflt:DERIVATIONEVENT_MARKER__type" />
 				<xsd:element name="SPECIMENOROBSERVATIONBASE_RIGHTS" type="dflt:SPECIMENOROBSERVATIONBASE_RIGHTS__type" />
 				<xsd:element name="DBMAINTAIN_SCRIPTS" type="dflt:DBMAINTAIN_SCRIPTS__type" />
-				<xsd:element name="DEFINEDTERMBASE_MEDIA_AUD" type="dflt:DEFINEDTERMBASE_MEDIA_AUD__type" />
 				<xsd:element name="COLLECTION_EXTENSION_AUD" type="dflt:COLLECTION_EXTENSION_AUD__type" />
+				<xsd:element name="DEFINEDTERMBASE_MEDIA_AUD" type="dflt:DEFINEDTERMBASE_MEDIA_AUD__type" />
 				<xsd:element name="MEDIAKEY_SCOPE" type="dflt:MEDIAKEY_SCOPE__type" />
 				<xsd:element name="DETERMINATIONEVENT_REFERENCE_AUD" type="dflt:DETERMINATIONEVENT_REFERENCE_AUD__type" />
 				<xsd:element name="KEYSTATEMENT" type="dflt:KEYSTATEMENT__type" />
