@@ -1635,6 +1635,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyPort
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ProgressMonitorController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/StatisticsController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeController.java -text
@@ -1897,6 +1898,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeSer
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IStatisticsService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
@@ -1921,6 +1923,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceI
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
