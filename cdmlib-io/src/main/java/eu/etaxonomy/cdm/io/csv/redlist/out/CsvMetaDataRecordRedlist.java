@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import org.apache.log4j.Logger;
  * @date 20.04.2011
  *
  */
-public class DwcaMetaDataRecordRedlist  {
+public class CsvMetaDataRecordRedlist  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaMetaDataRecordRedlist.class);
+	private static final Logger logger = Logger.getLogger(CsvMetaDataRecordRedlist.class);
 	
 	private String fileLocation;
 	private String rowType;
@@ -33,11 +33,11 @@ public class DwcaMetaDataRecordRedlist  {
 	
 	private int count = 0;
 	
-	private List<FieldEntry> fieldEntryList = new ArrayList<DwcaMetaDataRecordRedlist.FieldEntry>();
+	private List<FieldEntry> fieldEntryList = new ArrayList<CsvMetaDataRecordRedlist.FieldEntry>();
 	protected List<String> fieldList = new ArrayList<String>();
 	
 	
-	public DwcaMetaDataRecordRedlist(boolean isCore, String fileLocation, String rowType){
+	public CsvMetaDataRecordRedlist(boolean isCore, String fileLocation, String rowType){
 		FieldEntry idEntry = new FieldEntry();
 		idEntry.index = currentIndex++;
 		idEntry.elementName = isCore ? "id" : "coreid";

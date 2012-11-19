@@ -54,7 +54,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 
 	
 	public BerlinModelTypesImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 
 
@@ -279,23 +279,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		IOValidator<BerlinModelImportState> validator = new BerlinModelTypesImportValidator();
 		return validator.validate(state);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

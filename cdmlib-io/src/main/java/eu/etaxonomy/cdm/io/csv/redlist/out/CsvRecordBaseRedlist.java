@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.PrintWriter;
 import java.net.URI;
@@ -50,8 +50,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
  * @date 20.04.2011
  *
  */
-public abstract class DwcaRecordBaseRedlist {
-	private static final Logger logger = Logger.getLogger(DwcaRecordBaseRedlist.class);
+public abstract class CsvRecordBaseRedlist {
+	private static final Logger logger = Logger.getLogger(CsvRecordBaseRedlist.class);
 
 	//TODO Collection_SEPARATOR
 	protected static final CharSequence COLLECTION_SEPARATOR = "@";
@@ -67,14 +67,14 @@ public abstract class DwcaRecordBaseRedlist {
 	protected abstract void registerKnownFields();
 	
 	protected int count;
-	private DwcaMetaDataRecordRedlist metaDataRecord;
-	protected DwcaTaxExportConfiguratorRedlist config;
+	private CsvMetaDataRecordRedlist metaDataRecord;
+	protected CsvTaxExportConfiguratorRedlist config;
 
 	private Integer id;
 	private UUID uuid;
 
 	
-	protected DwcaRecordBaseRedlist(DwcaMetaDataRecordRedlist metaDataRecord, DwcaTaxExportConfiguratorRedlist config){
+	protected CsvRecordBaseRedlist(CsvMetaDataRecordRedlist metaDataRecord, CsvTaxExportConfiguratorRedlist config){
 		this.metaDataRecord = metaDataRecord;
 		this.count = metaDataRecord.inc();
 		this.config = config;
@@ -109,7 +109,7 @@ public abstract class DwcaRecordBaseRedlist {
 //	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 //		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
 //	}
-	protected void print(DwcaId dwcaId, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
+	protected void print(CsvId dwcaId, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(dwcaId == null ? null : dwcaId.getId(), writer, addSeparator, fieldKey);
 	}
 	protected void print(UUID uuid, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
@@ -222,7 +222,7 @@ public abstract class DwcaRecordBaseRedlist {
 		}
 	}
 	
-	protected void printHeadlines(PrintWriter writer, ArrayList<String> list, TermUri termUri){
+	protected void printHeadline(PrintWriter writer, ArrayList<String> list, TermUri termUri){
 		for(String element:list){
 			if(list.get(0).equals(element)){
 				print(element, writer, IS_FIRST, termUri);
@@ -242,17 +242,22 @@ public abstract class DwcaRecordBaseRedlist {
 				if(list.get(0).equals(element)){
 					writer.write("\t");
 					print(element, writer, IS_FIRST, termUri);
-					if(list.size()>1)
+					if(list.size()>1){
 						writer.write(",");
+						logger.info(element);
+					}
 				}else if(list.get(list.size()-1).equals(element)){
 					print(element, writer, IS_FIRST, termUri);
 				}else{
 					print(element, writer, IS_FIRST, termUri);
 					writer.write(",");
+					logger.info(element);
+					
 				}
 			}
 		}
 	}
+	
 	
 	private void registerFieldKey(URI key, String defaultValue) {
 		this.metaDataRecord.addFieldEntry(key, defaultValue);
@@ -287,7 +292,7 @@ public abstract class DwcaRecordBaseRedlist {
 	}
 
 	protected String getNomStatus(NomenclaturalStatusType nomStatus) {
-		String result = DwcaTaxExportTransformerRedlist.transformToGbifNomStatus(nomStatus);
+		String result = CsvTaxExportTransformerRedlist.transformToGbifNomStatus(nomStatus);
 		if (result == null){
 			if (nomStatus == null){
 				return "";
@@ -309,7 +314,7 @@ public abstract class DwcaRecordBaseRedlist {
 	}
 
 	protected String getRank(Rank rank) {
-		String result = DwcaTaxExportTransformerRedlist.transformToGbifRank(rank);
+		String result = CsvTaxExportTransformerRedlist.transformToGbifRank(rank);
 		if (result == null){
 			if (rank == null){
 				return "";
@@ -322,7 +327,7 @@ public abstract class DwcaRecordBaseRedlist {
 	}
 	
 	protected String getSex(Sex sex) {
-		String result = DwcaTaxExportTransformerRedlist.transformToGbifSex(sex);
+		String result = CsvTaxExportTransformerRedlist.transformToGbifSex(sex);
 		if (result == null){
 			if (sex == null){
 				return "";
@@ -335,7 +340,7 @@ public abstract class DwcaRecordBaseRedlist {
 	}
 	
 	protected String getLifeStage(Stage stage) {
-		String result = DwcaTaxExportTransformerRedlist.transformToGbifLifeStage(stage);
+		String result = CsvTaxExportTransformerRedlist.transformToGbifLifeStage(stage);
 		if (result == null){
 			if (stage == null){
 				return "";
@@ -348,7 +353,7 @@ public abstract class DwcaRecordBaseRedlist {
 	}
 
 	protected String getOccurrenceStatus(PresenceAbsenceTermBase<?> status) {
-		String result = DwcaTaxExportTransformerRedlist.transformToGbifOccStatus(status);
+		String result = CsvTaxExportTransformerRedlist.transformToGbifOccStatus(status);
 		if (result == null){
 			if (status == null){
 				return "";
@@ -361,7 +366,7 @@ public abstract class DwcaRecordBaseRedlist {
 	}
 	
 	protected String getEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
-		String result = DwcaTaxExportTransformerRedlist.transformToGbifEstablishmentMeans(status);
+		String result = CsvTaxExportTransformerRedlist.transformToGbifEstablishmentMeans(status);
 		if (result == null){
 			if (status == null){
 				return "";
@@ -441,10 +446,10 @@ public abstract class DwcaRecordBaseRedlist {
 		String result;
 		if (status.isInstanceOf(SpecimenTypeDesignationStatus.class)){
 			SpecimenTypeDesignationStatus specStatus = CdmBase.deproxy(status, SpecimenTypeDesignationStatus.class);
-			result = DwcaTaxExportTransformerRedlist.transformSpecimenTypeStatusToGbif(specStatus);
+			result = CsvTaxExportTransformerRedlist.transformSpecimenTypeStatusToGbif(specStatus);
 		}else{
 			NameTypeDesignationStatus nameStatus = CdmBase.deproxy(status, NameTypeDesignationStatus.class);
-			result = DwcaTaxExportTransformerRedlist.transformNameTypeStatusToGbif(nameStatus);
+			result = CsvTaxExportTransformerRedlist.transformNameTypeStatusToGbif(nameStatus);
 		}
 		if (result == null){
 			return status.getLabel();

@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.net.URI;
 import java.util.UUID;
@@ -23,9 +23,9 @@ import eu.etaxonomy.cdm.model.common.LSID;
  * @date 29.04.2011
  *
  */
-public class DwcaId {
+public class CsvId {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaId.class);
+	private static final Logger logger = Logger.getLogger(CsvId.class);
 
 	private Integer intId;
 	private String strId;
@@ -33,9 +33,9 @@ public class DwcaId {
 	private URI uriId;
 	private LSID lsidId;
 	
-	private DwcaTaxExportConfiguratorRedlist config;
+	private CsvTaxExportConfiguratorRedlist config;
 	
-	public DwcaId(DwcaTaxExportConfiguratorRedlist config){
+	public CsvId(CsvTaxExportConfiguratorRedlist config){
 		this.config = config;
 	}
 	

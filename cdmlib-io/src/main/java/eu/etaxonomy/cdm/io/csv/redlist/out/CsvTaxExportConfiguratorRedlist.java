@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,15 +22,16 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 
 /**
  * @author a.oppermann
  * @created 17.10.2012
  */
-public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<DwcaTaxExportStateRedlist> {
+public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<CsvTaxExportStateRedlist> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaTaxExportConfiguratorRedlist.class);
+	private static final Logger logger = Logger.getLogger(CsvTaxExportConfiguratorRedlist.class);
 
 	private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
@@ -39,10 +40,6 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private String fieldsTerminatedBy=",";
 	private boolean doTaxa = true;
 	private boolean doDistributions = false;
-	private boolean includeRlStaus2013 = false;
-	private boolean includeRlStatus1996 = false;
-	private UUID rlUuid1996;
-	private UUID rlUuid2013;
 	private ByteArrayOutputStream baos;
 	private boolean isUseIdWherePossible = false;
 	private boolean includeBasionymsInResourceRelations;
@@ -53,18 +50,20 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	private Set<UUID> classificationUuids = new HashSet<UUID>();   
 	private boolean withHigherClassification = false;
 	private String setSeparator = ";";
+
+	private List<Feature> features;
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
-	public static DwcaTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) { 
-		return new DwcaTaxExportConfiguratorRedlist(source, destinationFolder);
+	public static CsvTaxExportConfiguratorRedlist NewInstance(ICdmDataSource source, File destinationFolder) { 
+		return new CsvTaxExportConfiguratorRedlist(source, destinationFolder);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				DwcaTaxExportRedlist.class
+				CsvTaxExportRedlist.class
 		};
 	}
 
@@ -72,7 +71,7 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	 * @param url
 	 * @param destination
 	 */
-	private DwcaTaxExportConfiguratorRedlist(ICdmDataSource source, File destination) {
+	private CsvTaxExportConfiguratorRedlist(ICdmDataSource source, File destination) {
 		super(destination, source, defaultTransformer);
 	}
 
@@ -107,8 +106,8 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public DwcaTaxExportStateRedlist getNewState() {
-		return new DwcaTaxExportStateRedlist(this);
+	public CsvTaxExportStateRedlist getNewState() {
+		return new CsvTaxExportStateRedlist(this);
 	}
 
 	public boolean isDoTaxa() {
@@ -260,39 +259,14 @@ public class DwcaTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<
 		this.baos = baos;
 	}
 
-	public boolean isIncludedRl2013() {
-		return includeRlStaus2013;
-	}
-
-	public void setIncludeRl2013(boolean isRl2013) {
-		this.includeRlStaus2013 = isRl2013;
-	}
-
-	public boolean isIncludedRl1996() {
-		return includeRlStatus1996;
-	}
-
-	public void setIncludeRl1996(boolean isRl1996) {
-		this.includeRlStatus1996 = isRl1996;
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
+		
 	}
 	
-	public UUID getRlUuid1996() {
-		return rlUuid1996;
-	}
-
-
-	public void setRlUuid1996(UUID rlUuid1996) {
-		this.rlUuid1996 = rlUuid1996;
-	}
-
-
-	public UUID getRlUuid2013() {
-		return rlUuid2013;
-	}
-
-
-	public void setRlUuid2013(UUID rlUuid2013) {
-		this.rlUuid2013 = rlUuid2013;
+	public List<Feature>  getFeatures() {
+		return features;
+		
 	}
 
 

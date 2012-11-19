@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.IOException;
 
@@ -29,8 +29,8 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
  * @date 02.05.2011
  *
  */
-public class DwcaTaxExportTransformerRedlist extends InputTransformerBase {
-	private static final Logger logger = Logger.getLogger(DwcaTaxExportTransformerRedlist.class);
+public class CsvTaxExportTransformerRedlist extends InputTransformerBase {
+	private static final Logger logger = Logger.getLogger(CsvTaxExportTransformerRedlist.class);
 	
 //	private static Map<UUID, String> nomStatusMap = new HashMap<UUID, String>();
 	private static TermMapping nomStatusMapping;

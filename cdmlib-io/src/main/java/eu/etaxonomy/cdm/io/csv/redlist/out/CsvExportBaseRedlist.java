@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,8 +34,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.io.dwca.redlist.out.DwcaTaxExportConfiguratorRedlist;
-import eu.etaxonomy.cdm.io.dwca.redlist.out.DwcaTaxExportStateRedlist;
+import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
+import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportStateRedlist;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -51,8 +51,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 18.10.2012
  *
  */
-public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportConfiguratorRedlist, DwcaTaxExportStateRedlist, IExportTransformer> implements ICdmExport<DwcaTaxExportConfiguratorRedlist, DwcaTaxExportStateRedlist>{
-	private static final Logger logger = Logger.getLogger(DwcaExportBaseRedlist.class);
+public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist, IExportTransformer> implements ICdmExport<CsvTaxExportConfiguratorRedlist, CsvTaxExportStateRedlist>{
+	private static final Logger logger = Logger.getLogger(CsvExportBaseRedlist.class);
 	
 	protected static final boolean IS_CORE = true;
 	
@@ -113,7 +113,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	 * @param record
 	 * @param area
 	 */
-	protected void handleArea(IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
+	protected void handleArea(ICsvAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
 		if (area != null){
 			record.setLocationId(area);
 			record.setLocality(area.getLabel());
@@ -167,7 +167,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	}
 	
 
-	protected String getSources(ISourceable<?> sourceable, DwcaTaxExportConfiguratorRedlist config) {
+	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
 		for (IOriginalSource source: sourceable.getSources()){
 			if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
@@ -187,7 +187,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	protected FileOutputStream createFileOutputStream(DwcaTaxExportConfiguratorRedlist config, String thisFileName) throws IOException, FileNotFoundException {
+	protected FileOutputStream createFileOutputStream(CsvTaxExportConfiguratorRedlist config, String thisFileName) throws IOException, FileNotFoundException {
 		String filePath = config.getDestinationNameString();
 		String fileName = filePath + File.separatorChar + thisFileName;
 		File f = new File(fileName);
@@ -207,7 +207,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	 * @throws FileNotFoundException
 	 * @throws XMLStreamException
 	 */
-	protected XMLStreamWriter createXmlStreamWriter(DwcaTaxExportStateRedlist state, String fileName)
+	protected XMLStreamWriter createXmlStreamWriter(CsvTaxExportStateRedlist state, String fileName)
 			throws IOException, FileNotFoundException, XMLStreamException {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
 		OutputStream os;
@@ -230,7 +230,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	 * @throws FileNotFoundException
 	 * @throws UnsupportedEncodingException
 	 */
-	protected PrintWriter createPrintWriter(final String fileName, DwcaTaxExportStateRedlist state) 
+	protected PrintWriter createPrintWriter(final String fileName, CsvTaxExportStateRedlist state) 
 					throws IOException, FileNotFoundException, UnsupportedEncodingException {
 		
 		OutputStream os;
@@ -253,7 +253,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	 * @param writer
 	 * @param state
 	 */
-	protected void closeWriter(PrintWriter writer, DwcaTaxExportStateRedlist state) {
+	protected void closeWriter(PrintWriter writer, CsvTaxExportStateRedlist state) {
 		if (writer != null && state.isZip() == false){
 			writer.close();
 		}
@@ -267,7 +267,7 @@ public abstract class DwcaExportBaseRedlist extends CdmExportBase<DwcaTaxExportC
 	 * @param writer
 	 * @param state
 	 */
-	protected void closeWriter(XMLStreamWriter writer, DwcaTaxExportStateRedlist state) {
+	protected void closeWriter(XMLStreamWriter writer, CsvTaxExportStateRedlist state) {
 		if (writer != null && state.isZip() == false){
 			try {
 				writer.close();

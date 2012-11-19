@@ -59,7 +59,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	public static final String NAMESPACE = "Taxon";
 
 	private static final String pluralString = "Taxa";
-	private String dbTableName = "PTaxon";
+	private static final String dbTableName = "PTaxon";
 	
 	/**
 	 * How should the publish flag in table PTaxon be interpreted
@@ -82,7 +82,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 	}
 	
 	public BerlinModelTaxonImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 	
 

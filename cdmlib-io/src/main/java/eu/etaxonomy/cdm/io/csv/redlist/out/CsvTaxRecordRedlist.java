@@ -7,16 +7,18 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
@@ -24,29 +26,30 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @date 18.10.2012
  *
  */
-public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
+public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaTaxRecordRedlist.class);
+	private static final Logger logger = Logger.getLogger(CsvTaxRecordRedlist.class);
 
 	private String scientificNameId;
 	private String scientificName;
 	private String taxonomicStatus;
-	private DwcaId datasetId;
+	private CsvId datasetId;
 	private String datasetName;
 	private ArrayList<String> synonyms;
 	private String threadStatus;
 	private ArrayList<String> countryCodes;
-	private ArrayList<String> rlStatus96;
-	private ArrayList<String> rlStatus13;
 	private ArrayList<String> headlines;
 	private boolean isHeadLinePrinted;
-	private boolean printRl96 = false;
-	private boolean printRl13 = false;
 
 
-	public DwcaTaxRecordRedlist(DwcaMetaDataRecordRedlist metaDataRecord, DwcaTaxExportConfiguratorRedlist config){
+	private List<Feature> features;
+
+	private List<List<String>> featuresCells;
+
+
+	public CsvTaxRecordRedlist(CsvMetaDataRecordRedlist metaDataRecord, CsvTaxExportConfiguratorRedlist config){
 		super(metaDataRecord, config);
-		datasetId = new DwcaId(config);
+		datasetId = new CsvId(config);
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +68,7 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 
 	public void write(PrintWriter writer) {
 		if(isHeadLinePrinted()){
-			printHeadlines(writer, setHeadlines(), TermUri.DWC_DATASET_NAME);
+			printHeadline(writer, setHeadlines(), TermUri.DWC_DATASET_NAME);
 			isHeadLinePrinted=false;
 		}
 
@@ -75,11 +78,14 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 		print(taxonomicStatus, writer, IS_NOT_FIRST, TermUri.DWC_TAXONOMIC_STATUS);
 		prettyPrintRedlist(synonyms, TermUri.DWC_SCIENTIFIC_NAME, writer);
 		prettyPrintRedlist(countryCodes, TermUri.DWC_COUNTRY_CODE, writer);
-		if(printRl96)prettyPrintRedlist(rlStatus96, TermUri.DWC_LIFESTAGE, writer);
-		if(printRl13)prettyPrintRedlist(rlStatus13, TermUri.DWC_LIFESTAGE, writer);
+		if(features != null ||featuresCells != null || !featuresCells.isEmpty()){
+			for(List<String> featureList : featuresCells) {
+				prettyPrintRedlist((ArrayList<String>)featureList, TermUri.DWC_LIFESTAGE, writer);
+			}
+		}
 		writer.println();
 	}
-	
+
 	public String getDatasetName() {
 		return datasetName;
 	}
@@ -121,22 +127,16 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 		this.countryCodes = countryCodes;
 	}
 
-	public void setRlStatus96(ArrayList<String> rlStatus96) {
-		this.rlStatus96 = rlStatus96;
-		printRl96 = true;
-	}
-
-	public void setRlStatus13(ArrayList<String> rlStatus13) {
-		this.rlStatus13 = rlStatus13;
-		printRl13 = true;
-	}
 	//FIXME: hard coded header lines
 	private ArrayList<String> setHeadlines(){
 		headlines = new ArrayList<String>(); 
 		Collections.addAll(headlines, "Classification","Taxon","Taxon ID","Taxon Status","Synonym","Distribution");
-		if(printRl96)headlines.add("Rote Liste Satus 1996");
-		if(printRl13)headlines.add("Rote Liste Satus 2013");
-		
+
+		if(features != null || !features.isEmpty()){
+			for(Feature f : features) {
+				headlines.add(f.getLabel());
+			}
+		}
 		return headlines;
 	}
 
@@ -148,16 +148,18 @@ public class DwcaTaxRecordRedlist extends DwcaRecordBaseRedlist{
 		this.isHeadLinePrinted = isHeadLinePrinted;
 	}
 
-	public void setPrintRl96(boolean printRl96) {
-		this.printRl96 = printRl96;
-	}
-
-	public void setPrintRl13(boolean printRl13) {
-		this.printRl13 = printRl13;
-	}
-	
 	public void setScientificNameId(String scientificNameId) {
 		this.scientificNameId = scientificNameId;
+	}
+
+	public void setPrintFeatures(List<Feature> features) {
+		this.features = features;
+		
+	}
+
+	public void setFeatures(List<List<String>> featureCells) {
+		this.featuresCells = featureCells;
+		
 	}
 
 }

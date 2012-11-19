@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -46,17 +47,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @created 18.10.2012
  */
 @Component
-public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
-	private static final Logger logger = Logger.getLogger(DwcaTaxExportRedlist.class);
+public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
+	private static final Logger logger = Logger.getLogger(CsvTaxExportRedlist.class);
 
 	private static final String ROW_TYPE = "http://rs.tdwg.org/dwc/terms/Taxon";
 	private static final String fileName = "RedlistCoreTax.csv";
-	private boolean doRlStatus96;
-	private boolean doRlStatus13;
-	private UUID rlUuid1996;
-	private UUID rlUuid2013;
+	private List<Feature> features;
 
-	public DwcaTaxExportRedlist() {
+	public CsvTaxExportRedlist() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
@@ -70,14 +68,11 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	 * @param filename
 	 */
 	@Override
-	protected void doInvoke(DwcaTaxExportStateRedlist state){
-		DwcaTaxExportConfiguratorRedlist config = state.getConfig();
+	protected void doInvoke(CsvTaxExportStateRedlist state){
+		CsvTaxExportConfiguratorRedlist config = state.getConfig();
 		TransactionStatus txStatus = startTransaction(true);
-		doRlStatus13 = config.isIncludedRl2013();
-		doRlStatus96 = config.isIncludedRl1996();
-		rlUuid1996 = config.getRlUuid1996();
-		rlUuid2013 = config.getRlUuid2013();
-		DwcaMetaDataRecordRedlist metaRecord = new DwcaMetaDataRecordRedlist(true, fileName, ROW_TYPE);
+		features = config.getFeatures();
+		CsvMetaDataRecordRedlist metaRecord = new CsvMetaDataRecordRedlist(true, fileName, ROW_TYPE);
 		state.addMetaRecord(metaRecord);
 		
 		Set<UUID> classificationUuidSet = config.getClassificationUuids();
@@ -94,7 +89,7 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				DwcaTaxRecordRedlist record = new DwcaTaxRecordRedlist(metaRecord, config);
+				CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Classification classification = node.getClassification();
 				if (! this.recordExists(taxon)){
@@ -119,10 +114,10 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		
 	}
 
-	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, DwcaMetaDataRecordRedlist metaRecord, DwcaTaxExportConfiguratorRedlist config) {
+	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvMetaDataRecordRedlist metaRecord, CsvTaxExportConfiguratorRedlist config) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
 		for (Taxon misappliedName : misappliedNames ){
-			DwcaTaxRecordRedlist record = new DwcaTaxRecordRedlist(metaRecord, config);
+			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
 			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
 		
@@ -146,14 +141,13 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	 * @param config 
 	 * @param type
 	 */
-	private void handleTaxonBase(DwcaTaxRecordRedlist record,TaxonBase<?> taxonBase,
+	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
 			NonViralName<?> name, Taxon acceptedTaxon, Classification classification, 
 			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, 
-			DwcaTaxExportConfiguratorRedlist config) {
+			CsvTaxExportConfiguratorRedlist config) {
 		
 		record.setHeadLinePrinted(config.isHasHeaderLines());
-		record.setPrintRl13(doRlStatus13);
-		record.setPrintRl96(doRlStatus96);
+		if(features != null)record.setPrintFeatures(features);
 		config.setHasHeaderLines(false);
 
 		record.setDatasetName(classification.getTitleCache());
@@ -164,13 +158,16 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		handleSynonyms(record,(Taxon) taxonBase);
 		//distribution
 		handleDiscriptionData(record, (Taxon) taxonBase);
-		if(doRlStatus96||doRlStatus13)handleRedlistStatus(record, (Taxon)taxonBase, false);
-		//handle status data from related Taxa in different classifications
-		if(doRlStatus96||doRlStatus13){
-			handleRelatedRedlistStatus(record, (Taxon) taxonBase, true);
-			handleRelatedRedlistStatus(record, (Taxon) taxonBase, false);
+		if(features!= null) {
+			
+			List<List<String>> featureCells = new ArrayList<List<String>>(features.size());
+			for(int i = 0; i < features.size(); i++) {
+				featureCells.add(new ArrayList<String>());
+			}
+			handleRelatedRedlistStatus(record, (Taxon)taxonBase, false, featureCells);
+			handleRelatedRedlistStatus(record, (Taxon)taxonBase, true, featureCells);
+
 		}
-		
 		return;
 	}
 
@@ -182,7 +179,7 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 	 * @param isProParte 
 	 */
 	private void handleTaxonomicStatus(
-			DwcaTaxRecordRedlist record,
+			CsvTaxRecordRedlist record,
 			NonViralName<?> name, 
 			RelationshipTermBase<?> type,
 			boolean isProParte,
@@ -210,7 +207,7 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		}
 	}
 
-	private void handleSynonyms(DwcaTaxRecordRedlist record, Taxon taxon) {
+	private void handleSynonyms(CsvTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
 		ArrayList<String> synonyms = new ArrayList<String>(); 
@@ -226,7 +223,7 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		record.setSynonyms(synonyms);
 	}
 
-	private void handleDiscriptionData(DwcaTaxRecordRedlist record, Taxon taxon) {
+	private void handleDiscriptionData(CsvTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		ArrayList<String> distributions = new ArrayList<String>();
@@ -243,33 +240,34 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 		record.setCountryCode(distributions);
 	}
 	
-	private void handleRedlistStatus(DwcaTaxRecordRedlist record, Taxon taxon, boolean isRelated){
+	private void handleRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, List<List<String>> featureCells){
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
-		ArrayList<String> rl96 = new ArrayList<String>();
-		ArrayList<String> rl13 = new ArrayList<String>();
-		boolean isSet96 = false;
-		boolean isSet13 = false;
+
 		for (TaxonDescription description : descriptions){
 			for (DescriptionElementBase el : description.getElements()){
 				if(el.isInstanceOf(CategoricalData.class)){
 					CategoricalData categoricalData = CdmBase.deproxy(el, CategoricalData.class);
 					for(State state:categoricalData.getStatesOnly()){
-						if(doRlStatus96 && rlUuid1996.equals(categoricalData.getFeature().getUuid())){
-							rl96.add(state.toString());
-							isSet96 = true;
-						}else if(doRlStatus13 && rlUuid2013.equals(categoricalData.getFeature().getUuid())){
-							rl13.add(state.toString());
-							isSet13 = true;
+						Feature stateFeature = categoricalData.getFeature();
+						// find matching feature and put data into according cell
+						for(int i = 0; i < features.size(); i++) {
+							if(features.get(i).equals(stateFeature)){
+								List<String> cell = featureCells.get(i);
+								cell.add(state.toString());
+							}
 						}
 					}
 				}
 			}
 		}
-		if(doRlStatus96 && isSet96)record.setRlStatus96(rl96);
-		if(doRlStatus13 && isSet13)record.setRlStatus13(rl13);
+		record.setFeatures(featureCells);
 	}
 
-	private void handleRelatedRedlistStatus(DwcaTaxRecordRedlist record, Taxon taxon, boolean relationFrom) {
+	private void handleRelatedRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, boolean relationFrom, List<List<String>> featureCells) {
+
+		if (relationFrom)handleRedlistStatus(record, taxon, featureCells);
+		
+		
 		Set<TaxonRelationship> taxRels;
 		if(relationFrom){
 			taxRels = taxon.getRelationsFromThisTaxon();
@@ -284,20 +282,20 @@ public class DwcaTaxExportRedlist extends DwcaExportBaseRedlist {
 				}else{
 					relatedTaxon = taxRel.getFromTaxon();
 				}
-				handleRedlistStatus(record, relatedTaxon, true);
+				handleRedlistStatus(record, relatedTaxon, featureCells);
 			}
 		}
 	}
 
 	@Override
-	protected boolean doCheck(DwcaTaxExportStateRedlist state) {
+	protected boolean doCheck(CsvTaxExportStateRedlist state) {
 		boolean result = true;
 		logger.warn("No check implemented for " + this.ioName);
 		return result;
 	}
 
 	@Override
-	protected boolean isIgnore(DwcaTaxExportStateRedlist state) {
+	protected boolean isIgnore(CsvTaxExportStateRedlist state) {
 		return ! state.getConfig().isDoTaxa();
 	}
 	

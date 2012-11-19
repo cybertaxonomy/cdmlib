@@ -10,12 +10,14 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -23,16 +25,18 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 11.05.2009
  * @version 1.0
  */
-public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, STATE extends DbImportStateBase> extends ImportStateBase<CONFIG, CdmImportBase> implements IPartitionedState {
+public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase, STATE extends DbImportStateBase> extends ImportStateBase<CONFIG, CdmImportBase> implements IPartitionedState {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
 	
 	public static final String CURRENT_OBJECT_NAMESPACE = "CurrentObjectNamespace";
 	public static final String CURRENT_OBJECT_ID = "CurrentObjectId";
 	
+	private Map<String, User> usernameMap = new HashMap<String, User>();
+	
 	
 	private Reference<?> partitionSourceReference;
 	
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
 	private RelatedObjectsHelper relatedObjectsHelper = new RelatedObjectsHelper();;
 	//holds the classifications needed for this partition, the key is a value that differentiate classifications
 	//like the taxons reference (secundum)
@@ -98,6 +102,14 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 			this.partitionSourceReference = this.getConfig().getSourceReference();
 			service.saveOrUpdate(this.partitionSourceReference);
 		}
+	}
+	
+	public User getUser(String username){
+		return usernameMap.get(username);
+	}
+
+	public void putUser(String username, User user){
+		usernameMap.put(username, user);
 	}
 
 	

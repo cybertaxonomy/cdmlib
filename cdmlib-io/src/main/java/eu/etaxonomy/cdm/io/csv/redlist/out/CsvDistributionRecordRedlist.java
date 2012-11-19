@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -30,11 +30,11 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
  * @date 20.04.2011
  *
  */
-public class DwcaDistributionRecordRedlist extends DwcaRecordBaseRedlist implements IDwcaAreaRecord{
+public class CsvDistributionRecordRedlist extends CsvRecordBaseRedlist implements ICsvAreaRecord{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaDistributionRecordRedlist.class);
+	private static final Logger logger = Logger.getLogger(CsvDistributionRecordRedlist.class);
 	
-	private DwcaId locationId;
+	private CsvId locationId;
 	private String locationIdString;
 	private String locality;
 	private String countryCode;
@@ -51,9 +51,9 @@ public class DwcaDistributionRecordRedlist extends DwcaRecordBaseRedlist impleme
 	private String occurrenceRemarks;
 	
 	
-	public DwcaDistributionRecordRedlist(DwcaMetaDataRecordRedlist metaDataRecord, DwcaTaxExportConfiguratorRedlist config){
+	public CsvDistributionRecordRedlist(CsvMetaDataRecordRedlist metaDataRecord, CsvTaxExportConfiguratorRedlist config){
 		super(metaDataRecord, config);
-		locationId = new DwcaId(config);
+		locationId = new CsvId(config);
 	}
 	
 	/* (non-Javadoc)

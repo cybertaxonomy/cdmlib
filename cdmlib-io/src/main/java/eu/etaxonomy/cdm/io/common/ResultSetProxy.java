@@ -641,19 +641,22 @@ public class ResultSetProxy implements ResultSet {
 	 */
 	@Override
 	public Object getObject(String columnLabel) throws SQLException {
-		if (proxyMap.get(columnLabel) != null){
-			return proxyMap.get(columnLabel);
-		}else{
-			try {
-				Object result = resultSet.getObject(columnLabel);
-				proxyMap.put(columnLabel, result);
-				return result;
-			} catch (SQLException e) {
-				String message = " SQLException occurred when retrieving database value for column %s.";
-				message = String.format(message, columnLabel);
-				logger.error(message);
-				throw e;
+		Object mapValue = proxyMap.get(columnLabel);
+		if (mapValue != null){
+			if (mapValue == NULL){
+				return null;
+			}else{
+				return mapValue;
 			}
+		}else{
+			Object result = resultSet.getObject(columnLabel);
+			if (result == null){
+				mapValue = NULL;
+			}else{
+				mapValue = result;
+			}
+			proxyMap.put(columnLabel, mapValue);
+			return result;
 		}
 	}
 

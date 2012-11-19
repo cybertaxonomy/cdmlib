@@ -99,7 +99,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 	
 	public BerlinModelReferenceImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 	
 	protected void initializeMappers(BerlinModelImportState state){
@@ -1033,23 +1033,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		BerlinModelReferenceImportValidator validator = new BerlinModelReferenceImportValidator();
 		return validator.validate(state, this);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

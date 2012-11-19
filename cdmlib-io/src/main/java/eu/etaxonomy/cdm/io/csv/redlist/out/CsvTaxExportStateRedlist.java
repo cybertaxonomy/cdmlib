@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.redlist.out;
+package eu.etaxonomy.cdm.io.csv.redlist.out;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,15 +26,15 @@ import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
  * @author a.mueller
  * @created 18.04.2011
  */
-public class DwcaTaxExportStateRedlist extends XmlExportState<DwcaTaxExportConfiguratorRedlist>{
+public class CsvTaxExportStateRedlist extends XmlExportState<CsvTaxExportConfiguratorRedlist>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaTaxExportStateRedlist.class);
+	private static final Logger logger = Logger.getLogger(CsvTaxExportStateRedlist.class);
 
-	private List<DwcaMetaDataRecordRedlist> metaRecords = new ArrayList<DwcaMetaDataRecordRedlist>();
+	private List<CsvMetaDataRecordRedlist> metaRecords = new ArrayList<CsvMetaDataRecordRedlist>();
 	private boolean isZip = false;
 	private ZipOutputStream zos;
 	
-	public DwcaTaxExportStateRedlist(DwcaTaxExportConfiguratorRedlist config) {
+	public CsvTaxExportStateRedlist(CsvTaxExportConfiguratorRedlist config) {
 		super(config);
 		File file = config.getDestination();
 		if (! config.getDestination().isDirectory()){
@@ -51,11 +51,11 @@ public class DwcaTaxExportStateRedlist extends XmlExportState<DwcaTaxExportConfi
 		}
 	}
 	
-	public void addMetaRecord(DwcaMetaDataRecordRedlist record){
+	public void addMetaRecord(CsvMetaDataRecordRedlist record){
 		metaRecords.add(record);
 	}
 	
-	public List<DwcaMetaDataRecordRedlist> getMetaRecords(){
+	public List<CsvMetaDataRecordRedlist> getMetaRecords(){
 		return metaRecords;
 	}
 
