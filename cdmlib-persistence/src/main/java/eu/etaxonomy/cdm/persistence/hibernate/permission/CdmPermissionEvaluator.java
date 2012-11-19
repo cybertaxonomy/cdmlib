@@ -24,7 +24,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import static eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl.Role;
 
 /**
  * @author k.luther
@@ -69,6 +68,10 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         CdmAuthority evalPermission;
         EnumSet<CRUD> requiredOperation;
 
+        if(authentication == null) {
+            return false;
+        }
+
         if(logger.isDebugEnabled()){
             StringBuilder grantedAuthoritiesTxt = new StringBuilder();
             for(GrantedAuthority ga : authentication.getAuthorities()){
@@ -98,13 +101,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             return true; // it might be wrong to return true
         }
 
-        try{
-            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, ((CdmBase)targetDomainObject).getUuid());
-            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, requiredOperation, ((CdmBase)targetDomainObject).getUuid());
-        }catch(NullPointerException e){
-            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
-            evalPermission = new CdmAuthority((CdmBase)targetDomainObject, requiredOperation, null);
-        }
+        evalPermission = authorityRequiredFor((CdmBase)targetDomainObject, requiredOperation);
 
 
         if (evalPermission.permissionClass != null) {
@@ -115,6 +112,25 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
             return true;
         }
 
+    }
+
+    /**
+     * @param targetEntity
+     * @param requiredOperation
+     * @return
+     */
+    private CdmAuthority authorityRequiredFor(CdmBase targetEntity, EnumSet<CRUD> requiredOperation) {
+        CdmAuthority evalPermission;
+        try{
+            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, (targetDomainObject).getUuid());
+            evalPermission = new CdmAuthority(targetEntity, requiredOperation, (targetEntity).getUuid());
+        }catch(NullPointerException e){
+            // TODO document where the NPE is coming from
+
+            //evalPermission = new CdmAuthority(targetDomainObject.getClass().getSimpleName().toUpperCase(), cdmPermission, null);
+            evalPermission = new CdmAuthority(targetEntity, requiredOperation, null);
+        }
+        return evalPermission;
     }
 
 
@@ -128,7 +144,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
 
         //if user has administrator rights return true;
          for (GrantedAuthority authority: authentication.getAuthorities()){
-             if (authority.getAuthority().equals(Role.ROLE_ADMIN.name())){
+             if (authority.getAuthority().equals(Role.ROLE_ADMIN.getAuthority())){
                  logger.debug("ROLE_ADMIN found => true");
                  return true;
              }
