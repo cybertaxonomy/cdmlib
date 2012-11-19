@@ -157,12 +157,12 @@ $(document).ready(function () {
 				checkbox = document.createElement('input');
 				checkbox.id = "checkbox"+i;
 				checkbox.type = "checkbox";
-				checkbox.name = "dlOptions";
+				checkbox.name = "features";
 				checkbox.value = data[j].root.children[i].feature.uuid;
 				var description = data[j].root.children[i].feature.titleCache; 
-				$("#dwcaDlOptions").append(checkbox);
-				$("#dwcaDlOptions").append(document.createTextNode(description));
-				$("#dwcaDlOptions").append("<p>");
+				$("#csvExportOptions").append(checkbox);
+				$("#csvExportOptions").append(document.createTextNode(description));
+				$("#csvExportOptions").append("<p>");
 			}
 		}
 	});
