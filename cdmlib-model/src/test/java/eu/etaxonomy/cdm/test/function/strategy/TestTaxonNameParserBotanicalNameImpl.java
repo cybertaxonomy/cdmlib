@@ -33,12 +33,12 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	private static final Logger logger = Logger.getLogger(TestTaxonNameParserBotanicalNameImpl.class);
 	
 	final private String strNameFamily = "Asteraceae";
-	final private String strNameGenus = "Abies Müller";
+	final private String strNameGenus = "Abies MÃ¼ller";
 	final private String strNameAbies1 = "Abies alba";
 	final private String strNameAbiesSub1 = "Abies alba subsp. beta";
-	final private String strNameAbiesAuthor1 = "Abies alba Müller";
-	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'Müller";
-	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Döhring) D'Müller ex. de Greuther"; 
+	final private String strNameAbiesAuthor1 = "Abies alba MÃ¼ller";
+	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'MÃ¼ller";
+	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex DÃ¶hring) D'MÃ¼ller ex. de Greuther"; 
 	final private String strNameAbiesBasionymAuthorUe = "Abies alba (Ciardelli) D'Mueller";
 	
 	private INonViralNameParser<BotanicalName> parser ;
@@ -104,11 +104,11 @@ public class TestTaxonNameParserBotanicalNameImpl {
 //		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
 //		result += parseIt( "Hieracium asturicum Arv.-Touv.");
 //		result += parseIt( "Hieracium mougeotii subsp. asturicum Zahn");
-//		result += parseIt( "Hieracium vogesiacum subsp. asturicum (Zahn) O. Bolòs & Vigo");
+//		result += parseIt( "Hieracium vogesiacum subsp. asturicum (Zahn) O. BolÃ²s & Vigo");
 //		result += parseIt( "Hieracium cantabricum Arv.-Touv.");
 //		result += parseIt( "Hieracium mougeotii subsp. cantabricum (Arv.-Touv.) Zahn");
 //		result += parseIt( "Hieracium murorramondii Mateo");
-		result += parseIt( "Micrasterias denticulata Brébisson ex Ralfs 1848");
+		result += parseIt( "Micrasterias denticulata BrÃ©bisson ex Ralfs 1848");
 //		[13:11:55] Patricia Kelbert : Micrasterias denticulata var. angulosa (Hantzsch) W. et G.S. West 1902
 //		[13:12:04] Patricia Kelbert : Micrasterias angulosa Hantzsch in Rabenhorst 1862
 		

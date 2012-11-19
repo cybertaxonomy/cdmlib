@@ -253,14 +253,14 @@ public class PointTest {
 		
 		try {
 			point1.setLongitudeByParsing("191");
-			Assert.fail("Longitude can be > 180°");
+			Assert.fail("Longitude can be > 180Â°");
 		} catch (ParseException e) {
-			Assert.assertTrue("Longitude can not > 180°", true);
+			Assert.assertTrue("Longitude can not > 180Â°", true);
 		}
 		try {
 			point1.setLatitudeByParsing("2\u00B039'38,5956\"S");
 		} catch (ParseException e) {
-			Assert.fail("String '2°39'38,5956\"S'should be parsable");
+			Assert.fail("String '2Â°39'38,5956\"S'should be parsable");
 		}
 }
 	

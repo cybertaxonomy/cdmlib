@@ -21,14 +21,11 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelGeneralImportValidator;
+import eu.etaxonomy.cdm.io.common.DbImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 
 /**
@@ -36,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelImportConfigurator extends ImportConfiguratorBase<BerlinModelImportState, Source> implements IImportConfigurator{
+public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<BerlinModelImportState> implements IImportConfigurator{
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
 
 	public static BerlinModelImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
@@ -74,13 +71,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private boolean includesEmCode = true;  // in Campanula we do not have an EMCOde
 	private boolean allowInfraSpecTaxonRank = true; 
 
-	
-	/* Max number of records to be saved with one service call */
-	private int recordsPerTransaction = 1000;
-
 	private Method namerelationshipTypeMethod;
 	private Method uuidForDefTermMethod;
-	private Method userTransformationMethod;
 	private Method nameTypeDesignationStatusMethod;
 	
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
@@ -147,7 +139,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public ImportStateBase getNewState() {
+	public BerlinModelImportState getNewState() {
 		return new BerlinModelImportState(this);
 	}
 
@@ -159,47 +151,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 * @param destination
 	 */
 	protected BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
-	   super(defaultTransformer);
-	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
-	   setSource(berlinModelSource);
-	   setDestination(destination);
+	   super(berlinModelSource, destination, NomenclaturalCode.ICBN, defaultTransformer); //default for Berlin Model
 	}
 	
-	
-	public Source getSource() {
-		return (Source)super.getSource();
-	}
-	public void setSource(Source berlinModelSource) {
-		super.setSource(berlinModelSource);
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
-	 */
-	public Reference getSourceReference() {
-		if (sourceReference == null){
-			sourceReference =  ReferenceFactory.newDatabase();
-			if (getSource() != null){
-				sourceReference.setTitleCache(getSource().getDatabase(), true);
-			}
-			if (getSourceRefUuid() != null){
-				sourceReference.setUuid(getSourceRefUuid());
-			}
-		}
-		return sourceReference;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
-		if (this.getSource() == null){
-			return null;
-		}else{
-			return this.getSource().getDatabase();
-		}
-	}
 	
 	/**
 	 * Import name relationships yes/no?.
@@ -346,19 +300,6 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		this.uuidForDefTermMethod = uuidForDefTermMethod;
 	}
 
-	/**
-	 * @return the userTransformationMethod
-	 */
-	public Method getUserTransformationMethod() {
-		return userTransformationMethod;
-	}
-
-	/**
-	 * @param userTransformationMethod the userTransformationMethod to set
-	 */
-	public void setUserTransformationMethod(Method userTransformationMethod) {
-		this.userTransformationMethod = userTransformationMethod;
-	}
 
 
 
@@ -377,22 +318,6 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 			Method nameTypeDesignationStatusMethod) {
 		this.nameTypeDesignationStatusMethod = nameTypeDesignationStatusMethod;
 	}
-	
-	/**
-	 * @return the limitSave
-	 */
-	public int getRecordsPerTransaction() {
-		return recordsPerTransaction;
-	}
-
-	/**
-	 * @param limitSave the limitSave to set
-	 */
-	public void setRecordsPerTransaction(int recordsPerTransaction) {
-		this.recordsPerTransaction = recordsPerTransaction;
-	}
-
-
 	
 	public boolean isDoNameStatus() {
 		return doNameStatus;

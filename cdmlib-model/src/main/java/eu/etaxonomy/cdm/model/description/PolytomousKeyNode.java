@@ -1,5 +1,4 @@
 /**
- * Copyright (C) 2007 EDIT
  * European Distributed Institute of Taxonomy 
  * http://www.e-taxonomy.eu
  * 
@@ -209,6 +208,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
+	public static final Integer ROOT_NODE_NUMBER = 0;
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
@@ -229,7 +229,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public static PolytomousKeyNode NewRootInstance() {
 		PolytomousKeyNode result = new PolytomousKeyNode();
-		result.setNodeNumber(0);
+		result.setNodeNumber(ROOT_NODE_NUMBER);
 		return result;
 	}
 
@@ -350,38 +350,61 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-
+		
+		int maxNodeNumber = ROOT_NODE_NUMBER;
+		if(index == 0) {
+			maxNodeNumber = getNewMaxNodeNumberFromRoot() + 1;
+			child.setNodeNumber(maxNodeNumber);
+		} else {
+			maxNodeNumber = children.get(0).getNodeNumber();
+			child.setNodeNumber(maxNodeNumber);
+		}
+		
 		children.add(index, child);
 		child.setKey(this.getKey());
 		// TODO workaround (see sortIndex doc)
 		for (int i = 0; i < children.size(); i++) {
-			children.get(i).sortIndex = i;
+			children.get(i).sortIndex = i;			
 		}
-		child.sortIndex = index;
-		updateNodeNumber();
+		child.sortIndex = index;		
 		child.setParent(this);
 	}
 
-	private void updateNodeNumber() {
-		int nodeNumber = 1;
-		PolytomousKeyNode root = getKey().getRoot();
-		root.setNodeNumber(nodeNumber++);
-		nodeNumber = updateChildNodeNumbers(nodeNumber, root);
+	private int getNewMaxNodeNumberFromRoot() {
+		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();		
+		int maxNodeNumber = getMaxNodeNumber(ROOT_NODE_NUMBER, rootKeyNode);
+		return maxNodeNumber++;
 	}
-
-	private int updateChildNodeNumbers(int nodeNumber, PolytomousKeyNode parent) {
-		if (parent.isLeaf()) {
-			parent.setNodeNumber(null);
-		} else {
-			for (PolytomousKeyNode child : parent.getChildren()) {
-				if (! child.isLeaf()){
-					child.setNodeNumber(nodeNumber++);
-				}
-				nodeNumber = updateChildNodeNumbers(nodeNumber, child);
+	
+	private int getMaxNodeNumber(int maxNumber, PolytomousKeyNode parent) {
+		if (parent.getNodeNumber() != null) {		
+			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
+			for (PolytomousKeyNode child : parent.getChildren()) {				
+				maxNumber = getMaxNodeNumber(maxNumber, child);
 			}
 		}
-		return nodeNumber;
+		return maxNumber;
 	}
+	
+	public void refreshNodeNumbering() {
+		getKey().getRoot().setNodeNumber(ROOT_NODE_NUMBER);
+		updateChildNodeNumbering(getKey().getRoot(), ROOT_NODE_NUMBER);
+	}
+	
+	private int updateChildNodeNumbering(PolytomousKeyNode node,int nodeN) {
+		int newNodeN = nodeN;
+		if (node.isLeaf()) {			
+		} else {		
+			newNodeN = ++nodeN;
+			for (PolytomousKeyNode child : node.getChildren()) {					
+				child.setNodeNumber(nodeN);				
+				newNodeN = updateChildNodeNumbering(child, newNodeN);
+			}
+		}		
+		return newNodeN;
+	}
+	
+
 
 	/**
 	 * Removes the given polytomous key node from the list of
@@ -418,15 +441,16 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		PolytomousKeyNode child = children.get(index);
 		if (child != null) {
 			children.remove(index);
-			// child.setParent(null);
+			child.setParent(null);
 			// TODO workaround (see sortIndex doc)
 			for (int i = 0; i < children.size(); i++) {
 				PolytomousKeyNode childAt = children.get(i);
 				childAt.sortIndex = i;
 			}
 			child.sortIndex = null;
+			child.setNodeNumber(null);
 		}
-		updateNodeNumber();
+		refreshNodeNumbering();
 	}
 
 	/**

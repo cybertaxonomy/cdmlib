@@ -157,6 +157,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportStateBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbImportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DefaultImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportConfiguratorBase.java -text

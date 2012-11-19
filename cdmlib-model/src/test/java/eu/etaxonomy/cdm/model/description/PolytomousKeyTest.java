@@ -97,7 +97,7 @@ public class PolytomousKeyTest {
 		System.out.println(strKey);
 		Assert.assertEquals(
 				"",
-				"My Test Key\n  1. Is this Aus bus?\n    a) Yes ... 2, Aus bus L.\n    b) No ... Cus dus Mill.\n  2. Leaf\n    a) Long and wide ... Cus dus subs. rus L., Second Key\n    b) Small and narrow ... Cus dus subs. zus L., Second Key 0\n",
+				"My Test Key\n  0. Is this Aus bus?\n    a) Yes ... 1, Aus bus L.\n    b) No ... Cus dus Mill.\n  1. Leaf\n    a) Long and wide ... Cus dus subs. rus L., Second Key\n    b) Small and narrow ... Cus dus subs. zus L., Second Key 0\n",
 				strKey);
 	}
 

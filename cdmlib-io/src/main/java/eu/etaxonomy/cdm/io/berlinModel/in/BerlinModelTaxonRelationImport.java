@@ -71,7 +71,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 
 	
 	public BerlinModelTaxonRelationImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 
 	/**
@@ -622,23 +622,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelTaxonRelationImportValidator();
 		return validator.validate(state);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
 	}
 	
 	/* (non-Javadoc)

@@ -49,7 +49,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	private Source source;
 
 	public BerlinModelAuthorTeamImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 
 	
@@ -284,23 +284,6 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelAuthorTeamImportValidator();
 		return validator.validate(state);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
 	}
 	
 	

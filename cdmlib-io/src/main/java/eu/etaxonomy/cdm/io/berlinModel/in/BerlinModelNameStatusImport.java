@@ -50,7 +50,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 
 	
 	public BerlinModelNameStatusImport(){
-		super();
+		super(dbTableName, pluralString);
 	}
 
 
@@ -276,9 +276,6 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 		}
 		return success;
 	}
-
-
-
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
@@ -287,22 +284,6 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelNameStatusImportValidator();
 		return validator.validate(state);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
 	}
 
 	

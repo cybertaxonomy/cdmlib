@@ -35,7 +35,7 @@ public class BerlinModelGeneralImportValidator extends BerlinModelImportBase imp
 	private static final Logger logger = Logger.getLogger(BerlinModelGeneralImportValidator.class);
 
 	public BerlinModelGeneralImportValidator(){
-		super();
+		super(null, null);
 	}
 	
 	/* (non-Javadoc)
@@ -112,24 +112,7 @@ public class BerlinModelGeneralImportValidator extends BerlinModelImportBase imp
 		}
 
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return null;  //not needed
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return null; //not needed
-	}
-	
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

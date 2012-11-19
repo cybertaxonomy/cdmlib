@@ -9,29 +9,20 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.DbImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.io.common.IPartitionedIO;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -50,52 +41,13 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImportConfigurator, BerlinModelImportState> implements ICdmIO<BerlinModelImportState>, IPartitionedIO<BerlinModelImportState> {
+public abstract class BerlinModelImportBase extends DbImportBase<BerlinModelImportState, BerlinModelImportConfigurator>  implements ICdmIO<BerlinModelImportState>, IPartitionedIO<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelImportBase.class);
 	
-	public BerlinModelImportBase() {
-		super();
+	public BerlinModelImportBase(String tableName, String pluralString ) {
+		super(tableName, pluralString);
 	}
 	
-	protected void doInvoke(BerlinModelImportState state){
-			//	String strTeamStore = ICdmIO.TEAM_STORE;
-			BerlinModelImportConfigurator config = state.getConfig();
-			Source source = config.getSource();
-			boolean success = true ;
-			
-			logger.info("start make " + getPluralString() + " ...");
-
-			String strIdQuery = getIdQuery(state);
-			String strRecordQuery = getRecordQuery(config);
-
-			int recordsPerTransaction = config.getRecordsPerTransaction();
-			try{
-				ResultSetPartitioner<BerlinModelImportState> partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
-				while (partitioner.nextPartition()){
-					try {
-						partitioner.doPartition(this, state);
-					} catch (Exception e) {
-						e.printStackTrace();
-						success = false;
-					}
-				}
-			} catch (SQLException e) {
-				logger.error("SQLException:" +  e);
-				state.setUnsuccessfull();
-			}
-	
-			logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
-			if (success == false){
-				state.setUnsuccessfull();
-			}
-			return;
-	}
-
-	
-	/**
-	 * @return
-	 */
-	protected abstract String getRecordQuery(BerlinModelImportConfigurator config);
 
 	/**
 	 * @return
@@ -104,21 +56,12 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		String result = " SELECT " + getTableName() + "id FROM " + getTableName();
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getPluralString()
-	 */
-	public abstract String getPluralString();
 
-	/**
-	 * @return
-	 */
-	protected abstract String getTableName();
 	
 	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, DescriptionElementBase descriptionElement, ResultSet rs, String id, String namespace) throws SQLException{
 		boolean success = true;
 		//id
-		success &= ImportHelper.setOriginalSource(descriptionElement, state.getTransactionalSourceReference(), id, namespace);
+		success &= doId(state, descriptionElement, id, namespace);
 		//createdUpdateNotes
 		success &= doCreatedUpdatedNotes(state, descriptionElement, rs);
 		return success;
@@ -128,7 +71,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 				throws SQLException{
 		boolean success = true;
 		//id
-		success &= ImportHelper.setOriginalSource(identifiableEntity, state.getTransactionalSourceReference() , id, namespace);
+		success &= doId(state, identifiableEntity, id, namespace);
 		//createdUpdateNotes
 		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs, excludeUpdated);
 		return success;
@@ -181,8 +124,8 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			annotation.setAnnotationType(AnnotationType.TECHNICAL());
 			annotatableEntity.addAnnotation(annotation);
 		}else if (config.getEditor().equals(EDITOR.EDITOR_AS_EDITOR)){
-			User creator = getUser(createdWho, state);
-			User updator = getUser(updatedWho, state);
+			User creator = getUser(state, createdWho);
+			User updator = getUser(state, updatedWho);
 			DateTime created = getDateTime(createdWhen);
 			DateTime updated = getDateTime(updatedWhen);
 			annotatableEntity.setCreatedBy(creator);
@@ -197,26 +140,6 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		//notes
 		doNotes(annotatableEntity, notes);
 		return success;
-	}
-
-	/**
-	 * Adds a note to the annotatable entity.
-	 * Nothing happens if annotatableEntity is <code>null</code> or notes is empty or <code>null</code>.
-	 * @param annotatableEntity
-	 * @param notes
-	 */
-	protected void doNotes(AnnotatableEntity annotatableEntity, String notes) {
-		if (StringUtils.isNotBlank(notes) && annotatableEntity != null ){
-			String notesString = String.valueOf(notes);
-			if (notesString.length() > 65530 ){
-				notesString = notesString.substring(0, 65530) + "...";
-				logger.warn("Notes string is longer than 65530 and was truncated: " + annotatableEntity);
-			}
-			Annotation notesAnnotation = Annotation.NewInstance(notesString, Language.DEFAULT());
-			//notesAnnotation.setAnnotationType(AnnotationType.EDITORIAL());
-			//notes.setCommentator(bmiConfig.getCommentator());
-			annotatableEntity.addAnnotation(notesAnnotation);
-		}
 	}
 	
 	/**
@@ -235,53 +158,6 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		}
 	}
 
-	private User getUser(String userString, BerlinModelImportState state){
-		if (CdmUtils.isBlank(userString)){
-			return null;
-		}
-		userString = userString.trim();
-		
-		User user = state.getUser(userString);
-		if (user == null){
-			user = getTransformedUser(userString,state);
-		}
-		if (user == null){
-			user = makeNewUser(userString, state);
-		}
-		if (user == null){
-			logger.warn("User is null");
-		}
-		return user;
-	}
-	
-	private User getTransformedUser(String userString, BerlinModelImportState state){
-		Method method = state.getConfig().getUserTransformationMethod();
-		if (method == null){
-			return null;
-		}
-		try {
-			userString = (String)state.getConfig().getUserTransformationMethod().invoke(null, userString);
-		} catch (Exception e) {
-			logger.warn("Error when trying to transform userString " +  userString + ". No transformation done.");
-		}
-		User user = state.getUser(userString);
-		return user;
-	}
-
-	private User makeNewUser(String userString, BerlinModelImportState state){
-		String pwd = getPassword(); 
-		User user = User.NewInstance(userString, pwd);
-		state.putUser(userString, user);
-		getUserService().save(user);
-		logger.info("Added new user: " + userString);
-		return user;
-	}
-	
-	private String getPassword(){
-		String result = UUID.randomUUID().toString();
-		return result;
-	}
-	
 	private DateTime getDateTime(Object timeString){
 		if (timeString == null){
 			return null;
@@ -296,96 +172,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		}
 		return dateTime;
 	}
-	
-	protected boolean resultSetHasColumn(ResultSet rs, String columnName){
-		try {
-			ResultSetMetaData metaData = rs.getMetaData();
-			for (int i = 0; i < metaData.getColumnCount(); i++){
-				if (metaData.getColumnName(i + 1).equalsIgnoreCase(columnName)){
-					return true;
-				}
-			}
-			return false;
-		} catch (SQLException e) {
-            logger.warn("Exception in resultSetHasColumn");
-            return false;
-		}
-	}
-	
-	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
-		String strQuery = "SELECT  Count(t.id) as n " +
-				" FROM sysobjects AS t " +
-				" INNER JOIN syscolumns AS c ON t.id = c.id " +
-				" WHERE (t.xtype = 'U') AND " + 
-				" (t.name = '" + tableName + "') AND " + 
-				" (c.name = '" + columnName + "')";
-		ResultSet rs = source.getResultSet(strQuery) ;		
-		int n;
-		try {
-			rs.next();
-			n = rs.getInt("n");
-			return n>0;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
-	
-	/**
-	 * Returns a map that holds all values of a ResultSet. This is needed if a value needs to
-	 * be accessed twice
-	 * @param rs
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Map<String, Object> getValueMap(ResultSet rs) throws SQLException{
-		try{
-			Map<String, Object> valueMap = new HashMap<String, Object>();
-			int colCount = rs.getMetaData().getColumnCount();
-			for (int c = 0; c < colCount ; c++){
-				Object value = rs.getObject(c+1);
-				String label = rs.getMetaData().getColumnLabel(c+1).toLowerCase();
-				if (value != null && ! CdmUtils.Nz(value.toString()).trim().equals("")){
-					valueMap.put(label, value);
-				}
-			}
-			return valueMap;
-		}catch(SQLException e){
-			throw e;
-		}
-	}
 
-	/**
-	 * Reads a foreign key field from the result set and adds its value to the idSet.
-	 * @param rs
-	 * @param teamIdSet
-	 * @throws SQLException
-	 */
-	protected void handleForeignKey(ResultSet rs, Set<String> idSet, String attributeName)
-			throws SQLException {
-		Object idObj = rs.getObject(attributeName);
-		if (idObj != null){
-			String id  = String.valueOf(idObj);
-			idSet.add(id);
-		}
-	}
-	
-	/**
-	 * Returns true if i is a multiple of recordsPerTransaction
-	 * @param i
-	 * @param recordsPerTransaction
-	 * @return
-	 */
-	protected boolean loopNeedsHandling(int i, int recordsPerLoop) {
-		startTransaction();
-		return (i % recordsPerLoop) == 0;
-		}
-	
-	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
-		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
-	}
-	
 
 	/**
 	 * 	Searches first in the detail maps then in the ref maps for a reference.
