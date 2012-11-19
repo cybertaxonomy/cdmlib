@@ -151,7 +151,8 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Classification", targetEntity = Classification.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class)
+		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class)
 })
 package eu.etaxonomy.cdm.model.common;
 
@@ -192,4 +193,4 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-	
+import eu.etaxonomy.cdm.model.description.PolytomousKey;

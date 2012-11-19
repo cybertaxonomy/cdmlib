@@ -25,6 +25,7 @@ import org.springframework.security.core.GrantedAuthority;
 @XmlRootElement(name = "Group")
 @Entity
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
+
     private static final long serialVersionUID = 2651969425860655040L;
     private static final Logger logger = Logger
             .getLogger(GrantedAuthority.class);
@@ -41,6 +42,10 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         return new GrantedAuthorityImpl();
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.core.GrantedAuthority#getAuthority()
+     */
+    @Override
     public String getAuthority() {
         return authority;
     }
@@ -49,6 +54,10 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         this.authority = authority;
     }
 
+    /**
+     * @param o
+     * @return
+     */
     public int compareTo(Object o) {
         if (o instanceof GrantedAuthority) {
             return this.authority.compareTo(((GrantedAuthority) o)
@@ -89,20 +98,5 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * The role prefix 'ROLE_' is defined in
-     * the spring security <code>RoleVoter</code>
-     *
-     * @author a.kohlbecker
-     * @date Oct 5, 2012
-     *
-     */
-    public enum Role {
-
-        ROLE_ADMIN,
-        ROLE_USER_MANAGER
-
     }
 }
