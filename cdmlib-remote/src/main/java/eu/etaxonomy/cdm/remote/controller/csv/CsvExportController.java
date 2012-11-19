@@ -6,14 +6,16 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.remote.controller.dwca;
+package eu.etaxonomy.cdm.remote.controller.csv;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,14 +24,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.UUIDEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
-import eu.etaxonomy.cdm.io.dwca.redlist.out.DwcaTaxExportConfiguratorRedlist;
+import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * @author a.oppermann
@@ -37,21 +46,31 @@ import eu.etaxonomy.cdm.io.dwca.redlist.out.DwcaTaxExportConfiguratorRedlist;
  * 
  */
 @Controller
-@RequestMapping(value = { "/dwca" })
-public class DwcaExportController{
+@RequestMapping(value = { "/csv" })
+public class CsvExportController{
 
 	@Autowired
 	private ApplicationContext appContext;
-	private static final Logger logger = Logger.getLogger(DwcaExportController.class);
+	
+	@Autowired 
+	private ITermService termService;
+	
+	private static final Logger logger = Logger.getLogger(CsvExportController.class);
+	
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(UUID.class, new UUIDEditor());
+    }
 
-	@RequestMapping(value = { "getDB" }, method = { RequestMethod.POST })
-	public void doExport(
-			@RequestParam(value = "dlOptions", required = false) String[] options,
+	@RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
+	public void doExportRedlist(
+			@RequestParam(value = "features", required = false) UuidList featureUuids,
 			@RequestParam(value = "combobox", required = false) String classificationUUID,
 			HttpServletResponse response) {
-
+		
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		DwcaTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, options, byteArrayOutputStream);
+		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
 		defaultExport.invoke(config);
@@ -60,6 +79,8 @@ public class DwcaExportController{
 			 *  Fetch data from the appContext and forward stream to HttpServleResponse
 			 *  
 			 *  FIXME: Large Data could be out of memory
+			 *  
+			 *  HTPP Error Break
 			 */
 			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
@@ -82,44 +103,25 @@ public class DwcaExportController{
 		}
 	}
 
-	private DwcaTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, String[] options, ByteArrayOutputStream byteArrayOutputStream) {
-
-		boolean doRlStatus2013 = false;
-		boolean doRlStatus1996 = false;		
-		UUID rlUuid1996 = null;
-		UUID rlUuid2013 = null;
+	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, ByteArrayOutputStream byteArrayOutputStream) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<UUID> classificationUUIDS = new HashSet
 		(Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
 		String destination = System.getProperty("java.io.tmpdir");
-
-		if (options != null && options.length != 0) {
-			logger.info("set individual configurations for export...");
-			for (String option : options) {
-				logger.info("... "+option);
-				if(option.equals("d4ac9c74-06fb-4899-b4b2-52c0ea940161")) {
-					doRlStatus1996 = true;
-					rlUuid1996 = UUID.fromString(option);
-				}
-				if(option.equals("bc0dbe02-56f5-43f9-8649-7a77f27e3563")){
-					doRlStatus2013 = true;
-					rlUuid2013 = UUID.fromString(option);
-				}
-				//if(option.equals("setDoDistributions"))doDistributions=true;
+		List<Feature> features = new ArrayList<Feature>();
+		if(featureUuids != null){
+			for(UUID uuid : featureUuids) {
+				features.add((Feature) termService.find(uuid));
 			}
-		}else {
-			logger.info("set standard configurations for export...");
 		}
-		DwcaTaxExportConfiguratorRedlist config = DwcaTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
+		
+		CsvTaxExportConfiguratorRedlist config = CsvTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
 		config.setHasHeaderLines(true);
 		config.setFieldsTerminatedBy("\t");
 		config.setClassificationUuids(classificationUUIDS);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
-		if(doRlStatus1996)config.setRlUuid1996(rlUuid1996);
-		if(doRlStatus2013)config.setRlUuid2013(rlUuid2013);
-		config.setIncludeRl1996(doRlStatus1996);
-		config.setIncludeRl2013(doRlStatus2013);
+		if(features != null)config.setFeatures(features);
 		return config;
 	}
 }
