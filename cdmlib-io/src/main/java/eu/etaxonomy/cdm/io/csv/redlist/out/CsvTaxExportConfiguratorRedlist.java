@@ -52,6 +52,8 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	private String setSeparator = ";";
 
 	private List<Feature> features;
+
+	private String classificationTitleCache;
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
@@ -267,6 +269,13 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	public List<Feature>  getFeatures() {
 		return features;
 		
+	}
+
+	public void setClassificationTitleCache(String classificationTitleCache) {
+		this.classificationTitleCache = classificationTitleCache;
+	}
+	public String getClassificationTitleCache() {
+		return classificationTitleCache;
 	}
 
 

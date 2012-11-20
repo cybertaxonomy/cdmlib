@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
@@ -86,7 +87,7 @@ public class CsvExportController{
 			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
 			ServletOutputStream sos = response.getOutputStream();
 			response.setContentType("text/csv");
-			response.setHeader("Content-Disposition", "attachment; filename=\"RedlistCoreTax.txt\"");
+			response.setHeader("Content-Disposition", "attachment; filename=\""+config.getClassificationTitleCache()+".txt\"");
 
 			int i;
 			while((i = isr.read())!= -1){

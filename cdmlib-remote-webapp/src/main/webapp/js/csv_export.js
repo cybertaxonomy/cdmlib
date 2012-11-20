@@ -138,6 +138,7 @@ $(function() {
 });
 
 $(document).ready(function () {
+	$("#csvExportOptions").hide();
 	var o = new Option("", "");
 	var classification = getUrlVars()["classification"];
 	$(o).html("");
@@ -167,6 +168,7 @@ $(document).ready(function () {
 				$("#csvExportOptions").append("<p>");
 			}
 		}
+		$("#csvExportOptions").show();
 	});
 });
 

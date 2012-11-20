@@ -92,6 +92,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 				CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Classification classification = node.getClassification();
+				config.setClassificationTitleCache(classification.getTitleCache());
 				if (! this.recordExists(taxon)){
 						handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config);
 						record.write(writer);
