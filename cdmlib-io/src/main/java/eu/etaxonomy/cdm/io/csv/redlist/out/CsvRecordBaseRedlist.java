@@ -50,6 +50,10 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
  * @date 20.04.2011
  *
  */
+/**
+ * @author alex
+ *
+ */
 public abstract class CsvRecordBaseRedlist {
 	private static final Logger logger = Logger.getLogger(CsvRecordBaseRedlist.class);
 
@@ -222,6 +226,11 @@ public abstract class CsvRecordBaseRedlist {
 		}
 	}
 	
+	/**
+	 * @param writer
+	 * @param list
+	 * @param termUri
+	 */
 	protected void printHeadline(PrintWriter writer, ArrayList<String> list, TermUri termUri){
 		for(String element:list){
 			if(list.get(0).equals(element)){
@@ -234,7 +243,14 @@ public abstract class CsvRecordBaseRedlist {
 		writer.println();
 	}
 
-	protected void prettyPrintRedlist(ArrayList<String> list, TermUri termUri, PrintWriter writer){
+	/**
+	 * @param list
+	 * @param termUri
+	 * @param writer
+	 * 
+	 * Method for concatenating strings, especially for the red list use case
+	 */
+	protected void print(ArrayList<String> list, TermUri termUri, PrintWriter writer){
 		if(list == null||list.isEmpty()){
 			print("", writer, IS_NOT_FIRST, termUri);
 		}else{

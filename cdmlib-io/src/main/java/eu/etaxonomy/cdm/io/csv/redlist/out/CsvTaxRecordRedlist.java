@@ -76,11 +76,11 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 		print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
 		print(scientificNameId, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_ID);
 		print(taxonomicStatus, writer, IS_NOT_FIRST, TermUri.DWC_TAXONOMIC_STATUS);
-		prettyPrintRedlist(synonyms, TermUri.DWC_SCIENTIFIC_NAME, writer);
-		prettyPrintRedlist(countryCodes, TermUri.DWC_COUNTRY_CODE, writer);
+		print(synonyms, TermUri.DWC_SCIENTIFIC_NAME, writer);
+		print(countryCodes, TermUri.DWC_COUNTRY_CODE, writer);
 		if(features != null ||featuresCells != null || !featuresCells.isEmpty()){
 			for(List<String> featureList : featuresCells) {
-				prettyPrintRedlist((ArrayList<String>)featureList, TermUri.DWC_LIFESTAGE, writer);
+				print((ArrayList<String>)featureList, TermUri.DWC_LIFESTAGE, writer);
 			}
 		}
 		writer.println();
