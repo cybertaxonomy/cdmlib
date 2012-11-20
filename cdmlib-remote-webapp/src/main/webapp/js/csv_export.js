@@ -139,9 +139,10 @@ $(function() {
 
 $(document).ready(function () {
 	var o = new Option("", "");
+	var classification = getUrlVars()["classification"];
 	$(o).html("");
 	$("#combobox").append(o);
-	$.getJSON('../classification.json', function(data) {
+	$.getJSON(classification, function(data) {//'../classification.json'
 		var count = data.count;
 		for(i=0;i < count ; i++){
 			var o = new Option(data.records[i].titleCache, data.records[i].uuid);
@@ -151,7 +152,8 @@ $(document).ready(function () {
 		}
 	});
 	var checkbox;
-	$.getJSON('../featureTree.json', function(data) {
+	var featureTree = getUrlVars()["featureTree"];
+	$.getJSON(featureTree, function(data) {
 		for(j = 0; j < data.length; j++){
 			for(i=0; i < data[j].root.children.length ; i++){
 				checkbox = document.createElement('input');
@@ -167,6 +169,15 @@ $(document).ready(function () {
 		}
 	});
 });
+
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
 
 function validateForm()
 {
