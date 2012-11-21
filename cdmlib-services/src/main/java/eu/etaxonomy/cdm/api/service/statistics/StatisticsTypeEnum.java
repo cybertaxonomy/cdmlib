@@ -10,12 +10,13 @@
 package eu.etaxonomy.cdm.api.service.statistics;
 
 /**
- * @author a.mueller
+ * @author a.mueller, (s.buers)
  * @date 21.09.2012
  *
  */
 public enum StatisticsTypeEnum {
 	
+	//TODO keep only one of the parameters label or description
 //	ALL ("All", "All data in the datastore");
 	CLASSIFICATION("Classification", "All classifications"),
 	ALL_TAXA("All taxa", "Accepted taxa and synonyms (concepts)"),

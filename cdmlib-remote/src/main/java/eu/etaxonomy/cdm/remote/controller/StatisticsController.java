@@ -7,6 +7,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSON;
+import net.sf.json.xml.JSONTypes;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,6 +72,7 @@ public class StatisticsController {
 		Statistics statistics = service.getStatistics(configurator);
 		logger.info("doStatistics() - " + request.getServletPath());
 		Integer i = 12;
+		
 		mv.addObject(statistics);
 	 mv.addObject(configurator);
 		// mv.addObject(i);

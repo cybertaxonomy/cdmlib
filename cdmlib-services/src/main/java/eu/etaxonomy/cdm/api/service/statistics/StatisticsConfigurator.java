@@ -34,8 +34,11 @@ public class StatisticsConfigurator {
 	}
 	
 	//
-	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
+
 	private List<StatisticsPartEnum> partList= new ArrayList<StatisticsPartEnum>();
+	
+	//TODO: replace with IdentifiableEntity???:
+//	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
 
 	private List<StatisticsTypeEnum> typeList = new ArrayList<StatisticsTypeEnum>();
 // *************************** METHODS ******************************/
@@ -62,13 +65,13 @@ public class StatisticsConfigurator {
 
 	
 
-	public List<IdentifiableEntity> getFilter() {
-		return filter;
-	}
-	
-	public void addFilter(IdentifiableEntity filterItem) {
-		this.filter.add(filterItem);
-	}
+//	public List<IdentifiableEntity> getFilter() {
+//		return filter;
+//	}
+//	
+//	public void addFilter(IdentifiableEntity filterItem) {
+//		this.filter.add(filterItem);
+//	}
 
 	
 	
