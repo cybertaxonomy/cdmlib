@@ -168,7 +168,7 @@ $(document).ready(function () {
 				$("#csvExportOptions").append("<p>");
 			}
 		}
-		$("#csvExportOptions").show();
+		$("#csvExportOptions").show(); 
 	});
 });
 
