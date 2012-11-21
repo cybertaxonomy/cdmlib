@@ -579,13 +579,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
                         ti.addToResponseRelatedTaxa(uuid, titleTo, name, rank, status, "", relLabel);
+                        //logger.info("titleTo : " + titleTo + " , name : " + name);
                     }
 
-                    // - relationships from the requested taxon
+                    // - relationships to the requested taxon
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
                         String titleFrom = tr.getFromTaxon().getTitleCache();
-                        TaxonNameBase fromnvn = (TaxonNameBase) tr.getToTaxon().getName();
+                        TaxonNameBase fromnvn = (TaxonNameBase) tr.getFromTaxon().getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
                         String uuid = tr.getFromTaxon().getUuid().toString();
@@ -594,6 +595,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
                         ti.addToResponseRelatedTaxa(uuid, titleFrom, name, rank, status, "", relLabel);
+                        //logger.info("titleFrom : " + titleFrom + " , name : " + name);
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
