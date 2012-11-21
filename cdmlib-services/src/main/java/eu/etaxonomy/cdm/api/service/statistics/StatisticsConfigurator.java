@@ -35,11 +35,19 @@ public class StatisticsConfigurator {
 	
 	//
 	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
-	private List<StatisticsPartEnum> partList;
+	private List<StatisticsPartEnum> partList= new ArrayList<StatisticsPartEnum>();
 
-	
+	private List<StatisticsTypeEnum> typeList = new ArrayList<StatisticsTypeEnum>();
 // *************************** METHODS ******************************/
 	
+	public List<StatisticsTypeEnum> getTypeList() {
+		return Collections.unmodifiableList(typeList);
+	}
+	
+	public void addType(StatisticsTypeEnum type){
+		this.typeList.add(type);
+	}
+
 	public void addPart(StatisticsPartEnum part) {
 		this.partList.add(part);
 	}
@@ -52,6 +60,7 @@ public class StatisticsConfigurator {
 		return Collections.unmodifiableList(partList);
 	}
 
+	
 
 	public List<IdentifiableEntity> getFilter() {
 		return filter;

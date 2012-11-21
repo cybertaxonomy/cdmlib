@@ -6,9 +6,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
-public interface IStatisticsService extends IService<Taxon>{
+public interface IStatisticsService {
 
 	Statistics getStatistics(StatisticsConfigurator configurator);
 
-	Integer countAll(StatisticsConfigurator configurator);
+	
 }
