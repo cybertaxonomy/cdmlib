@@ -69,7 +69,7 @@ public class StatisticsController {
 
 		createConfigurator(parts, types);
 		// service.getStatistics(configurator);
-		Statistics statistics = service.getStatistics(configurator);
+		Statistics statistics = service.getCountStatistics(configurator);
 		logger.info("doStatistics() - " + request.getServletPath());
 		Integer i = 12;
 		
