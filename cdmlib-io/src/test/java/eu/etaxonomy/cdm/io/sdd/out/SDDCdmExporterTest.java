@@ -44,7 +44,8 @@ public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
 		String url ="";
 		//FIXME
 		ICdmDataSource source = null;
-		//exportConfigurator = SDDExportConfigurator.NewInstance(source, url, null);
+		
+		exportConfigurator = SDDExportConfigurator.NewInstance(source, url, null);
 	}
 	
 	@Test
@@ -55,6 +56,7 @@ public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	public void testDoInvoke() {
+		
 		//sddCdmExporter.doInvoke(exportConfigurator, null);
 		//assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
 	}

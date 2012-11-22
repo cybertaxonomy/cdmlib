@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.io.sdd.out;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -20,7 +22,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.util.ResourceUtils;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
@@ -68,7 +72,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 	 * @param filename
 	 */
 	@Override
-	protected void doInvoke(SDDExportState state){
+	public void doInvoke(SDDExportState state){
 //		protected boolean doInvoke(IExportConfigurator config,
 //		Map<String, MapWrapper<? extends CdmBase>> stores) {
 	
@@ -76,7 +80,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		
 		String dbname = sddExpConfig.getSource() != null ? sddExpConfig.getSource().getName() : "unknown";
     	String fileName = sddExpConfig.getDestinationNameString();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
+		logger.warn("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + sddExpConfig.getDbSchemaValidation());
 
 		TransactionStatus txStatus = startTransaction(true);
@@ -95,16 +99,57 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 			logger.error("Error retrieving data");
 			e.printStackTrace();
 		}
+		
+		File fy = new File(fileName);
+		
+		
+		if ( fy.exists() )
+		{
+			logger.warn("LORNA FILE EXISTS");
 
-		logger.info("All data retrieved");
+		  if(fy.canWrite()) {
+			  
+				try {
+					logger.warn("LORNA FILE PATH" + fy.getCanonicalPath());
+					logger.warn("LORNA ABS PATH" + fy.getAbsolutePath());
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		  }
+		} else {
+			
+			logger.warn("FILE DOESNT EXIST " + fy.getAbsoluteFile().exists());
+			logger.warn("LORNA FILE DOESNT EXIST");
+			try {
+				logger.warn("LORNA FILE DOESNT EXIST" + ResourceUtils.getFile(fileName));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// File f = new File(fileName);
+		try {
+			FileOutputStream fosy = new FileOutputStream(ResourceUtils.getFile(fileName));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		logger.warn("All data retrieved");
 
 		try {
 			sddDocumentBuilder = new SDDDocumentBuilder();
+			logger.warn("LORNA the filename is " + fileName);
 			File f = new File(fileName);
 			// File f = new File(fileName);
-			FileOutputStream fos = new FileOutputStream(f);
+			//FileOutputStream fos = new FileOutputStream(f);
+			FileOutputStream fos = new FileOutputStream(ResourceUtils.getFile(fileName));
+			logger.warn("Created fos");
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, "UTF8"), true);
-			sddDocumentBuilder.marshal(dataSet, f);
+			//sddDocumentBuilder.marshal(dataSet, f);//lorna
+			sddDocumentBuilder.marshal(dataSet, fileName);
 
 			// TODO: Split into one file per data set member to see whether performance improves?
 
@@ -112,6 +157,7 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 			logger.info("Filename is: " + fileName);
 
 		} catch (Exception e) {
+			logger.warn("LORNA the filename is " + fileName);
 			logger.error("Marshalling error");
 			e.printStackTrace();
 		} 
@@ -142,6 +188,9 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		int languageDataRows = numberOfRows;
 		int termVocabularyRows = numberOfRows;
 		int homotypicalGroupRows = numberOfRows;
+		
+		logger.warn("LORNA no of rows: " + numberOfRows);
+		
 
 		if (sddExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
@@ -157,9 +206,16 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		}
 
 		if (sddExpConfig.isDoTerms() == true) {
-			if (definedTermBaseRows == 0) { definedTermBaseRows = getTermService().count(DefinedTermBase.class); }
+			if (definedTermBaseRows == 0) { 
+				definedTermBaseRows = getTermService().count(DefinedTermBase.class);
+				logger.warn("LORNA defined term base rows: " + definedTermBaseRows);
+				}
 			logger.info("# DefinedTermBase: " + definedTermBaseRows);
-			sddDataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
+			ITermService termService = getTermService();
+			List<DefinedTermBase> list = termService.list(null,definedTermBaseRows, 0,null,null);
+			sddDataSet.setTerms(list);
+			//sddDataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
+			//sddDataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoAuthors() == true) {

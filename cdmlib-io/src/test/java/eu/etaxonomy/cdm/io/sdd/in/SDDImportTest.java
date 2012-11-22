@@ -47,7 +47,9 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+        //URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+        //URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input2.xml");
+        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml");
 		URI uri = url.toURI();
 //		URI	uri = URI.create("file:///C:/localCopy/Data/xper/Cichorieae-DA2.sdd.xml");
         Assert.assertNotNull(url);
@@ -65,8 +67,11 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
 	public void testDoInvoke() {
         sddImport.doInvoke(new SDDImportState(configurator));
         this.setComplete();
+        logger.warn("Name service count: " + (nameService.count(null)));
+        
         this.endTransaction();
         assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
     }
+
 
 }

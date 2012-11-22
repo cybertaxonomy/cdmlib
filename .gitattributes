@@ -554,6 +554,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/reference/EndnoteRecordsImportTest.j
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/IkeyPlusImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/KeyActivator.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportBenchmark.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportExportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.java -text
