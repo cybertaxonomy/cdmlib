@@ -205,6 +205,7 @@ public abstract class TermBase extends IdentifiableEntity{
             }
             this.addRepresentation(repr);
         }
+        this.resetTitleCache();
     }
 
     /* (non-Javadoc)

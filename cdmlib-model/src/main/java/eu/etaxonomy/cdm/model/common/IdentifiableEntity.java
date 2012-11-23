@@ -200,6 +200,17 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return titleCache;
     }
+    
+    /**
+     * Will reset (set to <code>null</code>) the title cache if not protected
+     * @return <code>true</code> if title cache was reset, <code>false</code> otherwise
+     */
+	public boolean resetTitleCache() {
+		if (!protectedTitleCache) {
+			this.titleCache = null;
+		}
+		return protectedTitleCache;
+	}
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String)
      */
