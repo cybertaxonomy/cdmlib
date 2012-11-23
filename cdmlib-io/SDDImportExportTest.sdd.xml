@@ -229,23 +229,23 @@
                     <Citation location="p. 30" ref="p1"/>
                 </Scope>
                 <SummaryData>
-                    <Quantitative ref="c2">
-                        <Measure type="N" value="20.0"/>
-                        <Measure type="SD" value="1.3"/>
-                        <Measure type="Min" value="2.3"/>
-                        <Measure type="Mean" value="5.1"/>
-                        <Measure type="Max" value="7.9"/>
-                    </Quantitative>
                     <Categorical ref="c3">
                         <State ref="s3"/>
                         <State ref="s4"/>
                     </Categorical>
-                    <Categorical ref="c1">
-                        <State ref="s1"/>
-                    </Categorical>
+                    <Quantitative ref="c2">
+                        <Measure type="N" value="20.0"/>
+                        <Measure type="SD" value="1.3"/>
+                        <Measure type="Min" value="2.3"/>
+                        <Measure type="Max" value="7.9"/>
+                        <Measure type="Mean" value="5.1"/>
+                    </Quantitative>
                     <TextChar ref="text29">
                         <Content>Free form text</Content>
                     </TextChar>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
                 </SummaryData>
             </CodedDescription>
         </CodedDescriptions>
