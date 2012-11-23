@@ -605,6 +605,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/Cichorieae-fullSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/ant.sdd.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/duplicateEntrySDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/feuillesImagesURL.xml -text
