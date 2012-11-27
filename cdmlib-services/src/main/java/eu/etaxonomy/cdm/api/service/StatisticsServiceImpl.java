@@ -24,6 +24,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -55,16 +58,16 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private static final Logger logger = Logger
 			.getLogger(StatisticsServiceImpl.class);
 
-//	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
-//			.asList(new String[] { "" });
+	// private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE =
+	// Arrays
+	// .asList(new String[] { "" });
 
-	
 	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
 			.asList(new String[] { "sources.citation" });
-	//"descriptionSources", "citation"
-	
+	// "descriptionSources", "citation"
+
 	private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
-			.asList(new String[] { "descriptionSources",  });;
+			.asList(new String[] { "sources.citation", });;
 
 	private StatisticsConfigurator configurator;
 
@@ -98,10 +101,8 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		this.configurator = configurator;
 		this.statistics = new Statistics(configurator);
 		calculateParts();
-
-		// return (Integer) count(Taxon.class);
-//		return this.statistics;
-return new Statistics(null);
+		return this.statistics;
+		// return new Statistics(null);
 	}
 
 	private void calculateParts() {
@@ -156,7 +157,7 @@ return new Statistics(null);
 				break;
 			}
 			statistics.addCount(type, number);
-System.out.println("");
+			System.out.println("");
 		}
 
 	}
@@ -172,40 +173,51 @@ System.out.println("");
 		// int counter = 0;
 
 		// count references from each description:
-//
-//		// we need the set to get off the doubles:
+		// TODO find out, if there is actually only one description or this count does not work proper
+		// // we need the set to get off the doubles:
 		Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
-// second param 0?:
-		try  {
-//		List<DescriptionBase> descriptions = descriptionDao.list(null, 1, new ArrayList<OrderHint>(),DESCRIPTION_SOURCE_REF_STRATEGIE);
-		List<DescriptionBase> descriptions = descriptionDao.list(null, 1, null,null);
-		// list(null, 0);
-		for (DescriptionBase<?> description : descriptions) {
-			Set<IdentifiableSource> sources = description.getSources();
-			for (IdentifiableSource source : sources) {
-				if (source.getCitation() != null)
-					
-				references.add(source.getCitation());
-//				 counter++;
-			}
-			System.out.println("");
-		}
+		// second param 0?:
+//		try {
+			// List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
+			// new ArrayList<OrderHint>(),DESCRIPTION_SOURCE_REF_STRATEGIE);
+			// List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
+			// null,null);
+			List<DescriptionBase> descriptions = descriptionDao
+					.listDescriptions(TaxonDescription.class, null, null, null,
+							null, null, null, DESCRIPTION_SOURCE_REF_STRATEGIE);
+			descriptions.addAll(descriptionDao.listDescriptions(
+					TaxonNameDescription.class, null, null, null, null, null,
+					null, DESCRIPTION_SOURCE_REF_STRATEGIE));
+			descriptions.addAll(descriptionDao.listDescriptions(
+					SpecimenDescription.class, null, null, null, null, null,
+					null, DESCRIPTION_SOURCE_REF_STRATEGIE));
+			// list(null, 0);
+			for (DescriptionBase<?> description : descriptions) {
+				Set<IdentifiableSource> sources = description.getSources();
+				for (IdentifiableSource source : sources) {
+					if (source.getCitation() != null)
 
-		// count references from each description element:
-//		List<DescriptionElementBase> descrElements = descrElementDao.list(null,
-//				0, null, DESCR_ELEMENT_REF_STRATEGIE);
-//		for (DescriptionElementBase descriptionElement : descrElements) {
-//			Set<DescriptionElementSource> elementSources = descriptionElement
-//					.getSources();
-//			for (DescriptionElementSource source : elementSources) {
-//				if (source != null)
-//					references.add(source.getCitation());
-//				// counter++;
+						references.add(source.getCitation());
+					// counter++;
+				}
+				System.out.println("");
+			}
+
+			//this part produces still an error:
+			// count references from each description element:
+//			List<DescriptionElementBase> descrElements = descrElementDao.list(
+//					null, 0, null, DESCR_ELEMENT_REF_STRATEGIE);
+//			for (DescriptionElementBase descriptionElement : descrElements) {
+//				Set<DescriptionElementSource> elementSources = descriptionElement
+//						.getSources();
+//				for (DescriptionElementSource source : elementSources) {
+//					if (source.getCitation() != null)
+//						references.add(source.getCitation());
+//				}
 //			}
+//		} catch (HibernateException he) {
+//			he.printStackTrace();
 //		}
-		} catch(HibernateException he) {
-			he.printStackTrace();
-		}
 		return references.size();
 	}
 
