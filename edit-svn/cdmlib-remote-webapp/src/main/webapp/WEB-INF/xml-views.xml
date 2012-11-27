@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <!--
+        ===============================================================
+        This is the configuration file for the
+        eu.etaxonomy.cdm.remote.view.PatternViewResolver
+        ===============================================================
+
+      - bean names are ant style patterns
+      - the eu.etaxonomy.cdm.remote.view.PatternViewResolver
+        must be used to resolve patterns used as bean names
+    -->
+
+    <!-- entity services -->
+    <bean name="**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="type" value="XML" />
+      <property name="jsonConfig" ref="jsonConfig" />
+      <!--  <property name="xsl" value="humane.xsl" />  -->
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
+    </bean>
+
+
+    <bean name="**/name/* **/name" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="type" value="XML" />
+      <property name="xsl" value="name.xsl" />
+      <property name="jsonConfig" ref="jsonConfig" />
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
+    </bean>
+
+    <bean name="**/taxon/* **/taxon" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="type" value="XML" />
+      <property name="jsonConfig" ref="jsonConfig" />
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
+      <property name="xsl" value="taxon.xsl" />
+    </bean>
+
+     <bean name="**/name_catalogue/* **/name_catalogue" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="type" value="XML" />
+      <property name="jsonConfig" ref="nameCatalogueJsonConfig" />
+      <property name="dataSourceProperties" ref="dataSourceProperties" />
+    </bean>
+
+
+    <!-- taxonomy service -->
+    <bean name="**/classification **/classification/* **/classification/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+        <!--  <property name="xsl" value="humane.xsl" />  -->
+        <property name="jsonConfig" ref="jsonConfigClassification" />
+        <property name="dataSourceProperties" ref="dataSourceProperties" />
+    </bean>
+
+    <!-- portal service -->
+    <bean name="**/portal/* **/portal/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+        <!--  <property name="xsl" value="humane.xsl" />  -->
+        <property name="jsonConfig" ref="jsonConfigPortal" />
+        <property name="dataSourceProperties" ref="dataSourceProperties" />
+    </bean>
+
+    <!-- management service
+    <bean name="/manager/*.xml /manager/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+    </bean>
+    <bean name="/manager/*.json /manager/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    </bean>
+    -->
+</beans>

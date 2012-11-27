@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
+    "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
+<mappings>   
+    <!-- agent package -->
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.agent.Person</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Person</class-b>
+    </mapping>
+     
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.agent.Team</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Team</class-b>
+    </mapping> 
+     <!-- common package -->
+     <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.common.DefinedTermBase</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm</class-b>
+        <field>
+          <a>uri</a>
+          <b>identifier</b>
+        </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.common.LanguageString</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType</class-b>
+        <field custom-converter-id="stripTagsConverter">
+          <a>text</a>
+          <b>value</b>
+        </field>
+        <field>
+            <a>language.iso639_1</a>
+            <b>lang</b>
+        </field>
+    </mapping>
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.common.CdmBase</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing</class-b>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="username">
+            <a>createdBy</a>
+            <b>creator</b>
+        </field>
+        <field custom-converter-id="dateTimeConverter">
+            <a>created</a>
+            <b>created</b>
+        </field>
+    </mapping>
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.common.VersionableEntity</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing</class-b>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="username">
+            <a>updatedBy</a>
+            <b>contributor</b>
+        </field>
+        <field custom-converter-id="dateTimeConverter">
+            <a>updated</a>
+            <b>date</b>
+        </field>
+    </mapping>
+     
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.common.IdentifiableEntity</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing</class-b>
+        <field custom-converter-id="stripTagsConverter">
+            <a>titleCache</a>
+            <b>title</b>
+        </field>
+        <field custom-converter-id="lsidConverter">
+            <a>lsid</a>
+            <b>identifier</b>
+        </field>
+        <field type="one-way" custom-converter-id="lsidProxyConverter">
+            <a>lsid</a>
+            <b>sameAs</b>
+        </field>
+    </mapping>
+    
+    <!-- location package -->
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.location.NamedArea</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.GeographicRegion</class-b>
+    </mapping>
+    
+    <!-- name package -->
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.name.NonViralName</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName</class-b>
+        <field>
+          <a>authorshipCache</a>
+          <b>authorship</b>
+        </field>
+        <field>
+          <a>nameCache</a>
+          <b>nameComplete</b>
+        </field>
+    </mapping>
+      
+</mappings>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+
+   <!-- include default application context and customization -->
+    <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
+    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+       <property name="omit" value="false" />
+    </bean>
+   <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
+
+   <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
+
+    <context:component-scan base-package="eu/etaxonomy/cdm/io">
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.faunaEuropaea.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.erms.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.eflora.*" />
+        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.berlinModel.*" />
+    </context:component-scan>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="properties">
+      <props>
+          <prop key="eu.etaxonomy.cdm.base.path">${user.home}/.cdmLibrary/</prop>
+          <prop key="eu.etaxonomy.cdm.search.index.path">${user.home}/.cdmLibrary/index/</prop>
+      </props>
+        </property>
+  </bean>
+
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- import additional beans into the root context -->
+    <import resource="applicationContext.views.xml"/>
+
+    <!-- CONFIGURE WEB APPLICATION HERE -->
+    <import resource="datasources/configurable.xml" />
+
+    <context:annotation-config/>
+    <bean class="eu.etaxonomy.cdm.remote.config.LoggingConfigurer">
+    </bean>
+
+     <!-- OAI-PMH TODO externalize? -->
+     <bean name="taxonOaiPmhController" class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
+     <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>
+   </bean>
+
+  <bean name="taxonOaiPmhCacheMapping" class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
+          <property name="cacheName" value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
+  </bean>
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="configLocation" value="classpath:/eu/etaxonomy/cdm/remote/ehcache.xml" />
+        <property name="shared" value="true"/>
+    </bean>
+
+  <bean id="serializableFactory" class="org.springmodules.cache.serializable.XStreamSerializableFactory"/>
+
+  <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
+      <property name="cacheManager" ref="cacheManager" />
+      <property name="serializableFactory" ref="serializableFactory"/>
+  </bean>
+
+</beans>

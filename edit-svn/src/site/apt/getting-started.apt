@@ -1,0 +1,176 @@
+		----
+		Developing with the CDM Library
+		----
+
+
+Developing with the CDM Library
+
+	<Table of Contents>
+
+%{toc|section=0|fromDepth=2|toDepth=3}
+
+
+  <<Note:>> The CDM Library uses Apache Maven for dependency management. If you are not familiar with that please take a look at the {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}developer resources on the wiki}}. In case you run into problems, you might want to check {{{./troubleshooting.html}Troubleshooting}} or contact {{{mailto:editsupport@bgbm.org}editsupport@bgbm.org}} directly.
+
+* Integrating the CDM Library into a maven project
+
+	To integrate the CDM Library into your personal maven project pelase add our maven repository to your POM:
+	{{http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/}}. To use the <cdmlib-service> package add the following
+	dependency to you POM (adapt the right version number !!):
+
+---
+<dependency>
+	<groupId>eu.etaxonomy</groupId>
+	<artifactId>cdmlib-service</artifactId>
+	<version>x.x</version>
+</dependency>
+---
+
+
+* Spring applications with the CDM Library
+
+	In your own applicationContext.xml you can simply import the cdm service spring beans from the library.
+	In addition it also needs a datasource bean and a hibernateProperties bean specific for that datasource.
+	The CDM Library comes with an embedded hypersonic database that is super easy to use. All you need to do
+	is to import that hsql specific spring configuration like this:
+
+---
+applicationContext.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<import resource="classpath:/eu/etaxonomy/cdm/services.xml" />
+	<import resource="classpath:/eu/etaxonomy/cdm/hsql-datasource.xml" />
+
+</beans>
+---
+
+	In case you want to define the datasource within your own applicationContext you can surely do so.
+	For a typical mysql database it looks like this:
+
+---
+applicationContext.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<import resource="classpath:/eu/etaxonomy/cdm/services.xml" />
+
+    <bean id="dataSource"
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_build"/>
+        <property name="username" value="cdm_user"/>
+        <property name="password" value="why_do_i_need_this"/>
+    </bean>
+
+    <bean id="hibernateProperties"
+			class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.cache.provider_class">
+					org.hibernate.cache.NoCacheProvider
+				</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
+---
+
+
+* Developing the CDM Library with Eclipse
+
+	To use the entire CDM Library with {{{http://www.eclipse.org/} Eclipse}}, you must meet the following prerequisites:
+
+    * Maven 2.2.1 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}}} for installation instructions.
+
+    * Subclipse 1.6.x (for convenient subversion access from Eclipse). {{{http://subclipse.tigris.org/}}}
+
+    * Java JDK >= 1.6 (JRE is not enough) and JAVA_HOME is set to JDK path
+
+	[]
+
+** Preparing the CDM Library
+
+	Start by checking out the source code from the subversion repository:
+
+---
+$ svn co http://dev.e-taxonomy.eu/svn/trunk/cdmlib/ .
+---
+
+	Change into the cdmlib directory, compile and install the cdmlib packages in your local repository. This will also download the dependencies into your local repository.
+
+---
+$ cd cdmlib
+$ mvn install
+---
+
+	Let maven create project dependencies and Eclipse metafiles (.project s.o.)
+
+---
+$ mvn eclipse:eclipse
+---
+
+** Configuring Eclipse
+
+	* Setup a new Eclipse workspace (where ever you want but using the cdmlib folder may be comfortable)
+
+	* In Eclipse preferences (not project properties) set a java class variable called <<<M2_REPO>>>, pointing to your local repository.
+
+		* Eclipse Preferences: Java -> Build Path -> Classpath
+
+		* Click <<<New>>>. In the upcoming dialog, enter <<<M2_REPO>>> as the variables name and browse the filesystem for the location of the maven repository
+
+			* In OSX for example    <<</Users/USERNAME/.m2/repository>>>
+
+			* In WinXP for example  <<<C:\Documents and Settings\USERNAME\.m2\repository>>>
+
+	* Import the cdmlib projects:
+
+		* In Eclipse open the Import Wizard: File -> Import -> General -> Existing Projects into Workspace
+
+		* Choose "Select root directory". Click "Browse" and navigate to your cdmlib folder and confirm the file dialog.
+
+		* The projects should now show in the Import Wizard window. Select the projects you want wo work on (usually all) and hit OK.
+
+* Getting started with the cdmlib based web services
+
+    A good starting point for getting familiar with the cdmlib based web services is this documentation
+    on the cdm-server in general, and the documentation on the {{{rest-api.html} CDM REST API}}.
+    Usually you will be mostly interested into the generic API Service which exposes more or less
+    one to one the service layer of the CDM architecture to the web.
+
+    If you want to take a look at the code, the almost all of the web service implementation
+    is found in the maven sub module <<<cdmlib/cdmlib-remote>>>. Inside this module the controllers
+    are found in <<</src/main/java/eu/etaxonomy/cdm/remote/controller>>>.
+    The serialization to json and xml is done by <<<JSON-lib>>> but we might switch to Jackson in the future.
+    Beans which support the serialization are found in <<</src/main/java/eu/etaxonomy/cdm/remote/json>>>,
+    and last but not least you will also be interested into the configuration which ties everything
+    together: <<</src/main/resources/eu/etaxonomy/cdm/remote/json/jsonConfigurations.xml>>>
+    The maven module module <<<cdmlib/cdmlib-remote>>> only contains the views and the controllers.
+    All parts (mostly configuration) required to let it run in a web application context are
+    contained in another module <<<cdmlib/cdmlib-remote-webapp>>>, this module actually is run as a
+    server instance by the {{{/cdm-server}cdm-server}}, configuration files are found in <<</src/main/webapp/WEB-INF/>>>
+
+* Where do I go from here?
+
+	Now that you have integrated or installed the CDM Library you are probably looking for documentation
+	on how to develop with it. A good start is to read the {{{./reference.html}reference documentation}}
+	of the CDM Library. The {{{./cdm-uml}UML diagrams}} are also a good starting point to get familiar
+	with the structure of the Common Data Model itself or consult the {{{./apidocs}javadoc}} for the API documentation.
+	Please also have a look at the {{{http://dev.e-taxonomy.eu/trac/wiki/GeneralDev} general information}} and
+	{{{http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev} further information about coding with the CDM Library}} in the development wiki.
+
+
+

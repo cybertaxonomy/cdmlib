@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    
+    <bean id="defaultDataSource"
+	        lazy-init="true"
+	        class="eu.etaxonomy.cdm.database.LocalHsqldb"   
+	        init-method="init"
+	        destroy-method="destroy"
+        >
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+        <property name="startServer" value="true"/>
+        <property name="silent" value="true"/>
+        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
+        <!-- property name="dbName" value="cdm"/> -->
+        <!--  <property name="databasePath" value="C:\tmp\cdmDb\"/> -->
+    </bean>
+    
+    <bean id="defaultMySqlDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_build" />
+        <property name="username" value="edit" />
+        <property name="password" value="wp5" />
+    </bean>
+    <bean id="testSqlServer2000DataSource"  lazy-init="true"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <property name="driverClassName" value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+        <property name="url" value="jdbc:microsoft:sqlserver://LAPTOPHP:1433;databaseName=cdmTest;SelectMethod=cursor" />
+        <property name="username" value="edit" />
+        <property name="password" value="wp5" />
+    </bean>
+    <bean id="testSqlServer2005DataSource"  lazy-init="true"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+        <property name="url" value="jdbc:sqlserver://LAPTOPHP:1433;databaseName=cdmTest;SelectMethod=cursor" />
+        <property name="username" value="edit" />
+        <property name="password" value="wp5" />
+    </bean>
+    <bean id="testPostgreDataSource" lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://192.168.1.17:5432/cdm_test" />
+        <property name="username" value="edit" />
+        <property name="password" value="schalke" />
+        
+    </bean>
+    <bean id="localMysqlDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost/cdm" />
+        <property name="username" value="edit" />
+        <property name="password" value="wp5" />
+    </bean>
+
+    <bean id="rel1_1DataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_1_1" />
+        <property name="username" value="edit" />
+        <property name="password" value="wp5" />
+    </bean>
+    
+</beans>

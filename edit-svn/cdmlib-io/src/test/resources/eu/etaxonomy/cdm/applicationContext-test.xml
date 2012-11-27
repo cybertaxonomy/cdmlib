@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
+
+    <context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+
+   <!--
+        use TestingTermInitializer
+     -->
+    <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
+        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
+        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
+        <property name="omit" value="false"/>
+    </bean>
+    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+        <property name="omit" value="true"/>
+    </bean>
+
+
+    <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
+
+    <bean id="hibernateProperties"
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLCorrectedDialect</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+                <prop key="hibernate.search.default.indexBase">./target/test-classes</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="tableGeneratorGlobalOverride"
+        class="eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride">
+        <property name="properties">
+            <props>
+                <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
+                <prop key="optimizer">none</prop>
+                <prop key="initial_value">3000</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
+      <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
+      <property name="create" value="true"/>
+    </bean>
+
+    <bean id="taxonSpellingIndex" class="org.springmodules.lucene.index.support.SimpleIndexFactoryBean">
+      <property name="directory" ref="taxonSpellingDirectory"/>
+      <property name="create" value="true"/>
+      <property name="analyzer">
+        <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
+      </property>
+    </bean>
+
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <property name="providers">
+            <list>
+                <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+
+    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="getUsername"/>
+    </bean>
+
+</beans>

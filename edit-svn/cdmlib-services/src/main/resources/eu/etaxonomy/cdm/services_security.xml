@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:security="http://www.springframework.org/schema/security"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.4.xsd"
+    >
+
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence_security.xml"/>
+
+    <!--
+        ======================================================================
+          default service configuration (same as in services.xml)
+        ======================================================================
+     -->
+    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
+      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
+    </context:component-scan>
+
+    <context:component-scan base-package="eu/etaxonomy/cdm/search" />
+
+    <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
+
+    <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
+    <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator">
+    </bean>
+
+    <!--
+        ======================================================================
+          security specific configuration
+        ======================================================================
+     -->
+    <security:global-method-security pre-post-annotations="enabled" run-as-manager-ref="runAsManager" >
+        <security:expression-handler ref="expressionHandler" />
+    </security:global-method-security>
+
+    <!--
+        To use "hasPermission()" in the Spring EL method annotations like @PreAuthorize we explicitly configure the permissionEvaluator
+        the cdmPermissionEvaluator is already defined in the persistence security context
+    -->
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
+    </bean>
+
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <property name="providers">
+            <list>
+                <ref local="daoAuthenticationProvider"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userService"/>
+        <property name="saltSource" ref="saltSource"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+
+    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+        <property name="userPropertyToUse" value="getUsername"/>
+    </bean>
+
+    <!--
+        Run-As Authentication Replacement for system operations
+        as e.g. performed by the eu.etaxonomy.cdm.api.application.FirstDataInserter
+
+        the key must match FirstDataInserter.RUN_AS_KEY
+     -->
+    <bean id="runAsManager"
+        class="org.springframework.security.access.intercept.RunAsManagerImpl">
+      <property name="key" value="TtlCx3pgKC4l"/>
+    </bean>
+
+    <bean id="runAsAuthenticationProvider"
+        class="org.springframework.security.access.intercept.RunAsImplAuthenticationProvider">
+      <property name="key" value="TtlCx3pgKC4l"/>
+    </bean>
+
+    <!-- equips a new and empty database with the initial set of meta data and admin user   -->
+    <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter">
+        <property name="runAsAuthenticationProvider" ref="runAsAuthenticationProvider"/>
+    </bean>
+
+</beans>
