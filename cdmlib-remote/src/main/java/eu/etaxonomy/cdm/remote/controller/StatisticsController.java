@@ -71,10 +71,10 @@ public class StatisticsController {
 		// service.getStatistics(configurator);
 		Statistics statistics = service.getCountStatistics(configurator);
 		logger.info("doStatistics() - " + request.getServletPath());
-		Integer i = 12;
+		
 		
 		mv.addObject(statistics);
-	 mv.addObject(configurator);
+//	 mv.addObject(configurator);
 		// mv.addObject(i);
 		return mv;
 	}

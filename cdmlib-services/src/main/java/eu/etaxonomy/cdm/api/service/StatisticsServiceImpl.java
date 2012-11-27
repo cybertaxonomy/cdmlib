@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * 
@@ -53,12 +55,17 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private static final Logger logger = Logger
 			.getLogger(StatisticsServiceImpl.class);
 
-	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
-			.asList(new String[] { "" });
+//	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
+//			.asList(new String[] { "" });
 
+	
+	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
+			.asList(new String[] { "sources.citation" });
+	//"descriptionSources", "citation"
+	
 	private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
-			.asList(new String[] { "" });;
-			
+			.asList(new String[] { "descriptionSources",  });;
+
 	private StatisticsConfigurator configurator;
 
 	private Statistics statistics;
@@ -93,7 +100,8 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		calculateParts();
 
 		// return (Integer) count(Taxon.class);
-		return this.statistics;
+//		return this.statistics;
+return new Statistics(null);
 	}
 
 	private void calculateParts() {
@@ -148,7 +156,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				break;
 			}
 			statistics.addCount(type, number);
-
+System.out.println("");
 		}
 
 	}
@@ -164,33 +172,39 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		// int counter = 0;
 
 		// count references from each description:
-
-		// we need the set to get off the doubles:
+//
+//		// we need the set to get off the doubles:
 		Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
-		List<DescriptionBase> descriptions = descriptionDao.list(null, 0, null,
-				DESCRIPTION_SOURCE_REF_STRATEGIE);
+// second param 0?:
+		try  {
+//		List<DescriptionBase> descriptions = descriptionDao.list(null, 1, new ArrayList<OrderHint>(),DESCRIPTION_SOURCE_REF_STRATEGIE);
+		List<DescriptionBase> descriptions = descriptionDao.list(null, 1, null,null);
 		// list(null, 0);
 		for (DescriptionBase<?> description : descriptions) {
 			Set<IdentifiableSource> sources = description.getSources();
 			for (IdentifiableSource source : sources) {
 				if (source.getCitation() != null)
-					;
+					
 				references.add(source.getCitation());
-				// counter++;
+//				 counter++;
 			}
+			System.out.println("");
 		}
 
 		// count references from each description element:
-		List<DescriptionElementBase> descrElements = descrElementDao.list(null,
-				0, null, DESCR_ELEMENT_REF_STRATEGIE);
-		for (DescriptionElementBase descriptionElement : descrElements) {
-			Set<DescriptionElementSource> elementSources = descriptionElement
-					.getSources();
-			for (DescriptionElementSource source : elementSources) {
-				if (source != null)
-					references.add(source.getCitation());
-				// counter++;
-			}
+//		List<DescriptionElementBase> descrElements = descrElementDao.list(null,
+//				0, null, DESCR_ELEMENT_REF_STRATEGIE);
+//		for (DescriptionElementBase descriptionElement : descrElements) {
+//			Set<DescriptionElementSource> elementSources = descriptionElement
+//					.getSources();
+//			for (DescriptionElementSource source : elementSources) {
+//				if (source != null)
+//					references.add(source.getCitation());
+//				// counter++;
+//			}
+//		}
+		} catch(HibernateException he) {
+			he.printStackTrace();
 		}
 		return references.size();
 	}

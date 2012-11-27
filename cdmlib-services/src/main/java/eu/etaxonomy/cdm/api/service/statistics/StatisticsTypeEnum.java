@@ -18,14 +18,14 @@ public enum StatisticsTypeEnum {
 	
 	//TODO keep only one of the parameters label or description
 //	ALL ("All", "All data in the datastore");
-	CLASSIFICATION("Classification", "All classifications"),
-	ALL_TAXA("All taxa", "Accepted taxa and synonyms (concepts)"),
-	ACCEPTED_TAXA("Accepted taxa", "Accepted taxa"),
+	CLASSIFICATION("Classifications", "All classifications"),
+	ALL_TAXA("All_taxa", "Accepted taxa and synonyms (concepts)"),
+	ACCEPTED_TAXA("Accepted_taxa", "Accepted taxa"),
 	SYNONYMS("Synonyms", "All synonyms"),
-	TAXON_NAMES("Taxon names", "All taxon names (not"),
+	TAXON_NAMES("Taxon_names", "All taxon names (not"),
 	ALL_REFERENCES("References", "References"),
-	NOMECLATURAL_REFERENCES("Nomeclatural references", "Nomenclatural references"),
-	DESCRIPTIVE_SOURCE_REFERENCES("Descriptive source references", "Descriptive source references")
+	NOMECLATURAL_REFERENCES("Nomeclatural_references", "Nomenclatural references"),
+	DESCRIPTIVE_SOURCE_REFERENCES("Descriptive_source_references", "Descriptive source references")
 	;
 	
 	

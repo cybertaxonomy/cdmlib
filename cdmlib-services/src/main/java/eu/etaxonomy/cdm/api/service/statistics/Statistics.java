@@ -67,6 +67,7 @@ public class Statistics {
 	public void addCount(StatisticsTypeEnum type, Integer number) {
 		this.countMap.put(type.getLabel(), number);
 	}
+	
 	// public Map<StatisticsPartEnum, Map<IdentifiableEntity, Statistics>>
 	// getPartList() {
 	// // return part;
