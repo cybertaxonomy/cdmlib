@@ -1,4 +1,6 @@
 * text=auto !eol
+/1dnaxml.xml -text
+/2.xml -text
 cdmlib-io/LICENSE.TXT -text
 cdmlib-io/README.TXT -text
 cdmlib-io/SDDImportExportTest.sdd.xml -text
@@ -535,3 +537,8 @@ cdmlib-io/src/test/resources/main/resources/conf.properties -text
 cdmlib-io/src/test/resources/main/resources/confOverridable.properties -text
 cdmlib-io/src/test/resources/termCodeCreator.xls -text
 cdmlib-io/src/test/resources/unitils.properties -text
+/corbeau.xml -text
+/corbeau2.xml -text
+/corbeaux.xml -text
+/cra.xml -text
+/dnaxml.xml -text

@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<abcd:DataSets xmlns:abcd="http://www.tdwg.org/schemas/abcd/2.06" xmlns:biocase="http://www.biocase.org/schemas/protocol/1.3" xmlns:ns1="http://www.dnabank-network.org/test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.biocase.org/schemas/protocol/1.3 http://www.bgbm.org/biodivinf/schema/protocol_1_31.xsd">
+      <abcd:DataSet>
+        <abcd:TechnicalContacts>
+          <abcd:TechnicalContact>
+            <abcd:Name>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd:Name>
+            <abcd:Email>biodiversitydata@bgbm.org</abcd:Email>
+            <abcd:Address>K&#xF6;nigin-Luise-Str. 6-8, D-14195 Berlin, Germany</abcd:Address>
+          </abcd:TechnicalContact>
+        </abcd:TechnicalContacts>
+        <abcd:ContentContacts>
+          <abcd:ContentContact abcd:preferred="1">
+            <abcd:Name>Botanic Garden and Botanical Museum Berlin Dahlem, Dept. of Biodiversity Informatics</abcd:Name>
+            <abcd:Email>biodiversitydata@bgbm.org</abcd:Email>
+            <abcd:Address>K&#xF6;nigin-Luise-Str. 6-8, D-14195 Berlin, Germany</abcd:Address>
+          </abcd:ContentContact>
+        </abcd:ContentContacts>
+        <abcd:Metadata>
+          <abcd:Description>
+            <abcd:Representation abcd:language="EN">
+              <abcd:Title>BoBO - Botanic Garden Berlin BDI Observations</abcd:Title>
+            </abcd:Representation>
+          </abcd:Description>
+          <abcd:IconURI>http://www.biocase.org/images/bdi_logo.gif</abcd:IconURI>
+          <abcd:RevisionData>
+            <abcd:Creators>BoBO - Botanic Garden Berlin BDI Observations</abcd:Creators>
+            <abcd:DateModified>2004-02-04</abcd:DateModified>
+          </abcd:RevisionData>
+          <abcd:Owners>
+            <abcd:Owner>
+              <abcd:Organisation>
+                <abcd:Name>
+                  <abcd:Representation abcd:language="en">
+                    <abcd:Text>Anton G&#xFC;ntsch</abcd:Text>
+                  </abcd:Representation>
+                </abcd:Name>
+              </abcd:Organisation>
+              <abcd:EmailAddresses>
+                <abcd:EmailAddress>biodiversitydata@bgbm.org</abcd:EmailAddress>
+              </abcd:EmailAddresses>
+              <abcd:LogoURI>http://www.biocase.org/images/bdi_logo.gif</abcd:LogoURI>
+            </abcd:Owner>
+          </abcd:Owners>
+          <abcd:IPRStatements>
+            <abcd:Citations>
+              <abcd:Citation abcd:language="EN">
+                <abcd:Text>G&#xFC;ntsch, A. 2003 - (continuously updated): Open observation database at the BGBM Berlin-Dahlem.</abcd:Text>
+              </abcd:Citation>
+            </abcd:Citations>
+          </abcd:IPRStatements>
+        </abcd:Metadata>
+        <abcd:Units>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BGBM</abcd:SourceInstitutionID>
+            <abcd:SourceID>BoBO - Botanic Garden Berlin BDI Observations</abcd:SourceID>
+            <abcd:UnitID>2</abcd:UnitID>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>animalia</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>regnum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Marmota marmota Blabla 1970</abcd:FullScientificNameString>
+                   
+					<abcd:NameAtomised>
+					 <abcd:Zoological>
+                          <abcd:GenusOrMonomial>Marmota</abcd:GenusOrMonomial>
+                          <abcd:SpeciesEpithet>marmota</abcd:SpeciesEpithet>
+					</abcd:Zoological>
+                      </abcd:NameAtomised>
+				  </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>Observation</abcd:RecordBasis>
+            <abcd:MultiMediaObjects>
+              <abcd:MultiMediaObject>
+                <abcd:FileURI>http://ww2.bgbm.org/herbarium/view_bobo.cfm?Image=119-1911_IMG.JPG</abcd:FileURI>
+              </abcd:MultiMediaObject>
+            </abcd:MultiMediaObjects>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:ISODateTimeBegin>2003-09-16T00:00:00</abcd:ISODateTimeBegin>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgent>
+                  <abcd:AgentText>G&#xFC;ntsch, A. &amp; Schmiedeke, S.</abcd:AgentText>
+                </abcd:GatheringAgent>
+              </abcd:Agents>
+              <abcd:LocalityText>Allgaeuer Alpen</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name>Germany</abcd:Name>
+                <abcd:ISO3166Code>DE</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>10.2</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>47.4</abcd:LatitudeDecimal>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+        </abcd:Units>
+      </abcd:DataSet>
+    </abcd:DataSets>

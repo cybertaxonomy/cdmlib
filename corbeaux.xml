@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<abcd:DataSets xmlns:abcd="http://www.tdwg.org/schemas/abcd/2.06" xmlns:biocase="http://www.biocase.org/schemas/protocol/1.3" xmlns:ns1="http://www.dnabank-network.org/test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.biocase.org/schemas/protocol/1.3 http://www.bgbm.org/biodivinf/schema/protocol_1_31.xsd">
+      <abcd:DataSet>
+        <abcd:TechnicalContacts>
+          <abcd:TechnicalContact>
+            <abcd:Name>Gabriele Droege</abcd:Name>
+            <abcd:Email>mail@corvids.de</abcd:Email>
+          </abcd:TechnicalContact>
+        </abcd:TechnicalContacts>
+        <abcd:ContentContacts>
+          <abcd:ContentContact>
+            <abcd:Name>Gabriele Droege</abcd:Name>
+            <abcd:Email>mail@corvids.de</abcd:Email>
+          </abcd:ContentContact>
+        </abcd:ContentContacts>
+        <abcd:Metadata>
+          <abcd:Description>
+            <abcd:Representation abcd:language="en">
+              <abcd:Title>Corvids Literature Database</abcd:Title>
+              <abcd:Details>The Corvids Literature Database (CLD) is online since spring 2006. Its aim is to record all known publications (citation format) about Crows, Ravens, Jays, and Magpies worldwide. Several thousand papers about Corvids can be found by using powerful literature search engines. But none of them is able to handle crow-specific search keys, like for example "Show me all papers with information about Nesting of the Black-billed Magpie". A few cited specimens can already be found at GBIF or museum websites. The database provides specimens and observations of Corvids found in published papers of the Corvids Literature Database.</abcd:Details>
+            </abcd:Representation>
+          </abcd:Description>
+          <abcd:IconURI>http://www.corvids.de/cld/rabe_klein.jpg</abcd:IconURI>
+          <abcd:RevisionData>
+            <abcd:DateModified>2012-04-10T15:22:42</abcd:DateModified>
+          </abcd:RevisionData>
+          <abcd:IPRStatements>
+            <abcd:Copyrights>
+              <abcd:Copyright abcd:language="en">
+                <abcd:Text>Copyright of the Corvids Literature Database: Gabriele Droege.</abcd:Text>
+              </abcd:Copyright>
+            </abcd:Copyrights>
+            <abcd:TermsOfUseStatements>
+              <abcd:TermsOfUse abcd:language="en">
+                <abcd:Text>The use of the data is allowed only for non-profit scientific use and for non-profit nature conservation purpose. The data base or part of it may only be used or copied by the written permission from the legal owner.</abcd:Text>
+              </abcd:TermsOfUse>
+            </abcd:TermsOfUseStatements>
+            <abcd:Citations>
+              <abcd:Citation abcd:language="en">
+                <abcd:Text>Droege, G. (Ed.) 2006 - (continuously updated): Specimen and Observation records cited in papers of the Corvids Literature Database.</abcd:Text>
+              </abcd:Citation>
+            </abcd:Citations>
+          </abcd:IPRStatements>
+        </abcd:Metadata>
+        <abcd:Units>
+          <abcd:Unit>
+            <abcd:UnitGUID>9d59843d-f7ef-4631-b298-6912afd11e70</abcd:UnitGUID>
+            <abcd:SourceInstitutionID>corvids.de</abcd:SourceInstitutionID>
+            <abcd:SourceID>Corvids Literature Database</abcd:SourceID>
+            <abcd:UnitID>9d59843d-f7ef-4631-b298-6912afd11e70</abcd:UnitID>
+            <abcd:SourceReference>
+              <abcd:TitleCitation>Wolfe, L.R. (1950): Notes on the Birds of Korea. The Auk 67 (4): 433-455.</abcd:TitleCitation>
+              <abcd:URI>http://www.corvids.de/cld/query.php?ID_Paper=48</abcd:URI>
+            </abcd:SourceReference>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Animalia</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>regnum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Chordata</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>phylum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Aves</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>classis</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Passeriformes</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>ordo</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Corvidae</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Corvus macrorhynchos subsp. mandshuricus Buturlin, 1913</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Zoological>
+                          <abcd:GenusOrMonomial>Corvus</abcd:GenusOrMonomial>
+                          <abcd:SpeciesEpithet>macrorhynchos</abcd:SpeciesEpithet>
+                          <abcd:SubspeciesEpithet>mandshuricus</abcd:SubspeciesEpithet>
+                          <abcd:AuthorTeamOriginalAndYear>Buturlin</abcd:AuthorTeamOriginalAndYear>
+                        </abcd:Zoological>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>1</abcd:PreferredFlag>
+              </abcd:Identification>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Animalia</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>regnum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Chordata</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>phylum</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Aves</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>classis</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Corvidae</abcd:HigherTaxonName>
+                        <abcd:HigherTaxonRank>familia</abcd:HigherTaxonRank>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Corvus levaillantii subsp. mandschuricus</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Zoological>
+                          <abcd:GenusOrMonomial>Corvus</abcd:GenusOrMonomial>
+                          <abcd:SpeciesEpithet>levaillantii</abcd:SpeciesEpithet>
+                          <abcd:SubspeciesEpithet>mandschuricus</abcd:SubspeciesEpithet>
+                        </abcd:Zoological>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+                <abcd:PreferredFlag>0</abcd:PreferredFlag>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:RecordBasis>Observation</abcd:RecordBasis>
+            <abcd:KindOfUnit>Literature record</abcd:KindOfUnit>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:ISODateTimeBegin>1948-04-18T00:00:00</abcd:ISODateTimeBegin>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgent>
+                  <abcd:Person>
+                    <abcd:FullName>Wolfe, L.R.</abcd:FullName>
+                  </abcd:Person>
+                </abcd:GatheringAgent>
+              </abcd:Agents>
+              <abcd:LocalityText>Seoul E or NE of Seoul</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name>Korea, Republic of</abcd:Name>
+                <abcd:ISO3166Code>KR</abcd:ISO3166Code>
+              </abcd:Country>
+              <abcd:NamedAreas>
+                <abcd:NamedArea>
+                  <abcd:AreaName>Asia</abcd:AreaName>
+                </abcd:NamedArea>
+              </abcd:NamedAreas>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>126.98</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>37.56</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>ca.</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>20000</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+            <abcd:Notes>two nests with young birds recorded;  see voucher reference p.451 for more details</abcd:Notes>
+          </abcd:Unit>
+        </abcd:Units>
+      </abcd:DataSet>
+    </abcd:DataSets>
