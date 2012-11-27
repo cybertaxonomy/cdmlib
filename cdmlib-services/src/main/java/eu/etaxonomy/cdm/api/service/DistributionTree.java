@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -23,6 +25,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 public class DistributionTree extends Tree<Distribution>{
+
+    public static final Logger logger = Logger.getLogger(DistributionTree.class);
 
     public DistributionTree(){
         NamedArea area = new NamedArea();
@@ -77,12 +81,20 @@ public class DistributionTree extends Tree<Distribution>{
     }
 
     private List<Distribution> orderDistributionsByLevel(List<Distribution> distList){
-        boolean flag = true;
-        int length = distList.size()-1;
+
+        if(distList == null){
+            distList = new ArrayList<Distribution>();
+        }
+        if(distList.size() == 0){
+            return distList;
+        }
+
         Distribution dist;
-        List<Distribution> orderedList = new ArrayList<Distribution>(length);
+        List<Distribution> orderedList = new ArrayList<Distribution>(distList.size());
         orderedList.addAll(distList);
 
+        int length = -1;
+        boolean flag = true;
         for (int i = 0; i < length && flag; i++) {
             flag = false;
             for (int j = 0; j < length-1; j++) {
@@ -101,12 +113,16 @@ public class DistributionTree extends Tree<Distribution>{
         return orderedList;
     }
 
+    /**
+     * @param distList
+     * @param omitLevels
+     */
     public void merge(List<Distribution> distList, Set<NamedAreaLevel> omitLevels){
+
         List<Distribution> orderedDistList = orderDistributionsByLevel(distList);
 
         for (Distribution distribution : orderedDistList) {
-            List<NamedArea> levelList =
-                this.getAreaLevelPathList(distribution.getArea(), omitLevels);
+            List<NamedArea> levelList = getAreaLevelPathList(distribution.getArea(), omitLevels);
             mergeAux(distribution, distribution.getArea().getLevel(), levelList, this.getRootElement());
         }
     }
@@ -132,6 +148,7 @@ public class DistributionTree extends Tree<Distribution>{
                           NamedAreaLevel level,
                            List<NamedArea> areaHierarchieList,
                            TreeNode<Distribution> root){
+
         TreeNode<Distribution> highestDistNode;
         TreeNode<Distribution> child;// the new child to add or the child to follow through the tree
 
@@ -144,8 +161,11 @@ public class DistributionTree extends Tree<Distribution>{
         //NamedAreaLevel highestAreaLevel = (NamedAreaLevel) HibernateProxyHelper.deproxy(highestArea.getLevel());
         //NamedAreaLevel currentLevel = (NamedAreaLevel) HibernateProxyHelper.deproxy(level);
         //if (highestAreaLevel.compareTo(currentLevel) == 0){//if distribution.status is relevant
+        if(highestArea == null || level == null) {
+            logger.error("highestArea or level is NULL");
+        }
 
-        if (highestArea.getLevel().getLabel().compareTo(level.getLabel()) == 0){
+        if (highestArea.getUuid().equals((level.getUuid()))) {
             highestDistNode = new TreeNode<Distribution>(distribution);//distribution.area comes from proxy!!!!
         }else{ //if distribution.status is not relevant
             Distribution data = Distribution.NewInstance(highestArea, null);
