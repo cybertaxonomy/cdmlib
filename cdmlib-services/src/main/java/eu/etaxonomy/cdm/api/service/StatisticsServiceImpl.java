@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * 
+ *
  * @author s.buers Service to provide statistic data of the database elements
  */
 
@@ -55,156 +55,156 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Transactional
 public class StatisticsServiceImpl implements IStatisticsService {
 
-	private static final Logger logger = Logger
-			.getLogger(StatisticsServiceImpl.class);
+    private static final Logger logger = Logger
+            .getLogger(StatisticsServiceImpl.class);
 
-	// private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE =
-	// Arrays
-	// .asList(new String[] { "" });
+    // private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE =
+    // Arrays
+    // .asList(new String[] { "" });
 
-	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
-			.asList(new String[] { "sources.citation" });
-	// "descriptionSources", "citation"
+    private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
+            .asList(new String[] { "sources.citation" });
+    // "descriptionSources", "citation"
 
-	private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
-			.asList(new String[] { "sources.citation", });;
+    private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
+            .asList(new String[] { "sources.citation", });;
 
-	private StatisticsConfigurator configurator;
+    private StatisticsConfigurator configurator;
 
-	private Statistics statistics;
+    private Statistics statistics;
 
-	@Autowired
-	private ITaxonDao taxonDao;
+    @Autowired
+    private ITaxonDao taxonDao;
 
-	@Autowired
-	private ITaxonNameDao taxonNameDao;
+    @Autowired
+    private ITaxonNameDao taxonNameDao;
 
-	@Autowired
-	private IClassificationDao classificationDao;
+    @Autowired
+    private IClassificationDao classificationDao;
 
-	@Autowired
-	private IReferenceDao referenceDao;
+    @Autowired
+    private IReferenceDao referenceDao;
 
-	@Autowired
-	private IDescriptionDao descriptionDao;
+    @Autowired
+    private IDescriptionDao descriptionDao;
 
-	@Autowired
-	private IDescriptionElementDao descrElementDao;
+    @Autowired
+    private IDescriptionElementDao descrElementDao;
 
-	/**
-	 * counts all the elements referenced in the configurator from the part of
-	 * the database referenced in the configurator
-	 */
-	@Override
-	@Transactional
-	public Statistics getCountStatistics(StatisticsConfigurator configurator) {
-		this.configurator = configurator;
-		this.statistics = new Statistics(configurator);
-		calculateParts();
-		return this.statistics;
-		// return new Statistics(null);
-	}
+    /**
+     * counts all the elements referenced in the configurator from the part of
+     * the database referenced in the configurator
+     */
+    @Override
+    @Transactional
+    public Statistics getCountStatistics(StatisticsConfigurator configurator) {
+        this.configurator = configurator;
+        this.statistics = new Statistics(configurator);
+        calculateParts();
+        return this.statistics;
+        // return new Statistics(null);
+    }
 
-	private void calculateParts() {
-		for (StatisticsPartEnum part : configurator.getPartList()) {
-			switch (part) {
-			case ALL:
-				countAll();
-				break;
+    private void calculateParts() {
+        for (StatisticsPartEnum part : configurator.getPartList()) {
+            switch (part) {
+            case ALL:
+                countAll();
+                break;
 
-			case CLASSIFICATION:
-				// TODO
-				break;
-			}
-		}
+            case CLASSIFICATION:
+                // TODO
+                break;
+            }
+        }
 
-	}
+    }
 
-	@Transactional
-	private void countAll() {
+    @Transactional
+    private void countAll() {
 
-		for (StatisticsTypeEnum type : configurator.getTypeList()) {
-			Integer number = 0;
-			switch (type) {
+        for (StatisticsTypeEnum type : configurator.getTypeList()) {
+            Integer number = 0;
+            switch (type) {
 
-			case ALL_TAXA:
-				number += taxonDao.count(Taxon.class);
-			case SYNONYMS:
-				number += taxonDao.count(Synonym.class);
-				break;
-			case ACCEPTED_TAXA:
-				number += taxonDao.count(Taxon.class);
-				break;
-			case ALL_REFERENCES:
-				number += referenceDao
-						.count(eu.etaxonomy.cdm.model.reference.Reference.class);
-				break;
-			case CLASSIFICATION:
-				number += classificationDao.count(Classification.class);
+            case ALL_TAXA:
+                number += taxonDao.count(Taxon.class);
+            case SYNONYMS:
+                number += taxonDao.count(Synonym.class);
+                break;
+            case ACCEPTED_TAXA:
+                number += taxonDao.count(Taxon.class);
+                break;
+            case ALL_REFERENCES:
+                number += referenceDao
+                        .count(eu.etaxonomy.cdm.model.reference.Reference.class);
+                break;
+            case CLASSIFICATION:
+                number += classificationDao.count(Classification.class);
 
-				break;
+                break;
 
-			case TAXON_NAMES:
-				number += taxonNameDao.count(TaxonNameBase.class);
-				break;
+            case TAXON_NAMES:
+                number += taxonNameDao.count(TaxonNameBase.class);
+                break;
 
-			case NOMECLATURAL_REFERENCES:
-				number += referenceDao.getAllNomenclaturalReferences().size();
-				break;
+            case NOMECLATURAL_REFERENCES:
+                number += referenceDao.getAllNomenclaturalReferences().size();
+                break;
 
-			case DESCRIPTIVE_SOURCE_REFERENCES:
-				number += getDescriptiveSourceReferences();
-				break;
-			}
-			statistics.addCount(type, number);
-			System.out.println("");
-		}
+            case DESCRIPTIVE_SOURCE_REFERENCES:
+                number += getDescriptiveSourceReferences();
+                break;
+            }
+            statistics.addCount(type, number);
+//			System.out.println("");
+        }
 
-	}
+    }
 
-	/**
-	 * needs to be changed if deprecated {@link DescriptionBase}
-	 * .getDescriptionSources() is removed!
-	 * 
-	 * @return
-	 */
+    /**
+     * needs to be changed if deprecated {@link DescriptionBase}
+     * .getDescriptionSources() is removed!
+     *
+     * @return
+     */
 
-	private Integer getDescriptiveSourceReferences() {
-		// int counter = 0;
+    private Integer getDescriptiveSourceReferences() {
+        // int counter = 0;
 
-		// count references from each description:
-		// TODO find out, if there is actually only one description or this count does not work proper
-		// // we need the set to get off the doubles:
-		Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
-		// second param 0?:
+        // count references from each description:
+        // TODO find out, if there is actually only one description or this count does not work proper
+        // // we need the set to get off the doubles:
+        Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
+        // second param 0?:
 //		try {
-			// List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
-			// new ArrayList<OrderHint>(),DESCRIPTION_SOURCE_REF_STRATEGIE);
-			// List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
-			// null,null);
-			List<DescriptionBase> descriptions = descriptionDao
-					.listDescriptions(TaxonDescription.class, null, null, null,
-							null, null, null, DESCRIPTION_SOURCE_REF_STRATEGIE);
-			descriptions.addAll(descriptionDao.listDescriptions(
-					TaxonNameDescription.class, null, null, null, null, null,
-					null, DESCRIPTION_SOURCE_REF_STRATEGIE));
-			descriptions.addAll(descriptionDao.listDescriptions(
-					SpecimenDescription.class, null, null, null, null, null,
-					null, DESCRIPTION_SOURCE_REF_STRATEGIE));
-			// list(null, 0);
-			for (DescriptionBase<?> description : descriptions) {
-				Set<IdentifiableSource> sources = description.getSources();
-				for (IdentifiableSource source : sources) {
-					if (source.getCitation() != null)
+            // List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
+            // new ArrayList<OrderHint>(),DESCRIPTION_SOURCE_REF_STRATEGIE);
+            // List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
+            // null,null);
+            List<DescriptionBase> descriptions = descriptionDao
+                    .listDescriptions(TaxonDescription.class, null, null, null,
+                            null, null, null, DESCRIPTION_SOURCE_REF_STRATEGIE);
+            descriptions.addAll(descriptionDao.listDescriptions(
+                    TaxonNameDescription.class, null, null, null, null, null,
+                    null, DESCRIPTION_SOURCE_REF_STRATEGIE));
+            descriptions.addAll(descriptionDao.listDescriptions(
+                    SpecimenDescription.class, null, null, null, null, null,
+                    null, DESCRIPTION_SOURCE_REF_STRATEGIE));
+            // list(null, 0);
+            for (DescriptionBase<?> description : descriptions) {
+                Set<IdentifiableSource> sources = description.getSources();
+                for (IdentifiableSource source : sources) {
+                    if (source.getCitation() != null)
 
-						references.add(source.getCitation());
-					// counter++;
-				}
-				System.out.println("");
-			}
+                        references.add(source.getCitation());
+                    // counter++;
+                }
+//                System.out.println("");
+            }
 
-			//this part produces still an error:
-			// count references from each description element:
+            //this part produces still an error:
+            // count references from each description element:
 //			List<DescriptionElementBase> descrElements = descrElementDao.list(
 //					null, 0, null, DESCR_ELEMENT_REF_STRATEGIE);
 //			for (DescriptionElementBase descriptionElement : descrElements) {
@@ -218,7 +218,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 //		} catch (HibernateException he) {
 //			he.printStackTrace();
 //		}
-		return references.size();
-	}
+        return references.size();
+    }
 
 }
