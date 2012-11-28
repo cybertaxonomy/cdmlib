@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.*;
-
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -24,7 +22,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**

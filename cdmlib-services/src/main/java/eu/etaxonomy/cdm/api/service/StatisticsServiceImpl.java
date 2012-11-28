@@ -1,29 +1,21 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.sun.tools.xjc.api.Reference;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -31,20 +23,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionElementDaoImpl;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  *
@@ -57,10 +41,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
     private static final Logger logger = Logger
             .getLogger(StatisticsServiceImpl.class);
-
-    // private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE =
-    // Arrays
-    // .asList(new String[] { "" });
 
     private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
             .asList(new String[] { "sources.citation" });

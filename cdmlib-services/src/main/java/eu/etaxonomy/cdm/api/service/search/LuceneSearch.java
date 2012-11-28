@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.api.service.search;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;

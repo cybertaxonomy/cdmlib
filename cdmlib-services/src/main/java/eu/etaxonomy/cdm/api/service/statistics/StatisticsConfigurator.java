@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-
 /**
  * This class configures the statistical request to 
  * a CDM Store. It defines which statistical values should

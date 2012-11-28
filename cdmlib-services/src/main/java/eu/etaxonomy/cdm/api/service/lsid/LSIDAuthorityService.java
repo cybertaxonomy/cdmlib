@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.api.service.lsid;
 
 import com.ibm.lsid.ExpiringResponse;
-
-
 import com.ibm.lsid.server.LSIDServerException;
 import com.ibm.lsid.server.LSIDService;
 

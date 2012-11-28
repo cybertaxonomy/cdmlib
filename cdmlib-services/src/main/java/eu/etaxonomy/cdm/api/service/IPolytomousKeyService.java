@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 

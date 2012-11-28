@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.api.service.lsid;
 
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,13 +19,10 @@ import java.util.UUID;
 
 import org.hibernate.LockMode;
 import org.hibernate.Session;
-import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 

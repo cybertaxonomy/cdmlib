@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +25,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.grouping.GroupDocs;
-import org.apache.lucene.search.grouping.TopGroups;
 import org.hibernate.search.engine.DocumentBuilder;
 
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;

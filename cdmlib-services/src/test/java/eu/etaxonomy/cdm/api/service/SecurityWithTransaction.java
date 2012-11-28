@@ -13,21 +13,14 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.database.annotations.TestDataSource;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 
 import eu.etaxonomy.cdm.model.description.Feature;

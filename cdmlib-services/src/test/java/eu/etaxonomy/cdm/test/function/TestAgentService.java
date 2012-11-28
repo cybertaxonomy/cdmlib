@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * <h2>NOTE</h2>

@@ -27,8 +27,6 @@ package org.apache.lucene.search;
 import java.io.IOException;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.Collector;
-import org.apache.lucene.search.Scorer;
 
 /**
  * A {@link Collector} which allows running a search with several

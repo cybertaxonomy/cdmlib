@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 
 /**
  * This class represents the result of a delete action.

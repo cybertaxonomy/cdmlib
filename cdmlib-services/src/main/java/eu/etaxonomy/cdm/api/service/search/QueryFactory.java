@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 

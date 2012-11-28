@@ -11,17 +11,13 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
-import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;

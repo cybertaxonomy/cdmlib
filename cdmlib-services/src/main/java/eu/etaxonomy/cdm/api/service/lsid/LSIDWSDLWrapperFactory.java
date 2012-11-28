@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service.lsid;
 
 import java.io.InputStream;
 
-
 import com.ibm.lsid.LSIDException;
 
 import eu.etaxonomy.cdm.model.common.LSID;

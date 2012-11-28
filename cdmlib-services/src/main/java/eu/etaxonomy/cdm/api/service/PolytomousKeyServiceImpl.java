@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 

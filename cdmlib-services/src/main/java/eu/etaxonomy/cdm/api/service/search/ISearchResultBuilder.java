@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.grouping.TopGroups;
 
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;

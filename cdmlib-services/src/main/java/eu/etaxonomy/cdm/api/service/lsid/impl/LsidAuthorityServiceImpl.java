@@ -16,16 +16,12 @@ import javax.wsdl.WSDLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-
-import com.ibm.lsid.ExpiringResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.LSIDException;
-
 import com.ibm.lsid.server.LSIDServerException;
 import com.ibm.lsid.server.LSIDServiceConfig;
 import com.ibm.lsid.wsdl.HTTPLocation;

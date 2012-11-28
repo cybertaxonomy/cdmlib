@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service.lsid;
 import java.io.InputStream;
+
 import com.ibm.lsid.server.LSIDServerException;
 import com.ibm.lsid.server.LSIDService;
 
