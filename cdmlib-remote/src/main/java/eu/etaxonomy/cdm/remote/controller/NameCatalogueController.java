@@ -22,6 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.Hashtable;
 
+import org.apache.log4j.Level;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -35,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.DocUtils;
 
 import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
@@ -44,7 +49,10 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -99,9 +107,13 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /** Classifcation 'all' key */
     public static final String CLASSIFICATION_ALL = "all";
 
+    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
     @Autowired
     private ITaxonService taxonService;
 
+    @Autowired
+    private ITermService termService;
+    
     @Autowired
     private IClassificationService classificationService;
 
@@ -146,6 +158,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "relationsFromThisTaxon.relatedTo.name.rank.titleCache",
             "relationsToThisTaxon.type.$",
             "relationsToThisTaxon.relatedFrom.name.rank.titleCache",
+            "sec.titleCache",
             "taxonNodes",
             "taxonNodes.classification" });
 
@@ -337,7 +350,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 er.setErrorMessage("No Taxon Name for given query : " + query);
                 nsList.add(er);
             }
-        }
+        }        
+
         mv.addObject(nsList);
         return mv;
     }
@@ -543,12 +557,19 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
                     NonViralName nvn = (NonViralName) taxon.getName();
+                    DateTime dt = taxon.getUpdated();                    
+                    String modified = fmt.print(dt);
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
                             ACCEPTED_NAME_STATUS,
                             buildFlagMap(tb),
-                            classificationMap);
+                            classificationMap,
+                            "",
+                            "",
+                            "",
+                            taxon.getSec().getTitleCache(),
+                            modified);
 
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
                     // add synonyms (if exists) to taxon information object
@@ -563,7 +584,19 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String relLabel = sr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
+                        dt = syn.getUpdated();
+                        modified = fmt.print(dt);
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		title, 
+                        		name, 
+                        		rank, 
+                        		status, 
+                        		relLabel,
+                        		"",
+                        		"",
+                        		"",
+                        		syn.getSec().getTitleCache(),
+                                modified);
                     }
 
                     // build relationship information as,
@@ -578,7 +611,19 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, titleTo, name, rank, status, "", relLabel);
+                        dt = tr.getToTaxon().getUpdated();
+                        modified = fmt.print(dt);
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		titleTo, 
+                        		name, 
+                        		rank, 
+                        		status, 
+                        		relLabel,
+                        		"",
+                        		"",
+                        		"",
+                        		tr.getToTaxon().getSec().getTitleCache(),
+                                modified);
                         //logger.info("titleTo : " + titleTo + " , name : " + name);
                     }
 
@@ -594,19 +639,38 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String relLabel = tr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, titleFrom, name, rank, status, "", relLabel);
+                        dt = tr.getFromTaxon().getUpdated();
+                        modified = fmt.print(dt);
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		titleFrom, 
+                        		name, 
+                        		rank, 
+                        		status,
+                        		relLabel,
+                        		"",
+                        		"",
+                        		"",
+                        		tr.getFromTaxon().getSec().getTitleCache(),
+                                modified);
                         //logger.info("titleFrom : " + titleFrom + " , name : " + name);
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
                     TaxonNameBase nvn = (TaxonNameBase) synonym.getName();
                  // update taxon information object with synonym related data
+                    DateTime dt = synonym.getUpdated();                    
+                    String modified = fmt.print(dt);
                     ti.setResponseTaxon(synonym.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
                             SYNONYM_STATUS,
                             buildFlagMap(synonym),
-                            new TreeMap<String,Map>());
+                            new TreeMap<String,Map>(),
+                            "",
+                    		"",
+                    		"",
+                    		synonym.getSec().getTitleCache(),
+                            modified);
                     // add accepted taxa (if exists) to taxon information object
                     
                     Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
@@ -623,7 +687,19 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
+                        dt = accTaxon.getUpdated();                    
+                        modified = fmt.print(dt);
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		title, 
+                        		name, 
+                        		rank, 
+                        		status, 
+                        		relLabel,
+                        		"",
+                        		"",
+                        		"",
+                        		synonym.getSec().getTitleCache(),
+                                modified);
                     }
 
                 }
