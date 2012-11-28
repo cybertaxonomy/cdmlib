@@ -205,7 +205,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * Will reset (set to <code>null</code>) the title cache if not protected
      * @return <code>true</code> if title cache was reset, <code>false</code> otherwise
      */
-	public boolean resetTitleCache() {
+	protected boolean resetTitleCache() {
 		if (!protectedTitleCache) {
 			this.titleCache = null;
 		}
