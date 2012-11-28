@@ -1580,6 +1580,7 @@ cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/xsl/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text
+cdmlib-remote-webapp/src/main/webapp/xsl/statistics.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/taxon.xsl -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
 cdmlib-remote-webapp/src/test/resources/log4j.properties -text
