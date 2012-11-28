@@ -30,7 +30,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author sybille
- * @created 07.11.2012
+ * @created 07.11.2012 this class provides counting of different entities in a
+ *          database
  * 
  */
 @Controller
@@ -45,37 +46,29 @@ public class StatisticsController {
 	private IStatisticsService service;
 
 	@Autowired
-	private IClassificationService clService;
-
-	@Autowired
 	public void setService(IStatisticsService service) {
 		this.service = service;
-		// System.out.println();
 	}
 
 	StatisticsConfigurator configurator;
 
 	@RequestMapping(value = { "statistics" }, method = RequestMethod.GET)
 	public ModelAndView doStatistics(
-			@RequestParam(value = "parts", required = false) String[] parts,
-			@RequestParam(value = "types", required = false) String[] types,
+			@RequestParam(value = "parts", required = true) String[] parts,
+			@RequestParam(value = "types", required = true) String[] types,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-
+		// TODO in createConfigurator() create defaults for parts and types and
+		// set them to "false"
 		configurator = new StatisticsConfigurator();
 		ModelAndView mv = new ModelAndView();
-
-		// TODO fill configurator;
 
 		createConfigurator(parts, types);
 		// service.getStatistics(configurator);
 		Statistics statistics = service.getCountStatistics(configurator);
 		logger.info("doStatistics() - " + request.getServletPath());
-		
-		
+
 		mv.addObject(statistics);
-//	 mv.addObject(configurator);
-		// mv.addObject(i);
 		return mv;
 	}
 
@@ -83,7 +76,6 @@ public class StatisticsController {
 		if (type != null) {
 			for (String string : type) {
 				configurator.addType(StatisticsTypeEnum.valueOf(string));
-				this.addDefaultTypes();
 			}
 		}
 		if (part != null) {
@@ -92,17 +84,5 @@ public class StatisticsController {
 			}
 		}
 	}
-
-	// TODO
-	private void addDefaultTypes() {
-		// TODO Auto-generated method stub
-
-	}
-
-	// TODO countAll();
-	// Statistics countAll(IdentifiableServiceBase<IdentifiableEntity,
-	// IIdentifiableDao<T>> service){
-	//
-	// }
 
 }

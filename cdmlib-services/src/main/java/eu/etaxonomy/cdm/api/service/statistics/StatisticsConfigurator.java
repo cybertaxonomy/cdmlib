@@ -19,7 +19,7 @@ import java.util.List;
  * be computed and returned.
  * 
  * on a CDM Store
- * @author a.mueller
+ * @author a.mueller (, s.buers)
  * @date 21.09.2012
  *
  */
@@ -39,6 +39,7 @@ public class StatisticsConfigurator {
 //	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
 
 	private List<StatisticsTypeEnum> typeList = new ArrayList<StatisticsTypeEnum>();
+	
 // *************************** METHODS ******************************/
 	
 	public List<StatisticsTypeEnum> getTypeList() {

@@ -14,8 +14,10 @@ import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -80,6 +82,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
     public Statistics getCountStatistics(StatisticsConfigurator configurator) {
         this.configurator = configurator;
         this.statistics = new Statistics(configurator);
+        //TODO use "about" parameter of Statistics element
         calculateParts();
         return this.statistics;
         // return new Statistics(null);
@@ -133,35 +136,26 @@ public class StatisticsServiceImpl implements IStatisticsService {
                 break;
 
             case DESCRIPTIVE_SOURCE_REFERENCES:
-                number += getDescriptiveSourceReferences();
+            	//TODO create statistics DAO
+//                number += getDescriptiveSourceReferences();
                 break;
             }
             statistics.addCount(type, number);
-//			System.out.println("");
         }
 
     }
 
-    /**
-     * needs to be changed if deprecated {@link DescriptionBase}
-     * .getDescriptionSources() is removed!
-     *
-     * @return
-     */
 
     private Integer getDescriptiveSourceReferences() {
         // int counter = 0;
 
         // count references from each description:
-        // TODO find out, if there is actually only one description or this count does not work proper
+        // TODO test this function or write dao and delete it 
+    	
         // // we need the set to get off the doubles:
         Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
-        // second param 0?:
-//		try {
-            // List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
-            // new ArrayList<OrderHint>(),DESCRIPTION_SOURCE_REF_STRATEGIE);
-            // List<DescriptionBase> descriptions = descriptionDao.list(null, 1,
-            // null,null);
+        // TODO second param 0?:
+
             List<DescriptionBase> descriptions = descriptionDao
                     .listDescriptions(TaxonDescription.class, null, null, null,
                             null, null, null, DESCRIPTION_SOURCE_REF_STRATEGIE);
@@ -178,26 +172,22 @@ public class StatisticsServiceImpl implements IStatisticsService {
                     if (source.getCitation() != null)
 
                         references.add(source.getCitation());
-                    // counter++;
                 }
-//                System.out.println("");
             }
 
-            //this part produces still an error:
+            //this part still provokes an error:
             // count references from each description element:
-//			List<DescriptionElementBase> descrElements = descrElementDao.list(
-//					null, 0, null, DESCR_ELEMENT_REF_STRATEGIE);
-//			for (DescriptionElementBase descriptionElement : descrElements) {
-//				Set<DescriptionElementSource> elementSources = descriptionElement
-//						.getSources();
-//				for (DescriptionElementSource source : elementSources) {
-//					if (source.getCitation() != null)
-//						references.add(source.getCitation());
-//				}
-//			}
-//		} catch (HibernateException he) {
-//			he.printStackTrace();
-//		}
+			List<DescriptionElementBase> descrElements = descrElementDao.list(
+					null, 0, null, DESCR_ELEMENT_REF_STRATEGIE);
+			for (DescriptionElementBase descriptionElement : descrElements) {
+				Set<DescriptionElementSource> elementSources = descriptionElement
+						.getSources();
+				for (DescriptionElementSource source : elementSources) {
+					if (source.getCitation() != null)
+						references.add(source.getCitation());
+				}
+			}
+
         return references.size();
     }
 
