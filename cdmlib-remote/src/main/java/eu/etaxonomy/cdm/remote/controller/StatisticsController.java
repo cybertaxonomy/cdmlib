@@ -32,57 +32,71 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author sybille
  * @created 07.11.2012 this class provides counting of different entities in a
  *          database
- * 
+ *
  */
 @Controller
 @RequestMapping(value = { "/statistic" })
 public class StatisticsController {
 
-	private static final Logger logger = Logger
-			.getLogger(StatisticsController.class);
+    private static final Logger logger = Logger
+            .getLogger(StatisticsController.class);
 
-	private static final List<StatisticsTypeEnum> D = null;
+    private static final List<StatisticsTypeEnum> D = null;
 
-	private IStatisticsService service;
+    private IStatisticsService service;
 
-	@Autowired
-	public void setService(IStatisticsService service) {
-		this.service = service;
-	}
+    @Autowired
+    private IClassificationService clService;
+    @Autowired
+    public void setService(IStatisticsService service) {
+        this.service = service;
+    }
 
-	StatisticsConfigurator configurator;
+    StatisticsConfigurator configurator;
 
-	@RequestMapping(value = { "statistics" }, method = RequestMethod.GET)
-	public ModelAndView doStatistics(
-			@RequestParam(value = "parts", required = true) String[] parts,
-			@RequestParam(value = "types", required = true) String[] types,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+    /**
+     * example query:
+     * <pre>
+       parts=ALL&parts=CLASSIFICATION&types=DESCRIPTIVE_SOURCE_REFERENCES&types=ALL_TAXA&types=ACCEPTED_TAXA&types=SYNONYMS&types=TAXON_NAMES&types=ALL_REFERENCES&types=NOMECLATURAL_REFERENCES
+      </pre>
+     * @param parts
+     * @param types
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = { "statistics" }, method = RequestMethod.GET)
+    public ModelAndView doStatistics(
+			@RequestParam(value = "parts", required = false) String[] parts,
+			@RequestParam(value = "types", required = false) String[] types,
+            HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 		// TODO in createConfigurator() create defaults for parts and types and
 		// set them to "false"
-		configurator = new StatisticsConfigurator();
-		ModelAndView mv = new ModelAndView();
+        configurator = new StatisticsConfigurator();
+        ModelAndView mv = new ModelAndView();
 
-		createConfigurator(parts, types);
-		// service.getStatistics(configurator);
-		Statistics statistics = service.getCountStatistics(configurator);
-		logger.info("doStatistics() - " + request.getServletPath());
+        createConfigurator(parts, types);
+        // service.getStatistics(configurator);
+        Statistics statistics = service.getCountStatistics(configurator);
+        logger.info("doStatistics() - " + request.getServletPath());
 
-		mv.addObject(statistics);
-		return mv;
-	}
+        mv.addObject(statistics);
+        return mv;
+    }
 
-	private void createConfigurator(String[] part, String[] type) {
-		if (type != null) {
-			for (String string : type) {
-				configurator.addType(StatisticsTypeEnum.valueOf(string));
-			}
-		}
-		if (part != null) {
-			for (String string : part) {
-				configurator.addPart(StatisticsPartEnum.valueOf(string));
-			}
-		}
-	}
+    private void createConfigurator(String[] part, String[] type) {
+        if (type != null) {
+            for (String string : type) {
+                configurator.addType(StatisticsTypeEnum.valueOf(string));
+            }
+        }
+        if (part != null) {
+            for (String string : part) {
+                configurator.addPart(StatisticsPartEnum.valueOf(string));
+            }
+        }
+    }
 
 }

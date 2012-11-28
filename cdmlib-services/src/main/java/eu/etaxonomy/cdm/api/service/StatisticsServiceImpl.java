@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,9 +154,21 @@ public class StatisticsServiceImpl implements IStatisticsService {
         // TODO test this function or write dao and delete it 
     	
         // // we need the set to get off the doubles:
+
+        /*
+         * TODO >>> better performance and more reliabale deduplication with
+         * Set<UUID> referenceUuids = new HashSet<UUID>();
+         */
+        Set<UUID> referenceUuids = new HashSet<UUID>();
         Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
         // TODO second param 0?:
 
+
+            /* TODO
+             *  >>>> it should not be necessary to use init stratgies
+             *  >>>> listDescriptions(null, null, null, null, null, null, null, null); would list all descriptions
+             *
+             */
             List<DescriptionBase> descriptions = descriptionDao
                     .listDescriptions(TaxonDescription.class, null, null, null,
                             null, null, null, DESCRIPTION_SOURCE_REF_STRATEGIE);
@@ -167,12 +180,25 @@ public class StatisticsServiceImpl implements IStatisticsService {
                     null, DESCRIPTION_SOURCE_REF_STRATEGIE));
             // list(null, 0);
             for (DescriptionBase<?> description : descriptions) {
+
+                // get all sources of the description
                 Set<IdentifiableSource> sources = description.getSources();
                 for (IdentifiableSource source : sources) {
                     if (source.getCitation() != null)
 
                         references.add(source.getCitation());
                 }
+
+                /*
+                 * TODO >>>> get all description elements from the description
+                 *
+                 * e.g:
+                for (DescriptionElementBase element : description.getElements()) {
+                    for (DescriptionElementSource source : element.getSources()) {
+
+                    }
+                }
+                */
             }
 
             //this part still provokes an error:
