@@ -1439,6 +1439,7 @@ public class Abcd206Import extends
 			}
 			//debug barbare - to be corrected
 			TaxonNode p = classification.addChildTaxon(taxon, ref, "", null);
+			classification.addChildNode(p, ref, "", null);
 			return map;
 		}
 
