@@ -33,33 +33,33 @@ public class StatisticsConfigurator {
 	
 	//
 
-	private List<StatisticsPartEnum> partList= new ArrayList<StatisticsPartEnum>();
+	private List<StatisticsPartEnum> part= new ArrayList<StatisticsPartEnum>();
 	
 	//TODO: replace with IdentifiableEntity???:
 //	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
 
-	private List<StatisticsTypeEnum> typeList = new ArrayList<StatisticsTypeEnum>();
+	private List<StatisticsTypeEnum> type = new ArrayList<StatisticsTypeEnum>();
 	
 // *************************** METHODS ******************************/
 	
-	public List<StatisticsTypeEnum> getTypeList() {
-		return Collections.unmodifiableList(typeList);
+	public List<StatisticsTypeEnum> getType() {
+		return Collections.unmodifiableList(type);
 	}
 	
 	public void addType(StatisticsTypeEnum type){
-		this.typeList.add(type);
+		this.type.add(type);
 	}
 
 	public void addPart(StatisticsPartEnum part) {
-		this.partList.add(part);
+		this.part.add(part);
 	}
 	
 	public void addPart(int index, StatisticsPartEnum part) {
-		this.partList.add(index, part);
+		this.part.add(index, part);
 	}
 	
-	public List<StatisticsPartEnum> getPartList() {
-		return Collections.unmodifiableList(partList);
+	public List<StatisticsPartEnum> getPart() {
+		return Collections.unmodifiableList(part);
 	}
 
 	
