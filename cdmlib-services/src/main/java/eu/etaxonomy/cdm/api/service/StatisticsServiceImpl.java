@@ -90,7 +90,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
     }
 
     private void calculateParts() {
-        for (StatisticsPartEnum part : configurator.getPartList()) {
+        for (StatisticsPartEnum part : configurator.getPart()) {
             switch (part) {
             case ALL:
                 countAll();
@@ -107,7 +107,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
     @Transactional
     private void countAll() {
 
-        for (StatisticsTypeEnum type : configurator.getTypeList()) {
+        for (StatisticsTypeEnum type : configurator.getType()) {
             Integer number = 0;
             switch (type) {
 
