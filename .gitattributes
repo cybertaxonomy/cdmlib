@@ -2013,6 +2013,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenera
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityWithTransaction.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
