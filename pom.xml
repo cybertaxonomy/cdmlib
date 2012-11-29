@@ -262,6 +262,7 @@
                 <version>3.0</version>
                 <configuration>
                     <locales>en</locales>
+		    <outputEncoding>UTF-8</outputEncoding>
                 </configuration>
             </plugin>
             <plugin>
