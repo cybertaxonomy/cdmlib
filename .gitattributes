@@ -1576,6 +1576,9 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsp/index.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
+cdmlib-remote-webapp/src/main/webapp/css/acquia_prosper_logo.png -text
+cdmlib-remote-webapp/src/main/webapp/css/background-body-crop.jpg -text
+cdmlib-remote-webapp/src/main/webapp/css/vibrant.css -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/xsl/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
