@@ -37,5 +37,10 @@ public enum StatisticsPartEnum {
 	public String getDesription(){
 		return description;
 	}
+
 	
+//	public static StatisticsPartEnum getDefault(){
+//		return ALL;
+//	}
+//	
 }
