@@ -32,12 +32,12 @@
     </bean>
 
 <!-- for statistics web service-->
-    <!--bean name="**/statistic/* **/statistic" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    <bean name="**/statistic/* **/statistic" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="type" value="XML" />
       <property name="xsl" value="statistics.xsl" />
       <property name="jsonConfig" ref="jsonConfig" />
       <property name="dataSourceProperties" ref="dataSourceProperties" />
-    </bean-->
+    </bean>
 
     <bean name="**/taxon/* **/taxon" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="type" value="XML" />
