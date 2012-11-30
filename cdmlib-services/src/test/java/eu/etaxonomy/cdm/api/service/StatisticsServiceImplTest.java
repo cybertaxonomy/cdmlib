@@ -55,6 +55,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	// ---------- test--------------
 
 	@Test
+	@Ignore
 	public void testGetCountStatistics_partAll() {
 
 		createConfigurator();
@@ -80,6 +81,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
+	@Ignore
 	public void testGetCountStatistics_partCLASSIFICATION() {
 		fail("Not yet implemented");
 	}
