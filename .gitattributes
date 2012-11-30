@@ -1615,6 +1615,7 @@ cdmlib-remote-webapp/src/main/webapp/js/jquery-ui-1.8.23.custom.min.js -text
 cdmlib-remote-webapp/src/main/webapp/xsl/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text
+cdmlib-remote-webapp/src/main/webapp/xsl/statistics.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/taxon.xsl -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
 cdmlib-remote-webapp/src/test/resources/log4j.properties -text
@@ -1670,6 +1671,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/PolytomousKeyPort
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ProgressMonitorController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/StatisticsController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeController.java -text
@@ -1933,6 +1935,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeSer
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IStatisticsService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
@@ -1957,6 +1960,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceI
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
@@ -2042,6 +2046,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenera
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityWithTransaction.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
