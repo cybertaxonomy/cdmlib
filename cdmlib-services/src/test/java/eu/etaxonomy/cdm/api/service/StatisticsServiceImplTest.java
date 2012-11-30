@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import org.junit.Ignore;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -54,8 +54,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// ---------- test--------------
 
-	@Test
 	@Ignore
+	@Test
 	public void testGetCountStatistics_partAll() {
 
 		createConfigurator();
@@ -80,8 +80,9 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 //		fail("Not yet implemented");
 	}
 
-	@Test
+
 	@Ignore
+	@Test
 	public void testGetCountStatistics_partCLASSIFICATION() {
 		fail("Not yet implemented");
 	}
