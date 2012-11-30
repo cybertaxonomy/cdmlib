@@ -34,7 +34,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			put(StatisticsTypeEnum.SYNONYMS, 0);
 			put(StatisticsTypeEnum.TAXON_NAMES, 0);
 			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES, 0);
-			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES, 0);
+//			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES, 0);
 
 		}
 	};

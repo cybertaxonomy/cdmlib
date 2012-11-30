@@ -17,7 +17,7 @@
                     <img src="../css/acquia_prosper_logo.png" alt="Home"/>
                 </a>
 
-                <table>
+                <table width="100%">
                     <tr>
                         <td width="20%"/>
                         <td valign="top">
@@ -28,7 +28,7 @@
                             <H4>Summary statistics: </H4>
                             <br/>
 
-                            <table width="60%" border="1" cellspacing="4" cellpadding="0" bordercolor="#66C266"
+                            <table width="60%" border="1" cellspacing="6" cellpadding="0" bordercolor="#66C266"
                     style="border-collapse: collapse">
                                 <xsl:for-each select="countMap/*">
                                     <tr>
