@@ -137,7 +137,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return termSourceUri;
 	}
 	public void setTermSourceUri(URI vocabularyUri) {
-		this.termSourceUri = vocabularyUri;
+		this.termSourceUri = vocabularyUri;		
 	}
 	
 	

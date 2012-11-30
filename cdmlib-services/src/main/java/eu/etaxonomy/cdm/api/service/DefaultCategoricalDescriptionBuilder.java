@@ -24,11 +24,14 @@ public class DefaultCategoricalDescriptionBuilder extends AbstractCategoricalDes
 				Modifier modifier = mod.next();
 				CategoricalDescription.append(" " + getRightText(modifier.getPreferredRepresentation(languages)));
 			}
-			CategoricalDescription.append(" " + getRightText(s.getPreferredRepresentation(languages)));
-			if (sd.hasNext()) CategoricalDescription.append(separator);
-			if (language==null) {
-				language = s.getPreferredRepresentation(languages).getLanguage();
+			if(s != null) {
+				CategoricalDescription.append(" " + getRightText(s.getPreferredRepresentation(languages)));
+				if (language==null) {
+					language = s.getPreferredRepresentation(languages).getLanguage();
+				}
 			}
+			if (sd.hasNext()) CategoricalDescription.append(separator);
+			
 		}
 		if (language==null) {
 			language = Language.DEFAULT();

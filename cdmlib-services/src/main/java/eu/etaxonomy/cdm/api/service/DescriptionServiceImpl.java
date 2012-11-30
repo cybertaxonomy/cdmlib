@@ -274,7 +274,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         }
 
         //ordering the areas
-        tree.merge(distList, omitLevels);
+        tree.orderAsTree(distList, omitLevels);
         tree.sortChildren();
         return tree;
     }

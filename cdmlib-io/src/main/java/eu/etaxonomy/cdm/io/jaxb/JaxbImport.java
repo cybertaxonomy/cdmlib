@@ -140,7 +140,20 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
 		// are automatically saved as well.
 
+	
 		
+		try {
+			if (jaxbImpConfig.isDoUser() == true) {
+				if ((users = dataSet.getUsers()).size() > 0) {
+					logger.info("Users: " + users.size());
+					getUserService().save(users);
+					
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("Error saving users");
+			success = false;
+		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
@@ -171,18 +184,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 //			ret = false;
 //		}
 //		commitTransaction(txStatus);
-		try {
-			if (jaxbImpConfig.isDoUser() == true) {
-				if ((users = dataSet.getUsers()).size() > 0) {
-					logger.info("Users: " + users.size());
-					getUserService().save(users);
-					
-				}
-			}
-		} catch (Exception ex) {
-			logger.error("Error saving users");
-			success = false;
-		}
+
 		
 		//txStatus = startTransaction();
 		try {
