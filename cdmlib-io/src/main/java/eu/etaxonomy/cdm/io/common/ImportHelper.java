@@ -49,8 +49,8 @@ public class ImportHelper {
 	
 	
 
-	public static boolean setOriginalSource(IdentifiableEntity idEntity, Reference sourceReference, long sourceId, String namespace){
-		return setOriginalSource(idEntity, sourceReference, String.valueOf(sourceId), namespace);
+	public static boolean setOriginalSource(ISourceable sourceable, Reference sourceReference, long sourceId, String namespace){
+		return setOriginalSource(sourceable, sourceReference, String.valueOf(sourceId), namespace);
 	}
 	
 	/**

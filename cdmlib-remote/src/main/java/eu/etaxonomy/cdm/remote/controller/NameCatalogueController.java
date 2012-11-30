@@ -22,6 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.Hashtable;
 
+import org.apache.log4j.Level;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -33,8 +37,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.DocUtils;
 
 import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
@@ -44,7 +50,11 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -98,13 +108,19 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Classifcation 'all' key */
     public static final String CLASSIFICATION_ALL = "all";
+    
+    private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
+    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
     @Autowired
     private ITaxonService taxonService;
-
+    
+    
     @Autowired
     private IClassificationService classificationService;
-
+    
+    @Autowired
+    private ICommonService commonService;
     /** Hibernate name search initialisation strategy */
     private static final List<String> NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
             "combinationAuthorTeam.$",
@@ -134,18 +150,38 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /** Hibernate taxon information initialisation strategy */
     private static final List<String> TAXON_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "name.titleCache",
-            "name.rank.titleCache",
+            "name.rank.titleCache",    
+            
+            "sec.updated",
+            "sec.titleCache",
+            "sources.citation.sources.idNamespace",
+            "sources.citation.sources.idInSource",
+            
             "synonymRelations.synonym.name.rank.titleCache",
+            "synonymRelations.synonym.sec.updated",
+            "synonymRelations.synonym.sec.titleCache",            
+            "synonymRelations.synonym.sources.citation.sources.idNamespace",
+            "synonymRelations.synonym.sources.citation.sources.idInSource",   
             "synonymRelations.acceptedTaxon.name.rank.titleCache",
+            "synonymRelations.acceptedTaxon.sec.titleCache",
+            "synonymRelations.acceptedTaxon.sources.citation.sources.idNamespace",
+            "synonymRelations.acceptedTaxon.sources.citation.sources.idInSource",    
             "synonymRelations.type.$",
-            "taxonRelations.toTaxon.$",
-            "taxonRelations.fromTaxon.$",
-            "taxonRelations.type.$",            
-            "synonymRelations.relatedTo.name.rank.titleCache",
+            
             "relationsFromThisTaxon.type.$",
             "relationsFromThisTaxon.relatedTo.name.rank.titleCache",
+            "relationsFromThisTaxon.relatedTo.sec.updated",
+            "relationsFromThisTaxon.relatedTo.sec.titleCache",
+            "relationsFromThisTaxon.relatedTo.sources.citation.sources.idNamespace",
+            "relationsFromThisTaxon.relatedTo.sources.citation.sources.idInSource",
+            
             "relationsToThisTaxon.type.$",
             "relationsToThisTaxon.relatedFrom.name.rank.titleCache",
+            "relationsFromThisTaxon.relatedFrom.sec.updated",
+            "relationsFromThisTaxon.relatedFrom.sec.titleCache",
+            "relationsFromThisTaxon.relatedFrom.sources.citation.sources.idNamespace",
+            "relationsFromThisTaxon.relatedFrom.sources.citation.sources.idInSource",
+            
             "taxonNodes",
             "taxonNodes.classification" });
 
@@ -162,6 +198,10 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "classification",
             "classification.reference.$",
             "classification.reference.authorTeam.$" });
+    
+    /** Hibernate classification vocabulary initialisation strategy */
+    private static final List<String> COMMON_INIT_STRATEGY = Arrays.asList(new String[] {});
+    
     public NameCatalogueController() {
         super();
         setInitializationStrategy(Arrays.asList(new String[] { "$" }));
@@ -337,7 +377,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 er.setErrorMessage("No Taxon Name for given query : " + query);
                 nsList.add(er);
             }
-        }
+        }        
+
         mv.addObject(nsList);
         return mv;
     }
@@ -530,6 +571,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             // find name by uuid
             TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
                     TAXON_INFORMATION_INIT_STRATEGY);
+            
             // if search is successful then get related information, else return error
             if (tb != null) {
                 TaxonInformation ti = new TaxonInformation();
@@ -543,13 +585,31 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
                     NonViralName nvn = (NonViralName) taxon.getName();
+
+                    String secTitle = "" ;
+                    String modified = "";
+                    if(taxon.getSec() != null) {
+                    	secTitle = taxon.getSec().getTitleCache();
+                    	DateTime dt = taxon.getUpdated();                               
+                        modified = fmt.print(dt);
+                    }
+                    
+                    Set<IdentifiableSource> sources = taxon.getSources();
+                    String[] didname = getDatasetIdName(sources);                    
+
                     ti.setResponseTaxon(tb.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
                             ACCEPTED_NAME_STATUS,
                             buildFlagMap(tb),
-                            classificationMap);
-
+                            classificationMap,
+                            "",
+                            didname[0],
+                            didname[1],
+                            secTitle,
+                            modified);
+                    
+                    
                     Set<SynonymRelationship> synRelationships = taxon.getSynonymRelations();
                     // add synonyms (if exists) to taxon information object
                     for (SynonymRelationship sr : synRelationships) {
@@ -563,7 +623,29 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String relLabel = sr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
+                        
+                        secTitle = "" ;
+                        modified = "";
+                        if(syn.getSec() != null) {
+                        	secTitle = syn.getSec().getTitleCache();
+                        	DateTime dt = syn.getUpdated();                               
+                            modified = fmt.print(dt);
+                        }
+                        
+                        sources = syn.getSources();
+                        didname = getDatasetIdName(sources);
+                                                
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		title, 
+                        		name, 
+                        		rank, 
+                        		status, 
+                        		relLabel,
+                        		"",
+                                didname[0],
+                                didname[1],
+                        		secTitle,
+                                modified);
                     }
 
                     // build relationship information as,
@@ -578,14 +660,37 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = tr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, titleTo, name, rank, status, "", relLabel);
+
+                        secTitle = "" ;
+                        modified = "";
+                        if(tr.getToTaxon().getSec() != null) {
+                        	secTitle = tr.getToTaxon().getSec().getTitleCache();
+                        	DateTime dt = tr.getToTaxon().getUpdated();                               
+                            modified = fmt.print(dt);
+                        }
+                        
+                        sources = tr.getToTaxon().getSources();
+                        didname = getDatasetIdName(sources);
+                                                
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		titleTo, 
+                        		name, 
+                        		rank, 
+                        		status, 
+                        		relLabel,
+                        		"",
+                                didname[0],
+                                didname[1],
+                        		secTitle,
+                                modified);
+                        //logger.info("titleTo : " + titleTo + " , name : " + name);
                     }
 
-                    // - relationships from the requested taxon
+                    // - relationships to the requested taxon
                     Set<TaxonRelationship> trToSet = taxon.getRelationsToThisTaxon();
                     for (TaxonRelationship tr : trToSet) {
                         String titleFrom = tr.getFromTaxon().getTitleCache();
-                        TaxonNameBase fromnvn = (TaxonNameBase) tr.getToTaxon().getName();
+                        TaxonNameBase fromnvn = (TaxonNameBase) tr.getFromTaxon().getName();
                         String name = fromnvn.getTitleCache();
                         String rank = fromnvn.getRank().getTitleCache();
                         String uuid = tr.getFromTaxon().getUuid().toString();
@@ -593,18 +698,52 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String relLabel = tr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, titleFrom, name, rank, status, "", relLabel);
+
+                        if(tr.getFromTaxon().getSec() != null) {
+                        	secTitle = tr.getFromTaxon().getSec().getTitleCache();
+                        	DateTime dt = tr.getFromTaxon().getSec().getUpdated();                               
+                            modified = fmt.print(dt);
+                        }
+                        
+                        sources = tr.getFromTaxon().getSources();
+                        didname = getDatasetIdName(sources);
+                        
+                        secTitle = (tr.getFromTaxon().getSec() == null) ? "" : tr.getFromTaxon().getSec().getTitleCache();
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		titleFrom, 
+                        		name, 
+                        		rank, 
+                        		status,
+                        		relLabel,
+                        		"",
+                                didname[0],
+                                didname[1],
+                        		secTitle,
+                                modified);
+                        //logger.info("titleFrom : " + titleFrom + " , name : " + name);
                     }
                 } else if (tb instanceof Synonym) {
                     Synonym synonym = (Synonym) tb;
                     TaxonNameBase nvn = (TaxonNameBase) synonym.getName();
                  // update taxon information object with synonym related data
+                    DateTime dt = synonym.getUpdated();                    
+                    String modified = fmt.print(dt);
+                    
+                    Set<IdentifiableSource> sources = synonym.getSources();
+                    String[] didname = getDatasetIdName(sources);
+                    
+                    String secTitle = (synonym.getSec() == null) ? "" : synonym.getSec().getTitleCache();
                     ti.setResponseTaxon(synonym.getTitleCache(),
                             nvn.getTitleCache(),
                             nvn.getRank().getTitleCache(),
                             SYNONYM_STATUS,
                             buildFlagMap(synonym),
-                            new TreeMap<String,Map>());
+                            new TreeMap<String,Map>(),
+                            "",
+                            didname[0],
+                            didname[1],
+                    		secTitle,
+                            modified);
                     // add accepted taxa (if exists) to taxon information object
                     
                     Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
@@ -621,7 +760,24 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = sr.getType().getRepresentation(Language.DEFAULT())
                                 .getLabel();
-                        ti.addToResponseRelatedTaxa(uuid, title, name, rank, status, "", relLabel);
+                        dt = accTaxon.getUpdated();                    
+                        modified = fmt.print(dt);
+                        
+                        sources = accTaxon.getSources();
+                        didname = getDatasetIdName(sources);
+                        
+                        secTitle = (accTaxon.getSec() == null) ? "" : accTaxon.getSec().getTitleCache();
+                        ti.addToResponseRelatedTaxa(uuid, 
+                        		title, 
+                        		name, 
+                        		rank, 
+                        		status, 
+                        		relLabel,
+                        		"",
+                                didname[0],
+                                didname[1],
+                        		secTitle,
+                                modified);
                     }
 
                 }
@@ -688,6 +844,39 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         return mv;
     }
 
+    /**
+     * Returns the Dataset ID / Name of the given original source.
+     * FIXME: Very hacky and needs to be revisited. Mainly for deciding on which objects to use during import.
+     * FIXME: dataset id is mapped to a DWC term - is that right?
+     * 
+     * @param sources Set of sources attached to a taxa / synonym
+     *             
+     *
+     * @return String array where [0] is the datsetID and [1] is the datsetName
+     */
+    private String[] getDatasetIdName(Set<IdentifiableSource> sources) {
+    	String didname[] = {"",""};
+        Iterator<IdentifiableSource> itr = sources.iterator();
+        while(itr.hasNext()) {
+        	IdentifiableSource source = itr.next();        	
+        	Reference ref = source.getCitation();        	   
+            Set<IdentifiableSource> ref_sources = ref.getSources();
+            Iterator<IdentifiableSource> ref_itr = ref_sources.iterator();
+            while(ref_itr.hasNext()) {
+            	IdentifiableSource ref_source = ref_itr.next();            	
+            	if(ref_source.getIdNamespace().equals(DWC_DATASET_ID)) {
+            		didname[0] = ref_source.getIdInSource();
+            		break;
+            	}
+            }
+            if(!didname[0].isEmpty()) {
+            	didname[1] = ref.getTitleCache();
+            	break;
+            }
+        }
+    	return didname;
+    }
+    
     /**
      * Returns the match mode by parsing the input string of wildcards.
      *

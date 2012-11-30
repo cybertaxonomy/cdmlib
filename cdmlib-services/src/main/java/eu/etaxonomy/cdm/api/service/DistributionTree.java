@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -23,6 +25,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 public class DistributionTree extends Tree<Distribution>{
+
+    public static final Logger logger = Logger.getLogger(DistributionTree.class);
 
     public DistributionTree(){
         NamedArea area = new NamedArea();
@@ -77,12 +81,20 @@ public class DistributionTree extends Tree<Distribution>{
     }
 
     private List<Distribution> orderDistributionsByLevel(List<Distribution> distList){
-        boolean flag = true;
-        int length = distList.size()-1;
+
+        if(distList == null){
+            distList = new ArrayList<Distribution>();
+        }
+        if(distList.size() == 0){
+            return distList;
+        }
+
         Distribution dist;
-        List<Distribution> orderedList = new ArrayList<Distribution>(length);
+        List<Distribution> orderedList = new ArrayList<Distribution>(distList.size());
         orderedList.addAll(distList);
 
+        int length = -1;
+        boolean flag = true;
         for (int i = 0; i < length && flag; i++) {
             flag = false;
             for (int j = 0; j < length-1; j++) {
@@ -101,13 +113,19 @@ public class DistributionTree extends Tree<Distribution>{
         return orderedList;
     }
 
-    public void merge(List<Distribution> distList, Set<NamedAreaLevel> omitLevels){
+    /**
+     * @param distList
+     * @param omitLevels
+     */
+    public void orderAsTree(List<Distribution> distList, Set<NamedAreaLevel> omitLevels){
+
         List<Distribution> orderedDistList = orderDistributionsByLevel(distList);
 
-        for (Distribution distribution : orderedDistList) {
-            List<NamedArea> levelList =
-                this.getAreaLevelPathList(distribution.getArea(), omitLevels);
-            mergeAux(distribution, distribution.getArea().getLevel(), levelList, this.getRootElement());
+        for (Distribution distributionElement : orderedDistList) {
+            // get path through area hierarchy
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distributionElement.getArea(), omitLevels);
+            // order by merging
+            mergeAux(distributionElement, namedAreaPath, this.getRootElement());
         }
     }
 
@@ -128,31 +146,39 @@ public class DistributionTree extends Tree<Distribution>{
         }
     }
 
-    private void mergeAux(Distribution distribution,
-                          NamedAreaLevel level,
-                           List<NamedArea> areaHierarchieList,
-                           TreeNode<Distribution> root){
+    private void mergeAux(Distribution distributionElement, List<NamedArea> namedAreaPath, TreeNode<Distribution> root){
+
         TreeNode<Distribution> highestDistNode;
         TreeNode<Distribution> child;// the new child to add or the child to follow through the tree
 
-        //if the list to merge is empty finish the execution
-        if (areaHierarchieList.isEmpty()) {
+         //if the list to merge is empty finish the execution
+        if (namedAreaPath.isEmpty()) {
             return;
         }
-        //getting the highest area and inserting it into the tree
-        NamedArea highestArea = areaHierarchieList.get(0);
-        //NamedAreaLevel highestAreaLevel = (NamedAreaLevel) HibernateProxyHelper.deproxy(highestArea.getLevel());
-        //NamedAreaLevel currentLevel = (NamedAreaLevel) HibernateProxyHelper.deproxy(level);
-        //if (highestAreaLevel.compareTo(currentLevel) == 0){//if distribution.status is relevant
 
-        if (highestArea.getLevel().getLabel().compareTo(level.getLabel()) == 0){
-            highestDistNode = new TreeNode<Distribution>(distribution);//distribution.area comes from proxy!!!!
-        }else{ //if distribution.status is not relevant
-            Distribution data = Distribution.NewInstance(highestArea, null);
-            highestDistNode = new TreeNode<Distribution>(data);
+        //getting the highest area and inserting it into the tree
+        NamedArea highestArea = namedAreaPath.get(0);
+
+        boolean isOnTop = false;
+        if(distributionElement.getArea().getLevel() == null) {
+            // is level is null compare by area only
+//            isOnTop = distributionElement.getArea().getUuid().equals(highestArea.getUuid());
+            isOnTop = false;
+        } else {
+            // otherwise compare by level
+            isOnTop = highestArea.getLevel().getUuid().equals((distributionElement.getArea().getLevel().getUuid()));
         }
+
+        if (isOnTop) {
+            highestDistNode = new TreeNode<Distribution>(distributionElement); //distribution.area comes from proxy!!!!
+        }else{
+            //if distribution.status is not relevant
+            Distribution dummyDistributionElement = Distribution.NewInstance(highestArea, null);
+            highestDistNode = new TreeNode<Distribution>(dummyDistributionElement);
+        }
+
         if(highestDistNode.data.getModifyingText().isEmpty()){
-            highestDistNode.data.putModifyingText(Language.ENGLISH(), "test");
+            highestDistNode.data.putModifyingText(Language.ENGLISH(), "test"); // FIXME what is this ?????
         }
 
         if (root.getChildren().isEmpty() || !containsChild(root, highestDistNode)) {
@@ -161,16 +187,21 @@ public class DistributionTree extends Tree<Distribution>{
             child = new TreeNode<Distribution>(highestDistNode.data);
             root.addChild(child);//child.getData().getArea().getUuid().toString().equals("8cfc1722-e1e8-49d3-95a7-9879de6de490");
         }else {
-            //if the deepth-1 of the tree contains the highest area level
+            //if the depth-1 of the tree contains the highest area level
             //get the subtree or create it in order to continuing merging
             child = getChild(root,highestDistNode);
         }
         //continue merging with the next highest area of the list.
-        List<NamedArea> newList = areaHierarchieList.subList(1, areaHierarchieList.size());
-        mergeAux(distribution, level, newList, child);
+        List<NamedArea> newList = namedAreaPath.subList(1, namedAreaPath.size());
+        mergeAux(distributionElement, newList, child);
     }
 
-    private List<NamedArea> getAreaLevelPathList(NamedArea area, Set<NamedAreaLevel> omitLevels){
+    /**
+     * @param area
+     * @param omitLevels
+     * @return the path through area hierarchy from the <code>area</code> given as parameter to the root
+     */
+    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<NamedAreaLevel> omitLevels){
         List<NamedArea> result = new ArrayList<NamedArea>();
         if (omitLevels == null || !omitLevels.contains(area.getLevel())){
             result.add(area);

@@ -18,14 +18,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.DbImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.mueller
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportConfiguratorBase,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
+public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/

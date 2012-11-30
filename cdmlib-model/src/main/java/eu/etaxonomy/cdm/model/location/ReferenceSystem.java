@@ -43,7 +43,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
-	private static final long serialVersionUID = 2704455299046749175L;
+	private static final long serialVersionUID = -9060720949197749047L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceSystem.class);
 

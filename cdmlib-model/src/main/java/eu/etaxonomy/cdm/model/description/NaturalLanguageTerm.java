@@ -101,7 +101,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	public static final NaturalLanguageTerm TO(){
 		NaturalLanguageTerm nlt = TO;
 		Representation representation = Representation.NewInstance("", "to", "", Language.ENGLISH());
-		Representation representation2 = Representation.NewInstance("", "à", "", Language.FRENCH());
+		Representation representation2 = Representation.NewInstance("", "√†", "", Language.FRENCH());
 		nlt.addRepresentation(representation);
 		nlt.addRepresentation(representation2);
 		return nlt;
@@ -110,7 +110,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	public static final NaturalLanguageTerm UP_TO(){
 		NaturalLanguageTerm nlt = UP_TO;
 		Representation representation = Representation.NewInstance("", "up to", "", Language.ENGLISH());
-		Representation representation2 = Representation.NewInstance("", "jusqu'à", "", Language.FRENCH());
+		Representation representation2 = Representation.NewInstance("", "jusqu'√†", "", Language.FRENCH());
 		nlt.addRepresentation(representation);
 		nlt.addRepresentation(representation2);
 		return nlt;
@@ -119,7 +119,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	public static final NaturalLanguageTerm MOST_FREQUENTLY(){
 		NaturalLanguageTerm nlt = MOST_FREQUENTLY;
 		Representation representation = Representation.NewInstance("", "most frequently", "", Language.ENGLISH());
-		Representation representation2 = Representation.NewInstance("", "plus fréquemment", "", Language.FRENCH());
+		Representation representation2 = Representation.NewInstance("", "plus fr√©quemment", "", Language.FRENCH());
 		nlt.addRepresentation(representation);
 		nlt.addRepresentation(representation2);
 		return nlt;
