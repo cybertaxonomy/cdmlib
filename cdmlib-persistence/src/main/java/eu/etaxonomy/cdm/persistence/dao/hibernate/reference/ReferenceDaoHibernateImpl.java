@@ -139,7 +139,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	
 	public List<Reference> getAllNomenclaturalReferences() {
 		List<Reference> references = getSession().createQuery(
-				"select t.nomenclaturalReference from TaxonNameBase t").list();
+				"select distinct t.nomenclaturalReference from TaxonNameBase t").list();
 		return references;
 	}
 
