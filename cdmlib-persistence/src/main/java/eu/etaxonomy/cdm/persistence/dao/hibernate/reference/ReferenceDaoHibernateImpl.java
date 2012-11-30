@@ -137,6 +137,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		return resultRefernces;
 	}
 	
+	// the result list held doubles therefore i put a "distinct" in the query string
 	public List<Reference> getAllNomenclaturalReferences() {
 		List<Reference> references = getSession().createQuery(
 				"select distinct t.nomenclaturalReference from TaxonNameBase t").list();
