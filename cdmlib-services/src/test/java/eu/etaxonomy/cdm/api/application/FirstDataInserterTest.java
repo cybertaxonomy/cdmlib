@@ -14,7 +14,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * test for the {@link FirstDataInserter}
@@ -29,7 +28,7 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA"};
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="FirstDataInserterTest.testBlankDB.xml")
+    @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
     @ExpectedDataSet(value="FirstDataInserterTest.testBlankDB-result.xml")
     public void testBlankDB(){
 
