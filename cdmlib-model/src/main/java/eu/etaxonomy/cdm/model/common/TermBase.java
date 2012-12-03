@@ -92,7 +92,7 @@ public abstract class TermBase extends IdentifiableEntity{
         this.representations.add(representation);
         // this is just a preliminary solution (see ticket #3148)
         if(representation.language!=null && representation.language.equals(Language.DEFAULT())){
-        	this.regenerateTitleCache();
+        	this.resetTitleCache();
         }
     }
 
