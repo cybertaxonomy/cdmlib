@@ -23,6 +23,7 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Level;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -71,27 +72,30 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
     private IExportConfigurator exportConfigurator;
 
     @Before
+    @Ignore
+    //calling before testInit testDoInvoke. db stuff into devlopeACustomDatabase
+    //setDefaultRollback
     public void setUp() throws URISyntaxException, MalformedURLException {
         // input data
-        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml");
+        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input3.xml");
         URI uri = url.toURI();
 
         // export data
         String exporturlStr = "SDDImportExportTest.sdd.xml";
         File f = new File(exporturlStr);
         exporturlStr = f.toURI().toURL().toString();
-        logger.debug("LORNA the exporturlStr is " + exporturlStr);
+        logger.debug("The exporturlStr is " + exporturlStr);
 
         // URI.create("file:///C:/localCopy/Data/xper/Cichorieae-DA2.sdd.xml");
 
         Assert.assertNotNull(url);
 
-        CdmPersistentDataSource loadedDataSource = null;
+        ICdmDataSource loadedDataSource = null;
 
         /*
          * enable below line if you wish to use a custom data source
          */
-//        loadedDataSource = customDataSource();
+        //loadedDataSource = customDataSource();
 
         importConfigurator = SDDImportConfigurator.NewInstance(uri, loadedDataSource);
         exportConfigurator = SDDExportConfigurator.NewInstance(loadedDataSource, exporturlStr);
@@ -100,6 +104,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
+    @Ignore
     public void testDoInvoke() {
 
         assertNotNull("sddImport should not be null", sddImport);
@@ -128,18 +133,18 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
      * @param loadedDataSource
      * @return
      */
-    private CdmPersistentDataSource customDataSource() {
+    private ICdmDataSource customDataSource() {
 
          CdmPersistentDataSource loadedDataSource = null;
         //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, code);
-        String dataSourceName = "test";
+        String dataSourceName = "cdm_test2";
         String password = CdmUtils.readInputLine("Password: ");
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_test", 3306, "ljm", password, NomenclaturalCode.ICBN);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_test2", 3306, "ljm", password, NomenclaturalCode.ICBN);
         //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_test", 3306, "edit", password, NomenclaturalCode.ICBN);
         boolean connectionAvailable;
         try {
             connectionAvailable = dataSource.testConnection();
-            logger.debug("LORNA connection avaiable " + connectionAvailable);
+            logger.debug("Is connection avaiable " + connectionAvailable);
             Assert.assertTrue("Testdatabase is not available", connectionAvailable);
 
         } catch (ClassNotFoundException e1) {
@@ -161,6 +166,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return loadedDataSource;
+        //return loadedDataSource;
+        return dataSource;
     }
 }
