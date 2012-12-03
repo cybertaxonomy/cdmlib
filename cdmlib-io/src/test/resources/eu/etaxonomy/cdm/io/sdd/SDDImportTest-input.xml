@@ -144,7 +144,7 @@
           <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
         </Representation>
         <Type>Image</Type>
-        <Source href="http://test.edu/test.jpg"/>
+        <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_en_fente.gif"/>
       </MediaObject>
     </MediaObjects>
   </Dataset>
