@@ -58,7 +58,8 @@ public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
 	public void testDoInvoke() {
 		
 		//sddCdmExporter.doInvoke(exportConfigurator, null);
-		//assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
+		sddCdmExporter.doInvoke(new SDDExportState((SDDExportConfigurator) exportConfigurator));
+        assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
 	}
 
 }
