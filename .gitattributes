@@ -2116,8 +2116,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistr
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-securityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.unused.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
