@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.ResourceUtils;
 
+import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -292,6 +294,14 @@ public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExpo
 		if (sddExpConfig.isDoMedia() == true) {
 			if (mediaRows == 0) { mediaRows = MAX_ROWS; }
 			logger.info("# Media");
+			IMediaService mservice = getMediaService();
+
+			/*List<Media> l = mservice.list(null,mediaRows, 0,null,null);
+			for (Media med : l) {
+				logger.debug("The Media object " + med);// + med.getTitle().getLanguageLabel());
+				//logger.warn("LORNA " + med.getTitle().getText());
+			}*/
+			
 			sddDataSet.setMedia(getMediaService().list(null,mediaRows, 0,null,null));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentations(mediaRows, 0));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
