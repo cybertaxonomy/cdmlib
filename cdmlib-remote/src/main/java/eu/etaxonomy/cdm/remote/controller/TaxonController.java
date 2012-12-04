@@ -57,9 +57,9 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     private IOccurrenceService occurrenceService;
     @Autowired
     private INameService nameService;
-    @Autowired 
-    private ITaxonService taxonService; 
-    
+    @Autowired
+    private ITaxonService taxonService;
+
 
     protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
             "taxonNodes"
@@ -123,14 +123,14 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             return null;
         }
     }
-   
 
-    @RequestMapping(value = "specimensOrObersvations", method = RequestMethod.GET)
-    public ModelAndView doListSpecimensOrObersvations(
+
+    @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
+    public ModelAndView doListSpecimensOrObservations(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doListSpecimensOrObersvations() - " + request.getServletPath());
+        logger.info("doListSpecimensOrObservations() - " + request.getServletPath());
 
         ModelAndView mv = new ModelAndView();
 
@@ -164,21 +164,21 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
     }
-    
+
     /**
      * FIXME change @RequestMapping to /taxon/findBestMatchingTaxon and also move into TaxonListController
      */
     @RequestMapping(value = "/bestMatchingTaxon/{taxonName}", method = RequestMethod.GET)
     public TaxonBase doFindBestMatchingTaxon(
-    	 	@PathVariable("taxonName") String taxonName,
-    		HttpServletRequest request, 
-    		HttpServletResponse response)throws IOException {
-		
-    	Taxon bestMatchingTaxon =  taxonService.findBestMatchingTaxon(taxonName);
-    	
-    	return bestMatchingTaxon;
-    
-    	
+             @PathVariable("taxonName") String taxonName,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+
+        Taxon bestMatchingTaxon =  taxonService.findBestMatchingTaxon(taxonName);
+
+        return bestMatchingTaxon;
+
+
     }
 
 }
