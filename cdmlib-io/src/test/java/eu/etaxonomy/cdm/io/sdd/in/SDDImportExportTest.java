@@ -77,7 +77,8 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
     //setDefaultRollback
     public void setUp() throws URISyntaxException, MalformedURLException {
         // input data
-        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input3.xml");
+        //URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input3.xml");
+        URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/ant.sdd.xml");
         URI uri = url.toURI();
 
         // export data

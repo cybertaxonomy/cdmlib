@@ -82,7 +82,6 @@ cdmlib-ext/src/test/resources/log4j.properties -text
 cdmlib-ext/src/test/resources/unitils.properties -text
 cdmlib-io/LICENSE.TXT -text
 cdmlib-io/README.TXT -text
-cdmlib-io/SDDImportExportTest.sdd.xml -text
 cdmlib-io/pom.xml -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/api/application/CdmIoApplicationController.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
