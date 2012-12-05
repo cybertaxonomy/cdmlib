@@ -76,7 +76,8 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	@Autowired
 	private IDescriptionElementDao descrElementDao;
 	
-	@Autowired IStatisticsDao statisticsDao;
+	@Autowired 
+	private IStatisticsDao statisticsDao;
 
 	/**
 	 * counts all the elements referenced in the configurator from the part of
@@ -146,10 +147,11 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				number = Long.valueOf(taxonNameDao.count(TaxonNameBase.class));
 				break;
 
-//			case DESCRIPTIVE_SOURCE_REFERENCES:
-//				 TODO create statistics DAO
-//				 number = getDescriptiveSourceReferences();
-//				break;
+			case DESCRIPTIVE_SOURCE_REFERENCES:
+				 
+				 number = statisticsDao.countDescriptiveSourceReferences();
+//				number = taxonDao.count
+				break;
 			}
 
 			statistics.addCount(type, number);
