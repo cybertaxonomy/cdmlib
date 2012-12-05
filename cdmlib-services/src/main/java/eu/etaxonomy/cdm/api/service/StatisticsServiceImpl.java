@@ -26,10 +26,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
@@ -73,20 +75,25 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	@Autowired
 	private IDescriptionElementDao descrElementDao;
+	
+	@Autowired IStatisticsDao statisticsDao;
 
 	/**
 	 * counts all the elements referenced in the configurator from the part of
 	 * the database referenced in the configurator
+	 
+	 * @param configurator
+	 * @return the Statistics countMap might contain null Numbers
 	 */
 	@Override
 	@Transactional
+	
 	public Statistics getCountStatistics(StatisticsConfigurator configurator) {
 		this.configurator = configurator;
 		this.statistics = new Statistics(configurator);
 		// TODO use "about" parameter of Statistics element
 		calculateParts();
 		return this.statistics;
-		// return new Statistics(null);
 	}
 
 	private void calculateParts() {
@@ -108,40 +115,43 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private void countAll() {
 
 		for (StatisticsTypeEnum type : configurator.getType()) {
-			Integer number = 0;
+			Long number = null;
 			switch (type) {
 
 			case ALL_TAXA:
-				number += taxonDao.count(Taxon.class);
+				number = Long.valueOf(taxonDao.count(TaxonBase.class));
+				break;
 			case SYNONYMS:
-				number += taxonDao.count(Synonym.class);
+				number = Long.valueOf(taxonDao.count(Synonym.class));
 				break;
 			case ACCEPTED_TAXA:
-				number += taxonDao.count(Taxon.class);
+				number = Long.valueOf(taxonDao.count(Taxon.class));
 				break;
 			case ALL_REFERENCES:
-				number += referenceDao
-						.count(eu.etaxonomy.cdm.model.reference.Reference.class);
+				number = Long.valueOf(referenceDao
+						.count(eu.etaxonomy.cdm.model.reference.Reference.class));
 				break;
 
 			case NOMECLATURAL_REFERENCES:
-				number += (referenceDao.getAllNomenclaturalReferences()).size();
+//				number += (referenceDao.getAllNomenclaturalReferences()).size(); // to slow!!!
+				number = statisticsDao.countNomenclaturalReferences();
 				break;
 
 			case CLASSIFICATION:
-				number += classificationDao.count(Classification.class);
+				number = Long.valueOf(classificationDao.count(Classification.class));
 
 				break;
 
 			case TAXON_NAMES:
-				number += taxonNameDao.count(TaxonNameBase.class);
+				number = Long.valueOf(taxonNameDao.count(TaxonNameBase.class));
 				break;
 
 //			case DESCRIPTIVE_SOURCE_REFERENCES:
-				// TODO create statistics DAO
-				// number += getDescriptiveSourceReferences();
+//				 TODO create statistics DAO
+//				 number = getDescriptiveSourceReferences();
 //				break;
 			}
+
 			statistics.addCount(type, number);
 		}
 

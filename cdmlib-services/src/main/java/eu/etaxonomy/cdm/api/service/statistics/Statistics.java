@@ -64,7 +64,7 @@ public class Statistics {
 		return countMap;
 	}
 
-	public void addCount(StatisticsTypeEnum type, Integer number) {
+	public void addCount(StatisticsTypeEnum type, Long number) {
 		this.countMap.put(type.getLabel(), number);
 	}
 	
