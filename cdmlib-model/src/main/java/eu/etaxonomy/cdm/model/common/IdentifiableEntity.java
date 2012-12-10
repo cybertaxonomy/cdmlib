@@ -163,7 +163,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     protected void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent e) {
+            @Override
+			public void propertyChange(PropertyChangeEvent e) {
                 if (!e.getPropertyName().equals("titleCache") && !e.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
                     titleCache = null;
                 }
@@ -178,7 +179,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      *
      * Specific subclasses (e.g. Sequence) can override if necessary.
      */
-    public byte[] getData() {
+    @Override
+	public byte[] getData() {
         return null;
     }
 
@@ -189,7 +191,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
      */
     // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
-    public String getTitleCache(){
+    @Override
+	public String getTitleCache(){
         if (protectedTitleCache){
             return this.titleCache;
         }
@@ -202,26 +205,29 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
     
     /**
-     * Will reset (set to <code>null</code>) the title cache if not protected
-     * @return <code>true</code> if title cache was reset, <code>false</code> otherwise
+     * The titleCache will be regenerated from scratch if not protected
+     * @return <code>true</code> if title cache was regenerated, <code>false</code> otherwise
      */
-	protected boolean resetTitleCache() {
+	protected boolean regenerateTitleCache() {
 		if (!protectedTitleCache) {
 			this.titleCache = null;
+			getTitleCache();
 		}
 		return protectedTitleCache;
 	}
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String)
      */
-    public void setTitleCache(String titleCache){
+    @Override
+	public void setTitleCache(String titleCache){
         this.titleCache = titleCache;
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String, boolean)
      */
-    public void setTitleCache(String titleCache, boolean protectCache){
+    @Override
+	public void setTitleCache(String titleCache, boolean protectCache){
         titleCache = getTruncatedCache(titleCache);
         this.titleCache = titleCache;
         this.protectedTitleCache = protectCache;
@@ -246,19 +252,22 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
      */
-    public LSID getLsid(){
+    @Override
+	public LSID getLsid(){
         return this.lsid;
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setLsid(java.lang.String)
      */
-    public void setLsid(LSID lsid){
+    @Override
+	public void setLsid(LSID lsid){
         this.lsid = lsid;
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
      */
-    public Set<Rights> getRights() {
+    @Override
+	public Set<Rights> getRights() {
         if(rights == null) {
             this.rights = new HashSet<Rights>();
         }
@@ -268,18 +277,21 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addRights(eu.etaxonomy.cdm.model.media.Rights)
      */
-    public void addRights(Rights right){
+    @Override
+	public void addRights(Rights right){
         getRights().add(right);
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeRights(eu.etaxonomy.cdm.model.media.Rights)
      */
-    public void removeRights(Rights right){
+    @Override
+	public void removeRights(Rights right){
         getRights().remove(right);
     }
 
 
-    public List<Credit> getCredits() {
+    @Override
+	public List<Credit> getCredits() {
         if(credits == null) {
             this.credits = new ArrayList<Credit>();
         }
@@ -289,14 +301,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits(int)
      */
-    public Credit getCredits(Integer index){
+    @Override
+	public Credit getCredits(Integer index){
         return getCredits().get(index);
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit)
      */
-    public void addCredit(Credit credit){
+    @Override
+	public void addCredit(Credit credit){
         getCredits().add(credit);
     }
 
@@ -304,21 +318,24 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit, int)
      */
-    public void addCredit(Credit credit, int index){
+    @Override
+	public void addCredit(Credit credit, int index){
         getCredits().add(index, credit);
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(eu.etaxonomy.cdm.model.common.Credit)
      */
-    public void removeCredit(Credit credit){
+    @Override
+	public void removeCredit(Credit credit){
         getCredits().remove(credit);
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(int)
      */
-    public void removeCredit(int index){
+    @Override
+	public void removeCredit(int index){
         getCredits().remove(index);
     }
 
@@ -326,7 +343,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
      */
-    public Set<Extension> getExtensions(){
+    @Override
+	public Set<Extension> getExtensions(){
         if(extensions == null) {
             this.extensions = new HashSet<Extension>();
         }
@@ -352,7 +370,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addExtension(eu.etaxonomy.cdm.model.common.Extension)
      */
-    public void addExtension(Extension extension){
+    @Override
+	public void addExtension(Extension extension){
         if (extension != null){
             extension.setExtendedObj(this);
             getExtensions().add(extension);
@@ -361,7 +380,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeExtension(eu.etaxonomy.cdm.model.common.Extension)
      */
-    public void removeExtension(Extension extension){
+    @Override
+	public void removeExtension(Extension extension){
         if (extension != null){
             extension.setExtendedObj(null);
             getExtensions().remove(extension);
@@ -372,21 +392,24 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#isProtectedTitleCache()
      */
-    public boolean isProtectedTitleCache() {
+    @Override
+	public boolean isProtectedTitleCache() {
         return protectedTitleCache;
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setProtectedTitleCache(boolean)
      */
-    public void setProtectedTitleCache(boolean protectedTitleCache) {
+    @Override
+	public void setProtectedTitleCache(boolean protectedTitleCache) {
         this.protectedTitleCache = protectedTitleCache;
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
      */
-    public Set<IdentifiableSource> getSources() {
+    @Override
+	public Set<IdentifiableSource> getSources() {
         if(sources == null) {
             this.sources = new HashSet<IdentifiableSource>();
         }
@@ -396,7 +419,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceBase)
      */
-    public void addSource(IdentifiableSource source) {
+    @Override
+	public void addSource(IdentifiableSource source) {
         if (source != null){
             IdentifiableEntity oldSourcedObj = source.getSourcedObj();
             if (oldSourcedObj != null && oldSourcedObj != this){
@@ -410,7 +434,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
      */
-    public IdentifiableSource addSource(String id, String idNamespace, Reference citation, String microCitation) {
+    @Override
+	public IdentifiableSource addSource(String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
@@ -422,7 +447,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
      */
-    public void removeSource(IdentifiableSource source) {
+    @Override
+	public void removeSource(IdentifiableSource source) {
         getSources().remove(source);
     }
 
@@ -539,7 +565,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             this.cacheStrategy = cacheStrategy;
         }
 
-        public String generateTitle() {
+        @Override
+		public String generateTitle() {
             if (cacheStrategy == null){
                 //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
                 return this.getClass() + ": " + this.getUuid();
