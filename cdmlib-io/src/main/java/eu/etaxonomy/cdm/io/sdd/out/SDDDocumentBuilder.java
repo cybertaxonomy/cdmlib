@@ -33,6 +33,7 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.springframework.util.ResourceUtils;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
@@ -212,6 +213,17 @@ public class SDDDocumentBuilder {
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		logger.info("Start marshalling");
 		writeCDMtoSDD(sddDestination);
+
+	}
+	
+	public void marshal(SDDDataSet cdmSource, String sddDestinationFileName)
+			throws IOException {
+
+		this.cdmSource = cdmSource;
+		Marshaller marshaller;
+		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
+		logger.info("Start marshalling");
+		writeCDMtoSDD(ResourceUtils.getFile(sddDestinationFileName));
 
 	}
 
@@ -1373,7 +1385,7 @@ public class SDDDocumentBuilder {
 					Annotation annotation = a.next();
 					AnnotationType annotationType = annotation
 							.getAnnotationType();
-					if (annotationType.equals(AnnotationType.EDITORIAL())) {
+					if (annotationType != null && annotationType.equals(AnnotationType.EDITORIAL())) {
 						editorial = true;
 					} else {
 						editorial = false;

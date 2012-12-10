@@ -6,7 +6,10 @@
   <Dataset xml:lang="en-us">
     <Representation>
       <Label>The Genus Viola</Label>
-      <Detail>This is an example for a very simple SDD file, representing a single description with categorical, quantitative, and text character. Compare also the "Fragment*" examples, which contain more complex examples in the form of document fragments. Intended for version="SDD 1.1".</Detail>
+      <Detail>This is an example for a very simple SDD file, representing a single description with
+        categorical, quantitative, and text character. Compare also the "Fragment*" examples, which
+        contain more complex examples in the form of document fragments. Intended for version="SDD
+        1.1".</Detail>
     </Representation>
     <RevisionData>
       <Creators>
@@ -83,7 +86,8 @@
     <CodedDescriptions>
       <CodedDescription id="D101">
         <Representation>
-          <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
+          <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8,
+            2006</Label>
         </Representation>
         <Scope>
           <TaxonName ref="t1"/>
@@ -98,7 +102,7 @@
             <State ref="s2"/>
           </Categorical>
           <Quantitative ref="c2">
-            <Measure type="Min" value="2.3"></Measure>
+            <Measure type="Min" value="2.3"/>
             <Measure type="Mean" value="5.1"/>
             <Measure type="Max" value="7.9"/>
             <Measure type="SD" value="1.3"/>
@@ -144,9 +148,10 @@
           <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
         </Representation>
         <Type>Image</Type>
-        <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_en_fente.gif"/>
+        <Source
+          href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_en_fente.gif"
+        />
       </MediaObject>
     </MediaObjects>
   </Dataset>
 </Datasets>
-
