@@ -8,6 +8,7 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 
@@ -41,12 +42,14 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				"select distinct descriptionSources from DescriptionBase");
 		// org.hibernate.type.Type[] types= query.getReturnTypes();
 		List<DescriptionElementSource> queryList = query.list();
+		Set <DescriptionElementSource> sourcesSet = new HashSet<DescriptionElementSource>();
+		sourcesSet.addAll(query.list());
 		if (queryList == null/* || queryList.isEmpty() */) {
 			return null;
 
 		} else {
 
-			count += queryList.size();
+			count += sourcesSet.size();
 		}
 
 		// count sources from Descriptive Elements:
@@ -55,8 +58,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// eliminate doubles
 
 		query = getSession().createQuery(
+//				"select count(distinct citation) from (select distinct sources from DescriptionElementBase)");
 				"select distinct sources from DescriptionElementBase");
-
+				
 		// count=(Long)query.uniqueResult();
 		org.hibernate.type.Type[] types = query.getReturnTypes();
 		// Object object =query.uniqueResult();
@@ -70,9 +74,18 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			// count += queryList.size();
 			// ////
 		}
-		Set<DescriptionElementSource> sourceSet = new HashSet<DescriptionElementSource>();
-		sourceSet.addAll(queryList);
-		count += sourceSet.size();
+//		Set<DescriptionElementSource> sourceSet = new HashSet<DescriptionElementSource>();
+		Set<Reference> referenceSet = new HashSet<Reference>();
+		for (DescriptionElementSource descriptionElementSource : queryList) {
+			if(descriptionElementSource.getCitation()!=null){
+				referenceSet.add(descriptionElementSource.getCitation());
+			}
+		}
+		
+//		sourceSet.addAll(queryList);
+//		count += sourceSet.size();
+		count+=referenceSet.size();
+		
 		return count;
 	}
 }
