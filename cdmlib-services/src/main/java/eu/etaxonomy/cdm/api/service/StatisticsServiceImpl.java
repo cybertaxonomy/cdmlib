@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -54,9 +55,9 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
 			.asList(new String[] { "sources.citation", });;
 
-	private StatisticsConfigurator configurator;
+	private List<StatisticsConfigurator> configurators;
 
-	private Statistics statistics;
+	private ArrayList<Statistics> statisticsList;
 
 	@Autowired
 	private ITaxonDao taxonDao;
@@ -75,46 +76,41 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	@Autowired
 	private IDescriptionElementDao descrElementDao;
-	
-	@Autowired 
+
+	@Autowired
 	private IStatisticsDao statisticsDao;
 
 	/**
 	 * counts all the elements referenced in the configurator from the part of
 	 * the database referenced in the configurator
-	 
-	 * @param configurator
-	 * @return the Statistics countMap might contain null Numbers
+	 * 
+	 * @param configurators
+	 * @return be aware that a Statistics.countMap might contain "null" for {@link Number} value,
+	 * if the count failed (, if the value is "0" the count succeeded and sum is 0)
 	 */
 	@Override
 	@Transactional
-	
-	public Statistics getCountStatistics(StatisticsConfigurator configurator) {
-		this.configurator = configurator;
-		this.statistics = new Statistics(configurator);
-		// TODO use "about" parameter of Statistics element
-		calculateParts();
-		return this.statistics;
-	}
-
-	private void calculateParts() {
-		for (StatisticsPartEnum part : configurator.getPart()) {
-			switch (part) {
-			case ALL:
-				countAll();
-				break;
-
-			case CLASSIFICATION:
-				// TODO
-				break;
-			}
+	public List<Statistics> getCountStatistics(
+			List<StatisticsConfigurator> configurators) {
+		
+		statisticsList = new ArrayList<Statistics>();
+		
+		for (StatisticsConfigurator statisticsConfigurator : configurators) {
+// create a Statistics element for each configurator
+			countStatisticsPart(statisticsConfigurator);
 		}
-
+		// TODO use "about" parameter of Statistics element
+//		calculateParts();
+		return this.statisticsList;
 	}
+	
+
 
 	@Transactional
-	private void countAll() {
-
+	private void countStatisticsPart(StatisticsConfigurator configurator) {
+//TODO use about
+		Statistics statistics = new Statistics(configurator);
+		//TODO add about
 		for (StatisticsTypeEnum type : configurator.getType()) {
 			Long number = null;
 			switch (type) {
@@ -129,17 +125,21 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				number = Long.valueOf(taxonDao.count(Taxon.class));
 				break;
 			case ALL_REFERENCES:
-				number = Long.valueOf(referenceDao
-						.count(eu.etaxonomy.cdm.model.reference.Reference.class));
+				number = Long
+						.valueOf(referenceDao
+								.count(eu.etaxonomy.cdm.model.reference.Reference.class));
 				break;
 
 			case NOMECLATURAL_REFERENCES:
-//				number += (referenceDao.getAllNomenclaturalReferences()).size(); // to slow!!!
+				// number +=
+				// (referenceDao.getAllNomenclaturalReferences()).size(); // to
+				// slow!!!
 				number = statisticsDao.countNomenclaturalReferences();
 				break;
 
 			case CLASSIFICATION:
-				number = Long.valueOf(classificationDao.count(Classification.class));
+				number = Long.valueOf(classificationDao
+						.count(Classification.class));
 
 				break;
 
@@ -148,14 +148,61 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				break;
 
 			case DESCRIPTIVE_SOURCE_REFERENCES:
-				 
-				 number = statisticsDao.countDescriptiveSourceReferences();
-//				number = taxonDao.count
+
+				number = statisticsDao.countDescriptiveSourceReferences();
+
 				break;
 			}
 
 			statistics.addCount(type, number);
 		}
+		statisticsList.add(statistics);
+	}
+	
+	
+	
+	//-------------------------------------------------
+
+	
+//	private void countStatistic(StatisticsConfigurator configurator){
+//	
+//		Statistics statistics = new Statistics(configurator);
+//		for (StatisticsPartEnum part : configurator.getPart()) {
+//			switch (part) {
+//			case ALL:
+//				countAll(configurator);
+//				break;
+//
+//			case CLASSIFICATION:
+//				// get classifications
+//				// foreach classification:
+//				countPart();
+//				break;
+//			}
+//		}
+//	}
+
+//	private void calculatePart() {
+//		//TODO
+//		for (StatisticsPartEnum part : configurator.getPart()) {
+//			switch (part) {
+//			case ALL:
+//				countAll();
+//				break;
+//
+//			case CLASSIFICATION:
+//				// get classifications
+//				// foreach classification:
+//				countPart();
+//				break;
+//			}
+//		}
+//
+//	}
+	
+	
+	@Transactional
+	private void countPart() {
 
 	}
 

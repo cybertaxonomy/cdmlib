@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
  * 
  */
 @Controller
-@RequestMapping(value = { "/statistic" })
+@RequestMapping(value = { "/statistics" })
 public class StatisticsController {
 
 	private static final Logger logger = Logger
@@ -69,8 +70,11 @@ public class StatisticsController {
 		ModelAndView mv = new ModelAndView();
 
 		createConfigurator(part, type);
+		//TODO:
 		// service.getStatistics(configurator);
-		Statistics statistics = service.getCountStatistics(configurator);
+		List<StatisticsConfigurator> configuratorList =new ArrayList<StatisticsConfigurator>();
+		configuratorList.add(configurator);
+		List<Statistics> statistics = service.getCountStatistics(configuratorList);
 		logger.info("doStatistics() - " + request.getServletPath());
 
 		mv.addObject(statistics);

@@ -38,6 +38,7 @@ public class Statistics {
 
 	private List<IdentifiableEntity> about;
 
+	
 	// it's a pitty, but for JSON Map keys must be Strings
 	// see also: JSONObject _fromMap( Map map, JsonConfig jsonConfig )
 	// --> TODO: modify MapJSONValueProcessor.processArrayValue(Object value,

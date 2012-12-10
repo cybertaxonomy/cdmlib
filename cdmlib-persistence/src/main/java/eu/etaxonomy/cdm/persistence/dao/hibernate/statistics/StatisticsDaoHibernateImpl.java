@@ -21,12 +21,20 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 */
 	@Override
 	public Long countNomenclaturalReferences() {
-		Query query = getSession()
-				.createQuery(
-						"select count(distinct nomenclaturalReference) from TaxonNameBase");
+		return countNomenclaturalReferences("");
+	}
 
+	private Long countNomenclaturalReferences(String where) {
+
+		Query query = getSession().createQuery(
+				"select count(distinct nomenclaturalReference) from TaxonNameBase"
+						+ where);
 		return (Long) query.uniqueResult();
-
+	}
+	
+	@Override
+	public Long countNomenclaturalReferences(Class clazz){
+		return countNomenclaturalReferences("where" + clazz.getSimpleName());
 	}
 
 	/**
@@ -42,7 +50,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				"select distinct descriptionSources from DescriptionBase");
 		// org.hibernate.type.Type[] types= query.getReturnTypes();
 		List<DescriptionElementSource> queryList = query.list();
-		Set <DescriptionElementSource> sourcesSet = new HashSet<DescriptionElementSource>();
+		Set<DescriptionElementSource> sourcesSet = new HashSet<DescriptionElementSource>();
 		sourcesSet.addAll(query.list());
 		if (queryList == null/* || queryList.isEmpty() */) {
 			return null;
@@ -58,9 +66,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// eliminate doubles
 
 		query = getSession().createQuery(
-//				"select count(distinct citation) from (select distinct sources from DescriptionElementBase)");
+		// "select count(distinct citation) from (select distinct sources from DescriptionElementBase)");
 				"select distinct sources from DescriptionElementBase");
-				
+
 		// count=(Long)query.uniqueResult();
 		org.hibernate.type.Type[] types = query.getReturnTypes();
 		// Object object =query.uniqueResult();
@@ -74,18 +82,19 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			// count += queryList.size();
 			// ////
 		}
-//		Set<DescriptionElementSource> sourceSet = new HashSet<DescriptionElementSource>();
+		// Set<DescriptionElementSource> sourceSet = new
+		// HashSet<DescriptionElementSource>();
 		Set<Reference> referenceSet = new HashSet<Reference>();
 		for (DescriptionElementSource descriptionElementSource : queryList) {
-			if(descriptionElementSource.getCitation()!=null){
+			if (descriptionElementSource.getCitation() != null) {
 				referenceSet.add(descriptionElementSource.getCitation());
 			}
 		}
-		
-//		sourceSet.addAll(queryList);
-//		count += sourceSet.size();
-		count+=referenceSet.size();
-		
+
+		// sourceSet.addAll(queryList);
+		// count += sourceSet.size();
+		count += referenceSet.size();
+
 		return count;
 	}
 }

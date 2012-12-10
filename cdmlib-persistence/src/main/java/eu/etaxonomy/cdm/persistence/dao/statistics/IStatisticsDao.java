@@ -7,4 +7,7 @@ public interface IStatisticsDao {
 
 
 	public Long countDescriptiveSourceReferences();
+
+
+	Long countNomenclaturalReferences(Class clazz);
 }
