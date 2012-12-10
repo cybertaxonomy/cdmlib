@@ -1,21 +1,16 @@
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Ignore;
+
 import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
-import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -89,13 +84,13 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// ------------------------------------------------------------------
 
-	private void createConfigurator() {
-		configurator = new StatisticsConfigurator();
-		configurator.addPart(StatisticsPartEnum.ALL);
-		for (StatisticsTypeEnum type : StatisticsTypeEnum.values()) {
-			configurator.addType(type);
-		}
-
-	}
+//	private void createConfigurator() {
+//		configurator = new StatisticsConfigurator();
+//		configurator.addPart(StatisticsPartEnum.ALL);
+//		for (StatisticsTypeEnum type : StatisticsTypeEnum.values()) {
+//			configurator.addType(type);
+//		}
+//
+//	}
 
 }

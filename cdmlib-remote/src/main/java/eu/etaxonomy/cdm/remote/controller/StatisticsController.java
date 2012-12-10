@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author sybille
@@ -34,7 +35,10 @@ public class StatisticsController {
 	private static final Logger logger = Logger
 			.getLogger(StatisticsController.class);
 
-	private static final List<StatisticsTypeEnum> D = null;
+	// private static final List<StatisticsTypeEnum> D = null;
+
+	private static final IdentifiableEntity ALL_DB = null;
+	private static final IdentifiableEntity DEFAULT_Entity = ALL_DB;
 
 	private IStatisticsService service;
 
@@ -43,7 +47,7 @@ public class StatisticsController {
 		this.service = service;
 	}
 
-	StatisticsConfigurator configurator;
+	// StatisticsConfigurator configurator;
 
 	/**
 	 * example query:
@@ -66,43 +70,89 @@ public class StatisticsController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-		configurator = new StatisticsConfigurator();
+		// configurator = new StatisticsConfigurator();
 		ModelAndView mv = new ModelAndView();
 
-		createConfigurator(part, type);
-		//TODO:
+		// TODO:
 		// service.getStatistics(configurator);
-		List<StatisticsConfigurator> configuratorList =new ArrayList<StatisticsConfigurator>();
-		configuratorList.add(configurator);
-		List<Statistics> statistics = service.getCountStatistics(configuratorList);
+		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
+				part, type);
+		// configuratorList.add(configurator);
+		List<Statistics> statistics = service
+				.getCountStatistics(configuratorList);
 		logger.info("doStatistics() - " + request.getServletPath());
 
 		mv.addObject(statistics);
 		return mv;
 	}
 
-	private void createConfigurator(String[] part, String[] type) {
+	private List<StatisticsConfigurator> createConfiguratorList(String[] part,
+			String[] type) {
 
-		if (part != null) {
-			for (String string : part) {
-				configurator.addPart(StatisticsPartEnum.valueOf(string));
-			}
-		} else
-			configurator.addPart(StatisticsPartEnum.ALL);
+		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
+
+		// 1. get types for configurators:
+		// all the configurators will have the same types
+		// so we calculate the types once and save them in a helperConfigurator
+		StatisticsConfigurator helperConfigurator = new StatisticsConfigurator();
 
 		if (type != null) {
 			for (String string : type) {
-				configurator.addType(StatisticsTypeEnum.valueOf(string));
+				helperConfigurator.addType(StatisticsTypeEnum.valueOf(string));
 			}
-		} else
-			setDefaultType();
-	}
-
-	private void setDefaultType() {
-		// for default choose all types:
-		for (StatisticsTypeEnum type : StatisticsTypeEnum.values()) {
-			configurator.addType(type);
+		} else {
+			for (StatisticsTypeEnum enumValue : StatisticsTypeEnum.values()) {
+				helperConfigurator.addType(enumValue);
+			}
 		}
 
+		// 2. determine the entities and put each of them in a configurator:
+
+		// if no part was given:
+		if (part == null) {
+			helperConfigurator.addFilter(DEFAULT_Entity);
+			configuratorList.add(helperConfigurator);
+		}
+		// else parse list of parts:
+		else {
+			for (String string : part) {
+				if(part.equals(StatisticsPartEnum.ALL.toString())){
+					helperConfigurator.addFilter(ALL_DB);
+					configuratorList.add(helperConfigurator);
+				}
+				else if(part.equals(StatisticsPartEnum.CLASSIFICATION.toString())){
+					//TODO create configurators for classifications
+					// do not forget to clone the configurator or create new one.
+				}
+			}
+
+		}
+
+		return configuratorList;
 	}
+
+	// private void createConfigurator(String part, String[] type) {
+	//
+	// if (part != null) {
+	// for (String string : part) {
+	// configurator.addPart(StatisticsPartEnum.valueOf(string));
+	// }
+	// } else
+	// configurator.addPart(StatisticsPartEnum.ALL);
+	//
+	// if (type != null) {
+	// for (String string : type) {
+	// configurator.addType(StatisticsTypeEnum.valueOf(string));
+	// }
+	// } else
+	// setDefaultType();
+	// }
+	//
+	// private void setDefaultType() {
+	// // for default choose all types:
+	// for (StatisticsTypeEnum type : StatisticsTypeEnum.values()) {
+	// configurator.addType(type);
+	// }
+	//
+	// }
 }

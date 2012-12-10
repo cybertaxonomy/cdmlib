@@ -36,7 +36,7 @@ public class Statistics {
 	// private Map<StatisticsPartEnum, Map<IdentifiableEntity, Statistics>>
 	// partList;
 
-	private List<IdentifiableEntity> about;
+//	private List<IdentifiableEntity> about;
 
 	
 	// it's a pitty, but for JSON Map keys must be Strings
@@ -50,7 +50,7 @@ public class Statistics {
 		this.request = configurator;
 		this.countMap = new HashMap<String, Number>();
 
-		this.about = new ArrayList<IdentifiableEntity>();
+//		this.about = new ArrayList<IdentifiableEntity>();
 	}
 
 	public void setRequest(StatisticsConfigurator request) {

@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -96,11 +97,11 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		statisticsList = new ArrayList<Statistics>();
 		
 		for (StatisticsConfigurator statisticsConfigurator : configurators) {
-// create a Statistics element for each configurator
+			// create a Statistics element for each configurator
 			countStatisticsPart(statisticsConfigurator);
 		}
 		// TODO use "about" parameter of Statistics element
-//		calculateParts();
+
 		return this.statisticsList;
 	}
 	
@@ -108,9 +109,11 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	@Transactional
 	private void countStatisticsPart(StatisticsConfigurator configurator) {
-//TODO use about
+		//TODO use "filter" in count functionality 
+		//get last element of configurator.filter:
+		IdentifiableEntity filter= configurator.getFilter().get((configurator.getFilter().size())-1);
 		Statistics statistics = new Statistics(configurator);
-		//TODO add about
+
 		for (StatisticsTypeEnum type : configurator.getType()) {
 			Long number = null;
 			switch (type) {
