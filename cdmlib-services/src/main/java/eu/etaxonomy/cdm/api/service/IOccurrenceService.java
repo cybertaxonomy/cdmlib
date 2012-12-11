@@ -138,28 +138,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, List<String> propertyPaths);
 
     /**
-     * Lists all instances of {@link SpecimenOrObservationBase} which are associated with the <code>taxon</code> specified as parameter.
-     * SpecimenOrObservationBase instances can be associated to taxa in multiple ways, all these possible relations are taken into account:
-     * <ul>
-     * <li>The {@link IndividualsAssociation} elements in a {@link TaxonDescription} contain {@link DerivedUnitBase}s</li>
-     * <li>{@link SpecimenTypeDesignation}s may be associated with any {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
-     * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li>
-     * </ul>
-     *
-     * @param <T>
-     * @param type
-     * @param associatedTaxon
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     * @deprecated
-     */
-    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-
-    /**
      * Lists all instances of {@link SpecimenOrObservationBase} which are
      * associated with the <code>taxon</code> specified as parameter.
      * SpecimenOrObservationBase instances can be associated to taxa in multiple

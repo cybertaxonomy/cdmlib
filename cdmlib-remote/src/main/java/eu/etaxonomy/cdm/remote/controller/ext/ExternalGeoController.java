@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -52,129 +52,128 @@ import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
  * is loaded by the {@link UpdatableRoutingDataSource}. If the
  * UpdatableRoutingDataSource is not being used in the actual application
  * context any arbitrary {datasource-name} may be used.
- * <p> 
+ * <p>
  * @author a.kohlbecker
  * @date 18.06.2009
- * 
+ *
  */
 @Controller
 @RequestMapping(value = { "ext/edit/mapServiceParameters/" })
 public class ExternalGeoController extends BaseController<TaxonBase, ITaxonService> {
-	
-	public static final Logger logger = Logger.getLogger(ExternalGeoController.class);
 
-	@Autowired
-	private IEditGeoService geoservice;
-	
-	@Autowired
-	private IDescriptionService descriptionService;
-	
-	@Autowired
-	private IOccurrenceService occurrenceService;
+    public static final Logger logger = Logger.getLogger(ExternalGeoController.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy
-	 * .cdm.api.service.IService)
-	 */
-	@Autowired
-	@Override
-	public void setService(ITaxonService service) {
-		this.service = service;
-	}
+    @Autowired
+    private IEditGeoService geoservice;
 
-	/**
-	 * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the  
-	 * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into 
-	 * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all 
-	 * nested sub-areas. 
-	 * <p>
-	 * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
-	 * 
-	 * @param request
-	 * @param response
-	 * @return URI parameter Strings for the EDIT Map Service
-	 * @throws IOException TODO write controller method documentation
-	 */
-	@RequestMapping(value = { "taxonDistributionFor/{uuid}" }, method = RequestMethod.GET)
-	public ModelAndView doGetDistributionMapUriParams(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response)
-			throws IOException {
-		
-		
-		int width = 0;
-		int height = 0;
-		String bbox = null;
-		String backLayer = null;
-		
-		logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
-		ModelAndView mv = new ModelAndView();
-		
-		// get the descriptions for the taxon
-		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-		
-		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
-		//languages
-		List<Language> langs = LocaleContext.getLanguages();
+    @Autowired
+    private IDescriptionService descriptionService;
 
-		Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
-		List<TaxonDescription> taxonDescriptions = page.getRecords();
-		String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
-			backLayer, langs);
-		mv.addObject(uriParams);
-		return mv;
-	}
-	
-	
-	/**
-	 * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the  
-	 * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into 
-	 * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all 
-	 * nested sub-areas. 
-	 * <p>
-	 * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
-	 * 
-	 * @param request
-	 * @param response
-	 * @return URI parameter Strings for the EDIT Map Service
-	 * @throws IOException TODO write controller method documentation
-	 */
-	@RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
-	public ModelAndView doGetOccurrenceMapUriParams(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response)
-			throws IOException {
-		
-		Integer width = null;
-		Integer height = null;
-		String bbox = null;
-		String backLayer = null;
-		Boolean doReturnImage = null;
-		Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
-		
-		logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath());
-		ModelAndView mv = new ModelAndView();
-		
-		// get the descriptions for the taxon
-		Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+    @Autowired
+    private IOccurrenceService occurrenceService;
 
-		TaxonBase tb = service.load(uuid);
-		
-		List<OrderHint> orderHints = new ArrayList<OrderHint>();
-		orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
-		
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy
+     * .cdm.api.service.IService)
+     */
+    @Autowired
+    @Override
+    public void setService(ITaxonService service) {
+        this.service = service;
+    }
 
-		List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
-					null, (Taxon)tb, null, 0, orderHints, null);
-		
-		String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
-		mv.addObject(uriParams);
-		return mv;
-	}
+    /**
+     * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
+     * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
+     * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all
+     * nested sub-areas.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
+     *
+     * @param request
+     * @param response
+     * @return URI parameter Strings for the EDIT Map Service
+     * @throws IOException TODO write controller method documentation
+     */
+    @RequestMapping(value = { "taxonDistributionFor/{uuid}" }, method = RequestMethod.GET)
+    public ModelAndView doGetDistributionMapUriParams(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+
+        int width = 0;
+        int height = 0;
+        String bbox = null;
+        String backLayer = null;
+
+        logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
+        ModelAndView mv = new ModelAndView();
+
+        // get the descriptions for the taxon
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+        Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+        //languages
+        List<Language> langs = LocaleContext.getLanguages();
+
+        Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
+        List<TaxonDescription> taxonDescriptions = page.getRecords();
+        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
+            backLayer, langs);
+        mv.addObject(uriParams);
+        return mv;
+    }
+
+
+    /**
+     * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
+     * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
+     * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all
+     * nested sub-areas.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
+     *
+     * @param request
+     * @param response
+     * @return URI parameter Strings for the EDIT Map Service
+     * @throws IOException TODO write controller method documentation
+     */
+    @RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
+    public ModelAndView doGetOccurrenceMapUriParams(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        Integer width = null;
+        Integer height = null;
+        String bbox = null;
+        String backLayer = null;
+        Boolean doReturnImage = null;
+        Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
+
+        logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath());
+        ModelAndView mv = new ModelAndView();
+
+        // get the descriptions for the taxon
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+        TaxonBase tb = service.load(uuid);
+
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+
+
+        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+
+        String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
+        mv.addObject(uriParams);
+        return mv;
+    }
 
 }

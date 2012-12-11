@@ -140,8 +140,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         if(tb instanceof Taxon){
-            List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
-                    null, (Taxon)tb, null, 0, orderHints, null);
+            List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
             mv.addObject(specimensOrObersvations);
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);

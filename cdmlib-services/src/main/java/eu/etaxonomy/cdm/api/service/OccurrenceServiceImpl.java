@@ -235,17 +235,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAssociatedTaxon(java.lang.Class, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
-    @Override
-    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
-    {
-        return listByAssociatedTaxon(type, null, associatedTaxon, null, limit, start, orderHints, propertyPaths);
-    }
-
-
-    /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
     @Override
