@@ -19,6 +19,9 @@ package eu.etaxonomy.cdm.api.service.pager;
 public class PagerUtils {
 
     public static Integer startFor(Integer pageSize, Integer pageIndex) {
+        if(pageSize == null){
+            return null;
+        }
         if(pageIndex == null) {
             pageIndex = 0;
         }
