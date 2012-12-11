@@ -1,8 +1,10 @@
 package eu.etaxonomy.cdm.api.service.util;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
@@ -26,8 +28,10 @@ public class AbstractRelationshipEdge<T extends RelationshipTermBase> {
     private T taxonRelationshipType;
     private EnumSet<Direction> directions;
 
-    public AbstractRelationshipEdge() {
+    public AbstractRelationshipEdge(T taxonRelationshipType, Direction ... direction) {
         super();
+        this.taxonRelationshipType = taxonRelationshipType;
+        directions = EnumSet.copyOf(Arrays.asList(direction));
     }
 
     public T getTaxonRelationshipType() {

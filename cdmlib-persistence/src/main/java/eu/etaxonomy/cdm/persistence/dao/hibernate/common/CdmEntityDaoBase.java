@@ -329,6 +329,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         Criteria criteria = prepareList(ids, pageSize, pageNumber, orderHints, "id");
 
+        logger.debug(criteria.toString());
+
          List<T> result = (List<T>)criteria.list();
          defaultBeanInitializer.initializeAll(result, propertyPaths);
          return result;

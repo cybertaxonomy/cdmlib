@@ -28,4 +28,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  */
 public class TaxonRelationshipEdge extends AbstractRelationshipEdge<TaxonRelationshipType> {
 
+    public TaxonRelationshipEdge(TaxonRelationshipType taxonRelationshipType, Direction ... direction) {
+        super(taxonRelationshipType, direction);
+    }
+
 }

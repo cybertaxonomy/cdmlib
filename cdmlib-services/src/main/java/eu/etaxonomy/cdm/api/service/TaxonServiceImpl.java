@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -492,7 +493,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param taxon
      * @param includeRelationships
      * @param taxa
-     * @param maxDepth
+     * @param maxDepth can be <code>null</code> for infinite depth
      * @return
      */
     private List<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, List<Taxon> taxa, Integer maxDepth) {
@@ -501,25 +502,38 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             taxa.add(taxon);
         }
 
-        maxDepth--;
-        logger.debug("collecting related taxa for " + taxon + " with maxDepth=" + maxDepth);
+        if(maxDepth != null) {
+            maxDepth--;
+        }
+        if(logger.isDebugEnabled()){
+            logger.debug("collecting related taxa for " + taxon + " with maxDepth=" + maxDepth);
+        }
         List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon, null, null, null, null, null, null);
-        for(TaxonRelationship taxRel : taxonRelationships) {
+        for (TaxonRelationship taxRel : taxonRelationships) {
+
+            // skip invalid data
+            if (taxRel.getToTaxon() == null || taxRel.getFromTaxon() == null || taxRel.getType() == null) {
+                continue;
+            }
             // filter by includeRelationships
             for (TaxonRelationshipEdge relationshipEdgeFilter : includeRelationships) {
                 if ( relationshipEdgeFilter.getTaxonRelationshipType().equals(taxRel.getType()) ) {
                     if (relationshipEdgeFilter.getDirections().contains(Direction.relatedTo) && !taxa.contains(taxRel.getToTaxon())) {
-                        logger.debug("adding toTaxon for " + taxRel.getType());
+                        if(logger.isDebugEnabled()){
+                            logger.debug(maxDepth + ": " + taxon.getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxRel.getToTaxon().getTitleCache());
+                        }
                         taxa.add(taxRel.getToTaxon());
-                        if(maxDepth > 0) {
-                            taxa.addAll(collectRelatedTaxa(taxon, includeRelationships, taxa, maxDepth));
+                        if(maxDepth == null || maxDepth > 0) {
+                            taxa.addAll(collectRelatedTaxa(taxRel.getToTaxon(), includeRelationships, taxa, maxDepth));
                         }
                     }
                     if(relationshipEdgeFilter.getDirections().contains(Direction.relatedFrom) && !taxa.contains(taxRel.getFromTaxon())) {
                         taxa.add(taxRel.getFromTaxon());
-                        logger.debug("adding fromTaxon for " + taxRel.getType());
-                        if(maxDepth > 0) {
-                            taxa.addAll(collectRelatedTaxa(taxon, includeRelationships, taxa, maxDepth));
+                        if(logger.isDebugEnabled()){
+                            logger.debug(maxDepth + ": " +taxRel.getFromTaxon().getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxon.getTitleCache() );
+                        }
+                        if(maxDepth == null || maxDepth > 0) {
+                            taxa.addAll(collectRelatedTaxa(taxRel.getFromTaxon(), includeRelationships, taxa, maxDepth));
                         }
                     }
                 }

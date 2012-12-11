@@ -160,13 +160,12 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param <T>
      * @param type
      * @param associatedTaxon
+     * @param Set<TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
      * @param maxDepth TODO
      * @param pageSize
      * @param pageNumber
      * @param orderHints
      * @param propertyPaths
-     * @param Set
-     *            <TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,

@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -241,39 +242,46 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        List<Taxon> taxa = new ArrayList<Taxon>();
-        List<Integer> occurrenceIds = new ArrayList<Integer>();
-        List<T> occurrences = new ArrayList<T>();
-
-
-        if(includeRelationships != null) {
-            taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, pageSize, pageSize, propertyPaths);
-        }
-
-        taxa.add((Taxon) taxonDao.load(associatedTaxon.getUuid()));
-
-        for (Taxon taxon : taxa) {
-            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, associatedTaxon, pageSize, pageSize, orderHints, propertyPaths);
-            for (SpecimenOrObservationBase o : perTaxonOccurrences) {
-                occurrenceIds.add(o.getId());
-            }
-        }
-
-        dao.listByIds(occurrenceIds, null, null, orderHints, propertyPaths);
-
-        return occurrences;
+        return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
     }
 
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageByAssociatedTaxon(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
+        List<Taxon> taxa = new ArrayList<Taxon>();
+        Set<Integer> occurrenceIds = new HashSet<Integer>();
+        List<T> occurrences = new ArrayList<T>();
 
-        return null;
+        Integer limit = PagerUtils.limitFor(pageSize);
+        Integer start = PagerUtils.startFor(pageSize, pageNumber);
+
+
+        associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+
+
+        if(includeRelationships != null) {
+            taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, pageSize, pageSize, propertyPaths);
+        }
+
+        taxa.add(associatedTaxon);
+
+        for (Taxon taxon : taxa) {
+            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, limit, start, orderHints, propertyPaths);
+            for (SpecimenOrObservationBase o : perTaxonOccurrences) {
+                occurrenceIds.add(o.getId());
+            }
+        }
+
+        occurrences = (List<T>) dao.listByIds(occurrenceIds, null, null, orderHints, propertyPaths);
+
+        return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
+
     }
 
 }
