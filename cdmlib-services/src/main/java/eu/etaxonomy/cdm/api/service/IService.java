@@ -122,8 +122,9 @@ public interface IService<T extends ICdmBase>{
     public T find(int id);
 
     /**
-     * Returns a set of persisted entities that match the database identifiers.
+     * Returns a <code>List</code> of persisted entities that match the database identifiers.
      * Returns an empty list if no identifier matches.
+     *
      * @param idSet
      * @return
      */

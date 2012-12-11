@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFac
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 
 /**
@@ -69,6 +71,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
     protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
+
     protected Class<T> type;
 
     @Autowired
@@ -305,14 +308,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return (T) getSession().get(type, id);
     }
 
-    public List<T> findById(Set<Integer> idSet) throws DataAccessException {
-        Session session = getSession();
-        String hql = "from " + type.getSimpleName() + " type where type.id in ( :idSet )" ;
-        Query query = session.createQuery(hql);
-        query.setParameterList("idSet", idSet);
-        List<T> results = query.list();
-        return results;
-    }
+
     public T findByUuid(UUID uuid) throws DataAccessException{
         Session session = getSession();
         Criteria crit = session.createCriteria(type);
@@ -329,14 +325,53 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
-    public List<T> findByUuid(Set<UUID> uuidSet) throws DataAccessException {
-        Session session = getSession();
-        String hql = "from " + type.getSimpleName() + " type where type.uuid in ( :uuidSet )" ;
-        Query query = session.createQuery(hql);
-        query.setParameterList("uuidSet", uuidSet);
-        List<T> results = query.list();
-        return results;
+    public List<T> listByIds(Collection<Integer> ids,  Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+
+        Criteria criteria = prepareList(ids, pageSize, pageNumber, orderHints, "id");
+
+         List<T> result = (List<T>)criteria.list();
+         defaultBeanInitializer.initializeAll(result, propertyPaths);
+         return result;
+     }
+
+
+    public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+
+       Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
+
+        List<T> result = (List<T>)criteria.list();
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        return result;
     }
+
+    /**
+     * @param uuids
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyName
+     * @return
+     */
+    private Criteria prepareList(Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, String propertyName) {
+        Criteria criteria = getSession().createCriteria(type);
+        criteria.add(Restrictions.in(propertyName, uuids));
+
+        if(pageSize != null) {
+            criteria.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                criteria.setFirstResult(pageNumber * pageSize);
+            } else {
+                criteria.setFirstResult(0);
+            }
+        }
+
+        if(orderHints == null) {
+            orderHints = OrderHint.defaultOrderHintsFor(type);
+        }
+        addOrder(criteria, orderHints);
+        return criteria;
+    }
+
 
     protected List<T> findByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
@@ -407,12 +442,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         defaultBeanInitializer.initialize(bean, propertyPaths);
 
         return bean;
-    }
-
-    public List<T> load(Set<UUID> uuidSet, List<String> propertyPaths) throws DataAccessException{
-        List<T> list = findByUuid(uuidSet);
-        defaultBeanInitializer.initializeAll(list, propertyPaths);
-        return list;
     }
 
     public Boolean exists(UUID uuid) {

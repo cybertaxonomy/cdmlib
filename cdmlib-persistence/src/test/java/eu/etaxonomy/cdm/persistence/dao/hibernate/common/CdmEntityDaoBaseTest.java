@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -320,14 +321,42 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(int, int)}.
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(Class, Integer, Integer, List, List)}.
      */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testRandomOrder() {
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new RandomOrder());
-        List<TaxonBase> list = cdmEntityDaoBase.list(null,1000, 0,orderHints,null);
+        List<TaxonBase> list = cdmEntityDaoBase.list((Class)null, 1000, 0, orderHints, null);
+        assertNotNull("list() should not return null",list);
+        assertEquals("list() should return a list with two entities in it",list.size(),2);
+    }
+
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(java.util.Collection, Integer, Integer, List, List)}.
+     */
+    @Test
+    @DataSet("CdmEntityDaoBaseTest.xml")
+    public void testListByUuids() {
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new RandomOrder());
+        UUID[] uuids = new UUID[]{UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66"), UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46")};
+        List<TaxonBase> list = cdmEntityDaoBase.list(Arrays.asList(uuids), 20, 0, orderHints, null);
+        assertNotNull("list() should not return null",list);
+        assertEquals("list() should return a list with two entities in it",list.size(),2);
+    }
+
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#listByIds(java.util.Collection, Integer, Integer, List, List)}.
+     */
+    @Test
+    @DataSet("CdmEntityDaoBaseTest.xml")
+    public void testListByIds() {
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new RandomOrder());
+        Integer[] ids = new Integer[]{1, 2};
+        List<TaxonBase> list = cdmEntityDaoBase.listByIds(Arrays.asList(ids), 20, 0, orderHints, null);
         assertNotNull("list() should not return null",list);
         assertEquals("list() should return a list with two entities in it",list.size(),2);
     }

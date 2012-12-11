@@ -154,6 +154,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param orderHints
      * @param propertyPaths
      * @return
+     * @deprecated
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -182,8 +183,8 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param type
      * @param associatedTaxon
      * @param maxDepth TODO
-     * @param limit
-     * @param start
+     * @param pageSize
+     * @param pageNumber
      * @param orderHints
      * @param propertyPaths
      * @param Set
@@ -191,6 +192,22 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
+     *
+     * @param type
+     * @param includeRelationships
+     * @param associatedTaxon
+     * @param maxDepth
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return a Pager
+     */
+    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

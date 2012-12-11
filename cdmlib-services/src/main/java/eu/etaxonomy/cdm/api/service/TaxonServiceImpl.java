@@ -751,7 +751,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaByID(java.util.Set)
      */
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
-        return this.dao.findById(listOfIDs);
+        return this.dao.listByIds(listOfIDs, null, null, null, null);
     }
 
     /* (non-Javadoc)
