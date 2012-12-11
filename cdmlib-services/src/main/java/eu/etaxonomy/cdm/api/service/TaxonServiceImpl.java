@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -86,6 +87,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -128,6 +130,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private IOrderedTermVocabularyDao orderedVocabularyDao;
+
+    @Autowired
+    private AbstractBeanInitializer beanInitializer;
 
     /**
      * Constructor
@@ -459,6 +464,68 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom);
         }
         return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
+    }
+
+    /**
+     * @param taxon
+     * @param includeRelationships
+     * @param maxDepth
+     * @param limit
+     * @param starts
+     * @param propertyPaths
+     * @return an List which is not specifically ordered
+     */
+    public List<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
+            Integer limit, Integer start, List<String> propertyPaths) {
+
+        List<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new ArrayList<Taxon>(), maxDepth);
+        relatedTaxa.remove(taxon);
+        beanInitializer.initializeAll(relatedTaxa, propertyPaths);
+        return relatedTaxa;
+    }
+
+
+    /**
+     * recursively collect related taxa for the given <code>taxon</code> . The returned list will also include the
+     *  <code>taxon</code> supplied as parameter.
+     *
+     * @param taxon
+     * @param includeRelationships
+     * @param taxa
+     * @param maxDepth
+     * @return
+     */
+    private List<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, List<Taxon> taxa, Integer maxDepth) {
+
+        if(taxa.isEmpty()) {
+            taxa.add(taxon);
+        }
+
+        maxDepth--;
+        logger.debug("collecting related taxa for " + taxon + " with maxDepth=" + maxDepth);
+        List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon, null, null, null, null, null, null);
+        for(TaxonRelationship taxRel : taxonRelationships) {
+            // filter by includeRelationships
+            for (TaxonRelationshipEdge relationshipEdgeFilter : includeRelationships) {
+                if ( relationshipEdgeFilter.getTaxonRelationshipType().equals(taxRel.getType()) ) {
+                    if (relationshipEdgeFilter.getDirections().contains(Direction.relatedTo) && !taxa.contains(taxRel.getToTaxon())) {
+                        logger.debug("adding toTaxon for " + taxRel.getType());
+                        taxa.add(taxRel.getToTaxon());
+                        if(maxDepth > 0) {
+                            taxa.addAll(collectRelatedTaxa(taxon, includeRelationships, taxa, maxDepth));
+                        }
+                    }
+                    if(relationshipEdgeFilter.getDirections().contains(Direction.relatedFrom) && !taxa.contains(taxRel.getFromTaxon())) {
+                        taxa.add(taxRel.getFromTaxon());
+                        logger.debug("adding fromTaxon for " + taxRel.getType());
+                        if(maxDepth > 0) {
+                            taxa.addAll(collectRelatedTaxa(taxon, includeRelationships, taxa, maxDepth));
+                        }
+                    }
+                }
+            }
+        }
+        return taxa;
     }
 
     /* (non-Javadoc)

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -323,6 +324,23 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return a Pager of TaxonRelationship instances
      */
     public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * lists all taxa which are related to the <code>taxon</code> given as
+     * parameter.
+     *
+     * @param taxon
+     * @param includeRelationships
+     * @param maxDepth
+     *            <code>1</code> for one level, <code>null</code> for infinite
+     *            depth, <code>0</code> will completely omit collecting related taxa.
+     * @param limit
+     * @param start
+     * @param propertyPaths
+     * @return
+     */
+    public List<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
+            Integer limit, Integer start, List<String> propertyPaths);
 
     /**
      * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)

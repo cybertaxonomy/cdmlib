@@ -2038,6 +2038,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/Statistics
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsPartEnum.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsTypeEnum.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/AbstractRelationshipEdge.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/TaxonRelationshipEdge.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text

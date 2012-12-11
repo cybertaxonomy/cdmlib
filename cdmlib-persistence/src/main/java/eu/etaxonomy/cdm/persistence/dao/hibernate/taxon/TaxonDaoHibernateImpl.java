@@ -1326,9 +1326,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
      */
-    public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
+    public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+
             Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
 
             if(direction != null) {
