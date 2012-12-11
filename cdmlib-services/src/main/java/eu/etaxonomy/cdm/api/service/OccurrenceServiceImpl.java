@@ -237,12 +237,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listSpecimenOrObservationsFor(java.lang.Class, eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
      */
     @Override
-    public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type,
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
     {
 
-        associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
-        return dao.listByAnyAssociation(type, associatedTaxon, limit, start, orderHints, propertyPaths);
+        return listByAssociatedTaxon(type, null, associatedTaxon, null, limit, start, orderHints, propertyPaths);
 
     }
 
@@ -251,7 +250,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
     @Override
-    public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         List<Taxon> taxa = new ArrayList<Taxon>();
@@ -265,7 +264,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         taxa.add((Taxon) taxonDao.load(associatedTaxon.getUuid()));
 
         for (Taxon taxon : taxa) {
-            occurrences.add( (T) dao.listByAnyAssociation(type, associatedTaxon, limit, start, orderHints, propertyPaths));
+            occurrences.add( (T) dao.listByAssociatedTaxon(type, associatedTaxon, limit, start, orderHints, propertyPaths));
         }
 
         // FIXME order result list

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -37,14 +38,14 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @RequestMapping(value = {"/occurrence/{uuid}"})
 public class OccurrenceController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
 {
-		
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Autowired
-	@Override
-	public void setService(IOccurrenceService service) {
-		this.service = service;
-	}
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Autowired
+    @Override
+    public void setService(IOccurrenceService service) {
+        this.service = service;
+    }
 
 }

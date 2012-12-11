@@ -155,7 +155,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param propertyPaths
      * @return
      */
-    public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type,
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -190,7 +190,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      *            <TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
      * @return
      */
-    public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }

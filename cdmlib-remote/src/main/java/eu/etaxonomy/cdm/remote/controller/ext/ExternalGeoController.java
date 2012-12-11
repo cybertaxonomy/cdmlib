@@ -169,7 +169,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 		orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 		
 
-		List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAnyAssociation(
+		List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
 					null, (Taxon)tb, null, 0, orderHints, null);
 		
 		String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );

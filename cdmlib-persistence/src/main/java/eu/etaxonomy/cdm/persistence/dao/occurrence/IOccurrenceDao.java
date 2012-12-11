@@ -141,7 +141,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param propertyPaths
 	 * @return
 	 */
-	public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type, Taxon associatedTaxon,
+	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
 			Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 		
 	
