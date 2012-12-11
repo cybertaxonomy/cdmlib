@@ -1336,6 +1336,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             if(direction != null) {
                 criteria.add(Restrictions.eq(direction.name(), taxon));
+            } else {
+                criteria.add(Restrictions.or(
+                        Restrictions.eq(Direction.relatedFrom.name(), taxon),
+                        Restrictions.eq(Direction.relatedTo.name(), taxon))
+                    );
             }
 
             if(type != null) {
