@@ -241,10 +241,10 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
 					
 				int relPTaxonId = rs.getInt("RelPTaxonId");
+				Integer taxon1Id = nullSafeInt(rs, "taxon1Id");
+				Integer taxon2Id = nullSafeInt(rs, "taxon2Id");
 				try {
-					int taxon1Id = rs.getInt("taxon1Id");
-					int taxon2Id = rs.getInt("taxon2Id");
-					Object relRefFkObj = rs.getObject("relRefFk");
+					Integer relRefFkObj = nullSafeInt(rs,"relRefFk");
 					int treeRefFk = rs.getInt("treeRefFk");
 					int relQualifierFk = rs.getInt("relQualifierFk");
 					String notes = rs.getString("notes");
@@ -343,7 +343,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						success = false;
 					}
 				} catch (Exception e) {
-					logger.error("Exception occurred when trying to handle taxon relationship " + relPTaxonId + ":" + e.getMessage());
+					logger.error("Exception occurred when trying to handle taxon relationship " + relPTaxonId + " (" + taxon1Id + ","+ taxon2Id + "): " + e.getMessage());
 //					e.printStackTrace();
 				}
 			}
