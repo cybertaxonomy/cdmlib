@@ -165,7 +165,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 					//ID
 					//etc.
 				}else{
-					logger.warn("TaxonName for NomStatus (" + nomStatusRelId + ") does not exist in store");
+					logger.warn("TaxonName for NomStatusRel (" + nomStatusRelId + ") does not exist in store");
 					success = false;
 				}
 			}
