@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -115,10 +116,10 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 					
 					String refCache = rs.getString("RefCache");
-					if (CdmUtils.isNotEmpty(refCache)){
+					if (StringUtils.isNotBlank(refCache)){
 						treeName = refCache;
 					}
-					if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+					if (ref != null && StringUtils.isNotBlank(ref.getTitleCache())){
 						treeName = ref.getTitleCache();
 					}
 					Classification tree = Classification.NewInstance(treeName);
