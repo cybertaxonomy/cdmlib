@@ -76,6 +76,11 @@ public class StatisticsConfigurator {
 		this.filter.add(filterItem);
 	}
 
+	public void setType(List<StatisticsTypeEnum> newType) {
+		this.type=newType;
+		
+	}
+
 	
 	
 	

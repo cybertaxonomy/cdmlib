@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IStatisticsService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author sybille
@@ -35,10 +39,11 @@ public class StatisticsController {
 	private static final Logger logger = Logger
 			.getLogger(StatisticsController.class);
 
-	// private static final List<StatisticsTypeEnum> D = null;
-
 	private static final IdentifiableEntity ALL_DB = null;
 	private static final IdentifiableEntity DEFAULT_Entity = ALL_DB;
+
+	@Autowired
+	private IClassificationService classificationService;
 
 	private IStatisticsService service;
 
@@ -46,8 +51,6 @@ public class StatisticsController {
 	public void setService(IStatisticsService service) {
 		this.service = service;
 	}
-
-	// StatisticsConfigurator configurator;
 
 	/**
 	 * example query:
@@ -70,14 +73,10 @@ public class StatisticsController {
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
-		// configurator = new StatisticsConfigurator();
 		ModelAndView mv = new ModelAndView();
 
-		// TODO:
-		// service.getStatistics(configurator);
 		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
 				part, type);
-		// configuratorList.add(configurator);
 		List<Statistics> statistics = service
 				.getCountStatistics(configuratorList);
 		logger.info("doStatistics() - " + request.getServletPath());
@@ -113,16 +112,26 @@ public class StatisticsController {
 			helperConfigurator.addFilter(DEFAULT_Entity);
 			configuratorList.add(helperConfigurator);
 		}
-		// else parse list of parts:
+		// else parse list of parts and create configurator for each:
 		else {
 			for (String string : part) {
-				if(part.equals(StatisticsPartEnum.ALL.toString())){
+				System.out.println(StatisticsPartEnum.ALL.toString());
+				if (string.equals(StatisticsPartEnum.ALL.toString())) {
 					helperConfigurator.addFilter(ALL_DB);
 					configuratorList.add(helperConfigurator);
-				}
-				else if(part.equals(StatisticsPartEnum.CLASSIFICATION.toString())){
-					//TODO create configurators for classifications
-					// do not forget to clone the configurator or create new one.
+				} else if (string.equals(StatisticsPartEnum.CLASSIFICATION
+						.toString())) {
+					List<Classification> classificationsList = classificationService
+							.listClassifications(null, 0, null, null);
+					for (Classification classification : classificationsList) {
+
+						StatisticsConfigurator newConfigurator = new StatisticsConfigurator();
+						newConfigurator.setType(helperConfigurator.getType());
+						newConfigurator.getFilter().addAll(
+								helperConfigurator.getFilter());
+						newConfigurator.addFilter(classification);
+						configuratorList.add(newConfigurator);
+					}
 				}
 			}
 
@@ -131,28 +140,4 @@ public class StatisticsController {
 		return configuratorList;
 	}
 
-	// private void createConfigurator(String part, String[] type) {
-	//
-	// if (part != null) {
-	// for (String string : part) {
-	// configurator.addPart(StatisticsPartEnum.valueOf(string));
-	// }
-	// } else
-	// configurator.addPart(StatisticsPartEnum.ALL);
-	//
-	// if (type != null) {
-	// for (String string : type) {
-	// configurator.addType(StatisticsTypeEnum.valueOf(string));
-	// }
-	// } else
-	// setDefaultType();
-	// }
-	//
-	// private void setDefaultType() {
-	// // for default choose all types:
-	// for (StatisticsTypeEnum type : StatisticsTypeEnum.values()) {
-	// configurator.addType(type);
-	// }
-	//
-	// }
 }
