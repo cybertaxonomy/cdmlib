@@ -64,6 +64,7 @@ public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<Berl
 
 	private boolean useSingleClassification = false;
 	private boolean includeFlatClassifications = false;  //concepts with no taxon relationship (even no misapplied name or synonym rel)
+	private boolean includeAllNonMisappliedRelatedClassifications = false;  //all concepts with any relationship except for misapplied name relationships
 	
 	//occurrences
 	private boolean isSplitTdwgCodes = true;
@@ -685,6 +686,19 @@ public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<Berl
 
 	public void setAllowInfraSpecTaxonRank(boolean allowInfraSpecTaxonRank) {
 		this.allowInfraSpecTaxonRank = allowInfraSpecTaxonRank;
+	}
+
+
+
+	public boolean isIncludeAllNonMisappliedRelatedClassifications() {
+		return includeAllNonMisappliedRelatedClassifications;
+	}
+
+
+
+	public void setIncludeAllNonMisappliedRelatedClassifications(
+			boolean includeAllNonMisappliedRelatedClassifications) {
+		this.includeAllNonMisappliedRelatedClassifications = includeAllNonMisappliedRelatedClassifications;
 	}
 
 
