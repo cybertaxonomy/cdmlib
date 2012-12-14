@@ -103,7 +103,7 @@ public class DerivedUnitFacade {
 			return representation;
 		}
 
-		private DerivedUnitBase getNewDerivedUnitInstance() {
+		public DerivedUnitBase<?> getNewDerivedUnitInstance() {
 			if (this == DerivedUnitType.Specimen) {
 				return eu.etaxonomy.cdm.model.occurrence.Specimen.NewInstance();
 			} else if (this == DerivedUnitType.Observation) {
@@ -1784,6 +1784,7 @@ public class DerivedUnitFacade {
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
 		testDerivedUnit();
+		//TODO implement correct bidirectional mapping in model classes
 		determination.setIdentifiedUnit(derivedUnit);
 		derivedUnit.addDetermination(determination);
 	}
