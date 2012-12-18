@@ -68,7 +68,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 		super(defaultTransformer);
 		setSource(uri);
 		setDestination(destination);
-
 	}
 	
 

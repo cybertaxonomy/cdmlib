@@ -14,8 +14,6 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-
 /**
  * @author a.mueller
  * @date 16.06.2010
@@ -47,7 +45,6 @@ public class Abcd206DataHolder {
 	
 	protected ArrayList<String> gatheringAgentList;
 	protected ArrayList<String> identificationList;
-	protected ArrayList<SpecimenTypeDesignationStatus> statusList;
 	protected ArrayList<HashMap<String, String>> atomisedIdentificationList;
 	protected ArrayList<String> namedAreaList;
 	protected ArrayList<String> referenceList;
