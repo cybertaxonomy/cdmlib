@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -94,7 +95,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
     @RequestMapping(
             value = {"byAssociatedTaxon"},
             method = RequestMethod.GET)
-    public List<SpecimenOrObservationBase> doListByAssociatedTaxon(
+    public Pager<SpecimenOrObservationBase> doListByAssociatedTaxon(
                 @RequestParam(value = "taxonUuid", required = true) UUID taxonUuid,
                 @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
@@ -129,7 +130,10 @@ public class OccurrenceListController extends IdentifiableListController<Specime
         pagerParams.normalizeAndValidate(response);
 
         List<OrderHint> orderHints = null;
-        return service.listByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, DEFAULT_INIT_STRATEGY);
+
+        return service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
+                maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                orderHints, DEFAULT_INIT_STRATEGY);
 
     }
 }
