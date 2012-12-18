@@ -106,7 +106,8 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	@Transactional
 	private void countStatisticsPart(StatisticsConfigurator configurator) {
-		// get last element of configurator.filter (the node that is the root for the count):
+		// get last element of configurator.filter (the node that is the root
+		// for the count):
 		IdentifiableEntity filter = configurator.getFilter().get(
 				(configurator.getFilter().size()) - 1);
 
@@ -173,10 +174,24 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private void countPart(StatisticsConfigurator configurator,
 			IdentifiableEntity filter) {
 		Statistics statistics = new Statistics(configurator);
-		// TODO count the items in the classification - there have to be dao method(s) for that first.
-		System.out.println("count in classification: " + filter.toString());
-		
+		// TODO count the items in the classification - there have to be dao
+		// method(s) for that first.
+		Long counter = new Long(0);
+
+		if (filter instanceof Classification) {
+
+			System.out.println("count in classification: " + filter.toString());
+			// statisticsDao.tryArround();
+
+			counter = statisticsDao.countTaxaInClassification(Taxon.class,
+					(Classification) filter);
+			
+			counter = statisticsDao.countTaxaInClassification(Synonym.class, (Classification) filter);
+//			System.out.println("");
+		}
+		statistics.addCount(StatisticsTypeEnum.ACCEPTED_TAXA, counter);
 		statisticsList.add(statistics);
+
 	}
-	
+
 }
