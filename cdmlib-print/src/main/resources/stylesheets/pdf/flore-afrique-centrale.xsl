@@ -616,8 +616,9 @@
             <xsl:with-param name="descriptionelements" select="../../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="name/uuid"/>
           </xsl:call-template>
+          <xsl:apply-templates select="name/typeDesignations" />
         </xsl:for-each>
-        <xsl:apply-templates select="e[1]/name/typeDesignations" />
+        <!--xsl:apply-templates select="e[1]/name/typeDesignations" /-->
       </fo:block>
     </xsl:for-each>
   </xsl:template>
