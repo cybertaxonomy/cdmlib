@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -86,6 +88,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -128,6 +131,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private IOrderedTermVocabularyDao orderedVocabularyDao;
+
+    @Autowired
+    private AbstractBeanInitializer beanInitializer;
 
     /**
      * Constructor
@@ -461,6 +467,81 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    /**
+     * @param taxon
+     * @param includeRelationships
+     * @param maxDepth
+     * @param limit
+     * @param starts
+     * @param propertyPaths
+     * @return an List which is not specifically ordered
+     */
+    public List<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
+            Integer limit, Integer start, List<String> propertyPaths) {
+
+        List<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new ArrayList<Taxon>(), maxDepth);
+        relatedTaxa.remove(taxon);
+        beanInitializer.initializeAll(relatedTaxa, propertyPaths);
+        return relatedTaxa;
+    }
+
+
+    /**
+     * recursively collect related taxa for the given <code>taxon</code> . The returned list will also include the
+     *  <code>taxon</code> supplied as parameter.
+     *
+     * @param taxon
+     * @param includeRelationships
+     * @param taxa
+     * @param maxDepth can be <code>null</code> for infinite depth
+     * @return
+     */
+    private List<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, List<Taxon> taxa, Integer maxDepth) {
+
+        if(taxa.isEmpty()) {
+            taxa.add(taxon);
+        }
+
+        if(maxDepth != null) {
+            maxDepth--;
+        }
+        if(logger.isDebugEnabled()){
+            logger.debug("collecting related taxa for " + taxon + " with maxDepth=" + maxDepth);
+        }
+        List<TaxonRelationship> taxonRelationships = dao.getTaxonRelationships(taxon, null, null, null, null, null, null);
+        for (TaxonRelationship taxRel : taxonRelationships) {
+
+            // skip invalid data
+            if (taxRel.getToTaxon() == null || taxRel.getFromTaxon() == null || taxRel.getType() == null) {
+                continue;
+            }
+            // filter by includeRelationships
+            for (TaxonRelationshipEdge relationshipEdgeFilter : includeRelationships) {
+                if ( relationshipEdgeFilter.getTaxonRelationshipType().equals(taxRel.getType()) ) {
+                    if (relationshipEdgeFilter.getDirections().contains(Direction.relatedTo) && !taxa.contains(taxRel.getToTaxon())) {
+                        if(logger.isDebugEnabled()){
+                            logger.debug(maxDepth + ": " + taxon.getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxRel.getToTaxon().getTitleCache());
+                        }
+                        taxa.add(taxRel.getToTaxon());
+                        if(maxDepth == null || maxDepth > 0) {
+                            taxa.addAll(collectRelatedTaxa(taxRel.getToTaxon(), includeRelationships, taxa, maxDepth));
+                        }
+                    }
+                    if(relationshipEdgeFilter.getDirections().contains(Direction.relatedFrom) && !taxa.contains(taxRel.getFromTaxon())) {
+                        taxa.add(taxRel.getFromTaxon());
+                        if(logger.isDebugEnabled()){
+                            logger.debug(maxDepth + ": " +taxRel.getFromTaxon().getTitleCache() + " --[" + taxRel.getType().getLabel() + "]--> " + taxon.getTitleCache() );
+                        }
+                        if(maxDepth == null || maxDepth > 0) {
+                            taxa.addAll(collectRelatedTaxa(taxRel.getFromTaxon(), includeRelationships, taxa, maxDepth));
+                        }
+                    }
+                }
+            }
+        }
+        return taxa;
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
@@ -684,7 +765,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaByID(java.util.Set)
      */
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
-        return this.dao.findById(listOfIDs);
+        return this.dao.listByIds(listOfIDs, null, null, null, null);
     }
 
     /* (non-Javadoc)
