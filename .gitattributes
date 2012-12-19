@@ -292,8 +292,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IdMapper.java -te
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IndexCounter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/MethodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/ObjectChangeMapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvDistributionExportRedlist.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvDistributionRecordRedlist.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvExportBaseRedlist.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvId.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvMetaDataRecordRedlist.java -text

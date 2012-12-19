@@ -274,6 +274,7 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	public void setClassificationTitleCache(String classificationTitleCache) {
 		this.classificationTitleCache = classificationTitleCache;
 	}
+	
 	public String getClassificationTitleCache() {
 		return classificationTitleCache;
 	}

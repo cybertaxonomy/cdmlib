@@ -59,8 +59,8 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		this.ioName = this.getClass().getSimpleName();
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
+	/** Retrieves data from a CDM DB and serializes them CDM to CSV.
+	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms, relationships, descriptive data, red list status (features).
 	 * Taxa that are not part of the classification are not found.
 	 * 
 	 * @param exImpConfig
@@ -115,6 +115,14 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		
 	}
 
+	/**
+	 * handels misapplied {@link Taxon}
+	 * @param taxon
+	 * @param writer
+	 * @param classification
+	 * @param metaRecord
+	 * @param config
+	 */
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvMetaDataRecordRedlist metaRecord, CsvTaxExportConfiguratorRedlist config) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
 		for (Taxon misappliedName : misappliedNames ){
@@ -131,8 +139,10 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	}
 
 	/**
-	 * @param record
-	 * @param taxonBase
+	 * handles the information record for the actual {@link Taxon} including {@link Classification classification}, Taxon Name, Taxon ID,
+	 * Taxon Status, Synonyms, {@link Feature features} data 
+	 * @param record the concrete information record
+	 * @param taxonBase {@link Taxon}
 	 * @param name
 	 * @param acceptedTaxon
 	 * @param parent
@@ -208,6 +218,11 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		}
 	}
 
+	/**
+	 * 
+	 * @param record
+	 * @param taxon
+	 */
 	private void handleSynonyms(CsvTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
@@ -224,6 +239,11 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		record.setSynonyms(synonyms);
 	}
 
+	/**
+	 * 
+	 * @param record
+	 * @param taxon
+	 */
 	private void handleDiscriptionData(CsvTaxRecordRedlist record, Taxon taxon) {
 		
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -240,7 +260,12 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		}
 		record.setCountryCode(distributions);
 	}
-	
+	/**
+	 * 
+	 * @param record
+	 * @param taxon
+	 * @param featureCells
+	 */
 	private void handleRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, List<List<String>> featureCells){
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 
@@ -264,6 +289,13 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		record.setFeatures(featureCells);
 	}
 
+	/**
+	 * 
+	 * @param record
+	 * @param taxon
+	 * @param relationFrom
+	 * @param featureCells
+	 */
 	private void handleRelatedRedlistStatus(CsvTaxRecordRedlist record, Taxon taxon, boolean relationFrom, List<List<String>> featureCells) {
 
 		if (relationFrom)handleRedlistStatus(record, taxon, featureCells);
