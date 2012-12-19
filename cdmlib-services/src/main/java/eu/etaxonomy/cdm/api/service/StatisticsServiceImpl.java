@@ -125,47 +125,47 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		Statistics statistics = new Statistics(configurator);
 
 		for (StatisticsTypeEnum type : configurator.getType()) {
-			Long number = null;
+			Long counter = null;
 			switch (type) {
 
 			case ALL_TAXA:
-				number = Long.valueOf(taxonDao.count(TaxonBase.class));
+				counter = Long.valueOf(taxonDao.count(TaxonBase.class));
 				break;
 			case SYNONYMS:
-				number = Long.valueOf(taxonDao.count(Synonym.class));
+				counter = Long.valueOf(taxonDao.count(Synonym.class));
 				break;
 			case ACCEPTED_TAXA:
-				number = Long.valueOf(taxonDao.count(Taxon.class));
+				counter = Long.valueOf(taxonDao.count(Taxon.class));
 				break;
 			case ALL_REFERENCES:
-				number = Long
+				counter = Long
 						.valueOf(referenceDao
 								.count(eu.etaxonomy.cdm.model.reference.Reference.class));
 				break;
 
 			case NOMECLATURAL_REFERENCES:
 
-				number = statisticsDao.countNomenclaturalReferences();
+				counter = statisticsDao.countNomenclaturalReferences();
 				break;
 
 			case CLASSIFICATION:
-				number = Long.valueOf(classificationDao
+				counter = Long.valueOf(classificationDao
 						.count(Classification.class));
 
 				break;
 
 			case TAXON_NAMES:
-				number = Long.valueOf(taxonNameDao.count(TaxonNameBase.class));
+				counter = Long.valueOf(taxonNameDao.count(TaxonNameBase.class));
 				break;
 
 			case DESCRIPTIVE_SOURCE_REFERENCES:
 
-				number = statisticsDao.countDescriptiveSourceReferences();
+				counter = statisticsDao.countDescriptiveSourceReferences();
 
 				break;
 			}
 
-			statistics.addCount(type, number);
+			statistics.addCount(type, counter);
 		}
 		statisticsList.add(statistics);
 	}
@@ -173,25 +173,59 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	@Transactional
 	private void countPart(StatisticsConfigurator configurator,
 			IdentifiableEntity filter) {
+		// TODO maybe remove redundant parameter filter
 		Statistics statistics = new Statistics(configurator);
 		// TODO count the items in the classification - there have to be dao
 		// method(s) for that first.
-		Long counter = new Long(0);
+		Long counter = null;
 
 		if (filter instanceof Classification) {
 
-			System.out.println("count in classification: " + filter.toString());
+			// System.out.println("count in classification: " +
+			// filter.toString());
 			// statisticsDao.tryArround();
 
-			counter = statisticsDao.countTaxaInClassification(Taxon.class,
-					(Classification) filter);
-			
-			counter = statisticsDao.countTaxaInClassification(Synonym.class, (Classification) filter);
-//			System.out.println("");
+			for (StatisticsTypeEnum type : configurator.getType()) {
+
+				switch (type) {
+				case CLASSIFICATION:
+					// there should not be any classification nested in an other
+					// classification
+					return;
+				case ACCEPTED_TAXA:
+					counter = statisticsDao.countTaxaInClassification(
+							Taxon.class, (Classification) filter);
+					break;
+
+				case ALL_TAXA:
+					counter = statisticsDao.countTaxaInClassification(
+							TaxonBase.class, (Classification) filter);
+					break;
+				case SYNONYMS:
+					counter = statisticsDao.countTaxaInClassification(
+							Synonym.class, (Classification) filter);
+					break;
+
+				case ALL_REFERENCES:
+					break;
+				case DESCRIPTIVE_SOURCE_REFERENCES:
+					break;
+				case NOMECLATURAL_REFERENCES:
+					break;
+
+				case TAXON_NAMES:
+					break;
+				}
+
+				statistics.addCount(type, counter);
+				// System.out.println("");
+			}
+
+		} else {
+			// TODO
+			// right now we just return null as count for the statistics element
 		}
-		statistics.addCount(StatisticsTypeEnum.ACCEPTED_TAXA, counter);
+
 		statisticsList.add(statistics);
-
 	}
-
 }
