@@ -23,5 +23,8 @@ public interface IStatisticsDao {
 			Classification classification);
 
 
+	Long countTaxonNames(Classification classification);
+
+
 
 }

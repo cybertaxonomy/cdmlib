@@ -191,6 +191,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				case CLASSIFICATION:
 					// there should not be any classification nested in an other
 					// classification
+					// so do nothing
 					return;
 				case ACCEPTED_TAXA:
 					counter = statisticsDao.countTaxaInClassification(
@@ -205,6 +206,9 @@ public class StatisticsServiceImpl implements IStatisticsService {
 					counter = statisticsDao.countTaxaInClassification(
 							Synonym.class, (Classification) filter);
 					break;
+				case TAXON_NAMES:
+					counter = statisticsDao.countTaxonNames((Classification)filter);
+					break;
 
 				case ALL_REFERENCES:
 					break;
@@ -213,8 +217,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				case NOMECLATURAL_REFERENCES:
 					break;
 
-				case TAXON_NAMES:
-					break;
 				}
 
 				statistics.addCount(type, counter);
@@ -223,7 +225,8 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 		} else {
 			// TODO
-			// right now we just return null as count for the statistics element
+			// right now we just return null as count for the statistics
+			// element, if the filter is no classification
 		}
 
 		statisticsList.add(statistics);

@@ -18,8 +18,6 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 public class StatisticsDaoHibernateImpl extends DaoBase implements
 		IStatisticsDao {
 
-	
-	
 	/**
 	 * @return be aware that the returned long might be null
 	 */
@@ -50,10 +48,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		Long count = new Long(0);
 
 		// count sources from Descriptions:
-		query = getSession()
-				.createQuery(
-						"select count(distinct d.descriptionSources) from DescriptionBase as d " +
-						"join d.descriptionSources");
+		query = getSession().createQuery(
+				"select count(distinct d.descriptionSources) from DescriptionBase as d "
+						+ "join d.descriptionSources");
 
 		query = getSession()
 				.createQuery(
@@ -84,30 +81,60 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			return countTaxaInClassification(Taxon.class, classification)
 					+ countTaxaInClassification(Synonym.class, classification);
 		}
-		
 
 		if (clazz.equals(Taxon.class)) {
 			Criteria criteria = getSession().createCriteria(TaxonNode.class);
 			criteria = getSession().createCriteria(TaxonNode.class);
 			criteria.add(Restrictions.eq("classification", classification));
 			criteria.setProjection(Projections.rowCount());
-			// criteria.
 			return Long.valueOf((Integer) criteria.uniqueResult());
+			// Long counter = Long.valueOf((Integer) criteria.uniqueResult());
+			// return counter;
 		}
 
 		else if (clazz.equals(Synonym.class)) {
 			// criteria= getSession().createCriteria(TaxonNode.class);
 
 			Query query = getSession().createQuery(
-					"select count(distinct sr.relatedFrom.uuid) from TaxonNode tn " +
-					"join tn.taxon.synonymRelations as sr " +
-					"where tn.classification=:classification"
-					);
+					"select count(distinct sr.relatedFrom.uuid) from TaxonNode tn "
+							+ "join tn.taxon.synonymRelations as sr "
+							+ "where tn.classification=:classification");
 			query.setParameter("classification", classification);
-			return (Long)query.uniqueResult();
+			Long counter = (Long) query.uniqueResult();
+			return counter;
+			// return (Long) query.uniqueResult();
 		}
 		// this should never happen:
 		return null;
 
+	}
+
+	@Override
+	public Long countTaxonNames(Classification classification) {
+		// TODO: merge the 2 queries below - you can't just add them because
+		// there might be doubles
+		Query query;
+		// this is only the taxon names:
+		// query = getSession().createQuery(
+		// "select count(distinct tn.taxon.name) from TaxonNode tn "
+		// + "where tn.classification=:classification");
+
+		// this is only the synonym names:
+		query = getSession().createQuery(
+				"select count(distinct s.name) from TaxonNode tn "
+						+ "join tn.taxon.synonymRelations sr "
+						+ "join sr.relatedFrom s "
+						+ "where tn.classification=:classification");
+
+		// everything:
+		query = getSession()
+				.createQuery(
+						"select count(distinct s2) from TaxonNode tn " +
+						"join tn.taxon.synonymRelations sr join sr.relatedFrom.name s1 " +
+						"join tn.taxon.name s2 " +
+						"where tn.classification=:classification");
+
+		query.setParameter("classification", classification);
+		return (Long) query.uniqueResult();
 	}
 }
