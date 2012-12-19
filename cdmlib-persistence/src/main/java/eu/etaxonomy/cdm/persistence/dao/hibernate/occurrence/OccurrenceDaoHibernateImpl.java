@@ -365,7 +365,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#listByAnyAssociation(java.lang.Class, eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
 	 */
 	@Override
-	public <T extends SpecimenOrObservationBase> List<T> listByAnyAssociation(Class<T> type,
+	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type,
 			Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		
 		Set<SpecimenOrObservationBase> setOfAll = new HashSet<SpecimenOrObservationBase>();

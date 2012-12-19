@@ -239,12 +239,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public T load(int id, List<String> propertyPaths);
 
+
     /**
-     * @param idSet
+     * @param ids
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
      * @return
      * @throws DataAccessException
      */
-    public List<T> findById(Set<Integer> uuidSet) throws DataAccessException;
+    public List<T> listByIds(Collection<Integer> ids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
     /**
      * @param Uuid
      * @return
@@ -252,12 +257,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public T findByUuid(UUID Uuid) throws DataAccessException;
 
+
     /**
-     * @param uuidSet
+     * @param uuids
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
      * @return
      * @throws DataAccessException
      */
-    public List<T> findByUuid(Set<UUID> uuidSet) throws DataAccessException;
+    public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
 
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and
@@ -281,15 +291,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      */
     public T load(UUID uuid, List<String> propertyPaths);
-
-
-    /**
-     * @param uuidSet
-     * @param propertyPaths
-     * @return
-     * @throws DataAccessException
-     */
-    public List<T> load(Set<UUID> uuidSet, List<String> propertyPaths) throws DataAccessException;
 
     /**
      * @param uuid
