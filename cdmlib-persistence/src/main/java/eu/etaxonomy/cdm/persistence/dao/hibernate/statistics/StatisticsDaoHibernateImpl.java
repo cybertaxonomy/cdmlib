@@ -126,7 +126,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "join sr.relatedFrom s "
 						+ "where tn.classification=:classification");
 
-		// everything:
+		// everything???:
 		query = getSession()
 				.createQuery(
 						"select count(distinct s2) from TaxonNode tn " +
