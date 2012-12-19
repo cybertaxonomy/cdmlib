@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
-import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
@@ -20,6 +18,8 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 public class StatisticsDaoHibernateImpl extends DaoBase implements
 		IStatisticsDao {
 
+	
+	
 	/**
 	 * @return be aware that the returned long might be null
 	 */
@@ -52,7 +52,8 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// count sources from Descriptions:
 		query = getSession()
 				.createQuery(
-						"select count(distinct d.descriptionSources) from DescriptionBase as d join d.descriptionSources");
+						"select count(distinct d.descriptionSources) from DescriptionBase as d " +
+						"join d.descriptionSources");
 
 		query = getSession()
 				.createQuery(
@@ -83,9 +84,10 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			return countTaxaInClassification(Taxon.class, classification)
 					+ countTaxaInClassification(Synonym.class, classification);
 		}
-		Criteria criteria = getSession().createCriteria(TaxonNode.class);
+		
 
 		if (clazz.equals(Taxon.class)) {
+			Criteria criteria = getSession().createCriteria(TaxonNode.class);
 			criteria = getSession().createCriteria(TaxonNode.class);
 			criteria.add(Restrictions.eq("classification", classification));
 			criteria.setProjection(Projections.rowCount());
@@ -95,24 +97,17 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		else if (clazz.equals(Synonym.class)) {
 			// criteria= getSession().createCriteria(TaxonNode.class);
-			Query query = getSession()
-					.createQuery(
-							"create table t as select taxon from TaxonNode where classification = :classification; "
-									+ "select (distinct sr.uuid) from t join t.synonymRelations as sr"
-					// "select distinct sr.uuid from"
-					// +
-					// " (select taxon from TaxonNode tn where tn.classification = :classification) "
-					// +
-					// "as t "
-					// + "join t.synonymRelations as sr "
+
+			Query query = getSession().createQuery(
+					"select count(distinct sr.relatedFrom.uuid) from TaxonNode tn " +
+					"join tn.taxon.synonymRelations as sr " +
+					"where tn.classification=:classification"
 					);
 			query.setParameter("classification", classification);
-			System.out.println(query.getQueryString());
-			List<Taxon> tList = query.list();
-			return new Long(0);
+			return (Long)query.uniqueResult();
 		}
-
-		return new Long(0);
+		// this should never happen:
+		return null;
 
 	}
 }
