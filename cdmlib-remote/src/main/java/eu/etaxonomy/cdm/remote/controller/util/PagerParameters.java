@@ -17,12 +17,15 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 
 /**
  *
  * NOTE: As the indices for objects and pages are 0-based in {@link Pager} the
  * <code>pageNumber</code> property of this class also follows this principle.
+ *
+ * TODO consider merging this class with {@link PagerUtils}
  *
  * @author a.kohlbecker
  * @date 22.08.2011

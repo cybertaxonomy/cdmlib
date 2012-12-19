@@ -114,8 +114,12 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "class", required = false) Class<T> type,
             HttpServletRequest request,
             HttpServletResponse response) {
+        
+        if (request != null)
+        {
+            logger.info("doGet() " + request.getServletPath());
+        }
 
-        logger.info("doGet() " + request.getServletPath());
         //if(start == null){ start = 0;}
         if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
         if(limit < 1){ limit = null;}

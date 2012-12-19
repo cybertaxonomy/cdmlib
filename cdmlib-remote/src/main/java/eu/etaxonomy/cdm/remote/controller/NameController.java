@@ -83,7 +83,9 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
      * @return a List of {@link TypeDesignationBase} entities which are initialized
      *         using the {@link #TYPEDESIGNATION_INIT_STRATEGY}
      * @throws IOException
-     *///TODO obsolete method?
+     *
+     * TODO obsolete method?
+     */
     @RequestMapping(value = { "typeDesignations" }, method = RequestMethod.GET)
     public List<TypeDesignationBase> doGetNameTypeDesignations(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
@@ -95,7 +97,6 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
-
     }
 
     @RequestMapping(
@@ -125,6 +126,6 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
         mv.addObject(service.getTaggedName(uuid));
         return mv;
     }
-    
+
 
 }

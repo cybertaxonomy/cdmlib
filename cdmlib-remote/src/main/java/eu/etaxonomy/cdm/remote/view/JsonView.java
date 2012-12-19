@@ -110,7 +110,12 @@ public class JsonView extends BaseView implements View{
      */
     public void render(Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String contextPath = request.getContextPath();
+        String contextPath = null;
+        
+        if (request != null)
+        	{
+        	contextPath = request.getContextPath();
+        	}
 
         if(jsonConfig == null){
             logger.error("The jsonConfig must not be null. It must be set in the applicationContext.");
