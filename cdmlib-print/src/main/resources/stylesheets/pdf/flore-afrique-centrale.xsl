@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xsl:stylesheet [<!ENTITY mdash "&#x2014;">]> 
+
 <!--
   
   CDM XSL Transformation
@@ -28,6 +30,7 @@
   <xsl:param name="taxon-page-top-margin">32mm</xsl:param>
   <xsl:param name="taxon-page-inner-margin">21mm</xsl:param>
   <xsl:param name="taxon-page-bottom-margin">32mm</xsl:param>
+  <xsl:param name="graphic-height">150mm</xsl:param>
 
   <xsl:param name="taxon-region-body-outer-margin">24mm</xsl:param>
 
@@ -61,11 +64,11 @@
     *********************************** -->
 
   <!-- format html i tags in text as italic -->
-  <xsl:template match="i">
+  <!--xsl:template match="i">
     <fo:inline font-style="italic">
       <xsl:value-of select="."/>
     </fo:inline>
-  </xsl:template>
+  </xsl:template-->
 
   <!-- format html b tags in text as bold -->
   <xsl:template match="b">
@@ -116,8 +119,10 @@
             margin-left="{$taxon-region-body-outer-margin}"/>
           <fo:region-before extent="{$taxon-region-before-extent}" region-name="even-before"/>
           <fo:region-after extent="{$taxon-region-after-extent}" region-name="even-after"/>
-        </fo:simple-page-master>
+          
+          <!--fo:leader leader-pattern="rule" leader-length="10mm"/--> 
 
+        </fo:simple-page-master>
 
 
         <!-- defines repeatable page-sequence for layout of taxa -->
@@ -373,22 +378,159 @@
 
   <xsl:template name="secondLevelDescriptionElements">
     <fo:block text-align="justify" margin-bottom="5mm">
+      <!--fo:external-graphic src='http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy2.jpg'/-->
       <xsl:for-each select="feature">
-        <fo:inline>
-          <fo:inline text-decoration="underline">
+        <fo:inline keep-with-next.within-line="always">
+          <fo:inline text-decoration="underline"  keep-with-next.within-line="always">
             <xsl:value-of select="representation_L10n"/>:
           </fo:inline>
           <xsl:for-each select="descriptionelements/descriptionelement">
-            <fo:inline>
-              <xsl:value-of
-                select="multilanguageText_L10n/text"/>
+            
+              <!--xsl:value-of
+                select="multilanguageText_L10n/text" disable-output-escaping = "yes"/-->
+              
+              <xsl:variable name="desc_element_text" select="multilanguageText_L10n/text"/>
+            
+            <fo:inline font-size="9pt" space-after="5mm">
+              <xsl:if test="not(starts-with($desc_element_text, 'Figure'))">
+                <xsl:apply-templates select="multilanguageText_L10n/text"/>
+              </xsl:if>
             </fo:inline>
+              <!--xsl:apply-templates select="multilanguageText_L10n/text"/-->
+              <!--xsl:apply-templates select="media"/-->
+              <xsl:apply-templates select="media/e/representations/e/parts/e/uri"/>
+              
+
           </xsl:for-each>
           <xsl:text> </xsl:text>
         </fo:inline>
       </xsl:for-each>
     </fo:block>
   </xsl:template>
+
+  <!-- IMAGES -->
+  
+  <!--xsl:template match="media"-->
+    <xsl:template match="uriprob">
+      <fo:block>
+    <!--xsl:variable name="graphic" select="e/representations/e/parts/e/uri"/-->
+      <xsl:variable name="graphic" select="."/>
+    <fo:external-graphic content-height="450%" scaling="uniform" src="{$graphic}" padding-before="100" padding-after="30"/>
+      <!--xsl:apply-templates select="../multilanguageText_L10n/text"/-->
+        <fo:inline font-size="{$taxon-name-size-font}">
+      <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
+  </fo:inline>
+      </fo:block>
+  </xsl:template>
+  
+  <xsl:template match="uri">
+    <!--fo:block text-align="center"-->
+    <fo:block keep-with-next="always" text-align="center">
+      <!--fo:inline text-align="center"-->
+      <!--xsl:variable name="graphic" select="e/representations/e/parts/e/uri"/-->
+      <xsl:variable name="graphic" select="."/>
+      
+      <fo:external-graphic content-height="scale-to-fit" height="{$graphic-height}" scaling="uniform" src="{$graphic}" padding-before="30" padding-after="2" display-align="center"/>
+      <!--/fo:inline-->
+    </fo:block>
+    <fo:block>
+      <fo:leader leader-pattern="rule"  leader-alignment="{$taxon-page-inner-margin}" rule-thickness="0.8pt" leader-length="114mm" ></fo:leader>
+    </fo:block>
+    <fo:block>
+
+      <!--fo:leader leader-pattern="rule" leader-length="120mm"/--> 
+      <fo:inline font-size="8pt">       
+        <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>      
+      </fo:inline>
+    </fo:block>
+  </xsl:template>
+  
+  <xsl:template match="urilorna">
+    <fo:block>
+      <fo:inline font-size="{$taxon-name-size-font}">
+        <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
+      </fo:inline>
+    </fo:block>
+  </xsl:template>
+  
+  <xsl:template match="text">
+    <!--fo:block font-size="9pt" space-after="5mm" -->
+      <!--xsl:apply-templates select="node()"/-->
+      <xsl:call-template name="add-italics">
+        <xsl:with-param name="str" select="."/>
+      </xsl:call-template>
+    <!--/fo:block -->
+  </xsl:template>
+  
+  <xsl:template name="add-italics">
+    <xsl:param name="str"/>
+    <xsl:choose>
+      <xsl:when test='contains($str,"&lt;i&gt;")'>
+        <xsl:variable name="before-first-i"
+          select='substring-before($str,"&lt;i&gt;")'/>
+        <xsl:variable name="inside-first-i"
+          select="substring-before(substring-after
+          ($str,'&lt;i&gt;'),'&lt;/i&gt;')"/>
+        <xsl:variable name="after-first-i"
+          select='substring-after($str,"&lt;/i&gt;")'/>      
+        <xsl:choose>
+          <xsl:when test="contains($before-first-i, '#x2014;')">
+            <xsl:call-template name="replace-mdash-html">
+              <xsl:with-param name="value" select="$before-first-i"/>
+            </xsl:call-template>
+          </xsl:when>
+          <xsl:otherwise><xsl:value-of select="$before-first-i"/></xsl:otherwise>
+        </xsl:choose>         
+        <fo:inline font-style="italic"><xsl:value-of select="$inside-first-i"/></fo:inline>
+        <xsl:call-template name="add-italics">
+          <xsl:with-param name="str" select="$after-first-i"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose>
+        <xsl:when test="contains($str, '#x2014;')">
+          <xsl:call-template name="replace-mdash-html">
+          <xsl:with-param name="value" select="$str"/>
+        </xsl:call-template>
+        </xsl:when>
+          <xsl:otherwise><xsl:value-of select="$str"/></xsl:otherwise>
+        </xsl:choose> 
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template name="replace-mdash-html">
+    <xsl:param name="value"/>
+    <xsl:value-of select="concat(substring-before($value, '&amp;#x2014;'), '&mdash;', substring-after($value, '&amp;#x2014;'))"/>  
+  </xsl:template>
+  
+  <xsl:template name="remove_ampersands">
+    <xsl:param name="str"/>
+    <xsl:choose>
+      <xsl:when test='contains($str,"amp;")'>             
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template name="remove">
+    <xsl:param name="value"/>
+    <xsl:value-of select="concat(substring-before($value, 'amp;'), substring-after($value, 'amp;'))"/>
+  </xsl:template>
+   
+  <!--xsl:template match="i">
+    <fo:inline font-style="italic">
+      <xsl:apply-templates select="node()"/>
+    </fo:inline>
+  </xsl:template-->
+  
+  <xsl:template match="i">
+    <fo:inline font-style="italic"><xsl:apply-templates/></fo:inline>
+  </xsl:template>
+  
+  <xsl:template match="i//text()">  
+    <fo:inline font-style="italic"><xsl:apply-templates/></fo:inline> 
+  </xsl:template>  
+  
 
   <xsl:template name="commonTaxonName">
     <fo:inline font-weight="bold">
@@ -405,15 +547,26 @@
   <xsl:template name="textData">
     <fo:block text-align="justify" margin-bottom="5mm">
       <!-- show all feature headlines except "ditribution" -->
-      <xsl:if test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
+      <!--xsl:if test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
         <fo:inline font-weight="bold">
           <xsl:value-of select="representation_L10n"/>
         </fo:inline>
         <xsl:text> – </xsl:text>
-      </xsl:if>
+      </xsl:if-->
+      <xsl:choose>
+      <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
+        <fo:inline font-weight="bold">
+          <xsl:value-of select="representation_L10n"/>
+        </fo:inline>
+        <xsl:text> &mdash; </xsl:text>
+      </xsl:when>
+        <xsl:otherwise><xsl:text> Matériel examiné </xsl:text></xsl:otherwise>
+      </xsl:choose>
       <xsl:for-each select="descriptionelements/descriptionelement">
         <fo:inline>
           <xsl:apply-templates select="multilanguageText_L10n/text"/>
+          <!--xsl:value-of
+            select="multilanguageText_L10n/text" disable-output-escaping = "yes"/-->
         </fo:inline>
       </xsl:for-each>
     </fo:block>
@@ -463,8 +616,9 @@
             <xsl:with-param name="descriptionelements" select="../../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="name/uuid"/>
           </xsl:call-template>
+          <xsl:apply-templates select="name/typeDesignations" />
         </xsl:for-each>
-        <xsl:apply-templates select="e[1]/name/typeDesignations" />
+        <!--xsl:apply-templates select="e[1]/name/typeDesignations" /-->
       </fo:block>
     </xsl:for-each>
   </xsl:template>

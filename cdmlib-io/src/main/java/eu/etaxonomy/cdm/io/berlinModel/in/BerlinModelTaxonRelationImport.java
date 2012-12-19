@@ -29,11 +29,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonRelationImportValidator;
@@ -110,15 +110,15 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				try {
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
 					
-					Object ptRefFkObj = rs.getObject("PTRefFk");
-					String ptRefFk= String.valueOf(ptRefFkObj);
+					Integer ptRefFkInt = nullSafeInt(rs,"PTRefFk");
+					String ptRefFk= String.valueOf(ptRefFkInt);
 					Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 					
 					String refCache = rs.getString("RefCache");
-					if (CdmUtils.isNotEmpty(refCache)){
+					if (StringUtils.isNotBlank(refCache)){
 						treeName = refCache;
 					}
-					if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+					if (ref != null && StringUtils.isNotBlank(ref.getTitleCache())){
 						treeName = ref.getTitleCache();
 					}
 					Classification tree = Classification.NewInstance(treeName);
@@ -130,7 +130,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					tree.addSource(identifiableSource);
 					
 					getClassificationService().save(tree);
-					state.putClassificationUuidInt((Integer)ptRefFkObj, tree);
+					state.putClassificationUuidInt(ptRefFkInt, tree);
 				} catch (Exception e) {
 					logger.error("Error in BerlinModleTaxonRelationImport.makeClassifications: " + e.getMessage());
 					e.printStackTrace();
@@ -164,37 +164,57 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 * @return
 	 */
 	private String getClassificationQuery(BerlinModelImportState state) {
-		String strQuerySelect = "SELECT PTaxon.PTRefFk, Reference.RefCache ";  
+		boolean includeAllClassifications = state.getConfig().isIncludeAllNonMisappliedRelatedClassifications();
+		String strQuerySelect = "SELECT PTaxon.PTRefFk, r.RefCache ";  
 		String strQueryFrom = " FROM RelPTaxon " + 
 							" INNER JOIN PTaxon AS PTaxon ON RelPTaxon.PTNameFk2 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon.PTRefFk " +
-							" INNER JOIN Reference ON PTaxon.PTRefFk = Reference.RefId "; 
+							" INNER JOIN Reference r ON PTaxon.PTRefFk = r.RefId "; 
 		String strQueryWhere = " WHERE (RelPTaxon.RelQualifierFk = 1) "; 
-		String strQueryGroupBy = " GROUP BY PTaxon.PTRefFk, Reference.RefCache ";
-		if (state.getConfig().isUseSingleClassification()){
-			if (state.getConfig().getSourceSecId()!= null){
-				strQueryWhere += " AND PTaxon.PTRefFk = " + state.getConfig().getSourceSecId() +  " ";
-			}else{
-				strQueryWhere += " AND (1=0) ";
+		if (includeAllClassifications){
+			strQueryWhere = " WHERE (RelPTaxon.RelQualifierFk <> 3) ";
+		}else{
+			if (state.getConfig().isUseSingleClassification()){
+				if (state.getConfig().getSourceSecId()!= null){
+					strQueryWhere += " AND PTaxon.PTRefFk = " + state.getConfig().getSourceSecId() +  " ";
+				}else{
+					strQueryWhere += " AND (1=0) ";
+				}
 			}
 		}
 		
-		boolean includeFlatClassifications = state.getConfig().isIncludeFlatClassifications();
+		String strQueryGroupBy = " GROUP BY PTaxon.PTRefFk, r.RefCache ";
 		String strQuery = strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
 		
+		
+		if (includeAllClassifications){
+			//add otherdirection
+			strQuerySelect = "SELECT PTaxon.PTRefFk, r.RefCache ";  
+			strQueryFrom = " FROM RelPTaxon rel " + 
+								" INNER JOIN PTaxon AS PTaxon ON rel.PTNameFk1 = PTaxon.PTNameFk AND rel.PTRefFk1 = PTaxon.PTRefFk " +
+								" INNER JOIN Reference r ON PTaxon.PTRefFk = r.RefId "; 
+			strQueryWhere =" WHERE (rel.RelQualifierFk <> 3) ";
+			String strAllQuery =  strQuerySelect + " " + strQueryFrom + " " + strQueryWhere + " " + strQueryGroupBy;
+			strQuery = strQuery + " UNION " + strAllQuery;
+		}
+		
+		
+		
+		boolean includeFlatClassifications = state.getConfig().isIncludeFlatClassifications();
 		//concepts with 
 		if (includeFlatClassifications){
 			String strFlatQuery = 
-					" SELECT pt.PTRefFk AS secRefFk, dbo.Reference.RefCache AS secRef " +
+					" SELECT pt.PTRefFk AS secRefFk, r.RefCache AS secRef " +
 					" FROM PTaxon AS pt LEFT OUTER JOIN " + 
-					          " Reference ON pt.PTRefFk = dbo.Reference.RefId LEFT OUTER JOIN " +
-					          " RelPTaxon ON pt.PTNameFk = dbo.RelPTaxon.PTNameFk2 AND pt.PTRefFk = dbo.RelPTaxon.PTRefFk2 LEFT OUTER JOIN " +
-					          " RelPTaxon AS RelPTaxon_1 ON pt.PTNameFk = RelPTaxon_1.PTNameFk1 AND pt.PTRefFk = RelPTaxon_1.PTRefFk1 " + 
-					" WHERE (RelPTaxon_1.RelQualifierFk IS NULL) AND (dbo.RelPTaxon.RelQualifierFk IS NULL) " + 
-					" GROUP BY pt.PTRefFk, dbo.Reference.RefCache "
+					          " Reference r ON pt.PTRefFk = r.RefId LEFT OUTER JOIN " +
+					          " RelPTaxon rel1 ON pt.PTNameFk = rel1.PTNameFk2 AND pt.PTRefFk = rel1.PTRefFk2 LEFT OUTER JOIN " +
+					          " RelPTaxon AS rel2 ON pt.PTNameFk = rel2.PTNameFk1 AND pt.PTRefFk = rel2.PTRefFk1 " + 
+					" WHERE (rel2.RelQualifierFk IS NULL) AND (rel1.RelQualifierFk IS NULL) " + 
+					" GROUP BY pt.PTRefFk, r.RefCache "
 					;
 			
 			strQuery = strQuery + " UNION " + strFlatQuery;
 		}
+
 		
 		
 		if (state.getConfig().getClassificationQuery() != null){
@@ -210,7 +230,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String strQuery = 
-			" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon2Id, ToTaxon.PTRefFk as treeRefFk, q.is_concept_relation " + 
+			" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon2Id, ToTaxon.PTRefFk as treeRefFk, FromTaxon.PTRefFk as fromRefFk, q.is_concept_relation " + 
 			" FROM PTaxon as FromTaxon " +
               	" INNER JOIN RelPTaxon ON FromTaxon.PTNameFk = RelPTaxon.PTNameFk1 AND FromTaxon.PTRefFk = RelPTaxon.PTRefFk1 " +
               	" INNER JOIN PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk " +
@@ -241,11 +261,13 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
 					
 				int relPTaxonId = rs.getInt("RelPTaxonId");
+				Integer taxon1Id = nullSafeInt(rs, "taxon1Id");
+				Integer taxon2Id = nullSafeInt(rs, "taxon2Id");
 				try {
-					int taxon1Id = rs.getInt("taxon1Id");
-					int taxon2Id = rs.getInt("taxon2Id");
-					Object relRefFkObj = rs.getObject("relRefFk");
+					Integer relRefFk = nullSafeInt(rs,"relRefFk");
 					int treeRefFk = rs.getInt("treeRefFk");
+					int fromRefFk = rs.getInt("fromRefFk");
+					
 					int relQualifierFk = rs.getInt("relQualifierFk");
 					String notes = rs.getString("notes");
 					boolean isConceptRelationship = rs.getBoolean("is_concept_relation");
@@ -253,7 +275,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					TaxonBase taxon1 = taxonMap.get(String.valueOf(taxon1Id));
 					TaxonBase taxon2 = taxonMap.get(String.valueOf(taxon2Id));
 					
-					String refFk = String.valueOf(relRefFkObj);
+					String refFk = String.valueOf(relRefFk);
 					Reference citation = getReferenceOnlyFromMaps(biblioRefMap,	nomRefMap, refFk);
 					
 					String microcitation = null; //does not exist in RelPTaxon
@@ -277,6 +299,10 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 								taxonRelationship = makeTaxonomicallyIncluded(state, classificationMap, treeRefFk, fromTaxon, toTaxon, citation, microcitation);
 							}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
 								 taxonRelationship = toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
+							}else{
+								handleAllRelatedTaxa(state, fromTaxon, classificationMap, fromRefFk);
+								handleAllRelatedTaxa(state, toTaxon, classificationMap, treeRefFk);
+								logger.warn("Unhandled taxon relationship: RelId:" + relPTaxonId + "; QualifierId: " + relQualifierFk);
 							}
 						}else if (isSynonymRelationship(relQualifierFk)){
 							if (!(taxon1 instanceof Synonym)){
@@ -284,6 +310,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 								success = false;
 								continue;
 							}
+							handleAllRelatedTaxa(state, toTaxon, classificationMap, treeRefFk);
 							Synonym synonym = (Synonym)taxon1;
 							SynonymRelationship synRel = getSynRel(relQualifierFk, toTaxon, synonym, citation, microcitation);
 							taxonRelationship = synRel;
@@ -314,6 +341,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 								}else{
 									Taxon fromTaxon = (Taxon)taxon1;
 									taxonRelationship = fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
+									handleAllRelatedTaxa(state, toTaxon, classificationMap, treeRefFk);
+									handleAllRelatedTaxa(state, fromTaxon, classificationMap, fromRefFk);
 								}
 							} catch (UnknownCdmTypeException e) {
 								//TODO other relationships
@@ -343,7 +372,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						success = false;
 					}
 				} catch (Exception e) {
-					logger.error("Exception occurred when trying to handle taxon relationship " + relPTaxonId + ":" + e.getMessage());
+					logger.error("Exception occurred when trying to handle taxon relationship " + relPTaxonId + " (" + taxon1Id + ","+ taxon2Id + "): " + e.getMessage());
 //					e.printStackTrace();
 				}
 			}
@@ -359,6 +388,18 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			return success;
 	}
 	
+
+	private void handleAllRelatedTaxa(BerlinModelImportState state, Taxon taxon, Map<Integer, Classification> classificationMap, Integer secRefFk) {
+		if (taxon.getTaxonNodes().size() > 0){
+			return;
+		}else{
+			Classification classification = getClassificationTree(state, classificationMap, secRefFk);
+			classification.addChildTaxon(taxon, null, null, null);
+		}
+		
+
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
@@ -609,7 +650,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			classificationMap.put(treeRefFk, tree);
 		}
 		if (tree == null){
-			throw new IllegalStateException("Tree for ToTaxon reference does not exist.");
+			throw new IllegalStateException("Tree for ToTaxon reference " + treeRefFk + " does not exist.");
 		}
 		return tree;
 	}

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.sdd.in;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -1557,6 +1559,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 						ImageInfo imageMetaData = null;
 						ImageFile image = null;
+						
 						if (href.substring(0,7).equals("http://")) {
 							try{
 								URL url = new URL(href);
@@ -1565,7 +1568,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 								image = ImageFile.NewInstance(url.toURI(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
-							}
+							} catch (IOException ioe) {
+								logger.warn("(IO ex: " + id + "): " + ioe.getMessage());
+								
+							} 
 						} else {
 							String sns = cdmState.getConfig().getSourceNameString();
 							File f = new File(sns);
@@ -1624,7 +1630,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					//FIXME
 					logger.warn("Could not attach MediaObject " + j + "(SDD: " + id + ") to several objects: " + e.getMessage());
 					cdmState.setUnsuccessfull();
-				}
+				} 
 
 				if ((++j % modCount) == 0){ logger.info("MediaObjects handled: " + j);
 

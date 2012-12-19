@@ -56,6 +56,10 @@ public class SDDExportConfigurator extends XmlExportConfiguratorBase<SDDExportSt
 		return new SDDExportConfigurator(source, destinationFolder + File.separator + url);
 	}
 	
+	public static SDDExportConfigurator NewInstance(ICdmDataSource source, String url) {
+		return new SDDExportConfigurator(source, url);
+	}
+	
 	
 	public int getMaxRows() {
 		return maxRows;
