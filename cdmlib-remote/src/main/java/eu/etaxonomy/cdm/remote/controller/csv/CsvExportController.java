@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2012 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See LICENSE.TXT at the top of this package for the full license terms.
- */
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.controller.csv;
 
 import java.io.ByteArrayInputStream;
@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -34,94 +36,128 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
  * @author a.oppermann
  * @created 20.09.2012
- *
+ * 
  */
 @Controller
 @RequestMapping(value = { "/csv" })
 public class CsvExportController{
 
-    @Autowired
-    private ApplicationContext appContext;
-
-    @Autowired
-    private ITermService termService;
-
-    private static final Logger logger = Logger.getLogger(CsvExportController.class);
-
+	/**
+	 * 
+	 */
+	@Autowired
+	private ApplicationContext appContext;
+	
+	@Autowired 
+	private ITermService termService;
+	
+	@Autowired
+	public ProgressMonitorController progressMonitorController;
+	
+	private static final Logger logger = Logger.getLogger(CsvExportController.class);
+	
+	/**
+	 * Helper method, which allows to convert strings directly into uuids.
+	 * 
+	 * @param binder Special DataBinder for data binding from web request parameters to JavaBean objects.
+	 */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
         binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
 
-    @RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
-    public void doExportRedlist(
-            @RequestParam(value = "features", required = false) UuidList featureUuids,
-            @RequestParam(value = "combobox", required = false) String classificationUUID,
-            HttpServletResponse response) {
+    /**
+     * Fetches data from the application context and forwards the stream to the HttpServletResponse, which offers a file download.
+     *
+     * @param featureUuids List of uuids to download/select {@link Feature feature}features
+     * @param classificationUUID Selected {@link Classification classification} to iterate the {@link Taxon}
+     * @param response HttpServletResponse which returns the ByteArrayOutputStream
+     */
+	@RequestMapping(value = { "exportRedlist" }, method = { RequestMethod.POST })
+	public void doExportRedlist(
+			@RequestParam(value = "features", required = false) UuidList featureUuids,
+			@RequestParam(value = "classification", required = false) String classificationUUID,
+			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
+			HttpServletResponse response,
+			HttpServletRequest request) {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, byteArrayOutputStream);
+		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
+		logger.info("Start export...");
+		defaultExport.invoke(config);
+		try {
+			/*
+			 *  Fetch data from the appContext and forward stream to HttpServleResponse
+			 *  
+			 *  FIXME: Large Data could be out of memory
+			 *  
+			 *  HTPP Error Break
+			 */
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
+			ServletOutputStream sos = response.getOutputStream();
+			Cookie progressCookie = new Cookie("fileDownloadToken", downloadTokenValueId);
+			progressCookie.setPath("/");
+			progressCookie.setMaxAge(60);
+			response.addCookie(progressCookie);
+			response.setContentType("text/csv; charset=utf-8");
+			response.setHeader("Content-Disposition", "attachment; filename=\""+config.getClassificationTitleCache()+".txt\"");
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, byteArrayOutputStream);
-        CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
-        logger.info("Start export...");
-        defaultExport.invoke(config);
-        try {
-            /*
-             *  Fetch data from the appContext and forward stream to HttpServleResponse
-             *
-             *  FIXME: Large Data could be out of memory
-             *
-             *  HTPP Error Break
-             */
-            ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
-            ServletOutputStream sos = response.getOutputStream();
-            response.setContentType("text/csv");
-            response.setHeader("Content-Disposition", "attachment; filename=\""+config.getClassificationTitleCache()+".txt\"");
+			int i;
+			while((i = isr.read())!= -1){
+				sos.write(i);
+			}
+			byteArrayOutputStream.flush();
+			isr.close();
+			byteArrayOutputStream.close();
+			sos.flush();
+			sos.close();
+		} catch (Exception e) {
+			logger.error("error generating feed", e);
+		}
+	}
 
-            int i;
-            while((i = isr.read())!= -1){
-                sos.write(i);
-            }
-            byteArrayOutputStream.flush();
-            isr.close();
-            byteArrayOutputStream.close();
-            sos.flush();
-            sos.close();
+	/**
+	 * Cofiguration method to set the configuration details for the defaultExport in the application context.
+	 * 
+	 * @param classificationUUID pass-through the selected {@link Classification classification}
+	 * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
+	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
+	 * @return the CsvTaxExportConfiguratorRedlist config
+	 */
+	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, ByteArrayOutputStream byteArrayOutputStream) {
 
-        } catch (Exception e) {
-            logger.error("error generating feed", e);
-        }
-    }
-
-    private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, ByteArrayOutputStream byteArrayOutputStream) {
-
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Set<UUID> classificationUUIDS = new HashSet
-        (Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
-        String destination = System.getProperty("java.io.tmpdir");
-        List<Feature> features = new ArrayList<Feature>();
-        if(featureUuids != null){
-            for(UUID uuid : featureUuids) {
-                features.add((Feature) termService.find(uuid));
-            }
-        }
-
-        CsvTaxExportConfiguratorRedlist config = CsvTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
-        config.setHasHeaderLines(true);
-        config.setFieldsTerminatedBy("\t");
-        config.setClassificationUuids(classificationUUIDS);
-        config.setByteArrayOutputStream(byteArrayOutputStream);
-        if(features != null)config.setFeatures(features);
-        return config;
-    }
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		Set<UUID> classificationUUIDS = new HashSet
+		(Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
+		String destination = System.getProperty("java.io.tmpdir");
+		List<Feature> features = new ArrayList<Feature>();
+		if(featureUuids != null){
+			for(UUID uuid : featureUuids) {
+				features.add((Feature) termService.find(uuid));
+			}
+		}
+		
+		CsvTaxExportConfiguratorRedlist config = CsvTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
+		config.setHasHeaderLines(true);
+		config.setFieldsTerminatedBy("\t");
+		config.setClassificationUuids(classificationUUIDS);
+		config.setByteArrayOutputStream(byteArrayOutputStream);
+		if(features != null)config.setFeatures(features);
+		return config;
+	}
 }
