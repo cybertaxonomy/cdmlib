@@ -1616,6 +1616,8 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/test/test.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/css/csv_export.css -text
+cdmlib-remote-webapp/src/main/webapp/css/images/ajax-loader.gif -text
+cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ajax-loader.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-bg_flat_0_aaaaaa_40x100.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-bg_flat_75_ffffff_40x100.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-bg_glass_55_fbf9ee_1x400.png -text
@@ -1635,6 +1637,9 @@ cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/js/csv_export.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-1.7.2.min.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-ui-1.8.23.custom.min.js -text
+cdmlib-remote-webapp/src/main/webapp/js/jquery.blockUI.js -text
+cdmlib-remote-webapp/src/main/webapp/js/jquery.cookie.js -text
+cdmlib-remote-webapp/src/main/webapp/js/jquery.fileDownload.js -text
 cdmlib-remote-webapp/src/main/webapp/xsl/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text
