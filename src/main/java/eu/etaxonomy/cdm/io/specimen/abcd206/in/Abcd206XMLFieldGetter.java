@@ -54,13 +54,15 @@ public class Abcd206XMLFieldGetter {
 									ntd = ntds.item(m).getChildNodes();	
 									for (int n = 0; n < ntd.getLength(); n++)		
 										if (ntd.item(n).getNodeName().equals(prefix + "TypeStatus")) 
-										{			type = ntd.item(n).getTextContent();
-										dataHolder.statusList.add(getSpecimenTypeDesignationStatusByKey(type));			
-										typeFound=true;			
-										path = ntd.item(l).getNodeName();			
-										getHierarchie(ntd.item(l));			
-										dataHolder.knownABCDelements.add(path);			
-										path = "";		}}
+										{			
+											type = ntd.item(n).getTextContent();
+											logger.info("ADD "+type);
+											dataHolder.statusList.add(getSpecimenTypeDesignationStatusByKey(type));			
+											typeFound=true;			
+											path = ntd.item(l).getNodeName();			
+											getHierarchie(ntd.item(l));			
+											dataHolder.knownABCDelements.add(path);			
+											path = "";		}}
 							}
 						}
 					}
@@ -213,7 +215,7 @@ public class Abcd206XMLFieldGetter {
 		results = result.getChildNodes();
 		boolean referencefound = false;
 		for (int k = 0; k < results.getLength(); k++) {
-			if (results.item(k).getNodeName().equals(prefix + "Reference")) {
+			if (results.item(k).getNodeName().equals(prefix + "SourceReference")) {
 				reference = results.item(k).getChildNodes();
 				for (int l = 0; l < reference.getLength(); l++) {
 					if (reference.item(l).getNodeName().equals(prefix + "TitleCitation")) {

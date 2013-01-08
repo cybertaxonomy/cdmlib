@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -55,6 +56,7 @@ public class Abcd206DataHolder {
 
 	protected ArrayList<String> knownABCDelements = new ArrayList<String>();
 	protected HashMap<String,String> allABCDelements = new HashMap<String,String>();
+	
 
 	
 
