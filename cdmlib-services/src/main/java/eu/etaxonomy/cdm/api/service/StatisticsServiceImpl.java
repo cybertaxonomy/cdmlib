@@ -110,7 +110,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		// for the count):
 		IdentifiableEntity filter = configurator.getFilter().get(
 				(configurator.getFilter().size()) - 1);
-
+		// TODO constant for null filter
 		if (filter == null) {
 			countAll(configurator);
 		} else {
@@ -181,10 +181,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 		if (filter instanceof Classification) {
 
-			// System.out.println("count in classification: " +
-			// filter.toString());
-			// statisticsDao.tryArround();
-
 			for (StatisticsTypeEnum type : configurator.getType()) {
 
 				switch (type) {
@@ -209,7 +205,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				case TAXON_NAMES:
 					counter = statisticsDao.countTaxonNames((Classification)filter);
 					break;
-
 				case ALL_REFERENCES:
 					break;
 				case DESCRIPTIVE_SOURCE_REFERENCES:
@@ -226,7 +221,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		} else {
 			// TODO
 			// right now we just return null as count for the statistics
-			// element, if the filter is no classification
+			// element, if the filter is neither classification nor null.
 		}
 
 		statisticsList.add(statistics);
