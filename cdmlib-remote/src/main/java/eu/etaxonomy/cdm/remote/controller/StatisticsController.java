@@ -115,7 +115,7 @@ public class StatisticsController {
 		// else parse list of parts and create configurator for each:
 		else {
 			for (String string : part) {
-				System.out.println(StatisticsPartEnum.ALL.toString());
+//				System.out.println(StatisticsPartEnum.ALL.toString());
 				if (string.equals(StatisticsPartEnum.ALL.toString())) {
 					helperConfigurator.addFilter(ALL_DB);
 					configuratorList.add(helperConfigurator);

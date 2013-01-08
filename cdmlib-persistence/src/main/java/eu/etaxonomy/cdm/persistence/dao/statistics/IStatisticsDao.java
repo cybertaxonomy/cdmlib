@@ -6,24 +6,22 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public interface IStatisticsDao {
 
+	//TODO add all public methods
 
 	public Long countNomenclaturalReferences();
 
 
-	Long countNomenclaturalReferences(Class clazz);
+//	public Long countNomenclaturalReferences(Class clazz);
 
 
 	public Long countDescriptiveSourceReferences();
-
-	//TODO remove this method:
-	public void tryArround();
 
 
 	public Long countTaxaInClassification(Class<? extends TaxonBase> clazz,
 			Classification classification);
 
 
-	Long countTaxonNames(Classification classification);
+	public Long countTaxonNames(Classification classification);
 
 
 

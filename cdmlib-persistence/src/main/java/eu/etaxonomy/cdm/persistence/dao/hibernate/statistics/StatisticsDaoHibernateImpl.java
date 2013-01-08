@@ -1,5 +1,10 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
@@ -23,20 +28,10 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 */
 	@Override
 	public Long countNomenclaturalReferences() {
-		return countNomenclaturalReferences("");
-	}
-
-	private Long countNomenclaturalReferences(String where) {
-
-		Query query = getSession().createQuery(
-				"select count(distinct nomenclaturalReference) from TaxonNameBase"
-						+ where);
+		Query query = getSession()
+				.createQuery(
+						"select count(distinct nomenclaturalReference) from TaxonNameBase");
 		return (Long) query.uniqueResult();
-	}
-
-	@Override
-	public Long countNomenclaturalReferences(Class clazz) {
-		return countNomenclaturalReferences("where" + clazz.getSimpleName());
 	}
 
 	/**
@@ -49,27 +44,17 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		// count sources from Descriptions:
 		query = getSession().createQuery(
-				"select count(distinct d.descriptionSources) from DescriptionBase as d "
-						+ "join d.descriptionSources");
+				"select count(distinct r.uuid) from DescriptionBase as d "
+						+ "join d.descriptionSources as r");
+		count += (Long) query.uniqueResult();
 
-		query = getSession()
-				.createQuery(
-						"select count(distinct s.citation) from DescriptionElementBase as d join d.sources as s");
-		return (Long) query.uniqueResult();
-	}
+		// count sources from DescriptionElements:
+		query = getSession().createQuery(
+				"select count(distinct s.citation) from DescriptionElementBase as d "
+						+ "join d.sources as s where s.citation is not null");
+		count += (Long) query.uniqueResult();
 
-	// TODO remove this method:
-	@Override
-	public void tryArround() {
-		Criteria criteria = getSession().createCriteria(Synonym.class);
-		// Query query =
-		// System.out.println("query: "+((Query) criteria).getQueryString());
-		// System.out.println(getSession().createCriteria(Synonym.class);
-		criteria.list();
-		// criteria.
-		// System.out.println(criteria.toString());
-		System.out.println("");
-
+		return count;
 	}
 
 	@Override
@@ -88,8 +73,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			criteria.add(Restrictions.eq("classification", classification));
 			criteria.setProjection(Projections.rowCount());
 			return Long.valueOf((Integer) criteria.uniqueResult());
-			// Long counter = Long.valueOf((Integer) criteria.uniqueResult());
-			// return counter;
 		}
 
 		else if (clazz.equals(Synonym.class)) {
@@ -100,9 +83,8 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 							+ "join tn.taxon.synonymRelations as sr "
 							+ "where tn.classification=:classification");
 			query.setParameter("classification", classification);
-			Long counter = (Long) query.uniqueResult();
-			return counter;
-			// return (Long) query.uniqueResult();
+
+			return (Long) query.uniqueResult();
 		}
 		// this should never happen:
 		return null;
@@ -111,30 +93,58 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 	@Override
 	public Long countTaxonNames(Classification classification) {
-		// TODO: merge the 2 queries below - you can't just add them because
-		// there might be doubles
+
+		// the query would be:
+		// "select count (distinct n) from (
+		// + "select distinct tn.taxon.name as c from TaxonNode tn "
+		// + "where tn.classification=:classification "
+		// + "UNION "
+		// + "select distinct sr.relatedFrom.name as c from TaxonNode tn "
+		// + "join tn.taxon.synonymRelations sr "
+		// + "where tn.classification=:classification "
+		// ") as n "
+
+		// as hibernate does not accept brackets in from and no unions
+		// we have to do it otherwise:
+
 		Query query;
-		// this is only the taxon names:
-		// query = getSession().createQuery(
-		// "select count(distinct tn.taxon.name) from TaxonNode tn "
-		// + "where tn.classification=:classification");
+		Set<Integer> nameIds = new HashSet<Integer>();
 
-		// this is only the synonym names:
-		query = getSession().createQuery(
-				"select count(distinct s.name) from TaxonNode tn "
-						+ "join tn.taxon.synonymRelations sr "
-						+ "join sr.relatedFrom s "
-						+ "where tn.classification=:classification");
+		// so instead of "UNION" we use 2 queries
+		// and count the names manually
+		List<String> queries = new ArrayList<String>();
+		queries.add("select distinct tn.taxon.name.id as c from TaxonNode tn "
+				+ "where tn.classification=:classification ");
+		queries.add("select distinct sr.relatedFrom.name.id as c from TaxonNode tn "
+				+ "join tn.taxon.synonymRelations sr "
+				+ "where tn.classification=:classification");
 
-		// everything???:
-		query = getSession()
-				.createQuery(
-						"select count(distinct s2) from TaxonNode tn " +
-						"join tn.taxon.synonymRelations sr join sr.relatedFrom.name s1 " +
-						"join tn.taxon.name s2 " +
-						"where tn.classification=:classification");
+		for (String queryString : queries) {
 
-		query.setParameter("classification", classification);
-		return (Long) query.uniqueResult();
+			query = getSession().createQuery(queryString);
+			query.setParameter("classification", classification);
+			nameIds.addAll((ArrayList<Integer>) query.list());
+		}
+
+		return Long.valueOf(nameIds.size());
 	}
+
+	// @Override
+	// public Long countNomenclaturalReferences() {
+	// return countNomenclaturalReferences("");
+	// }
+	//
+	// private Long countNomenclaturalReferences(String where) {
+	//
+	// Query query = getSession().createQuery(
+	// "select count(distinct nomenclaturalReference) from TaxonNameBase"
+	// + where);
+	// return (Long) query.uniqueResult();
+	// }
+	//
+	// @Override
+	// public Long countNomenclaturalReferences(Class clazz) {
+	// return countNomenclaturalReferences("where" + clazz.getSimpleName());
+	// }
+
 }
