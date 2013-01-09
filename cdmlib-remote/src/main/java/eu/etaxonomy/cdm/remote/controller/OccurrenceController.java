@@ -75,6 +75,4 @@ public class OccurrenceController extends BaseController<SpecimenOrObservationBa
         return mv;
     }
 
-
-
 }

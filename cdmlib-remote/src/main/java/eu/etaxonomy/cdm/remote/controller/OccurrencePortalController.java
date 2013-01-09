@@ -47,6 +47,21 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "derivedFrom.gatheringEvent.exactLocation.$"
     });
 
+    private static final List<String> DEFAULT_INIT_STRATEGY =  Arrays.asList(new String []{
+            "$",
+            "determinations.*",
+            "sources.$"
+    });
+
+
+    /**
+     *
+     */
+    public OccurrencePortalController() {
+        super();
+        setInitializationStrategy(DEFAULT_INIT_STRATEGY);
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
      */
