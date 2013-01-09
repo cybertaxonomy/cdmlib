@@ -37,12 +37,17 @@
        Configuration for the BeanInitialization
      -->
     <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
-      <bean id="annotationTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.AnnotationTypeAutoInitializer"></bean>
+    <bean id="annotationTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.AnnotationTypeAutoInitializer"></bean>
+    <bean id="gatheringEventLocationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.GatheringEventLocationAutoInitializer"></bean>
+    <bean id="termBaseAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TermBaseAutoInitializer"></bean>
+
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">
        <property name="beanAutoInitializers">
            <map>
                <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleCacheAutoInitializer" />
-                 <entry key="eu.etaxonomy.cdm.model.common.Annotation"  value-ref="annotationTypeAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.common.Annotation"  value-ref="annotationTypeAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"  value-ref="gatheringEventLocationAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.common.TermBase"  value-ref="termBaseAutoInitializer" />
            </map>
        </property>
     </bean>

@@ -35,6 +35,8 @@
              <value>DerivationEvent.derivatives</value>
              <value>DerivationEvent.originals</value>
 
+             <value>Point.referenceSystem</value>
+
              <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
              <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
 
