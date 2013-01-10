@@ -41,16 +41,14 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 public class OccurrencePortalController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
 {
 
-    private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
-            "derivedFrom.originals.*",
-            "derivedFrom.originals.determinations.taxon",
-            "derivedFrom.gatheringEvent.exactLocation.$"
-    });
-
     private static final List<String> DEFAULT_INIT_STRATEGY =  Arrays.asList(new String []{
             "$",
             "determinations.*",
-            "sources.$"
+            "sources.$",
+            "derivedFrom.type",
+            "derivedFrom.originals.*",
+            "derivedFrom.originals.determinations.taxon",
+            "derivedFrom.gatheringEvent.exactLocation.$"
     });
 
 
@@ -81,7 +79,7 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
 
         ModelAndView mv = new ModelAndView();
 
-        List<String> initStrategy = DERIVED_UNIT_INIT_STRATEGY;
+        List<String> initStrategy = DEFAULT_INIT_STRATEGY;
 
         SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, initStrategy);
         if(sob instanceof DerivedUnitBase){
