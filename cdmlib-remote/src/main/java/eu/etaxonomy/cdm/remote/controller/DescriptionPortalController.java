@@ -83,6 +83,12 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.modifyingText",
     });
 
+
+    public DescriptionPortalController() {
+        super();
+        setInitializationStrategy(TAXONDESCRIPTION_INIT_STRATEGY);
+    }
+
     @InitBinder
     @Override
     public void initBinder(WebDataBinder binder) {
