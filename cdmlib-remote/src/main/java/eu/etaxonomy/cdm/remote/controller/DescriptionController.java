@@ -61,8 +61,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 {
     @Autowired
     private IFeatureTreeService featureTreeService;
-    
-    
+
+
     public DescriptionController(){
         super();
     }
@@ -74,8 +74,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 "root.children.feature.representations",
                 "root.children.children.feature.representations",
             });
-    
-    
+
+
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
@@ -118,13 +118,25 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return featureTree;
     }
 
-
-    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
-    public Pager<Annotation> getDescriptionElementAnnotations(
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET)
+    public ModelAndView doGetDescriptionElement(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getDescriptionElementAnnotations() - " + request.getServletPath());
+
+        ModelAndView mv = new ModelAndView();
+        logger.info("doGetDescriptionElement() - " + request.getServletPath());
+        DescriptionElementBase element = service.getDescriptionElementByUuid(uuid);
+        mv.addObject(element);
+        return mv;
+    }
+
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
+    public Pager<Annotation> doGetDescriptionElementAnnotations(
+            @PathVariable("descriptionelement_uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetDescriptionElementAnnotations() - " + request.getServletPath());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         if(annotatableEntity == null){
             HttpStatusMessage.UUID_INVALID.send(response);
@@ -135,7 +147,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
     }
-    
+
 
 
     @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
@@ -214,7 +226,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         mv.addObject(textData);
         return mv;
     }
-    
+
     @RequestMapping(value = "/description/{uuid}/hasStructuredData", method = RequestMethod.GET)
     public ModelAndView doHasStructuredData(
             @PathVariable("uuid") UUID uuid,
