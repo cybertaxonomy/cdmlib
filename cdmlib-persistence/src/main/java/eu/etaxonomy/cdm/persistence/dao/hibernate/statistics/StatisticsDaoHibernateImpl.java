@@ -35,26 +35,135 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	}
 
 	/**
-	 * @return be aware that the returned long might be null
+	 * @return be aware that the returned long might be null, if...
 	 */
-
+	@Override
 	public Long countDescriptiveSourceReferences() {
 		Query query;
 		Long count = new Long(0);
+		Set descRefIds = new HashSet<Integer>();
+
+		// this query does not work...
+		// query = getSession().createQuery(
+		// "select count(distinct(r.id, desc.id)) from DescriptionBase as d "
+		// + "join d.descriptionElements as de "
+		// + "join de.sources as des "
+		// + "join des.citation as desc "
+		// + "join d.descriptionSources as r "
+		// + "where "
+		// + "desc is not null"
+		// + " and "
+		// + "r is not null ");
+
+		// ... here is the manual version:
 
 		// count sources from Descriptions:
 		query = getSession().createQuery(
-				"select count(distinct r.uuid) from DescriptionBase as d "
-						+ "join d.descriptionSources as r");
-		count += (Long) query.uniqueResult();
+				"select distinct r.id from DescriptionBase as d "
+						+ "join d.descriptionSources as r ");
+		descRefIds.addAll((ArrayList<Integer>) query.list());
 
 		// count sources from DescriptionElements:
 		query = getSession().createQuery(
-				"select count(distinct s.citation) from DescriptionElementBase as d "
-						+ "join d.sources as s where s.citation is not null");
-		count += (Long) query.uniqueResult();
+				"select distinct s.citation.id from DescriptionElementBase as d "
+						+ "join d.sources as s where s.citation is not null ");
+		// count += (Long) query.uniqueResult();
+		descRefIds.addAll((ArrayList<Integer>) query.list());
 
-		return count;
+		// System.out.println(query.getQueryString());
+
+		// count += (Long) query.uniqueResult();
+
+		return Long.valueOf(descRefIds.size());
+	}
+
+	@Override
+	public Long countDescriptiveSourceReferences(Classification classification) {
+
+		Query query;
+		Set<Integer> descrRefIds = new HashSet<Integer>();
+
+		// taxon descriptions
+		query = getSession().createQuery(
+				"select distinct r.id from TaxonNode as tn "
+						+ "join tn.taxon.descriptions as d "
+						+ "join d.descriptionSources as r "
+						+ "where tn.classification=:classification ");
+		query.setParameter("classification", classification);
+
+		descrRefIds.addAll((ArrayList<Integer>) query.list());
+
+		// taxon description elements:
+		query = getSession().createQuery(
+				"select distinct des.citation.id from TaxonNode as tn "
+						+ "join tn.taxon.descriptions as d "
+						+ "join d.descriptionElements as de "
+						+ "join de.sources as des "
+						+ "where tn.classification=:classification ");
+		query.setParameter("classification", classification);
+
+		descrRefIds.addAll((ArrayList<Integer>) query.list());
+
+		// TaxonNameBase descriptions:
+		query = getSession().createQuery(
+				"select distinct r.id from TaxonNode tn "
+						+ "join tn.taxon.name.descriptions as d "
+						+ "join d.descriptionSources as r "
+						+ "where tn.classification=:classification ");
+		query.setParameter("classification", classification);
+
+		descrRefIds.addAll((ArrayList<Integer>) query.list());
+
+		// TaxonNameBase description elements:
+		query = getSession().createQuery(
+				"select distinct des.citation.id from TaxonNode tn "
+						+ "join tn.taxon.name.descriptions as d "
+						+ "join d.descriptionElements as de "
+						+ "join de.sources as des "
+						+ "where tn.classification=:classification ");
+		query.setParameter("classification", classification);
+
+		descrRefIds.addAll((ArrayList<Integer>) query.list());
+
+		// SpecimenOrObservationBase
+//		query = getSession().createQuery(
+//				"select r.id from SpecimenOrObservationBase as so, TaxonNode as tn "
+//						+ "join so.determinations as det "
+//						+ "join tn.taxon as t1 " + "join det.taxon t2 "
+//						+ "on t1=t2  "
+//						+ "where tn.classification=: classification as t "
+//						+ "join t.descriptions as so_d "
+//						+ "join so_d.descriptionSources as r");
+		
+		query = getSession().createQuery(
+				"select r.id from DescriptionBase db, TaxonNode tn "
+						+ "join db.describedSpecimenOrObservations as so "
+						+ "join so.determinations as det "
+						+ "join db.descriptionSources as r "
+						+ "where tn.classification=:classification "
+						+ "and tn.taxon=det.taxon");
+
+		query.setParameter("classification", classification);
+
+		descrRefIds.addAll((ArrayList<Integer>) query.list());
+		
+		// SpecimenOrObservationBase description elements:
+
+		query = getSession().createQuery(
+				"select des.citation.id from DescriptionBase db, TaxonNode tn "
+						+ "join db.describedSpecimenOrObservations as so "
+						+ "join so.determinations as det "
+						+ "join db.descriptionElements as de "
+						+ "join de.sources as des "
+						+ "where tn.classification=:classification "
+						+ "and tn.taxon=det.taxon");
+
+		query.setParameter("classification", classification);
+
+		descrRefIds.addAll((ArrayList<Integer>) query.list());	
+
+		return Long.valueOf(descrRefIds.size());
+
 	}
 
 	@Override
@@ -81,7 +190,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			Query query = getSession().createQuery(
 					"select count(distinct sr.relatedFrom.uuid) from TaxonNode tn "
 							+ "join tn.taxon.synonymRelations as sr "
-							+ "where tn.classification=:classification");
+							+ "where tn.classification=:classification ");
 			query.setParameter("classification", classification);
 
 			return (Long) query.uniqueResult();
@@ -117,13 +226,44 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				+ "where tn.classification=:classification ");
 		queries.add("select distinct sr.relatedFrom.name.id as c from TaxonNode tn "
 				+ "join tn.taxon.synonymRelations sr "
-				+ "where tn.classification=:classification");
+				+ "where tn.classification=:classification ");
 
 		for (String queryString : queries) {
 
 			query = getSession().createQuery(queryString);
 			query.setParameter("classification", classification);
 			nameIds.addAll((ArrayList<Integer>) query.list());
+		}
+
+		return Long.valueOf(nameIds.size());
+	}
+
+	@Override
+	public Long countNomenclaturalReferences(Classification classification) {
+		Query query;
+		Set<Integer> nameIds = new HashSet<Integer>();
+
+		// so instead of "UNION" we use 2 queries
+		// and count the names manually
+		List<String> queryStrings = new ArrayList<String>();
+		queryStrings
+				.add("select distinct tn.taxon.name.nomenclaturalReference.id from TaxonNode tn "
+						+ "where tn.classification=:classification "
+						+ "and tn.taxon.name.nomenclaturalReference is not null ");
+		queryStrings
+				.add("select distinct sr.relatedFrom.name.nomenclaturalReference.id as c from TaxonNode tn "
+						+ "join tn.taxon.synonymRelations as sr "
+						+ "where tn.classification=:classification "
+				// +
+				// "and sr.relatedFrom.name.nomenclaturalReference is not null"
+				);
+
+		for (String queryString : queryStrings) {
+
+			query = getSession().createQuery(queryString);
+			query.setParameter("classification", classification);
+			nameIds.addAll((ArrayList<Integer>) query.list());
+			System.out.println();
 		}
 
 		return Long.valueOf(nameIds.size());

@@ -24,5 +24,11 @@ public interface IStatisticsDao {
 	public Long countTaxonNames(Classification classification);
 
 
+	Long countNomenclaturalReferences(Classification classification);
+
+
+	Long countDescriptiveSourceReferences(Classification classification);
+
+
 
 }

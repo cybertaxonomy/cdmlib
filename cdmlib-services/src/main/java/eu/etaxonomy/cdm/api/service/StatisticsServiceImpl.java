@@ -208,8 +208,10 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				case ALL_REFERENCES:
 					break;
 				case DESCRIPTIVE_SOURCE_REFERENCES:
+					counter= statisticsDao.countDescriptiveSourceReferences((Classification) filter);
 					break;
 				case NOMECLATURAL_REFERENCES:
+					counter = statisticsDao.countNomenclaturalReferences((Classification) filter);
 					break;
 
 				}
