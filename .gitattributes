@@ -1260,6 +1260,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAnnota
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmEntityDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmGenericDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IDefinedTermDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IEventBaseDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IGrantedAuthorityDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IGroupDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IIdentifiableDao.java -text
@@ -1297,6 +1298,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmGenericDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DaoBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/EventBaseDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/GrantedAuthorityDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/GroupDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBase.java -text
@@ -1674,6 +1676,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DerivedUnitFacade
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionPortalController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/EventBaseController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureNodeController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeController.java -text
@@ -1934,6 +1937,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionTree.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EventBaseServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/GrantedAuthorityServiceImpl.java -text
@@ -1947,6 +1951,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICollectionService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICommonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEventBaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureTreeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IGrantedAuthorityService.java -text
