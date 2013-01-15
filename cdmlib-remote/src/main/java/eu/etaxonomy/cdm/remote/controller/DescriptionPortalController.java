@@ -70,23 +70,26 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
                 "root.feature.representations",
                 "root.children.feature.representations",
             });
+
     private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
             "elements.sources.citation.$",
             "elements.area.$",
             });
-    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+
+    protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
             "elements.sources.citation.authorTeam.$",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",
+            "elements.states.*",
     });
 
 
     public DescriptionPortalController() {
         super();
-        setInitializationStrategy(TAXONDESCRIPTION_INIT_STRATEGY);
+        setInitializationStrategy(DESCRIPTION_INIT_STRATEGY);
     }
 
     @InitBinder
@@ -148,10 +151,10 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {
-            description = (TaxonDescription) service.load(descriptionUuid, TAXONDESCRIPTION_INIT_STRATEGY);
+            description = (TaxonDescription) service.load(descriptionUuid, DESCRIPTION_INIT_STRATEGY);
             taxonDescriptions.add(description);
         }
-        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, TAXONDESCRIPTION_INIT_STRATEGY);
+        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, DESCRIPTION_INIT_STRATEGY);
         return distTree;
     }
 

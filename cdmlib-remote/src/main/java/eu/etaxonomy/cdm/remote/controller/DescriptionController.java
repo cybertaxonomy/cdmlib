@@ -34,10 +34,12 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -74,6 +76,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 "root.children.feature.representations",
                 "root.children.children.feature.representations",
             });
+
 
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -127,6 +130,9 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         ModelAndView mv = new ModelAndView();
         logger.info("doGetDescriptionElement() - " + request.getServletPath());
         DescriptionElementBase element = service.getDescriptionElementByUuid(uuid);
+        if(element == null) {
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
         mv.addObject(element);
         return mv;
     }
@@ -146,6 +152,35 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
+    }
+
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/states", method = RequestMethod.GET)
+    public ModelAndView doGetDescriptionElementStates(
+            @PathVariable("descriptionelement_uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetDescriptionElementStates() - " + request.getServletPath());
+
+        ModelAndView mv = new ModelAndView();
+
+        DescriptionElementBase descriptionElement = service.loadDescriptionElement(uuid,
+                Arrays.asList( new String[]{
+                        "states.state.representations",
+                        "modifiers",
+                        "modifyingText"
+                        } ));
+        if(descriptionElement == null){
+            HttpStatusMessage.UUID_INVALID.send(response);
+            // method will exit here
+            return null;
+        }
+
+        if(descriptionElement instanceof CategoricalData){
+
+        }
+        List<StateData> states = ((CategoricalData)descriptionElement).getStates();
+        mv.addObject(states);
+        return mv;
     }
 
 

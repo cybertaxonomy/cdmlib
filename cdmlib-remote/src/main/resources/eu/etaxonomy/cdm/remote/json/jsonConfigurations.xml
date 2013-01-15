@@ -43,6 +43,10 @@
              <value>Synonym.sec</value>
              <value>Taxon.sec</value>
 
+             <value>StateData.state</value>
+             <value>StateData.modifiers</value>
+             <value>StateData.modifyingText</value>
+
              <value>TextData.feature</value>
              <value>CategoricalData.feature</value>
              <value>CommonTaxonName.feature</value>
