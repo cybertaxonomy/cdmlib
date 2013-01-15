@@ -84,7 +84,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.area.level",
             "elements.modifyingText",
             "elements.states.*",
-            "elements.media"
+            "elements.media.representations.parts", // TODO "elements.media" should be sufficient since we have the  MediaAutoInitializer
     });
 
 
