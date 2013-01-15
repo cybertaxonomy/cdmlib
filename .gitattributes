@@ -1249,6 +1249,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/BeanInitialize
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/GatheringEventLocationAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IMethodCache.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MediaAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/QueryParseException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/TermBaseAutoInitializer.java -text
