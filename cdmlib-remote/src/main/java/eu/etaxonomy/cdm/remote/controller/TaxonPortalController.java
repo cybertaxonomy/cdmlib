@@ -150,8 +150,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             // taxon descriptions
             "descriptions.elements.area.$",
             "descriptions.elements.multilanguageText",
-            "descriptions.elements.media.representations.parts",
-            "descriptions.elements.media.title",
+            "descriptions.elements.media",
 
             });
 
@@ -250,8 +249,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.multilanguageText",
-            "elements.media.representations.parts",
-            "elements.media.title",
+            "elements.media",
     });
 
     protected static final List<String> TAXONUSEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -265,8 +263,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.multilanguageText",
-            "elements.media.representations.parts",
-            "elements.media.title",
+            "elements.media",
     });
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
@@ -274,8 +271,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "sources.citation.authorTeam",
             "sources.nameUsedInSource.originalNameString",
             "multilanguageText",
-            "media.representations.parts",
-            "media.title",
+            "media",
     });
 
 
@@ -284,13 +280,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 //			"feature",
 //			"elements.$",
 //			"elements.multilanguageText",
-//			"elements.media.representations.parts",
-//			"elements.media.title",
+//			"elements.media",
 //	});
 
     protected static final List<String> TAXONDESCRIPTION_MEDIA_INIT_STRATEGY = Arrays.asList(new String []{
-            "elements.media.representations.parts",
-            "elements.media.title"
+            "elements.media"
 
     });
 

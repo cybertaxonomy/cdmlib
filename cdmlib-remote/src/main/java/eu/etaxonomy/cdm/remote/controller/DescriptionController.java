@@ -85,8 +85,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.multilanguageText",
-            "elements.media.representations.parts",
-            "elements.media.title",
+            "elements.media",
     });
 
     @InitBinder

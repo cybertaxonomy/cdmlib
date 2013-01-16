@@ -76,7 +76,7 @@ public class DerivedUnitFacadeController extends AbstractController{
         logger.info("doGetDerivedUnitMedia() - " + request.getServletPath());
         ModelAndView mv = new ModelAndView();
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
-                "derivedUnitMedia.representations.parts", "derivedUnitMedia.title"}));
+                "derivedUnitMedia", "derivedUnitMedia.title"}));
         if(duf != null){
             mv.addObject(duf.getDerivedUnitMedia());
         }
@@ -92,7 +92,7 @@ public class DerivedUnitFacadeController extends AbstractController{
         logger.info("doGetFieldObjectMedia() - " + request.getServletPath());
         ModelAndView mv = new ModelAndView();
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
-                "fieldObjectMedia.representations.parts", "fieldObjectMedia.title"}));
+                "fieldObjectMedia", "fieldObjectMedia.title"}));
         mv.addObject(duf.getFieldObjectMedia());
         return mv;
     }
