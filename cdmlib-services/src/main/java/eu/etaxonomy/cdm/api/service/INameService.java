@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -220,7 +220,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 *            may be null
 	 * @param propertyPaths
 	 *            properties to initialize - see
-	 *            {@link BeanInitializer#initialize(Object, List)}
+	 *            {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
 	public List<NameRelationship> listNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -235,7 +235,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
 	public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -249,7 +249,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 * @deprecated use {@link #listNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
@@ -265,7 +265,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 * @deprecated use {@link #pageNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
@@ -281,7 +281,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 * @deprecated use {@link #listNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
@@ -297,7 +297,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 * @deprecated use {@link #pageNameRelationships(TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
 	 */
@@ -314,7 +314,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of hybrid relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of HybridRelationship instances
 	 */
 	public Pager<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -347,7 +347,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageSize The maximum number of names returned (can be null for all names)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of TaxonNameBase instances
 	 */
 	public Pager<TaxonNameBase> searchNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -386,7 +386,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param criteria additional criteria to filter by
 	 * @param pageSize The maximum number of objects returned (can be null for all objects)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or

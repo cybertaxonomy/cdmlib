@@ -6,7 +6,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IMarkerService extends IVersionableService<Marker> {
@@ -18,7 +18,7 @@ public interface IMarkerService extends IVersionableService<Marker> {
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return
 	 */
 	public Pager<Marker> page(MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -30,7 +30,7 @@ public interface IMarkerService extends IVersionableService<Marker> {
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints Properties to order by
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a paged list of Marker instances
 	 */
     public Pager<Marker> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);

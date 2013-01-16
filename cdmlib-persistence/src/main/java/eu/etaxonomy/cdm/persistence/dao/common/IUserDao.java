@@ -14,7 +14,7 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -30,7 +30,7 @@ public interface IUserDao extends ICdmEntityDao<User> {
 	 * @param criteria extra restrictions to apply
 	 * @param pageSize The maximum number of rights returned (can be null for all rights)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or

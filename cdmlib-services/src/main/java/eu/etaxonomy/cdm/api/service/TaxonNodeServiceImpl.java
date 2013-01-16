@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
 /**
@@ -49,7 +49,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
 	@Autowired
-	private BeanInitializer defaultBeanInitializer;
+	private IBeanInitializer defaultBeanInitializer;
 	
 	private Comparator<? super TaxonNode> taxonNodeComparator;
 	@Autowired

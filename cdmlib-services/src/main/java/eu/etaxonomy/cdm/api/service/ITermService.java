@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ITermService extends IIdentifiableEntityService<DefinedTermBase> {
@@ -89,7 +89,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 	 * @param definedTerms the set of terms which are part of the terms of interest 
 	 * @param pageSize The maximum number of terms returned (can be null for all terms)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of DefinedTerms
 	 */
 	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -100,7 +100,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 	 * @param definedTerms the set of terms which include the terms of interest 
 	 * @param pageSize The maximum number of terms returned (can be null for all terms)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of DefinedTerms
 	 */
 	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);

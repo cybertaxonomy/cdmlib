@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -74,7 +74,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence associated with these media
 	 * @param pageSize The maximum number of media returned (can be null for all related media)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of media instances
      */
 	public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -95,7 +95,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
 	 * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of determination instances
      */
 	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -114,7 +114,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence that was a source of these derivation events
 	 * @param pageSize The maximum number of derivation events returned (can be null for all related derivation events)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of derivation events
      */
 	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);

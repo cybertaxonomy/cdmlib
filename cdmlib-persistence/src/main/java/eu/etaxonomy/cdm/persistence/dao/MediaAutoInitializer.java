@@ -21,9 +21,9 @@ public class MediaAutoInitializer extends AutoPropertyInitializer<Media> {
 
     @Override
     public void initialize(Media bean) {
-        bean.getRepresentations();
+        beanInitializer.initializeInstance(bean.getAllTitles());
         for (MediaRepresentation r : bean.getRepresentations()){
-            r.getParts();
+            beanInitializer.initializeInstance(r.getParts());
         }
     }
 }

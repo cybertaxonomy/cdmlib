@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class AutoPropertyInitializer<T extends CdmBase> {
 
     @Autowired
-    protected BeanInitializer beanInitializer;
+    protected IBeanInitializer beanInitializer;
 
 
     public abstract void initialize(T bean);

@@ -16,7 +16,7 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.security.provisioning.GroupManager;
 
 import eu.etaxonomy.cdm.model.common.Group;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -36,7 +36,7 @@ public interface IGroupService extends IService<Group>, GroupManager{
 	 * @param criteria additional criteria to filter by
 	 * @param pageSize The maximum number of objects returned (can be null for all objects)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
 	 *            include *-to-one properties like createdBy.username or

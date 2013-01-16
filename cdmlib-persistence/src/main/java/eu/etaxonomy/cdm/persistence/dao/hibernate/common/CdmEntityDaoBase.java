@@ -52,7 +52,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
@@ -76,9 +76,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Autowired
 //	@Qualifier("defaultBeanInitializer")
-    protected BeanInitializer defaultBeanInitializer;
+    protected IBeanInitializer defaultBeanInitializer;
 
-    public void setDefaultBeanInitializer(BeanInitializer defaultBeanInitializer) {
+    public void setDefaultBeanInitializer(IBeanInitializer defaultBeanInitializer) {
         this.defaultBeanInitializer = defaultBeanInitializer;
     }
 

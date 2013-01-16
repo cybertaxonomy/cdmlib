@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 26.03.2009
  *
  */
-public abstract class AbstractBeanInitializer implements BeanInitializer{
+public abstract class AbstractBeanInitializer implements IBeanInitializer{
 
     public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
 
@@ -57,14 +57,10 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
         return beanAutoInitializers;
     }
 
-    /**
-     * Initialize the the proxy, unwrap the target object and return it.
-     *
-     * @param proxy
-     *            the proxy to initialize may wrap a single bean or a collection
-     * @return the unwrapped target object
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeInstance(java.lang.Object)
      */
-    protected abstract Object initializeInstance(Object proxy);
+    public abstract Object initializeInstance(Object proxy);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -128,6 +124,9 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
      */
     //TODO optimize algorithm ..
     public void initialize(Object bean, List<String> propertyPaths) {
+
+        invokePropertyAutoInitializers(bean);
+
         if(propertyPaths == null){
             return;
         }

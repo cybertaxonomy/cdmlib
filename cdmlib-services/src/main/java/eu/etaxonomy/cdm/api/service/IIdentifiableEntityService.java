@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -80,7 +80,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @param t The identifiable entity
      * @param pageSize The maximum number of sources returned (can be null for all sources)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of OriginalSource entities
      */
     public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -91,7 +91,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @param t The identifiable entity
      * @param pageSize The maximum number of rights returned (can be null for all rights)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of Rights entities
      */
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -117,7 +117,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @param criteria additional criteria to filter by
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
@@ -167,7 +167,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @param criteria additional criteria to filter by
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
@@ -185,7 +185,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
      * @param criteria additional criteria to filter by
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or

@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -96,7 +96,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param propertyPaths
      *            properties to be initialized, For detailed description and
      *            examples <b>please refer to:</b>
-     *            {@link BeanInitializer#initialize(Object, List)}. <Br>
+     *            {@link IBeanInitializer#initialize(Object, List)}. <Br>
      *            Default: true.
      * @return The List<Taxon> of root taxa.
      * @deprecated obsolete when using classification
@@ -275,7 +275,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonRelationship instances
      */
     public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -291,7 +291,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of TaxonRelationship instances
      */
     public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -305,7 +305,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonRelationship instances
      */
     public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -320,7 +320,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of TaxonRelationship instances
      */
     public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -351,7 +351,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of SynonymRelationship instances
      */
     public Pager<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -365,7 +365,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of SynonymRelationship instances
      */
     public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -492,7 +492,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *            authorTeam.persistentTitleCache
      * @param propertyPaths
      *            properties to initialize - see
-     *            {@link BeanInitializer#initialize(Object, List)}
+     *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a paged list of instances of type T matching the queryString
      * @throws IOException
      * @throws CorruptIndexException
@@ -577,7 +577,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param pageSize The maximum number of relationships returned (can be null for all relationships)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param orderHints Properties to order by
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @param direction The direction of the relationship
      * @return a List of SynonymRelationship instances
      */
