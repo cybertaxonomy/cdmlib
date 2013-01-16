@@ -20,7 +20,7 @@ public class TermBaseAutoInitializer extends AutoPropertyInitializer<TermBase> {
 
     @Override
     public void initialize(TermBase bean) {
-        bean.getRepresentations();
+       beanInitializer.initializeInstance(bean.getRepresentations());
     }
 
 }

@@ -22,7 +22,7 @@ public class GatheringEventLocationAutoInitializer extends AutoPropertyInitializ
     @Override
     public void initialize(GatheringEvent bean) {
         try {
-            bean.getExactLocation().getReferenceSystem().getRepresentations();
+            beanInitializer.initializeInstance(bean.getExactLocation().getReferenceSystem().getRepresentations());
         } catch (NullPointerException npe){
             /* IGNORE */
         }
