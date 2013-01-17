@@ -244,7 +244,7 @@ public abstract class BerlinModelImportBase extends DbImportBase<BerlinModelImpo
 	 * @return
 	 */
 	private Reference getReferenceDetailFromMaps(Map<String, Reference> firstDetailMap, Map<String, Reference> secondDetailMap, String nomRefDetailFk) {
-		Reference result = null;
+		Reference<?> result = null;
 		if (nomRefDetailFk != null){
 			//get ref
 			if (firstDetailMap != null){
