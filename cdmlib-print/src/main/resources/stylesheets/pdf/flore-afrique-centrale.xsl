@@ -389,21 +389,32 @@
           <fo:inline text-decoration="underline"  keep-with-next.within-line="always">
             <xsl:value-of select="representation_L10n"/>
           </fo:inline>
-          <fo:inline>:</fo:inline>
-          <xsl:for-each select="descriptionelements/descriptionelement">
-            
-              <!--xsl:value-of
-                select="multilanguageText_L10n/text" disable-output-escaping = "yes"/-->
+          <fo:inline>: </fo:inline>
+          <xsl:for-each select="descriptionelements/descriptionelement">          
 
               <xsl:variable name="desc_element_text" select="multilanguageText_L10n/text"/>
             
+            <!-- filter out repeated description element text. Lorna - could do this in the CDM so it doesn't occur in the XML but not sure why it's happening-->
+            <xsl:variable name="prev_desc_element_text" select="preceding-sibling::descriptionelement[1]/multilanguageText_L10n/text"/>  
+            
             <fo:inline font-size="9pt" space-after="5mm">
-              <xsl:if test="not(starts-with($desc_element_text, 'Figure'))">
+                          
+              <xsl:if test="not(starts-with($desc_element_text, 'Figure'))">  
                 
-                <xsl:apply-templates select="multilanguageText_L10n/text"/>
-                </xsl:if>
-             
+                <xsl:choose>
+                  <xsl:when test="position() = 1">
+                    <xsl:apply-templates select="multilanguageText_L10n/text"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:if test="$desc_element_text != $prev_desc_element_text">
+                      <xsl:apply-templates select="multilanguageText_L10n/text"/>
+                    </xsl:if>
+                  </xsl:otherwise>
+                </xsl:choose>               
+
+              </xsl:if>            
             </fo:inline>
+                       
               <!--xsl:apply-templates select="multilanguageText_L10n/text"/-->
               <!--xsl:apply-templates select="media"/-->
             
