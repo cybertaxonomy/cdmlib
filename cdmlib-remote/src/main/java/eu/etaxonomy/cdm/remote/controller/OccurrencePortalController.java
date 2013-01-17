@@ -48,7 +48,10 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "derivedFrom.type",
             "derivedFrom.originals.*",
             "derivedFrom.originals.determinations.taxon",
-            "derivedFrom.gatheringEvent.exactLocation.$"
+            "derivedFrom.gatheringEvent.exactLocation.$",
+            "specimenTypeDesignations.*",
+            "specimenTypeDesignations.citation.*",
+            "specimenTypeDesignations.homotypicalGroup.*"
     });
 
 

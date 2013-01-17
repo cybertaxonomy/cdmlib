@@ -1254,6 +1254,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImp
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/QueryParseException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/TermBaseAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/TitleCacheAutoInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/TypeDesignationAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/agent/IAgentDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/AuditEventSort.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAnnotatableDao.java -text
