@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 @Audited
 public class FeatureTree extends TermBase implements Cloneable{
 	private static final long serialVersionUID = -6713834139003172735L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureTree.class);
 	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	
