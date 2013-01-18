@@ -39,6 +39,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -100,6 +101,18 @@ public class DeterminationEvent extends EventBase {
 	 */
 	public static DeterminationEvent NewInstance(){
 		return new DeterminationEvent();
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DeterminationEvent NewInstance(Taxon taxon, SpecimenOrObservationBase identifiedUnit ){
+		DeterminationEvent result = new DeterminationEvent();
+		result.setTaxon(taxon);
+		result.setIdentifiedUnit(identifiedUnit);
+		identifiedUnit.addDetermination(result);
+		return result;
 	}
 	
 	/**
