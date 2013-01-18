@@ -40,9 +40,11 @@ import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
+import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
@@ -77,6 +79,7 @@ public class CsvExportController{
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
         binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
 
@@ -91,11 +94,12 @@ public class CsvExportController{
 	public void doExportRedlist(
 			@RequestParam(value = "features", required = false) UuidList featureUuids,
 			@RequestParam(value = "classification", required = false) String classificationUUID,
+            @RequestParam(value = "area", required = false) UuidList areas,
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
 			HttpServletRequest request) {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, byteArrayOutputStream);
+		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
 		defaultExport.invoke(config);
@@ -136,10 +140,11 @@ public class CsvExportController{
 	 * 
 	 * @param classificationUUID pass-through the selected {@link Classification classification}
 	 * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
+	 * @param areas 
 	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
 	 * @return the CsvTaxExportConfiguratorRedlist config
 	 */
-	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, ByteArrayOutputStream byteArrayOutputStream) {
+	private CsvTaxExportConfiguratorRedlist setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<UUID> classificationUUIDS = new HashSet
@@ -151,13 +156,21 @@ public class CsvExportController{
 				features.add((Feature) termService.find(uuid));
 			}
 		}
-		
+		List<NamedArea> selectedAreas = new ArrayList<NamedArea>();
+		if(areas != null){
+			for(UUID area:areas){
+				logger.info(area);
+				selectedAreas.add((NamedArea)termService.find(area));
+			}
+		}
+
 		CsvTaxExportConfiguratorRedlist config = CsvTaxExportConfiguratorRedlist.NewInstance(null, new File(destination));
 		config.setHasHeaderLines(true);
 		config.setFieldsTerminatedBy("\t");
 		config.setClassificationUuids(classificationUUIDS);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
 		if(features != null)config.setFeatures(features);
+        config.setNamedAreas(selectedAreas);
 		return config;
 	}
 }

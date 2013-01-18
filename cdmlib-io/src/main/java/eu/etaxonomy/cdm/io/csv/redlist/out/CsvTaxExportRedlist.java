@@ -18,11 +18,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hamcrest.core.IsEqual;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -76,6 +79,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		state.addMetaRecord(metaRecord);
 		
 		Set<UUID> classificationUuidSet = config.getClassificationUuids();
+		List<NamedArea> selectedAreas = config.getNamedAreas();
 		List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
 		Set<Classification> classificationSet = new HashSet<Classification>();
 		classificationSet.addAll(classificationList);
@@ -86,23 +90,47 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			byteArrayOutputStream = config.getByteArrayOutputStream();
 			writer = new PrintWriter(byteArrayOutputStream); 
 
+			List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
 			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
-			for (TaxonNode node : allNodes){
+			//Geographical filter
+			if(selectedAreas != null && !selectedAreas.isEmpty()){
+				for (TaxonNode node : allNodes){
+					Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+					//TODO Hierarchically  order for Germany and its federal states
+					Set<TaxonDescription> descriptions = taxon.getDescriptions();
+					for (TaxonDescription description : descriptions){
+						for (DescriptionElementBase el : description.getElements()){
+							if (el.isInstanceOf(Distribution.class) ){
+								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+								NamedArea area = distribution.getArea();
+								for(NamedArea selectedArea:selectedAreas){
+									if(selectedArea.getUuid().equals(area.getUuid())){
+										filteredNodes.add(node);
+									}
+								}
+							}
+						}
+					}
+				}
+			}else{
+				filteredNodes = allNodes;
+			}
+			for (TaxonNode node : filteredNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+
 				CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Classification classification = node.getClassification();
 				config.setClassificationTitleCache(classification.getTitleCache());
 				if (! this.recordExists(taxon)){
-						handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config);
-						record.write(writer);
-						this.addExistingRecord(taxon);
-					}
+					handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config);
+					record.write(writer);
+					this.addExistingRecord(taxon);
+				}
 				//misapplied names
 				handleMisapplication(taxon, writer, classification, metaRecord, config);
 				writer.flush();
 			}
-
 		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
@@ -112,7 +140,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 		}
 		commitTransaction(txStatus);
 		return;
-		
+
 	}
 
 	/**
