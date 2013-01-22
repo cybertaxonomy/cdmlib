@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	
-	// ************constants to set up the expected result: *****************************
+	// ************constants to set up the expected results: *****************************
 
 	//here is the list of the types that will be test counted in the particular parts
 	private static final List<StatisticsTypeEnum> types = Arrays.asList(new StatisticsTypeEnum[]{
@@ -254,7 +254,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		List<Statistics> statisticsList = service.getCountStatistics(configuratorList);
 
 		assertEquals(expectedCountMap, statisticsList.get(0).getCountMap());
-//		fail("Not yet implemented");
 	}
 
 	private Map<String, Number> createExpectedCountMap_ALL() {
@@ -265,5 +264,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 		return countMap;
 	}
-
+	
+	
+	@Test
+	public void testGetCountStatistics_CLASSIFICATION() {
+		fail("Not yet implemented");
+	}
 }
