@@ -19,23 +19,28 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 
+/**
+ * this dao provides counting methods for elements in a database in general or
+ * in a specific class (or tree - TODO) in the database.
+ * 
+ * only functionality, that is not covered by other daos is implemented
+ * 
+ * MAYDO: restructure and using {@link Criteria} and methods like prepareQuery
+ * 
+ * @author s.buers
+ * 
+ */
+
 @Repository
 public class StatisticsDaoHibernateImpl extends DaoBase implements
 		IStatisticsDao {
 
-	/**
-	 * @return be aware that the returned long might be null
-	 */
-	@Override
-	public Long countNomenclaturalReferences() {
-		Query query = getSession()
-				.createQuery(
-						"select count(distinct nomenclaturalReference) from TaxonNameBase");
-		return (Long) query.uniqueResult();
-	}
 
-	/**
-	 * @return be aware that the returned long might be null, if...
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
+	 * countDescriptiveSourceReferences()
 	 */
 	@Override
 	public Long countDescriptiveSourceReferences() {
@@ -44,6 +49,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		Set descRefIds = new HashSet<Integer>();
 
 		// this query does not work...
+		
 		// query = getSession().createQuery(
 		// "select count(distinct(r.id, desc.id)) from DescriptionBase as d "
 		// + "join d.descriptionElements as de "
@@ -67,90 +73,75 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		query = getSession().createQuery(
 				"select distinct s.citation.id from DescriptionElementBase as d "
 						+ "join d.sources as s where s.citation is not null ");
-		// count += (Long) query.uniqueResult();
+
 		descRefIds.addAll((ArrayList<Integer>) query.list());
-
-		// System.out.println(query.getQueryString());
-
-		// count += (Long) query.uniqueResult();
 
 		return Long.valueOf(descRefIds.size());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
+	 * countDescriptiveSourceReferences
+	 * (eu.etaxonomy.cdm.model.taxon.Classification)
+	 */
 	@Override
 	public Long countDescriptiveSourceReferences(Classification classification) {
-
+		if(classification==null)
+			return null; //or MAYDO: throw some Exception???
 		Query query;
+		List<String> queryStrings = new ArrayList<String>();
 		Set<Integer> descrRefIds = new HashSet<Integer>();
 
-		// taxon descriptions
-		query = getSession().createQuery(
-				"select distinct r.id from TaxonNode as tn "
-						+ "join tn.taxon.descriptions as d "
-						+ "join d.descriptionSources as r "
-						+ "where tn.classification=:classification ");
-		query.setParameter("classification", classification);
+		// count Taxon descriptions
+		queryStrings.add("select distinct r.id from TaxonNode as tn "
+				+ "join tn.taxon.descriptions as d "
+				+ "join d.descriptionSources as r "
+				+ "where tn.classification=:classification ");
+		//
 
-		descrRefIds.addAll((ArrayList<Integer>) query.list());
-
-		// taxon description elements:
-		query = getSession().createQuery(
-				"select distinct des.citation.id from TaxonNode as tn "
+		// Taxon description elements:
+		queryStrings
+				.add("select distinct des.citation.id from TaxonNode as tn "
 						+ "join tn.taxon.descriptions as d "
 						+ "join d.descriptionElements as de "
 						+ "join de.sources as des "
 						+ "where tn.classification=:classification ");
-		query.setParameter("classification", classification);
-
-		descrRefIds.addAll((ArrayList<Integer>) query.list());
 
 		// TaxonNameBase descriptions:
-		query = getSession().createQuery(
-				"select distinct r.id from TaxonNode tn "
-						+ "join tn.taxon.name.descriptions as d "
-						+ "join d.descriptionSources as r "
-						+ "where tn.classification=:classification ");
-		query.setParameter("classification", classification);
-
-		descrRefIds.addAll((ArrayList<Integer>) query.list());
+		queryStrings.add("select distinct r.id from TaxonNode tn "
+				+ "join tn.taxon.name.descriptions as d "
+				+ "join d.descriptionSources as r "
+				+ "where tn.classification=:classification ");
 
 		// TaxonNameBase description elements:
-		query = getSession().createQuery(
-				"select distinct des.citation.id from TaxonNode tn "
-						+ "join tn.taxon.name.descriptions as d "
-						+ "join d.descriptionElements as de "
-						+ "join de.sources as des "
-						+ "where tn.classification=:classification ");
-		query.setParameter("classification", classification);
-
-		descrRefIds.addAll((ArrayList<Integer>) query.list());
+		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+				+ "join tn.taxon.name.descriptions as d "
+				+ "join d.descriptionElements as de "
+				+ "join de.sources as des "
+				+ "where tn.classification=:classification ");
 
 		// SpecimenOrObservationBase
-//		query = getSession().createQuery(
-//				"select r.id from SpecimenOrObservationBase as so, TaxonNode as tn "
-//						+ "join so.determinations as det "
-//						+ "join tn.taxon as t1 " + "join det.taxon t2 "
-//						+ "on t1=t2  "
-//						+ "where tn.classification=: classification as t "
-//						+ "join t.descriptions as so_d "
-//						+ "join so_d.descriptionSources as r");
-		
-		query = getSession().createQuery(
-				"select r.id from DescriptionBase db, TaxonNode tn "
-						+ "join db.describedSpecimenOrObservations as so "
-						+ "join so.determinations as det "
-						+ "join db.descriptionSources as r "
-						+ "where tn.classification=:classification "
-						+ "and tn.taxon=det.taxon");
+		// query = getSession().createQuery(
+		// "select r.id from SpecimenOrObservationBase as so, TaxonNode as tn "
+		// + "join so.determinations as det "
+		// + "join tn.taxon as t1 " + "join det.taxon t2 "
+		// + "on t1=t2  "
+		// + "where tn.classification=: classification as t "
+		// + "join t.descriptions as so_d "
+		// + "join so_d.descriptionSources as r");
 
-		query.setParameter("classification", classification);
+		queryStrings.add("select r.id from DescriptionBase db, TaxonNode tn "
+				+ "join db.describedSpecimenOrObservations as so "
+				+ "join so.determinations as det "
+				+ "join db.descriptionSources as r "
+				+ "where tn.classification=:classification "
+				+ "and tn.taxon=det.taxon");
 
-		descrRefIds.addAll((ArrayList<Integer>) query.list());
-		
 		// SpecimenOrObservationBase description elements:
-
-		query = getSession().createQuery(
-				"select des.citation.id from DescriptionBase db, TaxonNode tn "
+		queryStrings
+				.add("select des.citation.id from DescriptionBase db, TaxonNode tn "
 						+ "join db.describedSpecimenOrObservations as so "
 						+ "join so.determinations as det "
 						+ "join db.descriptionElements as de "
@@ -158,18 +149,29 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "where tn.classification=:classification "
 						+ "and tn.taxon=det.taxon");
 
-		query.setParameter("classification", classification);
-
-		descrRefIds.addAll((ArrayList<Integer>) query.list());	
+		for (String queryString : queryStrings) {
+			query = getSession().createQuery(queryString);
+			query.setParameter("classification", classification);
+			descrRefIds.addAll((ArrayList<Integer>) query.list());
+		}
 
 		return Long.valueOf(descrRefIds.size());
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
+	 * countTaxaInClassification(java.lang.Class,
+	 * eu.etaxonomy.cdm.model.taxon.Classification)
+	 */
 	@Override
 	public Long countTaxaInClassification(Class<? extends TaxonBase> clazz,
 			Classification classification) {
-
+		if(classification==null)
+			return null; //or MAYDO: throw some Exception???
+		
 		if (clazz.equals(TaxonBase.class)) {
 
 			return countTaxaInClassification(Taxon.class, classification)
@@ -200,9 +202,18 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#countTaxonNames
+	 * (eu.etaxonomy.cdm.model.taxon.Classification)
+	 */
 	@Override
 	public Long countTaxonNames(Classification classification) {
 
+		if(classification==null)
+			return null; //or MAYDO: throw some Exception???
 		// the query would be:
 		// "select count (distinct n) from (
 		// + "select distinct tn.taxon.name as c from TaxonNode tn "
@@ -238,8 +249,32 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		return Long.valueOf(nameIds.size());
 	}
 
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
+	 * countNomenclaturalReferences()
+	 */
+	@Override
+	public Long countNomenclaturalReferences() {
+		Query query = getSession()
+				.createQuery(
+						"select count(distinct nomenclaturalReference) from TaxonNameBase");
+		return (Long) query.uniqueResult();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
+	 * countNomenclaturalReferences(eu.etaxonomy.cdm.model.taxon.Classification)
+	 */
 	@Override
 	public Long countNomenclaturalReferences(Classification classification) {
+		
+		if(classification==null)
+			return null; //or MAYDO: throw some Exception???
 		Query query;
 		Set<Integer> nameIds = new HashSet<Integer>();
 
@@ -269,22 +304,19 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		return Long.valueOf(nameIds.size());
 	}
 
-	// @Override
-	// public Long countNomenclaturalReferences() {
-	// return countNomenclaturalReferences("");
-	// }
-	//
-	// private Long countNomenclaturalReferences(String where) {
-	//
-	// Query query = getSession().createQuery(
-	// "select count(distinct nomenclaturalReference) from TaxonNameBase"
-	// + where);
-	// return (Long) query.uniqueResult();
-	// }
-	//
-	// @Override
-	// public Long countNomenclaturalReferences(Class clazz) {
-	// return countNomenclaturalReferences("where" + clazz.getSimpleName());
-	// }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
+	 * countReferencesInClassification
+	 * (eu.etaxonomy.cdm.model.taxon.Classification)
+	 */
+	@Override
+	public Long countReferencesInClassification(Classification classification) {
+		if(classification==null)
+			return null; //or MAYDO: throw some Exception???
+		//TODO implement this count
+		return null;
+	}
 
 }
