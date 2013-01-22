@@ -17,19 +17,21 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IStatisticsService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * @author sybille
- * @created 07.11.2012 this class provides counting of different entities in a
- *          database
+ * this controller provides a method to count different entities in the entire
+ * database as well as from a particular classification 
+ * items of different types can be choosen 
+ * have a look at doStatistics method
+ * 
+ * @author s.buers
+ * @created 07.11.2012
  * 
  */
 @Controller
@@ -40,7 +42,7 @@ public class StatisticsController {
 			.getLogger(StatisticsController.class);
 
 	private static final IdentifiableEntity ALL_DB = null;
-	private static final IdentifiableEntity DEFAULT_Entity = ALL_DB;
+	private static final IdentifiableEntity DEFAULT_TYPES = null;
 
 	@Autowired
 	private IClassificationService classificationService;
@@ -91,7 +93,7 @@ public class StatisticsController {
 		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
 
 		// 1. get types for configurators:
-		// all the configurators will have the same types
+		// in our case all the configurators will have the same types
 		// so we calculate the types once and save them in a helperConfigurator
 		StatisticsConfigurator helperConfigurator = new StatisticsConfigurator();
 
@@ -109,15 +111,15 @@ public class StatisticsController {
 
 		// if no part was given:
 		if (part == null) {
-			helperConfigurator.addFilter(DEFAULT_Entity);
+			helperConfigurator.addFilter(DEFAULT_TYPES);
 			configuratorList.add(helperConfigurator);
 		}
 		// else parse list of parts and create configurator for each:
 		else {
 			for (String string : part) {
-//				System.out.println(StatisticsPartEnum.ALL.toString());
+				// System.out.println(StatisticsPartEnum.ALL.toString());
 				if (string.equals(StatisticsPartEnum.ALL.toString())) {
-					helperConfigurator.addFilter(ALL_DB);
+					helperConfigurator.addFilter(DEFAULT_TYPES);
 					configuratorList.add(helperConfigurator);
 				} else if (string.equals(StatisticsPartEnum.CLASSIFICATION
 						.toString())) {

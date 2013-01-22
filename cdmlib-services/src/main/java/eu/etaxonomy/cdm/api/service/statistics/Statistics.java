@@ -31,14 +31,6 @@ public class Statistics {
 
 	private StatisticsConfigurator request;
 
-	// private Map<StatisticsTypeEnum, Number> countMap;
-
-	// private Map<StatisticsPartEnum, Map<IdentifiableEntity, Statistics>>
-	// partList;
-
-//	private List<IdentifiableEntity> about;
-
-	
 	// it's a pitty, but for JSON Map keys must be Strings
 	// see also: JSONObject _fromMap( Map map, JsonConfig jsonConfig )
 	// --> TODO: modify MapJSONValueProcessor.processArrayValue(Object value,
@@ -49,8 +41,6 @@ public class Statistics {
 	public Statistics(StatisticsConfigurator configurator) {
 		this.request = configurator;
 		this.countMap = new HashMap<String, Number>();
-
-//		this.about = new ArrayList<IdentifiableEntity>();
 	}
 
 	public void setRequest(StatisticsConfigurator request) {
@@ -69,9 +59,4 @@ public class Statistics {
 		this.countMap.put(type.getLabel(), number);
 	}
 	
-	// public Map<StatisticsPartEnum, Map<IdentifiableEntity, Statistics>>
-	// getPartList() {
-	// // return part;
-	// }
-
 }

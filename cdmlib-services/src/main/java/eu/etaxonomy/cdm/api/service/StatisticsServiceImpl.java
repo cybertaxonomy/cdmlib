@@ -49,15 +49,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private static final Logger logger = Logger
 			.getLogger(StatisticsServiceImpl.class);
 
-	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
-			.asList(new String[] { "sources.citation" });
-	// "descriptionSources", "citation"
-
-	private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
-			.asList(new String[] { "sources.citation", });;
-
-	private List<StatisticsConfigurator> configurators;
-
 	private ArrayList<Statistics> statisticsList;
 
 	@Autowired
@@ -73,12 +64,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private IReferenceDao referenceDao;
 
 	@Autowired
-	private IDescriptionDao descriptionDao;
-
-	@Autowired
-	private IDescriptionElementDao descrElementDao;
-
-	@Autowired
 	private IStatisticsDao statisticsDao;
 
 	/**
@@ -86,9 +71,9 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	 * the database referenced in the configurator
 	 * 
 	 * @param configurators
-	 * @return be aware that a Statistics.countMap might contain "null" for
-	 *         {@link Number} value, if the count failed (, if the value is "0"
-	 *         the count succeeded and sum is 0)
+	 * @return be aware that a Statistics.countMap might contain "null"
+	 *         {@link Number} values, if the count failed (, if the value is "0"
+	 *         the count succeeded in counting zero elements.)
 	 */
 	@Override
 	@Transactional
@@ -116,6 +101,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		} else {
 			countPart(configurator, filter);
 		}
+
 	}
 
 	/**
@@ -175,8 +161,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 			IdentifiableEntity filter) {
 		// TODO maybe remove redundant parameter filter
 		Statistics statistics = new Statistics(configurator);
-		// TODO count the items in the classification - there have to be dao
-		// method(s) for that first.
+
 		Long counter = null;
 
 		if (filter instanceof Classification) {
@@ -185,10 +170,10 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 				switch (type) {
 				case CLASSIFICATION:
-					// there should not be any classification nested in an other
-					// classification
+					logger.info("there should not be any classification "
+							+ "nested in an other classification");
 					// so do nothing
-					return;
+					break;
 				case ACCEPTED_TAXA:
 					counter = statisticsDao.countTaxaInClassification(
 							Taxon.class, (Classification) filter);
@@ -203,21 +188,23 @@ public class StatisticsServiceImpl implements IStatisticsService {
 							Synonym.class, (Classification) filter);
 					break;
 				case TAXON_NAMES:
-					counter = statisticsDao.countTaxonNames((Classification)filter);
+					counter = statisticsDao
+							.countTaxonNames((Classification) filter);
 					break;
 				case ALL_REFERENCES:
 					break;
 				case DESCRIPTIVE_SOURCE_REFERENCES:
-					counter= statisticsDao.countDescriptiveSourceReferences((Classification) filter);
+					counter = statisticsDao
+							.countDescriptiveSourceReferences((Classification) filter);
 					break;
 				case NOMECLATURAL_REFERENCES:
-					counter = statisticsDao.countNomenclaturalReferences((Classification) filter);
+					counter = statisticsDao
+							.countNomenclaturalReferences((Classification) filter);
 					break;
 
 				}
 
 				statistics.addCount(type, counter);
-				// System.out.println("");
 			}
 
 		} else {
