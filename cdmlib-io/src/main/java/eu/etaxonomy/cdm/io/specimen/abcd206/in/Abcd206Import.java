@@ -159,7 +159,7 @@ implements ICdmIO<Abcd206ImportState> {
 
 			abcdFileGetter = new Abcd206XMLFieldGetter(dataHolder, prefix);
 
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < unitsList.getLength(); i++) {
 
 				// logger.info("UNIT NUMBER " + i);
 				this.setUnitPropertiesXML((Element) unitsList.item(i));
@@ -643,7 +643,7 @@ implements ICdmIO<Abcd206ImportState> {
 	}
 
 	private void makeIndividualsAssociation(Taxon taxon, DeterminationEvent determinationEvent) {
-	
+
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 		taxonDescription.setTitleCache(ref.getTitleCache(), true);
 
@@ -1635,4 +1635,3 @@ implements ICdmIO<Abcd206ImportState> {
 	}
 
 }
-
