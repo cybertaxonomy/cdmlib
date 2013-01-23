@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -27,6 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -43,7 +45,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
-
+	
 	@SpringBeanByType
 	INameService nameService;
 
@@ -74,7 +76,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
 	
-	@Test
+	@Ignore
 	@DataSet(value="../../../BlankDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
