@@ -161,7 +161,7 @@ implements ICdmIO<Abcd206ImportState> {
 
 			for (int i = 0; i < unitsList.getLength(); i++) {
 
-				logger.info("UNIT NUMBER " + i);
+				// logger.info("UNIT NUMBER " + i);
 				this.setUnitPropertiesXML((Element) unitsList.item(i));
 				refreshTransaction();
 				this.handleSingleUnit(i);
@@ -355,7 +355,7 @@ implements ICdmIO<Abcd206ImportState> {
 	 * @return DerivedUnitFacade
 	 */
 	private DerivedUnitFacade getFacade() {
-		logger.info("GETFACADE");
+		// logger.info("GETFACADE");
 		/**
 		 * SPECIMEN OR OBSERVATION OR LIVING
 		 */
@@ -462,7 +462,7 @@ implements ICdmIO<Abcd206ImportState> {
 			// logger.info("Institution (agent) already in the db");
 			institution = institutions.get(0);
 		}
-		logger.info("getinstitution " + institution.toString());
+		// logger.info("getinstitution " + institution.toString());
 		return institution;
 	}
 
@@ -488,8 +488,8 @@ implements ICdmIO<Abcd206ImportState> {
 			collections = new ArrayList<Collection>();
 		}
 		if (collections.size() == 0 || !config.isReUseExistingMetadata()) {
-			logger.info("Collection not found or do not reuse existing metadata  "
-					+ dataHolder.collectionCode);
+			// logger.info("Collection not found or do not reuse existing metadata  "
+			//		+ dataHolder.collectionCode);
 			// create new collection
 			collection.setCode(dataHolder.collectionCode);
 			collection.setCodeStandard("GBIF");
@@ -533,7 +533,7 @@ implements ICdmIO<Abcd206ImportState> {
 	private void linkDeterminationEvent(Taxon taxon, boolean preferredFlag,
 			Abcd206ImportConfigurator config, 
 			DerivedUnitFacade derivedFacade) {
-		logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
+		// logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
 
 		refreshTransaction();
 
@@ -541,7 +541,7 @@ implements ICdmIO<Abcd206ImportState> {
 		try {
 			taxon = (Taxon) getTaxonService().find(taxon.getUuid());
 		} catch (Exception e) {
-			logger.info("taxon uptodate");
+			// logger.info("taxon uptodate");
 		}
 
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
@@ -555,15 +555,15 @@ implements ICdmIO<Abcd206ImportState> {
 		//		logger.info("dset: "+dset);
 
 		try {
-			logger.info("NB TYPES INFO: "+ dataHolder.statusList.size());
+			// logger.info("NB TYPES INFO: "+ dataHolder.statusList.size());
 			for (SpecimenTypeDesignationStatus specimenTypeDesignationstatus : dataHolder.statusList) {
 				if (specimenTypeDesignationstatus != null) {
-					logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
+					// logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
 					try {
 						taxon = (Taxon) getTaxonService().find(taxon.getUuid());
 						
 					} catch (Exception e) {
-						logger.info("taxon uptodate");
+						// logger.info("taxon uptodate");
 					}
 					specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) getTermService().find(specimenTypeDesignationstatus.getUuid());
 					//Designation
@@ -591,7 +591,7 @@ implements ICdmIO<Abcd206ImportState> {
 
 
 		if (config.isDoCreateIndividualsAssociations()) {
-			logger.info("isDoCreateIndividualsAssociations");
+			// logger.info("isDoCreateIndividualsAssociations");
 
 			// TaxonDescription taxonDescription = null;
 			if (config.isDoMatchToExistingDescription()) {
@@ -652,7 +652,9 @@ implements ICdmIO<Abcd206ImportState> {
 		refreshTransaction();
 
 		try{taxon = (Taxon) getTaxonService().find(taxon.getUuid());
-		}catch(Exception e){logger.info("taxon uptodate");}
+		}catch(Exception e){
+			//logger.info("taxon uptodate");
+			}
 
 		taxonDescription = (TaxonDescription) getDescriptionService().find(taxonDescription.getUuid());
 		taxon.addDescription(taxonDescription);
@@ -721,9 +723,9 @@ implements ICdmIO<Abcd206ImportState> {
 		Rank higherrank = null;
 		Rank taxonrank = taxonName.getRank();
 
-		logger.info("getParentTaxon childname " + taxonName.getFullTitleCache()
-				+ ", rank " + taxonrank + ", originalname "
-				+ originalName.getFullTitleCache());
+		// logger.info("getParentTaxon childname " + taxonName.getFullTitleCache()
+		//		+ ", rank " + taxonrank + ", originalname "
+		//		+ originalName.getFullTitleCache());
 
 		HashMap<Taxon, NonViralName<?>> map = new HashMap<Taxon, NonViralName<?>>();
 
@@ -762,13 +764,13 @@ implements ICdmIO<Abcd206ImportState> {
 		}
 
 		if (taxonrank.isInfraGeneric()) {
-			logger.info("isInfrageneric");
+			// logger.info("isInfrageneric");
 			highername.add(originalName.getGenusOrUninomial());
 			higherrank = Rank.GENUS();
 		}
 
 		if (taxonrank.isSpecies()) {
-			logger.info("isSpecies");
+			// logger.info("isSpecies");
 			if (originalName.getGenusOrUninomial() != null) {
 				highername.add(originalName.getGenusOrUninomial());
 				higherrank = Rank.GENUS();
@@ -784,7 +786,7 @@ implements ICdmIO<Abcd206ImportState> {
 		}
 
 		if (taxonrank.isInfraSpecific()) {
-			logger.info("isInfraSpecies");
+			// logger.info("isInfraSpecies");
 			if (originalName.getGenusOrUninomial() != null)
 				highername.add(originalName.getGenusOrUninomial());
 			if (originalName.getInfraGenericEpithet() != null) {
@@ -797,7 +799,7 @@ implements ICdmIO<Abcd206ImportState> {
 
 		String highernamestr = StringUtils.join(highername.iterator(), " ")
 				.split("sec. " + ref.getTitleCache())[0].trim();
-		logger.info("higherNamest :: " + highernamestr);
+		// logger.info("higherNamest :: " + highernamestr);
 		if (config.isDoReUseTaxon() && highername != null
 				&& highername.size() > 0 && highernamestr != "") {
 			boolean parentFound = false;
@@ -819,11 +821,11 @@ implements ICdmIO<Abcd206ImportState> {
 							parentFound = true;
 						}
 					}
-					if (!parentFound)
-						logger.info("parent pas trouvé");
-					else
-						logger.info("parent trouvé "
-								+ parenttaxon.getTitleCache());
+//					if (!parentFound)
+//						logger.info("parent pas trouvé");
+//					else
+//						logger.info("parent trouvé "
+//								+ parenttaxon.getTitleCache());
 
 				}
 			} catch (Exception e) {
@@ -836,7 +838,7 @@ implements ICdmIO<Abcd206ImportState> {
 
 		if ((parenttaxon == null && highername != null && highername.size() > 0 && highernamestr != "")
 				|| !config.isDoReUseTaxon()) {
-			logger.info("ICI BIS");
+			// logger.info("ICI BIS");
 			parentName = NonViralName.NewInstance(null);
 			parentName.setFullTitleCache(highernamestr);
 			parentName.setNameCache(highernamestr);
@@ -890,9 +892,9 @@ implements ICdmIO<Abcd206ImportState> {
 						child.getTitleCache().trim()
 						.split("sec. " + ref.getTitleCache())[0])
 						&& childName != null && tmpmaptn.keySet().size() > 0) {
-			logger.info("tmpparent.getTitleCache()  "
-					+ tmpparent.getTitleCache());
-			logger.info("child.getTitleCache() " + child.getTitleCache());
+			// logger.info("tmpparent.getTitleCache()  "
+			//		+ tmpparent.getTitleCache());
+			// logger.info("child.getTitleCache() " + child.getTitleCache());
 			child = (Taxon) getTaxonService().find(tmpparent.getUuid());
 			childName = maptn.get(child);
 			// if (childName == null) {
@@ -996,7 +998,7 @@ implements ICdmIO<Abcd206ImportState> {
 						//						logger.warn("B");
 						TaxonNode tn = getTaxonNodeService().find(child.getTaxonNodes().iterator().next().getUuid());
 						TaxonNode node = this.addChildNode(tn);
-						logger.warn("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+tn.getTaxon());
+//						logger.warn("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+tn.getTaxon());
 						this.addParentChild(t2,node.getTaxon());
 
 					}
@@ -1049,7 +1051,7 @@ implements ICdmIO<Abcd206ImportState> {
 	}
 
 	private void addParentChild(Taxon parent, Taxon child){
-		logger.info("ADDPARENTCHILD");
+		//logger.info("ADDPARENTCHILD");
 		boolean exists = false;
 		Taxon taxonFromHiber = null;
 		if (abcdstate.getConfig().isDoReUseTaxon()){
@@ -1133,7 +1135,7 @@ implements ICdmIO<Abcd206ImportState> {
 				taxon = null;
 			}
 		} else {
-			logger.info("Matching to existing Taxon : " + taxon.getTitleCache());
+			//logger.info("Matching to existing Taxon : " + taxon.getTitleCache());
 		}
 
 		if (!config.isDoReUseTaxon() && taxon == null) {
@@ -1147,8 +1149,8 @@ implements ICdmIO<Abcd206ImportState> {
 			getTaxonService().save(taxon);
 
 		}
-		logger.info("getTaxonService : "
-				+ getTaxonService().find(taxon.getUuid()));
+//		logger.info("getTaxonService : "
+//				+ getTaxonService().find(taxon.getUuid()));
 		return (Taxon) getTaxonService().find(taxon.getUuid());
 		// return taxonFromUUID()
 	}
@@ -1252,7 +1254,7 @@ implements ICdmIO<Abcd206ImportState> {
 		while (entries.hasNext()) {
 
 			int a = (Integer) entries.next();
-			logger.info("\n PREFERRED num." + a + " \n");
+//			logger.info("\n PREFERRED num." + a + " \n");
 			taxonName = preferredtaxonnametoinsert.get(a);
 			taxon = preferredtaxontoinsert.get(a);
 
@@ -1271,7 +1273,7 @@ implements ICdmIO<Abcd206ImportState> {
 
 			while (entries.hasNext()) {
 				int a = (Integer) entries.next();
-				logger.info("\n ADD non preferred " + a + " \n");
+//				logger.info("\n ADD non preferred " + a + " \n");
 				// taxonName = taxonnametoinsert.get(a);
 				taxon = taxontoinsert.get(a);
 				// do not do addParentTaxon as the name is not the
@@ -1292,12 +1294,12 @@ implements ICdmIO<Abcd206ImportState> {
 		}
 
 		else {// no preferred name, have to add everything to the classification
-			logger.info("no preferred taxa");
+			// logger.info("no preferred taxa");
 			entries = taxontoinsert.keySet().iterator();
 
 			while (entries.hasNext()) {
 				int a = (Integer) entries.next();
-				logger.info("\n NORMAL num." + a + " \n");
+				// logger.info("\n NORMAL num." + a + " \n");
 				taxonName = taxonnametoinsert.get(a);
 				taxon = taxontoinsert.get(a);
 
@@ -1326,8 +1328,8 @@ implements ICdmIO<Abcd206ImportState> {
 		NonViralName<?> taxonName = null;
 		boolean problem = false;
 
-		logger.info("parseScientificName "
-				+ dataHolder.nomenclatureCode.toString());
+		// logger.info("parseScientificName "
+		//		+ dataHolder.nomenclatureCode.toString());
 
 		if (dataHolder.nomenclatureCode.toString().equals("Zoological")
 				|| dataHolder.nomenclatureCode.toString().contains("ICZN")) {
@@ -1362,8 +1364,8 @@ implements ICdmIO<Abcd206ImportState> {
 			}
 		}
 		if (problem) {
-			logger.info("Parsing with problem in parseScientificName "
-					+ scientificName);
+			// logger.info("Parsing with problem in parseScientificName "
+			//		+ scientificName);
 			return null;
 		}
 		return taxonName;
@@ -1373,8 +1375,8 @@ implements ICdmIO<Abcd206ImportState> {
 	private NonViralName<?> setTaxonNameByType(
 			HashMap<String, String> atomisedMap, String fullName) {
 		boolean problem = false;
-		logger.info("settaxonnamebytype "
-				+ dataHolder.nomenclatureCode.toString());
+		// logger.info("settaxonnamebytype "
+		//		+ dataHolder.nomenclatureCode.toString());
 
 		if (dataHolder.nomenclatureCode.equals("Zoological")) {
 			NonViralName<ZoologicalName> taxonName = ZoologicalName
