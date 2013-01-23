@@ -547,6 +547,8 @@ implements ICdmIO<Abcd206ImportState> {
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
 		determinationEvent.setTaxon(taxon);
 		determinationEvent.setPreferredFlag(preferredFlag);
+		
+		determinationEvent.setIdentifiedUnit(derivedUnitBase);
 
 		derivedUnitBase.addDetermination(determinationEvent);
 		refreshTransaction();
