@@ -9,11 +9,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,6 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
@@ -49,60 +53,123 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	
-	// ************constants to set up the expected results: *****************************
+	// ************constants to set up the expected results for all: ********************
 
-	//here is the list of the types that will be test counted in the particular parts
-	private static final List<StatisticsTypeEnum> types = Arrays.asList(new StatisticsTypeEnum[]{
-			StatisticsTypeEnum.CLASSIFICATION}
-	);
-	
+	// here is the list of the types that will be test counted in the particular
+	// parts (ALL, CLASSIFICATION)
+	private static final List<StatisticsTypeEnum> types2Count = Arrays
+			.asList(new StatisticsTypeEnum[] { 
+					StatisticsTypeEnum.CLASSIFICATION, 
+					StatisticsTypeEnum.ACCEPTED_TAXA, 
+					StatisticsTypeEnum.ALL_TAXA,
+					StatisticsTypeEnum.ALL_REFERENCES});
+
 	// here is the number of items that will be created for the test count:
-	private static final Long NO_OF_CLASSIFICATIONS = new Long(3);
-
-	protected static final Long NO_OF_ALLTAXA = null;
-
-	protected static final Long NO_OF_ACCEPTED_TAXA = null;
-
-	protected static final Long NO_OF_SYNONYMS = null;
-
-	protected static final Long NO_OF_TAXON_NAMES = null;
-
-	protected static final Long NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = null;
-
-	protected static final Long NO_OF_ALL_REFERENCES = null;
-
-	protected static final Long NO_OF_NOMECLATURAL_REFERENCES = null;
+	// please only change the numbers
+	// but do not replace or add a number to any constants on the right.
 	
-	//*********************************************************************************
+	// ................ALL............................
+	
+	private static final int NO_OF_CLASSIFICATIONS = 3;
+
+	private static final int NO_OF_ACCEPTED_TAXA = 10;
+
+	private static final int NO_OF_SYNONYMS = 0;
+	
+	private static final int NO_OF_SHARED_TAXA= 4;
+
+	private static final int NO_OF_ALLTAXA = NO_OF_ACCEPTED_TAXA
+			+ NO_OF_SYNONYMS;
+
+	private static final int NO_OF_TAXON_NAMES = NO_OF_ACCEPTED_TAXA;
+
+	private static final int NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = 0;
+
+	private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0; // +....
+
+	private static final int NO_OF_NOMECLATURAL_REFERENCES = 0;
+	
+	// this is for the "all DB" count test
+	private static final List<IdentifiableEntity> partsAll = Arrays
+			.asList(new IdentifiableEntity[] { null });
+
+	// ............................................
+
+	private static final Map<String, Long> typeCountMap_ALL = new HashMap<String, Long>() {
+		{
+			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
+					Long.valueOf(NO_OF_CLASSIFICATIONS));
+			put(StatisticsTypeEnum.ALL_TAXA.getLabel(),
+					Long.valueOf(NO_OF_ALLTAXA));
+			put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
+					Long.valueOf(NO_OF_ACCEPTED_TAXA));
+			put(StatisticsTypeEnum.SYNONYMS.getLabel(),
+					Long.valueOf(NO_OF_SYNONYMS));
+			put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
+					Long.valueOf(NO_OF_TAXON_NAMES));
+			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
+					Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
+			put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
+					Long.valueOf(NO_OF_ALL_REFERENCES));
+			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
+					Long.valueOf(NO_OF_NOMECLATURAL_REFERENCES));
+		}
+	};
+
+	//------------------ variables for CLASSIFICATIONS -----------------------
+	
+	//int[] anArray = new int[NO_OF_CLASSIFICATIONS];
+	private static List<Integer> no_of_all_taxa = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+	private static List<Integer> no_of_accepted_taxa = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+	private static List<Integer> no_of_synonyms = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+	private static List<Integer> no_of_taxon_names = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+	private static List<Integer> no_of_descriptive_source_references = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+	private static List<Integer> no_of_all_references = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+	private static List<Integer> no_of_nomenclatural_references = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+//	private List<Integer> no_of_classifications = new ArrayList<Integer>(Collections.nCopies(NO_OF_CLASSIFICATIONS, 0));
+
+	//........................... constant map ..........................
+	
+	private static final Map<String, List<Integer>> typeCountMap_CLASSIFICATION = new HashMap<String, List<Integer>>() {
+		{
+			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
+						new ArrayList<Integer>(Arrays.asList((Integer)null, null, null)));
+			put(StatisticsTypeEnum.ALL_TAXA.getLabel(),
+					no_of_all_taxa);
+			put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
+					no_of_accepted_taxa);
+			put(StatisticsTypeEnum.SYNONYMS.getLabel(),
+					no_of_synonyms);
+			put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
+					no_of_taxon_names);
+			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
+					no_of_descriptive_source_references);
+			put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
+					no_of_all_references);
+			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
+					no_of_nomenclatural_references);
+		}
+	};
+	
+	private List<Classification> classifications;
 	
 	
-	 private static final Map<String, Long> typeCountMap_ALL = new HashMap<String, Long>(){
-	        {
-	            put(StatisticsTypeEnum.CLASSIFICATION.getLabel(), NO_OF_CLASSIFICATIONS);
-	            put(StatisticsTypeEnum.ALL_TAXA.getLabel(), NO_OF_ALLTAXA);
-	            put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(), NO_OF_ACCEPTED_TAXA);
-	            put(StatisticsTypeEnum.SYNONYMS.getLabel(), NO_OF_SYNONYMS);
-	            put(StatisticsTypeEnum.TAXON_NAMES.getLabel(), NO_OF_TAXON_NAMES);
-	            put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(), NO_OF_DESCRIPTIVE_SOURCE_REFERENCES);
-	            put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(), NO_OF_ALL_REFERENCES);
-	            put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(), NO_OF_NOMECLATURAL_REFERENCES);
-	        }
-	    };
-	
+	//****************** services: ************************
 	@SpringBeanByType
 	private IStatisticsService service;
 	@SpringBeanByType
 	private IClassificationService classificationService;
 	@SpringBeanByType
 	private ITaxonService taxonService;
+	@SpringBeanByType
+	private IReferenceService referenceService;
 
 
 	
-	// this is for the "all DB" count test
-	private static final List<IdentifiableEntity> partsAll=Arrays.asList(new IdentifiableEntity[]{null});
+	//*************** more members: *****************+
+	
 
-	
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -118,19 +185,62 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	/**
+	 * create some testdata
+	 * 
 	 * @throws java.lang.Exception
 	 */
+	
 	@Before
 	@DataSet
 	public void setUp() throws Exception {
 
-		List<Classification> classifications = new ArrayList<Classification>();
+		classifications = new ArrayList<Classification>();
 
 		for (int i = 1; i <= NO_OF_CLASSIFICATIONS; i++) {
 			Classification classification = Classification
 					.NewInstance("European Abies" + i);
 			classifications.add(classification);
 			classificationService.save(classification);
+		}
+//		// taxa
+		int remainder = NO_OF_ACCEPTED_TAXA;// -(NO_OF_ACCEPTED_TAXA / 2);
+		int taxa = 0;
+		for (int amount, k = 0; remainder > 0 && k < NO_OF_CLASSIFICATIONS; k++, remainder-=amount) {
+			
+			if (k >= NO_OF_CLASSIFICATIONS - 1) {
+				amount = remainder;
+			} else {
+				amount = remainder / 2;
+			}
+			
+			
+			
+			System.out.println("amount: " + amount);
+			for (int i = 1; i <= amount; i++) {
+				RandomStringUtils.randomAlphabetic(10);
+				String radomName = RandomStringUtils.randomAlphabetic(5) + " "
+						+ RandomStringUtils.randomAlphabetic(10);
+				String radomCommonName = RandomStringUtils.randomAlphabetic(10);
+				Reference sec = ReferenceFactory.newBook();
+				sec.setTitle("book" + i);
+				referenceService.save(sec);
+
+				BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+				name.setNameCache(radomName, true);
+				Taxon taxon = Taxon.NewInstance(name, sec);
+				taxonService.save(taxon);
+				classifications.get(k).addChildTaxon(taxon, null, null, null);
+		        
+		        classificationService.saveOrUpdate(classifications.get(k));
+		        increment(no_of_accepted_taxa, k);
+		        increment(no_of_all_taxa, k);
+		    
+				taxa++;
+			}
+		    
+			// remainder-=amount;
+			// k++;
+			System.out.println("number of taxa: " + taxa);
 		}
 
 		// Reference sec = ReferenceFactory.newBook();
@@ -228,7 +338,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// "LANGUAGESTRING", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING" });
 		//
 		//
-
+System.out.println(no_of_accepted_taxa);
 	}
 
 	/**
@@ -238,6 +348,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	public void tearDown() throws Exception {
 	}
 
+	
+	//****************** tests *****************
 	/**
 	 * Test method for
 	 * {@link eu.etaxonomy.cdm.api.service.StatisticsServiceImpl#getCountStatistics(java.util.List)}
@@ -245,29 +357,60 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	public void testGetCountStatistics_ALL() {
-		
+
 		Map<String, Number> expectedCountMap = createExpectedCountMap_ALL();
-		
-		List<StatisticsConfigurator> configuratorList =new ArrayList<StatisticsConfigurator>();
-		configuratorList.add(new StatisticsConfigurator(partsAll, types));
-		
-		List<Statistics> statisticsList = service.getCountStatistics(configuratorList);
+
+		List<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
+		configuratorList.add(new StatisticsConfigurator(partsAll, types2Count));
+
+		List<Statistics> statisticsList = service
+				.getCountStatistics(configuratorList);
 
 		assertEquals(expectedCountMap, statisticsList.get(0).getCountMap());
+
+	}
+
+	@Test
+	public void testGetCountStatistics_CLASSIFICATION() {
+		List<Map<String, Number>> ExpectedCountMaps = createExpectedCountMaps_CLASSIFICATION();
+		
+		fail("Not yet implemented");
+	}
+
+	//************************** private methods ****************************+
+	
+	/**
+	 * @param no_of_sth 
+	 * @param inClassification
+	 */
+	private void increment(List<Integer> no_of_sth, int inClassification) {
+		no_of_sth.set(inClassification, (no_of_sth.get(inClassification))+1);
 	}
 
 	private Map<String, Number> createExpectedCountMap_ALL() {
-		Map<String, Number> countMap =new HashMap<String, Number>();
-		
-		for (StatisticsTypeEnum type : types) {
+		Map<String, Number> countMap = new HashMap<String, Number>();
+	
+		for (StatisticsTypeEnum type : types2Count) {
 			countMap.put(type.getLabel(), typeCountMap_ALL.get(type.getLabel()));
 		}
 		return countMap;
 	}
-	
-	
-	@Test
-	public void testGetCountStatistics_CLASSIFICATION() {
-		fail("Not yet implemented");
+
+	private List<Map<String, Number>> createExpectedCountMaps_CLASSIFICATION() {
+		
+		List<Map<String, Number>> mapList = new ArrayList<Map<String,Number>>();
+		
+		for (int i=0; i<NO_OF_CLASSIFICATIONS; i++) {
+			
+			Map<String, Number> countMap = new HashMap<String, Number>();
+			
+			for (StatisticsTypeEnum type : types2Count) {
+				countMap.put(type.getLabel(), (typeCountMap_CLASSIFICATION.get(type.getLabel())).get(i));
+				
+			}
+			mapList.add(countMap);
+		}
+
+		return mapList;
 	}
 }
