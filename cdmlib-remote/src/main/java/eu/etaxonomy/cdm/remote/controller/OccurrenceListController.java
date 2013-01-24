@@ -95,7 +95,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
     @RequestMapping(
             value = {"byAssociatedTaxon"},
             method = RequestMethod.GET)
-    public List<SpecimenOrObservationBase> doListByAssociatedTaxon(
+    public Pager<SpecimenOrObservationBase> doListByAssociatedTaxon(
                 @RequestParam(value = "taxonUuid", required = true) UUID taxonUuid,
                 @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
@@ -104,6 +104,8 @@ public class OccurrenceListController extends IdentifiableListController<Specime
                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                 HttpServletRequest request,
                 HttpServletResponse response) throws IOException {
+
+        logger.info("doListByAssociatedTaxon()" + request.getServletPath() + "?" + request.getQueryString());
 
         Set<TaxonRelationshipEdge> includeRelationships = null;
         if(relationshipUuids != null || relationshipInversUuids != null){
@@ -131,7 +133,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
 
         List<OrderHint> orderHints = null;
 
-        return service.listByAssociatedTaxon(null, includeRelationships, associatedTaxon,
+        return service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
                 maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 orderHints, DEFAULT_INIT_STRATEGY);
 
