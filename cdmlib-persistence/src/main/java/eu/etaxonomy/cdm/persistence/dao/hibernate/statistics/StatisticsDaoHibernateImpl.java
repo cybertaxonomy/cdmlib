@@ -297,8 +297,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 			query = getSession().createQuery(queryString);
 			query.setParameter("classification", classification);
-			nameIds.addAll((ArrayList<Integer>) query.list());
-			System.out.println();
+			nameIds.addAll((ArrayList<Integer>) query.list());			
 		}
 
 		return Long.valueOf(nameIds.size());
