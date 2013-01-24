@@ -7,7 +7,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-		<version>3.1.3-SNAPSHOT</version>
+    <version>3.1.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -164,10 +164,9 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>net.sf.json-lib</groupId>
-      <artifactId>json-lib</artifactId>
-      <version>2.2.3</version>
-      <classifier>jdk15</classifier>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+        <classifier>jdk15</classifier>
     </dependency>
   <dependency>
     <groupId>org.springframework</groupId>
@@ -213,32 +212,32 @@
         <artifactId>p6spy</artifactId>
     </dependency>
   </dependencies>
-    
-    <build>    
+
+    <build>
      <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
         <executions>
           <execution>
-            <id>copy-resources</id>            
+            <id>copy-resources</id>
             <phase>validate</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
               <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
-              <resources>          
+              <resources>
                 <resource>
                   <directory>../src/site/apt/remote</directory>
                   <filtering>true</filtering>
                 </resource>
-              </resources>              
-            </configuration>            
+              </resources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
-    </plugins>      
+    </plugins>
    </build>
 </project>
 
