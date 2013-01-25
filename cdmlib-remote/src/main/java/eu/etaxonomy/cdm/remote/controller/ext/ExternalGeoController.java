@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,15 +23,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -42,6 +48,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
+import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
+import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
@@ -71,6 +80,16 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
     @Autowired
     private IOccurrenceService occurrenceService;
+
+    @Autowired
+    private ITermService termService;
+
+    @InitBinder
+    @Override
+    public void initBinder(WebDataBinder binder) {
+        super.initBinder(binder);
+        binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+    }
 
     /*
      * (non-Javadoc)
@@ -146,6 +165,9 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     @RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
     public ModelAndView doGetOccurrenceMapUriParams(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+            @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -157,19 +179,17 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Boolean doReturnImage = null;
         Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
 
-        logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath());
+        logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath() + "?" + request.getQueryString());
         ModelAndView mv = new ModelAndView();
 
-        // get the descriptions for the taxon
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
-        TaxonBase tb = service.load(uuid);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
-
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
 
         String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
         mv.addObject(uriParams);

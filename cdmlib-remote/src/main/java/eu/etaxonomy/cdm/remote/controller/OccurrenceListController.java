@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -107,25 +108,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
 
         logger.info("doListByAssociatedTaxon()" + request.getServletPath() + "?" + request.getQueryString());
 
-        Set<TaxonRelationshipEdge> includeRelationships = null;
-        if(relationshipUuids != null || relationshipInversUuids != null){
-            includeRelationships = new HashSet<TaxonRelationshipEdge>();
-            if(relationshipUuids != null) {
-                for (UUID uuid : relationshipUuids) {
-                    if(relationshipInversUuids != null && relationshipInversUuids.contains(uuid)){
-                        includeRelationships.add(new TaxonRelationshipEdge((TaxonRelationshipType) termService.find(uuid), Direction.relatedTo, Direction.relatedFrom));
-                        relationshipInversUuids.remove(uuid);
-                    } else {
-                        includeRelationships.add(new TaxonRelationshipEdge((TaxonRelationshipType) termService.find(uuid), Direction.relatedTo));
-                    }
-                }
-            }
-            if(relationshipInversUuids != null) {
-                for (UUID uuid : relationshipInversUuids) {
-                    includeRelationships.add(new TaxonRelationshipEdge((TaxonRelationshipType) termService.find(uuid), Direction.relatedFrom));
-                }
-            }
-        }
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
         Taxon associatedTaxon = (Taxon) taxonService.find(taxonUuid);
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
@@ -138,4 +121,5 @@ public class OccurrenceListController extends IdentifiableListController<Specime
                 orderHints, DEFAULT_INIT_STRATEGY);
 
     }
+
 }
