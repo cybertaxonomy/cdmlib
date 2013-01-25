@@ -1778,6 +1778,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Status.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Verb.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/package-info.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/AbstractLinkDto.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/LinkedPolytomousKeyNodeEntryDto.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/Actor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/BaseThing.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/Concept.java -text
