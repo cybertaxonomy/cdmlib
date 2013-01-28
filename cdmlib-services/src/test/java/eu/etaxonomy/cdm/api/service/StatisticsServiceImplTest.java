@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author s.buers
  * 
  */
-@SuppressWarnings({"rawtypes","serial"})
+@SuppressWarnings({ "rawtypes", "serial" })
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// ************constants to set up the expected results for all:
@@ -52,15 +53,15 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			.asList(new StatisticsTypeEnum[] {
 					StatisticsTypeEnum.CLASSIFICATION,
 					StatisticsTypeEnum.ACCEPTED_TAXA,
-					StatisticsTypeEnum.ALL_TAXA,
-					StatisticsTypeEnum.ALL_REFERENCES });
+					StatisticsTypeEnum.ALL_TAXA
+//					StatisticsTypeEnum.ALL_REFERENCES 
+					});
 
 	// private static final String[] TYPES = { "CLASSIFICATION",
 	// "ACCEPTED_TAXA",
 	// "ALL_TAXA", "ALL_REFERENCES" };
 
 	// ................parts ..............................
-
 
 	private static final List<String> PARTS2 = Arrays.asList(new String[] {
 			"ALL", "CLASSIFICATION" });
@@ -80,7 +81,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	private static final int NO_OF_SYNONYMS = 0;
 
-	private static final int NO_OF_SHARED_TAXA = 4;
+	// taxa that occure in several classifications:
+	private static final int NO_OF_SHARED_TAXA = 4; // must NOT be more than NO_OF_ACCEPTED_TAXA
 
 	private static final int NO_OF_ALLTAXA = NO_OF_ACCEPTED_TAXA
 			+ NO_OF_SYNONYMS;
@@ -89,70 +91,56 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	private static final int NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = 0;
 
-	private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0; // +....
+	// private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0;
+	// // +....
 
 	private static final int NO_OF_NOMECLATURAL_REFERENCES = 0;
 
+	// --------------------variables for all ------------------
+
+	private Long no_of_all_references = new Long(0);
+
 	// ............................................
 
-	private static final Map<String, Long> typeCountMap_ALL = new HashMap<String, Long>() {
-		{
-			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
-					Long.valueOf(NO_OF_CLASSIFICATIONS));
-			put(StatisticsTypeEnum.ALL_TAXA.getLabel(),
-					Long.valueOf(NO_OF_ALLTAXA));
-			put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
-					Long.valueOf(NO_OF_ACCEPTED_TAXA));
-			put(StatisticsTypeEnum.SYNONYMS.getLabel(),
-					Long.valueOf(NO_OF_SYNONYMS));
-			put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
-					Long.valueOf(NO_OF_TAXON_NAMES));
-			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
-					Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
-			put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
-					Long.valueOf(NO_OF_ALL_REFERENCES));
-			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
-					Long.valueOf(NO_OF_NOMECLATURAL_REFERENCES));
-		}
-	};
+	// log the type enum to an int constant:
+	private Map<String, Long> typeMap_ALL;
 
 	// ------------------ variables for CLASSIFICATIONS -----------------------
 
 	// int[] anArray = new int[NO_OF_CLASSIFICATIONS];
-	private static List<Long> no_of_all_taxa = new ArrayList<Long>(
+	private static List<Long> no_of_all_taxa_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_accepted_taxa = new ArrayList<Long>(
+	private static List<Long> no_of_accepted_taxa_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_synonyms = new ArrayList<Long>(
+	private static List<Long> no_of_synonyms_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_taxon_names = new ArrayList<Long>(
+	private static List<Long> no_of_taxon_names_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_descriptive_source_references = new ArrayList<Long>(
+	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_all_references = new ArrayList<Long>(
+	private static List<Long> no_of_all_references_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_nomenclatural_references = new ArrayList<Long>(
+	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
 	// we do not count classifications in classifications
 
 	// ........................... constant map ..........................
 
-
 	private static final Map<String, List<Long>> typeCountMap_CLASSIFICATION = new HashMap<String, List<Long>>() {
 		{
 			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
 					new ArrayList<Long>(Arrays.asList((Long) null, null, null)));
-			put(StatisticsTypeEnum.ALL_TAXA.getLabel(), no_of_all_taxa);
+			put(StatisticsTypeEnum.ALL_TAXA.getLabel(), no_of_all_taxa_c);
 			put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
-					no_of_accepted_taxa);
-			put(StatisticsTypeEnum.SYNONYMS.getLabel(), no_of_synonyms);
-			put(StatisticsTypeEnum.TAXON_NAMES.getLabel(), no_of_taxon_names);
+					no_of_accepted_taxa_c);
+			put(StatisticsTypeEnum.SYNONYMS.getLabel(), no_of_synonyms_c);
+			put(StatisticsTypeEnum.TAXON_NAMES.getLabel(), no_of_taxon_names_c);
 			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
-					no_of_descriptive_source_references);
+					no_of_descriptive_source_references_c);
 			put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
-					no_of_all_references);
+					no_of_all_references_c);
 			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
-					no_of_nomenclatural_references);
+					no_of_nomenclatural_references_c);
 		}
 	};
 
@@ -205,7 +193,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// // taxa
 		int remainder = NO_OF_ACCEPTED_TAXA;
 
-		for (int amount, k = 0; remainder > 0 && k < NO_OF_CLASSIFICATIONS; k++, remainder -= amount) {
+		Reference sec = ReferenceFactory.newBook();
+
+		for (int amount, k = 0, l = 0, s = 0; remainder > 0
+				&& k < NO_OF_CLASSIFICATIONS; k++, remainder -= amount) {
 
 			if (k >= NO_OF_CLASSIFICATIONS - 1) {
 				amount = remainder;
@@ -213,27 +204,48 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				amount = remainder / 2;
 			}
 
-			System.out.println("amount: " + amount);
+			// System.out.println("amount: " + amount);
 			for (int i = 1; i <= amount; i++) {
 				RandomStringUtils.randomAlphabetic(10);
-				String radomName = RandomStringUtils.randomAlphabetic(5) + " "
+				String randomName = RandomStringUtils.randomAlphabetic(5) + " "
 						+ RandomStringUtils.randomAlphabetic(10);
-				//TODO
+				// TODO
 				String radomCommonName = RandomStringUtils.randomAlphabetic(10);
-				Reference sec = ReferenceFactory.newBook();
-				sec.setTitle("book" + i);
-				referenceService.save(sec);
-				increment(no_of_all_references, k);
+				if (i % 2 != 0) {
+					sec = ReferenceFactory.newBook();
+					sec.setTitle("book" + i);
+					referenceService.save(sec);
+					increment(no_of_all_references_c, k);
+					no_of_all_references++;
+					 System.out.println("all_ref: "+no_of_all_references_c.toString());
+				}
 				BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
-				name.setNameCache(radomName, true);
+				name.setNameCache(randomName, true);
 				Taxon taxon = Taxon.NewInstance(name, sec);
 				// TODO count name
 				taxonService.save(taxon);
 				classifications.get(k).addChildTaxon(taxon, null, null, null);
-
 				classificationService.saveOrUpdate(classifications.get(k));
-				increment(no_of_accepted_taxa, k);
-				increment(no_of_all_taxa, k);
+				increment(no_of_accepted_taxa_c, k);
+				increment(no_of_all_taxa_c, k);
+				if (k < NO_OF_CLASSIFICATIONS && l < NO_OF_SHARED_TAXA) {
+					classifications.get(k + 1).addChildTaxon(taxon, null, null,
+							null);
+					increment(no_of_accepted_taxa_c, k + 1);
+					increment(no_of_all_taxa_c, k + 1);
+					if (i % 2 != 0) {
+						increment(no_of_all_references_c, k + 1);
+					}
+					l++;
+				}
+				// if(s<NO_OF_SYNONYMS){
+				// randomName = RandomStringUtils.randomAlphabetic(5) + " "
+				// + RandomStringUtils.randomAlphabetic(10);
+				// Synonym s_abies_subalpina = Synonym.NewInstance(randomName,
+				// sec);
+				// taxonService.save(s_abies_subalpina);
+				// }
+				// classificationService.saveOrUpdate(classifications.get(k+1));
 			}
 
 		}
@@ -278,16 +290,18 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// as we cannot be sure the order of the statisticsList
 		// matches the order of the expectedCountmapList
 		// we have to work arround a little:
-
+		System.out.println("expected: " + expectedCountmapList.toString());
 		for (Statistics statistics : statisticsList) {
+			System.out.println("statistics: "
+					+ statistics.getCountMap().toString());
 			Boolean orCompare = false;
 			for (Map<String, Number> map : expectedCountmapList) {
 				orCompare = orCompare || statistics.getCountMap().equals(map);
 			}
-			assertTrue(orCompare);
+			 assertTrue(orCompare);
 		}
-	}
 
+	}
 
 	// ************************** private methods ****************************+
 
@@ -301,9 +315,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	private Map<String, Number> createExpectedCountMap_ALL() {
 		Map<String, Number> countMap = new HashMap<String, Number>();
-
+		createMap_ALL();
 		for (StatisticsTypeEnum type : TYPES) {
-			countMap.put(type.getLabel(), typeCountMap_ALL.get(type.getLabel()));
+			System.out.println(typeMap_ALL.get(type.getLabel()));
+			countMap.put(type.getLabel(), typeMap_ALL.get(type.getLabel()));
 		}
 		return countMap;
 	}
@@ -325,6 +340,34 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 
 		return mapList;
+	}
+
+	/**
+	 * 
+	 */
+	private void createMap_ALL() {
+		typeMap_ALL = new HashMap<String, Long>() {
+			{
+				put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
+						Long.valueOf(NO_OF_CLASSIFICATIONS));
+				put(StatisticsTypeEnum.ALL_TAXA.getLabel(),
+						Long.valueOf(NO_OF_ALLTAXA));
+				put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
+						Long.valueOf(NO_OF_ACCEPTED_TAXA));
+				put(StatisticsTypeEnum.SYNONYMS.getLabel(),
+						Long.valueOf(NO_OF_SYNONYMS));
+				put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
+						Long.valueOf(NO_OF_TAXON_NAMES));
+				put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
+						Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
+				// put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
+				// Long.valueOf(NO_OF_ALL_REFERENCES));
+				put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
+						no_of_all_references);
+				put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
+						Long.valueOf(NO_OF_NOMECLATURAL_REFERENCES));
+			}
+		};
 	}
 
 	private List<StatisticsConfigurator> createConfiguratorList(String[] part,
@@ -381,6 +424,5 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 		return configuratorList;
 	}
-
 
 }
