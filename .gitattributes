@@ -2196,6 +2196,7 @@ src/site/apt/remote/name-catalogue-default.apt -text
 src/site/apt/remote/name-catalogue-name-info.apt -text
 src/site/apt/remote/name-catalogue-taxon-info.apt -text
 src/site/apt/rest-api-name-catalogue.apt -text
+src/site/apt/rest-api-statistics.apt -text
 src/site/apt/rest-api.apt -text
 src/site/fml/faq.fml -text
 src/site/fml/troubleshooting.fml -text
