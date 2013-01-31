@@ -29,7 +29,7 @@
 	
 	Note:
 		
-		* When the number of records returned are greater than the page size multiple calls to the web service must be made to return the susequent pages.
+		* When the number of records returned are greater than the page size multiple calls to the web service must be made to return the subequent pages.
 		
 	
 	Example Requests :
