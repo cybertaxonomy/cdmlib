@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  *
  */
 public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CsvTaxRecordRedlist.class);
 
@@ -40,13 +41,14 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 	private ArrayList<String> countryCodes;
 	private ArrayList<String> headlines;
 	private boolean isHeadLinePrinted;
-
-
 	private List<Feature> features;
-
 	private List<List<String>> featuresCells;
 
-
+	/**
+	 * 
+	 * @param metaDataRecord
+	 * @param config
+	 */
 	public CsvTaxRecordRedlist(CsvMetaDataRecordRedlist metaDataRecord, CsvTaxExportConfiguratorRedlist config){
 		super(metaDataRecord, config);
 		datasetId = new CsvId(config);

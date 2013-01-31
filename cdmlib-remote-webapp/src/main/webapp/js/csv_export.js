@@ -138,6 +138,7 @@ $(function() {
 });
 
 $(document).ready(function () {
+	$("dialog-message").hide(); 
 	$("#csvExportOptions").hide();
 	var o = new Option("", "");
 	var classification = getUrlVars()["classification"];
@@ -151,6 +152,7 @@ $(document).ready(function () {
 			$("#combobox").append(o);
 
 		}
+
 	});
 	var checkbox;
 	var featureTree = getUrlVars()["featureTree"];
@@ -172,6 +174,7 @@ $(document).ready(function () {
 	});
 });
 
+
 function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -183,10 +186,40 @@ function getUrlVars() {
 
 function validateForm()
 {
-var x=document.forms["exportForm"]["combobox"].selectedIndex;
-if (x==null || x==-1 || x == "")
-  {
-  alert("Select a classification");
-  return false;
-  }
+	var x=document.forms["exportForm"]["combobox"].selectedIndex;
+	if (x==null || x==-1 || x == "")
+	{
+		 $( "#dialog-message" ).show();
+	        $( "#dialog-message" ).dialog({
+	            modal: true,
+	            buttons: {
+	                Ok: function() {
+	                    $( this ).dialog( "close" );
+	                    $( "#dialog-message" ).hide();
+	                }
+	            }
+	        });
+		$('#comboboxWidget').addClass("error");
+		return false;
+	}
+	blockUIForDownload();
 }
+
+var fileDownloadCheckTimer;
+function blockUIForDownload() {
+  var token = '1234'; //use the current timestamp as the token value
+  $('#downloadTokenValueId').val(token);
+  $.blockUI( { message:'<h1><img src="../css/jquery-ui/images/ajax-loader.png">Please wait...</h1>'});
+  fileDownloadCheckTimer = window.setInterval(function () {
+    var cookieValue = $.cookie('fileDownloadToken');
+    if (cookieValue == token)
+     finishDownload();
+  }, 1000);
+}
+
+function finishDownload() {
+	 window.clearInterval(fileDownloadCheckTimer);
+	 $.cookie('fileDownloadToken', null); //clears this cookie value
+	 $.unblockUI();
+}
+

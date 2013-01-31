@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 
@@ -18,7 +18,7 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	
 	@Autowired
 	@Qualifier("defaultBeanInitializer")
-	protected BeanInitializer defaultBeanInitializer;
+	protected IBeanInitializer defaultBeanInitializer;
 
 	public int count() {
 		Query query = getSession().createQuery("select count(key) from eu.etaxonomy.cdm.model.description.IIdentificationKey key");

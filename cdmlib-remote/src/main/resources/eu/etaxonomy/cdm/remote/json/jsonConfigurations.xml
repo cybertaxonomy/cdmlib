@@ -13,6 +13,14 @@
        <property name="includeToManyRelations" value="false" />
        <property name="exceptions">
          <set>
+           <!--
+             the exceptions listed here should be covered by implementations of
+             eu.etaxonomy.cdm.persistence.dao.AutoPropertyInitializer.
+             The according configuration files are
+              - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence_security.xml
+              - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml
+             whereas persistence.xml will be removed in the near future.
+            -->
              <value>FeatureTree.root</value>
              <value>FeatureNode.children</value>
              <value>FeatureNode.feature</value>
@@ -35,11 +43,17 @@
              <value>DerivationEvent.derivatives</value>
              <value>DerivationEvent.originals</value>
 
+             <value>Point.referenceSystem</value>
+
              <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
              <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
 
              <value>Synonym.sec</value>
              <value>Taxon.sec</value>
+
+             <value>StateData.state</value>
+             <value>StateData.modifiers</value>
+             <value>StateData.modifyingText</value>
 
              <value>TextData.feature</value>
              <value>CategoricalData.feature</value>

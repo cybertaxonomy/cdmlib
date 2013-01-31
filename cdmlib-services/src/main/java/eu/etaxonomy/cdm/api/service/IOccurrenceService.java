@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -86,7 +86,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param occurence the occurence associated with these media
      * @param pageSize The maximum number of media returned (can be null for all related media)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of media instances
      */
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);

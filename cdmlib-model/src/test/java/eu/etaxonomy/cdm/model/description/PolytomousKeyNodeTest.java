@@ -66,6 +66,9 @@ public class PolytomousKeyNodeTest {
 		child3.setSubkey(key2);
 
 		child4.setOtherNode(key2.getRoot());
+		
+		PolytomousKeyNode child5 = PolytomousKeyNode.NewInstance("Long and narrow");
+		child3.addChild(child5);
 
 	}
 
@@ -75,19 +78,15 @@ public class PolytomousKeyNodeTest {
 	@Test
 	public void testNodeNumber() {
 		PolytomousKeyNode root = key1.getRoot();
-		Assert.assertEquals("Root should have node number 0", Integer.valueOf(0), root.getNodeNumber());
+		Assert.assertEquals("Root should have node number = 1", Integer.valueOf(1), root.getNodeNumber());
 		PolytomousKeyNode child1 = root.getChildAt(0);
-		Assert.assertEquals("Child1 should have node number 1", Integer.valueOf(1), child1.getNodeNumber());
+		Assert.assertEquals("Child1 should have node number = 2", Integer.valueOf(2), child1.getNodeNumber());
 		PolytomousKeyNode child2 = root.getChildAt(1);
-		Assert.assertEquals("Child2 should have node number 1", Integer.valueOf(1),child2.getNodeNumber());
+		Assert.assertEquals("Child2 should have node number = null", null,child2.getNodeNumber());
 		PolytomousKeyNode child3 = child1.getChildAt(0);
-		Assert.assertEquals("Child3 should have node number 2", Integer.valueOf(2),child3.getNodeNumber());
+		Assert.assertEquals("Child3 should have node number = 3", Integer.valueOf(3),child3.getNodeNumber());
 		PolytomousKeyNode child4 = child1.getChildAt(1);
-		Assert.assertEquals("Child4 should have node number 2", Integer.valueOf(2),child4.getNodeNumber());
-		PolytomousKeyNode child5 = PolytomousKeyNode.NewInstance("My statement");
-		child4.addChild(child5);
-		Assert.assertEquals("Child5 should have node number 3",Integer.valueOf(3), child5.getNodeNumber());
-		
+		Assert.assertEquals("Child4 should have node number  = null", null,child4.getNodeNumber());		
 		
 	}
 	

@@ -380,32 +380,62 @@
     <fo:block text-align="justify" margin-bottom="5mm">
       <!--fo:external-graphic src='http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy2.jpg'/-->
       <xsl:for-each select="feature">
+        
+        <xsl:variable name="representation" select="representation_L10n"/>
+        <xsl:if test="not(starts-with($representation, 'Material'))">
+          <xsl:if test="not(starts-with($representation, 'Figures'))">
         <fo:inline keep-with-next.within-line="always">
+
           <fo:inline text-decoration="underline"  keep-with-next.within-line="always">
-            <xsl:value-of select="representation_L10n"/>:
+            <xsl:value-of select="representation_L10n"/>
           </fo:inline>
-          <xsl:for-each select="descriptionelements/descriptionelement">
-            
-              <!--xsl:value-of
-                select="multilanguageText_L10n/text" disable-output-escaping = "yes"/-->
-              
+          <fo:inline>: </fo:inline>
+          <xsl:for-each select="descriptionelements/descriptionelement">          
+
               <xsl:variable name="desc_element_text" select="multilanguageText_L10n/text"/>
             
+            <!-- filter out repeated description element text. Lorna - could do this in the CDM so it doesn't occur in the XML but not sure why it's happening-->
+            <xsl:variable name="prev_desc_element_text" select="preceding-sibling::descriptionelement[1]/multilanguageText_L10n/text"/>  
+            
             <fo:inline font-size="9pt" space-after="5mm">
-              <xsl:if test="not(starts-with($desc_element_text, 'Figure'))">
-                <xsl:apply-templates select="multilanguageText_L10n/text"/>
-              </xsl:if>
+                          
+              <xsl:if test="not(starts-with($desc_element_text, 'Figure'))">  
+                
+                <xsl:choose>
+                  <xsl:when test="position() = 1">
+                    <xsl:apply-templates select="multilanguageText_L10n/text"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:if test="$desc_element_text != $prev_desc_element_text">
+                      <xsl:apply-templates select="multilanguageText_L10n/text"/>
+                    </xsl:if>
+                  </xsl:otherwise>
+                </xsl:choose>               
+
+              </xsl:if>            
             </fo:inline>
+                       
               <!--xsl:apply-templates select="multilanguageText_L10n/text"/-->
               <!--xsl:apply-templates select="media"/-->
-              <xsl:apply-templates select="media/e/representations/e/parts/e/uri"/>
+            
+            <!--TODO Lorna we have to apply either one or the other depending on the species
+              need to find out why the images occur in different places in the XML -->
+            <xsl:apply-templates select="media/e/representations/e/parts/e/uri"/>
+            <!--xsl:apply-templates select="e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates-->                      
               
-
           </xsl:for-each>
+          
           <xsl:text> </xsl:text>
         </fo:inline>
+        </xsl:if>
+        </xsl:if>
       </xsl:for-each>
+      
+      
+      <xsl:apply-templates select="../../../../../../../../../synonymy[1]/homotypicSynonymsByHomotypicGroup[1]/e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates>
+      
     </fo:block>
+    
   </xsl:template>
 
   <!-- IMAGES -->
@@ -413,7 +443,6 @@
   <!--xsl:template match="media"-->
     <xsl:template match="uriprob">
       <fo:block>
-    <!--xsl:variable name="graphic" select="e/representations/e/parts/e/uri"/-->
       <xsl:variable name="graphic" select="."/>
     <fo:external-graphic content-height="450%" scaling="uniform" src="{$graphic}" padding-before="100" padding-after="30"/>
       <!--xsl:apply-templates select="../multilanguageText_L10n/text"/-->
@@ -560,7 +589,12 @@
         </fo:inline>
         <xsl:text> &mdash; </xsl:text>
       </xsl:when>
-        <xsl:otherwise><xsl:text> Matériel examiné </xsl:text></xsl:otherwise>
+        <xsl:otherwise>
+          <fo:inline font-weight="bold">
+          <xsl:text> Matériel examiné </xsl:text>
+          </fo:inline>
+        </xsl:otherwise>
+        
       </xsl:choose>
       <xsl:for-each select="descriptionelements/descriptionelement">
         <fo:inline>
@@ -602,8 +636,9 @@
         <xsl:with-param name="descriptionelements" select="../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
         <xsl:with-param name="name-uuid" select="name/uuid"/>
       </xsl:call-template>
-      
-    </xsl:for-each>
+     </xsl:for-each>
+   
+    <!--xsl:apply-templates select="e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates-->
   </xsl:template>
 
   <xsl:template match="heterotypicSynonymyGroups">

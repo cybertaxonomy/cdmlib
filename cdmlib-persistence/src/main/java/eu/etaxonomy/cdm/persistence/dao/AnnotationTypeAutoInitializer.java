@@ -28,7 +28,7 @@ public class AnnotationTypeAutoInitializer extends AutoPropertyInitializer<Annot
      */
     @Override
     public void initialize(Annotation bean) {
-        beanInitializer.initialize(bean, Arrays.asList(new String[] {"annotationType"}));
+        beanInitializer.initializeInstance(bean.getAnnotationType());
     }
 
 }

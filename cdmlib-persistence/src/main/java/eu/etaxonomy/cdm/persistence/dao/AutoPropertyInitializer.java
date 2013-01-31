@@ -21,9 +21,20 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class AutoPropertyInitializer<T extends CdmBase> {
 
     @Autowired
-    protected BeanInitializer beanInitializer;
+    protected IBeanInitializer beanInitializer;
 
 
+    /**
+     * Implement this method to initialize associated entities of the supplied beans.
+     * <p>
+     * For initializing collections of cdm entity bean it is recommended to
+     * use {@link IBeanInitializer#initializeInstance(Object)}.<br>
+     * <b>WARNING</b>: You must NOT use {@link IBeanInitializer#initialize(Object, java.util.List)}
+     * or {@link IBeanInitializer#initializeAll(java.util.List, java.util.List)} otherwise you risk
+     * to get StackOverflowExceptions.
+     *
+     * @param bean the cdm entity bean to process
+     */
     public abstract void initialize(T bean);
 
 }

@@ -198,7 +198,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@ManyToOne(fetch = FetchType.LAZY)
 	private PolytomousKeyNode otherNode;
 
-	private Integer nodeNumber = 0;
+	private Integer nodeNumber = null;
 
 	// TODO should be available for each taxon/result
 	@XmlElement(name = "ModifyingText")
@@ -208,7 +208,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
-	public static final Integer ROOT_NODE_NUMBER = 0;
+	public static final Integer ROOT_NODE_NUMBER = 1;
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
@@ -284,7 +284,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	/**
 	 * Is computed automatically and therefore should not be set by the user.
 	 */
-	private void setNodeNumber(Integer nodeNumber) {
+	public void setNodeNumber(Integer nodeNumber) {
 		this.nodeNumber = nodeNumber;
 	}
 
@@ -350,18 +350,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (index < 0 || index > children.size() + 1) {
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
-		
-		int maxNodeNumber = ROOT_NODE_NUMBER;
-		if(index == 0) {
-			maxNodeNumber = getNewMaxNodeNumberFromRoot() + 1;
-			child.setNodeNumber(maxNodeNumber);
-		} else {
-			maxNodeNumber = children.get(0).getNodeNumber();
-			child.setNodeNumber(maxNodeNumber);
+	
+		if(nodeNumber == null) {			
+			nodeNumber = getMaxNodeNumberFromRoot() + 1;			
 		}
 		
 		children.add(index, child);
 		child.setKey(this.getKey());
+		
 		// TODO workaround (see sortIndex doc)
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).sortIndex = i;			
@@ -370,12 +366,23 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		child.setParent(this);
 	}
 
-	private int getNewMaxNodeNumberFromRoot() {
+	/**
+	 * Returns the current maximum value of the node number in the entire key
+	 * starting from the root.
+	 * 
+	 * @return 
+	 */
+	private int getMaxNodeNumberFromRoot() {
 		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();		
-		int maxNodeNumber = getMaxNodeNumber(ROOT_NODE_NUMBER, rootKeyNode);
-		return maxNodeNumber++;
+		return getMaxNodeNumber(ROOT_NODE_NUMBER, rootKeyNode);		
 	}
 	
+	/**
+	 * Returns the current maximum value of the node number in the entire key
+	 * starting from the given key node, comparing with a given max value as input.
+	 * 
+	 * @return 
+	 */
 	private int getMaxNodeNumber(int maxNumber, PolytomousKeyNode parent) {
 		if (parent.getNodeNumber() != null) {		
 			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
@@ -386,19 +393,29 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		return maxNumber;
 	}
 	
-	public void refreshNodeNumbering() {
-		getKey().getRoot().setNodeNumber(ROOT_NODE_NUMBER);
-		updateChildNodeNumbering(getKey().getRoot(), ROOT_NODE_NUMBER);
+	/**
+	 * Refresh numbering of key nodes starting from root.
+	 * 	 
+	 */
+	public void refreshNodeNumbering() {				
+		updateNodeNumbering(getKey().getRoot(), ROOT_NODE_NUMBER);
 	}
 	
-	private int updateChildNodeNumbering(PolytomousKeyNode node,int nodeN) {
+	/**
+	 * Recursively (depth-first) refresh numbering of key nodes starting from the given key node, 
+	 * starting with a given node number.
+	 * 
+	 * @return new starting node number value
+	 */
+	private int updateNodeNumbering(PolytomousKeyNode node,int nodeN) {
 		int newNodeN = nodeN;
 		if (node.isLeaf()) {			
+			node.setNodeNumber(null);
 		} else {		
-			newNodeN = ++nodeN;
-			for (PolytomousKeyNode child : node.getChildren()) {					
-				child.setNodeNumber(nodeN);				
-				newNodeN = updateChildNodeNumbering(child, newNodeN);
+			node.setNodeNumber(nodeN);			
+			newNodeN++;
+			for (PolytomousKeyNode child : node.getChildren()) {												
+				newNodeN = updateNodeNumbering(child, newNodeN);				
 			}
 		}		
 		return newNodeN;
@@ -452,6 +469,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		}
 		refreshNodeNumbering();
 	}
+	
 
 	/**
 	 * Returns the feature node placed at the given (childIndex + 1) position

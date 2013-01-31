@@ -24,7 +24,7 @@ import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -57,7 +57,7 @@ public interface IService<T extends ICdmBase>{
      * All bean properties given in the <code>propertyPaths</code> parameter are recursively initialized.
      * <p>
      * For detailed description and examples <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
+     * {@link IBeanInitializer#initialize(Object, List)}
      *
      * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
      * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child
@@ -181,7 +181,7 @@ public interface IService<T extends ICdmBase>{
      * <code>propertyPaths</code> parameter.
      * <p>
      * For detailed description and examples <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
+     * {@link IBeanInitializer#initialize(Object, List)}
      *
      * @param uuid
      * @return

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,31 +26,31 @@ import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
  */
 //@Component("defaultBeanInitializer")
 public class HibernateBeanInitializer extends AbstractBeanInitializer{
-	
-	public static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
-	 */
-	@Override
-	protected Object initializeInstance(Object bean) {
-		initialize(bean);
-		return HibernateProxyHelperExtended.getProxyTarget(bean);
-	}
-	
-	public static void initialize(Object proxy) throws HibernateException {
-		if ( proxy == null ) {
-			return;
-		}
-		else if ( proxy instanceof HibernateProxy ) {
-			( ( HibernateProxy ) proxy ).getHibernateLazyInitializer().initialize();
-		} else if ( proxy instanceof PersistentCollection ) {
-			( ( PersistentCollection ) proxy ).forceInitialization();
-		} else if(proxy instanceof CollectionProxy) {
-			( ( CollectionProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
-		} else if(proxy instanceof MapProxy) {
-			( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
-		}
-	}
-	
+    public static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
+     */
+    @Override
+    public Object initializeInstance(Object bean) {
+        initialize(bean);
+        return HibernateProxyHelperExtended.getProxyTarget(bean);
+    }
+
+    public static void initialize(Object proxy) throws HibernateException {
+        if ( proxy == null ) {
+            return;
+        }
+        else if ( proxy instanceof HibernateProxy ) {
+            ( ( HibernateProxy ) proxy ).getHibernateLazyInitializer().initialize();
+        } else if ( proxy instanceof PersistentCollection ) {
+            ( ( PersistentCollection ) proxy ).forceInitialization();
+        } else if(proxy instanceof CollectionProxy) {
+            ( ( CollectionProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
+        } else if(proxy instanceof MapProxy) {
+            ( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
+        }
+    }
+
 }

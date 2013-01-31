@@ -169,18 +169,18 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "synonymRelations.type.$",
             
             "relationsFromThisTaxon.type.$",
-            "relationsFromThisTaxon.relatedTo.name.rank.titleCache",
-            "relationsFromThisTaxon.relatedTo.sec.updated",
-            "relationsFromThisTaxon.relatedTo.sec.titleCache",
-            "relationsFromThisTaxon.relatedTo.sources.citation.sources.idNamespace",
-            "relationsFromThisTaxon.relatedTo.sources.citation.sources.idInSource",
+            "relationsFromThisTaxon.toTaxon.name.rank.titleCache",
+            "relationsFromThisTaxon.toTaxon.sec.updated",
+            "relationsFromThisTaxon.toTaxon.sec.titleCache",
+            "relationsFromThisTaxon.toTaxon.sources.citation.sources.idNamespace",
+            "relationsFromThisTaxon.toTaxon.sources.citation.sources.idInSource",
             
             "relationsToThisTaxon.type.$",
-            "relationsToThisTaxon.relatedFrom.name.rank.titleCache",
-            "relationsFromThisTaxon.relatedFrom.sec.updated",
-            "relationsFromThisTaxon.relatedFrom.sec.titleCache",
-            "relationsFromThisTaxon.relatedFrom.sources.citation.sources.idNamespace",
-            "relationsFromThisTaxon.relatedFrom.sources.citation.sources.idInSource",
+            "relationsToThisTaxon.fromTaxon.name.rank.titleCache",
+            "relationsToThisTaxon.fromTaxon.sec.updated",
+            "relationsToThisTaxon.fromTaxon.sec.titleCache",
+            "relationsToThisTaxon.fromTaxon.sources.citation.sources.idNamespace",
+            "relationsToThisTaxon.fromTaxon.sources.citation.sources.idInSource",
             
             "taxonNodes",
             "taxonNodes.classification" });

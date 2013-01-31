@@ -13,7 +13,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IMarkerDao extends IVersionableDao<Marker> {
@@ -32,7 +32,7 @@ public interface IMarkerDao extends IVersionableDao<Marker> {
 	 * @param pageSize The maximum number of markers returned (can be null for all markers)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return
 	 */
 	public List<Marker> list(MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);

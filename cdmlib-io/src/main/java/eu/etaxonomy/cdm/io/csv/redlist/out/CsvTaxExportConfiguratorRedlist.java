@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 
 /**
@@ -54,6 +55,9 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	private List<Feature> features;
 
 	private String classificationTitleCache;
+
+	private List<NamedArea> areas;
+
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
@@ -274,9 +278,21 @@ public class CsvTaxExportConfiguratorRedlist extends XmlExportConfiguratorBase<C
 	public void setClassificationTitleCache(String classificationTitleCache) {
 		this.classificationTitleCache = classificationTitleCache;
 	}
+	
 	public String getClassificationTitleCache() {
 		return classificationTitleCache;
 	}
 
-
+	/**
+	 * @param areas
+	 */
+	public void setNamedAreas(List<NamedArea> areas) {
+		// TODO Auto-generated method stub
+		this.areas = areas;
+		
+	}
+	public List<NamedArea> getNamedAreas(){
+		return areas;
+	}
+	
 }

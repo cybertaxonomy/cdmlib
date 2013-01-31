@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
@@ -65,7 +65,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * <code>propertyPaths</code> parameter.
 	 * <p>
 	 * For detailed description and examples <b>please refer to:</b> 
-	 * {@link BeanInitializer#initialize(Object, List)}
+	 * {@link IBeanInitializer#initialize(Object, List)}
 	 * 
 	 * @param uuid the uuid of the DescriptionElement of interest
 	 * @return a DescriptionElement, or null if the DescriptionElement does not exist
@@ -104,7 +104,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing DescriptionBase instances
 	 */
 	public Pager<DescriptionBase> page(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -129,7 +129,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param class 
 	 * @param pageSize The maximum number of description elements returned (can be null for all description elements)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing DescriptionElementBase instances
 	 * 
 	 * FIXME candidate for harmonization - rename to pageDescriptionElements
@@ -145,7 +145,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param class 
 	 * @param pageSize The maximum number of description elements returned (can be null for all description elements)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List containing DescriptionElementBase instances
 	 */
 	public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -157,7 +157,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageSize The maximum number of terms returned (can be null for all annotations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of Annotation entities
 	 */
 	public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -171,7 +171,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonDescription instances
 	 * 
 	 * FIXME candidate for harmonization - rename to pageTaxonDescriptions
@@ -189,7 +189,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonDescription instances
 	 */
 	public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -229,7 +229,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param markerTypes only media for TaxonDescriptions with marker of type markerType and marker.flag=true are returned, one matching marker type is sufficient
 	 * @param pageSize
 	 * @param pageNumber
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return
 	 */
 	public List<Media> listTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -251,7 +251,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param name Restrict the results to those descriptions that refer to a specific name (can be null for all TaxonNameDescription instances)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonNameBase instances
 	 * 
 	 * FIXME candidate for harmonization - rename to pageTaxonNameDescriptions
@@ -268,7 +268,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing TaxonDescription instances
 	 */
 	public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -296,7 +296,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param descriptionElement the description element associated with these media
 	 * @param pageSize The maximum number of media returned (can be null for all related media)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager containing media instances
      * 
      * FIXME candidate for harmonization - rename to pageMedia

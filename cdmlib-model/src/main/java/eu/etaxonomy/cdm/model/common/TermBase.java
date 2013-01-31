@@ -80,8 +80,8 @@ public abstract class TermBase extends IdentifiableEntity{
     }
     public TermBase(String term, String label, String labelAbbrev) {
         super();
-        this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
         initCacheStrategy();
+        this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
     }
 
     public Set<Representation> getRepresentations() {

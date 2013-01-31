@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -60,7 +60,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 	@Autowired
 	private ITaxonDao taxonDao;
 	@Autowired
-	private BeanInitializer defaultBeanInitializer;
+	private IBeanInitializer defaultBeanInitializer;
 	private Comparator<? super TaxonNode> taxonNodeComparator;
 	@Autowired
 	public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){

@@ -34,10 +34,12 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -61,8 +63,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
 {
     @Autowired
     private IFeatureTreeService featureTreeService;
-    
-    
+
+
     public DescriptionController(){
         super();
     }
@@ -74,16 +76,16 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
                 "root.children.feature.representations",
                 "root.children.children.feature.representations",
             });
-    
-    
+
+
+
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.multilanguageText",
-            "elements.media.representations.parts",
-            "elements.media.title",
+            "elements.media",
     });
 
     @InitBinder
@@ -118,13 +120,28 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return featureTree;
     }
 
-
-    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
-    public Pager<Annotation> getDescriptionElementAnnotations(
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET)
+    public ModelAndView doGetDescriptionElement(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getDescriptionElementAnnotations() - " + request.getServletPath());
+
+        ModelAndView mv = new ModelAndView();
+        logger.info("doGetDescriptionElement() - " + request.getServletPath());
+        DescriptionElementBase element = service.getDescriptionElementByUuid(uuid);
+        if(element == null) {
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        mv.addObject(element);
+        return mv;
+    }
+
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
+    public Pager<Annotation> doGetDescriptionElementAnnotations(
+            @PathVariable("descriptionelement_uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetDescriptionElementAnnotations() - " + request.getServletPath());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         if(annotatableEntity == null){
             HttpStatusMessage.UUID_INVALID.send(response);
@@ -135,7 +152,36 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
     }
-    
+
+    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/states", method = RequestMethod.GET)
+    public ModelAndView doGetDescriptionElementStates(
+            @PathVariable("descriptionelement_uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetDescriptionElementStates() - " + request.getServletPath());
+
+        ModelAndView mv = new ModelAndView();
+
+        DescriptionElementBase descriptionElement = service.loadDescriptionElement(uuid,
+                Arrays.asList( new String[]{
+                        "states.state.representations",
+                        "modifiers",
+                        "modifyingText"
+                        } ));
+        if(descriptionElement == null){
+            HttpStatusMessage.UUID_INVALID.send(response);
+            // method will exit here
+            return null;
+        }
+
+        if(descriptionElement instanceof CategoricalData){
+
+        }
+        List<StateData> states = ((CategoricalData)descriptionElement).getStates();
+        mv.addObject(states);
+        return mv;
+    }
+
 
 
     @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
@@ -214,7 +260,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         mv.addObject(textData);
         return mv;
     }
-    
+
     @RequestMapping(value = "/description/{uuid}/hasStructuredData", method = RequestMethod.GET)
     public ModelAndView doHasStructuredData(
             @PathVariable("uuid") UUID uuid,

@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -43,7 +43,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of DescriptionBase instances
 	 */
 	 List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -67,7 +67,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param type The type of description
 	 * @param pageSize The maximum number of description elements returned (can be null for all description elements)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of DescriptionElementBase instances
 	 */
 	 List<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -91,7 +91,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param markerTypes Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonDescription instances
 	 */
 	List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -119,7 +119,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param markerTypes Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of Media instances
 	 */
 	List<Media> listTaxonDescriptionMedia(UUID taxonUuid, Boolean restrictToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -143,7 +143,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param name Restrict the results to those descriptions that refer to a specific name (can be null for all TaxonNameDescription instances)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonNameBase instances
 	 */
     List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -165,7 +165,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonDescription instances
 	 */
 	List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);

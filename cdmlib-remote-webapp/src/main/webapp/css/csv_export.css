@@ -7,6 +7,9 @@ body {
 .demoHeaders {
 	margin-top: 2em;
 }
+.error {
+    border: solid 1px #FF0000;  
+}
 
 #dialog_link {
 	padding: .4em 1em .4em 20px;

@@ -20,7 +20,7 @@ import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -82,7 +82,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * All bean properties given in the <code>propertyPaths</code> parameter are recursively initialized.
      * <p>
      * For detailed description and examples <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
+     * {@link IBeanInitializer#initialize(Object, List)}
      *
      * @param t
      * @param lockMode
@@ -174,7 +174,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *
      * For detailed description and examples redarding
      * <code>propertyPaths</code> <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
+     * {@link IBeanInitializer#initialize(Object, List)}
      *
      * @param limit
      *            the maximum number of entities returned (can be null to return
@@ -231,7 +231,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * <code>propertyPaths</code> parameter.
      * <p>
      * For detailed description and examples <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
+     * {@link IBeanInitializer#initialize(Object, List)}
      *
      * @param id
      * @param propertyPaths properties to be initialized
@@ -284,7 +284,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * <code>propertyPaths</code> parameter.
      * <p>
      * For detailed description and examples <b>please refer to:</b>
-     * {@link BeanInitializer#initialize(Object, List)}
+     * {@link IBeanInitializer#initialize(Object, List)}
      *
      * @param uuid
      * @param propertyPaths properties to be initialized

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -72,7 +72,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            The offset (in pageSize chunks) from the start of the result
 	 *            set (0 - based) of the result set (0 - based)
 	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of NameRelationship instances
 	 */
 	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction,
