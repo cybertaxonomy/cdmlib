@@ -3,8 +3,6 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,9 +29,12 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -41,6 +43,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 @SuppressWarnings({ "rawtypes", "serial" })
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
+
+	// constant if you want to printout the database content to console:
+	// only recommended for a small probe
+	private static final boolean PRINTOUT = false;
 
 	// ************constants to set up the expected results for all:
 	// ********************
@@ -53,8 +59,15 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			.asList(new StatisticsTypeEnum[] {
 					StatisticsTypeEnum.CLASSIFICATION,
 					StatisticsTypeEnum.ACCEPTED_TAXA,
-					StatisticsTypeEnum.ALL_TAXA
-//					StatisticsTypeEnum.ALL_REFERENCES 
+					StatisticsTypeEnum.ALL_TAXA,
+					StatisticsTypeEnum.ALL_REFERENCES, // this functionality
+					// for
+					// classifications is still missing for in the Statistics
+					// Service
+					StatisticsTypeEnum.SYNONYMS, 
+					StatisticsTypeEnum.TAXON_NAMES,
+					StatisticsTypeEnum.NOMECLATURAL_REFERENCES,
+//					StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES
 					});
 
 	// private static final String[] TYPES = { "CLASSIFICATION",
@@ -63,38 +76,45 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// ................parts ..............................
 
-	private static final List<String> PARTS2 = Arrays.asList(new String[] {
+	private static final List<String> PARTS = Arrays.asList(new String[] {
 			"ALL", "CLASSIFICATION" });
 	// .........................................................
 
 	// part= null means search all DB
-
 	private static final IdentifiableEntity PARTS_ALL = null;
 
 	// here is the number of items that will be created for the test count:
 	// please only change the numbers
 	// but do not replace or add a number to any constants on the right.
 
+
+	// choose a number
+	private static final int NO_OF_ACCEPTED_TAXA = 10;
+	
+	// choose a number (less than NO_OF_ACCEPTED_TAXA)
 	private static final int NO_OF_CLASSIFICATIONS = 3;
 
-	private static final int NO_OF_ACCEPTED_TAXA = 10;
 
-	private static final int NO_OF_SYNONYMS = 0;
+	// must be less or equal to NO_OF_ACCEPTED_TAXA
+	private static final int NO_OF_SYNONYMS = 7;
 
 	// taxa that occure in several classifications:
-	private static final int NO_OF_SHARED_TAXA = 4; // must NOT be more than NO_OF_ACCEPTED_TAXA
+	// must NOT be more than NO_OF_ACCEPTED_TAXA
+	private static final int NO_OF_SHARED_TAXA = 4; 
 
+	// must be NO_OF_ACCEPTED_TAXA + NO_OF_SYNONYMS
 	private static final int NO_OF_ALLTAXA = NO_OF_ACCEPTED_TAXA
 			+ NO_OF_SYNONYMS;
 
-	private static final int NO_OF_TAXON_NAMES = NO_OF_ACCEPTED_TAXA;
+	// must be NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS 
+	private static final int NO_OF_TAXON_NAMES = NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS;
 
 	private static final int NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = 0;
 
 	// private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0;
-	// // +....
 
-	private static final int NO_OF_NOMECLATURAL_REFERENCES = 0;
+	// must not be more than NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS 
+	private static final int NO_OF_NOMECLATURAL_REFERENCES = NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS - 4;
 
 	// --------------------variables for all ------------------
 
@@ -144,6 +164,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 	};
 
+	private static final Logger logger = Logger.getLogger(StatisticsServiceImplTest.class);
+	
 	private List<Classification> classifications;
 
 	// ****************** services: ************************
@@ -182,6 +204,11 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	@DataSet
 	public void setUp() throws Exception {
 
+		// missing in this example data:
+		// synonyms, that are attached to several taxa (same or different
+		// classification)
+
+		// create NO_OF_CLASSIFICATIONS classifications
 		classifications = new ArrayList<Classification>();
 
 		for (int i = 1; i <= NO_OF_CLASSIFICATIONS; i++) {
@@ -190,65 +217,179 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			classifications.add(classification);
 			classificationService.save(classification);
 		}
-		// // taxa
+		// create all taxa, references and synonyms and attach them to one or
+		// more classifications
+
+		// 1. variables
 		int remainder = NO_OF_ACCEPTED_TAXA;
-
 		Reference sec = ReferenceFactory.newBook();
+		boolean secondClassificationForTaxon = false;
+		boolean t_nomRef = false;
+		boolean s_nomRef= false;
 
-		for (int amount, k = 0, l = 0, s = 0; remainder > 0
-				&& k < NO_OF_CLASSIFICATIONS; k++, remainder -= amount) {
+		// iterate over classifications and add taxa
+		for (int taxaInClass, classiCounter = 0, sharedClassification = 0, synonymCounter = 0, nomRefCounter =0; remainder > 0
+				&& classiCounter < NO_OF_CLASSIFICATIONS; classiCounter++, remainder -= taxaInClass) {
 
-			if (k >= NO_OF_CLASSIFICATIONS - 1) {
-				amount = remainder;
-			} else {
-				amount = remainder / 2;
+			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last
+																// classification
+																// gets all left
+																// taxs
+				taxaInClass = remainder;
+			} else { // take half of left taxa for this class:
+				taxaInClass = remainder / 2;
 			}
 
-			// System.out.println("amount: " + amount);
-			for (int i = 1; i <= amount; i++) {
+			// iterate over amount of taxa meant to be in this classification
+			for (int taxonCounter = 1; taxonCounter <= taxaInClass; taxonCounter++) {
+
+				// create a Name
 				RandomStringUtils.randomAlphabetic(10);
 				String randomName = RandomStringUtils.randomAlphabetic(5) + " "
 						+ RandomStringUtils.randomAlphabetic(10);
-				// TODO
-				String radomCommonName = RandomStringUtils.randomAlphabetic(10);
-				if (i % 2 != 0) {
-					sec = ReferenceFactory.newBook();
-					sec.setTitle("book" + i);
-					referenceService.save(sec);
-					increment(no_of_all_references_c, k);
-					no_of_all_references++;
-					 System.out.println("all_ref: "+no_of_all_references_c.toString());
-				}
+				
+				// create a name for the taxon
 				BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 				name.setNameCache(randomName, true);
-				Taxon taxon = Taxon.NewInstance(name, sec);
-				// TODO count name
-				taxonService.save(taxon);
-				classifications.get(k).addChildTaxon(taxon, null, null, null);
-				classificationService.saveOrUpdate(classifications.get(k));
-				increment(no_of_accepted_taxa_c, k);
-				increment(no_of_all_taxa_c, k);
-				if (k < NO_OF_CLASSIFICATIONS && l < NO_OF_SHARED_TAXA) {
-					classifications.get(k + 1).addChildTaxon(taxon, null, null,
-							null);
-					increment(no_of_accepted_taxa_c, k + 1);
-					increment(no_of_all_taxa_c, k + 1);
-					if (i % 2 != 0) {
-						increment(no_of_all_references_c, k + 1);
-					}
-					l++;
+				increment(no_of_taxon_names_c, classiCounter);
+
+				// create nomenclatural reference for taxon name (if left)
+				if(nomRefCounter<NO_OF_NOMECLATURAL_REFERENCES){
+					// we remenber this taxon has a nomenclatural reference:
+					t_nomRef=true;
+					Reference nomRef = ReferenceFactory.newBook();
+					name.setNomenclaturalReference(nomRef);
+					referenceService.save(nomRef);
+					increment(no_of_nomenclatural_references_c, classiCounter);
+//					if(secondClassificationForTaxon){
+//						increment(no_of_nomenclatural_references_c, classiCounter+1);
+//					}
+					nomRefCounter++;
 				}
-				// if(s<NO_OF_SYNONYMS){
-				// randomName = RandomStringUtils.randomAlphabetic(5) + " "
-				// + RandomStringUtils.randomAlphabetic(10);
-				// Synonym s_abies_subalpina = Synonym.NewInstance(randomName,
-				// sec);
-				// taxonService.save(s_abies_subalpina);
-				// }
-				// classificationService.saveOrUpdate(classifications.get(k+1));
+				
+				// create a new sec for every other taxon
+				if (taxonCounter % 2 != 0) {
+					sec = createSecReference(classiCounter, taxonCounter);
+				}
+
+				// create the taxon
+				Taxon taxon = Taxon.NewInstance(name, sec);
+
+				// add taxon to classification
+				classifications.get(classiCounter).addChildTaxon(taxon, null,
+						null, null);
+
+				increment(no_of_accepted_taxa_c, classiCounter);
+				// increment(no_of_all_taxa_c, k);
+
+				// if this is not the last classification and there are
+				// taxa left that should be in more than one classification
+				// we add the taxon to the next class in the list too.
+				if (classiCounter < NO_OF_CLASSIFICATIONS
+						&& sharedClassification < NO_OF_SHARED_TAXA) {
+					classifications.get(classiCounter + 1).addChildTaxon(taxon,
+							null, null, null);
+					increment(no_of_accepted_taxa_c, classiCounter + 1);
+					// increment(no_of_all_taxa_c, k + 1);
+					increment(no_of_taxon_names_c, classiCounter + 1);
+					if(t_nomRef){
+						increment(no_of_nomenclatural_references_c, classiCounter+1);
+					}
+					
+					if (taxonCounter % 2 != 0) {
+						increment(no_of_all_references_c, classiCounter + 1);
+					}
+					// we remember that this taxon is attached to 2
+					// classifications:
+					secondClassificationForTaxon = true;
+					sharedClassification++;
+					classificationService.saveOrUpdate(classifications
+							.get(classiCounter + 1));
+				}
+
+				// now if there are any left, we create a synonym for the taxon
+				if (synonymCounter < NO_OF_SYNONYMS) {
+
+					randomName = RandomStringUtils.randomAlphabetic(5) + " "
+							+ RandomStringUtils.randomAlphabetic(10);
+					// name for synonym
+					name = BotanicalName.NewInstance(Rank.SPECIES());
+					name.setNameCache(randomName, true);
+					
+					// create nomenclatural reference for synonym name (if left)
+					if(nomRefCounter<NO_OF_NOMECLATURAL_REFERENCES){
+						s_nomRef = true;
+						Reference nomRef = ReferenceFactory.newBook();
+						name.setNomenclaturalReference(nomRef);
+						referenceService.save(nomRef);
+						increment(no_of_nomenclatural_references_c, classiCounter);
+						nomRefCounter++;
+					}
+					
+					// create a new reference for every other synonym:
+					if (taxonCounter % 2 != 0) {
+						sec = createSecReference(classiCounter, taxonCounter);
+					}
+					Synonym synonym = Synonym.NewInstance(name, sec);
+					taxonService.save(synonym);
+					taxon.addSynonym(synonym,
+							SynonymRelationshipType.SYNONYM_OF());
+					increment(no_of_synonyms_c, classiCounter);
+					increment(no_of_taxon_names_c, classiCounter);
+					
+					// if the taxon is added to a second class,
+					// the synonym and its countable elements are as well
+					if (secondClassificationForTaxon) {
+						increment(no_of_synonyms_c, classiCounter + 1);
+						increment(no_of_taxon_names_c, classiCounter + 1);
+						increment(no_of_nomenclatural_references_c, classiCounter+1);	
+						if(s_nomRef){
+							increment(no_of_nomenclatural_references_c, classiCounter+1);
+						}
+						
+					}
+					synonymCounter++;
+				}
+
+				taxonService.save(taxon);
+				classificationService.saveOrUpdate(classifications
+						.get(classiCounter));
+				secondClassificationForTaxon = false;
+				t_nomRef=false;
+				s_nomRef=false;
+
 			}
 
 		}
+
+		// the amount of all taxa can be computed from the number of taxa and
+		// synonyms
+		no_of_all_taxa_c = merge(no_of_accepted_taxa_c, no_of_synonyms_c);
+	}
+
+	/**
+	 * create and count a new sec Reference
+	 * @param classiCounter
+	 * @param taxonCounter
+	 * @return
+	 */
+	private Reference createSecReference(int classiCounter, int taxonCounter) {
+		Reference sec;
+		sec = ReferenceFactory.newBook();
+		sec.setTitle("book " + classiCounter + "." + taxonCounter);
+		referenceService.save(sec);
+		increment(no_of_all_references_c, classiCounter);
+		no_of_all_references++;
+		return sec;
+	}
+
+	private List<Long> merge(List<Long> no_of_sth1, List<Long> no_of_sth2) {
+		for (int i = 0; i < NO_OF_CLASSIFICATIONS; i++) {
+			Long sum = no_of_sth1.get(i) + no_of_sth2.get(i);
+			no_of_all_taxa_c.set(i, sum);
+
+		}
+		return null;
 	}
 
 	/**
@@ -269,10 +410,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 		// create maps to compare the testresults with:
 		List<Map<String, Number>> expectedCountmapList = new ArrayList<Map<String, Number>>();
-		if (PARTS2.contains("ALL")) {
+		if (PARTS.contains("ALL")) {
 			expectedCountmapList.add(createExpectedCountMap_ALL());
 		}
-		if (PARTS2.contains("CLASSIFICATION")) {
+		if (PARTS.contains("CLASSIFICATION")) {
 			expectedCountmapList
 					.addAll(createExpectedCountMaps_CLASSIFICATION());
 		}
@@ -280,27 +421,57 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// create configurator needed to call
 		// StatisticsService.getCountStatistics:
 		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
-				(String[]) PARTS2.toArray(), TYPES);
+				(String[]) PARTS.toArray(), TYPES);
 
 		// run method of StatisticsService
 		List<Statistics> statisticsList = service
 				.getCountStatistics(configuratorList);
 
-		// check the result with the expected values:
-		// as we cannot be sure the order of the statisticsList
-		// matches the order of the expectedCountmapList
-		// we have to work arround a little:
-		System.out.println("expected: " + expectedCountmapList.toString());
+		// print out the: expected and the result:
+		
+		logger.info("expected: ");
+
+		for (Map<String,Number> map : expectedCountmapList) {
+			logger.info( map.toString());
+		}
+		logger.info("statistics: ");
 		for (Statistics statistics : statisticsList) {
-			System.out.println("statistics: "
-					+ statistics.getCountMap().toString());
+			logger.info(statistics.getCountMap().toString());
+			
+		}
+			
+			// check the result with the expected values:
+			// as we cannot be sure the order of the statisticsList
+			// matches the order of the expectedCountmapList
+			// we have to work arround a little:
+		for (Statistics statistics : statisticsList) {
 			Boolean orCompare = false;
 			for (Map<String, Number> map : expectedCountmapList) {
 				orCompare = orCompare || statistics.getCountMap().equals(map);
 			}
-			 assertTrue(orCompare);
+			// assertTrue(orCompare);
+		}
+		if (PRINTOUT) {
+			print();
 		}
 
+	}
+
+	/**
+	 * 
+	 */
+	private void print() {
+		for (Classification classification : classifications) {
+			System.out.println("Classification:" + classification.toString());
+			for (TaxonNode node : classification.getAllNodes()) {
+				System.out.println("\tTaxon: " + node.getTaxon().toString());
+				for (Synonym synonym : node.getTaxon().getSynonyms()) {
+					System.out.println("\t\tSynonym: " + synonym.toString());
+					System.out.println();
+				}
+			}
+
+		}
 	}
 
 	// ************************** private methods ****************************+
@@ -317,7 +488,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		Map<String, Number> countMap = new HashMap<String, Number>();
 		createMap_ALL();
 		for (StatisticsTypeEnum type : TYPES) {
-			System.out.println(typeMap_ALL.get(type.getLabel()));
+//			System.out.println(""+typeMap_ALL.get(type.getLabel()));
 			countMap.put(type.getLabel(), typeMap_ALL.get(type.getLabel()));
 		}
 		return countMap;
@@ -400,7 +571,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// else parse list of parts and create configurator for each:
 		else {
 			for (String string : part) {
-				// System.out.println(StatisticsPartEnum.ALL.toString());
 				if (string.equals(StatisticsPartEnum.ALL.toString())) {
 					helperConfigurator.addFilter(PARTS_ALL);
 					configuratorList.add(helperConfigurator);

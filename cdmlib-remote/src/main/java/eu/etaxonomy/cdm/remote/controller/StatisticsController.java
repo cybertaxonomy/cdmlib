@@ -26,9 +26,8 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * this controller provides a method to count different entities in the entire
- * database as well as from a particular classification 
- * items of different types can be choosen 
- * have a look at doStatistics method
+ * database as well as from a particular classification items of different types
+ * can be choosen have a look at doStatistics method
  * 
  * @author s.buers
  * @created 07.11.2012
@@ -107,7 +106,8 @@ public class StatisticsController {
 			}
 		}
 
-		// 2. determine the entities and put each of them in a configurator:
+		// 2. determine the search areas (entire db or classifications) and put
+		// each of them in a configurator:
 
 		// if no part was given:
 		if (part == null) {
@@ -116,12 +116,13 @@ public class StatisticsController {
 		}
 		// else parse list of parts and create configurator for each:
 		else {
+			helperConfigurator.addFilter(DEFAULT_TYPES);
 			for (String string : part) {
 				// System.out.println(StatisticsPartEnum.ALL.toString());
 				if (string.equals(StatisticsPartEnum.ALL.toString())) {
-					helperConfigurator.addFilter(DEFAULT_TYPES);
 					configuratorList.add(helperConfigurator);
-				} else if (string.equals(StatisticsPartEnum.CLASSIFICATION
+				} 
+				else if (string.equals(StatisticsPartEnum.CLASSIFICATION
 						.toString())) {
 					List<Classification> classificationsList = classificationService
 							.listClassifications(null, 0, null, null);
