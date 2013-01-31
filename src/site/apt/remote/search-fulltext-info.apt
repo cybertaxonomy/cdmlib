@@ -1,0 +1,30 @@
+	---------------
+	Full text Search API
+	---------------
+
+{CDM Full text Search API}
+
+	This web service endpoint serves as a search engine for a query term related to a Taxon, e.g. In the free text descriptive data or aspart of the scientific name.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : any free text you wish to search for.
+	
+	* '<<class>>' [optional] : the class of the TaxonBase object you wish to search for.
+	
+	* '<<tree>>' [optional] : the uuid of the classification you wish to search for with the query string.
+	
+	* '<<languages>>' [optional] : a list of the languages you wish to search for the query string. English is the default.
+									
+	* '<<hl>>' [optional, default value = <<<20>>>]  : a boolean to indicate whether the query term should be highlighted in the response.
+									
+	* '<<pageSize>>' [optional, default value = <<<20>>>] 	: the number of results within each page in the response. The default is set to 20.
+	
+	* '<<pageNumber>>' [optional, default value = <<<1>>>] 	: the number of the page to be returned, the first page has the pageNumber = 1.
+	
+	
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON and XML.
+	
+	

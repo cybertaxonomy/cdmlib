@@ -1,0 +1,205 @@
+	---------------
+	Name Search API
+	---------------
+
+{CDM Search for Taxon information associated to a Name}
+
+	This web service endpoint provides taxon information for a scientific name.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : this could either be part of a scientific name or the complete scientific name. Wild-card searches are possible by including a * within the query string.
+	
+	* '<<matchMode>>' [optional, default value = <<<BEGINNING>>>] 	:  Case sensitive. This parameter can have the values,
+	
+									* <<<BEGINNING>>>	: MatchMode should be set to BEGINNING if the query contains a * at the beginning (e.g. *ichorieae).
+									
+									* <<<END>>>	:  MatchMode should be set to END if the query contains a * at the end (e.g. Cichori*).
+									
+									* <<<ANYWHERE>>>	: MatchMode should be set to ANYWHERE if the query contains a * within it (e.g.Hy*ridineae).
+									
+									* <<<EXACT>>>	: MatchMode should be set to EXACT to query for an exact name match.
+									
+	* '<<pageSize>>' [optional, default value = <<<20>>>] 	: the maximum number of entities returned per page (can be -1 to return all entities in a single page). The default is set to 20.
+	
+	* '<<pageNumber>>' [optional, default value = <<<1>>>] 	: the number of the page to be returned, the first page has the pageNumber = 1.
+	
+	
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON and XML.
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<class>>> : "DefaultPagerImpl" is always returned for a name search.
+		
+		* <<<count>>> : the total number of records returned.
+		
+		* <<<currentIndex>>> : the current index of the response. Index 0 corresponds to the first page.
+		
+		* <<<firstRecord>>> : an integer indicating the number of the first record on the current page.
+		
+		* <<<indexes>>> : a sliding window showing a list of integers showing the previous and next indexes of the avaiable pages.
+			
+		* <<<lastRecord>>> : an integer indicating the number of the last record on the current page.
+		
+		* <<<nextIndex>>> : the index corresponding to the next page.
+		
+		* <<<pageSize>>> : page size provided as input.
+		
+		* <<<pagesAvailable>>> : the total number of pages available.
+		
+		* <<<prevIndex>>> : the index corresponding to the previous page.
+		
+		* <<<records>>> : 
+		
+			* <<<appendedPhrase>>> : scientific name provided as input.
+			
+			* <<<class>>> : can be Taxon or Synonym
+			
+			* <<<created>>> : the date this object was created.
+			
+			* <<<data>>> : 
+			
+			* <<<doubtful>>> : true or false
+			
+			* <<<excluded>>> : true or false
+			
+			* <<<lsid>>> : lsid of the object if stored otherwise null
+			
+			* <<<protectedTitleCache>>> : true or false
+			
+			* <<<sec>>> : 
+		
+				* <<<titleCache>>> : the name of the secundum reference.
+				
+				* <<<type>>> : for example Generic
+				
+				* <<<problemEnds>>> : 
+				
+				* <<<parsingProblem>>> : 0 or 1 to indicate whether there was a parsing problem.
+				
+				* <<<datePublished>>> 
+				
+					* <<<class>>> : for example TimePeriod
+			
+					* <<<end>>> : the end date if known
+			
+					* <<<freeText>>> : free text for the date
+			
+					* <<<start>>> : the start date
+				
+				* <<<created>>> : a timestamp indicating when the secundum reference was created in the database.
+				
+				* <<<problemStarts>>> : 
+				
+				* <<<nomenclaturallyRelevant>>> : true or false.
+				
+				* <<<updated>>> : a timestamp indicating when the secundum reference was updated in the database.
+				
+				* <<<uri>>> : the uri of the secundum reference.
+				
+				* <<<uuid>>> : the uuid of the secundum reference
+				
+				* <<<protectedTitleCache>>> : true or false.
+				
+				* <<<class>>> : for example Reference
+				
+			* <<<taxonStatusUnknown>>> : true or false.
+			
+			* <<<taxonomicChildrenCount>>> : the number of children connected to this Taxon.
+			
+			* <<<titleCache>>> : the full scientfic name of the object e.g.Taxon
+			
+			* <<<unplaced>>> : true or false
+			
+			* <<<updated>>> : a timestamp indicating when the object e.g. Taxon was updated in the database.
+			
+			* <<<useNameCache>>> : true or false
+			
+			* <<<uuid>>> : the uuid of the object e.g.Taxon
+		
+		* <<<suggestion>>>
+		
+
+				
+			
+	Note:
+	
+		* When the number of records returned are greater than the page size multiple calls to the web service must be made to return the susequent pages.
+		
+	
+	Example Request :
+		
+		* Exact scientific name search : 	
+				
+			* {{{queryCichorium_endivia} /taxon/findByTitle.json?query=Cichorium endivia}}
+								
+			
+	Example Response :
+		
+		* Exact scientific name search : {query=Cichorium_endivia} [{{{CDM_Search_API_for_Distinct_Taxonomic_Name}back}}]
+										
+---
+
+[{
+
+    "class": "DefaultPagerImpl",
+    "count": 12,
+    "currentIndex": 0,
+    "firstRecord": 1,
+    "indices": [
+        0
+    ],
+    "lastRecord": 12,
+    "nextIndex": 0,
+    "pageSize": 20,
+    "pagesAvailable": 1,
+    "prevIndex": 0
+    "records": [
+    	{
+    	"appendedPhrase": "",
+		"class": "Taxon",
+		"created": "2011-02-25T17:44:07.000Z",
+		"data": [ ],
+		"doubtful": false,
+		"excluded": false,
+		"lsid": null,
+		"protectedTitleCache": false
+		"sec": {
+		    	"titleCache": "\"Edit WP6 - Cichorieae\", . 2006",
+		    	"type": "Generic",
+		    	"problemEnds": -1,
+		    	"parsingProblem": 0
+		    	"datePublished": {
+				"class": "TimePeriod",
+				"end": "",
+				"freeText": "2006",
+				"start": "2006-10-12"
+				}        ,
+		        "created": "2010-05-27T17:54:55.000+01:00",
+		        "problemStarts": -1,
+		        "nomenclaturallyRelevant": false,
+		        "updated": "2013-01-30T16:09:17.196Z",
+		        "uri": "",
+		        "uuid": "c5b96998-9c52-4f24-81f9-9d0f4de43052",
+		        "protectedTitleCache": false,
+		        "class": "Reference"
+		    },
+	    "taxonStatusUnknown": false,
+	    "taxonomicChildrenCount": 0,
+	    "titleCache": "Cichorium endivia L. sec. \"Edit WP6 - Cichorieae\", . 2006",
+	    "unplaced": false,
+	    "updated": "2010-05-27T18:05:58.000+01:00",
+	    "useNameCache": false,
+	    "uuid": "4f6c68d0-63f2-4235-83c2-5bff14532f90"
+	    },
+	    {...}
+    ],
+    "suggestion": ""
+   
+}]
+
+
+---		
+
