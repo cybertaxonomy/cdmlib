@@ -18,9 +18,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -46,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @author a.oppermann
  * @created 18.10.2012
  */
+
 @Component
 public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	private static final Logger logger = Logger.getLogger(CsvTaxExportRedlist.class);
@@ -90,7 +93,13 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
 			List<TaxonNode> allNodes =  getAllNodes(classificationSet);
 			//Geographical filter
-			if(selectedAreas != null && !selectedAreas.isEmpty()){
+			logger.info(selectedAreas.size());
+			if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
+//				if(selectedAreas.size() == 16){
+//					//Germany TDWG Level 3
+//					String germany="uu7b7c2db5-aa44-4302-bdec-6556fd74b0b9id";
+//					selectedAreas.add((NamedArea) getTermService().find(UUID.fromString(germany)));
+//				}
 				for (TaxonNode node : allNodes){
 					Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 					//TODO Hierarchically  order for Germany and its federal states
