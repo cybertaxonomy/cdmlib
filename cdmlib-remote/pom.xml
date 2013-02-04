@@ -7,7 +7,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.1.3-SNAPSHOT</version>
+    <version>3.1.3</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -27,13 +27,13 @@
   <packaging>jar</packaging>
   <scm>
     <connection>
-      scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+      scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.1.3/cdmlib-remote
     </connection>
     <developerConnection>
-      scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+      scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.1.3/cdmlib-remote
     </developerConnection>
     <url>
-      http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
+      scm:svn:http://dev.e-taxonomy.eu/svn/tags/cdmlib/cdmlib-parent-3.1.3/cdmlib-remote
     </url>
   </scm>
 
