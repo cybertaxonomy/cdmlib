@@ -243,27 +243,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     });
 
 
-    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "$",
-            "elements.$",
-            "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
-            "elements.multilanguageText",
-            "elements.media",
-    });
-
-    protected static final List<String> TAXONUSEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
-            "$",
-            "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
-            "sources.$",
             "elements.$",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.multilanguageText",
             "elements.media",
+            "name.$",
+            "name.rank.representations",
+            "name.status.type.representations",
+            "sources.$",
     });
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
@@ -772,11 +763,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         }
 
         else if (markerTypeTerms != null && markerTypeTerms.isEmpty()) {
-            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 
         }
         else {
-            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
             /*for (TaxonDescription description: descriptions) {
                 for (IdentifiableSource source :description.getSources()) {
                     if (source.getOriginalNameString() != null) {
@@ -807,7 +798,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
        //find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
        Set<MarkerType> markerTypes =  new HashSet<MarkerType>();
        markerTypes.add(useMarkerType);
-       List<TaxonDescription> descriptionElements = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+       List<TaxonDescription> descriptionElements = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
         //getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths)  load(uuid);
 
         /*if(!(description instanceof TaxonDescription)){
