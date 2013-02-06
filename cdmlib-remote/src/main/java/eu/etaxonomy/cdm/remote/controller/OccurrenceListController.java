@@ -83,8 +83,8 @@ public class OccurrenceListController extends IdentifiableListController<Specime
 
     /**
      * @param taxonUuid
-     * @param relationshipUuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
-     * @param relationshipInversUuids
+     * @param relationshipUuids a comma separated list of uuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
+     * @param relationshipInversUuids a comma separated list of uuids
      * @param maxDepth null for unlimited
      * @param pageNumber
      * @param pageSize
