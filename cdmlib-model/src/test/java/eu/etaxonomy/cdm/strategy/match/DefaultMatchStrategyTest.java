@@ -71,7 +71,6 @@ public class DefaultMatchStrategyTest {
 	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
-	ReferenceFactory refFactory;
 	
 	private IBook book3;
 	
@@ -96,19 +95,18 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		refFactory = ReferenceFactory.newInstance();
 		team1 = Team.NewInstance();
 		team1.setTitleCache("Team1",true);
 		team2 = Team.NewInstance();
 		team2.setTitleCache("Team2",true);
-		printSeries1 = refFactory.newPrintSeries("Series1");
+		printSeries1 = ReferenceFactory.newPrintSeries("Series1");
 		printSeries1.setTitle("print series");
-		printSeries2 = refFactory.newPrintSeries("Series2");
+		printSeries2 = ReferenceFactory.newPrintSeries("Series2");
 		annotation1 = Annotation.NewInstance("Annotation1", null);
 		annotationString2 = "Annotation2";
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
-		book1 = refFactory.newBook();
+		book1 = ReferenceFactory.newBook();
 		book1.setAuthorTeam(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
@@ -121,7 +119,7 @@ public class DefaultMatchStrategyTest {
 		book1.setLsid(lsid1);
 		((Reference) book1).setNomenclaturallyRelevant(false);
 		
-		book2 = refFactory.newBook();
+		book2 = ReferenceFactory.newBook();
 		book2.setAuthorTeam(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
@@ -264,8 +262,8 @@ public class DefaultMatchStrategyTest {
 		bookClone.setInSeries(printSeries1);
 		Assert.assertTrue("Original printSeries should match", matchStrategy.invoke(book1, bookClone));
 		
-		IBook bookTitle1 = refFactory.newBook();
-		IBook bookTitle2 = refFactory.newBook();
+		IBook bookTitle1 = ReferenceFactory.newBook();
+		IBook bookTitle2 = ReferenceFactory.newBook();
 		Assert.assertFalse("Books without title should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
 		String title = "Any title";
 		bookTitle1.setTitle(title);
@@ -288,11 +286,11 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Books with same publication dates should match", matchStrategy.invoke(bookTitle1, bookTitle2));
 
 		//BookSection
-		IBookSection section1 = refFactory.newBookSection();
+		IBookSection section1 = ReferenceFactory.newBookSection();
 		section1.setInBook(bookTitle1);
 		section1.setTitle("SecTitle");
 		section1.setPages("22-33");
-		IBookSection section2 = refFactory.newBookSection();
+		IBookSection section2 = ReferenceFactory.newBookSection();
 		section2.setInBook(bookTitle1);
 		section2.setTitle("SecTitle");
 		section2.setPages("22-33");

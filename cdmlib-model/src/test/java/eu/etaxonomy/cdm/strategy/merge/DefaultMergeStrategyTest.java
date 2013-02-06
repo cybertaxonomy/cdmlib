@@ -21,7 +21,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -46,8 +45,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-//import eu.etaxonomy.cdm.model.reference.PrintSeries;
-//import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
@@ -62,22 +59,22 @@ public class DefaultMergeStrategyTest {
 	private static final Logger logger = Logger.getLogger(DefaultMergeStrategyTest.class);
 
 	private DefaultMergeStrategy bookMergeStrategy;
-	private Reference book1;
+	private Reference<?> book1;
 	private String editionString1 ="Ed.1";
 	private String volumeString1 ="Vol.1";
 	private Team team1;
-	private Reference printSeries1;
+	private Reference<?> printSeries1;
 	private Annotation annotation1;
 	private String title1 = "Title1";
 	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
 	private int hasProblem1 = 1;
 	private LSID lsid1;
 	
-	private Reference book2;
+	private Reference<?> book2;
 	private String editionString2 ="Ed.2";
 	private String volumeString2 ="Vol.2";
 	private Team team2;
-	private Reference printSeries2;
+	private Reference<?> printSeries2;
 	private Annotation annotation2;
 	private String annotationString2;
 	private String title2 = "Title2";
@@ -85,10 +82,9 @@ public class DefaultMergeStrategyTest {
 	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
-	private ReferenceFactory refFactory;
 	
 	
-	private Reference book3;
+	private Reference<?> book3;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -111,19 +107,18 @@ public class DefaultMergeStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		refFactory = ReferenceFactory.newInstance();
 		bookMergeStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
 		team1 = Team.NewInstance();
 		team1.setTitleCache("Team1", true);
 		team2 = Team.NewInstance();
 		team2.setTitleCache("Team2", true);
-		printSeries1 = refFactory.newPrintSeries("Series1");
-		printSeries2 = refFactory.newPrintSeries("Series2");
+		printSeries1 = ReferenceFactory.newPrintSeries("Series1");
+		printSeries2 = ReferenceFactory.newPrintSeries("Series2");
 		annotation1 = Annotation.NewInstance("Annotation1", null);
 		annotationString2 = "Annotation2";
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
-		book1 = refFactory.newBook();
+		book1 = ReferenceFactory.newBook();
 		book1.setAuthorTeam(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
@@ -136,7 +131,7 @@ public class DefaultMergeStrategyTest {
 		book1.setLsid(lsid1);
 		book1.setNomenclaturallyRelevant(false);
 		
-		book2 = refFactory.newBook();
+		book2 = ReferenceFactory.newBook();
 		book2.setAuthorTeam(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
@@ -302,10 +297,10 @@ public class DefaultMergeStrategyTest {
 		Institution school1 = Institution.NewInstance();
 		Institution school2 = Institution.NewInstance();
 		
-		Reference thesis1 = refFactory.newThesis();
+		Reference<?> thesis1 = ReferenceFactory.newThesis();
 		thesis1.setSchool(school1);
 		//Thesis thesis1 = Thesis.NewInstance(school1);
-		Reference thesis2 = refFactory.newThesis();
+		Reference<?> thesis2 = ReferenceFactory.newThesis();
 		thesis2.setSchool(school2);
 		DefaultMergeStrategy thesisStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
 		
@@ -354,8 +349,8 @@ public class DefaultMergeStrategyTest {
 		botName2.setCombinationAuthorTeam(team2);
 		
 		//taxa
-		TaxonBase taxon1= Taxon.NewInstance(botName1, book1);
-		TaxonBase taxon2= Taxon.NewInstance(botName2, book2);
+		TaxonBase<?> taxon1= Taxon.NewInstance(botName1, book1);
+		TaxonBase<?> taxon2= Taxon.NewInstance(botName2, book2);
 		
 		try {
 			botNameMergeStrategy.setMergeMode("combinationAuthorTeam", MergeMode.SECOND);

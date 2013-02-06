@@ -13,7 +13,9 @@ package eu.etaxonomy.cdm.strategy.match;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +27,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
-import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -367,9 +367,9 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	}
 	
 	private Class getTypeOfSet(Field field) throws MatchException{
-		Type genericType = (ParameterizedTypeImpl)field.getGenericType();
-		if (genericType instanceof ParameterizedTypeImpl){
-			ParameterizedTypeImpl paraType = (ParameterizedTypeImpl)genericType;
+		Type genericType = (ParameterizedType)field.getGenericType();
+		if (genericType instanceof ParameterizedType/*Impl*/){
+			ParameterizedType paraType = (ParameterizedType)genericType;
 			paraType.getRawType();
 			Type[] arguments = paraType.getActualTypeArguments();
 			if (arguments.length == 1){
@@ -377,8 +377,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				try {
 					if (arguments[0] instanceof Class){
 						return (Class)arguments[0];
-					}else if(arguments[0] instanceof TypeVariableImpl){
-						TypeVariableImpl typeVariable = (TypeVariableImpl)arguments[0];
+					}else if(arguments[0] instanceof TypeVariable/*Impl*/){
+						TypeVariable typeVariable = (TypeVariable)arguments[0];
 						GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
 						return (Class)genericDeclaration;
 					}else{
