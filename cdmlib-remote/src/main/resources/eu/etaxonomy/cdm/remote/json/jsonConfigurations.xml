@@ -380,18 +380,16 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
-
-
         <entry key="java.lang.Class">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
         </entry>
-                <entry key="java.util.Map">
-                    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
-                </entry>
-                <entry key="java.net.URI">
-                    <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
-                </entry>
+        <entry key="java.util.Map">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+        <entry key="java.net.URI">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+        </entry>
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />
