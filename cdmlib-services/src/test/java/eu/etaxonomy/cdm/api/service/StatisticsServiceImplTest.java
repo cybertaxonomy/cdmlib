@@ -28,7 +28,11 @@ import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -55,7 +59,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	// ************constants to set up the expected results for all:
 	// ********************
 
-	// ................ALL............................
+	// ............................................
 
 	// here is the list of the types that will be test counted in the
 	// parts (ALL, CLASSIFICATION)
@@ -71,8 +75,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					StatisticsTypeEnum.SYNONYMS,
 					StatisticsTypeEnum.TAXON_NAMES,
 					StatisticsTypeEnum.NOMECLATURAL_REFERENCES,
-			// StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES
-			});
+					StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES });
 
 	// private static final String[] TYPES = { "CLASSIFICATION",
 	// "ACCEPTED_TAXA",
@@ -112,7 +115,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	private static final int NO_OF_TAXON_NAMES = NO_OF_ACCEPTED_TAXA
 			+ NO_OF_SYNONYMS;
 
-	private static final int NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = 0;
+	// this represents an approx. no of the amount that will actually generated!
+	private static final int NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = 16;
 
 	// private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0;
 
@@ -123,6 +127,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	// --------------------variables for all ------------------
 
 	private Long no_of_all_references = new Long(0);
+	private Long no_of_descriptive_source_references = new Long(0);
 
 	// ............................................
 
@@ -182,6 +187,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	private ITaxonService taxonService;
 	@SpringBeanByType
 	private IReferenceService referenceService;
+	@SpringBeanByType
+	private IDescriptionService descriptionService;
 
 	// *************** more members: *****************+
 
@@ -232,6 +239,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		boolean synonymFlag = false;
 		boolean tNomRefFlag = false;
 		boolean sNomRefFlag = false;
+		boolean descrSourceRefFlag = false;
+
+		int descriptiveElementsPerTaxon = (NO_OF_DESCRIPTIVE_SOURCE_REFERENCES
+				/ NO_OF_ACCEPTED_TAXA) + 1;
 
 		// iterate over classifications and add taxa
 		for (int taxaInClass, classiCounter = 0, sharedClassification = 0, synonymCounter = 0, nomRefCounter = 0; remainder > 0
@@ -277,13 +288,41 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				// create the taxon
 				Taxon taxon = Taxon.NewInstance(name, sec);
 
+				// create descriptions, description sources and their references
+
+				if (no_of_descriptive_source_references < NO_OF_DESCRIPTIVE_SOURCE_REFERENCES) {
+
+					descrSourceRefFlag = true;
+					TaxonDescription taxonDescription = new TaxonDescription();
+					for (int i = 0; i < descriptiveElementsPerTaxon; i++) {
+						DescriptionElementBase descriptionElement = new TextData();
+						DescriptionElementSource descriptionElementSource = DescriptionElementSource
+								.NewInstance();
+						Reference article = ReferenceFactory.newArticle();
+
+						descriptionElementSource.setCitation(article);
+						descriptionElement.addSource(descriptionElementSource);
+						taxonDescription.addElement(descriptionElement);
+						referenceService.save(article);
+						descriptionService
+								.saveDescriptionElement(descriptionElement);
+
+						
+					}
+					descriptionService.save(taxonDescription);
+					taxon.addDescription(taxonDescription);
+
+					no_of_descriptive_source_references += descriptiveElementsPerTaxon;
+					
+				}
+
 				// add taxon to classification
 				classifications.get(classiCounter).addChildTaxon(taxon, null,
 						null, null);
 
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < NO_OF_SYNONYMS) {
-//					synonymFlag = true;
+					synonymFlag = true;
 					randomName = RandomStringUtils.randomAlphabetic(5) + " "
 							+ RandomStringUtils.randomAlphabetic(10);
 					// name for synonym
@@ -357,6 +396,9 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 							increment(no_of_all_references_c, i);
 						}
 					}
+					if (descrSourceRefFlag) {
+						increment(no_of_descriptive_source_references_c, i, descriptiveElementsPerTaxon);
+					}
 
 				}
 				// put flags back:
@@ -364,12 +406,13 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				tNomRefFlag = false;
 				sNomRefFlag = false;
 				synonymFlag = false;
+				descrSourceRefFlag = false;
 			}
 
 		}
-		no_of_all_taxa_c = merge(no_of_accepted_taxa_c, no_of_synonyms_c);
-		no_of_all_references_c = merge(no_of_all_references_c,
-				no_of_nomenclatural_references_c);
+		merge(no_of_accepted_taxa_c, no_of_synonyms_c, no_of_all_taxa_c);
+		merge(no_of_all_references_c, no_of_nomenclatural_references_c,
+				no_of_all_references_c);
 	}
 
 	/**
@@ -388,13 +431,14 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		return sec;
 	}
 
-	private List<Long> merge(List<Long> no_of_sth1, List<Long> no_of_sth2) {
+	private void merge(List<Long> no_of_sth1, List<Long> no_of_sth2,
+			List<Long> no_of_sum) {
+
 		for (int i = 0; i < NO_OF_CLASSIFICATIONS; i++) {
 			Long sum = no_of_sth1.get(i) + no_of_sth2.get(i);
-			no_of_all_taxa_c.set(i, sum);
+			no_of_sum.set(i, sum);
 
 		}
-		return null;
 	}
 
 	/**
@@ -454,7 +498,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			for (Map<String, Number> map : expectedCountmapList) {
 				orCompare = orCompare || statistics.getCountMap().equals(map);
 			}
-//			 assertTrue(orCompare);
+			// assertTrue(orCompare);
 			assertTrue(true);
 		}
 		if (PRINTOUT) {
@@ -471,13 +515,30 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			System.out.println("Classification:" + classification.toString());
 			for (TaxonNode node : classification.getAllNodes()) {
 				System.out.println("\tTaxon: " + node.getTaxon().toString());
+				System.out.println(" \t(Name: "
+						+ node.getTaxon().getName().toString() + ")");
+				if (node.getTaxon().getName().getNomenclaturalReference() != null) {
+					System.out.println(" \t(Nomencl. Ref.: "
+							+ node.getTaxon().getName()
+									.getNomenclaturalReference().getId() + ")");
+				}
 				for (Synonym synonym : node.getTaxon().getSynonyms()) {
 					System.out.println("\t\tSynonym: " + synonym.toString());
+					System.out.println(" \t\t(Name: "
+							+ synonym.getName().toString() + ")");
+					if (synonym.getName().getNomenclaturalReference() != null) {
+						System.out.println(" \t\t(Nomencl. Ref.: "
+								+ synonym.getName().getNomenclaturalReference()
+										.getId() + ")");
+					}
 					System.out.println();
 				}
 			}
 
 		}
+		System.out.println();
+		System.out.println("end!");
+
 	}
 
 	// ************************** private methods ****************************+
@@ -485,9 +546,14 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	/**
 	 * @param no_of_sth
 	 * @param inClassification
+	 * @param increase 
 	 */
-	private void increment(List<Long> no_of_sth, int inClassification) {
-		no_of_sth.set(inClassification, (no_of_sth.get(inClassification)) + 1);
+	private void increment(List<Long> no_of_sth, int inClassification, int increase) {
+		no_of_sth.set(inClassification, (no_of_sth.get(inClassification)) + increase);
+	}
+	
+	private void increment(List<Long> no_of_sth, int inClassification){
+		increment(no_of_sth, inClassification, 1);
 	}
 
 	private Map<String, Number> createExpectedCountMap_ALL() {
@@ -535,8 +601,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						Long.valueOf(NO_OF_SYNONYMS));
 				put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
 						Long.valueOf(NO_OF_TAXON_NAMES));
+//				put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
+//						Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
 				put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
-						Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
+						Long.valueOf(no_of_descriptive_source_references));
 				// put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
 				// Long.valueOf(NO_OF_ALL_REFERENCES));
 				put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
