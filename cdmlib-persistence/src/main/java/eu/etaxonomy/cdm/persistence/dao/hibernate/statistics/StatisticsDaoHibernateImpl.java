@@ -34,8 +34,9 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 @Repository
 public class StatisticsDaoHibernateImpl extends DaoBase implements
 		IStatisticsDao {
-
-
+	
+	// TODO remove every commented query related to DescriptionBase.descriptionSources
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -44,12 +45,11 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 */
 	@Override
 	public Long countDescriptiveSourceReferences() {
-		Query query;
-		Long count = new Long(0);
-		Set descRefIds = new HashSet<Integer>();
+
+		List<String> queryStrings = new ArrayList<String>();
 
 		// this query does not work...
-		
+
 		// query = getSession().createQuery(
 		// "select count(distinct(r.id, desc.id)) from DescriptionBase as d "
 		// + "join d.descriptionElements as de "
@@ -64,19 +64,17 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// ... here is the manual version:
 
 		// count sources from Descriptions:
-		query = getSession().createQuery(
-				"select distinct r.id from DescriptionBase as d "
-						+ "join d.descriptionSources as r ");
-		descRefIds.addAll((ArrayList<Integer>) query.list());
+		// as the descriptionSources of DescriptionBase are depricated:
+//		queryStrings.add("select distinct r.id from DescriptionBase as d "
+//				+ "join d.descriptionSources as r ");
 
 		// count sources from DescriptionElements:
-		query = getSession().createQuery(
-				"select distinct s.citation.id from DescriptionElementBase as d "
+		queryStrings
+				.add("select distinct s.citation.id from DescriptionElementBase as d "
 						+ "join d.sources as s where s.citation is not null ");
 
-		descRefIds.addAll((ArrayList<Integer>) query.list());
-
-		return Long.valueOf(descRefIds.size());
+		return processQueriesWithIdListResultAndCountDistinct(queryStrings,
+				null);
 	}
 
 	/*
@@ -88,17 +86,23 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 */
 	@Override
 	public Long countDescriptiveSourceReferences(Classification classification) {
-		if(classification==null)
-			return null; //or MAYDO: throw some Exception???
-		Query query;
+		if (classification == null)
+
+			// TODO add count of Name descriptions:
+			// what about SpecimenOrObservations???
+
+			return null; // or MAYDO: throw some Exception???
+
 		List<String> queryStrings = new ArrayList<String>();
-		Set<Integer> descrRefIds = new HashSet<Integer>();
 
 		// count Taxon descriptions
-		queryStrings.add("select distinct r.id from TaxonNode as tn "
-				+ "join tn.taxon.descriptions as d "
-				+ "join d.descriptionSources as r "
-				+ "where tn.classification=:classification ");
+		// as the descriptionSources of DescriptionBase are depricated:
+//		queryStrings.add("select distinct r.id from TaxonNode as tn "
+//				+ "join tn.taxon.descriptions as d "
+//				+ "join d.descriptionSources as r "
+//				+ "where tn.classification=:classification "
+
+//				);
 		//
 
 		// Taxon description elements:
@@ -107,37 +111,47 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "join tn.taxon.descriptions as d "
 						+ "join d.descriptionElements as de "
 						+ "join de.sources as des "
-						+ "where tn.classification=:classification ");
+						+ "where tn.classification=:classification "
+						+ "and des.citation is not null ");
 
-		// TaxonNameBase descriptions:
-		queryStrings.add("select distinct r.id from TaxonNode tn "
-				+ "join tn.taxon.name.descriptions as d "
-				+ "join d.descriptionSources as r "
-				+ "where tn.classification=:classification ");
+		// TaxonNameBase descriptions for taxa:
+		// as the descriptionSources of DescriptionBase are depricated:
+//		queryStrings.add("select distinct r.id from TaxonNode tn "
+//				+ "join tn.taxon.name.descriptions as d "
+//				+ "join d.descriptionSources as r "
+//				+ "where tn.classification=:classification ");
 
-		// TaxonNameBase description elements:
+		// TaxonNameBase description elements for taxa:
 		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
 				+ "join tn.taxon.name.descriptions as d "
 				+ "join d.descriptionElements as de "
 				+ "join de.sources as des "
-				+ "where tn.classification=:classification ");
-
-		// SpecimenOrObservationBase
-		// query = getSession().createQuery(
-		// "select r.id from SpecimenOrObservationBase as so, TaxonNode as tn "
-		// + "join so.determinations as det "
-		// + "join tn.taxon as t1 " + "join det.taxon t2 "
-		// + "on t1=t2  "
-		// + "where tn.classification=: classification as t "
-		// + "join t.descriptions as so_d "
-		// + "join so_d.descriptionSources as r");
-
-		queryStrings.add("select r.id from DescriptionBase db, TaxonNode tn "
-				+ "join db.describedSpecimenOrObservations as so "
-				+ "join so.determinations as det "
-				+ "join db.descriptionSources as r "
 				+ "where tn.classification=:classification "
-				+ "and tn.taxon=det.taxon");
+				+ "and tn.taxon is not null "
+				+ "and tn.taxon.name is not null "				
+				+ "and des.citation is not null ");
+		
+		// TaxonNameBase description elements for synonyms:
+		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+				+ "join tn.taxon.synonymRelations as syr "
+				+ "join syr.relatedFrom as sy "
+				+ "join sy.name.descriptions as d "
+				+ "join d.descriptionElements as de "
+				+ "join de.sources as des "
+				+ "where tn.classification=:classification "
+				+ "and des.citation is not null "
+				+ "and sy is not null " // TODO: is this case actually possible???
+				+ "and sy.name is not null ");
+
+
+		// SpecimenOrObservationBase descriptions:
+		// as the descriptionSources of DescriptionBase are depricated:
+//		queryStrings.add("select r.id from DescriptionBase db, TaxonNode tn "
+//				+ "join db.describedSpecimenOrObservations as soo "
+//				+ "join soo.determinations as det "
+//				+ "join db.descriptionSources as r "
+//				+ "where tn.classification=:classification "
+//				+ "and tn.taxon=det.taxon");
 
 		// SpecimenOrObservationBase description elements:
 		queryStrings
@@ -147,15 +161,12 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "join db.descriptionElements as de "
 						+ "join de.sources as des "
 						+ "where tn.classification=:classification "
-						+ "and tn.taxon=det.taxon");
+						+ "and tn.taxon=det.taxon ");
 
-		for (String queryString : queryStrings) {
-			query = getSession().createQuery(queryString);
-			query.setParameter("classification", classification);
-			descrRefIds.addAll((ArrayList<Integer>) query.list());
-		}
-
-		return Long.valueOf(descrRefIds.size());
+		// TODO deal with WorkingSet!!!
+		
+		return processQueriesWithIdListResultAndCountDistinct(queryStrings,
+				classification);
 
 	}
 
@@ -169,9 +180,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	@Override
 	public Long countTaxaInClassification(Class<? extends TaxonBase> clazz,
 			Classification classification) {
-		if(classification==null)
-			return null; //or MAYDO: throw some Exception???
-		
+		if (classification == null)
+			return null; // or MAYDO: throw some Exception???
+
 		if (clazz.equals(TaxonBase.class)) {
 
 			return countTaxaInClassification(Taxon.class, classification)
@@ -212,8 +223,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	@Override
 	public Long countTaxonNames(Classification classification) {
 
-		if(classification==null)
-			return null; //or MAYDO: throw some Exception???
+		if (classification == null)
+			return null; // or MAYDO: throw some Exception???
+		
 		// the query would be:
 		// "select count (distinct n) from (
 		// + "select distinct tn.taxon.name as c from TaxonNode tn "
@@ -227,28 +239,20 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// as hibernate does not accept brackets in from and no unions
 		// we have to do it otherwise:
 
-		Query query;
-		Set<Integer> nameIds = new HashSet<Integer>();
-
 		// so instead of "UNION" we use 2 queries
 		// and count the names manually
-		List<String> queries = new ArrayList<String>();
-		queries.add("select distinct tn.taxon.name.id as c from TaxonNode tn "
-				+ "where tn.classification=:classification ");
-		queries.add("select distinct sr.relatedFrom.name.id as c from TaxonNode tn "
+		List<String> queryStrings = new ArrayList<String>();
+		queryStrings.add("select distinct tn.taxon.name.id as c from TaxonNode tn "
+				+ "where tn.classification=:classification "
+				+ "and tn.taxon.name is not null ");
+		queryStrings.add("select distinct sr.relatedFrom.name.id as c from TaxonNode tn "
 				+ "join tn.taxon.synonymRelations sr "
-				+ "where tn.classification=:classification ");
+				+ "where tn.classification=:classification "
+				+ "and sr.relatedFrom.name is not null ");
 
-		for (String queryString : queries) {
-
-			query = getSession().createQuery(queryString);
-			query.setParameter("classification", classification);
-			nameIds.addAll((ArrayList<Integer>) query.list());
-		}
-
-		return Long.valueOf(nameIds.size());
+		return processQueriesWithIdListResultAndCountDistinct(queryStrings,
+				classification);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -260,7 +264,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	public Long countNomenclaturalReferences() {
 		Query query = getSession()
 				.createQuery(
-						"select count(distinct nomenclaturalReference) from TaxonNameBase");
+						"select count(distinct nomenclaturalReference) from TaxonNameBase ");
 		return (Long) query.uniqueResult();
 	}
 
@@ -272,11 +276,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 */
 	@Override
 	public Long countNomenclaturalReferences(Classification classification) {
-		
-		if(classification==null)
-			return null; //or MAYDO: throw some Exception???
-		Query query;
-		Set<Integer> nameIds = new HashSet<Integer>();
+
+		if (classification == null)
+			return null; // or MAYDO: throw some Exception???
 
 		// so instead of "UNION" we use 2 queries
 		// and count the names manually
@@ -289,18 +291,10 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				.add("select distinct sr.relatedFrom.name.nomenclaturalReference.id as c from TaxonNode tn "
 						+ "join tn.taxon.synonymRelations as sr "
 						+ "where tn.classification=:classification "
-				// +
-				// "and sr.relatedFrom.name.nomenclaturalReference is not null"
-				);
+						+ "and sr.relatedFrom.name.nomenclaturalReference is not null ");
 
-		for (String queryString : queryStrings) {
-
-			query = getSession().createQuery(queryString);
-			query.setParameter("classification", classification);
-			nameIds.addAll((ArrayList<Integer>) query.list());			
-		}
-
-		return Long.valueOf(nameIds.size());
+		return processQueriesWithIdListResultAndCountDistinct(queryStrings,
+				classification);
 	}
 
 	/*
@@ -310,12 +304,40 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 * countReferencesInClassification
 	 * (eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
+	// TODO!!!
 	@Override
 	public Long countReferencesInClassification(Classification classification) {
-		if(classification==null)
-			return null; //or MAYDO: throw some Exception???
-		//TODO implement this count
+		if (classification == null)
+			return null; // or MAYDO: throw some Exception???
+		// TODO implement this count
 		return null;
+	}
+
+	/**
+	 * @param queryStrings
+	 *            - should be strings that represent a hibernate query, that
+	 *            result in a list of ids (Integer)
+	 * @param classification
+	 *            - to which the elements with the listed ids are attached to
+	 * @return - the distinct amount of ids, the queries result
+	 */
+	private Long processQueriesWithIdListResultAndCountDistinct(
+			List<String> queryStrings, Classification classification) {
+
+		// MAYDO catch error if qeries deliver wrong type
+		Query query;
+		Set<Integer> ids = new HashSet<Integer>();
+
+		for (String queryString : queryStrings) {
+
+			query = getSession().createQuery(queryString);
+			if (classification != null) {
+				query.setParameter("classification", classification);
+			}
+			ids.addAll((ArrayList<Integer>) query.list());
+		}
+
+		return Long.valueOf(ids.size());
 	}
 
 }
