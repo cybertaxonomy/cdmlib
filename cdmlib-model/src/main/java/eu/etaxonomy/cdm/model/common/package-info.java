@@ -152,7 +152,8 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class)
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.PolytomousKey", targetEntity = PolytomousKey.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.name.NomenclaturalStatus", targetEntity = NomenclaturalStatus.class)
 })
 package eu.etaxonomy.cdm.model.common;
 
@@ -180,6 +181,7 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
