@@ -51,6 +51,7 @@ import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.dbunit.operation.DeleteAllOperation;
 import org.dbunit.operation.DeleteOperation;
+import org.h2.tools.Server;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -73,13 +74,27 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
- * the unitils testing framework and dbunit, against an in-memory HSQL database.
+ * the unitils testing framework and dbunit.
+ * <p>
+ * The database being used is configured in
+ * the maven module specific unitils.properties file. By default the database is a H2 in memory data base.
+ * <p>
+ * The H2 can be monitored during the test execution if the system property <code>h2Server</code> is given as
+ * java virtual machine argument:
+ * <code>-Dh2Server</code>.
+ * An internal h2 database application will be started and listens at port 8082.
+ * The port to listen on can be specified by passing a second argument, e.g.: <code>-Dh2Server 8083</code>.
+ *
+ *
+ * @see <a href="http://www.unitils.org">unitils home page</a>
  *
  * @author ben.clark
- * @see <a href="http://www.unitils.org">unitils home page</a>
+ * @author a.kohlbecker (2013)
  */
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
+
+    private static final String PROPERTY_H2_SERVER = "h2Server";
 
     protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
@@ -114,6 +129,25 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 //		System.err.println("####" +  agentstr);
 //	}
 
+    @Before
+    public void startH2Server() throws Exception {
+
+        if(System.getProperty(PROPERTY_H2_SERVER) != null){
+            try {
+                List<String> args = new ArrayList<String>();
+                try {
+                    Integer port = Integer.parseInt(System.getProperty(PROPERTY_H2_SERVER));
+                    args.add("-webPort");
+                    args.add(port.toString());
+                } catch (Exception e) {
+                    // will start at port 8082 by default
+                }
+                Server.createWebServer(args.toArray(new String[]{})).start();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @TestDataSource
     protected DataSource dataSource;
