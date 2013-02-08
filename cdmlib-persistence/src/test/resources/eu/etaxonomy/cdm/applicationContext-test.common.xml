@@ -21,6 +21,7 @@
     <context:component-scan base-package="eu/etaxonomy/cdm">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
     </context:component-scan>
+
     <bean id="termInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
         <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
         <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
@@ -52,13 +53,6 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
-                <!--
-                  hsqldb v. <1.9 has a bug
-                  (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
-                  due to which it is not possible to use batch updates, so we need to disable hibernate batching when using
-                  hsqldb in the app context:
-                -->
-                <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
         </property>
     </bean>
