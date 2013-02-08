@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -36,184 +36,184 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 01.07.2008
  * @version 1.0
  */
-public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration 
-		implements ICdmIO<STATE>, IIoObservable {
-	private static final Logger logger = Logger.getLogger(CdmIoBase.class);
+public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration
+        implements ICdmIO<STATE>, IIoObservable {
+    private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
-	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
-	protected String ioName = null;
-
-	
-	/**
-	 * 
-	 */
-	public CdmIoBase() {
-		super();
-		this.ioName = this.getClass().getSimpleName();
-	}
-	
-//******************** Observers *********************************************************	
-	
-	@Override
-	public boolean addObserver(IIoObserver observer){
-		return observers.add(observer);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#getObservers()
-	 */
-	@Override
-	public Set<IIoObserver> getObservers() {
-		return observers;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#addObservers(java.util.Set)
-	 */
-	@Override
-	public void addObservers(Set<IIoObserver> newObservers) {
-		for (IIoObserver observer : newObservers){
-			this.observers.add(observer);
-		}
-	}
+    private Set<IIoObserver> observers = new HashSet<IIoObserver>();
+    protected String ioName = null;
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#countObservers()
-	 */
-	@Override
-	public int countObservers(){
-		return observers.size();
-	}
+    /**
+     *
+     */
+    public CdmIoBase() {
+        super();
+        this.ioName = this.getClass().getSimpleName();
+    }
+
+//******************** Observers *********************************************************
+
+    @Override
+    public boolean addObserver(IIoObserver observer){
+        return observers.add(observer);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IIoObservable#getObservers()
+     */
+    @Override
+    public Set<IIoObserver> getObservers() {
+        return observers;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IIoObservable#addObservers(java.util.Set)
+     */
+    @Override
+    public void addObservers(Set<IIoObserver> newObservers) {
+        for (IIoObserver observer : newObservers){
+            this.observers.add(observer);
+        }
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
-	 */
-	public boolean removeObserver(IIoObserver observer){
-		return observers.remove(observer);
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObservers()
-	 */
-	public void removeObservers(){
-		observers.removeAll(observers);
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.events.IIoEvent)
-	 */
-	public void fire(IIoEvent event){
-		for (IIoObserver observer: observers){
-			observer.handleEvent(event);
-		}
-	}
-
-//******************** End Observers *********************************************************	
-
-	
-	
-	public int countSteps(){
-		return 1;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IIoObservable#countObservers()
+     */
+    @Override
+    public int countObservers(){
+        return observers.size();
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmExport#invoke(eu.etaxonomy.cdm.io.common.ExportStateBase)
-	 */
-	public boolean invoke(STATE state) {
-		if (isIgnore( state)){
-			logger.info("No invoke for " + ioName + " (ignored)");
-			return true;
-		}else{
-			updateProgress(state, "Invoking " + ioName);
-			doInvoke(state);
-			return state.isSuccess();
-		}
-	}
-	
-	/**
-	 * invoke method to be implemented by implementing classes
-	 * @param state
-	 * @return
-	 */
-	protected abstract void doInvoke(STATE state);
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
+     */
+    public boolean removeObserver(IIoObserver observer){
+        return observers.remove(observer);
+    }
 
-	
-	@Autowired
-	SessionFactory sessionFactory;
-	
-	/**
-	 * flush the current session
-	 */
-	public void flush() {		
-		sessionFactory.getCurrentSession().flush();
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction()
-	 */
-	public TransactionStatus startTransaction() {
-		return startTransaction(false);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
-	 */
-	public TransactionStatus startTransaction(Boolean readOnly) {
-		
-		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
-		defaultTxDef.setReadOnly(readOnly);
-		TransactionDefinition txDef = defaultTxDef;
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObservers()
+     */
+    public void removeObservers(){
+        observers.removeAll(observers);
+    }
 
-		// Log some transaction-related debug information.
-		if (logger.isDebugEnabled()) { 
-			logger.debug("Transaction name = " + txDef.getName());
-			logger.debug("Transaction facets:");
-			logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
-			logger.debug("Isolation level = " + txDef.getIsolationLevel());
-			logger.debug("Timeout = " + txDef.getTimeout());
-			logger.debug("Read Only = " + txDef.isReadOnly());
-			// org.springframework.orm.hibernate3.HibernateTransactionManager
-			// provides more transaction/session-related debug information.
-		}
-		
-		TransactionStatus txStatus = super.getTransactionManager().getTransaction(txDef);
-		return txStatus;
-	}
 
-	public void commitTransaction(TransactionStatus txStatus){
-		PlatformTransactionManager txManager = super.getTransactionManager();
-		txManager.commit(txStatus);
-		return;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.events.IIoEvent)
+     */
+    public void fire(IIoEvent event){
+        for (IIoObserver observer: observers){
+            observer.handleEvent(event);
+        }
+    }
 
-	public void rollbackTransaction(TransactionStatus txStatus){
-		PlatformTransactionManager txManager = super.getTransactionManager();
-		txManager.rollback(txStatus);
-		return;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
-	 */
-	public boolean check(STATE state) {
-		if (isIgnore(state)){
-			logger.info("No check for " + ioName + " (ignored)");
-			return true;
-		}else{
-			return doCheck(state);
-		}
-	}
-	
-	protected abstract boolean doCheck(STATE state);
+//******************** End Observers *********************************************************
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, java.util.Map)
-	 */
+
+
+    public int countSteps(){
+        return 1;
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ICdmExport#invoke(eu.etaxonomy.cdm.io.common.ExportStateBase)
+     */
+    public boolean invoke(STATE state) {
+        if (isIgnore( state)){
+            logger.info("No invoke for " + ioName + " (ignored)");
+            return true;
+        }else{
+            updateProgress(state, "Invoking " + ioName);
+            doInvoke(state);
+            return state.isSuccess();
+        }
+    }
+
+    /**
+     * invoke method to be implemented by implementing classes
+     * @param state
+     * @return
+     */
+    protected abstract void doInvoke(STATE state);
+
+
+    @Autowired
+    SessionFactory sessionFactory;
+
+    /**
+     * flush the current session
+     */
+    public void flush() {
+        sessionFactory.getCurrentSession().flush();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction()
+     */
+    public TransactionStatus startTransaction() {
+        return startTransaction(false);
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
+     */
+    public TransactionStatus startTransaction(Boolean readOnly) {
+
+        DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
+        defaultTxDef.setReadOnly(readOnly);
+        TransactionDefinition txDef = defaultTxDef;
+
+        // Log some transaction-related debug information.
+        if (logger.isDebugEnabled()) {
+            logger.debug("Transaction name = " + txDef.getName());
+            logger.debug("Transaction facets:");
+            logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
+            logger.debug("Isolation level = " + txDef.getIsolationLevel());
+            logger.debug("Timeout = " + txDef.getTimeout());
+            logger.debug("Read Only = " + txDef.isReadOnly());
+            // org.springframework.orm.hibernate3.HibernateTransactionManager
+            // provides more transaction/session-related debug information.
+        }
+
+        TransactionStatus txStatus = super.getTransactionManager().getTransaction(txDef);
+        return txStatus;
+    }
+
+    public void commitTransaction(TransactionStatus txStatus){
+        PlatformTransactionManager txManager = super.getTransactionManager();
+        txManager.commit(txStatus);
+        return;
+    }
+
+    public void rollbackTransaction(TransactionStatus txStatus){
+        PlatformTransactionManager txManager = super.getTransactionManager();
+        txManager.rollback(txStatus);
+        return;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
+     */
+    public boolean check(STATE state) {
+        if (isIgnore(state)){
+            logger.info("No check for " + ioName + " (ignored)");
+            return true;
+        }else{
+            return doCheck(state);
+        }
+    }
+
+    protected abstract boolean doCheck(STATE state);
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, java.util.Map)
+     */
 //	public boolean invoke(T config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores) {
 //		if (isIgnore(config)){
@@ -223,126 +223,126 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 //			return doInvoke(config, stores);
 //		}
 //	}
-	
+
 //	protected abstract boolean doInvoke(T config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores);
 
-	
-	/**
-	 * Returns true if this (IO-)class should be ignored during the import/export process.
-	 * This information is usually stored in the configuration
-	 * @param config
-	 * @return
-	 */
-	protected abstract boolean isIgnore(STATE state);
 
-	protected <T extends CdmBase> T getInstance(Class<? extends T> clazz){
-		T result = null;
-		try {
-			Constructor<? extends T> constructor = clazz.getDeclaredConstructor();
-			constructor.setAccessible(true);
-			result = constructor.newInstance();
-		} catch (InstantiationException e) {
-			logger.error("Class " + clazz.getSimpleName()+" could not be instantiated. Class = " );
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			logger.error("Constructor of class "+clazz.getSimpleName()+" could not be accessed." );
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			logger.error("SecurityException for Constructor of class "+clazz.getSimpleName()+"." );
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			logger.error("Empty Constructor does not exist for class "+clazz.getSimpleName()+"." );
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			logger.error("Empty Constructor could not be invoked for class "+clazz.getSimpleName()+"." );
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	
-	protected String getSuccessString(boolean success){
-		if (success){
-			return "with success";
-		}else{
-			return "with errors";
-		}
-	}
+    /**
+     * Returns true if this (IO-)class should be ignored during the import/export process.
+     * This information is usually stored in the configuration
+     * @param config
+     * @return
+     */
+    protected abstract boolean isIgnore(STATE state);
 
-	@Override
-	public void updateProgress(STATE state, String message) {
-		updateProgress(state, message, 1);
-	};
-	
-	@Override
-	public void updateProgress(STATE state, String message, int worked) {
-		IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
-		if(progressMonitor != null){
-			progressMonitor.worked(worked);
-			progressMonitor.subTask(message);
-		}
-	}
-	
-	@Override
-	public void warnProgress(STATE state, String message, Throwable e) {
-		if(state.getConfig().getProgressMonitor() != null){
-			IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-			if (e == null) {
-				monitor.warning(message);
-			}else{
-				monitor.warning(message, e);
-			}
-		}
-	}
-	
-	protected void fireProgressEvent(String message, String location) {
-		IoProgressEvent event = new IoProgressEvent();
-		event.setThrowingClass(this.getClass());
-		event.setMessage(message);
-		event.setLocation(location);
+    protected <T extends CdmBase> T getInstance(Class<? extends T> clazz){
+        T result = null;
+        try {
+            Constructor<? extends T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            result = constructor.newInstance();
+        } catch (InstantiationException e) {
+            logger.error("Class " + clazz.getSimpleName()+" could not be instantiated. Class = " );
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            logger.error("Constructor of class "+clazz.getSimpleName()+" could not be accessed." );
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            logger.error("SecurityException for Constructor of class "+clazz.getSimpleName()+"." );
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            logger.error("Empty Constructor does not exist for class "+clazz.getSimpleName()+"." );
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            logger.error("Empty Constructor could not be invoked for class "+clazz.getSimpleName()+"." );
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    protected String getSuccessString(boolean success){
+        if (success){
+            return "with success";
+        }else{
+            return "with errors";
+        }
+    }
+
+    @Override
+    public void updateProgress(STATE state, String message) {
+        updateProgress(state, message, 1);
+    };
+
+    @Override
+    public void updateProgress(STATE state, String message, int worked) {
+        IProgressMonitor progressMonitor = state.getConfig().getProgressMonitor();
+        if(progressMonitor != null){
+            progressMonitor.worked(worked);
+            progressMonitor.subTask(message);
+        }
+    }
+
+    @Override
+    public void warnProgress(STATE state, String message, Throwable e) {
+        if(state.getConfig().getProgressMonitor() != null){
+            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            if (e == null) {
+                monitor.warning(message);
+            }else{
+                monitor.warning(message, e);
+            }
+        }
+    }
+
+    protected void fireProgressEvent(String message, String location) {
+        IoProgressEvent event = new IoProgressEvent();
+        event.setThrowingClass(this.getClass());
+        event.setMessage(message);
+        event.setLocation(location);
 //		int linenumber = new Exception().getStackTrace()[0].getLineNumber();
-		fire(event);
-	}
-	
-	
-	protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
-		fireWarningEvent(message, dataLocation, severity, 1);
-	}
-	
-	protected void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
-		stackDepth++;
-		StackTraceElement[] stackTrace = new Exception().getStackTrace();
-		int lineNumber = stackTrace[stackDepth].getLineNumber();
-		String methodName = stackTrace[stackDepth].getMethodName();
+        fire(event);
+    }
 
-		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, dataLocation, 
-				lineNumber, severity, methodName);
-		
-		//for performance improvement one may read:
-		//http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
+
+    protected void fireWarningEvent(String message, String dataLocation, Integer severity) {
+        fireWarningEvent(message, dataLocation, severity, 1);
+    }
+
+    protected void fireWarningEvent(String message, String dataLocation, Integer severity, int stackDepth) {
+        stackDepth++;
+        StackTraceElement[] stackTrace = new Exception().getStackTrace();
+        int lineNumber = stackTrace[stackDepth].getLineNumber();
+        String methodName = stackTrace[stackDepth].getMethodName();
+
+        IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, dataLocation,
+                lineNumber, severity, methodName);
+
+        //for performance improvement one may read:
+        //http://stackoverflow.com/questions/421280/in-java-how-do-i-find-the-caller-of-a-method-using-stacktrace-or-reflection
 //		Object o = new SecurityManager().getSecurityContext();
 
-		
-		fire(event);
-	}
-	
-	protected boolean isBlank(String str){
-		return StringUtils.isBlank(str);
-	}
 
-	protected boolean isNotBlank(String str){
-		return StringUtils.isNotBlank(str);
-	}
+        fire(event);
+    }
 
-	
+    protected boolean isBlank(String str){
+        return StringUtils.isBlank(str);
+    }
+
+    protected boolean isNotBlank(String str){
+        return StringUtils.isNotBlank(str);
+    }
+
+
 //	/**
 //	   * Returns the first stack trace element of the first class not equal to "StackTraceUtils" or "LogUtils" and aClass. <br />
 //	   * Stored in array of the callstack. <br />
 //	   * Allows to get past a certain class.
-//	   * @param aclass class to get pass in the stack trace. If null, only try to get past StackTraceUtils. 
+//	   * @param aclass class to get pass in the stack trace. If null, only try to get past StackTraceUtils.
 //	   * @return stackTraceElement (never null, because if aClass is not found, returns first class past StackTraceUtils)
 //	   * @throws AssertionFailedException if resulting statckTrace is null (RuntimeException)
 //	   */
@@ -386,7 +386,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 //	    }
 //	    return resst;
 //	  }
-//	  
+//
 //	  static private boolean shouldExamine(String className, Class aclass) {
 //	      final boolean res = StackTraceUtils.class.getName().equals(className) == false && (className.endsWith(LOG_UTILS
 //	        	) == false || (aclass !=null && aclass.getName().endsWith(LOG_UTILS)));
