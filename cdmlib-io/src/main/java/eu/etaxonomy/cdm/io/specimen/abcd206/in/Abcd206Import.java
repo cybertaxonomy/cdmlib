@@ -586,9 +586,12 @@ implements ICdmIO<Abcd206ImportState> {
 		for (String strReference : dataHolder.referenceList) {
 			Reference<?> reference = ReferenceFactory.newGeneric();
 			reference.setTitleCache(strReference, true);
+            getReferenceService().saveOrUpdate(reference);
+
 			determinationEvent.addReference(reference);
 		}
 
+        getOccurrenceService().saveOrUpdate(derivedUnitBase);
 		refreshTransaction();
 
 
