@@ -636,6 +636,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfigurator
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/main/resources/conf.properties -text
 cdmlib-io/src/test/resources/main/resources/confOverridable.properties -text
+cdmlib-io/src/test/resources/spy.properties -text
 cdmlib-io/src/test/resources/termCodeCreator.xls -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
