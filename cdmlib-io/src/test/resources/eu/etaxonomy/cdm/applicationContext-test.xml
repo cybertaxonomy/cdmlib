@@ -37,7 +37,7 @@
         <property name="properties">
             <props>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
-                <prop key="hibernate.show_sql">flase</prop>
+                <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
