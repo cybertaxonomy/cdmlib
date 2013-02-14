@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.dao.statistics;
 
+import java.util.Set;
+
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -60,6 +62,7 @@ public interface IStatisticsDao {
 
 	/**
 	 * count all Reference items attached to the given classification
+	 * but not nomeclatural references
 	 * 
 	 * @param classification
 	 * @return - the amount of the items in the classification

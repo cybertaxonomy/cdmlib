@@ -30,11 +30,17 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -232,26 +238,31 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// create all taxa, references and synonyms and attach them to one or
 		// more classifications
 
-		// 1. variables
+		// variables: flags
 		int remainder = NO_OF_ACCEPTED_TAXA;
 		Reference sec = ReferenceFactory.newBook();
 		boolean secondClassificationForTaxonFlag = false;
 		boolean synonymFlag = false;
 		boolean tNomRefFlag = false;
 		boolean sNomRefFlag = false;
-		boolean descrSourceRefFlag = false;
+		boolean tDescrSourceRefFlag = false;
+		boolean sDescrSourceRefFlag = false;
 
-		int descriptiveElementsPerTaxon = (NO_OF_DESCRIPTIVE_SOURCE_REFERENCES
-				/ NO_OF_ACCEPTED_TAXA) + 1;
+		// variables: counter (pre-loop)
+		int descriptiveElementsPerTaxon = (NO_OF_DESCRIPTIVE_SOURCE_REFERENCES / NO_OF_ACCEPTED_TAXA) + 1;
+
+		int taxaInClass;
+		int classiCounter = 0, sharedClassification = 0, synonymCounter = 0, nomRefCounter = 0;
 
 		// iterate over classifications and add taxa
-		for (int taxaInClass, classiCounter = 0, sharedClassification = 0, synonymCounter = 0, nomRefCounter = 0; remainder > 0
-				&& classiCounter < NO_OF_CLASSIFICATIONS; classiCounter++, remainder -= taxaInClass) {
+		for (/* see above */; remainder > 0
+				&& classiCounter < NO_OF_CLASSIFICATIONS; /* see below */) {
 
+			// compute no of taxa to be created in this classification
 			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last
 																// classification
 																// gets all left
-																// taxs
+																// taxa
 				taxaInClass = remainder;
 			} else { // take half of left taxa for this class:
 				taxaInClass = remainder / 2;
@@ -260,7 +271,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			// iterate over amount of taxa meant to be in this classification
 			for (int taxonCounter = 1; taxonCounter <= taxaInClass; taxonCounter++) {
 
-				// create a Name
+				// create a String for the Name
 				RandomStringUtils.randomAlphabetic(10);
 				String randomName = RandomStringUtils.randomAlphabetic(5) + " "
 						+ RandomStringUtils.randomAlphabetic(10);
@@ -271,12 +282,11 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 				// create nomenclatural reference for taxon name (if left)
 				if (nomRefCounter < NO_OF_NOMECLATURAL_REFERENCES) {
-					// we remenber this taxon has a nomenclatural reference:
+					// we remember this taxon has a nomenclatural reference:
 					tNomRefFlag = true;
 					Reference nomRef = ReferenceFactory.newBook();
 					name.setNomenclaturalReference(nomRef);
 					referenceService.save(nomRef);
-
 					nomRefCounter++;
 				}
 
@@ -292,7 +302,30 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 				if (no_of_descriptive_source_references < NO_OF_DESCRIPTIVE_SOURCE_REFERENCES) {
 
-					descrSourceRefFlag = true;
+					tDescrSourceRefFlag = true;
+
+					// create a description and 2 description elements with
+					// references for taxon name
+					TaxonNameDescription nameDescr = new TaxonNameDescription();
+					CommonTaxonName nameElement = CommonTaxonName.NewInstance(
+							"Veilchen" + taxonCounter, Language.GERMAN());
+					TextData textElement = new TextData();
+					Reference nameElementRef = ReferenceFactory.newArticle();
+					Reference textElementRef = ReferenceFactory
+							.newBookSection();
+					nameElement.addSource(null, null, nameElementRef, "name: ");
+					textElement.addSource(null, null, textElementRef, "text: ");
+					nameDescr.addElement(nameElement);
+					nameDescr.addElement(textElement);
+					name.addDescription(nameDescr);
+					// taxon.getName().addDescription(nameDescr);
+					referenceService.save(nameElementRef);
+					referenceService.save(textElementRef);
+					descriptionService.save(nameDescr);
+
+					// create descriptions, description sources and their
+					// references
+					// for taxon
 					TaxonDescription taxonDescription = new TaxonDescription();
 					for (int i = 0; i < descriptiveElementsPerTaxon; i++) {
 						DescriptionElementBase descriptionElement = new TextData();
@@ -307,13 +340,25 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						descriptionService
 								.saveDescriptionElement(descriptionElement);
 
-						
 					}
 					descriptionService.save(taxonDescription);
 					taxon.addDescription(taxonDescription);
 
-					no_of_descriptive_source_references += descriptiveElementsPerTaxon;
-					
+					// create a Specimen for taxon with description, descr.
+					// element and referece
+//
+//					Specimen specimen = Specimen.NewInstance();
+//					SpecimenDescription specimenDescription = SpecimenDescription.NewInstance(specimen);
+//					DescriptionElementBase descrElement = new TextData();
+//					Reference specimenRef = ReferenceFactory.newArticle();
+//					descrElement.addSource(null, null, specimenRef, null);
+//					
+//					
+//					descriptionService.save(specimenDescription);
+//					taxon.add(specimen);
+
+					no_of_descriptive_source_references += descriptiveElementsPerTaxon + 2 + 1;
+
 				}
 
 				// add taxon to classification
@@ -336,6 +381,34 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						name.setNomenclaturalReference(nomRef);
 						referenceService.save(nomRef);
 						nomRefCounter++;
+					}
+
+					if (no_of_descriptive_source_references < NO_OF_DESCRIPTIVE_SOURCE_REFERENCES) {
+						sDescrSourceRefFlag = true;
+
+						// create a description and 2 description elements with
+						// references for synonym name
+						TaxonNameDescription nameDescr = new TaxonNameDescription();
+						CommonTaxonName nameElement = CommonTaxonName
+								.NewInstance("anderes Veilchen" + taxonCounter,
+										Language.GERMAN());
+						TextData textElement = new TextData();
+						Reference nameElementRef = ReferenceFactory
+								.newArticle();
+						Reference textElementRef = ReferenceFactory
+								.newBookSection();
+						nameElement.addSource(null, null, nameElementRef,
+								"name: ");
+						textElement.addSource(null, null, textElementRef,
+								"text: ");
+						nameDescr.addElement(nameElement);
+						nameDescr.addElement(textElement);
+						name.addDescription(nameDescr);
+						// taxon.getName().addDescription(nameDescr);
+						referenceService.save(nameElementRef);
+						referenceService.save(textElementRef);
+						descriptionService.save(nameDescr);
+						no_of_descriptive_source_references += 2;
 					}
 
 					// create a new reference for every other synonym:
@@ -376,8 +449,14 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				if (secondClassificationForTaxonFlag) {
 					c++;
 				}
+
+				// run the following loop once, if this taxon only belongs to
+				// one
+				// classification.
+				// twice, if it is attached to 2 classifications
 				for (int i = classiCounter; i <= c; i++) {
 
+					// count everything just created for this taxon:
 					increment(no_of_accepted_taxa_c, i);
 					increment(no_of_taxon_names_c, i);
 					if (tNomRefFlag) {
@@ -396,18 +475,27 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 							increment(no_of_all_references_c, i);
 						}
 					}
-					if (descrSourceRefFlag) {
-						increment(no_of_descriptive_source_references_c, i, descriptiveElementsPerTaxon);
+					if (tDescrSourceRefFlag) {
+						increment(no_of_descriptive_source_references_c, i,
+								descriptiveElementsPerTaxon + 2);
 					}
 
+					if (sDescrSourceRefFlag) {
+						increment(no_of_descriptive_source_references_c, i, 2);
+					}
 				}
 				// put flags back:
 				secondClassificationForTaxonFlag = false;
 				tNomRefFlag = false;
 				sNomRefFlag = false;
 				synonymFlag = false;
-				descrSourceRefFlag = false;
+				tDescrSourceRefFlag = false;
+				sDescrSourceRefFlag = false;
 			}
+
+			// modify variables (post-loop)
+			classiCounter++;
+			remainder -= taxaInClass;
 
 		}
 		merge(no_of_accepted_taxa_c, no_of_synonyms_c, no_of_all_taxa_c);
@@ -546,13 +634,15 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	/**
 	 * @param no_of_sth
 	 * @param inClassification
-	 * @param increase 
+	 * @param increase
 	 */
-	private void increment(List<Long> no_of_sth, int inClassification, int increase) {
-		no_of_sth.set(inClassification, (no_of_sth.get(inClassification)) + increase);
+	private void increment(List<Long> no_of_sth, int inClassification,
+			int increase) {
+		no_of_sth.set(inClassification, (no_of_sth.get(inClassification))
+				+ increase);
 	}
-	
-	private void increment(List<Long> no_of_sth, int inClassification){
+
+	private void increment(List<Long> no_of_sth, int inClassification) {
 		increment(no_of_sth, inClassification, 1);
 	}
 
@@ -601,8 +691,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						Long.valueOf(NO_OF_SYNONYMS));
 				put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
 						Long.valueOf(NO_OF_TAXON_NAMES));
-//				put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
-//						Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
+				// put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
+				// Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
 				put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
 						Long.valueOf(no_of_descriptive_source_references));
 				// put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),

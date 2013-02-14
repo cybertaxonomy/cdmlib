@@ -192,7 +192,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 							.countTaxonNames((Classification) filter);
 					break;
 				case ALL_REFERENCES:
-					counter = null;
+					counter = statisticsDao.countReferencesInClassification((Classification) filter);
 					break;
 				case DESCRIPTIVE_SOURCE_REFERENCES:
 					counter = statisticsDao
