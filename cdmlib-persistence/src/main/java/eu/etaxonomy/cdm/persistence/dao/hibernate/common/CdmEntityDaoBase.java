@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -326,6 +327,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     public List<T> listByIds(Collection<Integer> ids,  Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+
+        if (ids.isEmpty()) {
+            return new ArrayList<T>(0);
+        }
 
         Criteria criteria = prepareList(ids, pageSize, pageNumber, orderHints, "id");
 
