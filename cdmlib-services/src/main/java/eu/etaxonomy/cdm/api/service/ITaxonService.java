@@ -518,10 +518,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     /**
      * Lists all Media found in an any TaxonDescription associated with this taxon.
      * @param taxon
+     * @param includeRelationships the given list of TaxonRelationshipEdges will be taken into
+     *    account when retrieving media associated with the given taxon. Can be NULL.
      * @param limitToGalleries whether to take only TaxonDescription into account which are marked as gallery
      * @return
      */
-    public List<Media> listTaxonDescriptionMedia(Taxon taxon, boolean limitToGalleries, List<String> propertyPath);
+    public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath);
 
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);

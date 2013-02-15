@@ -98,7 +98,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
         this.vocabularyDao = vocabularyDao;
     }
-    
+
     @Autowired
     protected void setDefinedTermDao(IDefinedTermDao definedTermDao) {
         this.definedTermDao = definedTermDao;
@@ -202,7 +202,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    public Pager<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Set<MarkerType> markerTypes = null;
         return pageTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
     }
@@ -231,24 +231,24 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         List<TaxonDescription> results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         return results;
     }
-    
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IDescriptionService#listTaxonDescriptionMedia(UUID, boolean, Set, Integer, Integer, List)
      */
     @Override
     public List<Media> listTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths){
-    	return this.dao.listTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes, pageSize, pageNumber, propertyPaths);
+        return this.dao.listTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes, pageSize, pageNumber, propertyPaths);
     }
-    
-	/*
-	 * @see IDescriptionService#countTaxonDescriptionMedia(UUID, boolean, Set)
-	 */
-	@Override
+
+    /*
+     * @see IDescriptionService#countTaxonDescriptionMedia(UUID, boolean, Set)
+     */
+    @Override
     public int countTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes){
-		return this.dao.countTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes);
-	}
-	
+        return this.dao.countTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes);
+    }
+
 
 
 
@@ -407,17 +407,17 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         featureTree = featureTreeDao.load(featureTree.getUuid());
 
         StringBuilder naturalLanguageDescription = new StringBuilder();
-        
+
         MarkerType useMarkerType = (MarkerType) definedTermDao.load(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
         boolean isUseDescription = false;
         if(!description.getMarkers().isEmpty()) {
-        	for (Marker marker: description.getMarkers()) {
-        		MarkerType markerType = marker.getMarkerType();
-        		if (markerType.equals(useMarkerType)) {
-        			isUseDescription = true;
-        		}
-        		
-        	}
+            for (Marker marker: description.getMarkers()) {
+                MarkerType markerType = marker.getMarkerType();
+                if (markerType.equals(useMarkerType)) {
+                    isUseDescription = true;
+                }
+
+            }
         }
 
         if(description.hasStructuredData() && !isUseDescription){
@@ -500,8 +500,8 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         }
         else if (isUseDescription) {
-        	//AT: Left Blank in case we need to generate a Natural language text string.
-		}
+            //AT: Left Blank in case we need to generate a Natural language text string.
+        }
         return naturalLanguageDescription.toString();
     }
 

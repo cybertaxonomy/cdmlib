@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -82,6 +83,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -115,6 +117,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
+
     public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
 
     @Autowired
@@ -758,7 +761,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         if (markerTypeTerms == null) {
 
-            Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+            Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
             descriptions = p.getRecords();
         }
 
@@ -916,15 +919,20 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
             @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        logger.info("doGetMedia()" + request.getServletPath());
-        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        String path = request.getServletPath();
-        List<Media> returnMedia = getMediaForTaxon(t, type, mimeTypes, widthOrDuration, height, size);
+        logger.info("doGetMedia() " + requestPathAndQuery(request));
+
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+
+        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships, type, mimeTypes, widthOrDuration, height, size);
         return returnMedia;
     }
 
@@ -935,14 +943,20 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 @PathVariable("uuid") UUID uuid,
                 @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
                 @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+                @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+                @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
                 @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
                 @RequestParam(value = "height", required = false) Integer height,
                 @RequestParam(value = "size", required = false) Integer size,
                 HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetMedia()" + request.getServletPath());
+
+        logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
+
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_NODES_INIT_STRATEGY);
-        String requestPath = request.getServletPath();
-        List<Media> returnMedia = getMediaForTaxon(taxon, type, mimeTypes, widthOrDuration, height, size);
+
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+
+        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships, type, mimeTypes, widthOrDuration, height, size);
         TaxonNode node;
         //looking for all medias of genus
         if (taxon.getTaxonNodes().size()>0){
@@ -958,17 +972,16 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();
                 childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
-                returnMedia.addAll(getMediaForTaxon(childTaxon, type, mimeTypes, widthOrDuration, height, size));
+                returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships, type, mimeTypes, widthOrDuration, height, size));
             }
         }
         return returnMedia;
     }
 
-
-    private List<Media> getMediaForTaxon(Taxon taxon, Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
+    private List<Media> getMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
             Integer widthOrDuration, Integer height, Integer size){
 
-        List<Media> taxonGalleryMedia = service.listTaxonDescriptionMedia(taxon, false, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
+        List<Media> taxonGalleryMedia = service.listTaxonDescriptionMedia(taxon, includeRelationships, false, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
                 mimeTypes, null, widthOrDuration, height, size);

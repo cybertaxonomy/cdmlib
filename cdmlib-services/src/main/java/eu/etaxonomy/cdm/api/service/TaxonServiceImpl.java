@@ -728,18 +728,26 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#listTaxonDescriptionMedia(eu.etaxonomy.cdm.model.taxon.Taxon, boolean)
      */
-    public List<Media> listTaxonDescriptionMedia(Taxon taxon, boolean limitToGalleries, List<String> propertyPath){
+    public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath){
 
-        Pager<TaxonDescription> p =
-                    descriptionService.getTaxonDescriptions(taxon, null, null, null, null, propertyPath);
 
-        // pars the media and quality parameters
+        List<Taxon> taxa = new ArrayList<Taxon>();
+        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
 
+        if(includeRelationships != null) {
+           taxa = (listRelatedTaxa(taxon, includeRelationships, null, null, null, null));
+        }
+        taxa.add(taxon);
+
+
+        for (Taxon t : taxa) {
+            taxonDescriptions.addAll(descriptionService.listTaxonDescriptions(t, null, null, null, null, propertyPath));
+        }
 
         // collect all media of the given taxon
         List<Media> taxonMedia = new ArrayList<Media>();
         List<Media> taxonGalleryMedia = new ArrayList<Media>();
-        for(TaxonDescription desc : p.getRecords()){
+        for(TaxonDescription desc : taxonDescriptions){
 
             if(desc.isImageGallery()){
                 for(DescriptionElementBase element : desc.getElements()){

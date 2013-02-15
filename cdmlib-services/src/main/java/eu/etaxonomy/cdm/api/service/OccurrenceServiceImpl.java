@@ -264,7 +264,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
 
-
         if(includeRelationships != null) {
             taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, pageSize, pageSize, propertyPaths);
         }
