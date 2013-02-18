@@ -101,23 +101,6 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
     }
-    
-    public List<TypeDesignationBase> doListNameTypeDesignations(
-            @PathVariable("uuid") UUID uuid, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        if (request != null) {
-        	logger.info("doListTypeDesignations()" + request.getServletPath());
-        }
-        TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
-                (List<String>) null);
-        
-        List<TypeDesignationBase> result = service.listTypeDesignations(tnb, null,
-                null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        
-        return result;
-
-    }
 
     @RequestMapping(
             value = {"nameCache"},
