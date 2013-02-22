@@ -1692,7 +1692,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ManagementControl
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaPortalController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameCatalogueController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NamePortalController.java -text
