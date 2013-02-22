@@ -343,6 +343,17 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             Integer limit, Integer start, List<String> propertyPaths);
 
     /**
+     * lists all accepted taxa for the given {@link Synonym}
+     *
+     * @param taxonBase
+     * @param limit
+     * @param start
+     * @param propertyPaths
+     * @return
+     */
+    public List<Classification> listClassifications(TaxonBase taxonBase, Integer limit, Integer start, List<String> propertyPaths);
+
+    /**
      * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)
      * where the supplied synonym is relatedFrom.
      *

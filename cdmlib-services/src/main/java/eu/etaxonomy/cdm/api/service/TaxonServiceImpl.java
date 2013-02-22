@@ -2081,6 +2081,39 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return inferredSynonyms;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#listClassifications(eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    public List<Classification> listClassifications(TaxonBase taxonBase, Integer limit, Integer start, List<String> propertyPaths) {
+
+        // TODO quickly implemented, create according dao !!!!
+        Set<TaxonNode> nodes = new HashSet<TaxonNode>();
+        Set<Classification> classifications = new HashSet<Classification>();
+        List<Classification> list = new ArrayList<Classification>();
+
+        if (taxonBase == null) {
+            return list;
+        }
+
+        taxonBase = load(taxonBase.getUuid());
+
+        if (taxonBase instanceof Taxon) {
+            nodes.addAll(((Taxon)taxonBase).getTaxonNodes());
+        } else {
+            for (Taxon taxon : ((Synonym)taxonBase).getAcceptedTaxa() ) {
+                nodes.addAll(taxon.getTaxonNodes());
+            }
+        }
+        for (TaxonNode node : nodes) {
+            classifications.add(node.getClassification());
+        }
+        list.addAll(classifications);
+        return list;
+    }
+
+
+
 
 
 

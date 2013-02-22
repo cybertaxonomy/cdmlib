@@ -709,9 +709,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
-        if(tb instanceof Taxon){
-            return ((Taxon)tb).getTaxonNodes();
+        logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
+        TaxonBase taxon = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        if(taxon instanceof Taxon){
+            return ((Taxon)taxon).getTaxonNodes();
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
