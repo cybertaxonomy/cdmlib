@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * TODO write controller documentation
- * 
+ *
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -44,74 +44,75 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 @RequestMapping(value = {"/reference/{uuid}"})
 public class ReferenceController extends BaseController<Reference, IReferenceService>
 {
-	
-	private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{
-			"$",
-			"authorTeam", // TODO obsolete??
-			"inReference.authorTeam"
-	});
-	
-	private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
-			"authorTeam.$"  // TODO obsolete??
-	});
-	
-	public ReferenceController(){
-		setInitializationStrategy(Arrays.asList(new String[]{
-				"$",
-				"authorTeam.$" // TODO obsolete??
-				}));
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Autowired
-	@Override
-	public void setService(IReferenceService service) {
-		this.service = service;
-	}
-	
-	/**
-	 * TODO write controller documentation
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(
-		value = {"nomenclaturalCitation"},
-		method = RequestMethod.GET)
-	public ModelAndView doGetNomenclaturalCitation(
-			@PathVariable("uuid") UUID uuid,
-			HttpServletRequest request, 
-			HttpServletResponse response,
-			@RequestParam(value = "microReference", required = false) String microReference)throws IOException {
-		ModelAndView mv = new ModelAndView();
-		Reference rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
-		if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
-			String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
-			mv.addObject(nomRefCit);
-			return mv;
-		} else {
-			response.sendError(400, "The supplied reference-uuid must specify a INomenclaturalReference.");
-		}
-		return mv;
-	}
-	
-	@RequestMapping(
-			value = {"authorTeam"},
-			method = RequestMethod.GET)
-		public ModelAndView doGetAuthorTeam(
-				@PathVariable("uuid") UUID uuid,
-				HttpServletRequest request, 
-				HttpServletResponse response) {
-		ModelAndView mv = new ModelAndView();
-		Reference rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
-		if(rb.getAuthorTeam() != null){
-			mv.addObject(rb.getAuthorTeam());
-		}
-		return mv;
-	}
+
+    private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "authorTeam",
+            "inReference.inReference",
+            "inReference.authorTeam"
+    });
+
+    private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
+            "authorTeam.$"
+    });
+
+    public ReferenceController(){
+        setInitializationStrategy(Arrays.asList(new String[]{
+                "$",
+                "authorTeam.$"
+             }));
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Autowired
+    @Override
+    public void setService(IReferenceService service) {
+        this.service = service;
+    }
+
+    /**
+     * TODO write controller documentation
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(
+        value = {"nomenclaturalCitation"},
+        method = RequestMethod.GET)
+    public ModelAndView doGetNomenclaturalCitation(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(value = "microReference", required = false) String microReference)throws IOException {
+        ModelAndView mv = new ModelAndView();
+        Reference rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
+        if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
+            String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
+            mv.addObject(nomRefCit);
+            return mv;
+        } else {
+            response.sendError(400, "The supplied reference-uuid must specify a INomenclaturalReference.");
+        }
+        return mv;
+    }
+
+    @RequestMapping(
+            value = {"authorTeam"},
+            method = RequestMethod.GET)
+        public ModelAndView doGetAuthorTeam(
+                @PathVariable("uuid") UUID uuid,
+                HttpServletRequest request,
+                HttpServletResponse response) {
+        ModelAndView mv = new ModelAndView();
+        Reference rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
+        if(rb.getAuthorTeam() != null){
+            mv.addObject(rb.getAuthorTeam());
+        }
+        return mv;
+    }
 
 }
