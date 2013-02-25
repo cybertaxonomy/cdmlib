@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
 import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.AcceptedNameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
@@ -131,6 +132,15 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "nameCache",
             "taxonBases",
             "taxonBases.synonymRelations.type.$"});
+    
+    /** Hibernate accepted name search initialisation strategy */
+    private static final List<String> ACC_NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
+            "nameCache",
+            "taxonBases",
+            "taxonBases.synonymRelations.acceptedTaxon.name.nameCache",
+            "taxonBases.synonymRelations.acceptedTaxon.name.rank.titleCache",
+            "taxonBases.synonymRelations.acceptedTaxon.taxonNodes.classification",
+            "taxonBases.relationsFromThisTaxon.type.$"});
 
     /** Hibernate name information initialisation strategy */
     private static final List<String> NAME_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
@@ -796,6 +806,157 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         mv.addObject(tiList);
         return mv;
     }
+    
+    /**
+     * Returns a list of accepted names of input scientific names matching the <code>{query}</code>
+     * string pattern. Each of these scientific names is accompanied by a list of
+     * name uuids, a list of taxon uuids and a list of accepted taxon uuids.
+     * <p>
+     * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-default.html">here</a>
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
+     *
+     * @param query
+     *                The scientific name pattern(s) to query for. The query can
+     *                contain wildcard characters ('*'). The query can be
+     *                performed with no wildcard or with the wildcard at the
+     *                begin and / or end depending on the search pattern.
+     * @param type
+     *                The type of name to query. This be either
+     *                "name" : scientific name corresponding to 'name cache' in CDM or
+     *                "title" : complete name corresponding to 'title cache' in CDM
+     * @param request Http servlet request.
+     * @param response Http servlet response.
+     * @return a List of {@link NameSearch} objects each corresponding to a
+     *         single query. These are built from {@link TaxonNameBase} entities
+     *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query"})
+    public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
+    		HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	return doGetAcceptedNameSearch(queries, DEFAULT_SEARCH_TYPE, request, response);
+    }
+    /**
+     * Returns a list of accepted names of input scientific names matching the <code>{query}</code>
+     * string pattern. Each of these scientific names is accompanied by a list of
+     * name uuids, a list of taxon uuids and a list of accepted taxon uuids.
+     * <p>
+     * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-default.html">here</a>
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
+     *
+     * @param query
+     *                The scientific name pattern(s) to query for. The query can
+     *                contain wildcard characters ('*'). The query can be
+     *                performed with no wildcard or with the wildcard at the
+     *                begin and / or end depending on the search pattern.
+     * @param type
+     *                The type of name to query. This be either
+     *                "name" : scientific name corresponding to 'name cache' in CDM or
+     *                "title" : complete name corresponding to 'title cache' in CDM
+     * @param request Http servlet request.
+     * @param response Http servlet response.
+     * @return a List of {@link NameSearch} objects each corresponding to a
+     *         single query. These are built from {@link TaxonNameBase} entities
+     *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {"query", "type"})
+    public ModelAndView doGetAcceptedNameSearch(@RequestParam(value = "query", required = true) String[] queries,
+            @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ModelAndView mv = new ModelAndView();
+        List<RemoteResponse> ansList = new ArrayList<RemoteResponse>();
+        logger.info("doGetAcceptedNameSearch()");
+        // if search type is not known then return error
+        if (!searchType.equals(NAME_SEARCH) && !searchType.equals(TITLE_SEARCH)) {
+            ErrorResponse er = new ErrorResponse();
+            er.setErrorMessage("searchType parameter can only be set as" + NAME_SEARCH + " or "
+                    + TITLE_SEARCH);
+            mv.addObject(er);
+            return mv;
+        }
+
+        // search through each query
+        for (String query : queries) {
+
+            //String queryWOWildcards = getQueryWithoutWildCards(query);
+            //MatchMode mm = getMatchModeFromQuery(query);
+            logger.info("doGetAcceptedNameSearch()" + request.getServletPath() + " for query \"" + query);
+            List<NonViralName> nameList = new ArrayList<NonViralName>();
+
+            // if "name" search then find by name cache
+            if (searchType.equals(NAME_SEARCH)) {
+                nameList = (List<NonViralName>) service.findNamesByNameCache(query, MatchMode.EXACT,
+                        ACC_NAME_SEARCH_INIT_STRATEGY);
+            }
+
+            //if "title" search then find by title cache
+            if (searchType.equals(TITLE_SEARCH)) {
+                nameList = (List<NonViralName>) service.findNamesByTitleCache(query, MatchMode.EXACT,
+                        ACC_NAME_SEARCH_INIT_STRATEGY);
+            }
+
+            // if search is successful then get related information , else return error
+            if (nameList == null || !nameList.isEmpty()) {
+                AcceptedNameSearch ans = new AcceptedNameSearch();
+                ans.setRequest(query);
+                
+                for (NonViralName nvn : nameList) {
+                    // we need to retrieve both taxon uuid of name queried and
+                    // the corresponding accepted taxa.
+                    // reason to return accepted taxa also, is to be able to get from
+                    // scientific name to taxon concept in two web service calls.
+                    Set<TaxonBase> tbSet = nvn.getTaxonBases();
+                    Set<TaxonBase> accTbSet = new HashSet<TaxonBase>();
+                    for (TaxonBase tb : tbSet) {
+                        // if synonym then get accepted taxa.
+                        if (tb instanceof Synonym) {
+                            Synonym synonym = (Synonym) tb;
+                            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
+                            for (SynonymRelationship sr : synRelationships) {
+                                Taxon accTaxon = sr.getAcceptedTaxon();
+                                NonViralName accNvn = (NonViralName)accTaxon.getName();
+                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT);
+                                ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
+                            }
+                        } else {
+                        	Taxon taxon = (Taxon)tb;
+                        	Set<TaxonRelationship> trFromSet = taxon.getRelationsFromThisTaxon();
+                        	boolean isConceptRelationship = true;
+                        	if(trFromSet.size() == 1) {
+                        		for (TaxonRelationship tr : trFromSet) {  
+                        			if(!tr.getType().isConceptRelationship()) {
+                        				// this is not a concept relationship, so it does not have an
+                        				// accepted name
+                        				isConceptRelationship = false;
+
+                        			}
+                        		}
+                        	}
+                            if(isConceptRelationship) {
+                            	Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT);
+                            	ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(),nvn.getRank().getTitleCache(), classificationMap);
+                            }
+                        	
+                        }
+                    }
+                    // update name search object
+                    
+                }
+                ansList.add(ans);
+
+            } else {
+                ErrorResponse er = new ErrorResponse();
+                er.setErrorMessage("No Taxon Name for given query : " + query);
+                ansList.add(er);
+            }
+        }        
+
+        mv.addObject(ansList);
+        return mv;
+    }
 
     /**
      * Returns a list of all available classifications (with associated referenc information) and the default classification.
@@ -936,7 +1097,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     private Map<String, Map> getClassification(Taxon taxon, String classificationType) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
-        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, classificationType);
+        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon);
 
         // if classification key is 'default' then return the default element of the map
         if(classificationType.equals(CLASSIFICATION_DEFAULT) && !sourceClassificationMap.isEmpty()) {
@@ -957,7 +1118,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /**
      * Build classification map.
      */
-    private TreeMap<String, Map> buildClassificationMap(Taxon taxon, String classificationType) {
+    private TreeMap<String, Map> buildClassificationMap(Taxon taxon) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
         TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
