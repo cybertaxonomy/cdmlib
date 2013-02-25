@@ -33,13 +33,25 @@ import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
- *
+ * @author a.kohlbecker
  */
 public class CdmUtils {
-    private static final String CDM_FOLDER_NAME = ".cdmLibrary";
-
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
+
+    /**
+     * The per user cdm folder name: ".cdmLibrary"
+     */
+    private static final String cdmFolderName = ".cdmLibrary";
+
+    final static String userHome = System.getProperty("user.home");
+
+    /**
+     * The per user cdm folder "~/.cdmLibrary"
+     */
+    public final static File perUserCdmFolder = new File(userHome + File.separator + ".cdmLibrary" );
+
+
 
 
     static final String MUST_EXIST_FILE = "MUST-EXIST.txt";
@@ -60,7 +72,7 @@ public class CdmUtils {
     }
 
     public static File getCdmHomeDir() {
-        return new File(System.getProperty("user.home")+File.separator+CDM_FOLDER_NAME+File.separator);
+        return new File(System.getProperty("user.home")+File.separator+cdmFolderName+File.separator);
     }
 
 
@@ -359,7 +371,7 @@ public class CdmUtils {
         }
         return false;
     }
-    
+
     /**
      * Returns <code>false</code> if string is null, "" or string.trim() is ""
      * @see isNotEmpty(String string)
@@ -369,7 +381,7 @@ public class CdmUtils {
     static public boolean isNotBlank(String string){
         return ! isBlank(string);
     }
-    
+
     /**
      * @see #isBlank(String)
      * @deprecated use {@link #isBlank(String)} instead
@@ -378,14 +390,14 @@ public class CdmUtils {
      */
     @Deprecated
     static public boolean isEmpty(String string){
-    	return isBlank(string);
+        return isBlank(string);
     }
-    
+
     static public boolean areBlank(String ... strings){
         for (String string : strings){
-        	if (! isBlank(string)){
-        		return false;
-        	}
+            if (! isBlank(string)){
+                return false;
+            }
         }
         return true;
     }

@@ -9,13 +9,19 @@
  */
 package eu.etaxonomy.cdm.remote.config;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.kohlbecker
@@ -24,12 +30,32 @@ import org.springframework.web.context.WebApplicationContext;
  */
 public abstract class AbstractWebApplicationConfigurer {
 
+    private static final String CDMLIB_REMOTE_PROPERTIES = "cdmlib-remote.properties";
+
     private static final String ATTRIBUTE_ERROR_MESSAGES = "cdm.errorMessages";
 
     public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
 
     WebApplicationContext webApplicationContext;
 
+    static Properties userDefinedProperties = null;
+    static {
+        if(userDefinedProperties == null) {
+            userDefinedProperties = new Properties();
+            try {
+                InputStream in = new FileInputStream(
+                            CdmUtils.perUserCdmFolder
+                            + java.io.File.separator
+                            + CDMLIB_REMOTE_PROPERTIES
+                    );
+                if (in != null) {
+                    userDefinedProperties.load(in);
+                }
+            } catch (IOException e) {
+                logger.debug("No per user " + CDMLIB_REMOTE_PROPERTIES + " found.");
+            }
+        }
+    }
 
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext){
@@ -44,11 +70,12 @@ public abstract class AbstractWebApplicationConfigurer {
     /**
      * Find a property primarily in the ServletContext and secondarily
      * in the environment variables of the OS. So a property can be set
-     * by two means:
+     * by three means:
      * <ol>
      * <li>As attribute to the ServletContext (the cdm-server makes use of this method)</li>
      * <li>as system property e.g. by setting the jvm commandline option like for example
      * <code>-Dcdm.rootpathprefix=my/cdm/remote-instance<code></li>
+     * <li>In a per user Java properties file {@code ~/.cdmLibrary/cdmlib-remote.properties}</li>
      * </ol>
      *
      * @param property usually a string constant defined in a subclass of
@@ -64,11 +91,15 @@ public abstract class AbstractWebApplicationConfigurer {
         if(value == null){
             value = System.getProperty(property);
         }
+        if(value == null && userDefinedProperties != null){
+            value = userDefinedProperties.getProperty(property);
+        }
         if(value == null && required){
             logger.error("property {" + property + "} not found.");
             logger.error("--> This property can be set in two ways:");
             logger.error("--> 		1. as attribute to the ServletContext");
             logger.error("--> 		2. as system property e.g. -D" + property);
+            logger.error("--> 		3. in ~/.cdmLibrary/cdmlib-remote.properties");
             logger.error("Stopping application ...");
             System.exit(-1);
         }
