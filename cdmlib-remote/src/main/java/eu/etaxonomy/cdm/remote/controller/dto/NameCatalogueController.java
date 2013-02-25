@@ -140,6 +140,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "taxonBases.synonymRelations.acceptedTaxon.name.nameCache",
             "taxonBases.synonymRelations.acceptedTaxon.name.rank.titleCache",
             "taxonBases.synonymRelations.acceptedTaxon.taxonNodes.classification",
+            "taxonBases.taxonNodes.classification",
             "taxonBases.relationsFromThisTaxon.type.$"});
 
     /** Hibernate name information initialisation strategy */
