@@ -58,6 +58,23 @@ public class GenBankAccession extends VersionableEntity {
 	@Type(type="uriUserType")
 	private URI uri;
 	
+//*********************** FACTORY ****************************************************/	
+
+	public static GenBankAccession NewInstance(String accessionNumber){
+		GenBankAccession result = new GenBankAccession();
+		result.setAccessionNumber(accessionNumber);
+		return result;
+	}
+	
+//*********************** CONSTRUCTOR ****************************************************/
+
+	private GenBankAccession() {
+
+	}
+
+//*********************** GETTER / SETTER ****************************************************/
+		
+	
 	public String getAccessionNumber(){
 		logger.debug("getAccessionNumber");
 		return this.accessionNumber;
