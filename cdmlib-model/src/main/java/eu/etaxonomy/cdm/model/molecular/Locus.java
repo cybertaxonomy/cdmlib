@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
@@ -44,6 +46,25 @@ public class Locus extends VersionableEntity {
 	
 	@XmlElement(name = "Description")
 	private String description;
+	
+//*********************** FACTORY ****************************************************/	
+
+	public static Locus NewInstance(String name, String description){
+		Locus result = new Locus();
+		result.setName(name);
+		result.setDescription(description);
+		return result;
+	}
+	
+//*********************** CONSTRUCTOR ****************************************************/
+
+	private Locus() {
+
+	}
+
+//*********************** GETTER / SETTER ****************************************************/
+	
+	
 	
 	public String getName(){
 		logger.debug("getName");
