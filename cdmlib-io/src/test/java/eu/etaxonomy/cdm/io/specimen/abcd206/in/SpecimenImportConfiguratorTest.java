@@ -19,6 +19,7 @@ import java.net.URL;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -71,6 +72,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 	
 	@Test
+	@DataSet(value="../../../BlankDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
