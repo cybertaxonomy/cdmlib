@@ -770,13 +770,13 @@ implements ICdmIO<Abcd206ImportState> {
 			return map;
 		}
 
-		if (taxonrank.isInfraGeneric()) {
+		else if (taxonrank.isInfraGeneric()) {
 			// logger.info("isInfrageneric");
 			highername.add(originalName.getGenusOrUninomial());
 			higherrank = Rank.GENUS();
 		}
 
-		if (taxonrank.isSpecies()) {
+		else if (taxonrank.isSpecies()) {
 			// logger.info("isSpecies");
 			if (originalName.getGenusOrUninomial() != null) {
 				highername.add(originalName.getGenusOrUninomial());
@@ -792,7 +792,7 @@ implements ICdmIO<Abcd206ImportState> {
 			}
 		}
 
-		if (taxonrank.isInfraSpecific()) {
+		else if (taxonrank.isInfraSpecific()) {
 			// logger.info("isInfraSpecies");
 			if (originalName.getGenusOrUninomial() != null)
 				highername.add(originalName.getGenusOrUninomial());
@@ -1446,9 +1446,14 @@ implements ICdmIO<Abcd206ImportState> {
 				return taxonName;
 			}
 		}
-		if (dataHolder.nomenclatureCode.equals("Botanical")) {
-			NonViralName<BotanicalName> taxonName = BotanicalName
-					.NewInstance(null);
+		else if (dataHolder.nomenclatureCode.equals("Botanical")) {
+			BotanicalName taxonName = (BotanicalName) parseScientificName(fullName);
+			if (taxonName != null){
+				return taxonName;
+			}
+			else{
+				taxonName = BotanicalName.NewInstance(null);
+			}
 			taxonName.setFullTitleCache(fullName, true);
 			taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
 			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,
@@ -1510,7 +1515,7 @@ implements ICdmIO<Abcd206ImportState> {
 				return taxonName;
 			}
 		}
-		if (dataHolder.nomenclatureCode.equals("Bacterial")) {
+		else if (dataHolder.nomenclatureCode.equals("Bacterial")) {
 			NonViralName<BacterialName> taxonName = BacterialName
 					.NewInstance(null);
 			taxonName.setFullTitleCache(fullName, true);
@@ -1553,7 +1558,7 @@ implements ICdmIO<Abcd206ImportState> {
 				return taxonName;
 			}
 		}
-		if (dataHolder.nomenclatureCode.equals("Cultivar")) {
+		else if (dataHolder.nomenclatureCode.equals("Cultivar")) {
 			CultivarPlantName taxonName = CultivarPlantName.NewInstance(null);
 
 			if (taxonName.hasProblem()) {
