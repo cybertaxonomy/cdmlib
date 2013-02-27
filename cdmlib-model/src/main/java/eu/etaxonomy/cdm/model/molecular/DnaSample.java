@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
@@ -70,7 +72,8 @@ public class DnaSample extends Specimen implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch = FetchType.LAZY)
-	private Set<Sequence> sequences = new HashSet<Sequence>();
+	@Cascade(CascadeType.SAVE_UPDATE)
+    private Set<Sequence> sequences = new HashSet<Sequence>();
 
 	
 	
