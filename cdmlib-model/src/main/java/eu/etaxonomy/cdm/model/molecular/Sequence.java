@@ -116,7 +116,8 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	@XmlElementWrapper(name = "GenBankAccessions")
 	@XmlElement(name = "GenBankAccession")
     @OneToMany(fetch = FetchType.LAZY)
-	private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
+	@Cascade(CascadeType.SAVE_UPDATE)
+    private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
 	
 	@XmlElement(name = "Locus")
     @XmlIDREF
