@@ -86,10 +86,13 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *
      * @param classification may be null for all classifications
      * @param rank the set to null for to get the root nodes of classifications
+     * @param limit The maximum number of objects returned (can be null for all matching objects)
+     * @param start The offset from the start of the result set (0 - based, can be null -
+     * 		equivalent of starting at the beginning of the recordset)
      * @param propertyPaths
      * @return
      */
-    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, List<String> propertyPaths);
+    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths);
 
     /**
      * @param taxonNode

@@ -51,9 +51,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
     }
 
     @SuppressWarnings("unchecked")
-    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, List<String> propertyPaths){
-        List<TaxonNode> results;
+    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank,
+            Integer limit, Integer start, List<String> propertyPaths){
 
+        List<TaxonNode> results;
         Query query;
 
         String whereClassification = "";
@@ -81,6 +82,13 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         if (classification != null){
             query.setParameter("classification", classification);
+        }
+
+        if(limit != null) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
         }
 
         results = query.list();
