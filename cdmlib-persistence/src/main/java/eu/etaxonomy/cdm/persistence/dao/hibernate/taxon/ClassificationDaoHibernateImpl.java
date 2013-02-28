@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,61 +37,75 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 @Repository
 @Qualifier("classificationDaoHibernateImpl")
 public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classification>
-		implements IClassificationDao {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ClassificationDaoHibernateImpl.class);
-	
-	@Autowired
-	private ITaxonNodeDao taxonNodeDao;
-	
-	public ClassificationDaoHibernateImpl() {
-		super(Classification.class);
-		indexedClasses = new Class[1];
-		indexedClasses[0] = Classification.class;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, List<String> propertyPaths){
-		List<TaxonNode> results;
-		if(rank == null){
-			classification = load(classification.getUuid());
-			results = new ArrayList(); 
-			results.addAll(classification.getChildNodes());
-		} else {
-			String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as ctn" +
-				" WHERE tn.classification = :classification  AND (" +
-				" tn.taxon.name.rank = :rank" +
-				" OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent = null)" +
-				" OR (tn.taxon.name.rank.orderIndex < :rankOrderIndex AND ctn.taxon.name.rank.orderIndex > :rankOrderIndex)" +
-				" )";
-			Query query = getSession().createQuery(hql);
-			query.setParameter("rank", rank);
-			query.setParameter("rankOrderIndex", rank.getOrderIndex());
-			query.setParameter("classification", classification);
-			results = query.list();
-		}
-		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		return results;
-		
-	}
-	
-	@Override
-	public UUID delete(Classification persistentObject){
-		//delete all childnodes, then delete the tree
-		
-		Set<TaxonNode> nodes = persistentObject.getChildNodes();
-		Iterator<TaxonNode> nodesIterator = nodes.iterator();
-		
-		while(nodesIterator.hasNext()){
-			TaxonNode node = nodesIterator.next();
-			taxonNodeDao.delete(node);
-		}
-				
-		super.delete(persistentObject);
-		
-		return persistentObject.getUuid();
-	}
+        implements IClassificationDao {
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(ClassificationDaoHibernateImpl.class);
 
-	
-	
+    @Autowired
+    private ITaxonNodeDao taxonNodeDao;
+
+    public ClassificationDaoHibernateImpl() {
+        super(Classification.class);
+        indexedClasses = new Class[1];
+        indexedClasses[0] = Classification.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, List<String> propertyPaths){
+        List<TaxonNode> results;
+
+        Query query;
+
+        String whereClassification = "";
+        if (classification != null){
+            whereClassification = " AND tn.classification = :classification ";
+        }
+
+        if(rank == null){
+            String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
+                " WHERE tn.parent = null " +
+                whereClassification;
+            query = getSession().createQuery(hql);
+        } else {
+            String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
+                " WHERE " +
+                " (tn.taxon.name.rank = :rank" +
+                "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent = null)" +
+                "   OR (tn.taxon.name.rank.orderIndex < :rankOrderIndex AND tnc.taxon.name.rank.orderIndex > :rankOrderIndex)" +
+                " )" +
+                whereClassification;
+            query = getSession().createQuery(hql);
+            query.setParameter("rank", rank);
+            query.setParameter("rankOrderIndex", rank.getOrderIndex());
+        }
+
+        if (classification != null){
+            query.setParameter("classification", classification);
+        }
+
+        results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+
+    }
+
+    @Override
+    public UUID delete(Classification persistentObject){
+        //delete all childnodes, then delete the tree
+
+        Set<TaxonNode> nodes = persistentObject.getChildNodes();
+        Iterator<TaxonNode> nodesIterator = nodes.iterator();
+
+        while(nodesIterator.hasNext()){
+            TaxonNode node = nodesIterator.next();
+            taxonNodeDao.delete(node);
+        }
+
+        super.delete(persistentObject);
+
+        return persistentObject.getUuid();
+    }
+
+
+
 }

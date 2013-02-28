@@ -150,11 +150,16 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
      */
     @Test
     @DataSet
-    @Ignore
     public final void testloadRankSpecificRootNodes(){
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
-        List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), NODE_INIT_STRATEGY);
+        List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(null, null, NODE_INIT_STRATEGY);
+        Assert.assertEquals(1, taxonNodes.size());
+
+        taxonNodes = service.loadRankSpecificRootNodes(classification, null, NODE_INIT_STRATEGY);
+        Assert.assertEquals(1, taxonNodes.size());
+
+        taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
 
     }
