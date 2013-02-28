@@ -11,18 +11,15 @@ package eu.etaxonomy.cdm.test.integration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -34,7 +31,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
-import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
@@ -46,36 +42,27 @@ import org.dbunit.dataset.filter.ITableFilterSimple;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlWriter;
-import org.dbunit.dataset.xml.XmlDataSetWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
-import org.dbunit.operation.DeleteAllOperation;
-import org.dbunit.operation.DeleteOperation;
 import org.h2.tools.Server;
 import org.junit.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
-import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
-import org.unitils.dbunit.util.MultiSchemaDataSet;
 import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.PersistentTermInitializer;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.agent.AgentDaoImpl;
 import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
  * the unitils testing framework and dbunit.
- * <p>
+ *
+ * <h2>Data base server</h2>
  * The database being used is configured in
  * the maven module specific unitils.properties file. By default the database is a H2 in memory data base.
  * <p>
@@ -84,6 +71,10 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  * <code>-Dh2Server</code>.
  * An internal h2 database application will be started and listens at port 8082.
  * The port to listen on can be specified by passing a second argument, e.g.: <code>-Dh2Server 8083</code>.
+ *
+ * <h2>Creating create DbUnit dataset files</h2>
+ * In order to create DbUnit datasets  for integration tests it is highly recommended method to use the
+ * {@link #writeDbUnitDataSetFile(String[])} method.
  *
  *
  * @see <a href="http://www.unitils.org">unitils home page</a>
@@ -214,7 +205,22 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * Prints the data set to an output stream, using the
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
-     * inserts '[null]' place holders for null values but skipping them.
+     * inserts '[null]' place holders for null values instead of skipping them.
+     * This was necessary to make this xml database export compatible to the
+     * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+     * <p>
+     * @param out out The OutputStream to write to.
+     * @param includeTableNames
+     */
+    public void printDataSetWithNull(OutputStream out, String[] includeTableNames) {
+        printDataSetWithNull(out, null, null, includeTableNames);
+    }
+
+    /**
+     * Prints the data set to an output stream, using the
+     * {@link FlatFullXmlWriter}.
+     * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
+     * inserts '[null]' place holders for null values instead of skipping them.
      * This was necessary to make this xml database export compatible to the
      * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
      * <p>
@@ -230,10 +236,16 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @see FlatFullXmlWriter
      */
     public void printDataSetWithNull(OutputStream out) {
-        printDataSetWithNull(out, null, null);
+        printDataSetWithNull(out, null, null, null);
     }
 
-    public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables, ITableFilterSimple filter) {
+    /**
+     * @param out
+     * @param excludeTermLoadingTables
+     * @param excludeFilter the tables to be <em>excluded</em>
+     */
+    public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
+            ITableFilterSimple excludeFilter, String[] includeTableNames) {
 
         if(excludeTermLoadingTables != null && excludeTermLoadingTables.equals(true)){
             ExcludeTableFilter excludeTableFilter = new ExcludeTableFilter();
@@ -241,18 +253,25 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
             for(String tname : termLoadingTables){
                 excludeTableFilter.excludeTable(tname);
             }
-            filter = excludeTableFilter;
+            excludeFilter = excludeTableFilter;
         }
 
-        if (filter == null){
-            filter = new ExcludeTableFilter();
+        if( excludeFilter != null && includeTableNames != null){
+            throw new RuntimeException("Ambiguous parameters: excludeFilter can not be used together with includeTableNames or excludeTermLoadingTable.");
         }
 
         IDatabaseConnection connection = null;
         try {
             connection = getConnection();
-            DatabaseDataSet dataSet = new DatabaseDataSet(connection, false, filter);
-
+            IDataSet dataSet;
+            if (includeTableNames != null) {
+                dataSet = connection.createDataSet(includeTableNames);
+            } else {
+                if (excludeFilter == null){
+                    excludeFilter = new ExcludeTableFilter();
+                }
+                dataSet = new DatabaseDataSet(connection, false, excludeFilter);
+            }
             FlatFullXmlWriter writer = new FlatFullXmlWriter(out);
             writer.write(dataSet);
         } catch (Exception e) {
@@ -306,21 +325,38 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     /**
      * Prints the named tables to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatXmlDataSet}.
+     * <p>
+     * <h2>NOTE: for compatibility with unitils 3.x you may
+     * want to use the {@link #printDataSetWithNull(OutputStream)}
+     * method instead.</h2>
+     *
+     * <p>
+     * Remember, if you've just called save() or
+     * update(), the data isn't written to the database until the
+     * transaction is committed, and that isn't until after the
+     * method exits. Consequently, if you want to test writing to
+     * the database, either use the {@literal @ExpectedDataSet}
+     * annotation (that executes after the test is run), or use
+     * {@link CdmTransactionalIntegrationTest}.
      *
      * @see {@link #printDataSet(OutputStream)}
+     * @see FlatFullXmlWriter
+     *
      * @param out
-     * @param tableNames
+     * 		the OutputStream to write the XML to
+     * @param includeTableNames
+     * 		the names of tables to print (should be in upper case letters)
      */
-    public void printDataSet(OutputStream out, String[] tableNames) {
+    public void printDataSet(OutputStream out, String[] includeTableNames) {
         IDatabaseConnection connection = null;
 
-        if(tableNames == null){
+        if(includeTableNames == null){
             return;
         }
 
         try {
             connection = getConnection();
-            IDataSet actualDataSet = connection.createDataSet(tableNames);
+            IDataSet actualDataSet = connection.createDataSet(includeTableNames);
             FlatXmlDataSet.write(actualDataSet, out);
 
         } catch (Exception e) {
@@ -337,8 +373,22 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     /**
      * Prints the named tables to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatXmlWriter}.
+     * <p>
+     * <h2>NOTE: for compatibility with unitils 3.x you may
+     * want to use the {@link #printDataSetWithNull(OutputStream)}
+     * method instead.</h2>
+     *
+     * <p>
+     * Remember, if you've just called save() or
+     * update(), the data isn't written to the database until the
+     * transaction is committed, and that isn't until after the
+     * method exits. Consequently, if you want to test writing to
+     * the database, either use the {@literal @ExpectedDataSet}
+     * annotation (that executes after the test is run), or use
+     * {@link CdmTransactionalIntegrationTest}.
      *
      * @see {@link #printDataSet(OutputStream)}
+     * @see FlatFullXmlWriter
      * @param out
      * @param filter
      */
@@ -393,6 +443,36 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
                 logger.error(sqle);
             }
         }
+    }
+
+    /**
+     * This is the recommended method to create DbUnit dataset for integration tests.
+     *
+     * Writes a  DbUnit dataset file from the current data base connection using the
+     * {@link FlatFullXmlWriter}.
+     * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
+     * inserts '[null]' place holders for null values instead of skipping them.
+     *
+     *
+     * @param includeTableNames
+     * @throws FileNotFoundException
+     */
+    public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
+
+        File file = new File("src" + File.separator + "test" + File.separator + "resources" + File.separator + this.getClass().getName().replace(".", File.separator) + ".xml");
+
+        if (file.exists()){
+            logger.warn("** OVERWRITING DbUnit dataset file " + file.getAbsolutePath());
+        } else {
+            logger.warn("Writing new DbUnit dataset file to " + file.getAbsolutePath());
+        }
+
+        printDataSetWithNull(
+            new FileOutputStream(file),
+            false,
+            null,
+            includeTableNames
+         );
     }
 
     /**

@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -44,7 +43,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * The TransmissionEngineOccurrence is meant to be used from within a service class.
  *
- * <h2>GENERAL NOTES</h2>
+ * <h2>GENERAL NOTES </h2>
+ *<em>TODO: These notes are directly taken from original Transmission Engine Occurrence
+ * version 14 written in Visual Basic and still need to be
+ * adapted to the java version of the transmission engine!</em>
  *
  * <h3>summaryStatus</h3>
  *
@@ -69,7 +71,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Feb 22, 2013
  */
 @Service
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
 public class TransmissionEngineOccurrence {
 
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineOccurrence.priority:";
@@ -79,11 +81,11 @@ public class TransmissionEngineOccurrence {
     private static final Integer batchSize = 1000;
 
 
-    /**
+    /**classification
      * A map which contains the status terms as key and the priority as value
      * The map will contain both, the PresenceTerms and the AbsenceTerms
      */
-    private Map<PresenceAbsenceTermBase, Integer> statusPriorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
+    private Map<PresenceAbsenceTermBase, Integer> statusPriorityMap = null;
 
     private ICdmApplicationConfiguration repo;
     @Autowired
@@ -123,6 +125,7 @@ public class TransmissionEngineOccurrence {
                             AbsenceTerm.NATIVE_REPORTED_IN_ERROR(),
                             AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(),
                             AbsenceTerm.NATIVE_FORMERLY_NATIVE()
+                            // TODO what about AbsenceTerm.ABSENT() also ignore?
                     });
         }
         return byAreaIgnoreStatusList;
@@ -146,7 +149,7 @@ public class TransmissionEngineOccurrence {
     public List<PresenceAbsenceTermBase> getByRankIgnoreStatusList() {
 
         if (byRankIgnoreStatusList == null) {
-            Arrays.asList(
+            byRankIgnoreStatusList = Arrays.asList(
                     new PresenceAbsenceTermBase[] {
                             PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()
                     });
@@ -174,7 +177,10 @@ public class TransmissionEngineOccurrence {
      */
     @SuppressWarnings("rawtypes")
     private void initializeStatusPriorityMap() {
+
+        statusPriorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
         Integer priority;
+
         // PresenceTerms
         for(DefinedTermBase term : repo.getTermService().list(PresenceTerm.class, null, null, null, null)){
             priority = getPriorityFor(term);
@@ -194,6 +200,7 @@ public class TransmissionEngineOccurrence {
     /**
      * Compares the PresenceAbsenceTermBase terms <code>a</code> and <code>b</code>  and
      * returns the PresenceAbsenceTermBase with the higher priority as stored in the statusPriorityMap.
+     * If either a or b are null b or a is returned.
      *
      * @see initializeStatusPriorityMap()
      *
@@ -202,10 +209,26 @@ public class TransmissionEngineOccurrence {
      * @return
      */
     private PresenceAbsenceTermBase choosePreferred(PresenceAbsenceTermBase a, PresenceAbsenceTermBase b){
+
         if (statusPriorityMap == null) {
             initializeStatusPriorityMap();
         }
 
+        if (b == null) {
+            return a;
+        }
+        if (a == null) {
+            return b;
+        }
+
+        if (statusPriorityMap.get(a) == null) {
+            logger.warn("No priority found in map for " + a.getLabel());
+            return b;
+        }
+        if (statusPriorityMap.get(b) == null) {
+            logger.warn("No priority found in map for " + b.getLabel());
+            return a;
+        }
         if(statusPriorityMap.get(a) > statusPriorityMap.get(b)){
             return a;
         } else {
@@ -221,29 +244,49 @@ public class TransmissionEngineOccurrence {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Integer getPriorityFor(DefinedTermBase term) {
-        Set<Extension> extensions = term.getExtensions(ExtensionType.ORDER());
+        Set<Extension> extensions = term.getExtensions();
         for(Extension extension : extensions){
+            if(!extension.getType().equals(ExtensionType.ORDER())) {
+                continue;
+            }
             int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
-            if(pos == EXTENSION_VALUE_PREFIX.length()){ // if starts with EXTENSION_VALUE_PREFIX
+            if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
                 try {
-                    Integer priority = Integer.valueOf(extension.getValue().substring(pos));
+                    Integer priority = Integer.valueOf(extension.getValue().substring(EXTENSION_VALUE_PREFIX.length()));
                     return priority;
                 } catch (NumberFormatException e) {
                     logger.warn("Invalid number format in Extension:" + extension.getValue());
                 }
             }
         }
+        logger.warn("no priority defined for '" + term.getLabel() + "'");
         return null;
     }
 
-
+    /**
+     * runs both steps
+     * <ul>
+     *  <li>Step 1: Accumulate occurrence records by area</li>
+     *  <li> Step 2: Accumulate by ranks staring from lower rank to upper rank, the status of all children
+     * are accumulated on each rank starting from lower rank to upper rank.</li>
+     * </ul>
+     *
+     * @param superAreas
+     * @param lowerRank
+     * @param upperRank
+     * @param classification
+     */
+    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification) {
+        accumulateByArea(superAreas, classification);
+        accumulateByRank(lowerRank, upperRank, classification);
+    }
 
     /**
      * Step 1: Accumulate occurrence records by area
      * <ul>
      * <li>areas are projected to super areas e.g.:  HS <-- HS(A), HS(G), HS(S)</li>
      * <li>super areas do initially not have a status set ==> Prerequisite to check in CDM</li>
-     * <li>areas having a summary status of summary value different from {@link #byAreaIgnoreStatusList} are ignored</li>
+     * <li>areas having a summary status of summary value different from {@link #getByAreaIgnoreStatusList()} are ignored</li>
      * <li>areas have a priority value, the status of the area with highest priority determines the status of the super area</li>
      * <li>the source references of the accumulated distributions are also accumulated into the new distribution,,</li>
      * <li>this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
@@ -261,25 +304,30 @@ public class TransmissionEngineOccurrence {
                 break;
             }
             for(TaxonBase taxonBase : taxa) {
-
-                logger.debug("accumulateByArea() - taxon :" + taxonBase.getTitleCache());
+                if(logger.isDebugEnabled()){
+                    logger.debug("accumulateByArea() - taxon :" + taxonBase.getTitleCache());
+                }
                 Taxon taxon = (Taxon)taxonBase;
-                TaxonDescription description = reuseDescription(taxon, true);
 
                 List<Distribution> distributions = distributionsFor(taxon);
 
                 // Step through superAreas for accumulation of subAreas
                 for (NamedArea superArea : superAreas){
                     // accumulate all sub area status
+                    superArea = (NamedArea) repo.getTermService().load(superArea.getUuid());
                     PresenceAbsenceTermBase accumulatedStatus = null;
                     Set<NamedArea> subAreas = getSubAreasFor(superArea);
                     for(NamedArea subArea : subAreas){
-
+                        if(logger.isDebugEnabled()){
+                            logger.debug("accumulateByArea() - \t\t" + subArea.getLabel());
+                        }
                         // step through all distributions for the given subArea
                         for(Distribution distribution : distributions){
                             if(distribution.getArea().equals(subArea) && distribution.getStatus() != null) {
                                 PresenceAbsenceTermBase status = distribution.getStatus();
-
+                                if(logger.isDebugEnabled()){
+                                    logger.debug("accumulateByArea() - \t\t" + subArea.getLabel() + ": " + status.getLabel());
+                                }
                                 // skip all having a status value different of those in byAreaIgnoreStatusList
                                 if (getByAreaIgnoreStatusList().contains(status)){
                                     continue;
@@ -289,12 +337,19 @@ public class TransmissionEngineOccurrence {
                         }
                     } // next sub area
 
-                    // store new distribution element for superArea in taxon description
-                    Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
-                    description.addElement(newDistribitionElement);
-                    repo.getDescriptionService().saveOrUpdate(description);
+                    if (accumulatedStatus != null) {
+                        if(logger.isDebugEnabled()){
+                            logger.debug("accumulateByArea() - \t >> " + superArea.getLabel() + ": " + accumulatedStatus.getLabel());
+                        }
+                        // store new distribution element for superArea in taxon description
+                        TaxonDescription description = findComputedDescription(taxon, true);
+                        Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
+                        description.addElement(newDistribitionElement);
+                        repo.getDescriptionService().saveOrUpdate(description);
+                    }
                 } // next super area ....
             } // next taxon
+            start = start + batchSize;
         }
     }
 
@@ -319,55 +374,80 @@ public class TransmissionEngineOccurrence {
         // remember which taxa have been processed already
         Set<Integer> taxaProcessedIds = new HashSet<Integer>();
 
-        int start = 0;
 
         //TODO loop over ranks from lower to higher
-
-        while (true) {
-            List<TaxonNode> taxonNodes = repo.getClassificationService()
-                    .loadRankSpecificRootNodes(classification, lowerRank, batchSize, start, null);
-
-            logger.debug("accumulateByRank() - next " + batchSize + " taxa at position " + start);
-            if (taxonNodes.size() == 0){
-                break;
+        Rank rank = lowerRank;
+        while (!rank.isHigher(upperRank)) {
+            if(logger.isDebugEnabled()){
+                logger.debug("accumulateByRank() - at Rank '" + rank.getLabel() + "'");
             }
-            for(TaxonNode taxonNode : taxonNodes) {
-
-                Taxon taxon = taxonNode.getTaxon();
-                if (taxaProcessedIds.contains(taxon.getId())) {
-                    logger.debug("accumulateByRank() - skipping already processed taxon :" + taxon.getTitleCache());
-                    continue;
+            int start = 0;
+            while (true) {
+                List<TaxonNode> taxonNodes = repo.getClassificationService()
+                        .loadRankSpecificRootNodes(classification, rank, batchSize, start, null);
+                logger.debug("accumulateByRank() - next " + batchSize + " taxa at position " + start);
+                if (taxonNodes.size() == 0){
+                    break;
                 }
-                taxaProcessedIds.add(taxon.getId());
+                for(TaxonNode taxonNode : taxonNodes) {
 
-                logger.debug("accumulateByRank() - taxon :" + taxon.getTitleCache());
-                TaxonDescription description = reuseDescription(taxon, true);
-
-                // Step through direct taxonomic children for accumulation
-
-                Map<NamedArea, PresenceAbsenceTermBase> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTermBase>();
-
-                for (TaxonNode subTaxonNode : taxonNode.getChildNodes()){
-                    for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
-                        PresenceAbsenceTermBase status = distribution.getStatus();
-                        NamedArea area = distribution.getArea();
-                        if (status != null || byRankIgnoreStatusList.contains(status)){
-                          continue;
+                    Taxon taxon = taxonNode.getTaxon();
+                    if (taxaProcessedIds.contains(taxon.getId())) {
+                        if(logger.isDebugEnabled()){
+                            logger.debug("accumulateByRank() - skipping already processed taxon :" + taxon.getTitleCache());
                         }
-                        accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), status));
-                     }
-                }
+                        continue;
+                    }
+                    taxaProcessedIds.add(taxon.getId());
+                    if(logger.isDebugEnabled()){
+                        logger.debug("accumulateByRank() - taxon :" + taxon.getTitleCache());
+                    }
 
-                for (NamedArea area : accumulatedStatusMap.keySet()) {
-                    // store new distribution element in new Description
-                    Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
-                    description.addElement(newDistribitionElement);
-                }
-                repo.getDescriptionService().saveOrUpdate(description);
-            } // next taxon node ....
-        } // next batch
+                    // Step through direct taxonomic children for accumulation
+
+                    Map<NamedArea, PresenceAbsenceTermBase> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTermBase>();
+
+                    for (TaxonNode subTaxonNode : taxonNode.getChildNodes()){
+                        for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
+                            PresenceAbsenceTermBase status = distribution.getStatus();
+                            NamedArea area = distribution.getArea();
+                            if (status == null || getByRankIgnoreStatusList().contains(status)){
+                              continue;
+                            }
+                            accumulatedStatusMap.put(area, choosePreferred(accumulatedStatusMap.get(area), status));
+                         }
+                    }
+
+                    if(accumulatedStatusMap.size() > 0) {
+                        TaxonDescription description = findComputedDescription(taxon, false);
+                        for (NamedArea area : accumulatedStatusMap.keySet()) {
+                            // store new distribution element in new Description
+                            Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
+                            description.addElement(newDistribitionElement);
+                        }
+                        repo.getDescriptionService().saveOrUpdate(description);
+                    }
+                } // next taxon node ....
+                start = start + batchSize;
+            } // next batch
+            rank = findNextHigherRank(rank);
+        } // next Rank
     }
 
+
+    /**
+     * returns the next higher rank
+     *
+     * TODO better implement OrderedTermBase.getNextHigherTerm() and OrderedTermBase.getNextLowerTerm()?
+     *
+     * @param rank
+     * @return
+     */
+    private Rank findNextHigherRank(Rank rank) {
+        rank = (Rank) repo.getTermService().load(rank.getUuid());
+        OrderedTermVocabulary<Rank> rankVocabulary = repo.getNameService().getRankVocabulary();
+        return (Rank) rankVocabulary.getNextHigherTerm(rank);
+    }
 
     /**
      * Either finds an existing taxon description of the given taxon or creates a new one.
@@ -377,12 +457,13 @@ public class TransmissionEngineOccurrence {
      * @param doClear
      * @return
      */
-    private TaxonDescription reuseDescription(Taxon taxon, boolean doClear) {
+    private TaxonDescription findComputedDescription(Taxon taxon, boolean doClear) {
 
         String descriptionTitle = this.getClass().getSimpleName();
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
+//        	if (description.hasMarker(MarkerType.COMPUTED, true)) { // TODO
             if (description.getTitleCache().equals(descriptionTitle)) {
                 logger.debug("reusing description for " + taxon.getTitleCache());
                 if (doClear) {
@@ -399,6 +480,7 @@ public class TransmissionEngineOccurrence {
         logger.debug("creating new description for " + taxon.getTitleCache());
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache(descriptionTitle, true);
+//        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED, true)); // TODO
         return description;
     }
 
@@ -409,7 +491,7 @@ public class TransmissionEngineOccurrence {
     private Set<NamedArea> getSubAreasFor(NamedArea superArea) {
 
         if(!subAreaMap.containsKey(superArea)) {
-            subAreaMap.put(superArea, superArea.getGeneralizationOf());
+            subAreaMap.put(superArea, superArea.getIncludes());
         }
         return subAreaMap.get(superArea);
     }
@@ -430,34 +512,37 @@ public class TransmissionEngineOccurrence {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void updatePriorities() {
-        Map<UUID, Integer> priorityMap = new HashMap<UUID, Integer>();
+        Map<PresenceAbsenceTermBase, Integer> priorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
 
-        priorityMap.put(AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR().getUuid(), 1);
-        priorityMap.put(PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION().getUuid(), 2);
-        priorityMap.put(AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED().getUuid(), 3);
-        priorityMap.put(AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR().getUuid(), 20);
-        priorityMap.put(AbsenceTerm.NATIVE_REPORTED_IN_ERROR().getUuid(), 30);
-        priorityMap.put(PresenceTerm.CULTIVATED().getUuid(), 45);
-        priorityMap.put(AbsenceTerm.NATIVE_FORMERLY_NATIVE().getUuid(), 40);
-        priorityMap.put(PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE().getUuid(), 60);
-        priorityMap.put(PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE().getUuid(), 50);
-        priorityMap.put(PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED().getUuid(), 80);
-        priorityMap.put(PresenceTerm.INTRODUCED().getUuid(), 90);
-        priorityMap.put(PresenceTerm.INTRODUCED_ADVENTITIOUS().getUuid(), 100);
-        priorityMap.put(PresenceTerm.INTRODUCED_NATURALIZED().getUuid(), 110);
-        priorityMap.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE().getUuid(), 120); // null
-        priorityMap.put(PresenceTerm.NATIVE().getUuid(), 130); // null
-        priorityMap.put(PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA().getUuid(), 999);
+        priorityMap.put(AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
+        priorityMap.put(PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);
+        priorityMap.put(AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), 3);
+        priorityMap.put(AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(), 20);
+        priorityMap.put(AbsenceTerm.NATIVE_REPORTED_IN_ERROR(), 30);
+        priorityMap.put(PresenceTerm.CULTIVATED(), 45);
+        priorityMap.put(AbsenceTerm.NATIVE_FORMERLY_NATIVE(), 40);
+        priorityMap.put(PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE(), 60);
+        priorityMap.put(PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE(), 50);
+        priorityMap.put(PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED(), 80);
+        priorityMap.put(PresenceTerm.INTRODUCED(), 90);
+        priorityMap.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), 100);
+        priorityMap.put(PresenceTerm.INTRODUCED_NATURALIZED(), 110);
+        priorityMap.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), 120); // null
+        priorityMap.put(PresenceTerm.NATIVE(), 130); // null
+        priorityMap.put(PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);
 
-        for(UUID termUuid : priorityMap.keySet()) {
+        for(PresenceAbsenceTermBase term : priorityMap.keySet()) {
             // load the term
-            PresenceAbsenceTermBase term = (PresenceAbsenceTermBase) repo.getTermService().load(termUuid);
+            term = (PresenceAbsenceTermBase) repo.getTermService().load(term.getUuid());
             // find the extension
             Extension priotityExtension = null;
-            Set<Extension> extensions = term.getExtensions(ExtensionType.ORDER());
+            Set<Extension> extensions = term.getExtensions();
             for(Extension extension : extensions){
+                if (!extension.getType().equals(ExtensionType.ORDER())) {
+                    continue;
+                }
                 int pos = extension.getValue().indexOf(EXTENSION_VALUE_PREFIX);
-                if(pos == EXTENSION_VALUE_PREFIX.length()){ // if starts with EXTENSION_VALUE_PREFIX
+                if(pos == 0){ // if starts with EXTENSION_VALUE_PREFIX
                     priotityExtension = extension;
                     break;
                 }
@@ -469,6 +554,9 @@ public class TransmissionEngineOccurrence {
 
             // save the term
             repo.getTermService().saveOrUpdate(term);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Priority updated for " + term.getLabel());
+            }
         }
 
     }
