@@ -86,6 +86,18 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	}
 	
 	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original, DerivedUnitBase derivative, DerivationEventType type){
+		DerivationEvent result = NewInstance();
+		result.addOriginal(original);
+		result.addDerivative(derivative);
+		result.setType(type);
+		return result;
+	}
+	
+	/**
 	 * Constructor
 	 */
 	protected DerivationEvent() {
