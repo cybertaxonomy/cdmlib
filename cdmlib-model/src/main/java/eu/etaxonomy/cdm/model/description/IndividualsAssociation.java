@@ -65,7 +65,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4117554860254531809L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
 	
 	@XmlElement(name = "Description")
@@ -93,8 +92,16 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	 * Creates a new empty individuals association instance.
 	 */
 	public static IndividualsAssociation NewInstance(){
+		return NewInstance(null);
+	}
+	
+	/** 
+	 * Creates a new empty individuals association instance.
+	 */
+	public static IndividualsAssociation NewInstance(SpecimenOrObservationBase specimen){
 		IndividualsAssociation result =  new IndividualsAssociation();
 		result.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
+		result.setAssociatedSpecimenOrObservation(specimen);
 		return result;
 	}
 	
