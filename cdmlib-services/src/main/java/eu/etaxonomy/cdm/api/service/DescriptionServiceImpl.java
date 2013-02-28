@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.description.TransmissionEngineOccurrence;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -544,6 +546,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
 
         }
+    }
+
+    public void aggregateDistributions(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank) {
+
+//        TransmissionEngineOccurrence engine = new TransmissionEngineOccurrence(superAreas, lowerRank, upperRank);
+
     }
 
 }
