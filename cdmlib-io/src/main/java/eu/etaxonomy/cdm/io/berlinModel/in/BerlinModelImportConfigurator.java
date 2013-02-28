@@ -701,7 +701,4 @@ public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<Berl
 		this.includeAllNonMisappliedRelatedClassifications = includeAllNonMisappliedRelatedClassifications;
 	}
 
-
-
-
 }
