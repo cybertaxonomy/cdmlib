@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @date Feb 26, 2013
  *
  */
-@Ignore
 public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
