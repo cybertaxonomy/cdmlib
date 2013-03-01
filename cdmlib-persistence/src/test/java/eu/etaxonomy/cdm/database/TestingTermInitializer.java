@@ -88,8 +88,8 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 //			    	}
 //		    	}
 
-                logger.info("loading data base schema from " + termsDtd.getFile().getAbsolutePath());
-                logger.info("loading data set from " + termsDataSet.getFile().getAbsolutePath());
+//                logger.info("loading data base schema from " + termsDtd.getFile().getAbsolutePath());
+//                logger.info("loading data set from " + termsDataSet.getFile().getAbsolutePath());
                 IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
 //				ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
 //				for(int rowId = 0; rowId < definedTermBase.getRowCount(); rowId++) {
