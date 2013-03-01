@@ -20,11 +20,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineOccurrence;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @date Feb 26, 2013
  *
  */
+@Ignore
 public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
@@ -68,9 +69,6 @@ public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegratio
 
 
     @SpringBeanByType
-    private IDescriptionService descriptionService;
-
-    @SpringBeanByType
     private ITermService termService;
 
     @SpringBeanByType
@@ -81,9 +79,6 @@ public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegratio
 
     @SpringBeanByType
     private IReferenceService referenceService;
-
-    @SpringBeanByType
-    private CdmApplicationDefaultConfiguration repo;
 
     @SpringBeanByType
     private TransmissionEngineOccurrence engine;
