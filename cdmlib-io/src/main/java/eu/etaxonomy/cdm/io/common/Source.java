@@ -463,7 +463,7 @@ public class Source {
 				return false;
 			}
     	}else{
-    		throw new MethodNotSupportedException("Check column exist is not supported by the database system");
+    		throw new RuntimeException("Check column exist is not supported by the database system");
     	}
     }
 
