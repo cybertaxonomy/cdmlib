@@ -31,6 +31,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
@@ -169,11 +170,11 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			return null;
 		}
 				 
-		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVReader.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
+		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVParser.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
 		// default is a kind of 'null' quote, which tells opencsv to ignore the enclosing quotes
 		char fieldsEnclosedBy = CSVWriter.NO_QUOTE_CHARACTER;
 		if(state == null || !state.getConfig().isNoQuotes()) {
-		        fieldsEnclosedBy= StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVReader.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
+		        fieldsEnclosedBy= StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVParser.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
 		}
 		boolean ignoreHeader = archiveEntry.getIgnoreHeaderLines();
 		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
