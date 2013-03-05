@@ -55,13 +55,13 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  * @param <SERVICE>
  */
 
-public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController {
+public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController<T, SERVICE> {
 
-	protected SERVICE service;
+/*	protected SERVICE service;
+	
+	public abstract void setService(SERVICE service);*/
 	
 	protected Class<T> baseClass;
-	
-	public abstract void setService(SERVICE service);
 	
 	public BaseController (){
 		

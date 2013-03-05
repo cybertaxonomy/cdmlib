@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 @Controller
 @RequestMapping(value = {"/derivedUnitFacade/{uuid}"})
-public class DerivedUnitFacadeController extends AbstractController{
+public class DerivedUnitFacadeController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{
 
 
     private IOccurrenceService service;

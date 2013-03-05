@@ -16,18 +16,27 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
  * @author a.kohlbecker
  * @date 23.06.2009
  *
+ * @param <T>
+ * @param <SERVICE>
  */
-public abstract class AbstractController {
+public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
     protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
 
     public static final Logger logger = Logger.getLogger(AbstractController.class);
+    
+	protected SERVICE service;
+
+	public abstract void setService(SERVICE service);
 
     protected static final Integer DEFAULT_PAGE_SIZE = 30;
 
@@ -49,6 +58,9 @@ public abstract class AbstractController {
      * @return request path and query parameters as string.
      */
     protected String requestPathAndQuery(HttpServletRequest request) {
+    	if(request == null) {
+    		return "";
+    	}
         StringBuilder b = new StringBuilder();
         b.append(request.getServletPath());
         String query = request.getQueryString();
