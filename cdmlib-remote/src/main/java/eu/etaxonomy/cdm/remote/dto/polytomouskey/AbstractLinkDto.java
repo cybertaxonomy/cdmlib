@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.dto.polytomouskey;
 
+import java.util.UUID;
+
 /**
  * @author l.morris
  * @date Jan 25, 2013
@@ -16,4 +18,22 @@ package eu.etaxonomy.cdm.remote.dto.polytomouskey;
  */
 public abstract class AbstractLinkDto {
 
+	private UUID uuid;
+	//modifying text?
+
+	/**
+	 * @return the uuid
+	 */
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	/**
+	 * @param uuid the uuid to set
+	 */
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
+	
+	
 }

@@ -1718,6 +1718,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyControl
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/csv/CsvExportController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/NameCatalogueController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/PolytomousKeyNodeDtoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalBhleController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalGeoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text
@@ -1781,7 +1782,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Verb.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/package-info.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/AbstractLinkDto.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/LinkedPolytomousKeyNodeEntryDto.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/LinkedPolytomousKeyNodeRowDto.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/PolytomousKeyNodeLinkDto.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/TaxonLinkDto.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/Actor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/BaseThing.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/Concept.java -text

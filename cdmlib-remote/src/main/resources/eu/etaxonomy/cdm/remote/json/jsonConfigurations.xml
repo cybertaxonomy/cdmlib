@@ -34,6 +34,11 @@
              <value>PolytomousKeyNode.feature</value>
              <value>PolytomousKeyNode.statement</value>
              <value>PolytomousKeyNode.modifyingText</value>
+             
+             <value>LinkedPolytomousKeyNodeRowDto.childStatement</value>
+             <value>LinkedPolytomousKeyNodeRowDto.rowQuestion</value>
+             <value>LinkedPolytomousKeyNodeRowDto.rowFeature</value>
+             <!-- value>LinkedPolytomousKeyNodeRowDto.keyNode</value-->
 
              <value>Media.representations</value>
              <value>MediaRepresentation.parts</value>
