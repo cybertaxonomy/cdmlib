@@ -28,6 +28,7 @@
         <unitils.version>3.3</unitils.version>
         <lucene.version>2.9.4</lucene.version><!-- lucene.version in hibernate-search 3.4.0-SNAPSHOT is 2.4.0-->
         <hsqldb.version>1.8.0.10</hsqldb.version><!-- 1.8.0.10, 1.9.0-rc6 (manualy build only for debugging) -->
+		<httpcomponents.version>4.2.3</httpcomponents.version>
     </properties>
     <scm>
         <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/</connection>
@@ -841,8 +842,13 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.2.3</version>
+                <version>${httpcomponents.version}</version>
             </dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>${httpcomponents.version}</version>
+			</dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
