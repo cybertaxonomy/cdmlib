@@ -250,9 +250,5 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
-    <dependency>
-    <groupId>jdom</groupId>
-    <artifactId>jdom</artifactId>
-    </dependency>
   </dependencies>
 </project>
