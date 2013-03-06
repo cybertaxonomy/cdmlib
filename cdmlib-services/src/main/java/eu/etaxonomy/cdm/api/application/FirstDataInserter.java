@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -195,11 +196,14 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         SecurityContext securityContext = SecurityContextHolder.getContext();
         authentication = securityContext.getAuthentication();
 
+       
+        Collection<GrantedAuthority> rules = new ArrayList<GrantedAuthority>();
+        rules.add(Role.ROLE_ADMIN);
         RunAsUserToken adminToken = new RunAsUserToken(
                 RUN_AS_KEY,
                 "system-admin",
                 null,
-                new Role[]{Role.ROLE_ADMIN},
+                rules,
                 (authentication != null ? authentication.getClass() : AnonymousAuthenticationToken.class));
 
         Authentication runAsAuthentication = runAsAuthenticationProvider.authenticate(adminToken);

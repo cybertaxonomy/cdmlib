@@ -18,10 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import sun.security.provider.PolicyParser.ParsingException;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
@@ -31,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
  * @date Sep 4, 2012
  *
  */
-public abstract class CdmPermissionVoter implements AccessDecisionVoter {
+public abstract class CdmPermissionVoter implements AccessDecisionVoter /*<Object>*/ {
 
     public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
 
