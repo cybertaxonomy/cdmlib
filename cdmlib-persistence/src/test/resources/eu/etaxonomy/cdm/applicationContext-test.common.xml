@@ -13,7 +13,7 @@
     <!--
         ========================================================================================
             NOTE: this is application context configuration used by all testing contexts
-            in common, this this file should be included into other contexts.
+            in common, this file should be included into other contexts.
         ========================================================================================
      -->
 
