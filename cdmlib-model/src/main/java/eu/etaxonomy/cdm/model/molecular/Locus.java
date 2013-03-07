@@ -24,10 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * The region name of a DNA string. E.g. 18S, COX, etc.
- * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:32
+ * @author a.mueller
+ * @created 04-Mar-2013 13:06:32
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Locus", propOrder = {
