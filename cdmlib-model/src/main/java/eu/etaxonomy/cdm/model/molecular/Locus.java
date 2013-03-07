@@ -58,6 +58,9 @@ public class Locus extends VersionableEntity {
 	
 //*********************** CONSTRUCTOR ****************************************************/
 
+	//Locus currently does not allow private constructor (javassist can't lazy load 
+	// and create  class).
+	//Still need to find out why.
 	protected Locus() {
 
 	}

@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.GenBankAccession;
 import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -34,12 +35,11 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 
 //**************** TESTS ************************************************	
 	
-	//Test if DnaSample, Sequence and Locus data can be retrieved from database
-	//Locus currently does not allow private constructor (javassist can't create class).
-	//Still need to find out why.
+	//Test if DnaSample can be loaded and if Sequence, Locus and GenBankAccession data can 
+	//be lazy loaded from database
 	//#3340
 	@Test
-	public void testRetrieveLocus() {
+	public void testLazyLoadSequenceLocusGenbankaccession() {
 		createTestData();
 		DnaSample sample1 = (DnaSample)occurrenceDao.findByUuid(uuidSample1);
 		Set<Sequence> sequences = sample1.getSequences();
@@ -47,6 +47,9 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 		Sequence sequence = sequences.iterator().next();
 		Locus locus = sequence.getLocus();
 		Assert.assertEquals("Locus", locus.getName());
+		Set<GenBankAccession> accessions = sequence.getGenBankAccession();
+		GenBankAccession accession = accessions.iterator().next();
+		Assert.assertEquals("123", accession.getAccessionNumber());
 		commit();
 	}
 
@@ -58,6 +61,9 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 		
 		Locus locus = Locus.NewInstance("Locus", null);
 		sequence.setLocus(locus);
+		
+		GenBankAccession accession = GenBankAccession.NewInstance("123");
+		sequence.addGenBankAccession(accession);
 		
 		occurrenceDao.save(sample);
 		commitAndStartNewTransaction(new String[]{"DnaSample", "SpecimenOrObservationBase", "Locus"});
