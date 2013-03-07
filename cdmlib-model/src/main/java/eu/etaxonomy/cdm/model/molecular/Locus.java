@@ -58,7 +58,7 @@ public class Locus extends VersionableEntity {
 	
 //*********************** CONSTRUCTOR ****************************************************/
 
-	private Locus() {
+	protected Locus() {
 
 	}
 
