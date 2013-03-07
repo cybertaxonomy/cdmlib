@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -120,7 +122,7 @@ public class TransmissionEngineOccurrence {
 
     private List<PresenceAbsenceTermBase> byRankIgnoreStatusList = null;
 
-    private Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<NamedArea, Set<NamedArea>>();
+    private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<NamedArea, Set<NamedArea>>();
 
 
     /**
@@ -465,7 +467,7 @@ public class TransmissionEngineOccurrence {
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());
         OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
-        return (Rank) rankVocabulary.getNextHigherTerm(rank);
+        return rankVocabulary.getNextHigherTerm(rank);
     }
 
     /**
@@ -473,7 +475,8 @@ public class TransmissionEngineOccurrence {
      * If the doClear is set all existing description elements will be cleared.
      *
      * @param taxon
-     * @param doClear
+     * @param doClear will remove all existing Distributions if the taxon already
+     * has a MarkerType.COMPUTED() TaxonDescription
      * @return
      */
     private TaxonDescription findComputedDescription(Taxon taxon, boolean doClear) {
@@ -482,14 +485,17 @@ public class TransmissionEngineOccurrence {
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
-//        	if (description.hasMarker(MarkerType.COMPUTED, true)) { // TODO
-            if (description.getTitleCache().equals(descriptionTitle)) {
+        	if (description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing description for " + taxon.getTitleCache());
                 if (doClear) {
+                    int deleteCount = 0;
                     for (DescriptionElementBase descriptionElement : description.getElements()) {
-                        descriptionService.deleteDescriptionElement(descriptionElement);
+                        if(descriptionElement instanceof Distribution) {
+                            descriptionService.deleteDescriptionElement(descriptionElement);
+                            deleteCount++;
+                        }
                     }
-                    logger.debug("\tall elements cleared");
+                    logger.debug("\t" + deleteCount +" distributions cleared");
                 }
                 return description;
             }
@@ -499,7 +505,7 @@ public class TransmissionEngineOccurrence {
         logger.debug("creating new description for " + taxon.getTitleCache());
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache(descriptionTitle, true);
-//        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED, true)); // TODO
+        description.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         return description;
     }
 
