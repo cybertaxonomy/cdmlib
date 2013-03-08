@@ -1594,6 +1594,7 @@ cdmlib-print/src/site/apt/index.apt -text
 cdmlib-print/src/site/apt/writing-templates.apt -text
 cdmlib-print/src/site/fml/troubleshooting.fml -text
 cdmlib-print/src/site/site.xml -text
+cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PubTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PublisherTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/TransformatorTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModuleTest.java -text
