@@ -240,6 +240,10 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		return getAcceptedTaxa().contains(taxon);
 	}
 
+	@Transient
+	public boolean isOrphaned() {
+		return false;
+	}
 	/** 
 	 * Returns the set of {@link SynonymRelationshipType synonym relationship types} of the
 	 * {@link SynonymRelationship synonym relationships} where the {@link SynonymRelationship#getSynonym() synonym}
