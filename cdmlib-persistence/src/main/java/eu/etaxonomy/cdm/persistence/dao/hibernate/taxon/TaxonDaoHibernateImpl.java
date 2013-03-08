@@ -295,15 +295,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 //differentiate taxa and synonyms
                 if (doTaxa && doSynonyms){
                     if (result[2].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
+                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
                     }
                 }else if (doTaxa){
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1]));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1]));
+                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
                 }
             }
 
@@ -657,57 +657,82 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
 
             if (doTaxa && doSynonyms){
-                if(synonyms.size()>0 && taxa.size()>0){
-                    if (doNotReturnFullEntities &&  !doCount ){
-                        // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                        hql = "select " + selectWhat + ", case when t.id in (:taxa) then 'taxon' else 'synonym' end" + " from %s t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
-                    }else{
-                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
-                    }
-                }else if (synonyms.size()>0 ){
-                    if (doNotReturnFullEntities &&  !doCount ){
-                        // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                        hql = "select " + selectWhat + ", 'synonym' from %s t" + " where t.id in (:synonyms)";
-                    } else {
-                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:synonyms)";
-                    }
+                if(synonyms.size()>0 && taxa.size()>0){                                    
+                	hql = "select " + selectWhat;
+                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                	// also return the computed isOrphaned flag
+                	if (doNotReturnFullEntities &&  !doCount ){
+                		hql += ", case when t.id in (:taxa) then 'taxon' else 'synonym' end, " + 
+                				" case when t.id in (:taxa) and t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                	}
+                	hql +=  " from %s t " +
+                			" where (t.id in (:taxa) OR t.id in (:synonyms)) ";                    
+                }else if (synonyms.size()>0 ){                	
+                	hql = "select " + selectWhat;
+                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                	// also return the computed isOrphaned flag
+                	if (doNotReturnFullEntities &&  !doCount ){
+                		hql += ", 'synonym', " + 
+                				" false ";
+                	}
+                	hql +=  " from %s t " +
+                			" where t.id in (:synonyms) ";       
+                	
                 } else if (taxa.size()>0 ){
-                    if (doNotReturnFullEntities &&  !doCount ){
-                        // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                        hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa) ";
-                    } else {
-                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa) ";
-                    }
+                	hql = "select " + selectWhat;
+                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                	// also return the computed isOrphaned flag
+                	if (doNotReturnFullEntities &&  !doCount ){
+                		hql += ", 'taxon', " + 
+                				" case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                	}
+                	hql +=  " from %s t " +
+                			" where t.id in (:taxa) ";  
+                	
                 } else{
                     hql = "select " + selectWhat + " from %s t";
                 }
             } else if(doTaxa){
-                if  (taxa.size()>0){
-                    if (doNotReturnFullEntities){
-                        hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa)";
-                    }else{
-                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa)";
-                    }
+                if  (taxa.size()>0){                	
+                	hql = "select " + selectWhat;
+                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                	// also return the computed isOrphaned flag
+                	if (doNotReturnFullEntities){
+                		hql += ", 'taxon', " + 
+                				" case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                	}
+                	hql +=  " from %s t " +
+                			" where t.id in (:taxa) ";  
+                	
                 }else{
                     hql = "select " + selectWhat + " from %s t";
                 }
             } else if(doSynonyms){
                 if (synonyms.size()>0){
-                    if (doNotReturnFullEntities){
-                        hql = "select " + selectWhat + ", 'synonym' from %s t" + " where t.id in (:synonyms)";
-                    }else{
-                        hql = "select " + selectWhat + " from %s t" + " where t.id in (:synonyms)";
-                    }
+                	
+                	hql = "select " + selectWhat;
+                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                	// also return the computed isOrphaned flag
+                	if (doNotReturnFullEntities){
+                		hql += ", 'synonym', " + 
+                				" false ";
+                	}
+                	hql +=  " from %s t " +
+                			" where t.id in (:synonyms) ";                    	
                 }else{
                     hql = "select " + selectWhat + " from %s t";
                 }
             } else if (doIncludeMisappliedNames){
-
-                if (doNotReturnFullEntities){
-                    hql = "select " + selectWhat + ", 'taxon' from %s t" + " where t.id in (:taxa)";
-                }else{
-                    hql = "select " + selectWhat + " from %s t" + " where t.id in (:taxa)";
-                }
+            	hql = "select " + selectWhat;
+            	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+            	// also return the computed isOrphaned flag
+            	if (doNotReturnFullEntities){
+            		hql += ", 'taxon', " + 
+            				" case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+            	}
+            	hql +=  " from %s t " +
+            			" where t.id in (:taxa) ";  
+            	
             }
 
             String classString;
