@@ -41,10 +41,17 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 public class OccurrenceController extends BaseController<SpecimenOrObservationBase, IOccurrenceService>
 {
 
+    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "sequences.$",
+    });
+
     private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
             "derivedFrom.derivatives",
             "derivedFrom.originals",
     });
+
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
