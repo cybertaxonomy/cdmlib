@@ -23,13 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -70,7 +66,9 @@ public class OccurrenceController extends BaseController<SpecimenOrObservationBa
         SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
         if(sob instanceof DerivedUnitBase){
             DerivationEvent derivationEvent = ((DerivedUnitBase)sob).getDerivedFrom();
-            mv.addObject(derivationEvent);
+            if (derivationEvent != null) {
+                mv.addObject(derivationEvent);
+            }
         }
         return mv;
     }
