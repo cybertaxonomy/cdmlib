@@ -1,0 +1,1833 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets xmlns="http://rs.tdwg.org/UBIF/2006/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006 http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd">
+    <TechnicalMetadata created="2010-07-09T19:23:00">
+        <Generator name="Xper2"
+            notes="This software is developed and distributed by LIS - Laboratoire Informatique et Systématique (LIS) - Université Pierre et Marie Curie - Paris VI - Copyright (c) 2004-2009" version="1.0"/>
+    </TechnicalMetadata>
+    <Dataset xml:lang="fr">
+        <Representation>
+            <Label>Détermination des ordres d'insectes d'eau douce d'Europe</Label>
+            <Detail>&lt;b&gt;Ordres d'insectes d'eau douce d'Europe&lt;/b&gt;&lt;br&gt;&lt;br&gt;Toutes les eaux douces, des fleuves et des lacs jusqu'aux simples collections d'eau temporaires, peuvent abriter des insectes. Beaucoup n'y sont que momentanément pour une période de leur vie. On trouve :&lt;br&gt;- des larves et des nymphes d'insectes à métamorphose complète (trichoptères, mégaloptères, certains diptères, de rares lépidoptères et hyménoptères) ;&lt;br&gt;- des juvéniles (éphéméroptères, odonatoptères, plécoptères) ;&lt;br&gt;- et quelques adultes (hétéroptères et coléoptères) qui passent toute leur vie dans l'eau.&lt;br&gt;&lt;br&gt;La présence d'yeux simples permet de différencier les larves des juvéniles, des nymphes et des adultes. Les juvéniles (immatures d’insectes à métamorphoses progressives), les nymphes et les adultes ont des yeux composés.&lt;br&gt;&lt;br&gt;Ouvrage conseillé :&lt;br&gt;Tachet H., Richoux P., Bournaud M., Usseglio-Polatera P., 2002. &amp;nbsp&lt;i&gt;Invertébrés d'eau couce, Systématique, biologie, écologie.&lt;/i&gt;&amp;nbsp CNRS éditions. 587 pages.</Detail>
+            <MediaObject ref="m1"/>
+        </Representation>
+        <RevisionData>
+            <Creators>
+                <Agent ref="a1" role="aut"/>
+                <Agent ref="a2" role="aut"/>
+                <Agent ref="a3" role="aut"/>
+                <Agent ref="a4" role="aut"/>
+            </Creators>
+            <DateCreated>2005-08-22T10:36:00</DateCreated>
+            <DateModified>2009-10-01T10:23:00</DateModified>
+        </RevisionData>
+        <IPRStatements>
+            <IPRStatement role="Copyright">
+                <Label>Vous êtes libres :&lt;br&gt;- de reproduire, distribuer et communiquer cette création au public&lt;br&gt;- de modifier cette création&lt;br&gt;&lt;br&gt;Selon les conditions suivantes :&lt;br&gt;- Paternité. Vous devez citer le nom des auteurs du contenu de cette application, les auteurs des illustrations (dessins et photos) et référencer le logiciel Xper2 utilisé pour cette création&lt;br&gt;- Pas d’utilisation commerciale. Vous n’avez pas le droit d’utiliser cette création à des fins commerciales.&lt;br&gt;&lt;br&gt;Contenu :&lt;br&gt;R. Vignes Lebbe&lt;br&gt;E. Kuntzelmann&lt;br&gt;H. Fradin (pour les traductions anglaises)&lt;br&gt;B. Mériguet&lt;br&gt;&lt;br&gt;Crédit dessins :&lt;br&gt;Les dessins ont été réalisés pour J. Lebbe et R. Vignes Lebbe par Messieurs Préchac et Desban. Leur reproduction pour d'autres utilisations que la présente application n'est pas autorisée.&lt;br&gt;M. Desban : D. 140, D. 141, D. 143, D. 144, D. 201, D. 202, D. 203, D. 224, D. 225, D. 228, D. 250, D. 251, D. 252, D. 255, D. 275, D. 283&lt;br&gt;M. Préchac : P. 236&lt;br&gt;R. Vignes Lebbe : V. 300, V. 301&lt;br&gt; &lt;br&gt;Crédit photos :&lt;br&gt;Photographies J. Lebbe et R. Vignes Lebbe. Toute reproduction doit maintenir la mention de copyright. Toute utilisation commerciale est interdite.</Label>
+            </IPRStatement>
+        </IPRStatements>
+        <DescriptiveConcepts>
+            <DescriptiveConcept id="dc1">
+                <Representation>
+                    <Label>Tête</Label>
+                </Representation>
+            </DescriptiveConcept>
+            <DescriptiveConcept id="dc2">
+                <Representation>
+                    <Label>Thorax</Label>
+                </Representation>
+            </DescriptiveConcept>
+            <DescriptiveConcept id="dc3">
+                <Representation>
+                    <Label>Abdomen</Label>
+                </Representation>
+            </DescriptiveConcept>
+            <DescriptiveConcept id="dc4">
+                <Representation>
+                    <Label>Comportement</Label>
+                </Representation>
+            </DescriptiveConcept>
+            <DescriptiveConcept id="dc5">
+                <Representation>
+                    <Label>Developpement</Label>
+                </Representation>
+            </DescriptiveConcept>
+        </DescriptiveConcepts>
+        <Characters>
+            <CategoricalCharacter id="c1">
+                <Representation>
+                    <Label>Extrémité de l'abdomen</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s1">
+                        <Representation>
+                            <Label>sans particularité</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s2">
+                        <Representation>
+                            <Label>deux filaments segmentés</Label>
+                            <MediaObject ref="m24"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s3">
+                        <Representation>
+                            <Label>trois filaments segmentés</Label>
+                            <Detail>On distingue aisément les Ephémères des Perles à leurs trois filaments segmentés au lieu de deux.</Detail>
+                            <MediaObject ref="m25"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s4">
+                        <Representation>
+                            <Label>un prolongement pointu non segmenté</Label>
+                            <MediaObject ref="m26"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s5">
+                        <Representation>
+                            <Label>crochets</Label>
+                            <Detail>La présence de deux crochets à l'extrémité de l'abdomen est typique des larves de Trichoptères.</Detail>
+                            <MediaObject ref="m27"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s6">
+                        <Representation>
+                            <Label>trois branchies foliacées</Label>
+                            <Detail>Les trois branchies foliacées, bien visibles, sont typiques des juvéniles de Demoiselles.</Detail>
+                            <MediaObject ref="m28"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s7">
+                        <Representation>
+                            <Label>deux pseudopodes excertiles</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s8">
+                        <Representation>
+                            <Label>deux ou trois filaments non multiarticulés</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c2">
+                <Representation>
+                    <Label>Pattes articulées libres</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s9">
+                        <Representation>
+                            <Label>absentes</Label>
+                            <MediaObject ref="m29"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s10">
+                        <Representation>
+                            <Label>présentes</Label>
+                            <MediaObject ref="m30"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c3">
+                <Representation>
+                    <Label>Ailes</Label>
+                    <MediaObject ref="m31"/>
+                    <MediaObject ref="m32"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s11">
+                        <Representation>
+                            <Label>absentes</Label>
+                            <MediaObject ref="m33"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s12">
+                        <Representation>
+                            <Label>présentes</Label>
+                            <MediaObject ref="m34"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c4">
+                <Representation>
+                    <Label>Type des ailes</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s13">
+                        <Representation>
+                            <Label>libres sans articulation et ne recouvrant pas l'abdomen</Label>
+                            <Detail>Chez les juvéniles des insectes à métamorphoses incomplètes (hémimétaboles), les ailes sont libres mais non fonctionnelles car encore non articulées à la base.</Detail>
+                            <MediaObject ref="m35"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s14">
+                        <Representation>
+                            <Label>libres et articulées et recouvrant l'abdomen en se chevauchant</Label>
+                            <Detail>Les ailes ne sont libres et articulées que chez des insectes adultes (imago). Ces ailes se croisent les unes au dessus des autres chez certains insectes tels que les Hétéroptères.</Detail>
+                            <MediaObject ref="m36"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s15">
+                        <Representation>
+                            <Label>libres et articulées et recouvrant l'abdomen sans se chevaucher</Label>
+                            <Detail>Les ailes ne sont libres et articulées que chez des insectes adultes (imago). Ces ailes se rejoignent sans se superposer chez les coléoptères par exemple.</Detail>
+                            <MediaObject ref="m37"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s16">
+                        <Representation>
+                            <Label>soudées au corps</Label>
+                            <Detail>On ne trouve des ailes soudées au corps que dans le cas de nymphe telle que des nymphes de diptères.</Detail>
+                            <MediaObject ref="m38"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c5">
+                <Representation>
+                    <Label>Yeux</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s17">
+                        <Representation>
+                            <Label>0 à 8 yeux simples (de chaque coté)</Label>
+                            <MediaObject ref="m39"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s18">
+                        <Representation>
+                            <Label>yeux composés</Label>
+                            <MediaObject ref="m40"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s19">
+                        <Representation>
+                            <Label>yeux absents</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c6">
+                <Representation>
+                    <Label>Pièces buccales</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s20">
+                        <Representation>
+                            <Label>type broyeur mandibulaire</Label>
+                            <MediaObject ref="m41"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s21">
+                        <Representation>
+                            <Label>en masque extensible</Label>
+                            <MediaObject ref="m42"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s22">
+                        <Representation>
+                            <Label>en bec multiarticulé</Label>
+                            <MediaObject ref="m43"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s23">
+                        <Representation>
+                            <Label>mandibules suceuses plus longues que la tête</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s24">
+                        <Representation>
+                            <Label>absentes</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s25">
+                        <Representation>
+                            <Label>mandibules suceuses pas plus longues que la tête</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c7">
+                <Representation>
+                    <Label>Position des branchies</Label>
+                    <Detail>Les branchies latérales abdominales sont présentes chez de nombreuses larves et juvéniles aquatiques.</Detail>
+                </Representation>
+                <States>
+                    <StateDefinition id="s26">
+                        <Representation>
+                            <Label>thoraciques</Label>
+                            <MediaObject ref="m44"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s27">
+                        <Representation>
+                            <Label>abdominales</Label>
+                            <MediaObject ref="m45"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s28">
+                        <Representation>
+                            <Label>anales</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s29">
+                        <Representation>
+                            <Label>pas de branchies</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c8">
+                <Representation>
+                    <Label>Type des branchies latérales abdominales</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s30">
+                        <Representation>
+                            <Label>multiarticulées</Label>
+                            <MediaObject ref="m46"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s31">
+                        <Representation>
+                            <Label>non multiarticulées</Label>
+                            <MediaObject ref="m47"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c9">
+                <Representation>
+                    <Label>Mode de vie</Label>
+                    <Detail>Beaucoup d'insectes ne sont aquatiques que pour une période de leur vie. On trouve ainsi :&lt;br&gt;- des larves et des nymphes d'insectes à métamorphose complète (trichoptères, mégaloptères, certains diptères, de rares lépidoptères et hyménoptères) ;&lt;br&gt;- des juvéniles (éphéméroptères, odonatoptères, plécoptères) ;&lt;br&gt;- et quelques adultes (hétéroptères et coléoptères) qui passent toute leur vie dans l'eau.&lt;br&gt;&lt;br&gt;La plupart des insectes aquatiques, larves ou adultes, sont libres dans l'eau. Certains trichoptères construisent un fourrreau protégeant leur abdomen. Les rares hyménoptères aquatiques sont des larves parasites.</Detail>
+                </Representation>
+                <States>
+                    <StateDefinition id="s32">
+                        <Representation>
+                            <Label>libre</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s33">
+                        <Representation>
+                            <Label>dans un fourreau ou un filet</Label>
+                            <MediaObject ref="m48"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s34">
+                        <Representation>
+                            <Label>ecto ou endo parasite (dans le corps d'un autre insecte)</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c10">
+                <Representation>
+                    <Label>Fausses pattes</Label>
+                    <Detail>Chez les larves de lépidoptères, les segments abdominaux sont constitués de fausses-pattes sur les segments abdominaux 3, 4, 5, 6 et 10. Certaines paires de fausses-pattes sont parfois atrophiées ou absentes.</Detail>
+                </Representation>
+                <States>
+                    <StateDefinition id="s35">
+                        <Representation>
+                            <Label>absentes</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s36">
+                        <Representation>
+                            <Label>présentes</Label>
+                            <MediaObject ref="m49"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c11">
+                <Representation>
+                    <Label>Extrémité des fausses pattes</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s37">
+                        <Representation>
+                            <Label>portant une couronne de crochets</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s38">
+                        <Representation>
+                            <Label>sans couronne de crochets</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c12">
+                <Representation>
+                    <Label>Stade de développement</Label>
+                    <Detail>Certains insectes ont un développement avec une métamorphose complète (holométabole) ; on distingue alors un stade larvaire, un stade nymphe, et enfin l'adulte.&lt;br&gt;D'autres ont un développement à métamorphose incomplète (hémimétabole) ; on parle alors de juvénile puis d'adulte ou imago.</Detail>
+                </Representation>
+                <States>
+                    <StateDefinition id="s39">
+                        <Representation>
+                            <Label>larve</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s40">
+                        <Representation>
+                            <Label>juvénile</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s41">
+                        <Representation>
+                            <Label>nymphe</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s42">
+                        <Representation>
+                            <Label>adulte</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c13">
+                <Representation>
+                    <Label>Extrémité des pattes (nombre de griffes)</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s43">
+                        <Representation>
+                            <Label>zéro griffe</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s44">
+                        <Representation>
+                            <Label>une griffe</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s45">
+                        <Representation>
+                            <Label>deux griffes</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c14">
+                <Representation>
+                    <Label>Tête bien individualisée</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s46">
+                        <Representation>
+                            <Label>non (acéphale)</Label>
+                            <Detail>pas de capsule céphalique individualisée. C'est le cas de certaines larves de diptères.</Detail>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s47">
+                        <Representation>
+                            <Label>oui (eucéphale)</Label>
+                            <Detail>capsule céphalique bien présente et marquée. C'est le cas de presque tous les ordres d'insectes.</Detail>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+        </Characters>
+        <CharacterTrees>
+            <CharacterTree id="ct1">
+                <Representation>
+                    <Label>Ordre et dépendance entre caractères</Label>
+                </Representation>
+                <ShouldContainAllCharacters>true</ShouldContainAllCharacters>
+                <Nodes>
+                    <CharNode>
+                        <Character ref="c1"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c2"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c3"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s11"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c4"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s46"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c5"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s46"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c6"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c7"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s26"/>
+                                <State ref="s28"/>
+                                <State ref="s29"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c8"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c9"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c10"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s35"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c11"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c12"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s9"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c13"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c14"/>
+                    </CharNode>
+                </Nodes>
+            </CharacterTree>
+            <CharacterTree id="ct2">
+                <Representation>
+                    <Label>Arbre secondaire Xper2 : groupes et variables contenues dans ces groupes</Label>
+                </Representation>
+                <Nodes>
+                    <Node id="cn1">
+                        <DescriptiveConcept ref="dc1"/>
+                    </Node>
+                    <CharNode>
+                        <Parent ref="cn1"/>
+                        <Character ref="c5"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn1"/>
+                        <Character ref="c6"/>
+                    </CharNode>
+                    <Node id="cn2">
+                        <DescriptiveConcept ref="dc2"/>
+                    </Node>
+                    <CharNode>
+                        <Parent ref="cn2"/>
+                        <Character ref="c2"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn2"/>
+                        <Character ref="c3"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn2"/>
+                        <Character ref="c4"/>
+                    </CharNode>
+                    <Node id="cn3">
+                        <DescriptiveConcept ref="dc3"/>
+                    </Node>
+                    <CharNode>
+                        <Parent ref="cn3"/>
+                        <Character ref="c1"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn3"/>
+                        <Character ref="c7"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn3"/>
+                        <Character ref="c8"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn3"/>
+                        <Character ref="c10"/>
+                    </CharNode>
+                    <CharNode>
+                        <Parent ref="cn3"/>
+                        <Character ref="c11"/>
+                    </CharNode>
+                    <Node id="cn4">
+                        <DescriptiveConcept ref="dc4"/>
+                    </Node>
+                    <CharNode>
+                        <Parent ref="cn4"/>
+                        <Character ref="c9"/>
+                    </CharNode>
+                    <Node id="cn5">
+                        <DescriptiveConcept ref="dc5"/>
+                    </Node>
+                    <CharNode>
+                        <Parent ref="cn5"/>
+                        <Character ref="c12"/>
+                    </CharNode>
+                </Nodes>
+            </CharacterTree>
+        </CharacterTrees>
+        <CodedDescriptions>
+            <CodedDescription id="D1">
+                <Representation>
+                    <Label>Odonate (juvénile)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;odonates&lt;/b&gt;&amp;nbsp (Odonata), ou&amp;nbsp&lt;b&gt;odonatoptères&lt;/b&gt;, sont un ordre d'insectes à corps allongé, dotés de deux paires d'ailes membraneuses généralement transparentes,&lt;br&gt;et dont les yeux composés et généralement volumineux leur permettent de chasser efficacement leurs proies. Ce sont des prédateurs, que l'on peut rencontrer occasionnellement dans tout type de milieu naturel,&lt;br&gt;mais qui se retrouvent plus fréquemment aux abords des zones d'eau douce à saumâtre, stagnante à faiblement courante.&lt;br&gt;Les larves des odonates sont toujours aquatiques. Elles sont carnivores tout comme les adultes et respirent au moyen de branchies trachéennes.&lt;br&gt;&lt;br&gt;The Odonata is an order of insect with a long body. These insects are composed of two pairs of membranous wings generally transparent.&lt;br&gt;Their composed and voluminous eyes allow them to hunt effectively. Odonata can be find in each type of natural environment but more frequently near freshwater and brackish water, stagnant to low running water.&lt;br&gt;Odonata larva are always aquatic. There are carnivore like the adults and breath with trachea gills.&lt;br&gt;&lt;br&gt;&lt;b&gt;Leraut P. 2003.&lt;/b&gt;&lt;i&gt;Le guide entomologique&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://en.wikipedia.org/wiki/Odonata "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m2"/>
+                    <MediaObject ref="m3"/>
+                    <MediaObject ref="m4"/>
+                    <MediaObject ref="m5"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <Note>Les odonates respirent au moyen de branchies trachéennes qui sont surtout visibles chez les zygoptères ("demoiselles") à l'extrémité de l'abdomen.</Note>
+                        <State ref="s1"/>
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <Note>Chez les odonates, la lèvre inférieure, ou labium, est très allongée et articulée, l'extrémité est terminée par des palpes modifiés en pinces mobiles. L'ensemble est replié sous la tête au repos et est nommé "masque".</Note>
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s40"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D2">
+                <Representation>
+                    <Label>Ephémère (juvénile)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;éphéméroptères&lt;/b&gt;&amp;nbsp(Ephemeroptera) constituent un ordre d'insectes apparus au Carbonifère, il y a environ 280 à 350 millions d'années.&lt;br&gt;On considère ces insectes comme des insectes à caractères primitifs ; le fait de ne pas pouvoir rabattre leurs ailes sur leur corps en est un exemple.&lt;br&gt;Les larves aquatiques des éphémères sont dotées de trois cerques. Leur respiration s'effectue grâce à des branchies trachéennes situées aux flancs de leur abdomen.&lt;br&gt;Elles peuvent être phytophages, détritivores ou carnivores. Parvenues à leur dernier stade, elles donnent une forme ailée - le subimago - qui va se fixer sur un support avant la vraie mue imaginale.&lt;br&gt;&lt;br&gt;The Ephemeroptera order appeared during the Carboniferous, 280 to 350 years ago. They are considered with primitive characters (for example they can not fold down their wings).&lt;br&gt;The larva are aquatic and they present 3 segmented filaments at the tip of the abdomen.&lt;br&gt;They breath thanks to trachea gills located on lateral parts of the abdomen.&lt;br&gt;Larva can be phytophagous, detritiphagous or carnivorous. At the last stage, called the subimago (winged form), they are fixed on a support before the real imaginal moult.&lt;br&gt;&lt;br&gt;&lt;b&gt;Leraut P. 2003.&lt;/b&gt;&lt;i&gt;Le guide entomologique&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Ephemeroptera "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m6"/>
+                    <MediaObject ref="m7"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s40"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s44"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D3">
+                <Representation>
+                    <Label>Plécoptère (juvénile)</Label>
+                    <Detail>L'ordre des&amp;nbsp&lt;b&gt;plécoptères&lt;/b&gt;&amp;nbsp est constitué d'insectes ailés, au corps mou et allongé.&lt;br&gt;C'est un groupe ancien, dont on trouve des fossiles datant au moins du début du Carbonifère. Au niveau mondial, plus de 2000 espèces de plécoptères sont actuellement répertoriées, mesurant de quelques millimètres à 5 cm&lt;br&gt;pour les plus grands.&lt;br&gt;Ils sont généralement inféodés aux zones humides à fort courant. Ils ne volent que sur de brèves distances, à proximité de berges ou de torrents.&lt;br&gt;Les larves et les nymphes vivent toutes dans les cours d'eau, alors que les adultes (ou imagos) sont aériens.&lt;br&gt;Comme les larves d'éphémères, le corps des larves de plécoptères est équipé de branchies et adapté au courant. Elles respirent par simple diffusion de l'oxygène au travers de la surface du corps et, de ce fait,&lt;br&gt;recherchent les courants d'eau vive bien oxygénés (frais et non pollués). La mue imaginale a lieu sur une pierre tout près de l'eau.&lt;br&gt;Les larves des plécoptères sont également utilisées comme bioindicateur, car très sensibles au taux en oxygène dissout dans l'eau.&lt;br&gt;&lt;br&gt;The&amp;nbsp&lt;b&gt;Plecoptera&lt;/b&gt;&amp;nbsp is an order of winged insects with à long and soft body.&lt;br&gt;It is an old group (beginning of the Carboniferous). There are some 2000 recorded species worldwide. They can measure from a few mm to 5 cm.&lt;br&gt;Most frequently they can be find next to humid areas with strong current. They only fly on short distance, near banks or torrents.&lt;br&gt;Larva and nymphs are aquatic and live in streams. Adults are flying insects. Like the Ephemeroptera larva, the plecoptera larva's body is composed of gills and adapted to streams.&lt;br&gt;They can be find in strong well oxygenated currents because they breathe thank to simple oxygen diffusion through all the surface of the body. The imaginale moult happens on a stone next to the water.&lt;br&gt;All species of Plecoptera are pollution intolerant and their presence in a stream or still water is usually an indicator of good or excellent water quality.&lt;br&gt;&lt;br&gt;&lt;b&gt;Leraut P. 2003.&lt;/b&gt;&lt;i&gt;Le guide entomologique&lt;/i&gt;&lt;br&gt;En savoir plus cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Pl%C3%A9copt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m8"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <Note>branchies thoraciques (coxales ou prosternales)</Note>
+                        <State ref="s26"/>
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s40"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D4">
+                <Representation>
+                    <Label>Hemiptera (juvénile)</Label>
+                    <Detail>Le sous-ordre des&amp;nbsp&lt;b&gt;hétéroptères&lt;/b&gt;&amp;nbsp(Heteroptera), ou punaises, appartient à l'ensemble des insectes ailés. Ils atteignent 0,5 à 2 cm. Le corps est ovale ou allongé et communément aplati dorso-ventralement.&lt;br&gt;La tête porte des pièces buccales largement développées de type piqueur-suceur et en plus des yeux composés, elle comporte des ocelles.&lt;br&gt;La plupart se nourrissent de sèves végétales mais certaines sont hématophages comme la punaise des lits ou les représentants du genre Triatoma,&lt;br&gt;vecteurs de la maladie de Chagas.&lt;br&gt;De type hémimétaboles, les larves ressemblent aux adultes (les ailes en moins), et elles traversent quatre ou cinq stades larvaires, chacun les rapprochant de l'imago en apparence,&lt;br&gt;mais à une taille plus réduite. Les ailes apparaissent comme des fourreaux alaires au départ, grandissant à chaque nouvelle mue. Les espèces aquatiques viennent respirer à la surface à la manière de certains coléoptères,&lt;br&gt;ou, comme la nèpe (&lt;i&gt;Nepa cinerea&lt;/i&gt;), sont dotées d'un long siphon respiratoire.&lt;br&gt;&lt;br&gt;The Heteroptera suborder, also called bugs, belongs to the winged insects. They measure from 0,5 to 2 cm. The body is oval or long and commonly flattened. The head is composed of developed mouthpart&lt;br&gt;(breaker-sucker type). They are made of composed eyes and ocelles.&lt;br&gt;Most of these insects feed them with plant sap but some of them eat blood like the common bed bug or the Triatoma kind, vector of the Chagas disease.&lt;br&gt;The hemimetabolous larva look like adults (but without wings), they go through 4 or 5 larva stages, during which they look like little adults.&lt;br&gt;Wings appeared first like winged sheath but grow up at each moult stage.&lt;br&gt;Aquatic species come to the water surface to breath like some coleoptera or like the&lt;i&gt;Nepa cinerea&lt;/i&gt;are made of a pair of half-tubes capable of being locked together to form a siphon.&lt;br&gt;&lt;br&gt;&lt;b&gt;Leraut P. 2003.&lt;/b&gt;&lt;i&gt;Le guide entomologique&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/H%C3%A9t%C3%A9ropt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m9"/>
+                    <MediaObject ref="m10"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <Note>rostre</Note>
+                        <State ref="s1"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <Note>formant un rostre sauf chez Corixa (bec uniarticulé et strié)</Note>
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s40"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s43"/>
+                        <State ref="s44"/>
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D5">
+                <Representation>
+                    <Label>Hétéroptère (adulte)</Label>
+                    <Detail>Le sous-ordre des&amp;nbsp&lt;b&gt;hétéroptères&lt;/b&gt;&amp;nbsp(Heteroptera), ou punaises, appartient à l'ensemble des insectes ailés. Ils atteignent 0,5 à 2 cm. Le corps est ovale ou allongé et communément aplati dorso-ventralement.&lt;br&gt;La tête porte des pièces buccales largement développées de type piqueur-suceur et en plus des yeux composés, elle comporte des ocelles.&lt;br&gt;La plupart se nourrissent de sèves végétales mais certaines sont hématophages comme la punaise des lits ou les représentants du genre Triatoma, vecteurs de la maladie de Chagas.&lt;br&gt;&lt;br&gt;The&amp;nbspHeteroptera&amp;nbsp suborder, also called bugs, belongs to the winged insects. They measure from 0,5 to 2 cm.&lt;br&gt;The body is oval or long and commonly flattened. The head is composed of developed mouthpart (breaker-sucker type). They are made of composed eyes and an ocellar system.&lt;br&gt;Most of these insects feed them with plant sap but some of them eat blood like the common bed bug or the Triatoma gender, vector of the Chagas disease.&lt;br&gt;&lt;br&gt;&lt;b&gt;Leraut P. 2003.&lt;/b&gt;&lt;i&gt;Le guide entomologique&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/H%C3%A9t%C3%A9ropt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m11"/>
+                    <MediaObject ref="m12"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <Note>formant un rostre sauf chez Corixa (bec uniarticulé et strié)</Note>
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s42"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s43"/>
+                        <State ref="s44"/>
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D6">
+                <Representation>
+                    <Label>Trichoptère (larve)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;trichoptères&lt;/b&gt;&amp;nbsp constituent un ordre d'insectes, apparenté de près aux lépidoptères mais adapté pour la vie en eau douce dans leur stade larvaire.&lt;br&gt;Certaines larves de trichoptères protègent leur corps par un étui ou fourreau.&lt;br&gt;La forme et lesmatériaux employés pour la fabrication de ce fourreau ainsi que certains caractères anatomiques (couleur de l'abdomen et du thorax etc.) de la larve permettent de discriminer les différents genres de trichoptères.&lt;br&gt;Les larves respirent par des branchies abdominales. D'après leur morphologie, on classe les larves en deux groupes : larves robustes en forme de chenilles (larves éruciformes) ou larves fines, allongées,&lt;br&gt;légèrement aplaties (larves campodéiformes.&lt;br&gt;&lt;br&gt;The&amp;nbsp&lt;b&gt;Trichoptera&lt;/b&gt;&amp;nbsp is an insect order relative to Lepidoptera but adapted to life in freshwater during the larva stages.&lt;br&gt;The larva oftenly protect their body in a sheath. It is possible to discriminate the different kind of Trichoptera thanks to the form of the sheath,&lt;br&gt;the materials used to build it and some anatomical characters (thorax and abdomen colors, etc.)&lt;br&gt;They breath with adominal gills. These larva can be classified into two groups: the robust larva with a caterpillar form (eruciform larva) or thin, long and slightly flattened (campodeiform larva).&lt;br&gt;&lt;br&gt;&lt;b&gt;Leraut P. 2003.&lt;/b&gt;&lt;i&gt;Le guide entomologique&lt;/i&gt;&lt;br&gt;Bameul F.&lt;b&gt;Les insectes aquatiques&lt;/b&gt;&lt;br&gt;En savoir plus cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Trichopt%C3%A8re"&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m13"/>
+                    <MediaObject ref="m14"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                        <State ref="s28"/>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                        <State ref="s36"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <State ref="s38"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D7">
+                <Representation>
+                    <Label>Trichoptère (nymphe)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;trichoptères&lt;/b&gt;&amp;nbsp constituent un ordre d'insectes, apparenté de près aux lépidoptères mais adapté pour la vie en eau douce dans leur stade larvaire.&lt;br&gt;Les nymphes de trichoptères, ou phryganes, affectionnent les eaux courantes, mais plusieurs espèces habitent les eaux stagnantes.&lt;br&gt;Les nymphes s'abritent dans le dernier fourreau larvaire ou dans un cocon de soie chez les espèces qui n'utilisent pas de fourreau.&lt;br&gt;Leurs pattes postérieures sont pourvues de soies natatoires qui permettent aux nymphes de remonter rapidement à la surface pour permettre la sortie des adultes.&lt;br&gt;&lt;br&gt;The&amp;nbsp&lt;b&gt;Trichoptera&lt;/b&gt;&amp;nbsp is an insect order relative to Lepidoptera but adapted to life in freshwater during the larva stages.&lt;br&gt;Nymphs, or phrygan, like stream waters but some of them live in stagnant water. Nymphs shelter them in the last larva's sheath or in a silk cocoon for species which don't use sheath.&lt;br&gt;The rear legs are made of swimming silks which allow them to go quickly to the water surface for the adults release.&lt;br&gt;&lt;br&gt;Bameul F.&lt;b&gt;Les insectes aquatiques&lt;/b&gt;&lt;br&gt;En savoir plus cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Trichopt%C3%A8re"&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m15"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s27"/>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s41"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D8">
+                <Representation>
+                    <Label>Lépidoptère (larve)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;lépidoptères&lt;/b&gt;&amp;nbsp (Lepidoptera) adultes (papillons) ne sont jamais aquatiques; les chenilles d'une seule famille Crambidae pars ( la famille des Pyrales) ont une vie aquatique tout à fait remarquable.&lt;br&gt;C'est surtout sous les feuilles de nénuphars ou d'autres végétaux immergés qu'elles se construisent une logette. Certaines espèces restent encore submergées pendant la phase nymphale.&lt;br&gt;&lt;br&gt;Adults lepidoptera (butterfly) are never aquatic ; the only one which have a remarkable aquatic life belongs to the Crambidae family (= Pyralidae).&lt;br&gt;It is especially under water lilies or other immersed plants that they build a little hidden place. Some species stay immersed during the nymphal stage.</Detail>
+                    <MediaObject ref="m16"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <Note>cependant il existe d'autres larves de lépidoptères à branchies ramifiées</Note>
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <Note>les fausses pattes sont situées sur les segments abdominaux 3-4-5-6</Note>
+                        <State ref="s36"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <State ref="s37"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s44"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D9">
+                <Representation>
+                    <Label>Diptère (larve)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;diptères&lt;/b&gt;&amp;nbsp (Diptera) constituent un ordre d'insectes très diversifié, comportant quelques 4000 espèces en Europe.&lt;br&gt;Les adultes ne possèdent que deux ailes, d'où le nom de l'ordre, et comprennent aussi bien les robustes&lt;br&gt;Mouches domestiques et Calliphoridés que les Sylphidés et les Taons, les Tipules et les Moustiques etc.&lt;br&gt;La quasi totalité des insectes aquatiques apodes sont des larves ou des nymphes de diptères (ex : larves de moustiques). Mais tous les diptères ne se développent pas dansl'eau, beaucoup grandissent dans la terre humide&lt;br&gt;ou dans des aliments en décomposition. Les larves de moustiques vivent dans les eaux stagnantes, en particulier les petites collections d'eau,&lt;br&gt;comme les mares, les flaques etc.&lt;br&gt;Elles respirent grâce à un siphon respiratoire et se tiennent le plus souvent, pendues par leur siphon, sous la surface des eaux. Certaines espèces de moustiques sont vectrices de maladies,&lt;br&gt;et c'est dès le stade larvaire que la lutte anti-vectorielle est amorcée.&lt;br&gt;&lt;br&gt;The Diptera is a very varied order and is composed of 4000 species in Europe. Diptera at the adult development stage have two wings that is why they are called Diptera. However the species composing this order are very different and&lt;br&gt; it is difficullt to imagine that they belong to the same group: housefly, Calliphorida, Sylphida horsefly, mosquitos etc.&lt;br&gt;Almost all aquatic apode insects are diptera larvae or nymphs. But most of the diptera don't grow in water but rather in wet earth or in food in decomposition.&lt;br&gt;Mosquitos larva live in stagnant water, particularly pools and ponds.&lt;br&gt;They breath with a respiratory siphon and stay most of the time hanged under the water surface. Some of the mosquitos species are vectors of diseases and vector control operations begin at the larva stage.&lt;br&gt;&lt;br&gt;&lt;b&gt;Bameul F&lt;/b&gt;.&lt;i&gt;Les insectes aquatiques&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Dipt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m17"/>
+                    <MediaObject ref="m18"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <Note>un prolongement en siphon</Note>
+                        <State ref="s1"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <Note>1 à 8</Note>
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                        <State ref="s28"/>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                        <State ref="s36"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <State ref="s38"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13"/>
+                    <Categorical ref="c14">
+                        <Note>le groupe des diptères est très diversifié. Certaines larves, type asticot, sont acéphale, d'autres ont une tête bien visible</Note>
+                        <State ref="s46"/>
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D10">
+                <Representation>
+                    <Label>Diptère (nymphe)</Label>
+                    <Detail>Les&amp;nbsp&lt;b&gt;diptères&lt;/b&gt;&amp;nbsp (Diptera) constitue un ordre d'insectes très diversifié : mouches domestiques, syrphes, taons, tipules, moustiques etc.&lt;br&gt;Les nymphes aquatiques (de moustiques, par exemple) sont très mobiles quoique leurs appendices soient fermement fixés au corps.&lt;br&gt;La mobilité de la nymphe lui permet d'adopter la position la plus favorable pour faciliter l'éclosion de l'adulte. Ces nymphes de moustique respirent à l'aide d'une paire de cornets respiratoires situés à l'arrière de la tête.&lt;br&gt;Beaucoup de larves et de nymphes de diptères ne sont pas aquatiques et se développent dans la terre (tipules par exemple) ou dans des organismes ou déchets en décomposition (mouche bleue de la viande par exemple) avec des nymphes qui ne sont pas mobiles mais emprisonnées dans la dernière enveloppe larvaire qui se durcit pour former un puparium.&lt;br&gt;&lt;br&gt;The Diptera is a very varied order and is composed of 4000 species in Europe : housefly, Calliphorida, Sylphida horsefly, mosquitos etc.&lt;br&gt;A lot of larva and nymphs are not aquatic.&lt;br&gt;Mosquitos nymphs are aquatic and move easily if their appendix are strongly fixed to their body. This mobility allows them to adopt the most adaped position for the adult's hatching. The nymph has a comma form and breath thanks a pair of respiratory cornet behind the head.&lt;br&gt;At the contrary, terrestrial nymphs (bluebottle) are not mobile but imprisoned in the last larva's envelope which become hard to form a puparium.&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Chinery M.&lt;/b&gt;&lt;i&gt;Les insectes d'Europe&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Dipt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m19"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <Note>palette natatoire chez les nymphes mobiles</Note>
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <Note>les ébauches d'ailes peuvent ne pas être visibles</Note>
+                        <State ref="s11"/>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s16"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                        <State ref="s28"/>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s41"/>
+                    </Categorical>
+                    <Categorical ref="c13"/>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D11">
+                <Representation>
+                    <Label>Neuroptera (larve)</Label>
+                    <Detail>Cet ordre comporte des espèces dont l'envergure n'est que de quelques mm et d'autres dont l'envergure varie de 60 à 80 mm et même jusqu'à 150 mm.&lt;br&gt;Par leur morphologie, ils ressemblent souvent à des insectes d'autres ordres (Libellules, pucerons etc.).&lt;br&gt;Quelques planipennes seulement se développent dans l'eau. Il s'agit des larves de&amp;nbsp&lt;i&gt;Sisyra&lt;/i&gt; qui présentent la particularité de vivre sur des éponges d'eau douce et de s'en nourrir, et des larves d'&lt;i&gt;Osmylus&lt;/i&gt;.&lt;br&gt;Les larves sont plutôt fusiformes et ont 3 paires de pattes bien développées. L'abdomen porte un certain nombre de soies. Les larves aquatiques respirent au moyen de branchies trachéales.&lt;br&gt;Elles sont entièrement carnivores et sont pourvues de pièces buccales de type suceur.&lt;br&gt;&lt;br&gt;In this order, insects can measure from a few mm to 60 to 80 mm andeven 150 mm. Because of their morphology they often look like insects from other orders (dragonfly, aphids etc.).&lt;br&gt;Only few planipennes grow in water: Sisyra's larvae that live on still water sponges and osmylus larvae.&lt;br&gt;Larva are either fusiform and are composed of 3 pairs of good developed legs. There are silks on the abdomen.&lt;br&gt;The aquatic larva breath through trachea gills. They are carnivorous and composed of sucking mandibula.&lt;br&gt;&lt;br&gt;&lt;b&gt;Chinery M.&lt;/b&gt;&lt;i&gt;Les insectes d'Europe&lt;/i&gt;</Detail>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s44"/>
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D12">
+                <Representation>
+                    <Label>Mégaloptère (larve)</Label>
+                    <Detail>Le sous-ordre des&amp;nbsp&lt;b&gt;mégaloptères&lt;/b&gt;&amp;nbsp (Megaloptera) comprend les Sialidées et des Raphidiidés. Les Sialidés déposent leurs oeufs au bord de l'eau, par groupe de 200 ou plus, el les larves tombent ou rampent dans l'eau où elles se nourrissent d'autres insectes.&lt;br&gt;Nos deux groupes vivent dans des eaux calmes ou à courant faible ; l'abdomen de leurs larves présente 7 paires de branchies et, enoutre, un filament terminal d'aspect similaire.&lt;br&gt;Ces espèces passent l'hiver sous la forme larvaire et le développement dure un an. Les adultes s'observeront en mai et en juin.&lt;br&gt;&lt;br&gt;The Megaloptera suborder is composed of the Sialidea and the Raphidiidea. The Sialidea lay their 200 or more eggs near the water. Then the larva fall orcrawl until the water where they feed on other insects. Both of these groups like still water ; the abdomen is made of 7 pairs of gills and a similar sharp and non-segmented extension.&lt;br&gt;During winter, they stay at the larva stage. The development goes on for one year. Adults can be observed during May and June.&lt;br&gt;&lt;br&gt;&lt;b&gt;Chinery M.&lt;/b&gt;&lt;i&gt;Les insectes d'Europe&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/M%C3%A9galopt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m20"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D13">
+                <Representation>
+                    <Label>Coléoptère (larve)</Label>
+                    <Detail>Parmi les&amp;nbsp&lt;b&gt;coléoptères&lt;/b&gt;&amp;nbsp (Coleoptera) certaines espèces effectuent tout leur développement dans le milieu aquatique de la larve à l'adulte qui reste aquatique.&lt;br&gt;Ces coléoptères aquatiques appartiennent principalement à quelques familles : les haliplidés, les dytiscidés, les gyrinidés et les hydrophilidés.&lt;br&gt;Les larves se caractérisent par 3 paires de pattes thoraciques; la tête est toujours bien différenciée, avec des ocelles ou non, mais jamais d'yeux composés; les antennes sont courtes et pluriarticulés.&lt;br&gt;Les larves revêtent des formes très différentes suivant les familles et même les genres. Au moment de se nymphoser la larve gagne souvent la rive et s'y enfonce. Dès son éclosion l'adulte retourne à l'eau.&lt;br&gt;&lt;br&gt;Some Coleoptera are fresh water insects both at the larva and adult form. These species belongs to some families like the haliplidae, the dytiscidae, the gyrinidae and the hydrophilidae.&lt;br&gt;Larvae are composed of 3 pairs of thoracic legs; the head is always good differentiated, with an ocellar system or not.but never composed eyes. The antennas are short and multiarticulated.&lt;br&gt;Larvae are very different depending on the families and kinds. At the pupation stage, the larva reach the bank and stay hidden in the earth. After the outbreak, the imago go back to water.&lt;br&gt;&lt;br&gt;&lt;b&gt;Chinery M.&lt;/b&gt;&lt;i&gt;Introduction à l'étude des Macroinvertébrés des eaux douces&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Col%C3%A9opt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m21"/>
+                    <MediaObject ref="m22"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s4"/>
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                        <State ref="s25"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D14">
+                <Representation>
+                    <Label>Coléoptère (adulte)</Label>
+                    <Detail>Les coléoptères vivant tant à l'état larvaire qu'adulte dans l'eau appartiennent principalement à quelques familles : les haliplidés, les dytiscidés, les gyrinidés et les hydrophilidés.&lt;br&gt;Les adultes sont très facilement identifiables grâce à leurs ailes antérieures coriacées, les élytres, qui cachent la seconde paire d'ailes membraneuses (quand elle existe).&lt;br&gt;&lt;br&gt;Some Coleoptera can be found in water both at the larva and adult form. These specimens belongs to some families like the haliplidae, the dytiscidae, the gyrinidae and the hydrophilidae.&lt;br&gt;Adults can be easily identified thanks to their sclerotic anterior wings, the elytrons which hide the second membranous pair of wings (when it exists).&lt;br&gt;&lt;br&gt;&lt;b&gt;Chinery M.&lt;/b&gt;&lt;i&gt;Introduction à l'étude des Macroinvertébrés des eaux douces&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Col%C3%A9opt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                    <MediaObject ref="m23"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <Note>2 ou 4</Note>
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s42"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D15">
+                <Representation>
+                    <Label>Hyménoptère (larve)</Label>
+                    <Detail>Les larves d'&amp;nbsp&lt;b&gt;hyménoptères&lt;/b&gt;&amp;nbsp (Hymenoptera) appartiennent à deux types différents; chez les symphytes le corps porte des pattes thoraciques et parfois des pattes abdominales.&lt;br&gt;Les appendices céphaliques sont relativement développés. Chez les aculéates et les térébrants, le corps est apode; les appendices céphaliques sont très réduits et charnus.&lt;br&gt;Les larves aquatiques d'hyménoptère sont des parasites et vivent dans le corps d'autres insectes. Il est très rare de les trouver en raison de leur petite taille, souvent inférieure à 2 mm, et de leur vie de parasites internes.&lt;br&gt;&lt;br&gt;Hymenoptera's larvae belongs to two different types; by the symphyta the body is composed of thoracic legs and sometimes of abdominal legs.&lt;br&gt;The gnathal appendage is relatively developed. The aculeata and the terebrants don't have legs, the gnathal appendage is very reduced and fleshy.&lt;br&gt;Hymenoptera's larvae are parasites and live in other insects body. Because of their small size (often lower than 2 mm) and their life of intern parasites it is very difficult to find them.&lt;br&gt;&lt;br&gt;&lt;b&gt;Paulian R.&lt;/b&gt;1990.&lt;i&gt;Larves d'insectes de France&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Hym%C3%A9nopt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s33"/>
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c13"/>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D16">
+                <Representation>
+                    <Label>Hyménoptère (nymphe)</Label>
+                    <Detail>Les rares hyménoptères aquatiques sont des parasites qui se développent dans le corps d'autres insectes.&lt;br&gt;Il est très rare de les trouver en raison de leur petite taille, souvent inférieure à 2 mm, et de leur vie de parasites internes.&lt;br&gt;&lt;br&gt;The rare aquatic Hymenoptera are parasites and live in other insects body. Because of their small size (often lower than 2 mm) and their life of intern parasites it is very difficult to find them.&lt;br&gt;&lt;br&gt;&lt;b&gt;Chinery M.&lt;/b&gt;&lt;i&gt;Les insectes d'Europe&lt;/i&gt;&lt;br&gt;En savoir plus sur wikipedia cliquer&amp;nbsp&lt;a href="http://fr.wikipedia.org/wiki/Hym%C3%A9nopt%C3%A8re "&gt;ici&lt;/a&gt;</Detail>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s41"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s45"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s47"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+        </CodedDescriptions>
+        <Agents>
+            <Agent id="a1">
+                <Representation>
+                    <Label>Régine Vignes Lebbe</Label>
+                </Representation>
+            </Agent>
+            <Agent id="a2">
+                <Representation>
+                    <Label>Elise Kuntzelmann</Label>
+                </Representation>
+            </Agent>
+            <Agent id="a3">
+                <Representation>
+                    <Label>Bruno Mériguet</Label>
+                </Representation>
+            </Agent>
+            <Agent id="a4">
+                <Representation>
+                    <Label>Hélène Fradin</Label>
+                </Representation>
+            </Agent>
+        </Agents>
+        <MediaObjects>
+            <MediaObject id="m1">
+                <Representation>
+                    <Label> - m1</Label>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/ephemere_juvenile3.jpg"/>
+            </MediaObject>
+            <MediaObject id="m2">
+                <Representation>
+                    <Label>Odonate (juvénile) - m2</Label>
+                    <Detail role="Caption">Odonate (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_demoiselle_adulte.jpg"/>
+            </MediaObject>
+            <MediaObject id="m3">
+                <Representation>
+                    <Label>Odonate (juvénile) - m3</Label>
+                    <Detail role="Caption">Odonate (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_juvenile_demoiselle.jpg"/>
+            </MediaObject>
+            <MediaObject id="m4">
+                <Representation>
+                    <Label>Odonate (juvénile) - m4</Label>
+                    <Detail role="Caption">Odonate (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_juvenile_libellule.jpg"/>
+            </MediaObject>
+            <MediaObject id="m5">
+                <Representation>
+                    <Label>Odonate (juvénile) - m5</Label>
+                    <Detail role="Caption">Odonate (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_libellule_adulte.jpg"/>
+            </MediaObject>
+            <MediaObject id="m6">
+                <Representation>
+                    <Label>Ephémère (juvénile) - m6</Label>
+                    <Detail role="Caption">Ephémère (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/ephemere_adulte2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m7">
+                <Representation>
+                    <Label>Ephémère (juvénile) - m7</Label>
+                    <Detail role="Caption">Ephémère (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/ephemere_juvenile3.jpg"/>
+            </MediaObject>
+            <MediaObject id="m8">
+                <Representation>
+                    <Label>Plécoptère (juvénile) - m8</Label>
+                    <Detail role="Caption">Plécoptère (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/plecoptere_juvenile.jpg"/>
+            </MediaObject>
+            <MediaObject id="m9">
+                <Representation>
+                    <Label>Hemiptera (juvénile) - m9</Label>
+                    <Detail role="Caption">Hemiptera (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/heteroptere_juvenile1.jpg"/>
+            </MediaObject>
+            <MediaObject id="m10">
+                <Representation>
+                    <Label>Hemiptera (juvénile) - m10</Label>
+                    <Detail role="Caption">Hemiptera (juvénile)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/heteroptere_juvenile3.jpg"/>
+            </MediaObject>
+            <MediaObject id="m11">
+                <Representation>
+                    <Label>Hétéroptère (adulte) - m11</Label>
+                    <Detail role="Caption">Hétéroptère (adulte)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/heteroptere_adulte_nepe1.jpg"/>
+            </MediaObject>
+            <MediaObject id="m12">
+                <Representation>
+                    <Label>Hétéroptère (adulte) - m12</Label>
+                    <Detail role="Caption">Hétéroptère (adulte)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/heteroptere_adulte_nepe2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m13">
+                <Representation>
+                    <Label>Trichoptère (larve) - m13</Label>
+                    <Detail role="Caption">Trichoptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m14">
+                <Representation>
+                    <Label>Trichoptère (larve) - m14</Label>
+                    <Detail role="Caption">Trichoptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_fourreau_de_phrygane.jpg"/>
+            </MediaObject>
+            <MediaObject id="m15">
+                <Representation>
+                    <Label>Trichoptère (nymphe) - m15</Label>
+                    <Detail role="Caption">Trichoptère (nymphe)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_nymphe.jpg"/>
+            </MediaObject>
+            <MediaObject id="m16">
+                <Representation>
+                    <Label>Lépidoptère (larve) - m16</Label>
+                    <Detail role="Caption">Lépidoptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/lepidoptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m17">
+                <Representation>
+                    <Label>Diptère (larve) - m17</Label>
+                    <Detail role="Caption">Diptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/diptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m18">
+                <Representation>
+                    <Label>Diptère (larve) - m18</Label>
+                    <Detail role="Caption">Diptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/diptere_larve_aquatique.jpg"/>
+            </MediaObject>
+            <MediaObject id="m19">
+                <Representation>
+                    <Label>Diptère (nymphe) - m19</Label>
+                    <Detail role="Caption">Diptère (nymphe)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/diptere_nymphe.jpg"/>
+            </MediaObject>
+            <MediaObject id="m20">
+                <Representation>
+                    <Label>Mégaloptère (larve) - m20</Label>
+                    <Detail role="Caption">Mégaloptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/megaloptere.jpg"/>
+            </MediaObject>
+            <MediaObject id="m21">
+                <Representation>
+                    <Label>Coléoptère (larve) - m21</Label>
+                    <Detail role="Caption">Coléoptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_larve2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m22">
+                <Representation>
+                    <Label>Coléoptère (larve) - m22</Label>
+                    <Detail role="Caption">Coléoptère (larve)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_larve4.jpg"/>
+            </MediaObject>
+            <MediaObject id="m23">
+                <Representation>
+                    <Label>Coléoptère (adulte) - m23</Label>
+                    <Detail role="Caption">Coléoptère (adulte)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_adulte.jpg"/>
+            </MediaObject>
+            <MediaObject id="m24">
+                <Representation>
+                    <Label>deux filaments segmentés - m24</Label>
+                    <Detail role="Caption">deux filaments segmentés</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/plecoptere_juvenile.jpg"/>
+            </MediaObject>
+            <MediaObject id="m25">
+                <Representation>
+                    <Label>trois filaments segmentés - m25</Label>
+                    <Detail role="Caption">trois filaments segmentés</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/ephemere_juvenile2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m26">
+                <Representation>
+                    <Label>un prolongement pointu non segmenté - m26</Label>
+                    <Detail role="Caption">un prolongement pointu non segmenté</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/hemiptere_nepe_prolongement.jpg"/>
+            </MediaObject>
+            <MediaObject id="m27">
+                <Representation>
+                    <Label>crochets - m27</Label>
+                    <Detail role="Caption">crochets</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_crochets_abdominaux.jpg"/>
+            </MediaObject>
+            <MediaObject id="m28">
+                <Representation>
+                    <Label>trois branchies foliacées - m28</Label>
+                    <Detail role="Caption">trois branchies foliacées</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_trois_branches_foliacees.jpg"/>
+            </MediaObject>
+            <MediaObject id="m29">
+                <Representation>
+                    <Label>absentes - m29</Label>
+                    <Detail role="Caption">absentes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/diptere_larve_chironome.jpg"/>
+            </MediaObject>
+            <MediaObject id="m30">
+                <Representation>
+                    <Label>présentes - m30</Label>
+                    <Detail role="Caption">présentes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_pattes_articules.jpg"/>
+            </MediaObject>
+            <MediaObject id="m31">
+                <Representation>
+                    <Label>Ailes - m31</Label>
+                    <Detail role="Caption">Ailes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/plecoptere_ebauches_ailes.jpg"/>
+            </MediaObject>
+            <MediaObject id="m32">
+                <Representation>
+                    <Label>Ailes - m32</Label>
+                    <Detail role="Caption">Ailes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_adulte.jpg"/>
+            </MediaObject>
+            <MediaObject id="m33">
+                <Representation>
+                    <Label>absentes - m33</Label>
+                    <Detail role="Caption">absentes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/diptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m34">
+                <Representation>
+                    <Label>présentes - m34</Label>
+                    <Detail role="Caption">présentes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/ephemere_juvenile_ebauche_ailes.jpg"/>
+            </MediaObject>
+            <MediaObject id="m35">
+                <Representation>
+                    <Label>libres sans articulation et ne recouvrant pas l'abdomen - m35</Label>
+                    <Detail role="Caption">libres sans articulation et ne recouvrant pas l'abdomen</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/plecoptere_ebauches_ailes.jpg"/>
+            </MediaObject>
+            <MediaObject id="m36">
+                <Representation>
+                    <Label>libres et articulées et recouvrant l'abdomen en se chevauchant - m36</Label>
+                    <Detail role="Caption">libres et articulées et recouvrant l'abdomen en se chevauchant</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/hemiptere_corixa_adulte.jpg"/>
+            </MediaObject>
+            <MediaObject id="m37">
+                <Representation>
+                    <Label>libres et articulées et recouvrant l'abdomen sans se chevaucher - m37</Label>
+                    <Detail role="Caption">libres et articulées et recouvrant l'abdomen sans se chevaucher</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_adulte.jpg"/>
+            </MediaObject>
+            <MediaObject id="m38">
+                <Representation>
+                    <Label>soudées au corps - m38</Label>
+                    <Detail role="Caption">soudées au corps</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/diptere_nymphe.jpg"/>
+            </MediaObject>
+            <MediaObject id="m39">
+                <Representation>
+                    <Label>0 à 8 yeux simples (de chaque coté) - m39</Label>
+                    <Detail role="Caption">0 à 8 yeux simples (de chaque coté)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_yeux_simples.jpg"/>
+            </MediaObject>
+            <MediaObject id="m40">
+                <Representation>
+                    <Label>yeux composés - m40</Label>
+                    <Detail role="Caption">yeux composés</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_yeux_compose.jpg"/>
+            </MediaObject>
+            <MediaObject id="m41">
+                <Representation>
+                    <Label>type broyeur mandibulaire - m41</Label>
+                    <Detail role="Caption">type broyeur mandibulaire</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m42">
+                <Representation>
+                    <Label>en masque extensible - m42</Label>
+                    <Detail role="Caption">en masque extensible</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/odonate_masque_extensible.jpg"/>
+            </MediaObject>
+            <MediaObject id="m43">
+                <Representation>
+                    <Label>en bec multiarticulé - m43</Label>
+                    <Detail role="Caption">en bec multiarticulé</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/hemiptere_bec_articule.jpg"/>
+            </MediaObject>
+            <MediaObject id="m44">
+                <Representation>
+                    <Label>thoraciques - m44</Label>
+                    <Detail role="Caption">thoraciques</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/coleoptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m45">
+                <Representation>
+                    <Label>abdominales - m45</Label>
+                    <Detail role="Caption">abdominales</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/megaloptere_branchie.jpg"/>
+            </MediaObject>
+            <MediaObject id="m46">
+                <Representation>
+                    <Label>multiarticulées - m46</Label>
+                    <Detail role="Caption">multiarticulées</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/megaloptere_branchie.jpg"/>
+            </MediaObject>
+            <MediaObject id="m47">
+                <Representation>
+                    <Label>non multiarticulées - m47</Label>
+                    <Detail role="Caption">non multiarticulées</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/ephemere_juvenile_branchie_foliacee.jpg"/>
+            </MediaObject>
+            <MediaObject id="m48">
+                <Representation>
+                    <Label>dans un fourreau ou un filet - m48</Label>
+                    <Detail role="Caption">dans un fourreau ou un filet</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/trichoptere_fourreau_de_phrygane.jpg"/>
+            </MediaObject>
+            <MediaObject id="m49">
+                <Representation>
+                    <Label>présentes - m49</Label>
+                    <Detail role="Caption">présentes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/lepidoptere_larve.jpg"/>
+            </MediaObject>
+            <MediaObject id="m50">
+                <Representation>
+                    <Label>http://www.faunaeur.org/index.php</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://www.faunaeur.org/index.php"/>
+            </MediaObject>
+            <MediaObject id="m51">
+                <Representation>
+                    <Label>http://lis.snv.jussieu.fr</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://lis.snv.jussieu.fr"/>
+            </MediaObject>
+        </MediaObjects>
+    </Dataset>
+</Datasets>
