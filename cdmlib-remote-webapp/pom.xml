@@ -152,6 +152,10 @@
         <groupId>stax</groupId>
         <artifactId>stax</artifactId>
       </dependency>
+      <dependency>
+      	<groupId>xom</groupId>
+        <artifactId>xom</artifactId>
+      </dependency>
       
       <!-- JSP TAG LIBS -->
       <dependency>
