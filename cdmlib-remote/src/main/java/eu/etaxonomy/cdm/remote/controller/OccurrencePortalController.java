@@ -53,6 +53,7 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "specimenTypeDesignations.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
             "sequences.$",
+            "sequences.annotations",
     });
 
 

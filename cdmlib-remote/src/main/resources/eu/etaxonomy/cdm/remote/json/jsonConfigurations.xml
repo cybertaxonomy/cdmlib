@@ -406,9 +406,13 @@
         <value>declaringClass</value><!-- DefaultExclude -->
         <value>metaClass</value><!-- DefaultExclude -->
         <value>id</value>
+        <!--
+            TODO temporarily commented out,
+            see  #3347 (services and REST service controller for molecular classes implemented)
         <value>annotations</value>
-        <value>cacheStrategy</value>
         <value>markers</value>
+        -->
+        <value>cacheStrategy</value>
         <value>createdBy</value>
         <value>updatedBy</value>
         <value>inDescription</value>
