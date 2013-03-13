@@ -911,6 +911,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+            @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,
@@ -922,7 +925,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
-        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships, type, mimeTypes, widthOrDuration, height, size);
+        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                type, mimeTypes, widthOrDuration, height, size);
         return returnMedia;
     }
 
@@ -935,6 +940,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
                 @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+                @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+                @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+                @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
                 @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
                 @RequestParam(value = "height", required = false) Integer height,
                 @RequestParam(value = "size", required = false) Integer size,
@@ -946,7 +954,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
-        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships, type, mimeTypes, widthOrDuration, height, size);
+        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                type, mimeTypes, widthOrDuration, height, size);
         TaxonNode node;
         //looking for all medias of genus
         if (taxon.getTaxonNodes().size()>0){
@@ -962,7 +972,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();
                 childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
-                returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships, type, mimeTypes, widthOrDuration, height, size));
+                returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
+                        includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                        type, mimeTypes, widthOrDuration, height, size));
             }
         }
         return returnMedia;
@@ -979,16 +991,19 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      * @param size
      * @return
      */
-    private List<Media> getMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size){
+    private List<Media> getMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
+            Class<? extends MediaRepresentationPart> type, String[] mimeTypes, Integer widthOrDuration, Integer height,
+            Integer size) {
 
-        List<Media> taxonGalleryMedia = service.listTaxonDescriptionMedia(taxon, includeRelationships, false, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
+        List<Media> taxonGalleryMedia = service.listMedia(taxon, includeRelationships, false, includeTaxonDescriptions,
+                includeOccurrences, includeTaxonNameDescriptions, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
                 mimeTypes, null, widthOrDuration, height, size);
 
         List<Media> filteredMedia = new ArrayList<Media>(mediaRepresentationMap.size());
-        for(Media media : mediaRepresentationMap.keySet()){
+        for (Media media : mediaRepresentationMap.keySet()) {
             media.getRepresentations().clear();
             media.addRepresentation(mediaRepresentationMap.get(media));
             filteredMedia.add(media);
@@ -996,7 +1011,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         return filteredMedia;
     }
-
 
 // ---------------------- code snippet preserved for possible later use --------------------
 //	@RequestMapping(
