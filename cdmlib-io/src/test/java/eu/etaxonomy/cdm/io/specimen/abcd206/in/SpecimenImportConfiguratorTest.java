@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -37,19 +37,19 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @version 1.0
  */
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
-	
+
 	@SpringBeanByName
 	CdmApplicationAwareDefaultImport<?> defaultImport;
-	
+
 	@SpringBeanByType
 	INameService nameService;
 
 	@SpringBeanByType
 	IOccurrenceService occurrenceService;
 
-	
+
 	private IImportConfigurator configurator;
-	
+
 	@Before
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
@@ -63,24 +63,24 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		}
 		assertNotNull("Configurator could not be created", configurator);
 	}
-	
+
 	@Test
 	public void testInit() {
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
-	
+
 	@Test
 	@DataSet(value="../../../BlankDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		
-		assertEquals("Number of TaxonNames is incorrect", 11, nameService.count(TaxonNameBase.class));
+
+		assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
 		assertEquals("Number of specimen is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
 
-		
+
 	}
 
 }
