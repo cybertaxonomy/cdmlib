@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +42,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -161,14 +161,16 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      */
     private void setClassification(SpecimenSynthesysExcelImportState state) {
         if (classification == null) {
-            String name = state.getConfig().getClassificationName();
-
-            classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-            if (state.getConfig().getClassificationUuid() != null) {
-                classification.setUuid(state.getConfig().getClassificationUuid());
-            }
-            getClassificationService().saveOrUpdate(classification);
-            refreshTransaction();
+            classification = getClassificationService().find(UUID.fromString("2c2dc41c-9891-42cd-9cd5-8b28dfdd1b8a"));
+            System.out.println(classification);
+            // System.exit(0)
+            //            String name = state.getConfig().getClassificationName();
+            //            classification = Classification.NewInstance(name, ref, Language.DEFAULT());
+            //            if (state.getConfig().getClassificationUuid() != null) {
+            //                classification.setUuid(state.getConfig().getClassificationUuid());
+            //            }
+            //getClassificationService().saveOrUpdate(classification);
+            //            refreshTransaction();
         }
     }
 
@@ -348,8 +350,14 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 List<TaxonBase> c = null;
                 try {
                     Taxon cc= getTaxonService().findBestMatchingTaxon(scientificName);
-                    if (cc != null && cc.getSec().getTitleCache().equalsIgnoreCase(ref.getTitleCache())){
-                        taxon=cc;
+                    if (cc != null){
+                        if ((cc.getSec() == null || cc.getSec().toString().isEmpty()) || (cc.getSec() != null && cc.getSec().getTitleCache().equalsIgnoreCase(ref.getTitleCache()))) {
+                            if(cc.getSec() == null || cc.getSec().toString().isEmpty()){
+                                cc.setSec(ref);
+                                getTaxonService().saveOrUpdate(cc);
+                            }
+                            taxon=cc;
+                        }
                     }
                     else{
                         c = getTaxonService().searchTaxaByName(scientificName, ref);
@@ -377,12 +385,12 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 getNameService().save(taxonName);
                 taxon = Taxon.NewInstance(taxonName, ref); //sec set null
                 getTaxonService().save(taxon);
+                //   refreshTransaction();
+                taxon = (Taxon) getTaxonService().find(taxon.getUuid());
+                taxon = addTaxonNode(taxon, config);
             }
 
-            refreshTransaction();
 
-            taxon = (Taxon) getTaxonService().find(taxon.getUuid());
-            taxon = addTaxonNode(taxon, config);
 
             DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
             determinationEvent.setTaxon(getTaxonService().find(taxon.getUuid()));
@@ -392,9 +400,9 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
             derivedUnitBase.addDetermination(determinationEvent);
 
-            refreshTransaction();
-
             makeIndividualsAssociation(taxon,determinationEvent);
+
+            getOccurrenceService().saveOrUpdate(derivedUnitBase);
         }
 
     }
@@ -418,7 +426,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         if (!exist){
             taxon = (Taxon) getTaxonService().find(taxon.getUuid());
             classification.addChildTaxon(taxon, ref, "", null);
-            refreshTransaction();
+            getClassificationService().saveOrUpdate(classification);
+            //            refreshTransaction();
         }
         return (Taxon) getTaxonService().find(taxon.getUuid());
     }
@@ -503,7 +512,9 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 type = DerivedUnitType.LivingBeing;
             }
             if (type == null) {
-                logger.info("The basis of record does not seem to be known: "   + recordBasis);
+                if(DEBUG) {
+                    logger.info("The basis of record does not seem to be known: "   + recordBasis);
+                }
                 type = DerivedUnitType.DerivedUnit;
             }
         } else {
@@ -520,7 +531,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     public boolean start(SpecimenSynthesysExcelImportConfigurator config){
         boolean result = true;
 
-        refreshTransaction();
+        //        refreshTransaction();
         try {
 
             /**
@@ -622,25 +633,24 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             getOccurrenceService().save(derivedUnitFacade.innerDerivedUnit());
 
 
-            getOccurrenceService().saveOrUpdate(derivedUnitBase);
-            refreshTransaction();
+            //            getOccurrenceService().saveOrUpdate(derivedUnitBase);
+            //            refreshTransaction();
 
             setTaxonNameBase(config);
 
-
-            refreshTransaction();
+            //         refreshTransaction();
             if (DEBUG) {
                 logger.info("saved new specimen ...");
             }
-
-
 
         } catch (Exception e) {
             logger.warn("Error when reading record!!");
             e.printStackTrace();
             result = false;
         }
-        logger.info("commit done");
+        if (DEBUG) {
+            logger.info("commit done");
+        }
         //app.close();
         return result;
     }
@@ -665,12 +675,12 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     }
 
     private void makeIndividualsAssociation(Taxon taxon, DeterminationEvent determinationEvent) {
-        try{
-            taxon = (Taxon) getTaxonService().find(taxon.getUuid());
-        }
-        catch(Exception e){
-            //logger.info("taxon uptodate");
-        }
+        //        try{
+        //            taxon = (Taxon) getTaxonService().find(taxon.getUuid());
+        //        }
+        //        catch(Exception e){
+        //            //logger.info("taxon uptodate");
+        //        }
 
         TaxonDescription taxonDescription = getTaxonDescription(taxon, ref, false, true);
         taxonDescription.setTitleCache(ref.getTitleCache(), true);
@@ -722,7 +732,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         if (ref == null){
             ref = state.getConfig().getSourceReference();
         }
+        getReferenceService().saveOrUpdate(ref);
+        System.out.println("ref:"+ref);
         setClassification(state);
+
+        refreshTransaction();
 
         URI source = state.getConfig().getSource();
         ArrayList<HashMap<String,String>> unitsList = null;
@@ -741,6 +755,10 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             HashMap<String,String> unit=null;
             MyHashMap<String,String> myunit;
             for (int i=0; i<unitsList.size();i++){
+                if (i%100==0) {
+                    logger.info("NbUnit prepared: "+i);
+                    refreshTransaction();
+                }
                 unit = unitsList.get(i);
                 myunit=new MyHashMap<String, String>();
                 for (String key :unit.keySet()) {
@@ -804,14 +822,40 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         List<String> collectorsU = new ArrayList<String>(new HashSet<String>(collectors));
         List<String> teamsU = new ArrayList<String>(new HashSet<String>(teams));
 
+
+        //existing teams in DB
+        Map<String,Team> titleCacheTeam = new HashMap<String, Team>();
         List<UuidAndTitleCache<Team>> hiberTeam = getAgentService().getTeamUuidAndTitleCache();
+
+        Set<UUID> uuids = new HashSet<UUID>();
+        for (UuidAndTitleCache<Team> hibernateT:hiberTeam){
+            uuids.add(hibernateT.getUuid());
+        }
+        List<AgentBase> existingTeams = getAgentService().find(uuids);
+        for (AgentBase existingP:existingTeams){
+            titleCacheTeam.put(existingP.getTitleCache(),(Team) existingP);
+        }
+
+
         Map<String,UUID> teamMap = new HashMap<String, UUID>();
         for (UuidAndTitleCache<Team> uuidt:hiberTeam){
             teamMap.put(uuidt.getTitleCache(), uuidt.getUuid());
         }
-        List<UuidAndTitleCache<Person>> persons = getAgentService().getPersonUuidAndTitleCache();
+
+        //existing persons in DB
+        List<UuidAndTitleCache<Person>> hiberPersons = getAgentService().getPersonUuidAndTitleCache();
+        Map<String,Person> titleCachePerson = new HashMap<String, Person>();
+        uuids = new HashSet<UUID>();
+        for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
+            uuids.add(hibernateP.getUuid());
+        }
+        List<AgentBase> existingPersons = getAgentService().find(uuids);
+        for (AgentBase existingP:existingPersons){
+            titleCachePerson.put(existingP.getTitleCache(),(Person) existingP);
+        }
+
         Map<String,UUID> personMap = new HashMap<String, UUID>();
-        for (UuidAndTitleCache<Person> person:persons){
+        for (UuidAndTitleCache<Person> person:hiberPersons){
             personMap.put(person.getTitleCache(), person.getUuid());
         }
 
@@ -832,13 +876,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 teamToAdd.add(p);
             }
         }
-
-
         Map<UUID, AgentBase> uuuidPerson = getAgentService().save(personToadd);
-        Map<String,Person> titleCachePerson = new HashMap<String, Person>();
         for (UUID u:uuuidPerson.keySet()){
             titleCachePerson.put(uuuidPerson.get(u).getTitleCache(),(Person) uuuidPerson.get(u) );
         }
+
 
         Person ptmp ;
         Map <String,Integer>teamdone = new HashMap<String, Integer>();
@@ -860,9 +902,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             }
         }
 
-        Map<String,Team> titleCacheTeam = new HashMap<String, Team>();
-        Map<UUID, AgentBase> uuuidTeam =  getAgentService().save(teamToAdd);
 
+        Map<UUID, AgentBase> uuuidTeam =  getAgentService().save(teamToAdd);
 
         for (UUID u:uuuidTeam.keySet()){
             titleCacheTeam.put(uuuidTeam.get(u).getTitleCache(), (Team) uuuidTeam.get(u) );

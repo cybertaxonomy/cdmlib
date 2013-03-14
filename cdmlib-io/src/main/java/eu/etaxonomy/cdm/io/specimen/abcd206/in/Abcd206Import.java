@@ -140,7 +140,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 classification.setUuid(state.getConfig().getClassificationUuid());
             }
             getClassificationService().saveOrUpdate(classification);
-            refreshTransaction();
+//            refreshTransaction();
         }
     }
 
@@ -168,7 +168,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             for (int i = 0; i < unitsList.getLength(); i++) {
 
                 this.setUnitPropertiesXML((Element) unitsList.item(i));
-                refreshTransaction();
+//                refreshTransaction();
                 this.handleSingleUnit(i);
 
                 // compare the ABCD elements added in to the CDM and the
@@ -179,7 +179,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // knownABCDelements = new ArrayList<String>();
                 dataHolder.allABCDelements = new HashMap<String, String>();
 
-                refreshTransaction();
+//                refreshTransaction();
             }
         }
         commitTransaction(tx);
@@ -292,7 +292,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 
             getOccurrenceService().saveOrUpdate(derivedUnitBase);
-            refreshTransaction();
+//            refreshTransaction();
 
             // handle identifications
             handleIdentifications(this.abcdstate.getConfig(), derivedUnitFacade);
@@ -522,7 +522,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
         }
 
-        refreshTransaction();
+//        refreshTransaction();
 
         try {
             taxon = (Taxon) getTaxonService().find(taxon.getUuid());
@@ -537,7 +537,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         determinationEvent.setIdentifiedUnit(derivedUnitBase);
 
         derivedUnitBase.addDetermination(determinationEvent);
-        refreshTransaction();
+//        refreshTransaction();
 
         try {
             if(DEBUG) {
@@ -562,7 +562,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     designation.setTypeStatus(specimenTypeDesignationstatus);
                     designation.setTypeSpecimen(derivedUnitBase);
                     name.addTypeDesignation(designation, true);
-                    refreshTransaction();
+//                    refreshTransaction();
 
                 }
             }
@@ -579,7 +579,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         getOccurrenceService().saveOrUpdate(derivedUnitBase);
-        refreshTransaction();
+//        refreshTransaction();
 
 
         if (config.isDoCreateIndividualsAssociations()) {
@@ -633,16 +633,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // }
             }
             makeIndividualsAssociation(taxon, determinationEvent);
+            getOccurrenceService().saveOrUpdate(derivedUnitBase);
         }
     }
 
     private void makeIndividualsAssociation(Taxon taxon, DeterminationEvent determinationEvent) {
-        try{
-            taxon = (Taxon) getTaxonService().find(taxon.getUuid());
-        }
-        catch(Exception e){
-            //logger.info("taxon uptodate");
-        }
+//        try{
+//            taxon = (Taxon) getTaxonService().find(taxon.getUuid());
+//        }
+//        catch(Exception e){
+//            //logger.info("taxon uptodate");
+//        }
 
         TaxonDescription taxonDescription = getTaxonDescription(taxon, ref, false, true);
         taxonDescription.setTitleCache(ref.getTitleCache(), true);
@@ -756,13 +757,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 taxonName.setRank(rank);
             }
             getNameService().save(taxonName);
-            refreshTransaction();
+//            refreshTransaction();
             taxon = Taxon.NewInstance(taxonName, ref); //sec set null
             getTaxonService().save(taxon);
             System.out.println("taxon uuid "+taxon.getUuid());
-            refreshTransaction();
+//            refreshTransaction();
         }
-        refreshTransaction();
+//        refreshTransaction();
         System.out.println("taxon.getUuid() suite :"+taxon.getUuid());
         return (Taxon) getTaxonService().find(taxon.getUuid());
     }
@@ -843,7 +844,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             taxon = (Taxon) getTaxonService().find(taxon.getUuid());
 
             linkDeterminationEvent(taxon, preferredFlag, config, derivedUnitFacade);
-            refreshTransaction();
+//            refreshTransaction();
         }
         taxon = (Taxon) getTaxonService().find(taxon.getUuid());
     }
@@ -895,7 +896,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             currentTaxon = getTaxon(config, name, -1, Rank.SUBSPECIES());
             currentTaxon = addParentTaxon(currentTaxon, config);
             classification.addParentChild(currentTaxon, taxon, ref, "");
-            refreshTransaction();
+            getClassificationService().saveOrUpdate(classification);
+//            refreshTransaction();
         }
 
         if (rank.isLower(Rank.SPECIES())){
@@ -904,7 +906,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             currentTaxon = getTaxon(config, name, -1, Rank.SPECIES());
             currentTaxon = addParentTaxon(currentTaxon, config);
             classification.addParentChild(currentTaxon, taxon, ref, "");
-            refreshTransaction();
+            getClassificationService().saveOrUpdate(classification);
+//            refreshTransaction();
         }
         if (rank.isLower(Rank.SUBGENUS())){
             String name = nvname.getInfraGenericEpithet();
@@ -914,7 +917,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 currentTaxon = addParentTaxon(currentTaxon, config);
                 saveOrUpdateClassification(currentTaxon,taxon);
 
-                refreshTransaction();
+//                refreshTransaction();
             }
         }
 
@@ -949,6 +952,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             child = (Taxon) getTaxonService().find(child.getUuid());
             classification.addChildTaxon(child, ref, "", null);
         }
+        getClassificationService().saveOrUpdate(classification);
     }
 
     private NonViralName<?> parseScientificName(String scientificName) {
