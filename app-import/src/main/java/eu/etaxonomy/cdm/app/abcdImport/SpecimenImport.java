@@ -54,6 +54,7 @@ public class SpecimenImport {
             ICdmDataSource destination = cdmDestination;
             Abcd206ImportConfigurator specimenImportConfigurator = Abcd206ImportConfigurator.NewInstance(source,  destination);
 
+            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
             specimenImportConfigurator.setSourceSecId("specimen");
             specimenImportConfigurator.setCheck(check);
             specimenImportConfigurator.setDbSchemaValidation(hbm2dll);

@@ -63,7 +63,7 @@ public class SynthesysCacheActivator {
             specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
             specimenImportConfigurator.setDoAutomaticParsing(true);
             specimenImportConfigurator.setReUseExistingMetadata(true);
-            specimenImportConfigurator.setAskForDate(false);
+            specimenImportConfigurator.setAskForDate(true);
             specimenImportConfigurator.setDefaultAuthor("L.");
 
             specimenImportConfigurator.setReUseTaxon(true);
