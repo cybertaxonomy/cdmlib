@@ -26,7 +26,7 @@ public class CdmDestinations {
     public static ICdmDataSource proibiosphere_local(){
         DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
         String cdmServer = "localhost";
-        String cdmDB = "cdm_integration_chenopodiumpilot_proibiosphere";
+        String cdmDB = "cdm_production_proibiosphere_chenopodium_pilot";
         String cdmUserName = "root";
         return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
     }
