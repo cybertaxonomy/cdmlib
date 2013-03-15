@@ -92,17 +92,21 @@ public class UnitsGatheringArea {
 			country = occurrenceService.getCountryByIso(iso);
 		}
 		if (country != null){
-			this.area.addWaterbodyOrCountry(country);
-		}else{
-			if (fullName != ""){
+			area.addWaterbodyOrCountry(country);
+			area.setLabel(country.getTitleCache());
+		}
+		else{
+			if (!fullName.isEmpty()){
 				//TODO move to termservice
 				countries = occurrenceService.getWaterbodyOrCountryByName(fullName);
 			}
 			if (countries.size() >0){
-				this.area.addWaterbodyOrCountry(countries.get(0));
-			}else{
-				this.area.setLabel(fullName);
-				this.area.setLevel(NamedAreaLevel.COUNTRY());
+				area.addWaterbodyOrCountry(countries.get(0));
+				area.setLabel(countries.get(0).getTitleCache());
+			}
+			else{
+				area.setLabel(fullName);
+				area.setLevel(NamedAreaLevel.COUNTRY());
 			}
 		}
 	}

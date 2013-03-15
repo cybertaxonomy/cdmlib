@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
@@ -134,6 +135,8 @@ public class UnitsGatheringEvent {
         if (latitude != 0.0) {
             coordinates.setLatitude(latitude);
         }
+        //for proiBiosphere Quentin's data
+        coordinates.setReferenceSystem(ReferenceSystem.WGS84());
         this.gatheringEvent.setExactLocation(coordinates);
 
     }

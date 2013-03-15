@@ -475,7 +475,7 @@ public class Abcd206XMLFieldGetter {
             group = root.getElementsByTagName(prefix + "Country");
             childs = group.item(0).getChildNodes();
             for (int i = 0; i < childs.getLength(); i++) {
-                if (childs.item(i).getNodeName() == "Name") {
+                if (childs.item(i).getNodeName().contains("Name")) {
                     path = childs.item(i).getNodeName();
                     getHierarchie(childs.item(i));
                     dataHolder.knownABCDelements.add(path);
@@ -490,7 +490,7 @@ public class Abcd206XMLFieldGetter {
             group = root.getElementsByTagName(prefix + "Country");
             childs = group.item(0).getChildNodes();
             for (int i = 0; i < childs.getLength(); i++) {
-                if (childs.item(i).getNodeName() == "ISO3166Code") {
+                if (childs.item(i).getNodeName().contains("ISO3166Code")) {
                     path = childs.item(i).getNodeName();
                     getHierarchie(childs.item(i));
                     dataHolder.knownABCDelements.add(path);

@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -31,8 +31,6 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
-import eu.etaxonomy.cdm.common.media.MediaInfo;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
@@ -42,15 +40,14 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -59,11 +56,13 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.Fossil;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -107,6 +106,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     protected String gatheringDate;
     protected String gatheringTeam;
     protected String gatheringAgent;
+    protected String originalsource;
 
     private DerivedUnitBase derivedUnitBase;
     private Reference<?> ref = null;
@@ -114,7 +114,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     private Classification classification = null;
 
     protected ArrayList<String> identificationList = new ArrayList<String>();
-    protected ArrayList<String> namedAreaList = new ArrayList<String>();
     protected ArrayList<String> multimediaObjects = new ArrayList<String>();
     private boolean keepAtomisedDate=true;
 
@@ -160,17 +159,24 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @return
      */
     private void setClassification(SpecimenSynthesysExcelImportState state) {
-        if (classification == null) {
-            classification = getClassificationService().find(UUID.fromString("2c2dc41c-9891-42cd-9cd5-8b28dfdd1b8a"));
-            System.out.println(classification);
-            // System.exit(0)
-            //            String name = state.getConfig().getClassificationName();
-            //            classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-            //            if (state.getConfig().getClassificationUuid() != null) {
-            //                classification.setUuid(state.getConfig().getClassificationUuid());
-            //            }
-            //getClassificationService().saveOrUpdate(classification);
-            //            refreshTransaction();
+        if (classification == null){
+            if (state.getConfig().getClassificationName()!=null && state.getConfig().getClassificationName().equalsIgnoreCase("chenopodium")) {
+                classification = getClassificationService().find(UUID.fromString("2c2dc41c-9891-42cd-9cd5-8b28dfdd1b8a"));
+                if (classification ==null){
+                    String name = state.getConfig().getClassificationName();
+                    classification = Classification.NewInstance(name, ref, Language.DEFAULT());
+                    getClassificationService().saveOrUpdate(classification);
+                }
+            }
+            else{
+                String name = state.getConfig().getClassificationName();
+                classification = Classification.NewInstance(name, ref, Language.DEFAULT());
+                if (state.getConfig().getClassificationUuid() != null) {
+                    classification.setUuid(state.getConfig().getClassificationUuid());
+                }
+                getClassificationService().saveOrUpdate(classification);
+            }
+
         }
     }
 
@@ -247,6 +253,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         gatheringMonth = unit.get("month");
         gatheringDay = unit.get("day");
         gatheringDate = unit.get("date");
+
+        originalsource = unit.get("originalsource");
     }
 
 
@@ -544,6 +552,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             derivedUnitFacade.setCatalogNumber(unitID);
             derivedUnitFacade.setAccessionNumber(accessionNumber);
 
+            if (!originalsource.isEmpty()){
+                Reference<?> reference = ReferenceFactory.newGeneric();
+                reference.setTitleCache(originalsource, true);
+                derivedUnitBase.addSource(originalsource, "", reference, "");
+            }
             /**
              * INSTITUTION & COLLECTION
              */
@@ -558,12 +571,36 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
              * GATHERING EVENT
              */
 
-            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), locality, languageIso, longitude,
-                    latitude, gatheringAgent, gatheringTeam, config );
+            // gathering event
+            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), locality, languageIso,
+                    longitude, latitude, gatheringAgent, gatheringTeam,config);
 
+            // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(isocountry, country, getOccurrenceService());
             NamedArea areaCountry = unitsGatheringArea.getArea();
-            unitsGatheringEvent.addArea(areaCountry);
+
+
+
+            // copy gathering event to facade
+            GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
+
+            //join gatheringEvent to fieldObservation
+            derivedUnitFacade.setGatheringEvent(gatheringEvent);
+
+            derivedUnitFacade.setLocality(gatheringEvent.getLocality());
+            derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+            //derivedUnitFacade.setCollector(gatheringEvent.getCollector());
+            derivedUnitFacade.setCountry(areaCountry);
+            derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+
+
+            /*
+             * merge AND STORE DATA
+             */
+            getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
+            getTermService().saveLanguageData(unitsGatheringEvent.getLocality());
+
+
 
             //add gathering date
             if (keepAtomisedDate && (!gatheringYear.isEmpty() || !gatheringMonth.isEmpty() || !gatheringDay.isEmpty())){
@@ -589,52 +626,22 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
             //add fieldNumber
             derivedUnitFacade.setFieldNumber(fieldNumber);
-            //join gatheringEvent to fieldObservation
-            derivedUnitFacade.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
+
             //add Multimedia URLs
             if(multimediaObjects.size()>0){
-                MediaRepresentation representation;
-                Media media;
-                MediaInfo mmd ;
-                ImageInfo imd ;
-                URL url ;
-                ImageFile imf;
-                for (int i=0;i<multimediaObjects.size();i++){
-                    if(multimediaObjects.get(i) != null){
-                        if (DEBUG) {
-                            logger.info("URL :"+multimediaObjects.get(i));
-                        }
-                        url = new URL(multimediaObjects.get(i));
-                        imd = ImageInfo.NewInstance(url.toURI(), 0);
-                        if (imd != null){
-                            if (DEBUG) {
-                                logger.debug("image not null");
-                            }
-                            representation = MediaRepresentation.NewInstance();
-                            URI uri = new URI(multimediaObjects.get(i));
-                            imf = ImageFile.NewInstance(uri, null, imd);
-                            representation.addRepresentationPart(imf);
-                            media = Media.NewInstance();
-                            media.addRepresentation(representation);
-                            derivedUnitFacade.addFieldObjectMedia(media);
-                        }
+                for (String multimediaObject : multimediaObjects) {
+                    Media media;
+                    try {
+                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA, false);
+                        derivedUnitFacade.addDerivedUnitMedia(media);
+                    } catch (MalformedURLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 }
             }
 
-            /**
-             * SAVE AND STORE DATA
-             */
-            getTermService().save(areaCountry);//save it sooner
-            //ONLY FOR ABCD XML DATA
-            //          for (int i=0; i<nas.size();i++)
-            //              app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
-            getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
-            getOccurrenceService().save(derivedUnitFacade.innerDerivedUnit());
-
-
-            //            getOccurrenceService().saveOrUpdate(derivedUnitBase);
-            //            refreshTransaction();
+            getOccurrenceService().saveOrUpdate(derivedUnitBase);
 
             setTaxonNameBase(config);
 
@@ -682,8 +689,15 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         //            //logger.info("taxon uptodate");
         //        }
 
-        TaxonDescription taxonDescription = getTaxonDescription(taxon, ref, false, true);
-        taxonDescription.setTitleCache(ref.getTitleCache(), true);
+        TaxonDescription taxonDescription=null;
+        if (taxon.getTitleCache().contains("Chenopodium vulvaria L.")) {
+            taxonDescription = (TaxonDescription) getDescriptionService().find(UUID.fromString("a60074e7-979b-41fd-ad4d-d391db474ac4"));
+        }
+        if(!taxon.getTitleCache().contains("Chenopodium vulvaria L.") || taxonDescription ==null) {
+            taxonDescription = getTaxonDescription(taxon, ref, false, true);
+            taxonDescription.setTitleCache(ref.getTitleCache(), true);
+        }
+
 
         taxon.addDescription(taxonDescription);
 
@@ -726,14 +740,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
         tx = startTransaction();
 
-        logger.info("getTaxonRef");
         ref = state.getConfig().getTaxonReference();
-        logger.info("getSourceRef");
         if (ref == null){
             ref = state.getConfig().getSourceReference();
         }
         getReferenceService().saveOrUpdate(ref);
-        System.out.println("ref:"+ref);
         setClassification(state);
 
         refreshTransaction();
@@ -831,9 +842,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         for (UuidAndTitleCache<Team> hibernateT:hiberTeam){
             uuids.add(hibernateT.getUuid());
         }
-        List<AgentBase> existingTeams = getAgentService().find(uuids);
-        for (AgentBase existingP:existingTeams){
-            titleCacheTeam.put(existingP.getTitleCache(),(Team) existingP);
+        if (!uuids.isEmpty()){
+            List<AgentBase> existingTeams = getAgentService().find(uuids);
+            for (AgentBase existingP:existingTeams){
+                titleCacheTeam.put(existingP.getTitleCache(),(Team) existingP);
+            }
         }
 
 
@@ -849,9 +862,12 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
             uuids.add(hibernateP.getUuid());
         }
-        List<AgentBase> existingPersons = getAgentService().find(uuids);
-        for (AgentBase existingP:existingPersons){
-            titleCachePerson.put(existingP.getTitleCache(),(Person) existingP);
+
+        if (!uuids.isEmpty()){
+            List<AgentBase> existingPersons = getAgentService().find(uuids);
+            for (AgentBase existingP:existingPersons){
+                titleCachePerson.put(existingP.getTitleCache(),(Person) existingP);
+            }
         }
 
         Map<String,UUID> personMap = new HashMap<String, UUID>();
