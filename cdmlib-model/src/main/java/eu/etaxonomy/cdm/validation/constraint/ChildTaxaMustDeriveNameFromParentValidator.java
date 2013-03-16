@@ -37,12 +37,12 @@ public class ChildTaxaMustDeriveNameFromParentValidator implements
 				if(((NonViralName)childName).getRank().isSpecies() || ((NonViralName)childName).getRank().isInfraSpecific()) {
 				    if(!((NonViralName)parentName).getGenusOrUninomial().equals(((NonViralName)childName).getGenusOrUninomial())) {
 					valid = false;
-					constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addSubNode("fromTaxon").addSubNode("name").addSubNode("genusOrUninomial").addError();
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("genusOrUninomial").addConstraintViolation();
 				}
 				if(((NonViralName)parentName).getRank().isSpecies() || ((NonViralName)parentName).getRank().isInfraSpecific()) {
 					if(!((NonViralName)parentName).getSpecificEpithet().equals(((NonViralName)childName).getSpecificEpithet())) {
 						valid = false;
-						constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addSubNode("fromTaxon").addSubNode("name").addSubNode("specificEpithet").addError();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("specificEpithet").addConstraintViolation();
 					}	
 				}
 				}

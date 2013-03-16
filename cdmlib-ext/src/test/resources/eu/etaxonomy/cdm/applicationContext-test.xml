@@ -30,10 +30,10 @@
             class="org.springframework.beans.factory.config.PropertiesFactoryBean">
             <property name="properties">
                 <props>
-                    <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                    <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
                     <prop key="hibernate.show_sql">false</prop>
                     <prop key="hibernate.format_sql">false</prop>
-                    <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+                    <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
                     <!-- TODO trying to use a managed session context
                     <prop key="hibernate.current_session_context_class">managed</prop>
                     -->
@@ -47,9 +47,13 @@
     </bean>
 
 
+   <!--  
+    We do not use old springmodules spelling module anymore. See persistence spelling.xml comments for details.
+    Try to work with modern annotationbased spelling instead.
+    
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>
-    </bean>
+    </bean> -->
 
 </beans>

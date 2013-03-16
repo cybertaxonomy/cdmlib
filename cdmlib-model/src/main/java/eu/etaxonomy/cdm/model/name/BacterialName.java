@@ -52,12 +52,12 @@ public class BacterialName extends NonViralName<BacterialName> implements Clonea
 
 	//Author team and year of the subgenus name
 	@XmlElement(name = "SubGenusAuthorship")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)  //TODO H42
 	private String subGenusAuthorship;
 	
 	//Approbation of name according to approved list, validation list, or validly published, paper in IJSB after 1980
 	@XmlElement(name = "NameApprobation")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES) //TODO H42
 	private String nameApprobation;
 
 	// ************* CONSTRUCTORS *************/

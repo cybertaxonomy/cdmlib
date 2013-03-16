@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -75,25 +76,25 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	private Collection collection;
 
 	@XmlElement(name = "CatalogNumber")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String catalogNumber;
 	
 	@XmlElement(name = "AccessionNumber")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String accessionNumber;
 	
 	@XmlElement(name = "CollectorsNumber")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO) //TODO H42 was UN_TOKENIZED
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String collectorsNumber;
 	
 	@XmlElement(name = "Barcode")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO) //TODO H42 was UN_TOKENIZED
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String barcode;

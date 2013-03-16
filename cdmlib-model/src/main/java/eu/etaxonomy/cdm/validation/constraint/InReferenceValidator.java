@@ -14,8 +14,7 @@ public class InReferenceValidator implements ConstraintValidator<InReference, Re
 		
 	}
 
-	public boolean isValid(Reference value,
-			ConstraintValidatorContext constraintValidatorContext) {
+	public boolean isValid(Reference value, ConstraintValidatorContext constraintValidatorContext) {
 		boolean isValid = true;
 		try {
 		if (value.getInReference() != null){
@@ -34,8 +33,8 @@ public class InReferenceValidator implements ConstraintValidator<InReference, Re
 		
 		}
 		if (!isValid){
-			constraintValidatorContext.disableDefaultError();
-			constraintValidatorContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.wrongInReferenceForReferenceType.message}").addSubNode("inReference").addError();
+			constraintValidatorContext.disableDefaultConstraintViolation();
+			constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.wrongInReferenceForReferenceType.message}").addNode("inReference").addConstraintViolation();
 		}
 		}catch(NullPointerException e){
 			return isValid;

@@ -31,12 +31,13 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -51,15 +52,13 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     FeatureTree.class
 })
 @MappedSuperclass
-public abstract class TermBase extends IdentifiableEntity{
+public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCacheStrategy >{
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermBase.class);
 
     @XmlElement(name = "URI")
-    @Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-    @NullOrNotEmpty
-    @Length(max = 255)
+    @Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)    //TODO H42 was UN_TOKENIZED
     @Type(type="uriUserType")
     private URI uri;
 

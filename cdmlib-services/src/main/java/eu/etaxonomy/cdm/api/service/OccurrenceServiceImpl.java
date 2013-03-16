@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,22 +26,17 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -50,10 +44,8 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -108,6 +100,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * FIXME Candidate for harmonization
      * move to termService
      */
+    @Override
     public WaterbodyOrCountry getCountryByIso(String iso639) {
         return this.definedTermDao.getCountryByIso(iso639);
 
@@ -117,6 +110,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * FIXME Candidate for harmonization
      * move to termService
      */
+    @Override
     public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name) {
         List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(WaterbodyOrCountry.class, name, null, null, null, null, null, null) ;
         List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
@@ -126,11 +120,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return countries;
     }
 
+    @Override
     @Autowired
     protected void setDao(IOccurrenceDao dao) {
         this.dao = dao;
     }
 
+    @Override
     public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDerivationEvents(occurence);
 
@@ -142,6 +138,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    @Override
     public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);
 
@@ -153,6 +150,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    @Override
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countMedia(occurence);
 
@@ -167,6 +165,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#list(java.lang.Class, eu.etaxonomy.cdm.model.taxon.TaxonBase, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
+    @Override
     public Pager<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.count(type,determinedAs);
         List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
@@ -258,26 +257,25 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Set<Integer> occurrenceIds = new HashSet<Integer>();
         List<T> occurrences = new ArrayList<T>();
 
-        Integer limit = PagerUtils.limitFor(pageSize);
-        Integer start = PagerUtils.startFor(pageSize, pageNumber);
-
+//        Integer limit = PagerUtils.limitFor(pageSize);
+//        Integer start = PagerUtils.startFor(pageSize, pageNumber);
 
         associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
 
         if(includeRelationships != null) {
-            taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, pageSize, pageSize, propertyPaths);
+            taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, null, null, propertyPaths);
         }
 
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, limit, start, orderHints, propertyPaths);
+            List<T> perTaxonOccurrences = dao.listByAssociatedTaxon(type, taxon, null, null, orderHints, propertyPaths);
             for (SpecimenOrObservationBase o : perTaxonOccurrences) {
                 occurrenceIds.add(o.getId());
             }
         }
 
-        occurrences = (List<T>) dao.listByIds(occurrenceIds, null, null, orderHints, propertyPaths);
+        occurrences = (List<T>) dao.listByIds(occurrenceIds, pageSize, pageNumber, orderHints, propertyPaths);
 
         return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
 

@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @version 1.0
  */
 public class NomenclaturalCodeAwareDataSource extends BasicDataSource {
-	private static final Logger logger = Logger
-			.getLogger(NomenclaturalCodeAwareDataSource.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NomenclaturalCodeAwareDataSource.class);
 	
 	private NomenclaturalCode nomenclaturalCode;
 

@@ -26,9 +26,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
@@ -66,14 +66,14 @@ public class TimePeriod implements Cloneable, Serializable {
 	@XmlElement(name = "Start")
 	@XmlJavaTypeAdapter(value = PartialAdapter.class)
 	@Type(type="partialUserType")
-	@Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index = org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO) //TODO H42 was UN_TOKENIZED
 	@FieldBridge(impl = PartialBridge.class)
 	private Partial start;
 	
 	@XmlElement(name = "End")
 	@XmlJavaTypeAdapter(value = PartialAdapter.class)
 	@Type(type="partialUserType")
-	@Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index = org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
 	@FieldBridge(impl = PartialBridge.class)
 	private Partial end;
 

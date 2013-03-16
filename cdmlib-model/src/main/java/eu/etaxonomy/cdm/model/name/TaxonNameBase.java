@@ -138,14 +138,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 
     @XmlElement(name = "AppendedPhrase")
-    @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @Field(index= org.hibernate.search.annotations.Index.YES) //TODO H42
     @CacheUpdate(value ="nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
     private String appendedPhrase;
 
     @XmlElement(name = "NomenclaturalMicroReference")
-    @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @Field(index= org.hibernate.search.annotations.Index.YES)  //TODO H42
     @CacheUpdate(noUpdate ="titleCache")
     @NullOrNotEmpty
     @Size(max = 255)

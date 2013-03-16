@@ -28,6 +28,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.validator.constraints.Length;
 
@@ -62,10 +63,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	
 	//external location of copyright text
 	@XmlElement(name = "URI")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@NullOrNotEmpty
-	@Length(max = 255)
-	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.uri.message}") 
+	@Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@Type(type="uriUserType")
 	private URI uri;
 	

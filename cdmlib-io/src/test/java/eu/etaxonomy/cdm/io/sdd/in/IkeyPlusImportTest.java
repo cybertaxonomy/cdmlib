@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
@@ -17,14 +16,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.io.sdd.ikeyplus.IkeyPlusImport;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -63,7 +60,9 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="../../BlankDataSet.xml")
     public void testDoInvoke() {
-         UUID newKeyUuid = null;
+    	commitAndStartNewTransaction(null);
+         
+    	UUID newKeyUuid = null;
         try {
             ikeyPlusImport.getKey(sddUri, null);
             newKeyUuid = ikeyPlusImport.getCdmKey().getUuid();

@@ -15,6 +15,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Fieldable;
 
 /**
  * @author Andreas Kohlbecker
@@ -37,8 +38,8 @@ public class LuceneDocumentBeanProcessor extends AbstractBeanProcessor<Document>
     @Override
     public JSONObject processBeanSecondStep(Document document, JSONObject json, JsonConfig jsonConfig) {
 
-        List<Field> fields = document.getFields();
-        for (Field field : fields) {
+        List<Fieldable> fields = document.getFields();
+        for (Fieldable field : fields) {
             // no need to handle multivalued fields, since we don't have these in case of the cdmlib
             json.element(field.name(), field.stringValue());
         }

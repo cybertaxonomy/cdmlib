@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -66,12 +67,12 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
 	@XmlElement(name = "Symmetrical")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)    //TODO H42 was UN_TOKENIZED
 	@Column(name="symmetrical") //to be compatible with PostGreSQL 
 	private boolean symmetric;
 	
 	@XmlElement(name = "Transitive")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)    //TODO H42 was UN_TOKENIZED
 	private boolean transitive;
 	
 	@XmlElementWrapper(name = "InverseRepresentations")

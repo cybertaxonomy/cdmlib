@@ -26,8 +26,8 @@ import org.dozer.Mapper;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
-import org.hibernate.collection.PersistentCollection;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.collection.spi.PersistentCollection;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
@@ -83,13 +83,12 @@ public class AssemblerTest extends UnitilsJUnit4 {
     private Taxon taxon;
     private IBook sec;
     private IBook book;
-    private Reference bookSection;
-    private TeamOrPersonBase authorTeam;
-    private NonViralName name;
+    private Reference<?> bookSection;
+    private TeamOrPersonBase<?> authorTeam;
+    private NonViralName<?> name;
     private LSID lsid;
     private TaxonDescription taxonDescription;
-    ReferenceFactory refFactory = ReferenceFactory.newInstance();
-
+   
     @BeforeClass
     public static void onSetUp() {
         DefaultTermInitializer defaultTermInitializer = new DefaultTermInitializer();
@@ -106,14 +105,14 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         name = BotanicalName.NewInstance(null);
         name.setNameCache("nameCache");
-        INomenclaturalReference nomenclaturalReference = refFactory.newArticle();
+        INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
         nomenclaturalReference.setTitleCache("nomenclaturalReference", true);
         name.setNomenclaturalReference(nomenclaturalReference);
         name.setNomenclaturalMicroReference("1");
         name.setAuthorshipCache("authorshipCache");
         name.setRank(Rank.SPECIES());
 
-        sec = refFactory.newBook();
+        sec = ReferenceFactory.newBook();
         sec.setAuthorTeam(authorTeam);
         sec.setTitleCache("sec.titleCache", true);
         sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
@@ -153,7 +152,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         // ------------------------------------------------------
 
-        book = refFactory.newBook();
+        book = ReferenceFactory.newBook();
         book.setTitle("Book.title");
         book.setAuthorTeam(authorTeam);
         book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
@@ -169,7 +168,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.setVolume("Volume 1");
         book.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/1"));
 
-        bookSection = refFactory.newBookSection();
+        bookSection = ReferenceFactory.newBookSection();
         bookSection.setInReference((Reference)book);
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
@@ -393,12 +392,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return null;
         }
 
-        public Object getImplementation(SessionImplementor arg0)
-                throws HibernateException {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
         public Class getPersistentClass() {
             // TODO Auto-generated method stub
             return null;
@@ -429,16 +422,50 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         }
 
-        public void setSession(SessionImplementor arg0)
-                throws HibernateException {
-            // TODO Auto-generated method stub
-
-        }
-
         public void setUnwrap(boolean arg0) {
             // TODO Auto-generated method stub
 
         }
+
+		@Override
+		public Object getImplementation(
+				org.hibernate.engine.spi.SessionImplementor session)
+				throws HibernateException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isReadOnlySettingAvailable() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setReadOnly(boolean readOnly) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setSession(
+				org.hibernate.engine.spi.SessionImplementor session)
+				throws HibernateException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void unsetSession() {
+			// TODO Auto-generated method stub
+			
+		}
 
     }
 

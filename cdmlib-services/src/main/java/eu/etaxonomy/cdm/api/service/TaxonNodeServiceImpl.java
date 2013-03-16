@@ -142,7 +142,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			// Remove old relationships
 			taxonRelationship.setToTaxon(null);
 			taxonRelationship.setFromTaxon(null);
+			
+			
 		}
+		oldTaxon.getRelationsFromThisTaxon().clear();
+		oldTaxon.getRelationsToThisTaxon().clear();
 		
 		//Move descriptions to new taxon
 		List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( oldTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions()) 
@@ -153,8 +157,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			newAcceptedTaxon.addDescription(description);
 		}
 				
-		oldTaxonNode.delete();
-		
+		oldTaxonNode.delete();		
 		return synonmyRelationship.getSynonym();
 	}
 }

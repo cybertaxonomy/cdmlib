@@ -12,8 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -21,7 +20,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.MediaKey;
-import eu.etaxonomy.cdm.model.description.MultiAccessKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;

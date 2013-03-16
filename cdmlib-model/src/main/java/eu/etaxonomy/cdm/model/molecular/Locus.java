@@ -10,24 +10,21 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
-
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+
 /**
- * The region name of a DNA string. E.g. 18S, COX, etc.
- * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:32
+ * @author a.mueller
+ * @created 04-Mar-2013 13:06:32
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Locus", propOrder = {
@@ -58,7 +55,10 @@ public class Locus extends VersionableEntity {
 	
 //*********************** CONSTRUCTOR ****************************************************/
 
-	private Locus() {
+	//Locus currently does not allow private constructor (javassist can't lazy load 
+	// and create  class).
+	//Still need to find out why.
+	protected Locus() {
 
 	}
 

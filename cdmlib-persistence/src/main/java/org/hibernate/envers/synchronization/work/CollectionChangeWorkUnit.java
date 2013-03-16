@@ -45,48 +45,51 @@ import org.hibernate.Session;
  * This fixes #
  *
  */
-public class CollectionChangeWorkUnit extends AbstractAuditWorkUnit implements AuditWorkUnit {
-    private final Object entity;
-
-    public CollectionChangeWorkUnit(String entityName, AuditConfiguration verCfg, Serializable id, Object entity) {
-        super(entity.getClass().getCanonicalName(), verCfg, id);
-//        OLD: super(entityName, verCfg, id);
-
-        this.entity = entity;
-    }
-
-    public boolean containsWork() {
-        return true;
-    }
-
-    public void perform(Session session, Object revisionData) {
-        Map<String, Object> data = new HashMap<String, Object>();
-        fillDataWithId(data, revisionData, RevisionType.MOD);
-
-        verCfg.getEntCfg().get(getEntityName()).getPropertyMapper().mapToMapFromEntity(data, entity, null);
-
-        session.save(verCfg.getAuditEntCfg().getAuditEntityName(getEntityName()), data);
-
-        setPerformed(data);
-    }
-
-    public KeepCheckResult check(AddWorkUnit second) {
-        return KeepCheckResult.SECOND;
-    }
-
-    public KeepCheckResult check(ModWorkUnit second) {
-        return KeepCheckResult.SECOND;
-    }
-
-    public KeepCheckResult check(DelWorkUnit second) {
-        return KeepCheckResult.SECOND;
-    }
-
-    public KeepCheckResult check(CollectionChangeWorkUnit second) {
-        return KeepCheckResult.FIRST;
-    }
-
-    public KeepCheckResult dispatch(KeepCheckVisitor first) {
-        return first.check(this);
-    }
-}
+//public class CollectionChangeWorkUnit extends AbstractAuditWorkUnit implements AuditWorkUnit {
+//    private final Object entity;
+//
+//    private xx;
+//    //TODO is this class still needed? It overrides an old envers class. Maybe fixed in current envers version.  
+//    
+//    public CollectionChangeWorkUnit(String entityName, AuditConfiguration verCfg, Serializable id, Object entity) {
+//        super(entity.getClass().getCanonicalName(), verCfg, id);
+////        OLD: super(entityName, verCfg, id);
+//
+//        this.entity = entity;
+//    }
+//
+//    public boolean containsWork() {
+//        return true;
+//    }
+//
+//    public void perform(Session session, Object revisionData) {
+//        Map<String, Object> data = new HashMap<String, Object>();
+//        fillDataWithId(data, revisionData, RevisionType.MOD);
+//
+//        verCfg.getEntCfg().get(getEntityName()).getPropertyMapper().mapToMapFromEntity(data, entity, null);
+//
+//        session.save(verCfg.getAuditEntCfg().getAuditEntityName(getEntityName()), data);
+//
+//        setPerformed(data);
+//    }
+//
+//    public KeepCheckResult check(AddWorkUnit second) {
+//        return KeepCheckResult.SECOND;
+//    }
+//
+//    public KeepCheckResult check(ModWorkUnit second) {
+//        return KeepCheckResult.SECOND;
+//    }
+//
+//    public KeepCheckResult check(DelWorkUnit second) {
+//        return KeepCheckResult.SECOND;
+//    }
+//
+//    public KeepCheckResult check(CollectionChangeWorkUnit second) {
+//        return KeepCheckResult.FIRST;
+//    }
+//
+//    public KeepCheckResult dispatch(KeepCheckVisitor first) {
+//        return first.check(this);
+//    }
+//}

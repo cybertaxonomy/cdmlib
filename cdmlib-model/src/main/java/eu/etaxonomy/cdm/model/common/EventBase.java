@@ -54,7 +54,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	private AgentBase actor;
 	
 	@XmlElement(name = "Description")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	private String description;
 	
 	

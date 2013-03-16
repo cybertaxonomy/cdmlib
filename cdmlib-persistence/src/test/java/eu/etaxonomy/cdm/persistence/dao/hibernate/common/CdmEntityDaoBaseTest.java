@@ -19,33 +19,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 /**
@@ -56,7 +48,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
 
     private static final UUID UUID_USER_BEN = UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66");
     private UUID uuid;
-    private TaxonBase cdmBase;
+    private TaxonBase<?> cdmBase;
 
     @SpringBeanByType
     private ITaxonDao cdmEntityDaoBase;
@@ -118,9 +110,10 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
     public void testSaveOrUpdate() {
-        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         cdmEntityDaoBase.saveOrUpdate(cdmBase);
+        commit();
     }
 
     /**
@@ -132,9 +125,10 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     public void testSaveOrUpdateWithAuthentication() {
 
         setAuthentication(taxonEditorToken);
-        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         cdmEntityDaoBase.saveOrUpdate(cdmBase);
+        commit();
     }
 
     /**
@@ -189,6 +183,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @ExpectedDataSet
     public void testSave() throws Exception {
         cdmEntityDaoBase.save(cdmBase);
+        commit();
     }
 
 
@@ -247,9 +242,10 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
     public void testUpdate() {
-        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         cdmEntityDaoBase.update(cdmBase);
+        commit();
     }
 
     @Test
@@ -258,7 +254,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     public void testUpdateWithAuthentication() {
 
         setAuthentication(taxonEditorToken);
-        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         RuntimeException securityException = null;
         try {
@@ -368,7 +364,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
     public void testDelete() {
-        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         assertNotNull(cdmBase);
         cdmEntityDaoBase.delete(cdmBase);
     }

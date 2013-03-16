@@ -13,7 +13,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.cache.CacheProvider;
+import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -40,7 +40,7 @@ public interface ICdmDataSource {
 	 * @param cacheProviderClass
 	 * @return BeanDefinition
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends CacheProvider> cacheProviderClass);
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass);
 
 	
 	/**

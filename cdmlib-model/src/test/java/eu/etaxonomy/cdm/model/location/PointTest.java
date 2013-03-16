@@ -131,8 +131,8 @@ public class PointTest {
 		
 		
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
-		Assert.assertEquals((Integer)22, (Integer)point2.getLongitudeSexagesimal().minutes);
-		Assert.assertEquals((Integer)0, (Integer)point2.getLongitudeSexagesimal().seconds);
+		Assert.assertEquals((Integer)22, point2.getLongitudeSexagesimal().minutes);
+		Assert.assertEquals((Integer)0, point2.getLongitudeSexagesimal().seconds);
 		
 		Double latitudeDouble = -45.57389326; 
 		point1.setLatitudeSexagesimal(Sexagesimal.valueOf(latitudeDouble, true));

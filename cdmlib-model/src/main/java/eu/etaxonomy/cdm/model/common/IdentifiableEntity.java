@@ -38,11 +38,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -85,6 +86,7 @@ import eu.etaxonomy.cdm.validation.Level2;
     "credits",
     "sources"
 })
+@Audited
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
@@ -109,7 +111,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Size(max = 255)
     @Fields({
         @Field(store=Store.YES),
-        @Field(name = "titleCache__sort", index = Index.UN_TOKENIZED, store=Store.YES)
+        @Field(name = "titleCache__sort", index = Index.YES, analyze = Analyze.NO, store=Store.YES)   //TODO H42 was UN_TOKENIZED
     })
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;

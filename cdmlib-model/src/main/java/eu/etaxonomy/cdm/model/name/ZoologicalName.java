@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -66,19 +67,19 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 
 	//Name of the breed of an animal
 	@XmlElement(name = "Breed")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)  //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String breed;
 	
 	@XmlElement(name = "PublicationYear")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@CacheUpdate(value ="authorshipCache")
 	@Min(0)
     private Integer publicationYear;
 	
 	@XmlElement(name = "OriginalPublicationYear")
-	@Field(index=Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@CacheUpdate(value ="authorshipCache")
 	@Min(0)
     private Integer originalPublicationYear;

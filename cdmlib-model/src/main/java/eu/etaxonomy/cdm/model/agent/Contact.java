@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -26,13 +27,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 @Audited
 public class Contact implements Serializable, Cloneable {
 	private static final long serialVersionUID = -1851305307069277625L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Contact.class);
 	
 	
@@ -91,8 +90,8 @@ public class Contact implements Serializable, Cloneable {
 			WaterbodyOrCountry country, String pobox, String region, 
 			String email, String faxNumber, String phoneNumber, String url, Point location) {
 		Contact result = new Contact();
-		if (country != null || CdmUtils.isNotEmpty(locality) || CdmUtils.isNotEmpty(pobox) || CdmUtils.isNotEmpty(postcode) || 
-				CdmUtils.isNotEmpty(region) || CdmUtils.isNotEmpty(street) ){
+		if (country != null || StringUtils.isNotBlank(locality) || StringUtils.isNotBlank(pobox) || StringUtils.isNotBlank(postcode) || 
+				StringUtils.isNotBlank(region) || StringUtils.isNotBlank(street) ){
 			Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
 			result.addAddress(newAddress);
 		}
@@ -142,23 +141,23 @@ public class Contact implements Serializable, Cloneable {
 
 	@XmlElementWrapper(name = "EmailAddresses", nillable = true)
 	@XmlElement(name = "EmailAddress")
-	@CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
 	private List<String> emailAddresses;
 	
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
-    @CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
 	private List<String> urls;
 	
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
-	@CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
 	private List<String> phoneNumbers;
 	
 	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
 	@XmlElement(name = "FaxNumber")
-	@CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
 	private List<String> faxNumbers;
 	
     @XmlElementWrapper(name = "Addresses", nillable = true)

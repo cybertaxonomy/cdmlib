@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.List;
 
-import org.hibernate.collection.PersistentMap;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.collection.internal.PersistentMap;
+import org.hibernate.engine.spi.SessionImplementor;
 
 public class PersistentMultiLanguageText extends PersistentMap implements IMultiLanguageText {
 
@@ -24,6 +24,9 @@ public class PersistentMultiLanguageText extends PersistentMap implements IMulti
 		super();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#add(eu.etaxonomy.cdm.model.common.LanguageString)
+	 */
 	@Deprecated
 	public LanguageString add(LanguageString languageString) {
 		if (languageString == null){

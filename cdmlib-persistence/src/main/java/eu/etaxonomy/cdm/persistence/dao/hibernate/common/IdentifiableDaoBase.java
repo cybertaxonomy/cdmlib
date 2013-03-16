@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -52,6 +54,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     protected String defaultField = "titleCache_tokenized";
     protected Class<? extends T> indexedClasses[];
 
+    
+    
     public IdentifiableDaoBase(Class<T> type) {
         super(type);
     }
@@ -302,7 +306,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
     public int count(Class<? extends T> clazz, String queryString) {
         checkNotInPriorView("IdentifiableDaoBase.count(Class<? extends T> clazz, String queryString)");
-        QueryParser queryParser = new QueryParser(defaultField , new StandardAnalyzer());
+       QueryParser queryParser = new QueryParser(version, defaultField , new StandardAnalyzer(version));
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -352,7 +356,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
     public List<T> search(Class<? extends T> clazz, String queryString,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths)");
-        QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
+        QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
         List<T> results = new ArrayList<T>();
 
         try {
@@ -405,7 +409,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.ilike("titleCache", queryString));
-        Integer result =  (Integer)crit.setProjection(Projections.rowCount()).uniqueResult();
+        Integer result =  ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         return result;
     }
 
@@ -427,7 +431,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
         }
 
 
-        Integer result = (Integer)crit.setProjection(Projections.rowCount()).uniqueResult();
+        Integer result = ((Number)crit.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         return result;
     }
 

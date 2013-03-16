@@ -71,13 +71,13 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	public static final Logger logger = Logger.getLogger(Institution.class);
 	
     @XmlElement(name = "Code")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES) //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
 	private String code;
 	
     @XmlElement(name = "Name")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES) //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
 	private String name;

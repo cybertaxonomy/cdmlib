@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +50,8 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -1525,6 +1528,17 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return unplaced;
     }
 
+    @Transient
+    public boolean isOrphaned() {
+    	
+    	if(taxonNodes == null || taxonNodes.isEmpty()) {
+    		if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
+				return true;
+	    	}
+    	}
+    	return false;
+    }
+    
     public void setUnplaced(boolean unplaced) {
         this.unplaced = unplaced;
     }

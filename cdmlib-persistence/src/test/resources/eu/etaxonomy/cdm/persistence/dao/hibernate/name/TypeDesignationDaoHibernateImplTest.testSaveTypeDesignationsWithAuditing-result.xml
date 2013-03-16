@@ -3,6 +3,7 @@
 
   <TAXONNAMEBASE UUID="8564287e-9654-4b8b-a38c-0ccdd9e885db" TITLECACHE="Name1"/>
   <TYPEDESIGNATIONBASE DTYPE="SpecimenTypeDesignation" UUID="ceca086e-e8d3-444e-abfb-c47f76835130"/>
-  <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="ceca086e-e8d3-444e-abfb-c47f76835130"/>
+   <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="ceca086e-e8d3-444e-abfb-c47f76835130"/>
+<!-- for testing  <TYPEDESIGNATIONBASE_AUD REVTYPE="0" DTYPE="SpecimenTypeDesignation" UUID="[null]" ORIGINALNAMESTRING="orig" NOTDESIGNATED="false"/> -->
 
  </dataset>

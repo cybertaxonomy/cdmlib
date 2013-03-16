@@ -96,8 +96,9 @@
 
 
 @org.hibernate.annotations.TypeDefs( { 
-	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.joda.time.contrib.hibernate.PersistentDuration.class),
-	@org.hibernate.annotations.TypeDef(name="dateTimeUserType", typeClass=org.joda.time.contrib.hibernate.PersistentDateTime.class),
+	//TODO needed ??
+	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.jadira.usertype.dateandtime.joda.PersistentDurationAsString.class),  
+	@org.hibernate.annotations.TypeDef(name="dateTimeUserType", typeClass=org.jadira.usertype.dateandtime.joda.PersistentDateTime.class),
 	@org.hibernate.annotations.TypeDef(name="partialUserType", typeClass=eu.etaxonomy.cdm.hibernate.PartialUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uuidUserType", typeClass=eu.etaxonomy.cdm.hibernate.UUIDUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uriUserType", typeClass=eu.etaxonomy.cdm.hibernate.URIUserType.class)

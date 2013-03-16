@@ -14,8 +14,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
-public class NullOrNotEmptyValidator implements
-		ConstraintValidator<NullOrNotEmpty, String> {
+public class NullOrNotEmptyValidator implements ConstraintValidator<NullOrNotEmpty, String> {
 
 	public void initialize(NullOrNotEmpty nullOrNotEmpty) { }
 

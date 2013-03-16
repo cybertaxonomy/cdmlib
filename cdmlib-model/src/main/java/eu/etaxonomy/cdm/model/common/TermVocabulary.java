@@ -39,7 +39,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
@@ -70,8 +72,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@Length(max = 255)
+	@Field(index=Index.YES, analyze = Analyze.NO) //TODO H42 was UN_TOKENIZED
 	@Type(type="uriUserType")
 	private URI termSourceUri;
 	

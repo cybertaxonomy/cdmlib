@@ -22,6 +22,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -81,7 +83,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends IdentifiableEntity implements Cloneable, IMultiLanguageTextHolder {
+public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> implements Cloneable, IMultiLanguageTextHolder {
     private static final long serialVersionUID = -1927421567263473658L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Media.class);
@@ -91,6 +93,7 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
     @XmlElement(name = "MediaTitle")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
+    @MapKeyJoinColumn(name="title_mapkey_id")
     @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
     @NotNull
@@ -109,9 +112,10 @@ public class Media extends IdentifiableEntity implements Cloneable, IMultiLangua
     @XmlElement(name = "MediaDescription")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
-    @IndexedEmbedded
+    @MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "Media_Description")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
+    @IndexedEmbedded
     @NotNull
     private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 

@@ -66,7 +66,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 //	protected INameCacheStrategy<ViralName> cacheStrategy;
 	
 	@XmlElement(name = "Acronym")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String acronym;

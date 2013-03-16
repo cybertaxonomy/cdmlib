@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 
 @Ignore
-public class IdentificationKeyGeneratorTest {
+public class IdentificationKeyGeneratorTTT {
 
 //*************************** TESTS *********************** /
 

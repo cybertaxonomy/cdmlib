@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "markers",
     "annotations"
 })
+@Audited
 @MappedSuperclass
 public abstract class AnnotatableEntity extends VersionableEntity implements IAnnotatableEntity {
 	private static final long serialVersionUID = 9151211842542443102L;

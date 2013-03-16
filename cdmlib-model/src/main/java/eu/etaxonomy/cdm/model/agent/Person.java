@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.agent;
 import java.util.HashSet;
 import java.util.Set;
 
+import javassist.compiler.ast.Keyword;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -36,7 +38,6 @@ import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -81,25 +82,25 @@ public class Person extends TeamOrPersonBase<Person>{
 	public static final Logger logger = Logger.getLogger(Person.class);
 
     @XmlElement(name = "Prefix")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES ) //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
 	private String prefix;
     
     @XmlElement(name = "FirstName")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES) //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
 	private String firstname;
 	
     @XmlElement(name = "LastName")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES) //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
 	private String lastname;
 	
     @XmlElement(name = "Suffix")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES) //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
 	private String suffix;
@@ -311,6 +312,9 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLifespan()
 	 */
 	public void setLifespan(TimePeriod lifespan){
+		if (lifespan == null){
+			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
+		}
 		this.lifespan = lifespan;
 	}
 

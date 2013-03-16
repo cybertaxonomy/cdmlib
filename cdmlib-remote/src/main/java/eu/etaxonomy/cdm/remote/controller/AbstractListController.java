@@ -19,10 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @param <T>
  * @param <SERVICE>
  */
-public abstract class AbstractListController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController {
+public abstract class AbstractListController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController<T, SERVICE> {
 
-	protected SERVICE service;
-
-	public abstract void setService(SERVICE service);
 
 }

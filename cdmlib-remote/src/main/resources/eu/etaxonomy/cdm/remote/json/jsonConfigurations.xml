@@ -35,8 +35,16 @@
              <value>PolytomousKeyNode.statement</value>
              <value>PolytomousKeyNode.modifyingText</value>
 
+             <value>LinkedPolytomousKeyNodeRowDto.childStatement</value>
+             <value>LinkedPolytomousKeyNodeRowDto.rowQuestion</value>
+             <value>LinkedPolytomousKeyNodeRowDto.rowFeature</value>
+             <!-- value>LinkedPolytomousKeyNodeRowDto.keyNode</value-->
+
              <value>Media.representations</value>
              <value>MediaRepresentation.parts</value>
+
+             <value>Sequence.locus</value>
+             <value>Sequence.genBankAccession</value>
 
              <value>Annotation.annotationType</value>
 
@@ -398,9 +406,13 @@
         <value>declaringClass</value><!-- DefaultExclude -->
         <value>metaClass</value><!-- DefaultExclude -->
         <value>id</value>
+        <!--
+            TODO temporarily commented out,
+            see  #3347 (services and REST service controller for molecular classes implemented)
         <value>annotations</value>
-        <value>cacheStrategy</value>
         <value>markers</value>
+        -->
+        <value>cacheStrategy</value>
         <value>createdBy</value>
         <value>updatedBy</value>
         <value>inDescription</value>

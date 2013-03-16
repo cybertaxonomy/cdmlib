@@ -222,10 +222,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		
 		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
 
-		
-		 criteria.setProjection(Projections.rowCount());
+		criteria.setProjection(Projections.rowCount());
 			
-		 return (Integer)criteria.uniqueResult();
+        return ((Number)criteria.uniqueResult()).intValue();
 	}
 	
 	@Override
@@ -264,9 +263,9 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
 
 		
-		 criteria.setProjection(Projections.rowCount());
+		criteria.setProjection(Projections.rowCount());
 			
-		 return (Integer)criteria.uniqueResult();
+        return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	
@@ -327,7 +326,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		
 		    criteria.setProjection(Projections.rowCount());
 		
-		    return (Integer)criteria.uniqueResult();
+	        return ((Number)criteria.uniqueResult()).intValue();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,auditEvent.getRevisionNumber());
 			

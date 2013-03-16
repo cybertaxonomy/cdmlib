@@ -45,11 +45,11 @@ public class Representation extends LanguageStringBase {
     private static final Logger logger = Logger.getLogger(Representation.class);
 
     @XmlElement(name = "Label")
-    @Field(index=Index.TOKENIZED, store=Store.YES)
+    @Field(index=Index.YES, store=Store.YES)   //TODO H42
     private String label;
 
     @XmlElement(name = "AbbreviatedLabel")
-    @Field(index=Index.TOKENIZED, store=Store.YES)
+    @Field(index=Index.YES, store=Store.YES)  //TODO H42
     private String abbreviatedLabel;
 
     /**

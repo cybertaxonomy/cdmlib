@@ -63,7 +63,7 @@ public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<S
 	
 	@XmlElement(name = "Exsiccatum")
 	@NullOrNotEmpty
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	@Size(max = 255)
     private String exsiccatum;
 	

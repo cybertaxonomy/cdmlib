@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -45,7 +44,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 		
 		criteria.setProjection(Projections.countDistinct("id"));
 		
-		return (Integer)criteria.uniqueResult();
+		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -87,7 +86,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 		
 		criteria.setProjection(Projections.countDistinct("id"));
 		
-		return (Integer)criteria.uniqueResult();
+		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	public List<Annotation> list(User creator, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {

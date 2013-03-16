@@ -26,10 +26,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
@@ -38,7 +39,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -61,31 +61,31 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
-@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="Collection", indexes = { @org.hibernate.annotations.Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> implements Cloneable{
 	private static final long serialVersionUID = -7833674897174732255L;
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
 	@XmlElement(name = "Code")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String code;
 	
 	@XmlElement(name = "CodeStandard")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String codeStandard;
 	
 	@XmlElement(name = "Name")
-	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
+	@Field(index=Index.YES)  //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
-	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String townOrLocation;

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -23,6 +22,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -33,12 +33,14 @@ import org.apache.lucene.search.spell.Dictionary;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.util.BytesRefIterator;
+import org.apache.lucene.util.Version;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
-import org.hibernate.search.reader.ReaderProvider;
-import org.hibernate.search.store.DirectoryProvider;
+import org.hibernate.search.indexes.IndexReaderAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -46,8 +48,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
 
 
-public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> extends HibernateDaoSupport  implements
-IAlternativeSpellingSuggestionParser {
+
+public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> 
+		extends HibernateDaoSupport  
+		implements IAlternativeSpellingSuggestionParser {
 	private static Log log = LogFactory.getLog(AlternativeSpellingSuggestionParser.class);
 
 	private String defaultField;
@@ -55,6 +59,10 @@ IAlternativeSpellingSuggestionParser {
 	private Class<T> type;
 	private Class<? extends T> indexedClasses[];
 
+	//FIXME only for testing in Hibernate 4/Lucene 3.6 migration
+	public static Version version = Version.LUCENE_36;
+
+	
 	public AlternativeSpellingSuggestionParser(Class<T> type) {
 		this.type = type;
 	}
@@ -75,12 +83,12 @@ IAlternativeSpellingSuggestionParser {
 	}
 
 	public Query parse(String queryString) throws ParseException {
-		QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());		
+		QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));		
 		return queryParser.parse(queryString);
 	}
 
 	public Query suggest(String queryString) throws ParseException {
-		QuerySuggester querySuggester = new QuerySuggester(defaultField, new StandardAnalyzer());
+		QuerySuggester querySuggester = new QuerySuggester(defaultField, new StandardAnalyzer(version));
 		Query query = querySuggester.parse(queryString);
 		return querySuggester.hasSuggestedQuery() ? query : null;
 	}
@@ -88,25 +96,39 @@ IAlternativeSpellingSuggestionParser {
 	private class QuerySuggester extends QueryParser {
 		private boolean suggestedQuery = false;
 		public QuerySuggester(String field, Analyzer analyzer) {
-			super(field, analyzer);
+			super(version, field, analyzer);
 		}
 		protected Query getFieldQuery(String field, String queryText) throws ParseException {
 			// Copied from org.apache.lucene.queryParser.QueryParser
 			// replacing construction of TermQuery with call to getTermQuery()
 			// which finds close matches.
 			TokenStream source = getAnalyzer().tokenStream(field, new StringReader(queryText));
-			Vector v = new Vector();
+			Vector<Object> v = new Vector<Object>();
 			Token t;
 
 			while (true) {
 				try {
-					t = source.next();
+					//OLD
+//					t = source.next();
+					
+					//FIXME this is new after Hibernate 4 migration 
+					//but completely unchecked and unsure if correct
+					//#3344
+					boolean it = source.incrementToken();
+					t = source.getAttribute(Token.class);
+					
+					
+					
 				} catch (IOException e) {
 					t = null;
 				}
-				if (t == null)
+				if (t == null){
 					break;
-				v.addElement(t.termText());
+				}
+				
+//		OLD		v.addElement(t.termText());
+				//FIXME unchecked #3344
+				v.addElement(t.term());
 			}
 			try {
 				source.close();
@@ -157,29 +179,41 @@ IAlternativeSpellingSuggestionParser {
 			SpellChecker spellChecker = new SpellChecker(directory);
 
 			for(Class<? extends T> indexedClass : indexedClasses) {
-				DirectoryProvider directoryProvider = searchFactory.getDirectoryProviders(indexedClass)[0];
-				ReaderProvider readerProvider = searchFactory.getReaderProvider();
+				//OLD
+//				DirectoryProvider<?> directoryProvider = searchFactory.getDirectoryProviders(indexedClass)[0];
+//				ReaderProvider readerProvider = searchFactory.getReaderProvider();
+				IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor(); 
+//				IndexReader indexReader = ira.open(indexedClass);
 				IndexReader indexReader = null;
 
 				try {
 
-					indexReader = readerProvider.openReader(directoryProvider);
+					indexReader = ira.open(indexedClass);
+//					indexReader = readerProvider.openIndexReader(); //  .openReader(directoryProvider);
 					log.debug("Creating new dictionary for words in " + defaultField + " docs " + indexReader.numDocs());
 
 					Dictionary dictionary = new LuceneDictionary(indexReader, defaultField);
 					if(log.isDebugEnabled()) {
-						Iterator iterator = dictionary.getWordsIterator();
-						while(iterator.hasNext()) {
-							log.debug("Indexing word " + iterator.next());
+						BytesRefIterator iterator = dictionary.getWordsIterator();
+						BytesRef bytesRef;
+						while((bytesRef = iterator.next())  != null) {
+							log.debug("Indexing word " + bytesRef);
 						}
 					}
 
-					spellChecker.indexDictionary(dictionary);
+					
+//					OLD: spellChecker.indexDictionary(dictionary);
+					//FIXME preliminary for Hibernate 4 migration see # 3344
+					IndexWriterConfig config = new IndexWriterConfig(version, new StandardAnalyzer(version)); 
+					boolean fullMerge = true;
+					spellChecker.indexDictionary(dictionary, config, fullMerge);
+					
 				} catch (CorruptIndexException cie) {
 					log.error("Spellings index is corrupted", cie);
 				} finally {
 					if (indexReader != null) {
-						readerProvider.closeReader(indexReader);
+//						readerProvider.closeIndexReader(indexReader);
+						ira.close(indexReader);
 					}
 				} 
 			} 

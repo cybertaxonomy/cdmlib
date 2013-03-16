@@ -13,7 +13,7 @@ import static org.junit.Assert.fail;
 
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;

@@ -37,7 +37,7 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     protected int defaultPort = 1433;
     
     //hibernate dialect
-    protected String hibernateDialect = "SQLServerDialect";
+    protected String hibernateDialect = "SQLServer2005Dialect";
  
     public String getConnectionString(ICdmDataSource ds, int port){
     	return getConnectionString(ds, port, null);
@@ -95,7 +95,7 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     
     /**
      * Deletes all foreign keys between tables in a sql server database.
-     * This make deleting tables easier.
+     * This makes deleting tables easier.
      * @param sqlServerDataSource
      * @return
      * @throws SQLException

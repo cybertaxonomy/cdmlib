@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -32,6 +30,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
@@ -137,8 +136,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         assert person != null : "person must exist";
         person.setFirstname("Benjamin");
         agentDao.update(person);
-        setComplete();
-        endTransaction();
+//        commitAndStartNewTransaction(new String[]{"AGENTBASE_AUD","AGENTBASE"});
+        commit();
     }
 
     @Test

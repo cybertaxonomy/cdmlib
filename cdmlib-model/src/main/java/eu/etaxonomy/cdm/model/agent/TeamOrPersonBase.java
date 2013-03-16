@@ -17,13 +17,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -48,7 +48,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
     @XmlElement(name="NomenclaturalTitle")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
@@ -66,7 +66,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     @Transient
     public String getNomenclaturalTitle() {
         String result = nomenclaturalTitle;
-        if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
+        if (StringUtils.isBlank(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
             result = getTitleCache();
         }
         return result;
@@ -106,10 +106,10 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      * @return
      */
     protected String replaceEmptyTitleByNomTitle(String result) {
-        if (CdmUtils.isEmpty(result)){
+        if (StringUtils.isBlank(result)){
             result = nomenclaturalTitle;
         }
-        if (CdmUtils.isEmpty(result)){
+        if (StringUtils.isBlank(result)){
             result = super.getTitleCache();
         }
         return result;

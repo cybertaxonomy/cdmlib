@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -70,7 +71,8 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+	@MapKeyJoinColumn(name="description_mapkey_id")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
 	@JoinTable(name = "IndividualAssociation_LanguageString")
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	

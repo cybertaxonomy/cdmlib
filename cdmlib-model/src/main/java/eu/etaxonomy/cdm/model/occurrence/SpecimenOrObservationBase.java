@@ -20,6 +20,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.Min;
@@ -40,6 +41,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -110,7 +112,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	private Stage lifeStage;
 	
 	@XmlElement(name = "IndividualCount")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)    //TODO H42 was UN_TOKENIZED
 	@Min(0)
 	private Integer individualCount;
 	
@@ -119,7 +121,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@MapKeyJoinColumn(name="definition_mapkey_id")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@IndexedEmbedded
 	@NotNull
 	protected Map<Language,LanguageString> definition = new HashMap<Language,LanguageString>();

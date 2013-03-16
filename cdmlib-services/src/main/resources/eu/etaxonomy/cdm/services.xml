@@ -16,7 +16,8 @@
           never be without security
         ======================================================================
      -->
-    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
+
+	 <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
 

@@ -37,6 +37,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -102,7 +103,7 @@ public class User extends CdmBase implements UserDetails {
 
     @XmlElement(name = "Username")
     @NaturalId
-    @Field(index = Index.UN_TOKENIZED)
+    @Field(index = Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
     protected String username;
 
     /**

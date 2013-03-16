@@ -63,7 +63,7 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
     private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 
     @XmlElement(name = "Name")
-    @Field(index = Index.TOKENIZED, store=Store.YES)
+    @Field(index = Index.YES, store=Store.YES)  //TODO H42
     private String name;
 
     @XmlElement(name = "Language")

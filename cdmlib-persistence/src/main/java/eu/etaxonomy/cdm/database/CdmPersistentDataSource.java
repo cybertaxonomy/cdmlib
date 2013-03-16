@@ -28,8 +28,8 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.hibernate.cache.CacheProvider;
-import org.hibernate.cache.NoCacheProvider;
+import org.hibernate.cache.internal.NoCachingRegionFactory;
+import org.hibernate.cache.spi.RegionFactory;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -385,7 +385,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		boolean showSql = false;
 		boolean formatSql = false;
 		boolean registerSearchListener = false;
-		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
+		Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
 		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 	}
 	
@@ -395,7 +395,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param showSql
 	 * @return
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends CacheProvider> cacheProviderClass){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
 			hbm2dll = DbSchemaValidation.VALIDATE;
@@ -407,7 +407,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			formatSql = false;
 		}
 		if (cacheProviderClass == null){
-			cacheProviderClass = NoCacheProvider.class;
+			cacheProviderClass = NoCachingRegionFactory.class;
 		}
 		if(registerSearchListener == null){
 			registerSearchListener = false;
@@ -420,7 +420,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		Properties props = new Properties();
 		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
 		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
-		props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
+		props.setProperty("hibernate.cache.region.factory_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
 		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
 		props.setProperty("hibernate.search.autoregister_listeners", String.valueOf(registerSearchListener));

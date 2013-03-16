@@ -35,7 +35,7 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		Criteria criteria = getSession().createCriteria(Marker.class);
 		criteria.add(Restrictions.eq("markerType", markerType));
 		criteria.setProjection(Projections.rowCount());
-		return (Integer) criteria.uniqueResult();
+        return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	public List<Marker> list(MarkerType markerType, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
@@ -78,7 +78,7 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
 		    criteria.add(Restrictions.eq("markerType", markerType));
 		}
 		criteria.setProjection(Projections.rowCount());
-		return (Integer) criteria.uniqueResult();
+        return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	public List<Marker> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {

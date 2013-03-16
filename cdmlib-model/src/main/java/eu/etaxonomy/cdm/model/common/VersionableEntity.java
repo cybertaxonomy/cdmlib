@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
@@ -56,6 +58,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "updatedBy"
 })
 @XmlJavaTypeAdapter(value=DateTimeAdapter.class,type=DateTime.class)
+@Audited
 @MappedSuperclass
 public abstract class VersionableEntity extends CdmBase implements IVersionableEntity{
 	private static final long serialVersionUID = 1409299200302758513L;
@@ -69,7 +72,7 @@ public abstract class VersionableEntity extends CdmBase implements IVersionableE
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
-	@Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index = org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
 	@FieldBridge(impl = DateTimeBridge.class)
 	private DateTime updated;
 	

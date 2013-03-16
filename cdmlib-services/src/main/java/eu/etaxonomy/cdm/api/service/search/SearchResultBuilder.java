@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +25,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.grouping.GroupDocs;
-import org.apache.lucene.search.grouping.TopGroups;
-import org.hibernate.search.engine.DocumentBuilder;
+import org.hibernate.search.ProjectionConstants;
 
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -174,7 +171,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      */
     private String findId(Map<CdmBaseType,String> idFieldMap, Document doc) {
 
-        String docClassName = doc.getValues(DocumentBuilder.CLASS_FIELDNAME)[0];
+        String docClassName = doc.getValues(ProjectionConstants.OBJECT_CLASS)[0];
 
         String id = null;
         for(CdmBaseType baseType  : idFieldMap.keySet()){

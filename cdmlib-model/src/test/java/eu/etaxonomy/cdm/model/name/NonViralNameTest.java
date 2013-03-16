@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -281,19 +281,19 @@ public class NonViralNameTest extends EntityTestBase {
 
 	@Test
 	public final void testGetChildAndParentRelationships() {
-		NonViralName nonViralName1 = new NonViralName();
+		NonViralName<?> nonViralName1 = new NonViralName();
 		assertEquals(0, nonViralName1.getParentRelationships().size());
-		assertEquals(0, nonViralName1.getChildRelationships().size());
+		assertEquals(0, nonViralName1.getHybridChildRelations().size());
 		BotanicalName femaleParent = BotanicalName.NewInstance(null);
 		HybridRelationship hybridRelationship = new HybridRelationship(nonViralName1, femaleParent, HybridRelationshipType.FEMALE_PARENT(), null );
-		assertEquals(1, nonViralName1.getChildRelationships().size());
-		assertEquals(hybridRelationship, nonViralName1.getChildRelationships().iterator().next());
+		assertEquals(1, nonViralName1.getHybridChildRelations().size());
+		assertEquals(hybridRelationship, nonViralName1.getHybridChildRelations().iterator().next());
 		assertEquals(1, femaleParent.getParentRelationships().size());
 	}
 
 	@Test
 	public final void testAddHybridRelationships() {
-		NonViralName nonViralName1 = new NonViralName();
+		NonViralName<?> nonViralName1 = new NonViralName();
 		assertEquals(0, nonViralName1.getParentRelationships().size());
 		assertEquals(0, nonViralName1.getChildRelationships().size());
 		BotanicalName femaleParent = BotanicalName.NewInstance(null);
@@ -302,54 +302,54 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.addHybridParent(femaleParent, HybridRelationshipType.MALE_PARENT(), null);
 		nonViralName1.addHybridParent(maleParent, HybridRelationshipType.MALE_PARENT(), null);
 		
-		assertEquals(2, nonViralName1.getChildRelationships().size());
-		assertEquals(0, nonViralName1.getParentRelationships().size());
-		assertEquals(1, maleParent.getParentRelationships().size());
-		assertEquals(1, femaleParent.getParentRelationships().size());
-		assertEquals(0, maleParent.getChildRelationships().size());
-		assertEquals(0, femaleParent.getChildRelationships().size());
+		assertEquals(2, nonViralName1.getHybridChildRelations().size());
+		assertEquals(0, nonViralName1.getHybridParentRelations().size());
+		assertEquals(1, maleParent.getHybridParentRelations().size());
+		assertEquals(1, femaleParent.getHybridParentRelations().size());
+		assertEquals(0, maleParent.getHybridChildRelations().size());
+		assertEquals(0, femaleParent.getHybridChildRelations().size());
 				
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public final void testAddHybridRelationship() {
-		NonViralName nonViralName1 = new NonViralName();
-		assertEquals(0, nonViralName1.getParentRelationships().size());
-		assertEquals(0, nonViralName1.getChildRelationships().size());
-		NonViralName botanicalName2 = new NonViralName();
+		NonViralName<?> nonViralName1 = new NonViralName();
+		assertEquals(0, nonViralName1.getHybridParentRelations().size());
+		assertEquals(0, nonViralName1.getHybridChildRelations().size());
+		NonViralName<?> botanicalName2 = new NonViralName();
 		botanicalName2.addHybridRelationship(null);
 	}
 
 	@Test
 	public final void testRemoveHybridRelationship() {
-		NonViralName botanicalName1 = new NonViralName();
-		assertEquals(0, botanicalName1.getParentRelationships().size());
-		assertEquals(0, botanicalName1.getChildRelationships().size());
+		NonViralName<?> botanicalName1 = new NonViralName();
+		assertEquals(0, botanicalName1.getHybridParentRelations().size());
+		assertEquals(0, botanicalName1.getHybridChildRelations().size());
 		BotanicalName femaleParent = BotanicalName.NewInstance(null);
-		NonViralName maleParent = NonViralName.NewInstance(null);
+		NonViralName<?> maleParent = NonViralName.NewInstance(null);
 		ZoologicalName child = ZoologicalName.NewInstance(null);
 		
 		botanicalName1.addHybridParent(femaleParent, HybridRelationshipType.FEMALE_PARENT(), null);
 		botanicalName1.addHybridParent(maleParent, HybridRelationshipType.MALE_PARENT(), null);
 		botanicalName1.addHybridChild(child, HybridRelationshipType.FIRST_PARENT(), null);
-		assertEquals(2, botanicalName1.getChildRelationships().size());
-		assertEquals(1, botanicalName1.getParentRelationships().size());
-		assertEquals(1, child.getChildRelationships().size());
+		assertEquals(2, botanicalName1.getHybridChildRelations().size());
+		assertEquals(1, botanicalName1.getHybridParentRelations().size());
+		assertEquals(1, child.getHybridChildRelations().size());
 		
 		botanicalName1.removeHybridParent(femaleParent);
-		assertEquals(1, botanicalName1.getChildRelationships().size());
-		assertEquals(1, botanicalName1.getParentRelationships().size());
+		assertEquals(1, botanicalName1.getHybridChildRelations().size());
+		assertEquals(1, botanicalName1.getHybridParentRelations().size());
 		
 		botanicalName1.removeHybridParent(maleParent);
-		assertEquals(0, botanicalName1.getChildRelationships().size());
-		assertEquals(1, botanicalName1.getParentRelationships().size());
+		assertEquals(0, botanicalName1.getHybridChildRelations().size());
+		assertEquals(1, botanicalName1.getHybridParentRelations().size());
 		
 		botanicalName1.removeHybridChild(child);
-		assertEquals(0, botanicalName1.getParentRelationships().size());
+		assertEquals(0, botanicalName1.getHybridParentRelations().size());
 		
 		//null
 		botanicalName1.removeHybridRelationship(null);
-		assertEquals(0, botanicalName1.getChildRelationships().size());
+		assertEquals(0, botanicalName1.getHybridChildRelations().size());
 	}
 	
 	
@@ -366,16 +366,16 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.setInfraSpecificEpithet("infrabus");
 		nonViralName1.setBinomHybrid(true);
 		
-		NonViralName parent = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName parent2 = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName child = NonViralName.NewInstance(Rank.SPECIES());
-		NonViralName child2 = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> parent = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> parent2 = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> child = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> child2 = NonViralName.NewInstance(Rank.SPECIES());
 		nonViralName1.addHybridParent(parent, HybridRelationshipType.FIRST_PARENT(), "parent rule");
 		nonViralName1.addHybridParent(parent2, HybridRelationshipType.SECOND_PARENT(), "parent rule2");
 		nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
 		
 		
-		NonViralName clone = (NonViralName)nonViralName1.clone();
+		NonViralName<?> clone = (NonViralName)nonViralName1.clone();
 		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
 		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
 		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());
@@ -392,11 +392,11 @@ public class NonViralNameTest extends EntityTestBase {
 		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
 		Set<NonViralName> parentSet = new HashSet<NonViralName>();
 		Set<NonViralName> childSet = new HashSet<NonViralName>();
-		for (Object object : clone.getChildRelationships()){
+		for (Object object : clone.getHybridChildRelations()){
 			HybridRelationship childRelation = (HybridRelationship)object;
-			NonViralName relatedFrom = childRelation.getRelatedFrom();
+			NonViralName<?> relatedFrom = childRelation.getRelatedFrom();
 			parentSet.add(relatedFrom);
-			NonViralName relatedTo = childRelation.getRelatedTo();
+			NonViralName<?> relatedTo = childRelation.getRelatedTo();
 			childSet.add(relatedTo);
 		}
 		Assert.assertTrue("Parent set should contain parent1", parentSet.contains(parent));
@@ -405,7 +405,7 @@ public class NonViralNameTest extends EntityTestBase {
 		
 		//hybrid child of clone
 		Assert.assertEquals("There should be exactly 1 hybrid relationship in which the clone takes the parent role", 1, clone.getParentRelationships().size());
-		HybridRelationship parentRelation = (HybridRelationship)clone.getParentRelationships().iterator().next();
+		HybridRelationship parentRelation = (HybridRelationship)clone.getHybridParentRelations().iterator().next();
 		Assert.assertSame("Clone should be parent in parentRelationship", clone, parentRelation.getRelatedFrom());
 		Assert.assertSame("Child should be child in parentRelationship", child, parentRelation.getRelatedTo());
 		Assert.assertSame("Relationship type should be cloned correctly", HybridRelationshipType.FEMALE_PARENT(), parentRelation.getType());

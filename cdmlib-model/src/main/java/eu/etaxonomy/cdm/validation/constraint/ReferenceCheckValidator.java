@@ -20,7 +20,7 @@ ConstraintValidator<ReferenceCheck, Reference>{
 		isValid &= validIsbn(value, constraintValidatorContext); 
 		if (value.getType() == ReferenceType.Journal && value.getDatePublished() != null) {
 			isValid &= false;
-			constraintValidatorContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveDatePublished.message}");
+			constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.JournalShouldNotHaveDatePublished.message}");
 		}
 		
 		return isValid;
@@ -34,7 +34,7 @@ ConstraintValidator<ReferenceCheck, Reference>{
 		if ((value.getType() != ReferenceType.Book && value.getType() != ReferenceType.Proceedings) ) {
 			if (value.getIsbn()!= null){
 				isValid = false;
-				constraintValidatorContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.ReferenceShouldNotHaveIsbn.message}");
+				constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.ReferenceShouldNotHaveIsbn.message}");
 			}
 		}
 		return isValid;

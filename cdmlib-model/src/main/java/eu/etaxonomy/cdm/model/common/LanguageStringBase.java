@@ -57,7 +57,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @XmlElement(name = "Text")
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Column(length=65536)
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @FieldBridge(impl=StripHtmlBridge.class)
     @Lob
     protected String text;

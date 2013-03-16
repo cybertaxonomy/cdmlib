@@ -21,10 +21,10 @@
                 according WebAppContext attributes or to the environment variable
               -->
               <prop key="hibernate.hbm2ddl.auto">validate</prop><!-- !!! must never be set to 'update' !!! -->
-              <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+              <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
               <prop key="hibernate.show_sql">false</prop>
               <prop key="hibernate.format_sql">false</prop>
-              <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+              <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
               <prop key="hibernate.search.default.indexBase">${eu.etaxonomy.cdm.search.index.path}</prop><!-- set in applicationContext.xml -->
             </props>
         </property>

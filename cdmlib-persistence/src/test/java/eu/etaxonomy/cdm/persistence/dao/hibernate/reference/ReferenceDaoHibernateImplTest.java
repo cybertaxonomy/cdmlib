@@ -11,9 +11,12 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -93,7 +96,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		List<Reference> proceedings_subordinateReferences = referenceDao.getSubordinateReferences(proceedings);
 		assertEquals("expecting one subordinate reference",2 ,proceedings_subordinateReferences.size());
 		sub_1 = proceedings_subordinateReferences.get(0);
-		Reference sub_2 = proceedings_subordinateReferences.get(1);
+		Reference<?> sub_2 = proceedings_subordinateReferences.get(1);
 		assertEquals("expecting BookSection as first subordinateReferences", "Proceedings of Testing Vol. 1", sub_1.getTitleCache());
 		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_2.getTitleCache());
 		assertEquals("first subordinateReferences matches uuid", firstBookUuid, sub_1.getUuid());
@@ -103,30 +106,44 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	@Test
 	public void testListCoveredTaxa() {
 
-	    
-		Reference book = referenceDao.findByUuid(firstBookUuid);
+		Reference<?> book = referenceDao.findByUuid(firstBookUuid);
 		List<TaxonBase> coveredTaxa = referenceDao.listCoveredTaxa(book, false, null);
 		assertEquals("expecting one Taxa covered by this book", 1, coveredTaxa.size());
 		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
 		
 		coveredTaxa = referenceDao.listCoveredTaxa(book, true, null);
-		assertEquals("expecting one Taxa covered by this book", 2, coveredTaxa.size());
-		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
-		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+		assertEquals("expecting 2 Taxa covered by this book", 2, coveredTaxa.size());
+		Set<String> titles = makeTitleCacheSet(coveredTaxa);
+		Assert.assertTrue("covered taxa must contain 'Lactuca perennis'", titles.contains("Lactuca perennis"));
+		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
+//		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
 		
 		Reference bookSection = referenceDao.findByUuid(bookSectionUuid);
 		coveredTaxa = referenceDao.listCoveredTaxa(bookSection, false, null);
 		assertEquals("expecting two Taxa covered by this bookSection", 2, coveredTaxa.size());
-		assertEquals("1st covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
-		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+		titles = makeTitleCacheSet(coveredTaxa);
+		Assert.assertTrue("covered taxa must contain 'Lactuca perennis'", titles.contains("Lactuca perennis"));
+		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
+//		assertEquals("1st covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+//		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
 		
 		// by nomenclaturalReference
 		Reference nomRef = referenceDao.findByUuid(nomenclaturalReferenceBookUuid);
 		coveredTaxa = referenceDao.listCoveredTaxa(nomRef, false, null);
 		assertEquals("expecting two Taxa covered nomenclaturalReference", 2, coveredTaxa.size());
-		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
-		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+		titles = makeTitleCacheSet(coveredTaxa);
+		Assert.assertTrue("covered taxa must contain 'Lactuca perennis'", titles.contains("Lactuca perennis"));
+		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
+//		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+//		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
 	
+	}
+
+	private Set<String> makeTitleCacheSet(List<TaxonBase> coveredTaxa) {
+		Set<String> titles = new HashSet<String>();
+		titles.add(coveredTaxa.get(0).getName().getTitleCache());
+		titles.add(coveredTaxa.get(1).getName().getTitleCache());
+		return titles;
 	}
 
 

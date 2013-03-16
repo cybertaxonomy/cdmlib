@@ -49,7 +49,7 @@ public class Group extends CdmBase {
 	
 	@XmlElement(name = "Name")
 	@NaturalId
-	@Field(index = Index.UN_TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	protected String name;
 	
 	@XmlElementWrapper(name = "Members")

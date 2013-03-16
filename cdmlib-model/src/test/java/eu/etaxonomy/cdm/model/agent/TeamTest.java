@@ -9,12 +9,10 @@
 */
 package eu.etaxonomy.cdm.model.agent;
 
-import static org.junit.Assert.*;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;

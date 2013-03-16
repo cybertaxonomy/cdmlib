@@ -41,6 +41,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
@@ -122,8 +123,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private static final Logger logger = Logger.getLogger(NonViralName.class);
 
     @XmlElement(name = "NameCache")
-    @Fields({@Field(name = "nameCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
-         @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    @Fields({@Field(name = "nameCache_tokenized",index = org.hibernate.search.annotations.Index.YES),  //TODO H42
+         @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
@@ -136,7 +137,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     protected boolean protectedNameCache;
 
     @XmlElement(name = "GenusOrUninomial")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)  //TODO H42
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
@@ -146,7 +147,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES) //TODO H42
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -154,7 +155,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String infraGenericEpithet;
 
     @XmlElement(name = "SpecificEpithet")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)  //TODO H42
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -162,7 +163,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String specificEpithet;
 
     @XmlElement(name = "InfraSpecificEpithet")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)    //TODO H42
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -210,8 +211,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private INomenclaturalAuthor exBasionymAuthorTeam;
 
     @XmlElement(name = "AuthorshipCache")
-    @Fields({@Field(name = "authorshipCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
-             @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    @Fields({@Field(name = "authorshipCache_tokenized",index = org.hibernate.search.annotations.Index.YES),  //TODO H42
+             @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
@@ -850,7 +851,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         if (protectedAuthorshipCache == false){
             String oldCache = this.authorshipCache;
             String newCache = this.getAuthorshipCache();
-            if ( (oldCache == null && newCache != null)  ||  ! oldCache.equals(newCache)){
+            if ( (oldCache == null && newCache != null)  ||  CdmUtils.nullSafeEqual(oldCache,newCache)){
                 this.setAuthorshipCache(this.getAuthorshipCache(), false);
             }
         }

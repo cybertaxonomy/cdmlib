@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
 import javax.naming.Reference;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,8 +35,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.impl.SessionFactoryImpl;
-import org.hibernate.impl.SessionImpl;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.persister.collection.CollectionPersister;
@@ -54,12 +54,12 @@ import org.hibernate.type.EnumType;
 import org.hibernate.type.FloatType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
+import org.hibernate.type.MaterializedClobType;
 import org.hibernate.type.SerializableType;
 import org.hibernate.type.SetType;
-import org.hibernate.type.StringClobType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
-import org.joda.time.contrib.hibernate.PersistentDateTime;
+import org.jadira.usertype.dateandtime.joda.PersistentDateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -273,7 +273,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}else if (propertyType.isCollectionType()){
 			CollectionType collectionType = (CollectionType)propertyType;
 			//String role = collectionType.getRole();
-			Type elType = collectionType.getElementType((SessionFactoryImpl)sessionFactory);
+			Type elType = collectionType.getElementType((SessionFactoryImplementor)sessionFactory);
 			makePropertyType(result, referencedClass, sessionFactory, cdmClass, elType, propertyName, true);
 		}else if (propertyType.isAnyType()){
 			AnyType anyType = (AnyType)propertyType;
@@ -345,7 +345,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				StringType.class,
 				BooleanType.class, 
 				IntegerType.class, 
-				StringClobType.class,
+				MaterializedClobType.class,
 				LongType.class,
 				FloatType.class,
 				SerializableType.class,
@@ -476,10 +476,11 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		try {
 			Reference ref = sessionFactory.getReference();
 			logger.debug("");
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		//sessionFactory.get
 		ClassMetadata classMetadata = getSession().getSessionFactory().getClassMetadata(clazz);
 		Type[] propertyTypes = classMetadata.getPropertyTypes();
@@ -560,7 +561,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			}else if (propertyType.isCollectionType()){
 				CollectionType collectionType = (CollectionType)propertyType;
 				String role = collectionType.getRole();
-				Type elType = collectionType.getElementType((SessionFactoryImpl)sessionFactory);
+				Type elType = collectionType.getElementType((SessionFactoryImplementor)sessionFactory);
 				String n = collectionType.getAssociatedEntityName(sessionFactory);
 				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(role);
 				if (collMetadata instanceof OneToManyPersister){

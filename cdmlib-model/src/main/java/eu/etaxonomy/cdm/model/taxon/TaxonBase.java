@@ -283,6 +283,9 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     public void setUseNameCache(boolean useNameCache) {
         this.useNameCache = useNameCache;
     }
+    
+    @Transient
+    public abstract boolean isOrphaned();
 //*********************** CLONE ********************************************************/
 
     /**

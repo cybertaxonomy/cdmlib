@@ -30,12 +30,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.tool.hbm2x.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -424,7 +424,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 						result += otherNodeString + separator;
 					}
 
-					result = StringUtils.chompLast(result, separator);
+					result = StringUtils.chomp(result, separator);
 					result += "\n";
 				}
 			}

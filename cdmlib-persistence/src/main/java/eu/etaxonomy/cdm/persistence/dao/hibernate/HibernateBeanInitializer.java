@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.collection.PersistentCollection;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
 import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;

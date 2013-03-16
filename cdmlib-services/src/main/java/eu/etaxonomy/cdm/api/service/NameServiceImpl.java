@@ -310,6 +310,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     /**
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * Replace by load(UUID, propertyPaths)
      */
     @Deprecated
     public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
@@ -612,7 +613,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     protected void setOtherCachesNull(TaxonNameBase name) {
         if (name.isInstanceOf(NonViralName.class)){
-            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+            NonViralName<?> nvn = CdmBase.deproxy(name, NonViralName.class);
             if (! nvn.isProtectedNameCache()){
                 nvn.setNameCache(null, false);
             }

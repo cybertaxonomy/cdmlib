@@ -18,7 +18,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.stereotype.Component;
@@ -408,7 +408,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
             logger.debug("Isolation level = " + txDef.getIsolationLevel());
             logger.debug("Timeout = " + txDef.getTimeout());
             logger.debug("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate3.HibernateTransactionManager
+            // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 

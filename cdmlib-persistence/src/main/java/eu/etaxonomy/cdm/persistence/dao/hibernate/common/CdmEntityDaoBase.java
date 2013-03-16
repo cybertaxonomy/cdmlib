@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +22,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
@@ -55,12 +55,12 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 
 /**
@@ -74,6 +74,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 
     protected Class<T> type;
+    
+    //preliminary
+    protected Version version = AlternativeSpellingSuggestionParser.version;
+    
 
     @Autowired
 //	@Qualifier("defaultBeanInitializer")
@@ -208,7 +212,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         for(ReferringObjectMetadata referringObjectMetadata : referringObjectMetas) {
 
-          List<CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x,getSession());
+          List<CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x, getSession());
 
           for(CdmBase referringObject : referringObjects) {
             try {
@@ -471,7 +475,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria = session.createCriteria(clazz);
         }
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Integer) criteria.uniqueResult();
+        
+        //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
+        //to be casted. Think about returning long rather then int!
+        return ((Number) criteria.uniqueResult()).intValue();
     }
 
     public List<T> list(Integer limit, Integer start) {
@@ -572,18 +579,21 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
-        if(orderHints != null && !orderHints.isEmpty()) {
+        //FIXME preliminary hardcoded type:
+    	int type = SortField.STRING;
+    	
+    	if(orderHints != null && !orderHints.isEmpty()) {
             org.apache.lucene.search.Sort sort = new Sort();
             SortField[] sortFields = new SortField[orderHints.size()];
             for(int i = 0; i < orderHints.size(); i++) {
                 OrderHint orderHint = orderHints.get(i);
                 switch(orderHint.getSortOrder()) {
                 case ASCENDING:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), true);
+                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, true);
                     break;
                 case DESCENDING:
                 default:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(),false);
+                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, false);
 
                 }
             }
@@ -682,7 +692,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         addExample(criteria,example,includeProperties);
 
         criteria.setProjection(Projections.rowCount());
-        return (Integer)criteria.uniqueResult();
+        return ((Number)criteria.uniqueResult()).intValue();
     }
 
     protected void addExample(Criteria criteria, T example, Set<String> includeProperties) {
@@ -747,7 +757,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         criteria.setProjection(Projections.rowCount());
 
         List<T> result = criteria.list();
-        return (Integer)criteria.uniqueResult();
+        return ((Number)criteria.uniqueResult()).intValue();
     }
 
 

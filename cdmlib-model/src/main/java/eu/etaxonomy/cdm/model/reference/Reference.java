@@ -39,6 +39,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -126,7 +127,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@XmlElement(name ="Title" )
 	@Column(length=4096, name="title")
 	@Lob
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)  //TODO H42
 	@Match(MatchMode.EQUAL_REQUIRED)
 	@NullOrNotEmpty
 	@Length(max = 4096)
@@ -136,70 +137,70 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	
     @XmlElement(name = "Editor")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	protected String editor;
 	
     @XmlElement(name = "Series")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	protected String series;
 	
     @XmlElement(name = "Volume")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	protected String volume;
 	
     @XmlElement(name = "Pages")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	protected String pages;
 	
     @XmlElement(name = "Edition")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	protected String edition;
 
     @XmlElement(name = "ISBN")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}") 
 	protected String isbn;
     
 	@XmlElement(name = "ISSN")
-	@Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.issn.message}") 
 	protected String issn;
 	
     @XmlElement(name = "SeriesPart")
-    @Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
     @NullOrNotEmpty
 	@Length(max = 255)
 	protected String seriesPart;
     
 	@XmlElement(name = "Organization")
-	@Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String organization;
 	
 	@XmlElement(name = "Publisher")
-	@Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String publisher;
 	
 	
 	@XmlElement(name = "PlacePublished")
-	@Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String placePublished;
@@ -257,7 +258,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@XmlElement(name ="Abstract" )
 	@Column(length=65536, name="referenceAbstract")
 	@Lob
-	@Field(index=Index.TOKENIZED)
+    @Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 65536)
 	private String referenceAbstract;  //abstract is a reserved term in Java
@@ -265,7 +266,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Field(index=Index.YES, analyze = Analyze.NO)  // TODO H42 was UN_TOKENIZED
 	@Type(type="uriUserType")
 	private URI uri;
 	

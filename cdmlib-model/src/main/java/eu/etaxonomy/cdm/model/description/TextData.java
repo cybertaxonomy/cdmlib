@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -78,6 +79,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     @XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY)
+    @MapKeyJoinColumn(name="multilanguagetext_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
     @Field(name="text", store=Store.YES)
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)

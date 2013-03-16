@@ -22,13 +22,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.hibernate.Hibernate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -47,14 +44,12 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
@@ -228,7 +223,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
 	@Test
 	public void testCountDescriptionElements() {
-		DescriptionBase description = descriptionDao.findByUuid(uuid);
+		DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
 		assert description != null : "description must exist";
 
 		int numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, null, TextData.class);
@@ -238,15 +233,14 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
 	@Test
 	public void testGetDescriptionElements() {
-		DescriptionBase description = descriptionDao.findByUuid(uuid);
+		DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
 		assert description != null : "description must exist";
 
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("multilanguageText");
 		propertyPaths.add("media");
-		propertyPaths.add("citation");
 		propertyPaths.add("feature");
-		propertyPaths.add("sources");
+		propertyPaths.add("sources.citation");
 
 		List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
 
@@ -295,7 +289,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 	@Test
 	public void testCountDescriptionElementsFeature() {
 		features.add(Feature.ECOLOGY());
-		DescriptionBase description = descriptionDao.findByUuid(uuid);
+		DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
 		assert description != null : "description must exist";
 
 		int numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, features, TextData.class);
@@ -306,7 +300,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 	@Test
 	public void testGetDescriptionElementsByFeature() {
 		features.add(Feature.ECOLOGY());
-		DescriptionBase description = descriptionDao.findByUuid(uuid);
+		DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
 		assert description != null : "description must exist";
 
 		List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(description, features, TextData.class, null, null,null);

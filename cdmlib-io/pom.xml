@@ -59,6 +59,12 @@
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-database</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-dbcp</groupId>
+      		<artifactId>commons-dbcp</artifactId>
+      	</exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -89,6 +95,12 @@
      <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-orm</artifactId>
+       <exclusions>
+      	<exclusion>
+      		<groupId>javax.persistence</groupId>
+	      	<artifactId>persistence-api</artifactId>
+      	</exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
      <dependency>

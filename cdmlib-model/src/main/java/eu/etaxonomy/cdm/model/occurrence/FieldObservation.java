@@ -64,7 +64,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
 	@XmlElement(name = "FieldNumber")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNumber;
@@ -79,7 +79,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	private Person primaryCollector;
 	
 	@XmlElement(name = "FieldNotes")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)   //TODO H42
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNotes;

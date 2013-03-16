@@ -39,6 +39,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -100,6 +102,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)
+    @Audited
     private int id;
 
     @XmlAttribute(required = true)
@@ -110,8 +113,9 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @Column(length=36)
     @Match(MatchMode.IGNORE)
     @NotNull
-    @Field(store = Store.YES, index = Index.UN_TOKENIZED)
+    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)  //TODO H42   (was Index.UN_TOKENIZED)
     @FieldBridge(impl = UuidBridge.class)
+    @Audited
     protected UUID uuid;
 
     @XmlElement (name = "Created", type= String.class)
@@ -119,8 +123,9 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.IGNORE)
-    @Field(index = Index.UN_TOKENIZED)
+    @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42   (was Index.UN_TOKENIZED)
     @FieldBridge(impl = DateTimeBridge.class)
+    @Audited
     private DateTime created;
 
     @XmlElement (name = "CreatedBy")
@@ -128,6 +133,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Match(MatchMode.IGNORE)
+    @Audited
     private User createdBy;
 
     /**
