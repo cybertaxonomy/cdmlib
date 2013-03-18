@@ -1167,7 +1167,6 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAccepted
 cdmlib-model/src/test/resources/log4j.properties -text
 cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
-cdmlib-persistence/build.xml -text
 cdmlib-persistence/pom.xml -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationUtils.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
