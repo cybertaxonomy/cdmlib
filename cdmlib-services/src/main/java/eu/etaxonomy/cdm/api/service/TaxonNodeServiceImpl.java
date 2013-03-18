@@ -115,7 +115,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			SynonymRelationshipType srt;
 			if(synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
 				srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-			} else if(synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+			} else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
 				srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 			} else {
 				srt = synRelation.getType();
