@@ -109,10 +109,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		}
 		SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
 		
-		//Move Synonym Relations to new Taxon
+		// Move Synonym Relations to new Taxon
+		// From ticket 3163 we can move taxon with accepted name having homotypic synonyms		
 		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
-			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), 
-					synRelation.getCitation(), synRelation.getCitationMicroReference());
+			SynonymRelationshipType srt;
+			if(synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
+				srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+			} else if(synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+				srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			} else {
+				srt = synRelation.getType();
+				
+			}
+			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), 
+					srt, 
+					synRelation.getCitation(), 
+					synRelation.getCitationMicroReference());
 		}
 
 		
@@ -145,8 +157,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			
 			
 		}
-		oldTaxon.getRelationsFromThisTaxon().clear();
-		oldTaxon.getRelationsToThisTaxon().clear();
+
 		
 		//Move descriptions to new taxon
 		List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( oldTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions()) 
