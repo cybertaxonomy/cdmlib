@@ -8,7 +8,7 @@
 
     <!-- this is the start template 
     it creates the mediawiki tag surounding and calls a template to create a page for 
-    every taxon node TODO: and a categorie -->
+    every taxon node TODO: and a category -->
     <xsl:template match="root">
         <mediawiki xmlns="http://www.mediawiki.org/xml/export-0.7/"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -69,45 +69,21 @@
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- this creates a page for 
-    every taxon node. TODO: and a categorie -->
+    every taxon node. TODO: and a category -->
     <xsl:template match="TaxonNode" name="TaxonNode">
         
-        <!-- create taxon page -->
-        <page>
-            <title>
-                <xsl:call-template name="title">
-                    <xsl:with-param name="taxon" select="Taxon"/>
-                </xsl:call-template>
-
-            </title>
-            <revision>
-                <!-- TODO: create seconds without positions after decimal point! -->
-                <timestamp><xsl:value-of select="year-from-date(current-date())"/>-<xsl:value-of
-                        select="month-from-date(current-date())"/>-<xsl:value-of
-                        select="day-from-date(current-date())"/>T<xsl:value-of
-                        select="hours-from-time(current-time())"/>:<xsl:value-of
-                        select="minutes-from-time(current-time())"/>:00Z </timestamp>
-                <contributor>
-                    <username>Sybille Test</username>
-                </contributor>
-                <text xml:space="preserve">
-                    <xsl:call-template name="TOC"/>
-                    <xsl:call-template name="display-name">
-                        <xsl:with-param name="taxon" select="Taxon"/>
-                    </xsl:call-template>
-                    <xsl:apply-templates select="Taxon"/>                    
-                </text>
-            </revision>
-        </page>
-        
-        
+        <!-- as we will need the title more than once, we create a variable-->
+        <xsl:variable name="title">
+            <xsl:call-template name="title">
+                <xsl:with-param name="taxon" select="Taxon"/>
+            </xsl:call-template>          
+        </xsl:variable>
+      
         <!-- create category -->       
         <page>
             <title>
-                <xsl:text>Categorie:</xsl:text>
-                <xsl:call-template name="title">
-                    <xsl:with-param name="taxon" select="Taxon"/>
-                </xsl:call-template>
+                <xsl:text>Category:</xsl:text>
+                <xsl:value-of select="$title"></xsl:value-of>
                 
             </title>
             <revision>
@@ -121,11 +97,35 @@
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
-                    <xsl:text>{{Taxinfo|</xsl:text>
-                    <xsl:call-template name="title">
-                    <xsl:with-param name="taxon" select="Taxon"/>
-                </xsl:call-template>
-                    <xsl:text>}}</xsl:text>       
+                    
+                    <xsl:value-of select="$title"></xsl:value-of>
+                </text>
+            </revision>
+        </page>
+      
+        <!-- create taxon page -->
+        <page>
+            <title>
+                <xsl:value-of select="$title"></xsl:value-of>
+            </title>
+            <revision>
+                <!-- TODO: create seconds without positions after decimal point! -->
+                <timestamp><xsl:value-of select="year-from-date(current-date())"/>-<xsl:value-of
+                        select="month-from-date(current-date())"/>-<xsl:value-of
+                        select="day-from-date(current-date())"/>T<xsl:value-of
+                        select="hours-from-time(current-time())"/>:<xsl:value-of
+                        select="minutes-from-time(current-time())"/>:01Z </timestamp>
+                <contributor>
+                    <username>Sybille Test</username>
+                </contributor>
+                <text xml:space="preserve">
+                    <xsl:call-template name="TOC"/>
+                    <xsl:call-template name="display-name">
+                        <xsl:with-param name="taxon" select="Taxon"/>
+                    </xsl:call-template>
+                    <xsl:apply-templates select="Taxon"/>  
+                    
+                    <xsl:value-of select="concat('[[Category:',$title, ']]')"></xsl:value-of>
                 </text>
             </revision>
         </page>
