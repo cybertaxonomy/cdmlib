@@ -1,0 +1,16 @@
+/.classpath
+/.project
+/.settings
+/.umlproject
+/bin
+/cdmlib-io.uml
+src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java
+src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java
+src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
+src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
+src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt
+src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml
+src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
+src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml.edited
+src/test/resources/log4j.properties
+/target
