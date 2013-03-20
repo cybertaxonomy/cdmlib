@@ -1584,6 +1584,7 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/taxpub/TaxPubOutputModule.
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/xml/XMLOutputModule.java -text
 cdmlib-print/src/main/resources/eu/etaxonomy/cdm/print/package.html -text
 cdmlib-print/src/main/resources/log4j.properties -text
+cdmlib-print/src/main/resources/stylesheets/mediawiki/multipages.xsl -text
 cdmlib-print/src/main/resources/stylesheets/odf/cdmToOdfText.xsl -text
 cdmlib-print/src/main/resources/stylesheets/pdf/flora-malesiana.xsl -text
 cdmlib-print/src/main/resources/stylesheets/pdf/flore-afrique-centrale.xsl -text
