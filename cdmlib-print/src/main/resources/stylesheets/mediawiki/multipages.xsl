@@ -6,6 +6,13 @@
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
+    <!-- create a timestamp for the whole going -->
+    <xsl:variable name="timestamp">
+        <xsl:value-of
+            select="concat(year-from-date(current-date()),'-',month-from-date(current-date()),'-',day-from-date(current-date()),'T',hours-from-time(current-time()),':',minutes-from-time(current-time()),':00Z')"/>
+
+    </xsl:variable>
+
     <!-- this is the start template 
     it creates the mediawiki tag surounding and calls a template to create a page for 
     every taxon node TODO: and a category -->
@@ -62,6 +69,7 @@
                     <namespace key="421" case="first-letter">Layer talk</namespace>
                 </namespaces>
             </siteinfo>
+
             <xsl:apply-templates select="//TaxonNode"/>
         </mediawiki>
     </xsl:template>
@@ -71,61 +79,57 @@
     <!-- this creates a page for 
     every taxon node. TODO: and a category -->
     <xsl:template match="TaxonNode" name="TaxonNode">
-        
+
         <!-- as we will need the title more than once, we create a variable-->
         <xsl:variable name="title">
             <xsl:call-template name="title">
                 <xsl:with-param name="taxon" select="Taxon"/>
-            </xsl:call-template>          
+            </xsl:call-template>
         </xsl:variable>
-      
-        <!-- create category -->       
+
+        <!-- create category -->
         <page>
             <title>
                 <xsl:text>Category:</xsl:text>
-                <xsl:value-of select="$title"></xsl:value-of>
-                
+                <xsl:value-of select="$title"/>
+
             </title>
             <revision>
                 <!-- TODO: create seconds without positions after decimal point! -->
-                <timestamp><xsl:value-of select="year-from-date(current-date())"/>-<xsl:value-of
-                    select="month-from-date(current-date())"/>-<xsl:value-of
-                        select="day-from-date(current-date())"/>T<xsl:value-of
-                            select="hours-from-time(current-time())"/>:<xsl:value-of
-                                select="minutes-from-time(current-time())"/>:00Z </timestamp>
+                <timestamp>
+                    <xsl:value-of select="$timestamp"/>
+                </timestamp>
                 <contributor>
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
                     
-                    <xsl:value-of select="$title"></xsl:value-of>
+                    <xsl:value-of select="$title"/>
                 </text>
             </revision>
         </page>
-      
+
         <!-- create taxon page -->
         <page>
             <title>
-                <xsl:value-of select="$title"></xsl:value-of>
+                <xsl:value-of select="$title"/>
             </title>
             <revision>
                 <!-- TODO: create seconds without positions after decimal point! -->
-                <timestamp><xsl:value-of select="year-from-date(current-date())"/>-<xsl:value-of
-                        select="month-from-date(current-date())"/>-<xsl:value-of
-                        select="day-from-date(current-date())"/>T<xsl:value-of
-                        select="hours-from-time(current-time())"/>:<xsl:value-of
-                        select="minutes-from-time(current-time())"/>:01Z </timestamp>
+                <timestamp>
+                    <xsl:value-of select="$timestamp"></xsl:value-of>
+                </timestamp>
                 <contributor>
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
                     <xsl:call-template name="TOC"/>
-                    <xsl:call-template name="display-name">
+                    <xsl:call-template name="display-taxon-name">
                         <xsl:with-param name="taxon" select="Taxon"/>
                     </xsl:call-template>
                     <xsl:apply-templates select="Taxon"/>  
                     
-                    <xsl:value-of select="concat('[[Category:',$title, ']]')"></xsl:value-of>
+                    <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
                 </text>
             </revision>
         </page>
@@ -283,28 +287,26 @@
 
 
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->
-    <!-- MAYDO preserve different files with differnt layouts 
-        or do the flixibility in the media wiki templates -->
-    
+
+
     <!-- change here to change the look of the mediawiki output -->
+    <!-- please use mediawiki templates -->
     <!-- think also of template changes in the mediawiki -->
 
-    <xsl:template name="TOC"> 
-        {{TOC|right}} 
-    </xsl:template>
-    
+    <xsl:template name="TOC"> {{TOC|right}} </xsl:template>
+
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <xsl:template name="chapter">
         <xsl:param name="title"/>
-        <xsl:value-of select="concat('{{Chapter|',$title,'|}}')"/>
+        <xsl:value-of select="concat('{{Chapter|',$title,'}}')"/>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <xsl:template name="subchapter">
         <xsl:param name="title"/>
-        <xsl:value-of select="concat('===',$title,'===')"/>
+        <xsl:value-of select="concat('{{Subchapter|',$title,'}}')"/>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -312,7 +314,7 @@
     <!--this template layouts and displays the name of a 
         taxon depending on it's "kind"
         MAYDO: create more useful layouts instead of title sizes-->
-    <xsl:template name="display-name">
+    <xsl:template name="display-taxon-name">
         <xsl:param name="taxon"/>
         <!-- get the name of the taxon -->
         <xsl:variable name="name">
@@ -324,20 +326,20 @@
         <xsl:choose>
             <!-- family -->
             <xsl:when test="$taxon/name/rank/uuid='af5f2481-3192-403f-ae65-7c957a0f02b6'">
-                <xsl:value-of select="concat('&#xA;', '==', $name, '==','&#xA;')"/>
+                <xsl:value-of select="concat('{{Family name|', $name, '}}')"/>
             </xsl:when>
             <!-- genus -->
             <xsl:when test="$taxon/name/rank/uuid='1b11c34c-48a8-4efa-98d5-84f7f66ef43a'">
-                <xsl:value-of select="concat('&#xA;', '===', $name, '===','&#xA;')"/>
+                <xsl:value-of select="concat('{{Genus name|', $name, '}}')"/>
             </xsl:when>
             <!--TODO-->
             <!-- subgenus -->
             <xsl:when test="$taxon/name/rank/uuid='78786e16-2a70-48af-a608-494023b91904'">
-                <xsl:value-of select="concat('&#xA;', '====', $name, '====','&#xA;')"/>
+                <xsl:value-of select="concat('{{Subgenus name|', $name, '}}')"/>
             </xsl:when>
             <!-- species -->
             <xsl:when test="$taxon/name/rank/uuid='b301f787-f319-4ccc-a10f-b4ed3b99a86d'">
-                <xsl:value-of select="concat('&#xA;', '=====', $name, '=====','&#xA;')"/>
+                <xsl:value-of select="concat('{{Species name|', $name, '}}')"/>
             </xsl:when>
             <xsl:otherwise>
                 <!-- for debugging --> Unformatted title for rank uuid: <xsl:value-of
