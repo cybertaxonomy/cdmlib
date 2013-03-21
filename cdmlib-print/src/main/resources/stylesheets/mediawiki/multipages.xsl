@@ -71,13 +71,16 @@
             </siteinfo>
 
             <xsl:apply-templates select="//TaxonNode"/>
+            <!-- TODO we cannot just call every node, we have to parse the tree
+             to gather tree structure for the categories tree-->
         </mediawiki>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-    <!-- this creates a page for 
-    every taxon node. TODO: and a category -->
+    <!-- this creates a page and a category for 
+    every taxon node.  -->
+    <!-- TODO create a template for page creating and for categorie creating -->
     <xsl:template match="TaxonNode" name="TaxonNode">
 
         <!-- as we will need the title more than once, we create a variable-->
@@ -103,8 +106,12 @@
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
-                    
-                    <xsl:value-of select="$title"/>
+                    <xsl:call-template name="TOC"/>
+                    <xsl:call-template name="chapter">
+                        <xsl:with-param name="title" >Overwiew</xsl:with-param>
+                    </xsl:call-template>
+                    <xsl:text> some information text</xsl:text>
+                    <xsl:call-template name="taxon_tree"/>
                 </text>
             </revision>
         </page>
@@ -292,6 +299,7 @@
     <!-- change here to change the look of the mediawiki output -->
     <!-- please use mediawiki templates -->
     <!-- think also of template changes in the mediawiki -->
+    <!-- TODO: wrap TOC layout in a mediawiki template -->
 
     <xsl:template name="TOC"> {{TOC|right}} </xsl:template>
 
@@ -349,7 +357,22 @@
         </xsl:choose>
     </xsl:template>
 
-    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--+++++++++++++++++++++++ C A T E G O R Y   T R E E  ++++++++++++++++++++++++++++++ -->
 
+    <xsl:template name="taxon_tree">
+        <xsl:call-template name="chapter">
+            <xsl:with-param name="title">Taxonomic Tree (Categorie Tree)</xsl:with-param>
+        </xsl:call-template>
+        <xsl:call-template name="subchapter">
+            <xsl:with-param name="title">Parent</xsl:with-param>
+        </xsl:call-template>
+        <xsl:text>{{#categorytree:{{PAGENAME}}|mode=parents|hideroot}} </xsl:text>
+        <xsl:call-template name="subchapter">
+            <xsl:with-param name="title">Children</xsl:with-param>
+        </xsl:call-template>
+        <xsl:text>{{#categorytree:{{PAGENAME}}|mode=categories|hideroot}} </xsl:text>
+    </xsl:template>
+
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 </xsl:stylesheet>
