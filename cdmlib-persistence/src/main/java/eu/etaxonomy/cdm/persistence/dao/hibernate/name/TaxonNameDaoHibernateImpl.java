@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  *
@@ -45,9 +45,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -70,7 +68,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 	private ITaxonDao taxonDao;
 
 	public TaxonNameDaoHibernateImpl() {
-		super(TaxonNameBase.class); 
+		super(TaxonNameBase.class);
 		indexedClasses = new Class[6];
 		indexedClasses[0] = BacterialName.class;
 		indexedClasses[1] = BotanicalName.class;
@@ -80,7 +78,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		indexedClasses[5] = ZoologicalName.class;
 	}
 
-	public int countHybridNames(NonViralName name, HybridRelationshipType type) {
+	@Override
+    public int countHybridNames(NonViralName name, HybridRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
@@ -104,21 +103,23 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 			return ((Long)query.getSingleResult()).intValue();
 		}
 	}
-	
-	public int countNames(String queryString) {
+
+	@Override
+    public int countNames(String queryString) {
 		checkNotInPriorView("TaxonNameDaoHibernateImpl.countNames(String queryString)");
         Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
-        
+
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("nameCache", queryString));
 		}
 		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		
+
 		return (Integer)criteria.uniqueResult();
 	}
 
-	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
-		
+	@Override
+    public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+
 		Criteria crit = getSession().createCriteria(type);
 		if (matchMode == MatchMode.EXACT) {
 			crit.add(Restrictions.eq("nameCache", matchMode.queryStringFrom(queryString)));
@@ -134,8 +135,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
 		return (Integer)crit.uniqueResult();
 	}
-	
-	public int countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
+
+	@Override
+    public int countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
@@ -210,8 +212,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 	}
 
-	public int countNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, NameRelationshipType type) {
-		
+	@Override
+    public int countNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, NameRelationshipType type) {
+
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
@@ -237,7 +240,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 	}
 
 
-	public int countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status) {
+	@Override
+    public int countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status) {
 		checkNotInPriorView("countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status)");
 		Query query = null;
 		if(status == null) {
@@ -250,7 +254,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public List<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	@Override
+    public List<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(HybridRelationship.class);
@@ -267,20 +272,20 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 					criteria.setFirstResult(0);
 				}
 			}
-			
+
 			addOrder(criteria, orderHints);
-			
-			List<HybridRelationship> results = (List<HybridRelationship>)criteria.list();
+
+			List<HybridRelationship> results = criteria.list();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(HybridRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
-			
+
 			if(type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 			}
-			
+
 			if(pageSize != null) {
 				query.setMaxResults(pageSize);
 				if(pageNumber != null) {
@@ -290,7 +295,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 				}
 			}
 
-			List<HybridRelationship> results =  (List<HybridRelationship>)query.getResultList();
+			List<HybridRelationship> results =  query.getResultList();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		}
@@ -299,10 +304,11 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
 	 */
-	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, 
-			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, 
+	@Override
+    public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction,
+			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
-		
+
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(NameRelationship.class);
@@ -322,8 +328,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 				}
 			}
 			addOrder(criteria, orderHints);
-			
-			List<NameRelationship> results = (List<NameRelationship>)criteria.list();
+
+			List<NameRelationship> results = criteria.list();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		} else {
@@ -333,7 +339,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 			if(type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 			}
-			
+
 			if(pageSize != null) {
 				query.setMaxResults(pageSize);
 				if(pageNumber != null) {
@@ -343,17 +349,19 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 				}
 			}
 
-			List<NameRelationship> results = (List<NameRelationship>)query.getResultList();
+			List<NameRelationship> results = query.getResultList();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		}
 	}
-	
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths){
+
+	@Override
+    public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths){
 		return getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
 	}
-	
-	public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonNameBase name, 
+
+	@Override
+    public <T extends TypeDesignationBase> List<T> getTypeDesignations(TaxonNameBase name,
 				Class<T> type,
 				TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
 				List<String> propertyPaths){
@@ -369,14 +377,14 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 
 		query = getSession().createQuery(queryString);
-		
-		if(status != null) {		
+
+		if(status != null) {
 			query.setParameter("status", status);
 		}
 		if(type != null){
 			query.setParameter("type", type.getSimpleName());
 		}
-		
+
 		query.setParameter("name",name);
 
 		if(pageSize != null) {
@@ -390,7 +398,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		return defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
 	}
 
-	
+
 	public List<TaxonNameBase<?,?>> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");
 		Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
@@ -410,13 +418,15 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		return results;
 	}
 
-	
-	public List<TaxonNameBase<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
+
+	@Override
+    public List<TaxonNameBase<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
 		return searchNames(queryString, MatchMode.BEGINNING, pageSize, pageNumber);
 	}
-	
-	
-	public List<TaxonNameBase> searchNames(String genusOrUninomial,String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,
+
+
+	@Override
+    public List<TaxonNameBase> searchNames(String genusOrUninomial,String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -449,7 +459,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 			} else {
 				criteria.add(Restrictions.isNull("infraSpecificEpithet"));
 			}
-			
+
 			if(rank != null) {
 			    criteria.add(Restrictions.eq("rank", rank));
 			}
@@ -462,10 +472,10 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 					criteria.setFirstResult(0);
 				}
 			}
-			
+
 			addOrder(criteria, orderHints);
 
-			List<TaxonNameBase> results = (List<TaxonNameBase>)criteria.list();
+			List<TaxonNameBase> results = criteria.list();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		} else {
@@ -507,14 +517,15 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 					query.setFirstResult(0);
 				}
 			}
-			
-			List<TaxonNameBase> results = (List<TaxonNameBase>)query.getResultList();
+
+			List<TaxonNameBase> results = query.getResultList();
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		}
 	}
 
-	public List<? extends TaxonNameBase<?,?>> findByName(String queryString, 
+	@Override
+    public List<? extends TaxonNameBase<?,?>> findByName(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
 		Criteria crit = getSession().createCriteria(type);
@@ -539,11 +550,12 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
 		List<? extends TaxonNameBase<?,?>> results = crit.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		
+
 		return results;
 	}
-	
-	public List<? extends TaxonNameBase<?,?>> findByTitle(String queryString, 
+
+	@Override
+    public List<? extends TaxonNameBase<?,?>> findByTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
 		Criteria crit = getSession().createCriteria(type);
@@ -568,12 +580,13 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 
 		List<? extends TaxonNameBase<?,?>> results = crit.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		
+
 		return results;
 	}
-	
 
-	public TaxonNameBase<?,?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
+
+	@Override
+    public TaxonNameBase<?,?> findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
 
 		Criteria crit = getSession().createCriteria(type);
 
@@ -600,21 +613,22 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		} else if (results.size() == 0) {
 			logger.info("No results for UUID: " + uuid);
 		}
-			
+
 		return null;
 	}
-	
-	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
+
+	@Override
+    public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
         	// for some reason the HQL .class discriminator didn't work here so I created this preliminary
         	// implementation for now. Should be cleaned in future.
-        	
+
         	List<RelationshipBase> result = new ArrayList<RelationshipBase>();
-            
+
         	int nameRelSize = countAllRelationships(NameRelationship.class);
         	if (nameRelSize > start){
-        		
+
         		String hql = " FROM %s as rb ORDER BY rb.id ";
         		hql = String.format(hql, NameRelationship.class.getSimpleName());
         		Query query = getSession().createQuery(hql);
@@ -639,11 +653,11 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
             return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
-			return (List<RelationshipBase>)query.getResultList();
+			return query.getResultList();
 		}
 	}
-	
-	
+
+
     /**
      * TODO not yet in interface
      * @param clazz
@@ -654,7 +668,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     		throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
     	}
     	int size = 0;
-    	 
+
         if (clazz == null || NameRelationship.class.isAssignableFrom(clazz)){
         	String hql = " SELECT count(rel) FROM NameRelationship rel";
         	size += (Long)getSession().createQuery(hql).list().get(0);
@@ -665,61 +679,67 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
         }
         return size;
     }
-	
-	
-	public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
+
+
+	@Override
+    public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
 		//TODO improve performance
 		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
 		return results.size();
-		
+
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getUuidAndTitleCacheOfNames()
 	 */
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
+	@Override
+    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
 		String queryString = "SELECT uuid, fullTitleCache FROM TaxonNameBase";
-		
+
 		List<Object[]> result = getSession().createSQLQuery(queryString).list();
-				
+
 		if(result.size() == 0){
 			return null;
 		}else{
-			List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size()); 
-			
+			List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size());
+
 			for (Object object : result){
-				
+
 				Object[] objectArray = (Object[]) object;
-				
+
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
-				
+
 				list.add(new UuidAndTitleCache(type, uuid, titleCache));
 			}
-			
-			return list;	
+
+			return list;
 		}
 	}
 
-	public Integer countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
+	@Override
+    public Integer countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
         return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
 	}
 
-	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+	@Override
+    public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		return super.findByParam(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 	}
-	
-	public UUID delete (TaxonNameBase persistentObject){
+
+	@Override
+    public UUID delete (TaxonNameBase persistentObject){
 		Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 		super.delete(persistentObject);
-				
+
 		for (TaxonBase taxonBase: taxonBases){
 			taxonDao.delete(taxonBase);
 		}
 		return persistentObject.getUuid();
 	}
-	
-	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start){
+
+	@Override
+    public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start){
 		List <TaxonNameBase> names = new ArrayList<TaxonNameBase>();
 		List <ZoologicalName> zooNames = new ArrayList<ZoologicalName>();
 		names = super.list(ZoologicalName.class, limit, start);
@@ -728,8 +748,9 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 		return zooNames;
 	}
-	
-	public ZoologicalName findZoologicalNameByUUID(UUID uuid){
+
+	@Override
+    public ZoologicalName findZoologicalNameByUUID(UUID uuid){
 		Criteria criteria = getSession().createCriteria(type);
 		if (uuid != null) {
 			criteria.add(Restrictions.eq("uuid", uuid));
@@ -737,7 +758,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 			logger.warn("UUID is NULL");
 			return null;
 		}
-		
+
 		List<? extends TaxonNameBase<?,?>> results = criteria.list();
 		if (results.size() == 1) {
 			defaultBeanInitializer.initializeAll(results, null);
@@ -755,5 +776,5 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 		return null;
 	}
-	
+
 }
