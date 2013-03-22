@@ -375,7 +375,8 @@ public class BerlinModelTransformer {
 			case 23: return TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_OVERLAPS();
 			case 24: return TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS();
 			
-			case 26: return TaxonRelationshipType.OVERLAPS();
+			case 26: return TaxonRelationshipType.EXCLUDES();
+			
 			//TODO other relationshipTypes
 			
 			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
