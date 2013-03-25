@@ -1490,7 +1490,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             nameQuery = new BooleanQuery();
             BooleanQuery languageSubQuery = new BooleanQuery();
             for(Language lang : languages){
-                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString()), Occur.SHOULD);
+                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
             }
             ((BooleanQuery) nameQuery).add(queryFactory.newTermQuery("name", queryString), Occur.MUST);
             ((BooleanQuery) nameQuery).add(languageSubQuery, Occur.MUST);
@@ -1529,6 +1529,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // the description must be associated with a taxon
         finalQuery.add(queryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
+        logger.info("prepareByDescriptionElementFullTextSearch() query: " + finalQuery.toString());
         luceneSearch.setQuery(finalQuery);
 
         if(highlightFragments){
@@ -1629,7 +1630,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                         if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())){
 
-                        	
+
                             for (SynonymRelationship synonymRelationOfParent:synonymRelationshipsOfParent){
                                 Synonym syn = synonymRelationOfParent.getSynonym();
 
@@ -2100,7 +2101,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }*/
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
-        
+
         IdentifiableSource originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);

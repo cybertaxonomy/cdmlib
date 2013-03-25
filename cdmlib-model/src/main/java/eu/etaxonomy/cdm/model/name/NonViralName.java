@@ -123,8 +123,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private static final Logger logger = Logger.getLogger(NonViralName.class);
 
     @XmlElement(name = "NameCache")
-    @Fields({@Field(name = "nameCache_tokenized",index = org.hibernate.search.annotations.Index.YES),  //TODO H42
-         @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
+    @Fields({
+        @Field(name = "nameCache_tokenized",index = Index.YES),  //TODO H42
+        @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
@@ -211,8 +212,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private INomenclaturalAuthor exBasionymAuthorTeam;
 
     @XmlElement(name = "AuthorshipCache")
-    @Fields({@Field(name = "authorshipCache_tokenized",index = org.hibernate.search.annotations.Index.YES),  //TODO H42
-             @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
+    @Fields({
+        @Field(name = "authorshipCache_tokenized",index = Index.YES),  //TODO H42
+        @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
@@ -378,7 +380,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         setSpecificEpithet(specificEpithet);
         setInfraSpecificEpithet(infraSpecificEpithet);
         setCombinationAuthorTeam(combinationAuthorTeam);
-        setNomenclaturalReference((Reference)nomenclaturalReference);
+        setNomenclaturalReference(nomenclaturalReference);
         this.setNomenclaturalMicroReference(nomenclMicroRef);
     }
 
@@ -393,8 +395,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         }
     }
 
+    @Override
     protected void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent e) {
                 boolean protectedByLowerCache = false;
                 //authorship cache
@@ -868,12 +872,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         setAuthorshipCache(authorshipCache, true);
     }
 
+    @Override
     @Transient
     public String getFullTitleCache(){
         updateAuthorshipCache();
         return super.getFullTitleCache();
     }
 
+    @Override
     public String getTitleCache(){
         if(!protectedTitleCache) {
             updateAuthorshipCache();
@@ -896,6 +902,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         this.setProtectedAuthorshipCache(protectedAuthorshipCache);
     }
 
+    @Override
     public void setTitleCache(String titleCache, boolean protectCache){
         super.setTitleCache(titleCache, protectCache);
     }
@@ -1112,6 +1119,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see    	HybridRelationshipType
      * @deprecated use {@link #getHybridParentRelations()} instead. Will be removed in higher versions.
      */
+    @Deprecated
     @Transient
     public Set<HybridRelationship> getParentRelationships() {
         return getHybridParentRelations();

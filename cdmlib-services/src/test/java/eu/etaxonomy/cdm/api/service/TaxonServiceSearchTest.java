@@ -937,7 +937,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         classificationService.save(classification);
         classificationService.save(alternativeClassification);
 
-        Reference sec = ReferenceFactory.newBook();
+        Reference<?> sec = ReferenceFactory.newBook();
         referenceService.save(sec);
 
         BotanicalName n_abies = BotanicalName.NewInstance(Rank.GENUS());
@@ -964,6 +964,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         BotanicalName n_abies_kawakamii = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_kawakamii.setNameCache("Abies kawakamii", true);
         Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
+        t_abies_kawakamii.getTitleCache();
         taxonService.save(t_abies_kawakamii);
 
         BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
@@ -982,8 +983,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null, null);
         classificationService.saveOrUpdate(classification);
         classificationService.saveOrUpdate(alternativeClassification);
-
-//        t_abies_balsamea.se
 
         //
         // Description
