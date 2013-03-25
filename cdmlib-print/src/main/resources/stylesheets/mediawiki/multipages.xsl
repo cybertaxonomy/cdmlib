@@ -95,7 +95,6 @@
             <title>
                 <xsl:text>Category:</xsl:text>
                 <xsl:value-of select="$title"/>
-
             </title>
             <revision>
                 <!-- TODO: create seconds without positions after decimal point! -->
@@ -106,12 +105,16 @@
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
-                    <xsl:call-template name="TOC"/>
-                    <xsl:call-template name="chapter">
-                        <xsl:with-param name="title" >Overwiew</xsl:with-param>
-                    </xsl:call-template>
-                    <xsl:text> some information text</xsl:text>
-                    <xsl:call-template name="taxon_tree"/>
+                    
+                    <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"></xsl:value-of>
+                    
+                    
+                    <!-- add parent categorie if exists -->
+                    
+                    <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
+                        <xsl:variable name="parent-title"><xsl:call-template name="title"><xsl:with-param name="taxon" select="../../Taxon"/></xsl:call-template></xsl:variable>
+                        <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
+                    </xsl:if>
                 </text>
             </revision>
         </page>
@@ -124,18 +127,15 @@
             <revision>
                 <!-- TODO: create seconds without positions after decimal point! -->
                 <timestamp>
-                    <xsl:value-of select="$timestamp"></xsl:value-of>
+                    <xsl:value-of select="$timestamp"/>
                 </timestamp>
                 <contributor>
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
                     <xsl:call-template name="TOC"/>
-                    <xsl:call-template name="display-taxon-name">
-                        <xsl:with-param name="taxon" select="Taxon"/>
-                    </xsl:call-template>
-                    <xsl:apply-templates select="Taxon"/>  
-                    
+                   
+                    <xsl:apply-templates select="Taxon"/>                      
                     <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
                 </text>
             </revision>
@@ -301,7 +301,7 @@
     <!-- think also of template changes in the mediawiki -->
     <!-- TODO: wrap TOC layout in a mediawiki template -->
 
-    <xsl:template name="TOC"> {{TOC|right}} </xsl:template>
+    <xsl:template name="TOC"> {{ViBRANT_TOC}} </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
