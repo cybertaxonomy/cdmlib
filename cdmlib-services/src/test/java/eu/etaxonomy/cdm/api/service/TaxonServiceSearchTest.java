@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -196,23 +195,30 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException,
+            ParseException {
 
         refreshLuceneIndex();
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null, false, null, null, null, null);
-        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null,
+                false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1),
+                pager.getCount());
 
-        // the description containing the Nulltanne has no taxon attached, taxon.id = null
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, null, null, false, null, null, null, null);
+        // the description containing the Nulltanne has no taxon attached,
+        // taxon.id = null
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, null, null,
+                false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for 'Nulltanne' ", Integer.valueOf(0), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null,
+                Arrays.asList(new Language[] { Language.GERMAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching in German", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null,
+                Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
 
     }
@@ -290,6 +296,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
+        Reference sec = ReferenceFactory.newDatabase();
+        referenceService.save(sec);
 
         Set<String> uniqueRandomStrs = new HashSet<String>(1024);
         int numOfItems = 100;
@@ -299,7 +307,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         for(String rndStr: uniqueRandomStrs){
 
-            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SERIES()), sec);
             taxon.setTitleCache("Tax" + rndStr, true);
             taxonService.save(taxon);
 
@@ -619,6 +627,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                                 "Die Balsamtanne ist mit bis zu 30 m Höhe ein mittelgroßer Baum und kann bis zu 200 Jahre alt werden",
                                 Language.GERMAN(), null));
         t_abies_balsamea.addDescription(d_abies_balsamea_new);
+        // set authorshipCache to null to avoid validation exception,
+        // this is maybe not needed in future,  see ticket #3344
+        BotanicalName abies_balsamea = HibernateProxyHelper.deproxy(t_abies_balsamea.getName(), BotanicalName.class);
+        abies_balsamea.setAuthorshipCache(null);
         taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
@@ -997,10 +1009,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         setComplete();
         endTransaction();
 
-        printDataSet(new FileOutputStream("TaxonServiceSearchTest.xml"), new String[] {
+
+        writeDbUnitDataSetFile(new String[] {
             "TAXONBASE", "TAXONNAMEBASE", "SYNONYMRELATIONSHIP",
             "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
-            "AGENTBASE", "HOMOTYPICALGROUP", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+            "AGENTBASE", "HOMOTYPICALGROUP",
+            "CLASSIFICATION", "CLASSIFICATION_TAXONNODE","TAXONNODE",
             "LANGUAGESTRING", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING" });
 
     }
