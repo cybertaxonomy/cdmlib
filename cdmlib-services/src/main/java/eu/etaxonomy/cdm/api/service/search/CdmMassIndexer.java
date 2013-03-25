@@ -15,7 +15,6 @@ import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +66,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         logger.info("start indexing " + type.getName());
         monitor.subTask("indexing " + type.getSimpleName());
-        Transaction transaction = fullTextSession.beginTransaction();
+//        FIXME is beginTransaction() needed and sensible here?
+//              removed for hibernate 4 migration testing
+//        Transaction transaction = fullTextSession.beginTransaction();
 
         Long countResult = countEntities(type);
         int numOfBatches = calculateNumOfBatches(countResult);
@@ -206,6 +207,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     /**
      * @return
      */
+    @Override
     public Class[] indexedClasses() {
         return new Class[] {
                 DescriptionElementBase.class,
