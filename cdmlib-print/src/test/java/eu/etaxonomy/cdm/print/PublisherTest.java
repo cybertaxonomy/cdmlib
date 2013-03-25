@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
  * @created Apr 9, 2010
  * @version 1.0
  */
-//@Ignore // Implement this test in a more generic way
+@Ignore // Implement this test in a more generic way
 public class PublisherTest {
 	private static final Logger logger = Logger.getLogger(PublisherTest.class);
 
