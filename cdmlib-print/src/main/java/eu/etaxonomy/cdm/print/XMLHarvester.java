@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.print;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -195,11 +196,17 @@ public class XMLHarvester {
 		// as the portal service is more likely to change
 		Element fullTaxonElement = factory.getAcceptedTaxonElement(taxonElement);
 		
-		populateTypeDesignations(fullTaxonElement);
+		//populateTypeDesignations(fullTaxonElement);
 	
 		// get descriptions
 		if(configurator.isDoDescriptions()){
 			populateDescriptions(fullTaxonElement);
+		}
+		
+		// get polytomous key
+		
+		if(configurator.isDoPolytomousKey()){
+			populatePolytomousKey(fullTaxonElement);
 		}
 		
 		// get synonym
@@ -254,6 +261,21 @@ public class XMLHarvester {
 			populateTreeNodeContainer(childNodeElement);			
 			XMLHelper.addContent(childNodeElement, "childNodes", taxonNodeElement);
 		}
+	}
+	
+	private void populatePolytomousKey(Element taxonElement){		
+		logger.setLevel(Level.INFO);
+		logger.info("populating Polytomous key");
+		logger.info("populating Polytomous key taxonElement " + XMLHelper.getUuid(taxonElement) + " name " + XMLHelper.getTitleCache(taxonElement));
+				
+		//List<Element> polytomousKey = factory.getPolytomousKey(taxonElement);
+		Element polytomousKey = factory.getPolytomousKey(taxonElement);
+		XMLHelper.addContent(polytomousKey, "key", taxonElement);
+			
+		/*for(Element keyRow : polytomousKey){
+			XMLHelper.addContent(keyRow, "key", taxonElement);
+		}*/
+		
 	}
 	
 	/**
