@@ -73,7 +73,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @created 04.02.2009
  * @version 1.0
  */
-//@Ignore // why ignored?
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
@@ -866,10 +865,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      */
     private void refreshLuceneIndex() {
 
-        commitAndStartNewTransaction(null);
+//        commitAndStartNewTransaction(null);
+        commit();
+        endTransaction();
         indexer.purge(null);
         indexer.reindex(DefaultProgressMonitor.NewInstance());
-        commitAndStartNewTransaction(null);
+        startNewTransaction();
+//        commitAndStartNewTransaction(null);
     }
 
     @SuppressWarnings("rawtypes")

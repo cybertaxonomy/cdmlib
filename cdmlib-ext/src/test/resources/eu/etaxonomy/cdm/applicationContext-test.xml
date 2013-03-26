@@ -38,6 +38,9 @@
                     <prop key="hibernate.current_session_context_class">managed</prop>
                     -->
                     <prop key="hibernate.search.default.indexBase">./target/index</prop>
+                    <!--  hibernate.search.default.exclusive_index_use=false
+                          locks must not only be released after application shutdown in test environment -->
+                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
                     <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
                         due to which it is not possible to use batch updates, so we need to disable
                         hibernate batching when using hsqldb in the app context: -->
@@ -47,10 +50,10 @@
     </bean>
 
 
-   <!--  
+   <!--
     We do not use old springmodules spelling module anymore. See persistence spelling.xml comments for details.
     Try to work with modern annotationbased spelling instead.
-    
+
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>

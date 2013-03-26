@@ -40,6 +40,9 @@
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
+                <!--  hibernate.search.default.exclusive_index_use=false
+                          locks must not only be released after application shutdown in test environment -->
+                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
             </props>
         </property>

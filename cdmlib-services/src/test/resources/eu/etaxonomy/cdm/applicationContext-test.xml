@@ -44,7 +44,6 @@
                 <!-- TODO trying to use a managed session context
                 <prop key="hibernate.current_session_context_class">managed</prop>
                 -->
-                
 <!--                 temp for h4 migration testing -->
 <!--                 <prop key="hibernate.connection.driver_class">org.h2.Driver</prop> -->
 <!--                 <prop key="hibernate.connection.url">jdbc:h2:mem:cdm</prop> -->
@@ -52,8 +51,10 @@
 <!--                 <prop key="hibernate.connection.password"></prop> -->
 <!--                 <prop key="hibernate.search.lucene_version">LUCENE_36</prop> -->
 <!--                 end temp for h4 migration testing -->
- 
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
+                <!--  hibernate.search.default.exclusive_index_use=false
+                      locks must not only be released after application shutdown in test environment -->
+                <prop key="hibernate.search.default.exclusive_index_use">false</prop>
                 <!-- hsqldb v. <1.9 has a bug (http://sourceforge.net/tracker/?func=detail&atid=378131&aid=1407528&group_id=23316)
                     due to which it is not possible to use batch updates, so we need to disable
                     hibernate batching when using hsqldb in the app context: -->

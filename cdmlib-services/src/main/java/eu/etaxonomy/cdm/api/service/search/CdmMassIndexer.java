@@ -66,9 +66,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         logger.info("start indexing " + type.getName());
         monitor.subTask("indexing " + type.getSimpleName());
-//        FIXME is beginTransaction() needed and sensible here?
-//              removed for hibernate 4 migration testing
-//        Transaction transaction = fullTextSession.beginTransaction();
 
         Long countResult = countEntities(type);
         int numOfBatches = calculateNumOfBatches(countResult);
@@ -101,7 +98,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             monitor.done();
             throw	e;
         }
-        //transaction.commit(); // no need to commit, transaction will be committed automatically
         logger.info("end indexing " + type.getName());
         subMonitor.done();
     }
@@ -128,12 +124,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-
         logger.info("purging " + type.getName());
-
         fullTextSession.purgeAll(type);
-        fullTextSession.getSearchFactory().optimize();
-        //transaction.commit(); // no need to commit, transaction will be committed automatically
     }
 
 
@@ -199,7 +191,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             purge(type, monitor);
             monitor.worked(1);
         }
-        optimize(monitor);
+
+//        // need to commit and start new transaction before optimizing
+//        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+//        Transaction tx = fullTextSession.getTransaction();
+//        tx.commit();
+//        fullTextSession.beginTransaction(); // will be committed automatically at the end of this method since this class is transactional
+
+//        optimize(monitor);
 
         monitor.done();
     }
