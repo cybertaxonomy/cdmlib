@@ -76,7 +76,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 	@Override
 	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
 		
-		List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, propertyPaths);
+		List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, null, propertyPaths);
 		
 		return taxonList;
 	}

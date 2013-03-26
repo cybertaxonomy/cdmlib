@@ -5,12 +5,13 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,27 +27,28 @@ import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
 public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
-	
+
 	@SpringBeanByType
 	IReferenceDao referenceDao;
-	
+
 	private UUID firstBookUuid;
 	private UUID firstJournalUuid;
 	private UUID genericUuid;
 	private UUID proceedingsUuid;
 	private UUID bookSectionUuid;
 	private UUID nomenclaturalReferenceBookUuid;
-	
-	private String firstPublisherName ="First Publisher";
-	private String secondPublisherName ="Second Publisher";
-	private String thirdPublisherName ="Third Publisher";
-	private String fourthPublisherName ="Fourth Publisher";
-	
-	
+
+	private final String firstPublisherName ="First Publisher";
+	private final String secondPublisherName ="Second Publisher";
+	private final String thirdPublisherName ="Third Publisher";
+	private final String fourthPublisherName ="Fourth Publisher";
+
+
 	@Before
 	public void setUp() {
 		firstBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
@@ -60,14 +62,14 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	@Test
 	public void testDummy() {
 	}
-	
+
 	@Test
 	public void testGetPublishers() {
-		IJournal firstJournal = (IJournal)referenceDao.findByUuid(firstJournalUuid);
+		IJournal firstJournal = referenceDao.findByUuid(firstJournalUuid);
 		assert firstJournal!= null : "journal must exist";
-		
+
 //		List<Publisher> publishers = firstJournal.getPublishers();
-//		
+//
 //		assertNotNull("getPublishers should return a list", publishers);
 //		assertFalse("the list should not be empty", publishers.isEmpty());
 //		assertEquals("getPublishers should return 4 Publisher instances",4,publishers.size());
@@ -75,23 +77,23 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 //		assertEquals("second publisher should come second",secondPublisherName,publishers.get(1).getPublisherName());
 //		assertEquals("third publisher should come third",thirdPublisherName,publishers.get(2).getPublisherName());
 //		assertEquals("fourth publisher should come fourth",fourthPublisherName,publishers.get(3).getPublisherName());
-		
-		
+
+
 	}
-	
+
 	@Test
 	public void testGetSubordinateReferences() {
-		
-	    Reference book = referenceDao.findByUuid(firstBookUuid);	    
+
+	    Reference book = referenceDao.findByUuid(firstBookUuid);
 	    Reference proceedings = referenceDao.findByUuid(proceedingsUuid);
-	    
+
 	    // 1.)
 		List<Reference> book_subordinateReferences = referenceDao.getSubordinateReferences(book);
 		assertEquals("expecting one subordinate reference", book_subordinateReferences.size(), 1);
 		Reference sub_1 = book_subordinateReferences.get(0);
 		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_1.getTitleCache());
 		assertEquals("first subordinateReferences matches uuid", bookSectionUuid, sub_1.getUuid());
-		
+
 		// 2.)
 		List<Reference> proceedings_subordinateReferences = referenceDao.getSubordinateReferences(proceedings);
 		assertEquals("expecting one subordinate reference",2 ,proceedings_subordinateReferences.size());
@@ -102,41 +104,43 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("first subordinateReferences matches uuid", firstBookUuid, sub_1.getUuid());
 		assertEquals("second subordinateReferences matches uuid", bookSectionUuid, sub_2.getUuid());
 	}
-	
+
 	@Test
 	public void testListCoveredTaxa() {
 
 		Reference<?> book = referenceDao.findByUuid(firstBookUuid);
-		List<TaxonBase> coveredTaxa = referenceDao.listCoveredTaxa(book, false, null);
+		List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", OrderHint.SortOrder.DESCENDING)});
+
+		List<TaxonBase> coveredTaxa = referenceDao.listCoveredTaxa(book, false, orderHints, null);
 		assertEquals("expecting one Taxa covered by this book", 1, coveredTaxa.size());
 		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
-		
-		coveredTaxa = referenceDao.listCoveredTaxa(book, true, null);
+
+		coveredTaxa = referenceDao.listCoveredTaxa(book, true, orderHints, null);
 		assertEquals("expecting 2 Taxa covered by this book", 2, coveredTaxa.size());
 		Set<String> titles = makeTitleCacheSet(coveredTaxa);
 		Assert.assertTrue("covered taxa must contain 'Lactuca perennis'", titles.contains("Lactuca perennis"));
 		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
-//		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
-		
+		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+
 		Reference bookSection = referenceDao.findByUuid(bookSectionUuid);
-		coveredTaxa = referenceDao.listCoveredTaxa(bookSection, false, null);
+		coveredTaxa = referenceDao.listCoveredTaxa(bookSection, false, orderHints, null);
 		assertEquals("expecting two Taxa covered by this bookSection", 2, coveredTaxa.size());
 		titles = makeTitleCacheSet(coveredTaxa);
 		Assert.assertTrue("covered taxa must contain 'Lactuca perennis'", titles.contains("Lactuca perennis"));
 		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
-//		assertEquals("1st covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
-//		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
-		
+		assertEquals("1st covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+
 		// by nomenclaturalReference
 		Reference nomRef = referenceDao.findByUuid(nomenclaturalReferenceBookUuid);
-		coveredTaxa = referenceDao.listCoveredTaxa(nomRef, false, null);
+		coveredTaxa = referenceDao.listCoveredTaxa(nomRef, false, orderHints, null);
 		assertEquals("expecting two Taxa covered nomenclaturalReference", 2, coveredTaxa.size());
 		titles = makeTitleCacheSet(coveredTaxa);
 		Assert.assertTrue("covered taxa must contain 'Lactuca perennis'", titles.contains("Lactuca perennis"));
 		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
-//		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
-//		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
-	
+		assertEquals("covered taxon is 'Lactuca perennis'", "Lactuca perennis", coveredTaxa.get(0).getName().getTitleCache() );
+		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
+
 	}
 
 	private Set<String> makeTitleCacheSet(List<TaxonBase> coveredTaxa) {
