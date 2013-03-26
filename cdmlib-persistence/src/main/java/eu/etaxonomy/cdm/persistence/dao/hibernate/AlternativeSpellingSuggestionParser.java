@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -44,25 +44,25 @@ import org.hibernate.search.indexes.IndexReaderAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
 
 
 
-public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> 
-		extends HibernateDaoSupport  
+public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
+		extends HibernateDaoSupport
 		implements IAlternativeSpellingSuggestionParser {
 	private static Log log = LogFactory.getLog(AlternativeSpellingSuggestionParser.class);
 
 	private String defaultField;
 	protected Directory directory;
-	private Class<T> type;
+	private final Class<T> type;
 	private Class<? extends T> indexedClasses[];
 
-	//FIXME only for testing in Hibernate 4/Lucene 3.6 migration
-	public static Version version = Version.LUCENE_36;
+	private static Version version = Configuration.luceneVersion;
 
-	
+
 	public AlternativeSpellingSuggestionParser(Class<T> type) {
 		this.type = type;
 	}
@@ -82,12 +82,14 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 		this.defaultField = defaultField;
 	}
 
-	public Query parse(String queryString) throws ParseException {
-		QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));		
+	@Override
+    public Query parse(String queryString) throws ParseException {
+		QueryParser queryParser = new QueryParser(version, defaultField, new StandardAnalyzer(version));
 		return queryParser.parse(queryString);
 	}
 
-	public Query suggest(String queryString) throws ParseException {
+	@Override
+    public Query suggest(String queryString) throws ParseException {
 		QuerySuggester querySuggester = new QuerySuggester(defaultField, new StandardAnalyzer(version));
 		Query query = querySuggester.parse(queryString);
 		return querySuggester.hasSuggestedQuery() ? query : null;
@@ -98,7 +100,8 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 		public QuerySuggester(String field, Analyzer analyzer) {
 			super(version, field, analyzer);
 		}
-		protected Query getFieldQuery(String field, String queryText) throws ParseException {
+		@Override
+        protected Query getFieldQuery(String field, String queryText) throws ParseException {
 			// Copied from org.apache.lucene.queryParser.QueryParser
 			// replacing construction of TermQuery with call to getTermQuery()
 			// which finds close matches.
@@ -110,22 +113,22 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 				try {
 					//OLD
 //					t = source.next();
-					
-					//FIXME this is new after Hibernate 4 migration 
+
+					//FIXME this is new after Hibernate 4 migration
 					//but completely unchecked and unsure if correct
 					//#3344
 					boolean it = source.incrementToken();
 					t = source.getAttribute(Token.class);
-					
-					
-					
+
+
+
 				} catch (IOException e) {
 					t = null;
 				}
 				if (t == null){
 					break;
 				}
-				
+
 //		OLD		v.addElement(t.termText());
 				//FIXME unchecked #3344
 				v.addElement(t.term());
@@ -136,11 +139,11 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 				// ignore
 			}
 
-			if (v.size() == 0)
-				return null;
-			else if (v.size() == 1)
-				return new TermQuery(getTerm(field, (String) v.elementAt(0)));
-			else {
+			if (v.size() == 0) {
+                return null;
+            } else if (v.size() == 1) {
+                return new TermQuery(getTerm(field, (String) v.elementAt(0)));
+            } else {
 				PhraseQuery q = new PhraseQuery();
 				q.setSlop(getPhraseSlop());
 				for (int i = 0; i < v.size(); i++) {
@@ -160,19 +163,20 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 				String[] similarWords = spellChecker.suggestSimilar(queryText, 1);
 				if (similarWords.length == 0) {
 					return new Term(field, queryText);
-				}			
+				}
 				suggestedQuery = true;
 				return new Term(field, similarWords[0]);
 			} catch (IOException e) {
 				throw new ParseException(e.getMessage());
 			}
-		}		
+		}
 		public boolean hasSuggestedQuery() {
 			return suggestedQuery;
-		}	
+		}
 	}
 
-	public void refresh() {
+	@Override
+    public void refresh() {
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		SearchFactory searchFactory = fullTextSession.getSearchFactory();
 		try {
@@ -182,7 +186,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 				//OLD
 //				DirectoryProvider<?> directoryProvider = searchFactory.getDirectoryProviders(indexedClass)[0];
 //				ReaderProvider readerProvider = searchFactory.getReaderProvider();
-				IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor(); 
+				IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor();
 //				IndexReader indexReader = ira.open(indexedClass);
 				IndexReader indexReader = null;
 
@@ -201,13 +205,13 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 						}
 					}
 
-					
+
 //					OLD: spellChecker.indexDictionary(dictionary);
 					//FIXME preliminary for Hibernate 4 migration see # 3344
-					IndexWriterConfig config = new IndexWriterConfig(version, new StandardAnalyzer(version)); 
+					IndexWriterConfig config = new IndexWriterConfig(version, new StandardAnalyzer(version));
 					boolean fullMerge = true;
 					spellChecker.indexDictionary(dictionary, config, fullMerge);
-					
+
 				} catch (CorruptIndexException cie) {
 					log.error("Spellings index is corrupted", cie);
 				} finally {
@@ -215,8 +219,8 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 //						readerProvider.closeIndexReader(indexReader);
 						ira.close(indexReader);
 					}
-				} 
-			} 
+				}
+			}
 		}catch (IOException ioe) {
 			log.error(ioe);
 		}

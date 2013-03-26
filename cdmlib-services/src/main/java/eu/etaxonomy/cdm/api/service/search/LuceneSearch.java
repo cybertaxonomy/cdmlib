@@ -32,19 +32,18 @@ import org.apache.lucene.search.grouping.TermAllGroupsCollector;
 import org.apache.lucene.search.grouping.TermFirstPassGroupingCollector;
 import org.apache.lucene.search.grouping.TermSecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
-import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.search.ProjectionConstants;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 
 /**
  *
@@ -179,7 +178,7 @@ public class LuceneSearch {
 
 //        ReaderProvider readerProvider = searchFactory.getReaderProvider();
 //        IndexReader reader = readerProvider.openReader(directoryProviders[0]);
-        
+
         IndexReader reader = searchFactory.getIndexReaderAccessor().open(getDirectorySelectClass());
         return reader;
     }
@@ -189,8 +188,7 @@ public class LuceneSearch {
      */
     public QueryParser getQueryParser() {
         Analyzer analyzer = getAnalyzer();
-        Version version = AlternativeSpellingSuggestionParser.version;
-        QueryParser parser = new QueryParser(version,  "titleCache", analyzer);
+        QueryParser parser = new QueryParser(Configuration.luceneVersion,  "titleCache", analyzer);
         return parser;
     }
 

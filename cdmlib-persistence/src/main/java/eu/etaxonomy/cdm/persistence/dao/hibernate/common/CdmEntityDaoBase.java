@@ -50,12 +50,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -74,10 +74,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     protected int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 
     protected Class<T> type;
-    
-    //preliminary
-    protected Version version = AlternativeSpellingSuggestionParser.version;
-    
+
+    protected Version version = Configuration.luceneVersion;
 
     @Autowired
 //	@Qualifier("defaultBeanInitializer")
@@ -96,10 +94,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         logger.debug("Creating DAO of type [" + type.getSimpleName() + "]");
     }
 
+    @Override
     public void lock(T t, LockMode lockMode) {
         getSession().lock(t, lockMode);
     }
 
+    @Override
     public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
         getSession().refresh(t, lockMode);
         defaultBeanInitializer.initialize(t, propertyPaths);
@@ -119,6 +119,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     //TODO: Use everywhere CdmEntityDaoBase.saveAll() instead of ServiceBase.saveCdmObjectAll()?
     //TODO: why does this use saveCdmObject_ which actually savesOrUpdateds data ?
+    @Override
     public Map<UUID, T> saveAll(Collection<T> cdmObjCollection){
         int types = cdmObjCollection.getClass().getTypeParameters().length;
         if (types > 0){
@@ -156,6 +157,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return cdmObj.getUuid();
     }
 
+    @Override
     public Map<UUID, T> saveOrUpdateAll(Collection<T> cdmObjCollection){
         int types = cdmObjCollection.getClass().getTypeParameters().length;
         if (types > 0){
@@ -191,6 +193,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 
 
+    @Override
     public T replace(T x, T y) {
         if(x.equals(y)) {
             return y;
@@ -229,16 +232,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return y;
     }
 
+    @Override
     public Session getSession() throws DataAccessException {
         return super.getSession();
     }
 
+    @Override
     public void clear() throws DataAccessException {
         Session session = getSession();
         session.clear();
         if (logger.isDebugEnabled()){logger.debug("dao clear end");}
     }
 
+    @Override
     public T merge(T transientObject) throws DataAccessException {
         Session session = getSession();
         T persistentObject = (T)session.merge(transientObject);
@@ -246,6 +252,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return persistentObject;
     }
 
+    @Override
     public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
         try {
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
@@ -278,21 +285,25 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
+    @Override
     public UUID save(T newInstance) throws DataAccessException {
         getSession().save(newInstance);
         return newInstance.getUuid();
     }
 
+    @Override
     public UUID update(T transientObject) throws DataAccessException {
         getSession().update(transientObject);
         return transientObject.getUuid();
     }
 
+    @Override
     public UUID refresh(T persistentObject) throws DataAccessException {
         getSession().refresh(persistentObject);
         return persistentObject.getUuid();
     }
 
+    @Override
     public UUID delete(T persistentObject) throws DataAccessException {
         if (persistentObject == null){
             logger.warn(type.getName() + " was 'null'");
@@ -309,11 +320,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return persistentObject.getUuid();
     }
 
+    @Override
     public T findById(int id) throws DataAccessException {
         return (T) getSession().get(type, id);
     }
 
 
+    @Override
     public T findByUuid(UUID uuid) throws DataAccessException{
         Session session = getSession();
         Criteria crit = session.createCriteria(type);
@@ -330,6 +343,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
+    @Override
     public List<T> listByIds(Collection<Integer> ids,  Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
         if (ids.isEmpty()) {
@@ -340,17 +354,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         logger.debug(criteria.toString());
 
-         List<T> result = (List<T>)criteria.list();
+         List<T> result = criteria.list();
          defaultBeanInitializer.initializeAll(result, propertyPaths);
          return result;
      }
 
 
+    @Override
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
        Criteria criteria = prepareList(uuids, pageSize, pageNumber, orderHints, "uuid");
 
-        List<T> result = (List<T>)criteria.list();
+        List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -420,11 +435,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria, orderHints);
 
-        List<T> result = (List<T>)criteria.list();
+        List<T> result = criteria.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
 
+    @Override
     public T load(UUID uuid) {
         T bean = findByUuid(uuid);
         if(bean == null){
@@ -435,6 +451,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return bean;
     }
 
+    @Override
     public T load(int id, List<String> propertyPaths){
         T bean = findById(id);
         if(bean == null){
@@ -445,6 +462,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return bean;
     }
 
+    @Override
     public T load(UUID uuid, List<String> propertyPaths){
         T bean = findByUuid(uuid);
         if(bean == null){
@@ -455,6 +473,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return bean;
     }
 
+    @Override
     public Boolean exists(UUID uuid) {
         if (findByUuid(uuid)==null){
             return false;
@@ -462,10 +481,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return true;
     }
 
+    @Override
     public int count() {
         return count(type);
     }
 
+    @Override
     public int count(Class<? extends T> clazz) {
         Session session = getSession();
         Criteria criteria = null;
@@ -475,16 +496,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria = session.createCriteria(clazz);
         }
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        
+
         //since hibernate 4 (or so) uniqueResult returns Long, not Integer, therefore needs
         //to be casted. Think about returning long rather then int!
         return ((Number) criteria.uniqueResult()).intValue();
     }
 
+    @Override
     public List<T> list(Integer limit, Integer start) {
         return list(limit, start, null);
     }
 
+    @Override
     public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
 
         Criteria criteria = null;
@@ -501,7 +524,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             criteria.setMaxResults(limit);
         }
 
-        List<Object[]> result = (List<Object[]>)criteria.list();
+        List<Object[]> result = criteria.list();
 
         if(propertyPaths != null && !propertyPaths.isEmpty()) {
           for(Object[] objects : result) {
@@ -581,7 +604,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
         //FIXME preliminary hardcoded type:
     	int type = SortField.STRING;
-    	
+
     	if(orderHints != null && !orderHints.isEmpty()) {
             org.apache.lucene.search.Sort sort = new Sort();
             SortField[] sortFields = new SortField[orderHints.size()];
@@ -603,10 +626,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
+    @Override
     public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(limit,start,orderHints,null);
     }
 
+    @Override
     public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = getSession().createCriteria(type);
         if(limit != null) {
@@ -615,12 +640,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
 
         addOrder(criteria,orderHints);
-        List<T> results = (List<T>)criteria.list();
+        List<T> results = criteria.list();
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
+    @Override
     public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
         if(clazz == null) {
@@ -640,7 +666,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria,orderHints);
 
-        List<T> results = (List<T>)criteria.list();
+        List<T> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
@@ -649,10 +675,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return list(type,limit,start,orderHints,null);
     }
 
+    @Override
     public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
         return list(type,limit,start,null,null);
     }
 
+    @Override
     public List<T> rows(String tableName, int limit, int start) {
         Query query = getSession().createQuery("from " + tableName + " order by uuid");
         query.setFirstResult(start);
@@ -661,6 +689,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         return result;
     }
 
+    @Override
     public Class<T> getType() {
         return type;
     }
@@ -687,6 +716,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
         }
     }
 
+    @Override
     public int count(T example, Set<String> includeProperties) {
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
@@ -761,6 +791,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
 
+    @Override
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria,example,includeProperties);
@@ -776,14 +807,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria,orderHints);
 
-        List<T> results = (List<T>)criteria.list();
+        List<T> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
     private class PropertySelectorImpl implements PropertySelector {
 
-        private Set<String> includeProperties;
+        private final Set<String> includeProperties;
         /**
          *
          */
@@ -793,6 +824,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             this.includeProperties = includeProperties;
         }
 
+        @Override
         public boolean include(Object propertyValue, String propertyName,	Type type) {
             if(includeProperties.contains(propertyName)) {
                 return true;

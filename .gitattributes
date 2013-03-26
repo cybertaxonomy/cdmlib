@@ -1169,6 +1169,7 @@ cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
 cdmlib-persistence/pom.xml -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationUtils.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/Configuration.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSourceBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmPersistentDataSource.java -text
