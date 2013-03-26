@@ -41,7 +41,6 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -113,7 +112,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @Column(length=36)
     @Match(MatchMode.IGNORE)
     @NotNull
-    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)  //TODO H42   (was Index.UN_TOKENIZED)
+    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     @FieldBridge(impl = UuidBridge.class)
     @Audited
     protected UUID uuid;
@@ -123,7 +122,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.IGNORE)
-    @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42   (was Index.UN_TOKENIZED)
+    @Field(analyze = Analyze.NO)
     @FieldBridge(impl = DateTimeBridge.class)
     @Audited
     private DateTime created;
@@ -200,12 +199,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
      */
+    @Override
     public UUID getUuid() {
         return uuid;
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#setUuid(java.util.UUID)
      */
+    @Override
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -213,12 +214,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
      */
+    @Override
     public int getId() {
         return this.id;
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#setId(int)
      */
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -226,12 +229,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
      */
+    @Override
     public DateTime getCreated() {
         return created;
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreated(java.util.Calendar)
      */
+    @Override
     public void setCreated(DateTime created) {
         if (created != null){
             new DateTime();
@@ -245,12 +250,14 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreatedBy()
      */
+    @Override
     public User getCreatedBy() {
         return this.createdBy;
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreatedBy(eu.etaxonomy.cdm.model.agent.Person)
      */
+    @Override
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }

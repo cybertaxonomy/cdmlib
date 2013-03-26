@@ -29,7 +29,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
@@ -57,7 +56,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @XmlElement(name = "Text")
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Column(length=65536)
-    @Field(index=Index.YES)   //TODO H42
+    @Field
     @FieldBridge(impl=StripHtmlBridge.class)
     @Lob
     protected String text;

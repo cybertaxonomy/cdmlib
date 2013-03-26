@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -12,24 +12,20 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.net.URI;
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.validation.Level2;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * @author m.doering
@@ -47,23 +43,23 @@ import javax.xml.bind.annotation.XmlType;
 public class GenBankAccession extends VersionableEntity {
 	private static final long serialVersionUID = -8179493118062601585L;
 	private static final Logger logger = Logger.getLogger(GenBankAccession.class);
-	
+
 	@XmlElement(name = "AccessionNumber")
 	private String accessionNumber;
-	
+
 	@XmlElement(name = "URI")
-	@Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
+	@Field(analyze = Analyze.NO)
 	@Type(type="uriUserType")
 	private URI uri;
-	
-//*********************** FACTORY ****************************************************/	
+
+//*********************** FACTORY ****************************************************/
 
 	public static GenBankAccession NewInstance(String accessionNumber){
 		GenBankAccession result = new GenBankAccession();
 		result.setAccessionNumber(accessionNumber);
 		return result;
 	}
-	
+
 //*********************** CONSTRUCTOR ****************************************************/
 
 	private GenBankAccession() {
@@ -71,15 +67,15 @@ public class GenBankAccession extends VersionableEntity {
 	}
 
 //*********************** GETTER / SETTER ****************************************************/
-		
-	
+
+
 	public String getAccessionNumber(){
 		logger.debug("getAccessionNumber");
 		return this.accessionNumber;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param accessionNumber    accessionNumber
 	 */
 	public void setAccessionNumber(String accessionNumber){
@@ -91,7 +87,7 @@ public class GenBankAccession extends VersionableEntity {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param uri    uri
 	 */
 	public void setUri(URI uri){

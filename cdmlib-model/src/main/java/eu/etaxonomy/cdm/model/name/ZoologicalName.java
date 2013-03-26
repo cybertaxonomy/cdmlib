@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -43,7 +42,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * The taxon name class for animals.
  * <P>
  * This class corresponds to: NameZoological according to the ABCD schema.
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:03
@@ -67,31 +66,31 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 
 	//Name of the breed of an animal
 	@XmlElement(name = "Breed")
-	@Field(index=Index.YES)  //TODO H42
+	@Field
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String breed;
-	
+
 	@XmlElement(name = "PublicationYear")
-	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
+	@Field(analyze = Analyze.NO)
 	@CacheUpdate(value ="authorshipCache")
 	@Min(0)
     private Integer publicationYear;
-	
+
 	@XmlElement(name = "OriginalPublicationYear")
-	@Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
+	@Field(analyze = Analyze.NO)
 	@CacheUpdate(value ="authorshipCache")
 	@Min(0)
     private Integer originalPublicationYear;
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();
 
-	
-	// ************* CONSTRUCTORS *************/	
-	/** 
+
+	// ************* CONSTRUCTORS *************/
+	/**
 	 * Class constructor: creates a new zoological taxon name instance
 	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
-	 * 
+	 *
 	 * @see #ZoologicalName(Rank, HomotypicalGroup)
 	 * @see #ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy
@@ -99,15 +98,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	protected ZoologicalName() {
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new zoological taxon name instance
 	 * only containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to the given homotypical group.
-	 * 
+	 *
 	 * @param	rank  the rank to be assigned to <i>this</i> zoological taxon name
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
 	 * @see 	#ZoologicalName()
@@ -119,7 +118,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 
-	/** 
+	/**
 	 * Class constructor: creates a new zoological taxon name instance
 	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
@@ -128,7 +127,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to the given homotypical group.
-	 * 
+	 *
 	 * @param	rank  the rank to be assigned to <i>this</i> zoological taxon name
 	 * @param	genusOrUninomial the string for <i>this</i> zoological taxon name
 	 * 			if its rank is genus or higher or for the genus part
@@ -155,15 +154,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
-	
-	
+
+
 	//********* METHODS **************************************/
-	
-	/** 
+
+	/**
 	 * Creates a new zoological taxon name instance
 	 * only containing its {@link Rank rank} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
-	 * 
+	 *
 	 * @param	rank	the rank to be assigned to <i>this</i> zoological taxon name
 	 * @see 			#ZoologicalName(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, HomotypicalGroup)
@@ -174,14 +173,14 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 		return new ZoologicalName(rank, null);
 	}
 
-	/** 
+	/**
 	 * Creates a new zoological taxon name instance
 	 * only containing its {@link Rank rank},
-	 * its {@link HomotypicalGroup homotypical group} and 
+	 * its {@link HomotypicalGroup homotypical group} and
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to the given homotypical group.
-	 * 
+	 *
 	 * @param  rank  the rank to be assigned to <i>this</i> zoological taxon name
 	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
 	 * @see    #NewInstance(Rank)
@@ -192,7 +191,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	public static ZoologicalName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
 		return new ZoologicalName(rank, homotypicalGroup);
 	}
-	/** 
+	/**
 	 * Creates a new zoological taxon name instance
 	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
@@ -201,7 +200,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to the given homotypical group.
-	 * 
+	 *
 	 * @param	rank  the rank to be assigned to <i>this</i> zoological taxon name
 	 * @param	genusOrUninomial the string for <i>this</i> zoological taxon name
 	 * 			if its rank is genus or higher or for the genus part
@@ -224,29 +223,29 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 */
 	public static ZoologicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		return new ZoologicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
-	}	
-	
-	
+	}
+
+
 	/**
 	 * Returns a zoological taxon name based on parsing a string representing
 	 * all elements (according to the {@link NomenclaturalCode#ICZN() ICZN}) of a zoological taxon name (where
 	 * the scientific name is an uninomial) including authorship but without
 	 * nomenclatural reference.
-	 * 
-	 * @param	fullNameString  the string to be parsed 
+	 *
+	 * @param	fullNameString  the string to be parsed
 	 * @return					the new zoological taxon name
 	 */
 	public static ZoologicalName PARSED_NAME(String fullNameString){
 		return PARSED_NAME(fullNameString, Rank.GENUS());
 	}
-	
+
 	/**
 	 * Returns a zoological taxon name based on parsing a string representing
 	 * all elements (according to the {@link NomenclaturalCode#ICZN() ICZN})) of a zoological taxon name including
 	 * authorship but without nomenclatural reference. The parsing result
 	 * depends on the given rank of the zoological taxon name to be created.
-	 * 
-	 * @param 	fullNameString  the string to be parsed 
+	 *
+	 * @param 	fullNameString  the string to be parsed
 	 * @param   rank			the rank of the taxon name
 	 * @return					the new zoological taxon name
 	 */
@@ -256,7 +255,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 		}
 		return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
 	}
-	
+
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> zoological taxon name, that is the
@@ -272,9 +271,9 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICZN;
 	}
-	
+
 //*************** ***************************
-	
+
 	private static Map<String, java.lang.reflect.Field> allFields = null;
 	@Override
     protected Map<String, java.lang.reflect.Field> getAllFields(){
@@ -283,14 +282,14 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 		}
     	return allFields;
     }
-	
+
 /* ***************** GETTER / SETTER ***************************/
-	
-	
-	
+
+
+
 	/**
 	 * Returns the breed name string for <i>this</i> animal (zoological taxon name).
-	 * 
+	 *
 	 * @return  the string containing the breed name for <i>this</i> zoological taxon name
 	 */
 	public String getBreed(){
@@ -308,7 +307,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * name. If the publicationYear attribute is null and a nomenclatural
 	 * reference exists the year could be computed from the
 	 * {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference}.
-	 * 
+	 *
 	 * @return  the integer representing the publication year for <i>this</i> zoological taxon name
 	 * @see  	#getOriginalPublicationYear()
 	 */
@@ -330,7 +329,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * from the publication year of the corresponding original name (basionym)
 	 * or from the {@link eu.etaxonomy.cdm.reference.INomenclaturalReference nomenclatural reference} of the basionym
 	 * if it exists.
-	 * 
+	 *
 	 * @return  the integer representing the publication year of the original
 	 * 			species epithet corresponding to <i>this</i> zoological taxon name
 	 * @see  	#getPublicationYear()
@@ -344,15 +343,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	public void setOriginalPublicationYear(Integer originalPublicationYear) {
 		this.originalPublicationYear = originalPublicationYear;
 	}
-	
-	
+
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> zoological name. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> zoological name by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.name.NonViralName#clone()
 	 * @see java.lang.Object#clone()
 	 */

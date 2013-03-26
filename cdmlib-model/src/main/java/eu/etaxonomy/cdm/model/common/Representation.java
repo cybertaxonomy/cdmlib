@@ -10,19 +10,19 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 
 /**
  * workaround for enumerations
@@ -45,11 +45,11 @@ public class Representation extends LanguageStringBase {
     private static final Logger logger = Logger.getLogger(Representation.class);
 
     @XmlElement(name = "Label")
-    @Field(index=Index.YES, store=Store.YES)   //TODO H42
+    @Field(store=Store.YES)
     private String label;
 
     @XmlElement(name = "AbbreviatedLabel")
-    @Field(index=Index.YES, store=Store.YES)  //TODO H42
+    @Field(store=Store.YES)
     private String abbreviatedLabel;
 
     /**

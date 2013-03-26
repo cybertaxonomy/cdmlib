@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
@@ -63,7 +62,7 @@ public class CommonTaxonName extends DescriptionElementBase implements Cloneable
     private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 
     @XmlElement(name = "Name")
-    @Field(index = Index.YES, store=Store.YES)  //TODO H42
+    @Field(store=Store.YES)
     private String name;
 
     @XmlElement(name = "Language")

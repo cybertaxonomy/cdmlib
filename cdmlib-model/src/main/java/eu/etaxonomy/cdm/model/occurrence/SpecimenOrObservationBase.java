@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -81,16 +81,16 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMultiLanguageTextHolder{
-	
+
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
-	
+
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="describedSpecimenOrObservations",targetEntity=DescriptionBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
-	
+
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
 	@OneToMany(mappedBy="identifiedUnit")
@@ -98,24 +98,24 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@IndexedEmbedded(depth = 2)
 	@NotNull
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
-	
+
 	@XmlElement(name = "Sex")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Sex sex;
-	
+
 	@XmlElement(name = "LifeStage")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Stage lifeStage;
-	
+
 	@XmlElement(name = "IndividualCount")
-	@Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)    //TODO H42 was UN_TOKENIZED
+	@Field(analyze = Analyze.NO)
 	@Min(0)
 	private Integer individualCount;
-	
+
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	@XmlElement(name = "Description")
@@ -126,7 +126,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@IndexedEmbedded
 	@NotNull
 	protected Map<Language,LanguageString> definition = new HashMap<Language,LanguageString>();
-	
+
 	// events that created derivedUnits from this unit
 	@XmlElementWrapper(name = "DerivationEvents")
 	@XmlElement(name = "DerivationEvent")
@@ -143,11 +143,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	protected SpecimenOrObservationBase(){
 		super();
 	}
-	
+
 	/**
 	 * The descriptions this specimen or observation is part of.<BR>
 	 * A specimen can not only have it's own {@link SpecimenDescription specimen description }
-	 * but can also be part of a {@link TaxonDescription taxon description} or a 
+	 * but can also be part of a {@link TaxonDescription taxon description} or a
 	 * {@link TaxonNameDescription taxon name description}.<BR>
 	 * @see #getSpecimenDescriptions()
 	 * @return
@@ -158,7 +158,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		}
 		return this.descriptions;
 	}
-	
+
 	/**
 	 * Returns the {@link SpecimenDescription specimen descriptions} this specimen is part of.
 	 * @see #getDescriptions()
@@ -168,7 +168,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public Set<SpecimenDescription> getSpecimenDescriptions() {
 		return getSpecimenDescriptions(true);
 	}
-	
+
 	/**
 	 * Returns the {@link SpecimenDescription specimen descriptions} this specimen is part of.
 	 * @see #getDescriptions()
@@ -182,7 +182,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 				if (includeImageGallery || descriptionBase.isImageGallery() == false){
 					specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
 				}
-				
+
 			}
 		}
 		return specimenDescriptions;
@@ -218,7 +218,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 //		ReflectionUtils.makeAccessible(method);
 //		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
 	}
-	
+
 	/**
 	 * Removes a specimen from a description (removes a description from this specimen)
 	 * @param description
@@ -232,25 +232,25 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 //		ReflectionUtils.makeAccessible(method);
 //		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
 	}
-	
+
 	public Set<DerivationEvent> getDerivationEvents() {
 		if(derivationEvents == null) {
 			this.derivationEvents = new HashSet<DerivationEvent>();
 		}
 		return this.derivationEvents;
 	}
-	
+
 	public void addDerivationEvent(DerivationEvent derivationEvent) {
 		if (! this.derivationEvents.contains(derivationEvent)){
 			this.derivationEvents.add(derivationEvent);
 			derivationEvent.addOriginal(this);
 		}
 	}
-	
+
 	public void removeDerivationEvent(DerivationEvent derivationEvent) {
 		this.derivationEvents.remove(derivationEvent);
 	}
-	
+
 	public Set<DeterminationEvent> getDeterminations() {
 		if(determinations == null) {
 			this.determinations = new HashSet<DeterminationEvent>();
@@ -262,12 +262,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		// FIXME bidirectional integrity. Use protected Determination setter
 		this.determinations.add(determination);
 	}
-	
+
 	public void removeDetermination(DeterminationEvent determination) {
 		// FIXME bidirectional integrity. Use protected Determination setter
 		this.determinations.remove(determination);
 	}
-	
+
 	public Sex getSex() {
 		return sex;
 	}
@@ -283,12 +283,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setLifeStage(Stage lifeStage) {
 		this.lifeStage = lifeStage;
 	}
-	
+
 	@Override
 	public String generateTitle(){
 		return getCacheStrategy().getTitleCache(this);
 	}
-	
+
 	public Integer getIndividualCount() {
 		return individualCount;
 	}
@@ -300,13 +300,13 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public Map<Language,LanguageString> getDefinition(){
 		return this.definition;
 	}
-	
+
 	/**
-	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text} 
+	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text}
 	 * used to define <i>this</i> specimen or observation.
-	 * 
+	 *
 	 * @param description	the languageString in with the title string and the given language
-	 *  
+	 *
 	 * @see    	   		#getDefinition()
 	 * @see    	   		#putDefinition(Language, String)
 	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
@@ -317,11 +317,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		this.putDefinition(description);
 	}
 	/**
-	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text} 
+	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text}
 	 * used to define <i>this</i> specimen or observation.
-	 * 
+	 *
 	 * @param description	the languageString in with the title string and the given language
-	 *  
+	 *
 	 * @see    	   		#getDefinition()
 	 * @see    	   		#putDefinition(Language, String)
 	 */
@@ -330,12 +330,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to define <i>this</i> specimen or observation.
-	 * 
+	 *
 	 * @param language	the language in which the title string is formulated
 	 * @param text		the definition in a particular language
-	 * 
+	 *
 	 * @see    	   		#getDefinition()
 	 * @see    	   		#putDefinition(LanguageString)
 	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
@@ -347,24 +347,24 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
 	 * used to define <i>this</i> specimen or observation.
-	 * 
+	 *
 	 * @param language	the language in which the title string is formulated
 	 * @param text		the definition in a particular language
-	 * 
+	 *
 	 * @see    	   		#getDefinition()
 	 * @see    	   		#putDefinition(LanguageString)
 	 */
 	public void putDefinition(Language language, String text){
 		this.definition.put(language, LanguageString.NewInstance(text, language));
 	}
-	
-	
+
+
 	public void removeDefinition(Language lang){
 		this.definition.remove(lang);
 	}
-	
+
 	/**
 	 * for derived units get the single next higher parental/original unit.
 	 * If multiple original units exist throw error
@@ -376,9 +376,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		return null;
 	}
 
-	
+
 //******************** CLONE **********************************************/
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
@@ -388,35 +388,35 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public Object clone() throws CloneNotSupportedException {
 		SpecimenOrObservationBase result = null;
 		result = (SpecimenOrObservationBase)super.clone();
-		
+
 		//defininion (description, languageString)
 		result.definition = new HashMap<Language,LanguageString>();
 		for(LanguageString languageString : this.definition.values()) {
 			LanguageString newLanguageString = (LanguageString)languageString.clone();
 			result.putDefinition(newLanguageString);
-		} 
+		}
 
 		//sex
 		result.setSex(this.sex);
 		//life stage
 		result.setLifeStage(this.lifeStage);
-		
+
 		//Descriptions
 		for(DescriptionBase description : this.descriptions) {
-			result.addDescription((SpecimenDescription)description);
+			result.addDescription(description);
 		}
-		
+
 		//DeterminationEvent FIXME should clone() the determination
 		// as the relationship is OneToMany
 		for(DeterminationEvent determination : this.determinations) {
 			result.addDetermination(determination);
 		}
-		
+
 		//DerivationEvent
 		for(DerivationEvent derivationEvent : this.derivationEvents) {
 			result.addDerivationEvent(derivationEvent);
 		}
-		
+
 		//no changes to: individualCount
 		return result;
 	}

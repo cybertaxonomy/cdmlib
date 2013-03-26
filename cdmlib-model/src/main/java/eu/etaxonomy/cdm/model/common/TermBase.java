@@ -33,13 +33,11 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
@@ -58,7 +56,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     private static final Logger logger = Logger.getLogger(TermBase.class);
 
     @XmlElement(name = "URI")
-    @Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)    //TODO H42 was UN_TOKENIZED
+    @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
 

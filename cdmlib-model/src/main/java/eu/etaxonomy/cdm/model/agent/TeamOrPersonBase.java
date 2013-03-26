@@ -48,7 +48,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
     @XmlElement(name="NomenclaturalTitle")
-    @Field(index=Index.YES)   //TODO H42
+    @Field(index=Index.YES)
     @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
@@ -63,6 +63,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      *
      * @see  INomenclaturalAuthor#getNomenclaturalTitle()
      */
+    @Override
     @Transient
     public String getNomenclaturalTitle() {
         String result = nomenclaturalTitle;
@@ -75,6 +76,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     /**
      * @see     #getNomenclaturalTitle()
      */
+    @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = nomenclaturalTitle;
     }

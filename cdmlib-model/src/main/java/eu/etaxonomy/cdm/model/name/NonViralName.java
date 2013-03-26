@@ -44,7 +44,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -124,8 +123,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     @XmlElement(name = "NameCache")
     @Fields({
-        @Field(name = "nameCache_tokenized",index = Index.YES),  //TODO H42
-        @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
+        @Field(name = "nameCache_tokenized"),
+        @Field(analyze = Analyze.NO)
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
@@ -138,7 +137,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     protected boolean protectedNameCache;
 
     @XmlElement(name = "GenusOrUninomial")
-    @Field(index=Index.YES)  //TODO H42
+    @Field
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
@@ -148,7 +147,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")
-    @Field(index=Index.YES) //TODO H42
+    @Field
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -156,7 +155,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String infraGenericEpithet;
 
     @XmlElement(name = "SpecificEpithet")
-    @Field(index=Index.YES)  //TODO H42
+    @Field
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -164,7 +163,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String specificEpithet;
 
     @XmlElement(name = "InfraSpecificEpithet")
-    @Field(index=Index.YES)    //TODO H42
+    @Field
     @CacheUpdate("nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -213,8 +212,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     @XmlElement(name = "AuthorshipCache")
     @Fields({
-        @Field(name = "authorshipCache_tokenized",index = Index.YES),  //TODO H42
-        @Field(index = Index.YES, analyze = Analyze.NO)  //TODO H42 was UN_TOKENIZED
+        @Field(name = "authorshipCache_tokenized"),
+        @Field(analyze = Analyze.NO)
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )

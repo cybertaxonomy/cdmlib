@@ -43,7 +43,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -111,7 +110,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Size(max = 255)
     @Fields({
         @Field(store=Store.YES),
-        @Field(name = "titleCache__sort", index = Index.YES, analyze = Analyze.NO, store=Store.YES)   //TODO H42 was UN_TOKENIZED
+        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
     })
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;

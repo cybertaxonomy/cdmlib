@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,7 +14,6 @@ import java.net.URI;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,13 +29,10 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.validation.Level2;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -60,22 +56,22 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class Rights extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);
-	
+
 	//external location of copyright text
 	@XmlElement(name = "URI")
-	@Field(index=org.hibernate.search.annotations.Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
+	@Field(analyze = Analyze.NO)
 	@Type(type="uriUserType")
 	private URI uri;
-	
+
 	@XmlElement(name = "AbbreviatedText")
 	private String abbreviatedText;
-	
+
 	@XmlElement(name = "Type")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private RightsTerm type;
-	
+
 	// owner etc as defined by the rightstype
 	@XmlElement(name = "Agent")
 	@XmlIDREF
@@ -84,7 +80,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private AgentBase agent;
 
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -101,7 +97,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	public static Rights NewInstance(String text, Language language) {
 		return new Rights(text, language);
 	}
-	
+
 	/**
 	 * Default Constructor
 	 */
@@ -119,7 +115,7 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	public RightsTerm getType(){
 		return this.type;
 	}
-	
+
 	public void setType(RightsTerm type){
 		this.type = type;
 	}
@@ -127,15 +123,15 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	public URI getUri(){
 		return this.uri;
 	}
-	
+
 	public void setUri(URI uri){
 		this.uri = uri;
 	}
-	
+
 	public String getAbbreviatedText(){
 		return this.abbreviatedText;
 	}
-	
+
 	public void setAbbreviatedText(String abbreviatedStatement){
 		this.abbreviatedText = abbreviatedStatement;
 	}
@@ -143,14 +139,14 @@ public class Rights extends LanguageStringBase implements Cloneable{
 	public AgentBase getAgent() {
 		return agent;
 	}
-	
+
 	public void setAgent(AgentBase agent) {
 		this.agent = agent;
 	}
-	
+
 //************************* CLONE **************************/
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */

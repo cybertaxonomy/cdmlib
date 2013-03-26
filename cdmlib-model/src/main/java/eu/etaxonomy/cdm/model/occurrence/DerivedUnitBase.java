@@ -31,7 +31,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
@@ -76,25 +75,25 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	private Collection collection;
 
 	@XmlElement(name = "CatalogNumber")
-	@Field(index=Index.YES, analyze = Analyze.NO)
+	@Field(analyze = Analyze.NO)
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String catalogNumber;
 
 	@XmlElement(name = "AccessionNumber")
-	@Field(index=Index.YES, analyze = Analyze.NO)
+	@Field(analyze = Analyze.NO)
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String accessionNumber;
 
 	@XmlElement(name = "CollectorsNumber")
-	@Field(index=Index.YES, analyze = Analyze.NO)
+	@Field(analyze = Analyze.NO)
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String collectorsNumber;
 
 	@XmlElement(name = "Barcode")
-	@Field(index=Index.YES, analyze = Analyze.NO)
+	@Field(analyze = Analyze.NO)
 	@NullOrNotEmpty
 	@Length(max = 255)
 	private String barcode;

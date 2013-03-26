@@ -138,14 +138,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 
     @XmlElement(name = "AppendedPhrase")
-    @Field(index= org.hibernate.search.annotations.Index.YES) //TODO H42
+    @Field
     @CacheUpdate(value ="nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
     private String appendedPhrase;
 
     @XmlElement(name = "NomenclaturalMicroReference")
-    @Field(index= org.hibernate.search.annotations.Index.YES)  //TODO H42
+    @Field
     @CacheUpdate(noUpdate ="titleCache")
     @NullOrNotEmpty
     @Size(max = 255)
@@ -532,6 +532,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    	   		NameRelationship
      * @see    	   		eu.etaxonomy.cdm.model.common.RelationshipBase
      */
+    @Override
     public void addRelationship(RelationshipBase relation) {
         if (relation instanceof NameRelationship){
             addNameRelationship((NameRelationship)relation);
@@ -845,6 +846,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
      */
+    @Override
     public int getParsingProblem(){
         return this.parsingProblem;
     }
@@ -852,6 +854,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(int)
      */
+    @Override
     public void setParsingProblem(int parsingProblem){
         this.parsingProblem = parsingProblem;
     }
@@ -859,6 +862,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
      */
+    @Override
     public void addParsingProblem(ParserProblem problem){
         parsingProblem = ParserProblem.addProblem(parsingProblem, problem);
     }
@@ -866,6 +870,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
      */
+    @Override
     public void removeParsingProblem(ParserProblem problem) {
         parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
     }
@@ -880,6 +885,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
      */
+    @Override
     public boolean hasProblem(){
         return parsingProblem != 0;
     }
@@ -889,6 +895,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
      */
+    @Override
     public boolean hasProblem(ParserProblem problem) {
         return getParsingProblems().contains(problem);
     }
@@ -897,6 +904,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
      */
+    @Override
     public int getProblemStarts(){
         return this.problemStarts;
     }
@@ -904,6 +912,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
      */
+    @Override
     public void setProblemStarts(int start) {
         this.problemStarts = start;
     }
@@ -911,6 +920,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
      */
+    @Override
     public int getProblemEnds(){
         return this.problemEnds;
     }
@@ -918,6 +928,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
      */
+    @Override
     public void setProblemEnds(int end) {
         this.problemEnds = end;
     }
@@ -1192,6 +1203,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see #getNomenclaturalReference()
      */
+    @Override
     @Transient
     public Reference getCitation(){
         //TODO What is the purpose of this method differing from the getNomenclaturalReference method?
@@ -1218,6 +1230,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Returns the parsing problems
      * @return
      */
+    @Override
     public List<ParserProblem> getParsingProblems(){
         return ParserProblem.warningList(this.parsingProblem);
     }

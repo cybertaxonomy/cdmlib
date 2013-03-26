@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
 /**
@@ -63,7 +62,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 
     @XmlAttribute(name = "isTechnical")
-    @Field(index=Index.YES, analyze = Analyze.NO)   //TODO H42 was UN_TOKENIZED
+    @Field(analyze = Analyze.NO)
     private boolean isTechnical=false;
 
 
