@@ -121,8 +121,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
 	@XmlElement(name = "LinkbackURL") // TODO tell JAXB to use the new field name: linkbackUri
-	@Column(name="linkbackUrl") // TODO upgrade databases to new field name: linkbackUri
-//	@Type(type="urlUserType")
+	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri
 	private URI linkbackUri;
 
 	/**
