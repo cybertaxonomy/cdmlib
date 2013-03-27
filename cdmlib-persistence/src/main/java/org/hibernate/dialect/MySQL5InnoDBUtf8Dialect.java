@@ -9,6 +9,8 @@
 
 package org.hibernate.dialect;
 
+import java.sql.Types;
+
 import org.hibernate.dialect.MySQL5InnoDBDialect;
 
 /**
@@ -18,7 +20,13 @@ import org.hibernate.dialect.MySQL5InnoDBDialect;
  */
 public class MySQL5InnoDBUtf8Dialect extends MySQL5InnoDBDialect {
 
-    public String getTableTypeString() {
+    
+	public MySQL5InnoDBUtf8Dialect(){
+		super();
+		registerColumnType(Types.BOOLEAN, "bit");
+	}
+	
+	public String getTableTypeString() {
         return " ENGINE=InnoDB DEFAULT CHARSET=utf8";
     }
     
