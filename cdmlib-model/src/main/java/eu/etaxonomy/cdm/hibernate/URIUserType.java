@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,16 +15,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.UUID;
 
 import org.hibernate.HibernateException;
 import org.hibernate.TypeMismatchException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
-import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 
 /**
  * This class maps java.net.URI to varchar(255)
@@ -33,7 +30,7 @@ import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
  */
 public class URIUserType extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = -5825017496962569105L;
-	
+
 	/**
      * SQL type for this usertype.
      */
@@ -44,7 +41,7 @@ public class URIUserType extends AbstractUserType implements UserType {
 	 */
 	@Override
 	public Class returnedClass() {
-		return UUID.class;
+		return URI.class;
 	}
 
 	@Override
@@ -54,10 +51,10 @@ public class URIUserType extends AbstractUserType implements UserType {
 
 
 	@Override
-	public URI nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
+	public URI nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
 		String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
-			
+
 		if(val == null) {
 			return null;
 		} else {
@@ -69,13 +66,13 @@ public class URIUserType extends AbstractUserType implements UserType {
 		}
     }
 
-	
+
 
 	@Override
-	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) 
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {
 
-		if (value == null) { 
+		if (value == null) {
 //        statement.setString(index, null); old version
           StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
       } else {
@@ -83,13 +80,14 @@ public class URIUserType extends AbstractUserType implements UserType {
 //       statement.setString(index, uri.toString()); //old version
           StandardBasicTypes.STRING.nullSafeSet(statement, uri.toString(), index, session);
       }
-	    
+
     }
 
     /**
      * @param value value being copied
      * @return copied value
      */
+    @Override
     public Object deepCopy(Object value) {
         if (value == null) {
             return null;
