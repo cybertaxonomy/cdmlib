@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,8 +14,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -36,13 +36,13 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  */
 public class AnnotationTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(AnnotationTest.class);
-	
-	private static Annotation annotation1; 
+
+	private static Annotation annotation1;
 	private static Person commentator;
-	private static URL linkbackUrl;
+	private static URI linkbackUri;
 	private static AnnotatableEntity annotatedObject;
-	
-	
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -68,12 +68,8 @@ public class AnnotationTest extends EntityTestBase {
 		annotation1.setCommentator(commentator);
 		annotatedObject = BotanicalName.NewInstance(Rank.SPECIES());
 		annotatedObject.addAnnotation(annotation1);
-		try {
-			linkbackUrl = new URL("http:\\www.abc.de");
-			annotation1.setLinkbackUrl(linkbackUrl);
-		} catch (MalformedURLException e) {
-			logger.warn("MalformedURLException");
-		}
+		linkbackUri = new URI("http:\\www.abc.de");
+        annotation1.setLinkbackUri(linkbackUri);
 	}
 
 	/**
@@ -84,7 +80,7 @@ public class AnnotationTest extends EntityTestBase {
 	}
 
 /* ****************** TESTS *************************************/
-	
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#Annotation(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
 	 */
@@ -93,7 +89,7 @@ public class AnnotationTest extends EntityTestBase {
 		assertNotNull(annotation1);
 		assertSame(commentator, annotation1.getCommentator());
 		assertSame(Language.DEFAULT(), annotation1.getLanguage());
-		assertSame(linkbackUrl, annotation1.getLinkbackUrl());
+		assertSame(linkbackUri, annotation1.getLinkbackUri());
 		assertSame(annotatedObject.getAnnotations().iterator().next(), annotation1);
 	}
 
@@ -126,21 +122,21 @@ public class AnnotationTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#getLinkbackUrl()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#setLinkbackUrl(java.net.URL)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#getLinkbackUri()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#setLinkbackUri(java.net.URL)}.
 	 */
 	@Test
-	public void testGetSetLinkbackUrl() {
-		URL url = null;
+	public void testGetSetLinkbackUri() {
+		URI uri = null;
 		try {
-			url = new URL("http:\\test.abc.de");
-		} catch (MalformedURLException e) {
-			fail();
-		}
-		annotation1.setLinkbackUrl(url);
-		assertSame(url, annotation1.getLinkbackUrl());
-		annotation1.setLinkbackUrl(null);
-		assertNull(annotation1.getLinkbackUrl());
+			uri = new URI("http:\\test.abc.de");
+		} catch (URISyntaxException e) {
+		    fail();
+        }
+		annotation1.setLinkbackUri(uri);
+		assertSame(uri, annotation1.getLinkbackUri());
+		annotation1.setLinkbackUri(null);
+		assertNull(annotation1.getLinkbackUri());
 	}
 
 }

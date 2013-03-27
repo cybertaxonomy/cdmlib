@@ -15,13 +15,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.UUID;
 
 import org.hibernate.HibernateException;
 import org.hibernate.TypeMismatchException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
+import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 
 /**
  * This class maps java.net.URI to varchar(255)
@@ -87,7 +90,6 @@ public class URIUserType extends AbstractUserType implements UserType {
      * @param value value being copied
      * @return copied value
      */
-    @Override
     public Object deepCopy(Object value) {
         if (value == null) {
             return null;
