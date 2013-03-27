@@ -23,6 +23,7 @@ public class MySQL5InnoDBUtf8Dialect extends MySQL5InnoDBDialect {
     
 	public MySQL5InnoDBUtf8Dialect(){
 		super();
+		//see http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
 		registerColumnType(Types.BOOLEAN, "bit");
 	}
 	

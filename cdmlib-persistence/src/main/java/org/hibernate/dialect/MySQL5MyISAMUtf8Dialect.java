@@ -9,6 +9,8 @@
 
 package org.hibernate.dialect;
 
+import java.sql.Types;
+
 
 
 /**
@@ -18,6 +20,12 @@ package org.hibernate.dialect;
  */
 public class MySQL5MyISAMUtf8Dialect extends MySQL5Dialect {
 
+	public MySQL5MyISAMUtf8Dialect(){
+		super();
+		//see http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
+		registerColumnType(Types.BOOLEAN, "bit");
+	}
+	
     public String getTableTypeString() {
         return " ENGINE=MYISAM DEFAULT CHARSET=utf8";
     }
