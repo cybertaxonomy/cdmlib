@@ -59,11 +59,13 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeInstance(java.lang.Object)
      */
+    @Override
     public abstract Object initializeInstance(Object proxy);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
      */
+    @Override
     public void load(Object bean) {
         initializeBean(bean, true, false);
     }
@@ -71,6 +73,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#loadFully(eu.etaxonomy.cdm.model.common.CdmBase)
      */
+    @Override
     public void loadFully(Object bean) {
         initializeBean(bean, true, true);
     }
@@ -122,6 +125,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeProperties(java.lang.Object, java.util.List)
      */
     //TODO optimize algorithm ..
+    @Override
     public void initialize(Object bean, List<String> propertyPaths) {
 
         invokePropertyAutoInitializers(bean);
@@ -152,7 +156,8 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
 
     }
 
-    public <T> List<T> initializeAll(List<T> beanList,  List<String> propertyPaths){
+    @Override
+    public <C extends Collection<?>> C initializeAll(C beanList,  List<String> propertyPaths) {
         if(propertyPaths != null){
             for(Object bean : beanList){
                 initialize(bean, propertyPaths);

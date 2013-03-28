@@ -342,7 +342,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param propertyPaths
      * @return
      */
-    public List<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
+    public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
             Integer limit, Integer start, List<String> propertyPaths);
 
     /**

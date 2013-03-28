@@ -44,12 +44,13 @@ import eu.etaxonomy.cdm.model.agent.Person;
     "commentator",
     "annotatedObj",
     "annotationType",
-    "linkbackUrl"
+    "linkbackUri"
 })
 @Entity
 @Audited
 public class Annotation extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -4484677078599520233L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Annotation.class);
 
 

@@ -15,7 +15,6 @@ import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
 import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
-import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 

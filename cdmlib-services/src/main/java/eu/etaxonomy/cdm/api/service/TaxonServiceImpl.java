@@ -500,10 +500,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @return an List which is not specifically ordered
      */
     @Override
-    public List<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
+    public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
             Integer limit, Integer start, List<String> propertyPaths) {
 
-        List<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new ArrayList<Taxon>(), maxDepth);
+        Set<Taxon> relatedTaxa = collectRelatedTaxa(taxon, includeRelationships, new HashSet<Taxon>(), maxDepth);
         relatedTaxa.remove(taxon);
         beanInitializer.initializeAll(relatedTaxa, propertyPaths);
         return relatedTaxa;
@@ -520,7 +520,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param maxDepth can be <code>null</code> for infinite depth
      * @return
      */
-    private List<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, List<Taxon> taxa, Integer maxDepth) {
+    private Set<Taxon> collectRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Set<Taxon> taxa, Integer maxDepth) {
 
         if(taxa.isEmpty()) {
             taxa.add(taxon);
@@ -773,7 +773,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
-        List<Taxon> taxa = new ArrayList<Taxon>();
+        Set<Taxon> taxa = new HashSet<Taxon>();
         List<Media> taxonMedia = new ArrayList<Media>();
 
         if (limitToGalleries == null) {

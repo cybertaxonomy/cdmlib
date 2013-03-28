@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 
 import java.net.URI;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +19,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -32,24 +35,29 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;
 	private String taxonReference = null;
-	
-	
+    private boolean askForDate = false;
+    private Map<String, Team> titleCacheTeam;
+    private Map<String, Person> titleCachePerson;
+    private String defaultAuthor="";
+
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-	
-	@SuppressWarnings("unchecked")
+
+	@Override
+    @SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			SpecimenSythesysExcelImport.class,
 		};
 	};
-	
+
 	public static SpecimenSynthesysExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new SpecimenSynthesysExcelImportConfigurator(uri, destination);
 	}
-	
-	
+
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -60,13 +68,14 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 		setSource(uri);
 		setDestination(destination);
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public SpecimenSynthesysExcelImportState getNewState() {
+	@Override
+    public SpecimenSynthesysExcelImportState getNewState() {
 		return new SpecimenSynthesysExcelImportState(this);
 	}
 
@@ -84,11 +93,11 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 		}
 		return sourceReference;
 	}
-	
+
 	public void setTaxonReference(String taxonReference) {
 		this.taxonReference = taxonReference;
 	}
-	
+
 	public Reference getTaxonReference() {
 		//TODO
 		if (this.taxonReference == null){
@@ -101,38 +110,86 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
 			return this.getSource().toString();
 		}
 	}
-	
+
 	public void setDoAutomaticParsing(boolean doParsing){
 		this.doParsing=doParsing;
 	}
-	
+
 	public boolean getDoAutomaticParsing(){
 		return this.doParsing;
 	}
-	
+
 	public void setReUseExistingMetadata(boolean reuseMetadata){
 		this.reuseMetadata = reuseMetadata;
 	}
-	
+
 	public boolean getReUseExistingMetadata(){
 		return this.reuseMetadata;
 	}
-	
+
 	public void setReUseTaxon(boolean reuseTaxon){
 		this.reuseTaxon = reuseTaxon;
 	}
-	
+
 	public boolean getDoReUseTaxon(){
 		return this.reuseTaxon;
 	}
-	
-	
-	
+
+    public boolean doAskForDate() {
+        return askForDate;
+    }
+
+    public void setAskForDate(boolean askForDate) {
+        this.askForDate = askForDate;
+    }
+
+    /**
+     * @param titleCacheTeam
+     */
+    public void setTeams(Map<String, Team> titleCacheTeam) {
+       this.titleCacheTeam = titleCacheTeam;
+       System.out.println(titleCacheTeam);
+
+    }
+
+    /**
+     * @param titleCachePerson
+     */
+    public void setPersons(Map<String, Person> titleCachePerson) {
+       this.titleCachePerson=titleCachePerson;
+       System.out.println(titleCachePerson);
+
+    }
+
+    public Map<String, Team> getTeams() {
+        return titleCacheTeam;
+    }
+
+
+    public Map<String, Person> getPersons() {
+        return titleCachePerson;
+    }
+
+    /**
+     * @param string
+     */
+    public void setDefaultAuthor(String string) {
+      defaultAuthor=string;
+
+    }
+
+    public String getDefaultAuthor(){
+     return defaultAuthor;
+    }
+
+
+
 }

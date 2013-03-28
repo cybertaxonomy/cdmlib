@@ -117,5 +117,13 @@ public interface IXMLEntityFactory {
 	 * @param taxonElement
 	 * @return a list of elements
 	 */
-	public Element getDescriptions(Element taxonElement);		
+	public Element getDescriptions(Element taxonElement);	
+	
+	/**
+	 * Gets the PolytomousKey as a List of LinkedPolytomousKeyNodeRowDto objects.
+	 * 
+	 * @param taxonElement
+	 * @return a list of elements
+	 */
+	public Element getPolytomousKey(Element taxonElement); 
 }

@@ -51,6 +51,8 @@ public class PublishConfigurator implements Serializable {
 	private boolean doSynonymy = true;
 
 	private boolean doDescriptions = true;
+	
+	private boolean doPolytomousKey = true;
 
 	private UUID featureTreeUuid;
 
@@ -398,6 +400,20 @@ public class PublishConfigurator implements Serializable {
 	public IProgressMonitor getProgressMonitor() {
 		return progressMonitor != null ? progressMonitor
 				: new NullProgressMonitor();
+	}
+
+	/**
+	 * @return the doPolytomousKey
+	 */
+	public boolean isDoPolytomousKey() {
+		return doPolytomousKey;
+	}
+
+	/**
+	 * @param doPolytomousKey the doPolytomousKey to set
+	 */
+	public void setDoPolytomousKey(boolean doPolytomousKey) {
+		this.doPolytomousKey = doPolytomousKey;
 	}
 
 }

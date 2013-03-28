@@ -35,8 +35,12 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  *
  */
 public class AnnotationTest extends EntityTestBase {
+	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationTest.class);
 
+	private static final String TEST_URI_STR = "http://test.abc.de";
+	
 	private static Annotation annotation1;
 	private static Person commentator;
 	private static URI linkbackUri;
@@ -99,8 +103,7 @@ public class AnnotationTest extends EntityTestBase {
 	 */
 	@Test
 	public void testGetSetAnnotatedObj() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		AnnotatableEntity database = refFactory.newDatabase();
+		AnnotatableEntity database = ReferenceFactory.newDatabase();
 		annotation1.setAnnotatedObj(database);
 		assertSame(database, annotation1.getAnnotatedObj());
 		annotation1.setAnnotatedObj(null);
@@ -129,7 +132,7 @@ public class AnnotationTest extends EntityTestBase {
 	public void testGetSetLinkbackUri() {
 		URI uri = null;
 		try {
-			uri = new URI("http://test.abc.de");
+			uri = new URI(TEST_URI_STR);
 		} catch (URISyntaxException e) {
 		    fail();
         }

@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -13,7 +13,6 @@ import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
@@ -30,7 +29,7 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 	private static final Logger logger = Logger.getLogger(HomotypicalGroupDaoHibernateImpl.class);
 
 	public HomotypicalGroupDaoHibernateImpl() {
-		super(HomotypicalGroup.class); 
+		super(HomotypicalGroup.class);
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +40,7 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 			HomotypicalGroup homotypicalGroup, Class<T> type,
 			TypeDesignationStatusBase status, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths) {
-		
+
 		// checkNotInPriorView("getTypeDesignations(HomotypicalGroup homotypicalGroup,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
 		Query query = null;
 		String queryString = "select designation from TypeDesignationBase designation join designation.typifiedNames name join name.homotypicalGroup homotypicalGroup where homotypicalGroup = :homotypicalGroup";
@@ -54,14 +53,14 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 		}
 
 		query = getSession().createQuery(queryString);
-		
-		if(status != null) {		
+
+		if(status != null) {
 			query.setParameter("status", status);
 		}
 		if(type != null){
 			query.setParameter("type", type.getSimpleName());
 		}
-		
+
 		query.setParameter("homotypicalGroup",homotypicalGroup);
 
 		if(pageSize != null) {
@@ -72,9 +71,9 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 				query.setFirstResult(0);
 			}
 		}
-		return defaultBeanInitializer.initializeAll((List<T>)query.list(), propertyPaths);
+		return defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
 	}
-	
+
 
 
 }

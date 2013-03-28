@@ -9,10 +9,11 @@
 */
 package eu.etaxonomy.cdm.persistence.dao;
 
+import java.util.Collection;
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.kohlbecker
@@ -73,7 +74,15 @@ public interface IBeanInitializer {
      */
     public void initialize(Object bean,  List<String> propertyPaths);
 
-    public <T> List<T> initializeAll(List<T> list,  List<String> propertyPaths);
+    /**
+     * Initializes the entities given in the bean list according to the given
+     * <code>propertyPaths</code>.
+     *
+     * @param beanList
+     * @param propertyPaths
+     * @return
+     */
+    public <C extends Collection<?>> C initializeAll(C list,  List<String> propertyPaths);
 
     /**
      * Initialize the the proxy, unwrap the target object and return it.

@@ -253,7 +253,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        List<Taxon> taxa = new ArrayList<Taxon>();
+        Set<Taxon> taxa = new HashSet<Taxon>();
         Set<Integer> occurrenceIds = new HashSet<Integer>();
         List<T> occurrences = new ArrayList<T>();
 

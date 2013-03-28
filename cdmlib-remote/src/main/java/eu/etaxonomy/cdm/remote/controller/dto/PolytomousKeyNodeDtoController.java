@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
+import eu.etaxonomy.cdm.remote.controller.PolytomousKeyListController;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.AbstractLinkDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.LinkedPolytomousKeyNodeRowDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.PolytomousKeyNodeLinkDto;
@@ -57,17 +60,24 @@ import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 @RequestMapping(value = {"/dto/polytomousKey/"})
 public class PolytomousKeyNodeDtoController extends AbstractController<PolytomousKey, IPolytomousKeyService> {
 
+	public static final Logger logger = Logger
+			.getLogger(PolytomousKeyNodeDtoController.class);
+	
+	private static final List<String> KEY_INIT_STRATEGY = Arrays.asList(new String[]{
+			"root.children"
+	});
+
 	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
-			"$",
+			"*",
             "question.label",
             "statement.label",
     		"taxon.name.$"
 	});
-
-	/*public PolytomousKeyNodeDtoController() {
+	
+	public PolytomousKeyNodeDtoController() {
 		super();
 		setInitializationStrategy(NODE_INIT_STRATEGY);
-	}*/
+	}
 	
     private ITaxonService taxonService;
     
@@ -130,6 +140,8 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
 	@RequestMapping(value = {"linkedStyle"})
 	public ModelAndView doLinkedStyleByTaxonomicScope(
 			@RequestParam(value = "findByTaxonomicScope") UUID taxonUuid,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
@@ -157,14 +169,18 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         //Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null);
 		
 		//not getting a result when I use the method findByTaxonomicScope. Maybe I'm giving it the wrong taxonUUID. Ask andreas for a taxon that works
-		//
-        Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE, nodePaths);//NODE_INIT_STRATEGY);//initializationStrategy);
-        logger.error("Pager size " +pager.getPageSize());
+	  PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+      pagerParameters.normalizeAndValidate(response);
+
+	        
+		Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), initializationStrategy, NODE_INIT_STRATEGY);
+        //Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE, nodePaths);//NODE_INIT_STRATEGY);//initializationStrategy);
+        /*logger.error("Pager size " +pager.getPageSize());
         logger.error("Pager first record " +pager.getFirstRecord());
         logger.error("Pager count " +pager.getCount());
         logger.error("Pager indices " +pager.getIndices());
         logger.error("pager.getRecords().iterator().hasNext() " +pager.getRecords().iterator().hasNext());
-        logger.error("pager.getRecords().size() " + pager.getRecords().size());
+        logger.error("pager.getRecords().size() " + pager.getRecords().size());*/
         
         List<PolytomousKey> keyList = pager.getRecords(); // a pager is returned containing 1 key but pager.getRecords is empty
         
