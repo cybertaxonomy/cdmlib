@@ -62,8 +62,10 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
+// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
+// this is needed, otherwise the fields of the also abstract super class are missed during indexing
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy> extends SpecimenOrObservationBase<S> implements Cloneable{
 
 	@XmlElement(name = "Collection")

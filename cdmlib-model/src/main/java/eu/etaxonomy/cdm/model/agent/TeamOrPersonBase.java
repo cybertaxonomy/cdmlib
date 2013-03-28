@@ -41,8 +41,10 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "nomenclaturalTitle"
 })
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
+// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
+// this is needed, otherwise the fields of the also abstract super class are missed during indexing
+@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
     private static final long serialVersionUID = 5216821307314001961L;
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);

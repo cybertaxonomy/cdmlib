@@ -58,8 +58,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	TaxonRelationshipType.class
 })
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
+// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
+// this is needed, otherwise the fields of the also abstract super class are missed during indexing
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
