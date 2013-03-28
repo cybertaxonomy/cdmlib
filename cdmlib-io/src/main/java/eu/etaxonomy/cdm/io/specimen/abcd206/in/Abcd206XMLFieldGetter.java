@@ -76,8 +76,7 @@ public class Abcd206XMLFieldGetter {
 	protected void getScientificNames(NodeList group) {
 		NodeList identifications, results;
 		String tmpName = null;
-		boolean nameFound = false;
-
+		
 		for (int j = 0; j < group.getLength(); j++) {
 			if (group.item(j).getNodeName().equals(prefix + "Identification")) {
 				identifications = group.item(j).getChildNodes();
