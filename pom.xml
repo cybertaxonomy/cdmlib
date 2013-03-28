@@ -770,6 +770,10 @@
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-test</artifactId>
+                    </exclusion>                    
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
 	        </dependency>
@@ -1223,6 +1227,10 @@
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-support</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
