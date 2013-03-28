@@ -68,7 +68,7 @@ public class AnnotationTest extends EntityTestBase {
 		annotation1.setCommentator(commentator);
 		annotatedObject = BotanicalName.NewInstance(Rank.SPECIES());
 		annotatedObject.addAnnotation(annotation1);
-		linkbackUri = new URI("http:\\www.abc.de");
+		linkbackUri = new URI("http://www.abc.de");
         annotation1.setLinkbackUri(linkbackUri);
 	}
 
@@ -129,7 +129,7 @@ public class AnnotationTest extends EntityTestBase {
 	public void testGetSetLinkbackUri() {
 		URI uri = null;
 		try {
-			uri = new URI("http:\\test.abc.de");
+			uri = new URI("http://test.abc.de");
 		} catch (URISyntaxException e) {
 		    fail();
         }
