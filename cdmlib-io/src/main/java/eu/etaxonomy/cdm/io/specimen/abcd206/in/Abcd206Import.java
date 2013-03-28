@@ -1539,21 +1539,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         state.getConfig().setPersons(titleCachePerson);
     }
 	
-
-	/**
-	 * Returns <code>null</code> for all blank strings. Identity function otherwise.
-	 * @param str
-	 * @return
-	 */
-	private String NB(String str) {
-		if (StringUtils.isBlank(str)){
-			return null;
-		}else{
-			return str;
-		}
-	}
-
-
 	@Override
 	protected boolean isIgnore(Abcd206ImportState state) {
 		return false;
