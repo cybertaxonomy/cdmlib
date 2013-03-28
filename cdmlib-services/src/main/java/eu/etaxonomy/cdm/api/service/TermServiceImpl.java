@@ -54,7 +54,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
+	
 	private ILanguageStringDao languageStringDao;
+	
 	@Autowired
 	@Qualifier("langStrBaseDao")
 	private ILanguageStringBaseDao languageStringBaseDao;
