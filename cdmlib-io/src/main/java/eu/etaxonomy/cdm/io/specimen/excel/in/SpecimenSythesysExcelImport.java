@@ -408,7 +408,7 @@ public class SpecimenSythesysExcelImport  extends SpecimenImportBase<SpecimenSyn
 
 			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, getOccurrenceService());
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, this);
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
 			//Only for ABCD XML data

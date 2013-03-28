@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
@@ -20,20 +21,24 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurator, CdmImportBase>{
+public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurator, CdmImportBase<Abcd206ImportConfigurator,Abcd206ImportState>>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Abcd206ImportState.class);
 
+	private TransactionStatus tx;
+	
 	public Abcd206ImportState(Abcd206ImportConfigurator config) {
 		super(config);
 	}
+
+	public TransactionStatus getTx() {
+		return tx;
+	}
+
+	public void setTx(TransactionStatus tx) {
+		this.tx = tx;
+	}
 	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(SpecimenImportConfigurator config) {
-////		super(config);		
-//	}
+	
 
 }
