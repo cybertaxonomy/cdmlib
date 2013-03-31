@@ -128,7 +128,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
-    @NotEmpty(groups = Level2.class) // implictly NotNull
+    @NotEmpty(groups = Level2.class) // implicitly NotNull
     @Size(max = 255)
     private String nameCache;
 
@@ -217,7 +217,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
-    @NullOrNotEmpty
+//    @NullOrNotEmpty
+//    @NotNull
     @Size(max = 255)
     @Pattern(regexp = "[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
     private String authorshipCache;

@@ -37,8 +37,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 24.03.2009
  * @version 1.0
  */
-public class CdmPostDataChangeObservableListener 
-	implements 
+public class CdmPostDataChangeObservableListener implements 
 		  PostDeleteEventListener
 		, PostInsertEventListener
 		, PostLoadEventListener

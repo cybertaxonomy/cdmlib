@@ -95,9 +95,9 @@ public class ZooNameDefaultCacheStrategy extends NonViralNameDefaultCacheStrateg
 			authorPart = CdmUtils.concat(AuthorYearSeperator, authorAndEx, publicationYearString);
 		}
 		result = CdmUtils.concat(BasionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
-        if ("".equals(result)){
-        	result = null;
-        }
+		if (result == null){
+			result = "";
+		}
 		return result;
 	}
 	

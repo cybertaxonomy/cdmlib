@@ -92,7 +92,7 @@ public class AgentController extends BaseController<AgentBase, IAgentService>
 	public ModelAndView doGetTitleCache(@PathVariable("uuid") UUID uuid,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		ModelAndView mv = new ModelAndView();
-		AgentBase agentbase = service.load(uuid);
+		AgentBase<?> agentbase = service.load(uuid);
 		mv.addObject(agentbase.getTitleCache());
 		return mv;
 

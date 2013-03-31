@@ -57,7 +57,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 
     @Transient
     @XmlTransient
-    protected boolean isGeneratingTitleCache = false;
+    protected boolean isGeneratingTitleCache = false;  //state variable to avoid recursions when generating title cache and nomenclatural title
 
     /**
      * Returns the identification string (nomenclatural abbreviation) used in
@@ -88,7 +88,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      */
     @Override
     @Transient /*
-                TODO  is this still needed, can't we remove this ??
+                TODO  is the transient annotation still needed, can't we remove this ??
                 @Transient is an absolutely special case and thus leads to several
                 special implementations in order to harmonize this exception again
                 in other parts of the library:
