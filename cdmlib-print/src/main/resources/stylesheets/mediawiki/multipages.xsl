@@ -90,6 +90,24 @@
             </xsl:call-template>
         </xsl:variable>
 
+        <!-- we also initialize the parent taxon variable if there is a higher taxon assigned: -->
+ 
+        <xsl:variable name="parent-title">
+        <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
+           
+                <xsl:call-template name="title">
+                    <xsl:with-param name="taxon" select="../../Taxon"/>
+                </xsl:call-template>
+           
+        </xsl:if>
+        <!-- else if no higher taxon could be found -->
+        <xsl:if test="not(exists(../..)) or not(name(../..)='TaxonNode')">
+           
+                <xsl:text>{{No Parent}}</xsl:text>
+            
+        </xsl:if>
+        </xsl:variable>
+
         <!-- create category -->
         <page>
             <title>
@@ -106,15 +124,14 @@
                 </contributor>
                 <text xml:space="preserve">
                     
-                    <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"></xsl:value-of>
-                    
-                    
+                    <!-- redirekt to corresponding page -->
+                    <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"/>
+
                     <!-- add parent categorie if exists -->
-                    
                     <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
-                        <xsl:variable name="parent-title"><xsl:call-template name="title"><xsl:with-param name="taxon" select="../../Taxon"/></xsl:call-template></xsl:variable>
                         <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
                     </xsl:if>
+              
                 </text>
             </revision>
         </page>
@@ -134,7 +151,9 @@
                 </contributor>
                 <text xml:space="preserve">
                     <xsl:call-template name="TOC"/>
-                   
+                   <!-- add taxo tree -->
+                     <xsl:value-of select="concat('{{Taxo Tree|',$parent-title, '}}')"/> 
+                    
                     <xsl:apply-templates select="Taxon"/>                      
                     <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
                 </text>
