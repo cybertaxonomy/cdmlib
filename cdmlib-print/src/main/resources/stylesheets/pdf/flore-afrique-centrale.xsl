@@ -530,46 +530,57 @@
   <xsl:template name="add-markup">
     <xsl:param name="str"/>
     <xsl:param name="tag-name"/>
+    <!--xsl:value-of  select="concat('&quot;&lt;', $tag-name, '&gt;&quot;')"></xsl:value-of-->
+    <!--xsl:value-of  select="concat('&lt;/', $tag-name, '&gt;')"></xsl:value-of-->
     <xsl:variable name="opening-tag">
-      <xsl:value-of select="concat('&quot;&lt;', $tag-name, '&gt;&quot;')"> </xsl:value-of>
+      <xsl:value-of select="concat('&lt;', $tag-name, '&gt;')"> </xsl:value-of>
     </xsl:variable>
     <xsl:variable name="closing-tag">
-      <xsl:value-of select="concat('&quot;&lt;/', $tag-name, '&gt;&quot;')"> </xsl:value-of>
+      <xsl:value-of select="concat('&lt;/', $tag-name, '&gt;')"> </xsl:value-of>
     </xsl:variable>
 
     <xsl:choose>
       <!--select="concat(substring-before($value, '&amp;#x2013;')-->
       <!--xsl:when test="contains($str,&quot;&lt;{$tag-name}&gt;&quot;)"-->
       <xsl:when test="contains($str, $opening-tag)">
-        <xsl:variable name="before-first-i"
-          select="substring-before($str, $opening-tag)"/>
-        <!--xsl:variable name="inside-first-i" select="substring-before(substring-after($str,'&lt;{$tag-name}&gt;'),'&lt;/{$tag-name}&gt;')"/-->
-        <xsl:variable name="inside-first-i" select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
-        <xsl:variable name="after-first-i" select="substring-after($str, $closing-tag)"/>
+        <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
+        <xsl:variable name="inside-tag" select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
+        <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
         <!--xsl:variable name="after-first-i" select="substring-after($str,&quot;&lt;/{$tag-name}&gt;&quot;)"/-->
         <xsl:choose>
-          <xsl:when test="contains($before-first-i, '#x2014;')">
+          <xsl:when test="contains($before-tag, '#x2014;')">
             <xsl:call-template name="replace-mdash-html">
-              <xsl:with-param name="value" select="$before-first-i"/>
+              <xsl:with-param name="value" select="$before-tag"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:choose>
-              <xsl:when test="contains($before-first-i, '#x2013;')">
+              <xsl:when test="contains($before-tag, '#x2013;')">
                 <xsl:call-template name="replace-ndash-html">
-                  <xsl:with-param name="value" select="$before-first-i"/>
+                  <xsl:with-param name="value" select="$before-tag"/>
                 </xsl:call-template>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="$before-first-i"/>
+                <xsl:value-of select="$before-tag"/>
               </xsl:otherwise>
             </xsl:choose>
             <!--xsl:value-of select="$before-first-i"/></xsl:otherwise-->
           </xsl:otherwise>
         </xsl:choose>
-        <fo:inline font-style="italic" font-weight="bold">
-          <xsl:value-of select="$inside-first-i"/>
-        </fo:inline>
+        <!-- add BOLD or italics when inside the appropriate tags -->
+        <xsl:choose>
+          <xsl:when test="$tag-name = 'b'">
+            <fo:inline font-weight="bold">
+              <xsl:value-of select="$inside-tag"/>
+            </fo:inline>
+          </xsl:when>
+          <xsl:otherwise>
+            <fo:inline font-style="italic">
+              <xsl:value-of select="$inside-tag"/>
+            </fo:inline>
+          </xsl:otherwise>
+        </xsl:choose>
+               
         <xsl:call-template name="add-markup">
           <xsl:with-param name="str" select="$after-first-i"/>
           <xsl:with-param name="tag-name" select="$tag-name"/>
