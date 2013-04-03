@@ -526,12 +526,10 @@
   </xsl:template>
 
   <!-- TODO Make this templates shorter by creating generic template for replacing html codes 2013 and 2014-->
-  <!-- TODO - make this more generic so it call also handle bold tags -->
   <xsl:template name="add-markup">
     <xsl:param name="str"/>
     <xsl:param name="tag-name"/>
-    <!--xsl:value-of  select="concat('&quot;&lt;', $tag-name, '&gt;&quot;')"></xsl:value-of-->
-    <!--xsl:value-of  select="concat('&lt;/', $tag-name, '&gt;')"></xsl:value-of-->
+
     <xsl:variable name="opening-tag">
       <xsl:value-of select="concat('&lt;', $tag-name, '&gt;')"> </xsl:value-of>
     </xsl:variable>
@@ -540,13 +538,10 @@
     </xsl:variable>
 
     <xsl:choose>
-      <!--select="concat(substring-before($value, '&amp;#x2013;')-->
-      <!--xsl:when test="contains($str,&quot;&lt;{$tag-name}&gt;&quot;)"-->
       <xsl:when test="contains($str, $opening-tag)">
         <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
         <xsl:variable name="inside-tag" select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
         <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
-        <!--xsl:variable name="after-first-i" select="substring-after($str,&quot;&lt;/{$tag-name}&gt;&quot;)"/-->
         <xsl:choose>
           <xsl:when test="contains($before-tag, '#x2014;')">
             <xsl:call-template name="replace-mdash-html">
@@ -564,7 +559,6 @@
                 <xsl:value-of select="$before-tag"/>
               </xsl:otherwise>
             </xsl:choose>
-            <!--xsl:value-of select="$before-first-i"/></xsl:otherwise-->
           </xsl:otherwise>
         </xsl:choose>
         <!-- add BOLD or italics when inside the appropriate tags -->
@@ -580,9 +574,9 @@
             </fo:inline>
           </xsl:otherwise>
         </xsl:choose>
-               
+        <!-- call template recursively with the remaining text after the tag -->       
         <xsl:call-template name="add-markup">
-          <xsl:with-param name="str" select="$after-first-i"/>
+          <xsl:with-param name="str" select="$after-tag"/>
           <xsl:with-param name="tag-name" select="$tag-name"/>
         </xsl:call-template>
       </xsl:when>
@@ -608,25 +602,6 @@
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
-
-  <xsl:template name="replace-mdash-html-new">
-    <xsl:param name="value"/>
-    <xsl:choose>
-      <xsl:when test="contains($value, '#x2013;')">
-        <xsl:variable name="replaced-ndash"
-          select="concat(substring-before($value, '&amp;#x2013;'), '&ndash;', substring-after($value, '&amp;#x2013;'))"/>
-        <xsl:value-of
-          select="concat(substring-before($replaced-ndash, '&amp;#x2014;'), '&mdash;', substring-after($replaced-ndash, '&amp;#x2014;'))"
-        />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of
-          select="concat(substring-before($value, '&amp;#x2014;'), '&mdash;', substring-after($value, '&amp;#x2014;'))"
-        />
-      </xsl:otherwise>
-    </xsl:choose>
-
   </xsl:template>
 
   <xsl:template name="replace-ndash-html">
