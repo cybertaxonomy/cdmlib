@@ -501,22 +501,52 @@
   <xsl:template match="text">
     <!--fo:block font-size="9pt" space-after="5mm" -->
     <!--xsl:apply-templates select="node()"/-->
-    <xsl:call-template name="add-italics">
+    <!--xsl:call-template name="add-markup">
       <xsl:with-param name="str" select="."/>
-    </xsl:call-template>
+
+      <xsl:with-param name="tag-name" select="b"/>
+    </xsl:call-template-->
+    <xsl:choose>
+      <xsl:when test="contains(.,&quot;&lt;b&gt;&quot;)">
+        <xsl:call-template name="add-markup">
+          <xsl:with-param name="str" select="."/>
+          <!--xsl:with-param name="tag-name" select="b"/-->
+          <xsl:with-param name="tag-name">b</xsl:with-param>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="add-markup">
+          <xsl:with-param name="str" select="."/>
+          <xsl:with-param name="tag-name">i</xsl:with-param>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+
     <!--/fo:block -->
   </xsl:template>
 
   <!-- TODO Make this templates shorter by creating generic template for replacing html codes 2013 and 2014-->
-  <xsl:template name="add-italics">
+  <!-- TODO - make this more generic so it call also handle bold tags -->
+  <xsl:template name="add-markup">
     <xsl:param name="str"/>
+    <xsl:param name="tag-name"/>
+    <xsl:variable name="opening-tag">
+      <xsl:value-of select="concat('&quot;&lt;', $tag-name, '&gt;&quot;')"> </xsl:value-of>
+    </xsl:variable>
+    <xsl:variable name="closing-tag">
+      <xsl:value-of select="concat('&quot;&lt;/', $tag-name, '&gt;&quot;')"> </xsl:value-of>
+    </xsl:variable>
+
     <xsl:choose>
-      <xsl:when test="contains($str,&quot;&lt;i&gt;&quot;)">
-        <xsl:variable name="before-first-i" select="substring-before($str,&quot;&lt;i&gt;&quot;)"/>
-        <xsl:variable name="inside-first-i"
-          select="substring-before(substring-after
-          ($str,'&lt;i&gt;'),'&lt;/i&gt;')"/>
-        <xsl:variable name="after-first-i" select="substring-after($str,&quot;&lt;/i&gt;&quot;)"/>
+      <!--select="concat(substring-before($value, '&amp;#x2013;')-->
+      <!--xsl:when test="contains($str,&quot;&lt;{$tag-name}&gt;&quot;)"-->
+      <xsl:when test="contains($str, $opening-tag)">
+        <xsl:variable name="before-first-i"
+          select="substring-before($str, $opening-tag)"/>
+        <!--xsl:variable name="inside-first-i" select="substring-before(substring-after($str,'&lt;{$tag-name}&gt;'),'&lt;/{$tag-name}&gt;')"/-->
+        <xsl:variable name="inside-first-i" select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
+        <xsl:variable name="after-first-i" select="substring-after($str, $closing-tag)"/>
+        <!--xsl:variable name="after-first-i" select="substring-after($str,&quot;&lt;/{$tag-name}&gt;&quot;)"/-->
         <xsl:choose>
           <xsl:when test="contains($before-first-i, '#x2014;')">
             <xsl:call-template name="replace-mdash-html">
@@ -537,11 +567,12 @@
             <!--xsl:value-of select="$before-first-i"/></xsl:otherwise-->
           </xsl:otherwise>
         </xsl:choose>
-        <fo:inline font-style="italic">
+        <fo:inline font-style="italic" font-weight="bold">
           <xsl:value-of select="$inside-first-i"/>
         </fo:inline>
-        <xsl:call-template name="add-italics">
+        <xsl:call-template name="add-markup">
           <xsl:with-param name="str" select="$after-first-i"/>
+          <xsl:with-param name="tag-name" select="$tag-name"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
@@ -722,7 +753,11 @@
     <!--fo:block margin-bottom="5mm" line-height="{$taxon-name-line-height}" font-size="{$taxon-name-size-font}"-->
     <fo:block linefeed-treatment="preserve">
 
-      <xsl:if test="ArrayList/e">
+      <fo:block font-weight="bold" text-align="center">
+        <xsl:value-of select="HashMap/titleCache"/>
+      </fo:block>
+      <xsl:if test="HashMap/records/e">
+        <xsl:text>&#xA;</xsl:text>
         <fo:table>
           <fo:table-column column-width="5mm"/>
           <fo:table-column column-width="5mm"/>
@@ -730,10 +765,9 @@
           <fo:table-column column-width="36mm"/>
           <fo:table-body>
             <!--xsl:if test="ArrayList/e"-->
-            <xsl:for-each select="ArrayList/e">
+            <xsl:for-each select="HashMap/records/e">
 
               <!-- TaxonLinkDto or PolytomousKeyNodeLinkDto-->
-
               <fo:table-row>
                 <fo:table-cell>
                   <fo:block>
@@ -770,21 +804,26 @@
                       </xsl:when>
                       <xsl:when test="links/e[1]/class = 'TaxonLinkDto'">
                         <xsl:variable name="taxonUuid" select="links/e[1]/uuid"/>
-                        <xsl:variable name="genus" select="//Taxon/uuid[.=$taxonUuid]/../name/genusOrUninomial"/>
+                        <xsl:variable name="genus"
+                          select="//Taxon/uuid[.=$taxonUuid]/../name/genusOrUninomial"/>
                         <xsl:choose>
                           <xsl:when test="taxonUuid = $uuidSubgenus">
-                            <xsl:variable name="repr" select="//Taxon/uuid[.='71cd0e8d-47eb-4c66-829a-e21c705ee660']/../name/rank/representation_L10n"/>
+                            <xsl:variable name="repr"
+                              select="//Taxon/uuid[.='71cd0e8d-47eb-4c66-829a-e21c705ee660']/../name/rank/representation_L10n"/>
                             <xsl:value-of select="concat($substring($genus,1,1), '. ', $repr)"/>
                           </xsl:when>
                           <xsl:when test="taxonUuid = $uuidGenus">
-                              <fo:block font-weight="bold" text-align="center" text-transform="uppercase">
-                                <xsl:apply-templates select="$genus"/>
-                              </fo:block>
-                            </xsl:when>
+                            <fo:block font-weight="bold" text-align="center"
+                              text-transform="uppercase">
+                              <xsl:apply-templates select="$genus"/>
+                            </fo:block>
+                          </xsl:when>
                           <xsl:otherwise>
-                            <xsl:variable name="specificEpithet" select="//Taxon/uuid[.=$taxonUuid]/../name/specificEpithet"/>
+                            <xsl:variable name="specificEpithet"
+                              select="//Taxon/uuid[.=$taxonUuid]/../name/specificEpithet"/>
                             <!-- abbreviate the genus for species names -->
-                            <xsl:value-of select="concat(substring($genus,1,1), '. ', $specificEpithet)"/>
+                            <xsl:value-of
+                              select="concat(substring($genus,1,1), '. ', $specificEpithet)"/>
                           </xsl:otherwise>
                         </xsl:choose>
                       </xsl:when>
