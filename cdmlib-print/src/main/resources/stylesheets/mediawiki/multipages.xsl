@@ -376,22 +376,11 @@
         </xsl:choose>
     </xsl:template>
 
-    <!--+++++++++++++++++++++++ C A T E G O R Y   T R E E  ++++++++++++++++++++++++++++++ -->
 
-    <xsl:template name="taxon_tree">
-        <xsl:call-template name="chapter">
-            <xsl:with-param name="title">Taxonomic Tree (Categorie Tree)</xsl:with-param>
-        </xsl:call-template>
-        <xsl:call-template name="subchapter">
-            <xsl:with-param name="title">Parent</xsl:with-param>
-        </xsl:call-template>
-        <xsl:text>{{#categorytree:{{PAGENAME}}|mode=parents|hideroot}} </xsl:text>
-        <xsl:call-template name="subchapter">
-            <xsl:with-param name="title">Children</xsl:with-param>
-        </xsl:call-template>
-        <xsl:text>{{#categorytree:{{PAGENAME}}|mode=categories|hideroot}} </xsl:text>
-    </xsl:template>
-
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--we replace html <i> with mediawiki tags-->
+    
+ 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 </xsl:stylesheet>
