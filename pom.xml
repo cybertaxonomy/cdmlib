@@ -24,7 +24,7 @@
 		<java.codelevel>1.6</java.codelevel>
         <spring.version>3.2.1.RELEASE</spring.version>
         <spring-security.version>3.0.7.RELEASE</spring-security.version>
-		<hibernate.version>4.1.9.Final</hibernate.version>
+		<hibernate.version>4.1.10.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <unitils.version>3.3</unitils.version>
         <lucene.version>3.6.2</lucene.version>
