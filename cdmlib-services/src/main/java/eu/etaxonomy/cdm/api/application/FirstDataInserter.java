@@ -16,29 +16,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.security.RunAs;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.security.access.intercept.RunAsManager;
-import org.springframework.security.access.intercept.RunAsManagerImpl;
 import org.springframework.security.access.intercept.RunAsUserToken;
-import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -49,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
@@ -196,7 +187,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
         SecurityContext securityContext = SecurityContextHolder.getContext();
         authentication = securityContext.getAuthentication();
 
-       
+
         Collection<GrantedAuthority> rules = new ArrayList<GrantedAuthority>();
         rules.add(Role.ROLE_ADMIN);
         RunAsUserToken adminToken = new RunAsUserToken(
@@ -249,9 +240,9 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
     private User createAdminUser(){
 
-        User admin = User.NewInstance("admin", "00000");
+        User admin = User.NewInstance(Configuration.adminLogin, Configuration.adminPassword);
         userService.save(admin);
-        logger.info("user 'admin' created.");
+        logger.info("user '" + Configuration.adminLogin + "' created.");
         return admin;
     }
 

@@ -34,4 +34,14 @@ public class Configuration {
     @Deprecated // so we now it is not 100% save to use this
     public static Version luceneVersion = Version.LUCENE_36;
 
+    /**
+     * Login name for the first user 'admin'
+     */
+    public static String adminLogin = "admin";
+
+    /**
+     * Default password for the first user 'admin'
+     */
+    public static String adminPassword = "00000";
+
 }
