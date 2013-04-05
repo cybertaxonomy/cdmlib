@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Feb 22, 2013
  */
 @Service
-@Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = false)
 public class TransmissionEngineOccurrence {
 
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineOccurrence.priority:";

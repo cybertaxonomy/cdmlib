@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalSourceDao> implements ICommonService {
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 	

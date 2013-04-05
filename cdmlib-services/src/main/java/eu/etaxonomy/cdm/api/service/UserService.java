@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * Note: All group related functionality has been refactored into a GroupService. The will be removed in a future version.
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 // NOTE: no type level @PreAuthorize annotation for this class!
 public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
 

@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
  * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ILocationService {
 
     @SuppressWarnings("unused")

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
 	

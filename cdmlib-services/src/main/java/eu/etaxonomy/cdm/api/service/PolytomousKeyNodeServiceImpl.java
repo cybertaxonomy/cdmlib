@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
  *
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+@Transactional(readOnly = false)
 public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<PolytomousKeyNode, IPolytomousKeyNodeDao> implements IPolytomousKeyNodeService {
 
 

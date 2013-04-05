@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @created Sep 21, 2009
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao> implements IClassificationService {
     private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 

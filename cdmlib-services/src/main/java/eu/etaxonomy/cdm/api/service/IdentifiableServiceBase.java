@@ -364,7 +364,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
 	 */
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+	@Transactional(readOnly = false)
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
 		DeduplicateState dedupState = new DeduplicateState();
 		
