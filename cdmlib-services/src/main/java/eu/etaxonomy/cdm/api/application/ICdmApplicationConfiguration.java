@@ -219,6 +219,8 @@ public interface ICdmApplicationConfiguration {
      */
     public PermissionEvaluator getPermissionEvaluator();
 
+	void authenticate(String username, String password);
+
 
 
 }

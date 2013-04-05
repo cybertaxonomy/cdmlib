@@ -26,6 +26,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -463,6 +465,19 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
 
     /* **** Security ***** */
+    
+	
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java.lang.String, java.lang.String)
+     */
+    @Override
+	public void authenticate(String username, String password){
+		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+	}
+    
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager()
