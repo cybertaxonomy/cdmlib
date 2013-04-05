@@ -265,7 +265,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
             admin.setGrantedAuthorities(authorities);
             progressMonitor.subTask("Creating Admins Role");
             userService.saveOrUpdate(admin);
-            logger.info("Role " + Role.ROLE_ADMIN.getAuthority() + " for user 'admin' created and added");
+            logger.info("Role " + Role.ROLE_ADMIN.getAuthority() + " for user '" + Configuration.adminLogin + "' created and added");
         }
     }
 
