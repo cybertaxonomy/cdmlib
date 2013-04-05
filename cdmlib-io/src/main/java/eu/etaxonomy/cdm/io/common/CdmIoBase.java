@@ -18,6 +18,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -25,6 +29,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
@@ -195,6 +200,26 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
         txManager.rollback(txStatus);
         return;
     }
+    
+	
+	/**
+	 *  Login as default admin. 
+	 */
+	protected void loginAsDefaultAdmin(){
+		loginAsUser(Configuration.adminLogin, Configuration.adminPassword);
+	}
+	
+	/**
+	 * Login as user with the given credentials.
+	 * @param username
+	 * @param password
+	 */
+	protected void loginAsUser(String username, String password){
+		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+	}
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
