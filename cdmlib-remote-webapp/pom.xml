@@ -171,6 +171,29 @@
         <artifactId>hibernate-c3p0</artifactId>         
       </dependency>
       
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-server</artifactId>
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-client-compiled</artifactId>
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-client</artifactId>
+	<scope>provided</scope>
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-themes</artifactId>
+      </dependency>
+      <dependency>
+	<groupId>ru.xpoft.vaadin</groupId>
+	<artifactId>spring-vaadin-integration</artifactId>
+<!-- 	<version>1.7.3</version> -->
+      </dependency>
+
       <!--  SQL Profiling  -->
       <dependency>
         <groupId>p6spy</groupId>

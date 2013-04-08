@@ -50,6 +50,34 @@
         -->
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
+      <!--  <servlet-class>com.vaadin.server.VaadinServlet</servlet-class> -->
+      <init-param>
+        <description>Vaadin UI class to use</description>
+        <param-name>beanName</param-name>
+        <param-value>helloWorld</param-value>
+      </init-param>
+      <init-param>
+        <description>Widget Set to Use</description>
+        <param-name>widgetset</param-name>
+        <param-value>eu.etaxonomy.cdm.remote.webapp.view.widgetset.AppWidgetSet</param-value>
+      </init-param>
+ 
+      
+<!--         <init-param>
+            <description>Vaadin application class to start</description>
+            <param-name>application</param-name>
+            <param-value>eu.etaxonomy.cdm.remote.view.HelloWorld</param-value>
+        </init-param>
+        <init-param>
+          <description>Widget Set to Use</description>
+           <param-name>widgetset</param-name>
+           <param-value>eu.etaxonomy.cdm.remote.view.widgetset.AppWidgetSet</param-value>
+        </init-param> -->
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>cdmlib-remote</servlet-name>
         <url-pattern>/</url-pattern>
@@ -78,10 +106,15 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.css</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
+    </servlet-mapping> 
+     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.js</url-pattern>
+    </servlet-mapping>
+    
+   <servlet-mapping>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
     </servlet-mapping>
 
     <!--
