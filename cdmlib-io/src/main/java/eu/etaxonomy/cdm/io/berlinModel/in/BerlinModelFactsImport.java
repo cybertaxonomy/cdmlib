@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
@@ -203,7 +201,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			}else{
 				result = " ORDER By Fact.FactId";
 			}
-		} catch (MethodNotSupportedException e) {
+		} catch (NoSuchMethodException e) {
 			logger.info("checkColumnExists not supported");
 			result = " ORDER By Fact.FactId";
 		}

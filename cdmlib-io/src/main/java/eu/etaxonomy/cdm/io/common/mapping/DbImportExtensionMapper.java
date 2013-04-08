@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -115,7 +113,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			}else{
 				ignore = true;
 			}
-		} catch (MethodNotSupportedException e) {
+		} catch (NoSuchMethodException e) {
 			//do nothing  - checkDbColumnExists is not possible
 		}
 	}
