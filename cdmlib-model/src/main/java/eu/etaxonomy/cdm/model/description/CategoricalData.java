@@ -74,6 +74,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
 
     @XmlElementWrapper(name = "States")
     @XmlElement(name = "State")
+    //TODO shouldn't we change the relationship tpye here? see #3382
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
     @IndexedEmbedded(depth = 3)

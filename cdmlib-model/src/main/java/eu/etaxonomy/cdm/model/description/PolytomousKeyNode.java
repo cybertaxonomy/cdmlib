@@ -160,14 +160,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private KeyStatement statement;
 
 	@XmlElement(name = "Question")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private KeyStatement question;
 
 	@XmlElement(name = "Feature")

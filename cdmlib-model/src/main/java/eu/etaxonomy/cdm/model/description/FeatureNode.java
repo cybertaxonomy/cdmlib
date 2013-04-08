@@ -134,18 +134,6 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
 	private Set<State> inapplicableIf = new HashSet<State>();
 
-//	@XmlElementWrapper(name = "Questions")
-//	@XmlElement(name = "Question")
-//    @OneToMany(fetch=FetchType.EAGER)
-//	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
-//	private Set<Representation> questions = new HashSet<Representation>();
-//
-//	@XmlElement(name = "Taxon")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@Cascade(CascadeType.SAVE_UPDATE)
-//	private Taxon taxon;
 
 	/** 
 	 * Creates a new empty feature node instance.
