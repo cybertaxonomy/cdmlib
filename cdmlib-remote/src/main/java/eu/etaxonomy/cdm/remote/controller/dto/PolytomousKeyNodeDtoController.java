@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.remote.controller.dto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -174,13 +176,6 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
 
 	        
 		Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), initializationStrategy, NODE_INIT_STRATEGY);
-        //Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, DEFAULT_PAGE_SIZE, DEFAULT_PAGE_SIZE, nodePaths);//NODE_INIT_STRATEGY);//initializationStrategy);
-        /*logger.error("Pager size " +pager.getPageSize());
-        logger.error("Pager first record " +pager.getFirstRecord());
-        logger.error("Pager count " +pager.getCount());
-        logger.error("Pager indices " +pager.getIndices());
-        logger.error("pager.getRecords().iterator().hasNext() " +pager.getRecords().iterator().hasNext());
-        logger.error("pager.getRecords().size() " + pager.getRecords().size());*/
         
         List<PolytomousKey> keyList = pager.getRecords(); // a pager is returned containing 1 key but pager.getRecords is empty
         
@@ -190,9 +185,17 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         	PolytomousKeyNode keyNode = key.getRoot();
         	processPolytomousKeyNode(keyNode, polytomousKeyNodeRowList);		
         	logger.info("size of polytomousKeyNodeRowList - " + polytomousKeyNodeRowList.size());
-
+        	logger.error("The key is " + key.getTitleCache());//TODO: Need to add this to the mv
         	//return a List of LinkedPolytomousKeyNodeRowDto
-        	mv.addObject(polytomousKeyNodeRowList); 
+       	
+        	Map<String, Object> modelMap = new HashMap<String, Object>();
+        	modelMap.put("titleCache", key.getTitleCache());
+        	modelMap.put("records", polytomousKeyNodeRowList);
+        	
+        	//mv.addObject(polytomousKeyNodeRowList); 
+        	//mv contains the list of LinkedPolytomousKeyNodeRowDto objects and the titleCache of the key.
+        	mv.addObject(modelMap);
+        	//mv.addAllObjects(modelMap);
         }
 		return mv;		
 	}
@@ -321,7 +324,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
 			//set the parameters in the LinkedPolytomousKeyodeRowDto and add it to the list
 			LinkedPolytomousKeyNodeRowDto keyRow = new LinkedPolytomousKeyNodeRowDto();
 			keyRow.setKeyNodeUuid(keyNode.getUuid());
-			keyRow.setEdgeNumber(new Integer(childIndex));//edgeNumber is always 2
+			keyRow.setEdgeNumber(new Integer(childIndex));
 			
 			List<Language> languages = LocaleContext.getLanguages();
 			

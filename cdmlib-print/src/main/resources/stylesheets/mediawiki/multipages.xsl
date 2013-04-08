@@ -90,6 +90,24 @@
             </xsl:call-template>
         </xsl:variable>
 
+        <!-- we also initialize the parent taxon variable if there is a higher taxon assigned: -->
+
+        <xsl:variable name="parent-title">
+            <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
+
+                <xsl:call-template name="title">
+                    <xsl:with-param name="taxon" select="../../Taxon"/>
+                </xsl:call-template>
+
+            </xsl:if>
+            <!-- else if no higher taxon could be found -->
+            <xsl:if test="not(exists(../..)) or not(name(../..)='TaxonNode')">
+
+                <xsl:text>{{No Parent}}</xsl:text>
+
+            </xsl:if>
+        </xsl:variable>
+
         <!-- create category -->
         <page>
             <title>
@@ -106,15 +124,14 @@
                 </contributor>
                 <text xml:space="preserve">
                     
-                    <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"></xsl:value-of>
-                    
-                    
+                    <!-- redirekt to corresponding page -->
+                    <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"/>
+
                     <!-- add parent categorie if exists -->
-                    
                     <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
-                        <xsl:variable name="parent-title"><xsl:call-template name="title"><xsl:with-param name="taxon" select="../../Taxon"/></xsl:call-template></xsl:variable>
                         <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
                     </xsl:if>
+              
                 </text>
             </revision>
         </page>
@@ -134,7 +151,9 @@
                 </contributor>
                 <text xml:space="preserve">
                     <xsl:call-template name="TOC"/>
-                   
+                   <!-- add taxo tree -->
+                     <xsl:value-of select="concat('{{Taxo Tree|',$parent-title, '}}')"/> 
+                    
                     <xsl:apply-templates select="Taxon"/>                      
                     <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
                 </text>
@@ -274,16 +293,18 @@
 
     <xsl:template match="taggedName">
         <xsl:for-each select="e">
+            <!-- TODO mybe some types don't contain font tags, we don't have to call the tmeplate  -->
+            <!--        we could just use <xsl:value-of select="text"/>-->
             <xsl:choose>
                 <xsl:when test="type='name'">
-                    <xsl:value-of select="text"/>
+                    <xsl:apply-templates select="text"/>
                     <xsl:text> </xsl:text>
                 </xsl:when>
                 <xsl:when test="type='authors'">
-                    <xsl:value-of select="text"/>
+                    <xsl:apply-templates select="text"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="text"/>
+                    <xsl:apply-templates select="text"/>
                     <xsl:text> </xsl:text>
                 </xsl:otherwise>
             </xsl:choose>
@@ -357,20 +378,71 @@
         </xsl:choose>
     </xsl:template>
 
-    <!--+++++++++++++++++++++++ C A T E G O R Y   T R E E  ++++++++++++++++++++++++++++++ -->
 
-    <xsl:template name="taxon_tree">
-        <xsl:call-template name="chapter">
-            <xsl:with-param name="title">Taxonomic Tree (Categorie Tree)</xsl:with-param>
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <!--we replace html i> with mediawiki templates-->
+    <xsl:template match="text" name="replace_html_tags">
+        <xsl:call-template name="replace-tags">
+            <xsl:with-param name="text-string" select="."/>
         </xsl:call-template>
-        <xsl:call-template name="subchapter">
-            <xsl:with-param name="title">Parent</xsl:with-param>
-        </xsl:call-template>
-        <xsl:text>{{#categorytree:{{PAGENAME}}|mode=parents|hideroot}} </xsl:text>
-        <xsl:call-template name="subchapter">
-            <xsl:with-param name="title">Children</xsl:with-param>
-        </xsl:call-template>
-        <xsl:text>{{#categorytree:{{PAGENAME}}|mode=categories|hideroot}} </xsl:text>
+
+    </xsl:template>
+
+    <!--.............................................-->
+
+    <xsl:template name="replace-tags">
+        <xsl:param name="text-string"/>
+        <xsl:choose>
+            <xsl:when test="contains($text-string,';&lt;b&gt;')">
+                <xsl:call-template name="add-markup">
+                    <xsl:with-param name="str" select="$text-string"/>
+                    <!--xsl:with-param name="tag-name" select="b"/-->
+                    <xsl:with-param name="wiki-template">Bold</xsl:with-param>
+                    <xsl:with-param name="tag-name">b</xsl:with-param>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="add-markup">
+                    <xsl:with-param name="str" select="$text-string"/>
+                    <xsl:with-param name="wiki-template">Italic</xsl:with-param>
+                    <xsl:with-param name="tag-name">i</xsl:with-param>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+
+    </xsl:template>
+
+    <!--.............................................-->
+
+    <xsl:template name="add-markup">
+        <xsl:param name="str"/>
+        <xsl:param name="wiki-template"/>
+        <xsl:param name="tag-name"/>
+
+        <xsl:variable name="opening-tag">
+            <xsl:value-of select="concat('&lt;', $tag-name, '&gt;')"> </xsl:value-of>
+        </xsl:variable>
+        <xsl:variable name="closing-tag">
+            <xsl:value-of select="concat('&lt;/', $tag-name, '&gt;')"> </xsl:value-of>
+        </xsl:variable>
+
+
+        <xsl:choose>
+            <xsl:when test="contains($str, $opening-tag) and contains($str, $closing-tag)">
+                <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
+                <xsl:variable name="inside-tag"
+                    select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
+                <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
+                <xsl:value-of select="concat($before-tag,'{{',$wiki-template,'|',$inside-tag,'}}')"/>
+                <xsl:call-template name="replace-tags">
+                    <xsl:with-param name="text-string" select="$after-tag"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$str"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
