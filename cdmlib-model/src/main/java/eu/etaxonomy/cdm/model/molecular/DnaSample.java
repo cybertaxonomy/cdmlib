@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @Audited
 public class DnaSample extends Specimen implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
 	
 	/**

@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 @Audited
 @Configurable
 public class LivingBeing extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<LivingBeing>> implements Cloneable {
+	private static final long serialVersionUID = 1926973338094312410L;
 	private static final Logger logger = Logger.getLogger(LivingBeing.class);
 
 	/**

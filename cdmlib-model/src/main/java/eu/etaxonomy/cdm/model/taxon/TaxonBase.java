@@ -30,10 +30,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-
-import org.springframework.security.access.prepost.PreFilter;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -101,11 +98,10 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name="name_id")
     @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
     @NotNull(groups = Level2.class)
-    private TaxonNameBase name;
+    private TaxonNameBase<?,?> name;
 
     // The concept reference
     @XmlElement(name = "Sec")

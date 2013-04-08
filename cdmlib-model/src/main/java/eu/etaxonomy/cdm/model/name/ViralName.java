@@ -66,7 +66,8 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 
 	@XmlElement(name = "Acronym")
 	@Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String acronym;
 

@@ -55,7 +55,8 @@ public class CultivarPlantName extends BotanicalName implements Cloneable{
 	
 	//the characteristical name of the cultivar
     @XmlElement(name = "CultivarName", required = true)
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Length(max = 255)
 	private String cultivarName;
 

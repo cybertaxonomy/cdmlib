@@ -82,32 +82,37 @@ public class Person extends TeamOrPersonBase<Person>{
 
     @XmlElement(name = "Prefix")
     @Field
-    @NullOrNotEmpty
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String prefix;
 
     @XmlElement(name = "FirstName")
     @Field
-    @NullOrNotEmpty
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String firstname;
 
     @XmlElement(name = "LastName")
     @Field
-    @NullOrNotEmpty
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String lastname;
 
     @XmlElement(name = "Suffix")
     @Field
-    @NullOrNotEmpty
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String suffix;
 
     @XmlElement(name = "Lifespan")
     @IndexedEmbedded
     @Match(value=MatchMode.EQUAL_OR_ONE_NULL)
-    @NotNull
+  //TODO Val #3379    check carefully what the condition is that lifespan is really null in legacy data
+//    @NotNull
 	private TimePeriod lifespan = TimePeriod.NewInstance();
 
     @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)

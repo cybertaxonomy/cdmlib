@@ -78,25 +78,29 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 
 	@XmlElement(name = "CatalogNumber")
 	@Field(analyze = Analyze.NO)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String catalogNumber;
 
 	@XmlElement(name = "AccessionNumber")
 	@Field(analyze = Analyze.NO)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String accessionNumber;
 
 	@XmlElement(name = "CollectorsNumber")
 	@Field(analyze = Analyze.NO)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String collectorsNumber;
 
 	@XmlElement(name = "Barcode")
 	@Field(analyze = Analyze.NO)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String barcode;
 

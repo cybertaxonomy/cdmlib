@@ -18,6 +18,13 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.usertype.UserCollectionType;
 
+/**
+ * TODO move to eu.etaxonomy.cdm.hibernate
+ * 
+ * @author unknown
+ * 
+ *
+ */
 public class PersistentMultiLanguageTextType implements UserCollectionType {
 	
 	public PersistentMultiLanguageTextType() {

@@ -51,7 +51,8 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 
     @XmlElement(name="NomenclaturalTitle")
     @Field(index=Index.YES)
-    @NullOrNotEmpty
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
 

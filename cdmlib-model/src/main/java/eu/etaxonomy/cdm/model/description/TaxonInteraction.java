@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.persistence.Entity;
@@ -73,10 +72,10 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	
 	@XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "TaxonInteraction_LanguageString")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	@XmlElement(name = "Taxon2")

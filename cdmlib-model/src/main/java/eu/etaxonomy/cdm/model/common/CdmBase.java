@@ -109,7 +109,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     @Type(type="uuidUserType")
     @NaturalId // This has the effect of placing a "unique" constraint on the database column
     @XmlID
-    @Column(length=36)
+    @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     @Match(MatchMode.IGNORE)
     @NotNull
     @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)

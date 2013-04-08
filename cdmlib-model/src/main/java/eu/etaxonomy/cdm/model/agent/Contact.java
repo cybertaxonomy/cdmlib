@@ -167,8 +167,8 @@ public class Contact implements Serializable, Cloneable {
 
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
-    @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<Address> addresses;
 
 

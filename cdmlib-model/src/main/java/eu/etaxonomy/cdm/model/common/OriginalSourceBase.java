@@ -64,17 +64,6 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
 
-	/*@XmlElement(name = "SourcedObject")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	@Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "sourcedObj_type"),
-	    	 fetch = FetchType.LAZY,
-	    	 optional = false)
-	@JoinColumn(name = "sourcedObj_id")
-	@NotAudited
-	protected IdentifiableEntity sourcedObj;*/
-
 	/**
 	 * Constructor
 	 */

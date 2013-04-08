@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.view.context;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.model.view.View;
 
 /**
  * Class based heavily on SecurityContextImpl, part 

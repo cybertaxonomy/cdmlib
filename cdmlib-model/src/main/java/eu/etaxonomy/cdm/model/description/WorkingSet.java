@@ -10,13 +10,10 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,7 +40,6 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Representation;
 
 /**

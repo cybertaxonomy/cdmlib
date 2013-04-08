@@ -70,9 +70,9 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "IndividualAssociation_LanguageString")
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	

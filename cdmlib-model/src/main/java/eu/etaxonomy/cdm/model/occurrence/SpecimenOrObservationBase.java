@@ -93,8 +93,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
-	@OneToMany(mappedBy="identifiedUnit")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@OneToMany(mappedBy="identifiedUnit", orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(depth = 2)
 	@NotNull
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
@@ -120,9 +120,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="definition_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	@IndexedEmbedded
 	@NotNull
 	protected Map<Language,LanguageString> definition = new HashMap<Language,LanguageString>();

@@ -61,7 +61,8 @@ public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<S
 
 
 	@XmlElement(name = "Exsiccatum")
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Field
 	@Size(max = 255)
     private String exsiccatum;

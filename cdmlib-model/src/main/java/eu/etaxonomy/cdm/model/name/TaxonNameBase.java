@@ -132,22 +132,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
-    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 
     @XmlElement(name = "AppendedPhrase")
     @Field
     @CacheUpdate(value ="nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     private String appendedPhrase;
 
     @XmlElement(name = "NomenclaturalMicroReference")
     @Field
     @CacheUpdate(noUpdate ="titleCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     private String nomenclaturalMicroReference;
 
@@ -189,8 +191,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -200,8 +202,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElement(name = "RelationToThisName")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE , CascadeType.DELETE_ORPHAN })
+    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -209,8 +211,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
-    @OneToMany(fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();

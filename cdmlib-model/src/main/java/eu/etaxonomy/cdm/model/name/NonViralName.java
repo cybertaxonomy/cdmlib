@@ -149,7 +149,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElement(name = "InfraGenericEpithet")
     @Field
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class,message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraGenericEpithet;
@@ -157,7 +158,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElement(name = "SpecificEpithet")
     @Field
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String specificEpithet;
@@ -165,7 +167,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElement(name = "InfraSpecificEpithet")
     @Field
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
@@ -229,16 +232,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
+    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
 
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
-    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })  //a hybrid relation can be deleted automatically if the child is deleted.
+    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true) //a hybrid relation can be deleted automatically if the child is deleted.
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})  
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();

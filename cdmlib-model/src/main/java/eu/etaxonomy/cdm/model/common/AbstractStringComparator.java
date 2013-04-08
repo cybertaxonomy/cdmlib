@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;

@@ -129,7 +129,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Lob
 	@Field
 	@Match(MatchMode.EQUAL_REQUIRED)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 4096)
 	private String title;
 
@@ -138,70 +139,81 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
     @XmlElement(name = "Editor")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String editor;
 
     @XmlElement(name = "Series")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String series;
 
     @XmlElement(name = "Volume")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String volume;
 
     @XmlElement(name = "Pages")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String pages;
 
     @XmlElement(name = "Edition")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String edition;
 
     @XmlElement(name = "ISBN")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}")
 	protected String isbn;
 
 	@XmlElement(name = "ISSN")
     @Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	@Pattern(regexp = "(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.issn.message}")
 	protected String issn;
 
     @XmlElement(name = "SeriesPart")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
 	@Length(max = 255)
 	protected String seriesPart;
 
 	@XmlElement(name = "Organization")
     @Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String organization;
 
 	@XmlElement(name = "Publisher")
     @Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String publisher;
 
 
 	@XmlElement(name = "PlacePublished")
     @Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	protected String placePublished;
 
@@ -259,7 +271,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Column(length=65536, name="referenceAbstract")
 	@Lob
     @Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 65536)
 	private String referenceAbstract;  //abstract is a reserved term in Java
 
@@ -282,7 +295,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private TeamOrPersonBase authorTeam;
+	private TeamOrPersonBase<?> authorTeam;
 
 //	@XmlElement(name = "ReferenceIdentity")
 //	@XmlIDREF

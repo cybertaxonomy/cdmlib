@@ -141,8 +141,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
 

@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class Distribution extends DescriptionElementBase implements Cloneable {
     private static final long serialVersionUID = 8366462435651559730L;
-    @SuppressWarnings("unused")
+
     private static final Logger logger = Logger.getLogger(Distribution.class);
 
     @XmlElement(name = "NamedArea")

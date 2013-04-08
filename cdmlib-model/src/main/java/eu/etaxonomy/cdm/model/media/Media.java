@@ -92,10 +92,10 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     // private MultilanguageText title = new MultilanguageText();
     @XmlElement(name = "MediaTitle")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="title_mapkey_id")
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
     private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
@@ -111,10 +111,10 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     // private MultilanguageText description = new MultilanguageText();
     @XmlElement(name = "MediaDescription")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @IndexedEmbedded
     @NotNull
     private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
@@ -123,8 +123,8 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     //Common are multiple resolutions or file formats for images for example
     @XmlElementWrapper(name = "MediaRepresentations")
     @XmlElement(name = "MediaRepresentation")
-    @OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
+    @OneToMany(mappedBy="media",fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
     private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
@@ -135,7 +135,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
-    private AgentBase artist;
+    private AgentBase<?> artist;
 
 
     /**

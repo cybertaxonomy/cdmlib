@@ -71,13 +71,15 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 
     @XmlElement(name = "Code")
     @Field
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String code;
 
     @XmlElement(name = "Name")
     @Field
-    @NullOrNotEmpty
+//TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String name;
 

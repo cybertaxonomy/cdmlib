@@ -67,25 +67,29 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 
 	@XmlElement(name = "Code")
 	@Field(analyze = Analyze.NO)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String code;
 
 	@XmlElement(name = "CodeStandard")
 	@Field(analyze = Analyze.NO)
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String codeStandard;
 
 	@XmlElement(name = "Name")
 	@Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
 	@Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String townOrLocation;
 

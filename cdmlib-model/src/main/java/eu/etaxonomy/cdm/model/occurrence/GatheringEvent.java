@@ -74,8 +74,8 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	private static final Logger logger = Logger.getLogger(GatheringEvent.class);
 
 	@XmlElement(name = "Locality")
-	@OneToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.ALL,CascadeType.DELETE_ORPHAN})
+	@OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.ALL})
 	@IndexedEmbedded
 	private LanguageString locality;
 
@@ -101,7 +101,8 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 	@XmlElement(name = "CollectingMethod")
 	@Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String collectingMethod;
 

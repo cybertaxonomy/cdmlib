@@ -64,7 +64,8 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 
 	@XmlElement(name = "FieldNumber")
 	@Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNumber;
 
@@ -79,7 +80,8 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 
 	@XmlElement(name = "FieldNotes")
 	@Field
-	@NullOrNotEmpty
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNotes;
 

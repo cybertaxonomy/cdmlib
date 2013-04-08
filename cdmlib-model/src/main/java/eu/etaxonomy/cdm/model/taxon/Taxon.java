@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,8 +49,6 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -103,8 +100,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     // all related synonyms
     @XmlElementWrapper(name = "SynonymRelations")
     @XmlElement(name = "SynonymRelationship")
-    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @Valid
     private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
@@ -112,8 +109,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     // all taxa relations with rel.fromTaxon==this
     @XmlElementWrapper(name = "RelationsFromThisTaxon")
     @XmlElement(name = "FromThisTaxonRelationship")
-    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @Valid
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
@@ -123,8 +120,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlElement(name = "ToThisTaxonRelationship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();

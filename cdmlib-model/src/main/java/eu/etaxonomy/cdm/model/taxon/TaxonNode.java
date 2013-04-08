@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
@@ -104,7 +103,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-    private Reference referenceForParentChildRelation;
+    private Reference<?> referenceForParentChildRelation;
 
     @XmlElement(name = "microReference")
     private String microReferenceForParentChildRelation;
