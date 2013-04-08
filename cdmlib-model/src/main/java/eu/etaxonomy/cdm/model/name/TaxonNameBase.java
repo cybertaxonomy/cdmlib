@@ -186,7 +186,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Match(MatchMode.IGNORE)
     @CacheUpdate(noUpdate ="titleCache")
-    @NotNull
+    //TODO Val #3379
+//    @NotNull
     private HomotypicalGroup homotypicalGroup;
 
     @XmlElementWrapper(name = "RelationsFromThisName")
@@ -230,7 +231,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.EAGER)
     @CacheUpdate(value ="nameCache")
-    @NotNull
+    //TODO Val #3379, handle maybe as groups = Level2.class ??
+//    @NotNull 
     @IndexedEmbedded(depth=1)
     private Rank rank;
 

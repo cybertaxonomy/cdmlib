@@ -111,7 +111,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @Cascade(CascadeType.SAVE_UPDATE)
     @NotNull(groups = Level2.class)
     @IndexedEmbedded
-    private Reference sec;
+    private Reference<?> sec;
 
 
     @XmlElement(name = "AppendedPhrase")

@@ -78,7 +78,8 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
-    @NotNull
+	 //TODO Val #3379
+//    @NotNull
 	private FeatureTree featureTree;
 	
 	@XmlElement(name = "Feature")
