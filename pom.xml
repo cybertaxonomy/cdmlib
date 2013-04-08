@@ -22,7 +22,7 @@
     </modules>
     <properties>
 		<java.codelevel>1.6</java.codelevel>
-        <spring.version>3.2.1.RELEASE</spring.version>
+        <spring.version>3.2.2.RELEASE</spring.version>
         <spring-security.version>3.0.8.RELEASE</spring-security.version>
 		<hibernate.version>4.1.10.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
