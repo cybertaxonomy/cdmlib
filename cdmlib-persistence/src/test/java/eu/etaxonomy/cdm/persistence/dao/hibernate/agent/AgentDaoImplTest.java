@@ -122,8 +122,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Person person = Person.NewInstance();
         person.setFirstname("ben");
         agentDao.save(person);
-        setComplete();
-        endTransaction();
+        commit();
     }
 
     @Test
