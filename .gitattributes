@@ -1730,7 +1730,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/NameCatalogue
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/PolytomousKeyNodeDtoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalBhleController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalGeoController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/DatasourceContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/AbstractOaiPmhController.java -text
