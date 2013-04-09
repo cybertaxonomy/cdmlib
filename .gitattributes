@@ -1459,6 +1459,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxo
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmAuthorityTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
