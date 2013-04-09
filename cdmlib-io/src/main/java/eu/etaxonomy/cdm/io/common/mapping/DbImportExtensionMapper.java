@@ -193,8 +193,8 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			//set vocabulary //TODO allow user defined vocabularies
 			UUID uuidExtensionTypeVocabulary = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
 			IVocabularyService vocService = currentImport.getVocabularyService();
-			TermVocabulary voc = vocService.find(uuidExtensionTypeVocabulary);
 			TransactionStatus tx = currentImport.startTransaction();
+			TermVocabulary<ExtensionType> voc = vocService.find(uuidExtensionTypeVocabulary);
 			currentImport.getVocabularyService().saveOrUpdate(voc);
 			if (voc != null){
 				voc.addTerm(extensionType);

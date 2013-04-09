@@ -28,9 +28,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <unitils.version>3.3</unitils.version>
         <lucene.version>3.6.2</lucene.version>
-        <!-- OLD: <lucene.version>2.9.4</lucene.version> --><!-- lucene.version in hibernate-search 3.4.0-SNAPSHOT is 2.4.0-->
-        
-        
         <hsqldb.version>1.8.0.10</hsqldb.version><!-- 1.8.0.10, 1.9.0-rc6 (manualy build only for debugging) -->
 		<httpcomponents.version>4.2.3</httpcomponents.version>
     </properties>
@@ -819,7 +816,7 @@
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>1.2.15</version>
+        <version>1.2.17</version>
       </dependency>
             <dependency>
                 <groupId>javax.annotation</groupId>
