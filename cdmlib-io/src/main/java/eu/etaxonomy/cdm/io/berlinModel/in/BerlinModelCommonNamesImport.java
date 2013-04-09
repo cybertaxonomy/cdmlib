@@ -247,7 +247,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					NamedArea area = regionMap.get(regionFk);
 					if (area == null){
 						if (regionFkSplit.length > 1 && StringUtils.isNotBlank(regionFk)){
-							logger.warn("Area for " + regionFk + " not defined.");
+							logger.warn("Area for " + regionFk + " not defined in regionMap.");
 						}else{
 							//no region is defined
 						}
@@ -576,10 +576,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		NamedArea area;
 		if (tdwgCode.equalsIgnoreCase("Ab")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidAzerbaijanNakhichevan, "Azerbaijan & Nakhichevan", "Azerbaijan (including Nakhichevan)",  "Ab", null, null);
-			getTermService().save(area);
+			getTermService().saveOrUpdate(area);
 		}else if (tdwgCode.equalsIgnoreCase("Uk")){
 			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
-			getTermService().save(area);
+			getTermService().saveOrUpdate(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
 			area = WaterbodyOrCountry.RUSSIANFEDERATION();
 		}else if (tdwgCode.equalsIgnoreCase("Gg")){

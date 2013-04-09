@@ -17,12 +17,12 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.CdmKey;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author a.mueller
@@ -95,7 +95,7 @@ public class DatabaseMappingTest {
 		ICdmDataSource datasource = mapping.getDatabase();
 		Assert.assertNotNull("Datasource should not be null", datasource);
 		
-		BotanicalName botName1 = BotanicalName.NewInstance(null);
+		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		int id = 23;
 		botName1.setId(id);
 		String sourceNS = "sourceNS";
