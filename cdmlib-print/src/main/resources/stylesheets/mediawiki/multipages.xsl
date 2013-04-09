@@ -9,9 +9,12 @@
     <!-- create a timestamp for the whole going -->
     <xsl:variable name="timestamp">
         <xsl:value-of
-            select="concat(year-from-date(current-date()),'-',month-from-date(current-date()),'-',day-from-date(current-date()),'T',hours-from-time(current-time()),':',minutes-from-time(current-time()),':00Z')"/>
-
+            select="concat(year-from-date(current-date()),'-',month-from-date(current-date()),'-',day-from-date(current-date()),'T',hours-from-time(current-time()),':',minutes-from-time(current-time()),':00Z')"
+        />
     </xsl:variable>
+
+    <!-- create the username who changed/created the pages -->
+    <xsl:variable name="username">Sybille Test </xsl:variable>
 
     <!-- this is the start template 
     it creates the mediawiki tag surounding and calls a template to create a page for 
@@ -147,14 +150,20 @@
                     <xsl:value-of select="$timestamp"/>
                 </timestamp>
                 <contributor>
-                    <username>Sybille Test</username>
+                    <username>
+                        <xsl:value-of select="$username"/>
+                    </username>
                 </contributor>
                 <text xml:space="preserve">
+                    <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
                    <!-- add taxo tree -->
                      <xsl:value-of select="concat('{{Taxo Tree|',$parent-title, '}}')"/> 
+                   
+                   <!-- add contents of taxon page -->
+                    <xsl:apply-templates select="Taxon"/> 
                     
-                    <xsl:apply-templates select="Taxon"/>                      
+                    <!-- put page to corresponding tax category -->
                     <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
                 </text>
             </revision>
@@ -226,7 +235,9 @@
     <!-- we run this for the content of the page -->
     <xsl:template match="Taxon" name="Taxon">
         <xsl:apply-templates select="synonymy"/>
-        <!--xsl:apply-templates select="synonymy"/-->
+        <xsl:apply-templates select="descriptions"/>
+
+
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -312,6 +323,118 @@
         <xsl:text>&#xA;</xsl:text>
     </xsl:template>
 
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <!-- description features -->
+
+    <xsl:template match="descriptions" name="descriptions">
+        <xsl:for-each select="features/feature">
+            <xsl:choose>
+                <xsl:when test="count(feature)!=0">
+                    <xsl:call-template name="secondLevelDescriptionElements"/> 
+                </xsl:when>
+                <xsl:otherwise>
+                    <!-- everything but Citation -->
+                    <xsl:if test="uuid!='99b2842f-9aa7-42fa-bd5f-7285311e0101'">
+                        <xsl:call-template name="descriptionElements"/>
+                    </xsl:if>
+                    <!--xsl:apply-templates select="media/e/representations/e/parts/e/uri"/-->
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
+    </xsl:template>
+
+    <!--.............................................-->
+    
+    <xsl:template name="secondLevelDescriptionElements">
+        
+        <xsl:value-of select="concat('{{Two_Leveled_Features_Title|',representation_L10n,'}}')"></xsl:value-of>
+        
+        <xsl:for-each select="feature">
+            <xsl:value-of select="concat('{{Second_Level_Feature|Name=',representation_L10n,'|Elements=')"></xsl:value-of>
+            <!-- TODO create Element -->
+            <xsl:for-each select="descriptionelements/descriptionelement">
+                <xsl:value-of select="concat('{{Second_Level_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"></xsl:value-of>
+            </xsl:for-each>
+            <xsl:text>}}</xsl:text>
+        </xsl:for-each>
+        
+    </xsl:template>
+    <!--.............................................-->
+
+
+    <xsl:template name="descriptionElements">
+        <xsl:choose>
+            <xsl:when test="supportsCommonTaxonName='true'">
+                <!-- must be Vernacular Name feature -->
+                <xsl:call-template name="commonTaxonName"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <!-- for example Habitat, Material Examined -->
+                <xsl:call-template name="textData"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!--.............................................-->
+
+    <xsl:template name="commonTaxonName">
+
+        <xsl:value-of select="concat('{{Tax_Feature|Name=',representation_L10n,'|Elements=')"/>
+        <xsl:for-each select="descriptionelements/descriptionelement">
+            <xsl:text/>
+            <xsl:value-of
+                select="concat('{{Common_Name_Feature_Element|Name=',name,'|Language=',language/representation_L10n,'}}')"
+            />
+        </xsl:for-each>
+        <xsl:text>}}</xsl:text>
+    </xsl:template>
+
+    <!--.............................................-->
+
+    <xsl:template name="textData">
+
+        <xsl:value-of
+            select="concat('{{Tax_Feature|Name=',representation_L10n, '|Elements={{Feature_Text|' )"/>
+        <xsl:choose>
+            <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'"> <!-- feature is not "Distribution" -->
+                <xsl:apply-templates
+                    select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
+            </xsl:when>
+        </xsl:choose>
+
+        <xsl:text>}}}}</xsl:text>
+
+
+        <!-- LORNA TRY IMAGE HERE -->
+        <!--xsl:apply-templates select="descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/-->
+
+
+    </xsl:template>
+
+    <!--.............................................-->
+
+
+    <xsl:template match="text">
+
+        <xsl:choose>
+            <xsl:when test="contains(.,&quot;&lt;b&gt;&quot;)">
+                <xsl:call-template name="add-markup">
+                    <xsl:with-param name="str" select="."/>
+                    <!--xsl:with-param name="tag-name" select="b"/-->
+                    <xsl:with-param name="tag-name">b</xsl:with-param>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="add-markup">
+                    <xsl:with-param name="str" select="."/>
+                    <xsl:with-param name="tag-name">i</xsl:with-param>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
+
+        <!--/fo:block -->
+    </xsl:template>
 
 
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->

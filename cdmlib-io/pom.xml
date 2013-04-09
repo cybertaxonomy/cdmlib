@@ -43,10 +43,6 @@
       <scope>test</scope>
       <version>${project.version}</version>
     </dependency>
-     <dependency>
-      <groupId>eu.etaxonomy</groupId>
-      <artifactId>cdmlib-services</artifactId>
-    </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-ext</artifactId>

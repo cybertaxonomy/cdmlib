@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.EnumSet;
+import java.util.StringTokenizer;
 
 
 /**
@@ -46,7 +47,16 @@ public class Operation {
         if(string.equals("NONE")){
             return NONE;
         }
-        return EnumSet.of(CRUD.valueOf(string));
+		StringTokenizer st = new StringTokenizer(string,",");		 
+		EnumSet<CRUD> op = EnumSet.noneOf(CRUD.class);
+
+		while (st.hasMoreElements()) {
+
+			String opStr = (String) st.nextElement();			
+			op.add(CRUD.valueOf(opStr.trim()));
+		}
+
+		return op;
     }
 
     public static boolean isOperation(Object o){
