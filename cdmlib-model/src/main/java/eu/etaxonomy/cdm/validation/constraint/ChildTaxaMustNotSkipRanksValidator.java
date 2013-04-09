@@ -32,10 +32,10 @@ public class ChildTaxaMustNotSkipRanksValidator implements
 			
 			if(parent.getName().getRank().isSupraGeneric() && child.getName().getRank().isLower(Rank.GENUS())) {
 				valid = false;
-				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipGenus.message}").addSubNode("fromTaxon").addSubNode("name").addSubNode("rank").addError();				
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipGenus.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();				
 			} else if(parent.getName().getRank().isHigher(Rank.SPECIES()) && child.getName().getRank().isLower(Rank.SPECIES())) {
 				valid = false;
-				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}").addSubNode("fromTaxon").addSubNode("name").addSubNode("rank").addError();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
 			}
 		}
 		

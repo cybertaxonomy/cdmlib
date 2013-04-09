@@ -68,7 +68,8 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @Audited
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
-    private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
+	private static final long serialVersionUID = 1615082389452680243L;
+	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
     @XmlElement(name = "IsProParte")
     private boolean proParte = false;

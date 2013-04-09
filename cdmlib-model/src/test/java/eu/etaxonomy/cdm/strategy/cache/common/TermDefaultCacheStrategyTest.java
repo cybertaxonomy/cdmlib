@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.common;
 
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class TermDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermDefaultCacheStrategyTest.class);
 	
-	private TermDefaultCacheStrategy strategy;
+	private TermDefaultCacheStrategy<?> strategy;
 	
 //************************* SET UP ****************************************	
 	

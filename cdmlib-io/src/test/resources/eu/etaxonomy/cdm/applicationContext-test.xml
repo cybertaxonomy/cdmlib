@@ -36,10 +36,13 @@
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
+                <!--  hibernate.search.default.exclusive_index_use=false
+                          locks must not only be released after application shutdown in test environment -->
+                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
             </props>
         </property>
@@ -57,7 +60,7 @@
     </bean>
 
 
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
+<!--     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>
     </bean>
@@ -68,7 +71,7 @@
       <property name="analyzer">
         <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
       </property>
-    </bean>
+    </bean> -->
 
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <property name="providers">

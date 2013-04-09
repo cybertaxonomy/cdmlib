@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxonNameDao> implements INameService {
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
@@ -310,6 +310,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     /**
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
+     * Replace by load(UUID, propertyPaths)
      */
     @Deprecated
     public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
@@ -612,7 +613,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     protected void setOtherCachesNull(TaxonNameBase name) {
         if (name.isInstanceOf(NonViralName.class)){
-            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+            NonViralName<?> nvn = CdmBase.deproxy(name, NonViralName.class);
             if (! nvn.isProtectedNameCache()){
                 nvn.setNameCache(null, false);
             }

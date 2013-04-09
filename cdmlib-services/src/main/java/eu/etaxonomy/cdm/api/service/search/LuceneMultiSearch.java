@@ -19,15 +19,12 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Searcher;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.hibernate.Session;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
-import org.hibernate.search.reader.ReaderProvider;
-import org.hibernate.search.store.DirectoryProvider;
+import org.hibernate.search.indexes.IndexReaderAccessor;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -71,18 +68,22 @@ public class LuceneMultiSearch extends LuceneSearch {
      * @return
      */
     @Override
-    public Searcher getSearcher() {
+    public IndexSearcher getSearcher() {
 
         if(searcher == null){
 
             SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
             List<IndexReader> readers = new ArrayList<IndexReader>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
-                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
-                logger.info(directoryProviders[0].getDirectory().toString());
+            	   //OLD
+//                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
+//                logger.info(directoryProviders[0].getDirectory().toString());
 
-                ReaderProvider readerProvider = searchFactory.getReaderProvider();
-                readers.add(readerProvider.openReader(directoryProviders[0]));
+//                ReaderProvider readerProvider = searchFactory.getReaderProvider();
+            	IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor(); 
+            	IndexReader reader = ira.open(type);
+//            	readers.add(readerProvider.openReader(directoryProviders[0]));
+            	readers.add(reader);
             }
             if(readers.size() > 1){
                 MultiReader multireader = new MultiReader(readers.toArray(new IndexReader[readers.size()]), true);

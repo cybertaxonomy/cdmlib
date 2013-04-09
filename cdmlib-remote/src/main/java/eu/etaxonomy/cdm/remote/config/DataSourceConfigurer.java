@@ -21,9 +21,9 @@ import java.util.Properties;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -301,7 +301,11 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         }
 
         if(url != null && url.contains("mysql")){
-            return "org.hibernate.dialect.MySQLDialect";
+            // TODO we should switch all databases to InnoDB !
+            // TODO open jdbc connection to check engine and choose between
+            // MySQL5MyISAMUtf8Dialect and MySQL5MyISAMUtf8Dialect
+            // see #3371 (switch cdm to MySQL InnoDB)
+            return MySQL5MyISAMUtf8Dialect.class.getName();
         }
 
         logger.error("hibernate dialect mapping for "+url+ " not jet implemented or unavailable");

@@ -13,11 +13,10 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
-import org.junit.BeforeClass;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;

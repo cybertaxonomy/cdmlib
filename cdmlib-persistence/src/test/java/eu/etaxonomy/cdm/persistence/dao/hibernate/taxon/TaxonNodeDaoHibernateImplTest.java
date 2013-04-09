@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;

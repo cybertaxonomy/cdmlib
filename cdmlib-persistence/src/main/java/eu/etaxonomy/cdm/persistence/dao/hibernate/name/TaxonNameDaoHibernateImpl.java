@@ -61,7 +61,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("taxonNameDaoHibernateImpl")
 public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
 
 	@Autowired
@@ -114,7 +113,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
 
-		return (Integer)criteria.uniqueResult();
+		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	@Override
@@ -133,7 +132,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 
 		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		return (Integer)crit.uniqueResult();
+		return ((Number)crit.uniqueResult()).intValue();
 	}
 
 	@Override
@@ -175,7 +174,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 			}
 
 			criteria.setProjection(Projections.rowCount());
-			return (Integer)criteria.uniqueResult();
+			return ((Number)criteria.uniqueResult()).intValue();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameBase.class,auditEvent.getRevisionNumber());
 
@@ -737,9 +736,12 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
 		}
 		return persistentObject.getUuid();
 	}
-
-	@Override
-    public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start){
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getZoologicalNames(java.lang.Integer, java.lang.Integer)
+	 */
+	//TODO candidate for harmonization
+	public List<ZoologicalName> getZoologicalNames(Integer limit, Integer start){
 		List <TaxonNameBase> names = new ArrayList<TaxonNameBase>();
 		List <ZoologicalName> zooNames = new ArrayList<ZoologicalName>();
 		names = super.list(ZoologicalName.class, limit, start);

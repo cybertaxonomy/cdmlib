@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -26,13 +28,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  * <li> ContactDetails according to the TDWG ontology
  * <li> Contact (partially) according to the ABCD schema
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:18
@@ -64,10 +65,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 @Audited
 public class Contact implements Serializable, Cloneable {
 	private static final long serialVersionUID = -1851305307069277625L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Contact.class);
-	
-	
+
+
 	public static Contact NewInstance() {
 		return new Contact();
 	}
@@ -87,12 +87,12 @@ public class Contact implements Serializable, Cloneable {
 	 * @param location
 	 * @return
 	 */
-	public static Contact NewInstance(String street, String postcode, String locality, 
-			WaterbodyOrCountry country, String pobox, String region, 
+	public static Contact NewInstance(String street, String postcode, String locality,
+			WaterbodyOrCountry country, String pobox, String region,
 			String email, String faxNumber, String phoneNumber, String url, Point location) {
 		Contact result = new Contact();
-		if (country != null || CdmUtils.isNotEmpty(locality) || CdmUtils.isNotEmpty(pobox) || CdmUtils.isNotEmpty(postcode) || 
-				CdmUtils.isNotEmpty(region) || CdmUtils.isNotEmpty(street) ){
+		if (country != null || StringUtils.isNotBlank(locality) || StringUtils.isNotBlank(pobox) || StringUtils.isNotBlank(postcode) ||
+				StringUtils.isNotBlank(region) || StringUtils.isNotBlank(street) ){
 			Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
 			result.addAddress(newAddress);
 		}
@@ -111,7 +111,7 @@ public class Contact implements Serializable, Cloneable {
 		return result;
 	}
 
-	
+
 	public static Contact NewInstance(Set<Address> addresses, List<String> emailAdresses,
 			List<String> faxNumbers, List<String> phoneNumbers, List<String> urls) {
 		Contact result = new Contact();
@@ -133,8 +133,8 @@ public class Contact implements Serializable, Cloneable {
 		return result;
 	}
 
-	
-	/** 
+
+	/**
 	 * Class constructor.
 	 */
 	public Contact() {
@@ -142,32 +142,36 @@ public class Contact implements Serializable, Cloneable {
 
 	@XmlElementWrapper(name = "EmailAddresses", nillable = true)
 	@XmlElement(name = "EmailAddress")
-	@CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
+	@Column(name = "contact_emailaddresses_element")
 	private List<String> emailAddresses;
-	
+
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
-    @CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "contact_urls_element")
 	private List<String> urls;
-	
+
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
-	@CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "contact_phonenumbers_element")
 	private List<String> phoneNumbers;
-	
+
 	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
 	@XmlElement(name = "FaxNumber")
-	@CollectionOfElements(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "contact_faxnumbers_element")
 	private List<String> faxNumbers;
-	
+
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
-    @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<Address> addresses;
-	
-	
+
+
 	public void merge(Contact contact2) throws MergeException{
 		if (contact2 != null){
 			mergeList(this.getEmailAddresses(), contact2.getEmailAddresses());
@@ -179,11 +183,11 @@ public class Contact implements Serializable, Cloneable {
 					this.addresses.add((Address)address.clone());
 				} catch (CloneNotSupportedException e) {
 					throw new MergeException("Address must implement Cloneable");
-				}		
+				}
 			}
 		}
 	}
-	
+
 	private void mergeList(List list1, List list2){
 		for (Object obj2 : list2){
 			if (! list1.contains(obj2)){
@@ -191,12 +195,12 @@ public class Contact implements Serializable, Cloneable {
 			}
 		}
 	}
-    
-    
-	/** 
-	 * Returns the set of postal {@link Address addresses} belonging to <i>this</i> contact. 
+
+
+	/**
+	 * Returns the set of postal {@link Address addresses} belonging to <i>this</i> contact.
 	 * A {@link Person person} or an {@link Institution institution} cannot have more than one contact,
-	 * but a contact may include several postal addresses. 
+	 * but a contact may include several postal addresses.
 	 *
 	 * @return	the set of postal addresses
 	 * @see     Address
@@ -207,8 +211,8 @@ public class Contact implements Serializable, Cloneable {
 		}
 		return this.addresses;
 	}
-	
-	/** 
+
+	/**
 	 * Adds a new postal {@link Address address} to the set of postal addresses of <i>this</i> contact.
 	 *
 	 * @param  address  the address to be added
@@ -220,14 +224,14 @@ public class Contact implements Serializable, Cloneable {
 			getAddresses().add(address);
 		}
 	}
-	
-	public void addAddress(String street, String postcode, String locality, 
+
+	public void addAddress(String street, String postcode, String locality,
 			WaterbodyOrCountry country, String pobox, String region, Point location){
 		Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
 		getAddresses().add(newAddress);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of postal addresses of <i>this</i> contact.
 	 *
 	 * @param  address  the postal address of <i>this</i> contact which should be deleted
@@ -237,7 +241,7 @@ public class Contact implements Serializable, Cloneable {
 		getAddresses().remove(address);
 	}
 
-	
+
 	/**
 	 * Returns the List of strings representing the electronic mail addresses
 	 * included in <i>this</i> contact.
@@ -255,8 +259,8 @@ public class Contact implements Serializable, Cloneable {
 	public void addEmailAddress(String emailAddress){
 		getEmailAddresses().add(emailAddress);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the list of email addresses of <i>this</i> contact.
 	 *
 	 * @param  emailAddress  the email address of <i>this</i> contact which should be deleted
@@ -283,8 +287,8 @@ public class Contact implements Serializable, Cloneable {
 	public void addUrl(String url){
 		getUrls().add(url);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the list of urls of <i>this</i> contact.
 	 *
 	 * @param  url  the url of <i>this</i> contact which should be deleted
@@ -311,8 +315,8 @@ public class Contact implements Serializable, Cloneable {
 	public void addPhoneNumber(String phoneNumber){
 		getPhoneNumbers().add(phoneNumber);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the list of phone numbers of <i>this</i> contact.
 	 *
 	 * @param  phoneNumber  the phone number of <i>this</i> contact which should be deleted
@@ -340,7 +344,7 @@ public class Contact implements Serializable, Cloneable {
 		getFaxNumbers().add(faxNumber);
 	}
 
-	/** 
+	/**
 	 * Removes one element from the list of telefax numbers of <i>this</i> contact.
 	 *
 	 * @param  faxNumber  the telefax number of <i>this</i> contact which should be deleted
@@ -351,12 +355,12 @@ public class Contact implements Serializable, Cloneable {
 	}
 
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> Contact. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Contact.
-	 *  
-	 * 
+	 *
+	 *
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

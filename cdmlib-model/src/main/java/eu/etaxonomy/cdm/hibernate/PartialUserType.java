@@ -9,16 +9,19 @@
 
 package eu.etaxonomy.cdm.hibernate;
 
-import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
+import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
+import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -28,61 +31,27 @@ import org.joda.time.Partial;
  * Only year, month and day is stored
  * @author a.mueller
  * @created 11.11.2008
- * @version 1.0
+ * @version 2.0
  */
-public class PartialUserType implements UserType {
+public class PartialUserType extends AbstractUserType implements UserType /* extends AbstractSingleColumnUserType<Partial, String, ColumnMapper<Partial,String>> implements UserType */ {
+	private static final long serialVersionUID = -5323104403077597869L;
+
 	private static final Logger logger = Logger.getLogger(PartialUserType.class);
 
+	//not required
 	public final static PartialUserType INSTANCE = new PartialUserType();
 
-	private static final int[] SQL_TYPES = new int[]
-    {
+	private static final int[] SQL_TYPES = new int[]{
 	    Types.VARCHAR,
 	};
 
-    public int[] sqlTypes()
-    {
-        return SQL_TYPES;
-    }
 
-    public Class returnedClass()
-    {
-        return Partial.class;
-    }
-
-    public boolean equals(Object x, Object y) throws HibernateException
-	{
-        if (x == y)
-        {
-            return true;
-        }
-        if (x == null || y == null)
-        {
-            return false;
-        }
-        Partial dtx = (Partial) x;
-        Partial dty = (Partial) y;
-
-        return dtx.equals(dty);
-    }
-
-    public int hashCode(Object object) throws HibernateException
-    {
-        return object.hashCode();
-    }
-
-    public Object nullSafeGet(ResultSet resultSet, String[] strings, Object object) throws HibernateException, SQLException
-	{
-		return nullSafeGet(resultSet, strings[0]);
-
-	}
-
-	public Object nullSafeGet(ResultSet resultSet, String string) throws SQLException
-	{
-		String partial = (String)Hibernate.STRING.nullSafeGet(resultSet, string);
+	@Override
+	public Partial nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
+			throws HibernateException, SQLException {
+		String partial = (String)StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 		Partial result = new Partial(); 
-		if (partial == null || partial.length() != 8)
-		{
+		if (partial == null || partial.length() != 8) {
 			return null;
 		}
 		Integer year = Integer.valueOf(partial.substring(0,4));
@@ -101,17 +70,14 @@ public class PartialUserType implements UserType {
 		return result;
 	}
 
-
-	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index) throws HibernateException, SQLException
-	{
-		if (value == null)
-		{
-			Hibernate.STRING.nullSafeSet(preparedStatement, null, index);
-		}
-		else
-		{
+	@Override
+	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index,
+			SessionImplementor session) throws HibernateException, SQLException {
+		if (value == null){
+			StandardBasicTypes.STRING.nullSafeSet(preparedStatement, null, index, session);
+		}else {
 			Partial p = ((Partial) value);
-			Hibernate.STRING.nullSafeSet(preparedStatement, partialToString(p), index);
+			StandardBasicTypes.STRING.nullSafeSet(preparedStatement, partialToString(p), index, session);
 		}
 	}
 
@@ -147,36 +113,25 @@ public class PartialUserType implements UserType {
 		}
 	}
 
-    public Object deepCopy(Object value) throws HibernateException
-    {
-        if (value == null)
-        {
+    public Object deepCopy(Object value) throws HibernateException {
+        if (value == null) {
             return null;
         }
 
         return new Partial((Partial)value);
     }
 
-    public boolean isMutable()
-    {
-        return false;
-    }
+	@Override
+	public int[] sqlTypes() {
+		// TODO Auto-generated method stub
+		return SQL_TYPES;
+	}
 
-    public Serializable disassemble(Object value) throws HibernateException
-    {
-        return (Serializable) value;
-    }
-
-    public Object assemble(Serializable cached, Object value) throws HibernateException
-    {
-        return cached;
-    }
-
-    public Object replace(Object original, Object target, Object owner) throws HibernateException
-    {
-        return original;
-    }
-
+	@Override
+	public Class returnedClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 
 }
 

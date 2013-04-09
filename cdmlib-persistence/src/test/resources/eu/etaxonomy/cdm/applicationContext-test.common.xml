@@ -48,11 +48,20 @@
         -->
         <property name="properties">
             <props>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
+                
+ <!--                temp for h4 migration testing
+                <prop key="hibernate.connection.driver_class">org.h2.Driver</prop>
+                <prop key="hibernate.connection.url">jdbc:h2:mem:cdm</prop>
+                <prop key="hibernate.connection.username">sa</prop>
+                <prop key="hibernate.connection.password"></prop>
+                <prop key="hibernate.search.lucene_version">LUCENE_36</prop>
+                end temp for h4 migration testing
+ -->                
             </props>
         </property>
     </bean>
@@ -76,9 +85,13 @@
         </property>
     </bean>
 
+<!--     
+    We do not use spelling suggestions anymore. This one relates to springmodules which is
+    somewhat outdated. Once we work again with spelling suggestions we better use a modern
+    approache, e.g. annotation based.
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>
-    </bean>
+    </bean> -->
 
 </beans>

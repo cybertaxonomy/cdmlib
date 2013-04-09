@@ -35,10 +35,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
-
-
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.security.core.GrantedAuthority;
@@ -102,7 +100,7 @@ public class User extends CdmBase implements UserDetails {
 
     @XmlElement(name = "Username")
     @NaturalId
-    @Field(index = Index.UN_TOKENIZED)
+    @Field(analyze = Analyze.NO)
     protected String username;
 
     /**
@@ -170,6 +168,7 @@ public class User extends CdmBase implements UserDetails {
      *
      * @return returns a {@code Set<GrantedAuthority>} as Collection
      */
+    @Override
     @Transient
     public Collection<GrantedAuthority> getAuthorities() {
         if(authorities == null || authorities.size() == 0) {
@@ -178,26 +177,32 @@ public class User extends CdmBase implements UserDetails {
         return authorities;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public boolean isAccountNonExpired() {
         return accountNonExpired;
     }
 
+    @Override
     public boolean isAccountNonLocked() {
         return accountNonLocked;
     }
 
+    @Override
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }

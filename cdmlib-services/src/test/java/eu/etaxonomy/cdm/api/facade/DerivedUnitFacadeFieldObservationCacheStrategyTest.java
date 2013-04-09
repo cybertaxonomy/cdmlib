@@ -9,15 +9,13 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -79,7 +77,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
-	TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 

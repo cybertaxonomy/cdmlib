@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class ArticleDefaultCacheStrategyTest {
 	private static IJournal journal1;
 	private static Team team1;
 	private static Team team2;
-	private static ArticleDefaultCacheStrategy defaultStrategy;
+	private static ArticleDefaultCacheStrategy<Reference<?>> defaultStrategy;
 	private static final String detail1 = "55";
 	
 	/**
@@ -123,7 +123,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setVolume("34");
 		article1.setSeries("ser. 2");
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
-		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getNomRefTitleWithoutYearAndAuthor((Reference)article1));
+		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getNomRefTitleWithoutYearAndAuthor((Reference<?>)article1));
 	}
 	
 	@Test 
@@ -137,7 +137,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setAuthorTeam(articleAuthor);
 		article1.setVolume("18");
 		article1.setDatePublished(TimePeriod.NewInstance(1943));
-		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference)article1));
+		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference<?>)article1));
 	}
 	
 }

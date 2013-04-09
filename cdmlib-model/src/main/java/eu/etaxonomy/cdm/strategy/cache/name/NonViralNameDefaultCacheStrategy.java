@@ -385,6 +385,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
             authorPart = getAuthorAndExAuthor(combinationAuthor, exCombinationAuthor);
         }
         result = CdmUtils.concat(BasionymAuthorCombinationAuthorSeperator, basionymPart, authorPart);
+//        if ("".equals(result)){
+//        	result = null;
+//        }
         return result;
     }
 

@@ -627,6 +627,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/varanusSDD_RatingExample3_c
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/varanusSDD_RatingExample_mod.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/wrongSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest.testResultSet-result.xml -text
@@ -1167,9 +1168,9 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/validation/TaxonNameCannotBeAccepted
 cdmlib-model/src/test/resources/log4j.properties -text
 cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
-cdmlib-persistence/build.xml -text
 cdmlib-persistence/pom.xml -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationUtils.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/Configuration.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSourceBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmPersistentDataSource.java -text
@@ -1201,6 +1202,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/OracleDatabaseT
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2008DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnAdder.java -text
@@ -1361,6 +1363,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataC
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeMap.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmHibernateInterceptor.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmListenerDuplicationStrategy.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmListenerIntegrator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmPostDataChangeObservableListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmSecurityHibernateInterceptor.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPostDataChangeObserver.java -text
@@ -1403,6 +1407,7 @@ cdmlib-persistence/src/main/java/org/hibernate/dialect/HSQLCorrectedDialect.java
 cdmlib-persistence/src/main/java/org/hibernate/dialect/MySQL5InnoDBUtf8Dialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/MySQL5MyISAMUtf8Dialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/envers/synchronization/work/CollectionChangeWorkUnit.java -text
+cdmlib-persistence/src/main/resources/META-INF/services/org.hibernate.integrator.spi.Integrator -text
 cdmlib-persistence/src/main/resources/c3p0-config.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/h2-datasource.xml -text
@@ -1477,6 +1482,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailI
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/CleanSweepInsertLoadStrategy.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/FlatFullXmlWriter.java -text
 cdmlib-persistence/src/test/resources/META-INF/persistence.xml -text
+cdmlib-persistence/src/test/resources/c3p0-config.xml -text
 cdmlib-persistence/src/test/resources/dbscripts/001-cdm.h2.sql -text
 cdmlib-persistence/src/test/resources/dbscripts/hibernate.cfg.xml -text
 cdmlib-persistence/src/test/resources/dbscripts/hibernate.properties -text
@@ -1725,7 +1731,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/NameCatalogue
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/PolytomousKeyNodeDtoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalBhleController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalGeoController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/DatasourceContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/oaipmh/AbstractOaiPmhController.java -text
@@ -2093,8 +2098,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationService
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/MediaServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTTT.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text

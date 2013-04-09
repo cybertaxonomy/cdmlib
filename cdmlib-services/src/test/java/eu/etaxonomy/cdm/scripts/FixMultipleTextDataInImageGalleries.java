@@ -43,8 +43,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @version 1.0
  */
 public class FixMultipleTextDataInImageGalleries {
-	public static final Logger logger = Logger
-			.getLogger(FixMultipleTextDataInImageGalleries.class);
+	public static final Logger logger = Logger.getLogger(FixMultipleTextDataInImageGalleries.class);
 
 	public static ICdmDataSource dataSource(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;

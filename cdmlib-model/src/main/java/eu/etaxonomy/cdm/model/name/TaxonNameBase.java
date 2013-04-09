@@ -132,22 +132,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
-    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 
     @XmlElement(name = "AppendedPhrase")
-    @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @Field
     @CacheUpdate(value ="nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     private String appendedPhrase;
 
     @XmlElement(name = "NomenclaturalMicroReference")
-    @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @Field
     @CacheUpdate(noUpdate ="titleCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     private String nomenclaturalMicroReference;
 
@@ -184,13 +186,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Match(MatchMode.IGNORE)
     @CacheUpdate(noUpdate ="titleCache")
-    @NotNull
+    //TODO Val #3379
+//    @NotNull
     private HomotypicalGroup homotypicalGroup;
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -200,8 +203,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElement(name = "RelationToThisName")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE , CascadeType.DELETE_ORPHAN })
+    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -209,8 +212,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
-    @OneToMany(fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
@@ -228,7 +231,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.EAGER)
     @CacheUpdate(value ="nameCache")
-    @NotNull
+    //TODO Val #3379, handle maybe as groups = Level2.class ??
+//    @NotNull 
     @IndexedEmbedded(depth=1)
     private Rank rank;
 
@@ -532,6 +536,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    	   		NameRelationship
      * @see    	   		eu.etaxonomy.cdm.model.common.RelationshipBase
      */
+    @Override
     public void addRelationship(RelationshipBase relation) {
         if (relation instanceof NameRelationship){
             addNameRelationship((NameRelationship)relation);
@@ -845,6 +850,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
      */
+    @Override
     public int getParsingProblem(){
         return this.parsingProblem;
     }
@@ -852,6 +858,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(int)
      */
+    @Override
     public void setParsingProblem(int parsingProblem){
         this.parsingProblem = parsingProblem;
     }
@@ -859,6 +866,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
      */
+    @Override
     public void addParsingProblem(ParserProblem problem){
         parsingProblem = ParserProblem.addProblem(parsingProblem, problem);
     }
@@ -866,6 +874,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
      */
+    @Override
     public void removeParsingProblem(ParserProblem problem) {
         parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
     }
@@ -880,6 +889,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
      */
+    @Override
     public boolean hasProblem(){
         return parsingProblem != 0;
     }
@@ -889,6 +899,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
      */
+    @Override
     public boolean hasProblem(ParserProblem problem) {
         return getParsingProblems().contains(problem);
     }
@@ -897,6 +908,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
      */
+    @Override
     public int getProblemStarts(){
         return this.problemStarts;
     }
@@ -904,6 +916,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
      */
+    @Override
     public void setProblemStarts(int start) {
         this.problemStarts = start;
     }
@@ -911,6 +924,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
      */
+    @Override
     public int getProblemEnds(){
         return this.problemEnds;
     }
@@ -918,6 +932,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
      */
+    @Override
     public void setProblemEnds(int end) {
         this.problemEnds = end;
     }
@@ -1192,6 +1207,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     /**
      * @see #getNomenclaturalReference()
      */
+    @Override
     @Transient
     public Reference getCitation(){
         //TODO What is the purpose of this method differing from the getNomenclaturalReference method?
@@ -1218,6 +1234,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * Returns the parsing problems
      * @return
      */
+    @Override
     public List<ParserProblem> getParsingProblems(){
         return ParserProblem.warningList(this.parsingProblem);
     }

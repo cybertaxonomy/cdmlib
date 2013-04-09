@@ -12,16 +12,16 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 
 
 import static org.junit.Assert.assertNotNull;
-import junit.framework.Assert;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
@@ -103,7 +103,7 @@ public class PersonDefaultCacheStrategyTest {
 		Assert.assertEquals("Person2 title should be P2NomT", "P2NomT", person2.getNomenclaturalTitle());
 		//person3
 		Assert.assertNotNull("person3 nomenclatural title must not to be null", person3.getNomenclaturalTitle());
-		Assert.assertTrue("Person3 nomenclatural title must not be empty", CdmUtils.isNotEmpty(person3.getNomenclaturalTitle()));
+		Assert.assertTrue("Person3 nomenclatural title must not be empty", StringUtils.isNotBlank(person3.getNomenclaturalTitle()));
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getNomenclaturalTitle().substring(0, 8));
 	}
@@ -119,7 +119,7 @@ public class PersonDefaultCacheStrategyTest {
 		Assert.assertEquals("Person2 title cache should be P2NomT", "P2FN P2LN P2Suff", person2.getTitleCache());
 		//person3
 		Assert.assertNotNull("person3 title cache must not to be null", person3.getTitleCache());
-		Assert.assertTrue("Person3 title cache must not be empty", CdmUtils.isNotEmpty(person3.getTitleCache()));
+		Assert.assertTrue("Person3 title cache must not be empty", StringUtils.isNotBlank(person3.getTitleCache()));
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title cache should start with Person#0", "Person#0", person3.getTitleCache().substring(0, 8));
 		person3.setFirstname("Klaus");

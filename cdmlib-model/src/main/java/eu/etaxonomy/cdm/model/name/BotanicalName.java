@@ -52,13 +52,14 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Configurable
 public class BotanicalName extends NonViralName<BotanicalName> implements Cloneable /*, IMergable*/ {
 	private static final long serialVersionUID = 6818651572463497727L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 	
 	//Only for fungi: to indicate that the type of the name is asexual or not
     @XmlElement(name ="IsAnamorphic")
 	private boolean anamorphic;
 
-	static private INonViralNameParser nameParser = new NonViralNameParserImpl();
+	static private INonViralNameParser<?> nameParser = new NonViralNameParserImpl();
 	
 	// ************* CONSTRUCTORS *************/	
 	//needed by hibernate

@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.1.4-SNAPSHOT</version>
   <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -115,17 +115,18 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-    </dependency>
+<!--     Part of hibernate-core since 3.6 -->
+<!--     <dependency> -->
+<!--       <groupId>org.hibernate</groupId> -->
+<!--       <artifactId>hibernate-annotations</artifactId> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search</artifactId>
+      <artifactId>hibernate-search-engine</artifactId>
     </dependency>
     <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -170,6 +171,12 @@
       <groupId>org.unitils</groupId>
       <artifactId>unitils-orm</artifactId>
       <scope>test</scope>
+      <exclusions>
+     	<exclusion>
+     		<groupId>javax.persistence</groupId>
+      		<artifactId>persistence-api</artifactId>
+     	</exclusion>
+      </exclusions>
     </dependency>
      <dependency>
       <groupId>org.unitils</groupId>
@@ -205,6 +212,12 @@
       <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
+		<groupId>org.jadira.usertype</groupId>
+		<artifactId>usertype.jodatime</artifactId>
+		<version>2.0.1</version>
+	</dependency>
+    
+<!--     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time-hibernate</artifactId>
       <exclusions>
@@ -225,7 +238,7 @@
           <groupId>hibernate</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>

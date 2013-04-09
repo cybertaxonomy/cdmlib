@@ -86,7 +86,7 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private Reference reference;
+	private Reference<?> reference;
 	
 	@XmlElement(name = "microReference")
 	private String microReference;

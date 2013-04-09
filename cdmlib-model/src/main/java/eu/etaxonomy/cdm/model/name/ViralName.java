@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -43,7 +42,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * "http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm"
  * <P>
  * This class corresponds to: NameViral according to the ABCD schema.
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:02
@@ -64,23 +63,24 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 //    @XmlTransient
 //    @Transient
 //	protected INameCacheStrategy<ViralName> cacheStrategy;
-	
+
 	@XmlElement(name = "Acronym")
-	@Field(index=Index.TOKENIZED)
-	@NullOrNotEmpty
+	@Field
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String acronym;
 
-	// ************* CONSTRUCTORS *************/	
-	
+	// ************* CONSTRUCTORS *************/
+
 	protected ViralName(){
 		super();
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor: creates a new viral taxon name instance
 	 * only containing its {@link Rank rank}.
-	 * 
+	 *
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
 	 */
@@ -88,7 +88,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 		super(rank);
 	}
 
-//*********************** 	
+//***********************
 
 	private static Map<String, java.lang.reflect.Field> allFields = null;
 	@Override
@@ -99,13 +99,13 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
     	return allFields;
     }
 
-//************************* 
-	
+//*************************
+
 	//********* METHODS **************************************/
 
-	/** 
+	/**
 	 * Creates a new viral taxon name instance only containing its {@link Rank rank}.
-	 * 
+	 *
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	#ViralName(Rank)
 	 */
@@ -116,7 +116,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	/**
 	 * Returns the accepted acronym (an assigned abbreviation) string for <i>this</i>
 	 * viral taxon name. For instance PCV stays for Peanut Clump Virus.
-	 * 
+	 *
 	 * @return  the string containing the accepted acronym of <i>this</i> viral taxon name
 	 */
 	public String getAcronym(){
@@ -152,7 +152,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 		logger.warn("not yet implemented");
 		return this.toString();
 	}
-	
+
 	/**
 	 * Returns the boolean value "true" if the components of <i>this</i> viral taxon name
 	 * follow the rules of the corresponding
@@ -160,7 +160,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * "false" otherwise.
 	 * This method overrides and implements the isCodeCompliant method from
 	 * the abstract {@link TaxonNameBase#isCodeCompliant() TaxonNameBase} class.
-	 *  
+	 *
 	 * @return  the boolean value expressing the compliance of <i>this</i> viral taxon name to its nomenclatural code
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
@@ -170,8 +170,8 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 		logger.warn("not yet implemented");
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> viral taxon name, that is the
@@ -192,7 +192,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
 	 * several strings corresponding to <i>this</i> viral taxon name.
-	 * 
+	 *
 	 * @return  the cache strategy used for <i>this</i> viral taxon name
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -212,14 +212,14 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 //		this.cacheStrategy = cacheStrategy;
 //	}
 
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> viral name. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> viral name by
 	 * modifying only some of the attributes.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#clone()
 	 * @see java.lang.Object#clone()
 	 */

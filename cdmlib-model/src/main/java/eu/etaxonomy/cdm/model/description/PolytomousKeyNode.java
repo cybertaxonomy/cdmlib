@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
@@ -159,14 +160,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private KeyStatement statement;
 
 	@XmlElement(name = "Question")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private KeyStatement question;
 
 	@XmlElement(name = "Feature")
@@ -205,7 +206,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
 	// @JoinTable(name = "DescriptionElementBase_ModifyingText")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
 	public static final Integer ROOT_NODE_NUMBER = 1;

@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -74,7 +73,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @created 04.02.2009
  * @version 1.0
  */
-@Ignore // why ignored?
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
@@ -124,7 +122,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     public final void testFindTaxaAndNames() {
 
         // pass 1
-        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
+        IFindTaxaAndNamesConfigurator<?> configurator = new FindTaxaAndNamesConfiguratorImpl();
         configurator.setTitleSearchString("Abies*");
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(true);
@@ -141,7 +139,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 if (list.get(i) instanceof NonViralName) {
                     nameCache = ((NonViralName<?>) list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
-                    TaxonNameBase taxonNameBase = ((TaxonBase) list.get(i)).getName();
+                    TaxonNameBase<?,?> taxonNameBase = ((TaxonBase) list.get(i)).getName();
                     nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
                 } else {
                 }
@@ -196,23 +194,30 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByDescriptionElementFullText_CommonName() throws CorruptIndexException, IOException,
+            ParseException {
 
         refreshLuceneIndex();
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null, false, null, null, null, null);
-        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null,
+                false, null, null, null, null);
+        Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1),
+                pager.getCount());
 
-        // the description containing the Nulltanne has no taxon attached, taxon.id = null
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, null, null, false, null, null, null, null);
+        // the description containing the Nulltanne has no taxon attached,
+        // taxon.id = null
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Nulltanne", null, null, null,
+                false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for 'Nulltanne' ", Integer.valueOf(0), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null,
+                Arrays.asList(new Language[] { Language.GERMAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching in German", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null,
+                Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
 
     }
@@ -290,6 +295,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
+        Reference sec = ReferenceFactory.newDatabase();
+        referenceService.save(sec);
 
         Set<String> uniqueRandomStrs = new HashSet<String>(1024);
         int numOfItems = 100;
@@ -299,7 +306,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         for(String rndStr: uniqueRandomStrs){
 
-            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+            Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SERIES()), sec);
             taxon.setTitleCache("Tax" + rndStr, true);
             taxonService.save(taxon);
 
@@ -570,7 +577,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         //
         // modify the DescriptionElement via the Description object
-        DescriptionBase description = descriptionService.find(UUID.fromString(inDescriptionUuidStr[0]));
+        DescriptionBase<?> description = descriptionService.find(UUID.fromString(inDescriptionUuidStr[0]));
         Set<DescriptionElementBase> elements = description.getElements();
         for( DescriptionElementBase elm : elements){
             if(elm.getUuid().toString().equals(descriptionElementUuidStr[0])){
@@ -619,6 +626,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                                 "Die Balsamtanne ist mit bis zu 30 m Höhe ein mittelgroßer Baum und kann bis zu 200 Jahre alt werden",
                                 Language.GERMAN(), null));
         t_abies_balsamea.addDescription(d_abies_balsamea_new);
+        // set authorshipCache to null to avoid validation exception,
+        // this is maybe not needed in future,  see ticket #3344
+        BotanicalName abies_balsamea = HibernateProxyHelper.deproxy(t_abies_balsamea.getName(), BotanicalName.class);
+        abies_balsamea.setAuthorshipCache(null);
         taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
@@ -854,10 +865,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      */
     private void refreshLuceneIndex() {
 
-        commitAndStartNewTransaction(null);
+//        commitAndStartNewTransaction(null);
+        commit();
+        endTransaction();
         indexer.purge(null);
         indexer.reindex(DefaultProgressMonitor.NewInstance());
-        commitAndStartNewTransaction(null);
+        startNewTransaction();
+//        commitAndStartNewTransaction(null);
     }
 
     @SuppressWarnings("rawtypes")
@@ -925,7 +939,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         classificationService.save(classification);
         classificationService.save(alternativeClassification);
 
-        Reference sec = ReferenceFactory.newBook();
+        Reference<?> sec = ReferenceFactory.newBook();
         referenceService.save(sec);
 
         BotanicalName n_abies = BotanicalName.NewInstance(Rank.GENUS());
@@ -952,6 +966,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         BotanicalName n_abies_kawakamii = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_kawakamii.setNameCache("Abies kawakamii", true);
         Taxon t_abies_kawakamii = Taxon.NewInstance(n_abies_kawakamii, sec);
+        t_abies_kawakamii.getTitleCache();
         taxonService.save(t_abies_kawakamii);
 
         BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
@@ -971,8 +986,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         classificationService.saveOrUpdate(classification);
         classificationService.saveOrUpdate(alternativeClassification);
 
-//        t_abies_balsamea.se
-
         //
         // Description
         //
@@ -985,10 +998,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // TextData
         TaxonDescription d_abies_balsamea = TaxonDescription.NewInstance(t_abies_balsamea);
         d_abies_balsamea
-                .addElement(TextData
-                        .NewInstance(
-                                "Die Balsam-Tanne (Abies balsamea) ist eine Pflanzenart aus der Gattung der Tannen (Abies). Sie wächst im nordöstlichen Nordamerika, wo sie sowohl Tief- als auch Bergland besiedelt. Sie gilt als relativ anspruchslos gegenüber dem Standort und ist frosthart. In vielen Teilen des natürlichen Verbreitungsgebietes stellt sie die Klimaxbaumart dar.",
-                                Language.GERMAN(), null));
+            .addElement(TextData
+                    .NewInstance(
+                            "Die Balsam-Tanne (Abies balsamea) ist eine Pflanzenart aus der Gattung der Tannen (Abies). Sie wächst im nordöstlichen Nordamerika, wo sie sowohl Tief- als auch Bergland besiedelt. Sie gilt als relativ anspruchslos gegenüber dem Standort und ist frosthart. In vielen Teilen des natürlichen Verbreitungsgebietes stellt sie die Klimaxbaumart dar.",
+                            Language.GERMAN(), null));
         d_abies_balsamea
                 .addElement(TextData
                         .NewInstance(
@@ -997,10 +1010,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         setComplete();
         endTransaction();
 
-        printDataSet(new FileOutputStream("TaxonServiceSearchTest.xml"), new String[] {
+
+        writeDbUnitDataSetFile(new String[] {
             "TAXONBASE", "TAXONNAMEBASE", "SYNONYMRELATIONSHIP",
             "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
-            "AGENTBASE", "HOMOTYPICALGROUP", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+            "AGENTBASE", "HOMOTYPICALGROUP",
+            "CLASSIFICATION", "CLASSIFICATION_TAXONNODE","TAXONNODE",
             "LANGUAGESTRING", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING" });
 
     }

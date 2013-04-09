@@ -48,20 +48,32 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author n.hoffmann
  * @created Sep 21, 2009
- * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao> implements IClassificationService {
     private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
+    
     @Autowired
     private ITaxonDao taxonDao;
+    
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
+    
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
+     */
+    @Autowired
+    protected void setDao(IClassificationDao dao) {
+        this.dao = dao;
+    }
+    
     private Comparator<? super TaxonNode> taxonNodeComparator;
+    
     @Autowired
     public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
         this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
@@ -324,18 +336,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         TaxonNode node = taxTree.getNode(taxon);
 
         return getAllMediaForChildNodes(node, propertyPaths, size, height, widthOrDuration, mimeTypes);
-    }
-
-
-
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
-     */
-    @Autowired
-    protected void setDao(IClassificationDao dao) {
-        this.dao = dao;
     }
 
 

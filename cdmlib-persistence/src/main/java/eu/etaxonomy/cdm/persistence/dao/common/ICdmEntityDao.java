@@ -65,7 +65,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * sub-components of the entity and this kind of global replace doesn't really make sense
      *
      * Consequently it is a good idea to either map such owned relationships with cascading
-     * semantics (i.e. CascadeType.DELETE, CascadeType.DELETE_ORPHAN) allowing them to be saved,
+     * semantics (i.e. CascadeType.DELETE, @OneToMany(orphanRemoval=true)) allowing them to be saved,
      * updated, and deleted along with the owning entity automatically.
      *
      * @param x the object to replace, must not be null

@@ -24,6 +24,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -116,6 +117,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "DescriptionElementBase_ModifyingText")
+    @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
     private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
@@ -139,8 +141,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
 

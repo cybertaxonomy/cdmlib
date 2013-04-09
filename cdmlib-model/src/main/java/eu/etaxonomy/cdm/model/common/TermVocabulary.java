@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -39,10 +39,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 
 
 /**
@@ -66,15 +66,14 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	private static final long serialVersionUID = 1925052321596648672L;
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
 
-	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
-	// Software can go and grap these terms incl labels and description. 
+	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.
+	// Software can go and grap these terms incl labels and description.
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@Length(max = 255)
+	@Field(analyze = Analyze.NO)
 	@Type(type="uriUserType")
 	private URI termSourceUri;
-	
+
 
 	//TODO Changed
 	@XmlElementWrapper(name = "Terms")
@@ -86,26 +85,26 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@IndexedEmbedded(depth = 2)
 	protected Set<T> terms = getNewTermSet();
-	
+
 // ********************************* FACTORY METHODS *****************************************/
 
 	public static TermVocabulary NewInstance(String description, String label, String abbrev, URI termSourceUri){
 		return new TermVocabulary(description, label, abbrev, termSourceUri);
 	}
-	
-// ************************* CONSTRUCTOR *************************************************	
+
+// ************************* CONSTRUCTOR *************************************************
 
 	protected TermVocabulary() {
 	}
-	
+
 	protected TermVocabulary(String term, String label, String labelAbbrev, URI termSourceUri) {
 		super(term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
-	
 
-// ******************* METHODS *************************************************/	
-	
+
+// ******************* METHODS *************************************************/
+
 	public T findTermByUuid(UUID uuid){
 		for(T t : terms) {
 			if(t.getUuid().equals(uuid)) {
@@ -123,7 +122,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public Set<T> getTerms() {
 		return terms;
 	}
-	
+
 	public void addTerm(T term) {
 		term.setVocabulary(this);
 		this.terms.add(term);
@@ -137,19 +136,20 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return termSourceUri;
 	}
 	public void setTermSourceUri(URI vocabularyUri) {
-		this.termSourceUri = vocabularyUri;		
+		this.termSourceUri = vocabularyUri;
 	}
-	
-	
-	public Iterator<T> iterator() {
+
+
+	@Override
+    public Iterator<T> iterator() {
 		return terms.iterator();  // OLD: new TermIterator<T>(this.terms);
 	}
-	
+
 	public int size(){
 		return terms.size();
 	}
-	
-	
+
+
 	/**
 	 * Returns all terms of this vocabulary sorted by their representation defined by the given language.
 	 * If such an representation does not exist, the representation of the default language is testing instead for ordering.
@@ -159,34 +159,34 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public SortedSet<T> getTermsOrderedByLabels(Language language){
 		TermLanguageComparator<T> comp = new TermLanguageComparator<T>();
 		comp.setCompareLanguage(language);
-		
+
 		SortedSet<T> result = new TreeSet<T>(comp);
 		result.addAll(getTerms());
 		return result;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */
 	public TermVocabulary<T> readCsvLine(List<String> csvLine) {
 		return readCsvLine(csvLine, Language.CSV_LANGUAGE());
 	}
-	
+
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(URI.create(csvLine.get(1)));
 		//this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
 		return this;
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> TermVocabulary. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> TermVocabulary.
 	 * The terms of the original vocabulary are cloned
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -195,7 +195,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		TermVocabulary result;
 		try {
 			result = (TermVocabulary) super.clone();
-			
+
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();
@@ -205,8 +205,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		for (T term: this.terms){
 			result.addTerm((T)term.clone());
 		}
-		
+
 		return result;
 	}
-    
+
 }

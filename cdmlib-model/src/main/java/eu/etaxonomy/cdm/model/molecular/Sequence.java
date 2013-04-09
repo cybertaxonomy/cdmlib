@@ -104,7 +104,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
-	private Reference publishedIn;
+	private Reference<?> publishedIn;
 	
 	@XmlElementWrapper(name = "Citations")
 	@XmlElement(name = "Citation")

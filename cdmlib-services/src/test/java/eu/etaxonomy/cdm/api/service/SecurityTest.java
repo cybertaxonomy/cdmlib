@@ -39,6 +39,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -138,7 +139,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             - TAXONBASE.DELETE
             - TAXONBASE.UPDATE
         */
-        tokenForAdmin = new UsernamePasswordAuthenticationToken("admin", PASSWORD_ADMIN);
+        tokenForAdmin = new UsernamePasswordAuthenticationToken(Configuration.adminLogin, PASSWORD_ADMIN);
 
         /* User 'userManager':
             - ROLE_ADMIN

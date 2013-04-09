@@ -16,11 +16,9 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.hibernate.Hibernate;
 
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
 public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
@@ -43,11 +41,11 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
 								
 								if(taxonBase1 instanceof Taxon && taxonBase2 instanceof Taxon) {
 									valid = false;
-									constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.twoAcceptedTaxaNotAllowed.message}").addSubNode("name").addError();
+									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.twoAcceptedTaxaNotAllowed.message}").addNode("name").addConstraintViolation();
 								}
 								if((taxonBase1 instanceof Taxon && taxonBase2 instanceof Synonym) || (taxonBase1 instanceof Synonym && taxonBase2 instanceof Taxon)) {
 									valid = false;
-									constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}").addSubNode("name").addError();
+									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}").addNode("name").addConstraintViolation();
 								}								
 							}
 						}

@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

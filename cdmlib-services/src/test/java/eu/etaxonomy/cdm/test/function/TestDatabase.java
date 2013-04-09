@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.hibernate.mapping.Column;
@@ -64,8 +64,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @Ignore
 public class TestDatabase {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TestDatabase.class);
-	ReferenceFactory refFactory;
+
 	private void test(){
 		System.out.println("Start TestDatabase");
 		//testNewDatabaseConnection();
@@ -105,7 +106,7 @@ public class TestDatabase {
 		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 		botanicalName.setGenusOrUninomial("GenusName");
 
-		IJournal journal = refFactory.newJournal();
+		IJournal journal = ReferenceFactory.newJournal();
 		journal.setTitleCache("Afro+Doc", true);
 
 		//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
@@ -149,7 +150,7 @@ public class TestDatabase {
 		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 		botanicalName.setGenusOrUninomial("GenusName");
 
-		IJournal journal = refFactory.newJournal();
+		IJournal journal = ReferenceFactory.newJournal();
 		journal.setTitleCache("Afro+Doc", true);
 
 		Taxon taxon = Taxon.NewInstance(botanicalName,(Reference)journal);
@@ -222,7 +223,7 @@ public class TestDatabase {
 		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 		botanicalName.setGenusOrUninomial("GenusName");
 
-		IJournal journal = refFactory.newJournal();
+		IJournal journal = ReferenceFactory.newJournal();
 		journal.setTitle("JournalTitel");
 
 		//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
@@ -249,7 +250,7 @@ public class TestDatabase {
 		//ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
 		ICdmDataSource datasource = cdm_test_anahit2();
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-		AgentBase person = Person.NewTitledInstance("TestPerson");
+		Person person = Person.NewTitledInstance("TestPerson");
 		Contact contact1 = new Contact();
 		Set<String> set = new HashSet<String>();
 		set.add("email1");
@@ -349,7 +350,7 @@ public class TestDatabase {
 		// if you are willing to blame it on conversations, please rewrite into two methods
 		// the result will be the same
 		ConversationHolder newConversation = appCtr.NewConversation();
-		DescriptionBase loadedDescription = appCtr.getDescriptionService().load(taxonDescriptionUuid);
+		DescriptionBase<?> loadedDescription = appCtr.getDescriptionService().load(taxonDescriptionUuid);
 
 		TextData descriptionElement = (TextData) loadedDescription.getElements().iterator().next();
 

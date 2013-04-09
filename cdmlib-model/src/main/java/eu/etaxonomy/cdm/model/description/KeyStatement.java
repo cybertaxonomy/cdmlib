@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -53,8 +54,9 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany (fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
+	@MapKeyJoinColumn(name="label_mapkey_id")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 //    @IndexedEmbedded
     private Map<Language, LanguageString> label = new HashMap<Language, LanguageString>();
 	

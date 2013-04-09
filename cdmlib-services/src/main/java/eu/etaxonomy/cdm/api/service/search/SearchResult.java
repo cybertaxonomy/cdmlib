@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.document.Document;
-import org.hibernate.search.engine.DocumentBuilder;
+import org.hibernate.search.ProjectionConstants;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -88,7 +88,7 @@ public class SearchResult<T extends CdmBase> {
 
 
     public void addDoc(Document doc) {
-        String key = doc.getValues(DocumentBuilder.CLASS_FIELDNAME)[0] + "." + doc.getValues(LuceneSearch.ID_FIELD)[0];
+        String key = doc.getValues(ProjectionConstants.OBJECT_CLASS)[0] + "." + doc.getValues(LuceneSearch.ID_FIELD)[0];
         this.docs.put(key, doc);
     }
 

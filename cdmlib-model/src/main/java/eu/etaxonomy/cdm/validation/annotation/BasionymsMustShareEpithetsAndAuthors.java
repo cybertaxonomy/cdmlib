@@ -18,7 +18,10 @@ import eu.etaxonomy.cdm.validation.constraint.NamesWithHomotypicRelationshipsMus
 @Constraint(validatedBy = BasionymsMustShareEpithetsAndAuthorsValidator.class)
 @Documented
 public @interface BasionymsMustShareEpithetsAndAuthors {
+	
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.message}";
+	
 	Class<? extends Payload>[] payload() default {};
+	
 	Class<?>[] groups() default {};
 }

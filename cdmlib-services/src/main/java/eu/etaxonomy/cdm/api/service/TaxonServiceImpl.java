@@ -110,7 +110,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
     private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
@@ -1375,7 +1375,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", false)};
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
@@ -1475,7 +1475,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), DescriptionElementBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", false)};
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.STRING, false)};
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
@@ -1490,7 +1490,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             nameQuery = new BooleanQuery();
             BooleanQuery languageSubQuery = new BooleanQuery();
             for(Language lang : languages){
-                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString()), Occur.SHOULD);
+                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
             }
             ((BooleanQuery) nameQuery).add(queryFactory.newTermQuery("name", queryString), Occur.MUST);
             ((BooleanQuery) nameQuery).add(languageSubQuery, Occur.MUST);
@@ -1529,6 +1529,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // the description must be associated with a taxon
         finalQuery.add(queryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
+        logger.info("prepareByDescriptionElementFullTextSearch() query: " + finalQuery.toString());
         luceneSearch.setQuery(finalQuery);
 
         if(highlightFragments){
@@ -1573,8 +1574,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
 
 
-        UUID uuid= taxon.getName().getUuid();
-        ZoologicalName taxonName = getZoologicalName(uuid, zooHashMap);
+        UUID nameUuid= taxon.getName().getUuid();
+        ZoologicalName taxonName = getZoologicalName(nameUuid, zooHashMap);
         String epithetOfTaxon = null;
         String infragenericEpithetOfTaxon = null;
         String infraspecificEpithetOfTaxon = null;
@@ -1597,7 +1598,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 if (!node.isTopmostNode()){
                     TaxonNode parent = node.getParent();
                     parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
-                    TaxonNameBase parentName =  parent.getTaxon().getName();
+                    TaxonNameBase<?,?> parentName =  parent.getTaxon().getName();
                     ZoologicalName zooParentName = HibernateProxyHelper.deproxy(parentName, ZoologicalName.class);
                     Taxon parentTaxon = (Taxon)HibernateProxyHelper.deproxy(parent.getTaxon());
                     Rank rankOfTaxon = taxonName.getRank();
@@ -1628,7 +1629,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
                         if (type.equals(SynonymRelationshipType.INFERRED_EPITHET_OF())){
-                            Set<String> genusNames = new HashSet<String>();
+
 
                             for (SynonymRelationship synonymRelationOfParent:synonymRelationshipsOfParent){
                                 Synonym syn = synonymRelationOfParent.getSynonym();
@@ -2029,7 +2030,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             TaxonNameBase parentName, TaxonBase syn) {
 
         Synonym inferredEpithet;
-        TaxonNameBase synName;
+        TaxonNameBase<?,?> synName;
         ZoologicalName inferredSynName;
         HibernateProxyHelper.deproxy(syn);
 
@@ -2037,7 +2038,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String idInSourceSyn = getIdInSource(syn);
         String idInSourceTaxon =  getIdInSource(taxon);
         // Determine the sourceReference
-        Reference sourceReference = syn.getSec();
+        Reference<?> sourceReference = syn.getSec();
 
         if (sourceReference == null){
             logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon");
@@ -2100,8 +2101,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }*/
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
-        IdentifiableSource originalSource;
-        originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+
+        IdentifiableSource originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);
 

@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
@@ -53,10 +54,10 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	@Override
 	public void rebuildIndex() {
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		
+
 		for(Reference reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorTeam());
-			
+
 			if(reference.getType().equals(ReferenceType.Article)) {
 				Hibernate.initialize(((IArticle)reference).getInJournal());
 			} else if(reference.getType().equals(ReferenceType.BookSection)) {
@@ -75,49 +76,51 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		fullTextSession.flushToIndexes();
 	}
 
-	public List<UuidAndTitleCache<Reference>> getUuidAndTitle(){
+	@Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(){
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
-		
+
 		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
-		
+
 		List<Object[]> result = query.list();
-		
+
 		for(Object[] object : result){
 			list.add(new UuidAndTitleCache<Reference>(type, (UUID) object[0], (String) object[1]));
 		}
-		
+
 		return list;
 	}
-	
+
 	@Override
 	public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache() {
 		List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
 		Session session = getSession();
-		
+
 		Query query = session.createQuery("select " +
 				"r.uuid, r.titleCache, ab.titleCache from " + type.getSimpleName() + " as r left outer join r.authorTeam as ab ");//"select uuid, titleCache from " + type.getSimpleName());
-		
+
 		List<Object[]> result = query.list();
-		
+
 		for(Object[] object : result){
 			UuidAndTitleCache<Reference> uuidAndTitleCache;
 			String referenceTitle = (String) object[1];
-			
-			if(referenceTitle != null){							
+
+			if(referenceTitle != null){
 				String teamTitle = (String) object[2];
 				referenceTitle = ReferenceBaseDefaultCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
-				
+
 				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0], referenceTitle));
 			}else{
 				logger.error("title cache of reference is null. UUID: " + object[0]);
 			}
 		}
-		
+
 		return list;
 	}
-	
-	public List<Reference> getAllReferencesForPublishing(){
+
+	@Override
+    public List<Reference> getAllReferencesForPublishing(){
 		List<Reference> references = getSession().createQuery("Select r from Reference r "+
 				"where r.id IN "+
 					"(Select m.markedObj.id from Marker m where "+
@@ -125,20 +128,22 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 							"(Select dtb.id from DefinedTermBase dtb, Representation r where r member of dtb.representations and r.text='publish'))").list();
 		return references;
 	}
-	
-	public List<Reference> getAllNotNomenclaturalReferencesForPublishing(){
-		
+
+	@Override
+    public List<Reference> getAllNotNomenclaturalReferencesForPublishing(){
+
 		List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
 		String queryString = "from Reference b where b not in (:referenceList) and b in (:publish)" ;
 		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
 		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
 		List<Reference> resultRefernces =referenceQuery.list();
-				
+
 		return resultRefernces;
 	}
-	
+
 	// the result list held doubles therefore i put a "distinct" in the query string
-	public List<Reference> getAllNomenclaturalReferences() {
+	@Override
+    public List<Reference> getAllNomenclaturalReferences() {
 		List<Reference> references = getSession().createQuery(
 				"select distinct t.nomenclaturalReference from TaxonNameBase t").list();
 		return references;
@@ -147,10 +152,10 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	@Override
 	public List<Reference> getSubordinateReferences(
 			Reference reference) {
-		
+
 		List<Reference> references = new ArrayList();
 		List<Reference> subordinateReferences = new ArrayList();
-		
+
 		Query query = getSession().createQuery("select r from Reference r where r.inReference = (:reference)");
 		query.setParameter("reference", reference);
 		references.addAll(query.list());
@@ -162,8 +167,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	}
 
 	@Override
-	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
-		
+	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<OrderHint> orderHints, List<String> propertyPaths) {
+
 		/*
 		 * <li>taxon.name.nomenclaturalreference</li>
 		 * <li>taxon.descriptions.descriptionElement.sources.citation</li>
@@ -171,7 +176,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		 * <li>taxon.name.descriptions.descriptionElement.sources</li>
 		 * <li>taxon.name.descriptions.descriptionSources</li>
 		 */
-		
+
 		//TODO implement search in nameDescriptions
 		List<TaxonBase> taxonBaseList = new ArrayList<TaxonBase>();
 		Set<Reference> referenceSet = new HashSet<Reference>();
@@ -180,9 +185,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 			referenceSet.addAll(getSubordinateReferences(reference));
 		}
 
-	
-		String taxonDescriptionSql = 
-			
+
+		StringBuilder taxonDescriptionSql = new StringBuilder();
+		taxonDescriptionSql.append(
 			"select distinct t from Taxon t " +
 			// TaxonDescription
 			"left join t.descriptions td " +
@@ -195,31 +200,42 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 			"left join nd.descriptionSources nd_s " +
 			"left join nd.descriptionElements nd_e " +
 			"left join nd_e.sources nd_e_s " +
-			
+
 			"where td_e_s.citation in (:referenceBase_1) " +
 			"or td_s in (:referenceBase_2) " +
 			"or nd_e_s.citation in (:referenceBase_3) " +
 			"or nd_s in (:referenceBase_4) or " +
 			"n.nomenclaturalReference in (:referenceBase_5) or " +
 			"t.sec in (:referenceBase_6)"
-			;
-		
-			// TODO include:
-			// name relations
-			// taxon relations
-			
-		Query query2 = getSession().createQuery(taxonDescriptionSql);
-		query2.setParameterList("referenceBase_1", referenceSet);
-		query2.setParameterList("referenceBase_2", referenceSet);
-		query2.setParameterList("referenceBase_3", referenceSet);
-		query2.setParameterList("referenceBase_4", referenceSet);
-		query2.setParameterList("referenceBase_5", referenceSet);
-		query2.setParameterList("referenceBase_6", referenceSet);
-		
-		taxonBaseList = query2.list();
-		
+			);
+
+		if (orderHints != null && orderHints.size() > 0){
+		    taxonDescriptionSql.append(" order by ");
+		    int i = 0;
+		    for (OrderHint hint : orderHints) {
+		        if(i > 0) {
+		            taxonDescriptionSql.append(", ");
+		        }
+		        taxonDescriptionSql.append("t.").append(hint.toHql());
+            }
+		}
+
+		// TODO include:
+		// name relations
+		// taxon relations
+
+		Query query = getSession().createQuery(taxonDescriptionSql.toString());
+		query.setParameterList("referenceBase_1", referenceSet);
+		query.setParameterList("referenceBase_2", referenceSet);
+		query.setParameterList("referenceBase_3", referenceSet);
+		query.setParameterList("referenceBase_4", referenceSet);
+		query.setParameterList("referenceBase_5", referenceSet);
+		query.setParameterList("referenceBase_6", referenceSet);
+
+		taxonBaseList = query.list();
+
 		defaultBeanInitializer.initializeAll(taxonBaseList, propertyPaths);
-		
+
 		return taxonBaseList;
 	}
 }

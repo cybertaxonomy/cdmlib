@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
  * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao> implements ITaxonNodeService{
 	private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 

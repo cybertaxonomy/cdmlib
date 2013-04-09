@@ -38,11 +38,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.validation.Level2;
     "credits",
     "sources"
 })
+@Audited
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
@@ -109,7 +110,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Size(max = 255)
     @Fields({
         @Field(store=Store.YES),
-        @Field(name = "titleCache__sort", index = Index.UN_TOKENIZED, store=Store.YES)
+        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
     })
     @FieldBridge(impl=StripHtmlBridge.class)
     protected String titleCache;
@@ -120,8 +121,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -130,8 +131,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
     @IndexColumn(name="sortIndex", base = 0)
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -139,16 +140,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<Extension> extensions = new HashSet<Extension>();
 
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
-    @OneToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();

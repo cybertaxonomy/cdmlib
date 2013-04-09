@@ -21,12 +21,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
@@ -353,7 +351,7 @@ public class NonViralNameParserImplTest {
 		
 		//unranked infraspecific
 		String infraspecificUnranked = "Genus species [unranked] infraspecific";
-		NonViralName name = parser.parseFullName(infraspecificUnranked);
+		NonViralName<?> name = parser.parseFullName(infraspecificUnranked);
 		assertEquals( "Genus", name.getGenusOrUninomial());
 		assertEquals( "species", name.getSpecificEpithet());
 		assertEquals( "infraspecific", name.getInfraSpecificEpithet());
@@ -361,7 +359,7 @@ public class NonViralNameParserImplTest {
 
 		//unranked infrageneric
 		String infraGenericUnranked = "Genus [unranked] Infragen";
-		NonViralName name2 = parser.parseFullName(infraGenericUnranked);
+		NonViralName<?> name2 = parser.parseFullName(infraGenericUnranked);
 		assertEquals( "Genus", name2.getGenusOrUninomial());
 		assertEquals( null, name2.getSpecificEpithet());
 		assertEquals( "Infragen", name2.getInfraGenericEpithet());
@@ -390,9 +388,9 @@ public class NonViralNameParserImplTest {
 		assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus", name1.getTitleCache());
 		List<HybridRelationship> orderedRels = name1.getOrderedChildRelationships();
 		assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
-		NonViralName firstParent = orderedRels.get(0).getParentName();
+		NonViralName<?> firstParent = orderedRels.get(0).getParentName();
 		assertEquals("Name must have Abies alba as first hybrid parent", "Abies alba", firstParent.getTitleCache());
-		NonViralName secondParent = orderedRels.get(1).getParentName();
+		NonViralName<?> secondParent = orderedRels.get(1).getParentName();
 		assertEquals("Name must have Pinus bus as second hybrid parent", "Pinus bus", secondParent.getTitleCache());
 		assertEquals("Hybrid name must have the lowest rank ('species') as rank", Rank.SPECIES(), name1.getRank());
 
@@ -434,7 +432,7 @@ public class NonViralNameParserImplTest {
 	
 	private void testName_StringNomcodeRank(Method parseMethod) 
 			throws InvocationTargetException, IllegalAccessException  {
-		NonViralName name1 = (NonViralName)parseMethod.invoke(parser, strNameAbies1, null, Rank.SPECIES());
+		NonViralName<?> name1 = (NonViralName)parseMethod.invoke(parser, strNameAbies1, null, Rank.SPECIES());
 		//parser.parseFullName(strNameAbies1, null, Rank.SPECIES());
 		assertEquals("Abies", name1.getGenusOrUninomial());
 		assertEquals("alba", name1.getSpecificEpithet());
@@ -444,13 +442,13 @@ public class NonViralNameParserImplTest {
 		assertEquals("alba", nameAuthor.getSpecificEpithet());
 		assertEquals("Mueller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
-		NonViralName nameBasionymAuthor = (NonViralName)parseMethod.invoke(parser, strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
+		NonViralName<?> nameBasionymAuthor = (NonViralName)parseMethod.invoke(parser, strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
 		assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
 		
-		NonViralName nameBasionymExAuthor = (NonViralName)parseMethod.invoke(parser, strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
+		NonViralName<?> nameBasionymExAuthor = (NonViralName)parseMethod.invoke(parser, strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
 		assertEquals("D'Mueller", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
@@ -458,7 +456,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Ciardelli", nameBasionymExAuthor.getExBasionymAuthorTeam().getNomenclaturalTitle());
 		assertEquals("Doering", nameBasionymExAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
 		
-		NonViralName name2 = (NonViralName)parseMethod.invoke(parser, strNameAbiesSub1, null, Rank.SPECIES());
+		NonViralName<?> name2 = (NonViralName)parseMethod.invoke(parser, strNameAbiesSub1, null, Rank.SPECIES());
 		assertEquals("Abies", name2.getGenusOrUninomial());
 		assertEquals("alba", name2.getSpecificEpithet());
 		assertEquals("beta", name2.getInfraSpecificEpithet());
@@ -1135,7 +1133,7 @@ public class NonViralNameParserImplTest {
 
 		String irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
 //		irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Uiuis Iuiui Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
-		NonViralName nvn = this.parser.parseReferencedName(irinaExample, NomenclaturalCode.ICZN, null);
+		NonViralName<?> nvn = this.parser.parseReferencedName(irinaExample, NomenclaturalCode.ICZN, null);
 		int parsingProblem = nvn.getParsingProblem();
 		Assert.assertEquals("Name should have only rank warning", 1, parsingProblem);
 		Assert.assertEquals("Titlecache", "Milichiidae Sharp, 1899", nvn.getTitleCache());

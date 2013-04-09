@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -73,8 +74,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @author p.kelbert
  * @created 29.10.2008
  * @version 1.0
- */
-/**
+ *
  * @author pkelbert
  * @date 13 mars 2013
  *
@@ -130,9 +130,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * return empty string instead of null
      * */
     public class MyHashMap<K,V> extends HashMap<K,V> {
-        /**
-         *
-         */
         private static final long serialVersionUID = -6230407405666753405L;
 
         @SuppressWarnings("unchecked")
@@ -190,10 +187,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         tx = startTransaction();
         ref = getReferenceService().find(ref.getUuid());
         classification = getClassificationService().find(classification.getUuid());
-        try{
-            derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
-        }catch(Exception e){
-            //logger.warn("derivedunit up to date or not created yet");
+        if (derivedUnitBase != null){
+        	derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
         }
     }
 
@@ -387,7 +382,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = parseScientificName(scientificName);
                 }
                 else{
-                    taxonName = NonViralName.NewInstance(null);
+                    taxonName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
                     taxonName.setTitleCache(scientificName, true);
                 }
                 getNameService().save(taxonName);
@@ -453,7 +448,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
         if(nomenclatureCode == null){
-            taxonName = NonViralName.NewInstance(null);
+            taxonName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
             taxonName.setTitleCache(scientificName, true);
             return taxonName;
         }
@@ -488,7 +483,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         //      }
         //TODO: parsing of ViralNames?
         if(problem){
-            taxonName = NonViralName.NewInstance(null);
+            taxonName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
             taxonName.setTitleCache(scientificName, true);
         }
         return taxonName;
@@ -576,7 +571,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     longitude, latitude, gatheringAgent, gatheringTeam,config);
 
             // country
-            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(isocountry, country, getOccurrenceService());
+            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(isocountry, country, this);
             NamedArea areaCountry = unitsGatheringArea.getArea();
 
 
@@ -625,7 +620,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
 
             //add fieldNumber
-            derivedUnitFacade.setFieldNumber(fieldNumber);
+            derivedUnitFacade.setFieldNumber(NB(fieldNumber));
 
             //add Multimedia URLs
             if(multimediaObjects.size()>0){

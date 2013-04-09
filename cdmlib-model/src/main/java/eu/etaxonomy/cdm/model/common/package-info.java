@@ -6,7 +6,7 @@
 	{
 		/* @see {@link eu.etaxonomy.cdm.persistence.hibernate.TableGenerator} */
 		@GenericGenerator(
-				name="custom-enhanced-table", 
+				name="custom-enhanced-table",
 				strategy = "eu.etaxonomy.cdm.persistence.hibernate.TableGenerator",
 				parameters = {
 				    @Parameter(name="optimizer", value = "pooled"),
@@ -25,10 +25,10 @@
 		 */
 		/* new table generator
 		 * always stores sequences in a table. May be configured to return a sequence on a per table basis
-		 * RECOMMENDED WHEN RUNNING A CDM DATASOURCE IN A MULTI CLIENT ENVIRONMENT 
+		 * RECOMMENDED WHEN RUNNING A CDM DATASOURCE IN A MULTI CLIENT ENVIRONMENT
 		 */
 		@GenericGenerator(
-				name="enhanced-table", 
+				name="enhanced-table",
 				strategy = "org.hibernate.id.enhanced.TableGenerator",
 				parameters = {
 				    @Parameter(name="optimizer", value = "pooled"),
@@ -45,7 +45,7 @@
 		 * Using sequence when the dialect supports it, otherwise it will emulate a sequence using a table in the db
 		 * This method will result in database wide unique id's */
 		@GenericGenerator(
-				name="enhanced-sequence", 
+				name="enhanced-sequence",
 				strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
 				parameters = {
 			        @Parameter(name="optimizer", value = "pooled"),
@@ -57,37 +57,37 @@
 			    }
 		),
 		/* A couple of old style generators */
-		/* generates identifiers of type long, short or int that are unique only when no other process 
-		 * is inserting data into the same table. 
+		/* generates identifiers of type long, short or int that are unique only when no other process
+		 * is inserting data into the same table.
 		 * DO NOT USE IN A CLUSTER OR MULTIPLE CLIENT ENVIRONMENT */
-		@GenericGenerator(		
-				name="system-increment", 
+		@GenericGenerator(
+				name="system-increment",
 				strategy = "increment"
 		),
-		/* supports identity columns in DB2, MySQL, MS SQL Server, Sybase and HypersonicSQL. 
+		/* supports identity columns in DB2, MySQL, MS SQL Server, Sybase and HypersonicSQL.
 		 * The returned identifier is of type long, short or int. */
 		@GenericGenerator(
-				name="system-identity", 
+				name="system-identity",
 				strategy = "identity"
-					
+
 		),
-		/* uses a hi/lo algorithm to efficiently generate identifiers of type long, short or int, 
-		 * given a table and column (by default hibernate_unique_key and next_hi respectively) as 
-		 * a source of hi values. The hi/lo algorithm generates identifiers that are unique only 
+		/* uses a hi/lo algorithm to efficiently generate identifiers of type long, short or int,
+		 * given a table and column (by default hibernate_unique_key and next_hi respectively) as
+		 * a source of hi values. The hi/lo algorithm generates identifiers that are unique only
 		 * for a particular database. */
 		@GenericGenerator(
-				name="system-hilo", 
+				name="system-hilo",
 				strategy = "hilo"
 		),
-		/* uses a sequence in DB2, PostgreSQL, Oracle, SAP DB, McKoi or a generator in Interbase. 
+		/* uses a sequence in DB2, PostgreSQL, Oracle, SAP DB, McKoi or a generator in Interbase.
 		 * The returned identifier is of type long, short or int */
 		@GenericGenerator(
-				name="system-sequence", 
+				name="system-sequence",
 				strategy = "sequence"
 		),
 		/* selects identity, sequence or hilo depending upon the capabilities of the underlying database. */
 		@GenericGenerator(
-				name="system-native", 
+				name="system-native",
 				strategy = "native"
 		)
 	}
@@ -95,15 +95,16 @@
 
 
 
-@org.hibernate.annotations.TypeDefs( { 
-	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.joda.time.contrib.hibernate.PersistentDuration.class),
-	@org.hibernate.annotations.TypeDef(name="dateTimeUserType", typeClass=org.joda.time.contrib.hibernate.PersistentDateTime.class),
+@org.hibernate.annotations.TypeDefs( {
+	//TODO needed ??
+	@org.hibernate.annotations.TypeDef(name="persistentDuration", typeClass=org.jadira.usertype.dateandtime.joda.PersistentDurationAsString.class),
+	@org.hibernate.annotations.TypeDef(name="dateTimeUserType", typeClass=org.jadira.usertype.dateandtime.joda.PersistentDateTime.class),
 	@org.hibernate.annotations.TypeDef(name="partialUserType", typeClass=eu.etaxonomy.cdm.hibernate.PartialUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uuidUserType", typeClass=eu.etaxonomy.cdm.hibernate.UUIDUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uriUserType", typeClass=eu.etaxonomy.cdm.hibernate.URIUserType.class)
 })
 @org.hibernate.annotations.AnyMetaDef(name = "CdmBase" ,
-		                              metaType="string", 
+		                              metaType="string",
 		                              idType="integer",
 		                              metaValues={
 		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Institution", targetEntity = Institution.class),
@@ -170,6 +171,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MediaKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -192,7 +194,7 @@ import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.description.PolytomousKey;
+

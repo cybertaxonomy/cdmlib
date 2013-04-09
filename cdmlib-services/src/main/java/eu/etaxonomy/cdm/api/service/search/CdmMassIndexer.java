@@ -15,11 +15,10 @@ import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +66,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         logger.info("start indexing " + type.getName());
         monitor.subTask("indexing " + type.getSimpleName());
-        Transaction transaction = fullTextSession.beginTransaction();
 
         Long countResult = countEntities(type);
         int numOfBatches = calculateNumOfBatches(countResult);
@@ -100,7 +98,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             monitor.done();
             throw	e;
         }
-        //transaction.commit(); // no need to commit, transaction will be committed automatically
         logger.info("end indexing " + type.getName());
         subMonitor.done();
     }
@@ -127,12 +124,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-
         logger.info("purging " + type.getName());
-
         fullTextSession.purgeAll(type);
-        fullTextSession.getSearchFactory().optimize();
-        //transaction.commit(); // no need to commit, transaction will be committed automatically
     }
 
 
@@ -198,7 +191,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             purge(type, monitor);
             monitor.worked(1);
         }
-        optimize(monitor);
+
+//        // need to commit and start new transaction before optimizing
+//        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+//        Transaction tx = fullTextSession.getTransaction();
+//        tx.commit();
+//        fullTextSession.beginTransaction(); // will be committed automatically at the end of this method since this class is transactional
+
+//        optimize(monitor);
 
         monitor.done();
     }
@@ -206,6 +206,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     /**
      * @return
      */
+    @Override
     public Class[] indexedClasses() {
         return new Class[] {
                 DescriptionElementBase.class,

@@ -26,7 +26,10 @@ import eu.etaxonomy.cdm.validation.constraint.MustHaveAuthorityValidator;
 @Constraint(validatedBy = MustHaveAuthorityValidator.class)
 @Documented
 public @interface MustHaveAuthority {
-String message() default "{eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority.message}";
-Class<? extends Payload>[] payload() default {};
-Class<?>[] groups() default {};
+	
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority.message}";
+	
+	Class<? extends Payload>[] payload() default {};
+	
+	Class<?>[] groups() default {};
 }

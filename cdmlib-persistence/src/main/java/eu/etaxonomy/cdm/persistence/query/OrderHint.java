@@ -48,9 +48,9 @@ public class OrderHint {
         }
     }
 
-    private String propertyName;
+    private final String propertyName;
 
-    private SortOrder sortOrder;
+    private final SortOrder sortOrder;
 
     public static final List<OrderHint> ORDER_BY_ID = Arrays.asList(new OrderHint[]{new OrderHint("id", SortOrder.ASCENDING)});
 
@@ -94,6 +94,12 @@ public class OrderHint {
         return sortOrder.equals(SortOrder.ASCENDING);
     }
 
+    /**
+     * FIXME document this
+     *
+     * @param criteria
+     * @param criteriaMap
+     */
     public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
         if(getPropertyName().indexOf(".") != -1) {
             /**
@@ -132,6 +138,11 @@ public class OrderHint {
         }
     }
 
+    /**
+     * FIXME document this
+     *
+     * @param query
+     */
     public void add(AuditQuery query) {
 
         if(getPropertyName().indexOf('.', 0) >= 0){
@@ -143,6 +154,17 @@ public class OrderHint {
                 query.addOrder(AuditEntity.property(getPropertyName()).desc());
             }
         }
+    }
+
+    /**
+     * Returns a hql order by clause element which can directly be used in hql queries.
+     *
+     * e.g.: "titleCache ASC"
+     *
+     * @return an hql order by clause element
+     */
+    public String toHql(){
+        return propertyName + " " + sortOrder.toHql();
     }
 
     @Override

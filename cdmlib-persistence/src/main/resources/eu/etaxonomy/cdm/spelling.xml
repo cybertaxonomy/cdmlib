@@ -11,12 +11,12 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
     ">
     
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <!-- TODO location -->
+<!--         We do not use spelling suggestions anymore. This one relates to springmodules which is -->
+<!--     somewhat outdated. Once we work again with spelling suggestions we better use a modern -->
+<!--     approache, e.g. annotation based. -->
+   <!--  <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
+      TODO location
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-<!--      <property name="location" value="file:\\C:\localCopy\eclipse\cdmlib\cdmlib-persistence\target\test-classes\eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>-->
-<!--     <property name="location" value="file:\\C:\tmpXXX\eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>-->
-      
       <property name="create" value="false"/>
     </bean>
     
@@ -27,7 +27,7 @@
       <property name="analyzer">
         <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
       </property>
-    </bean>
+    </bean> -->
 
 
 </beans>

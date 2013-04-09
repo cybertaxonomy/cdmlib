@@ -32,7 +32,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -71,14 +70,16 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	public static final Logger logger = Logger.getLogger(Institution.class);
 
     @XmlElement(name = "Code")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String code;
 
     @XmlElement(name = "Name")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field
+//TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String name;
 

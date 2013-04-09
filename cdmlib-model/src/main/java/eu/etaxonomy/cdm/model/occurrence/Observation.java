@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 @Audited
 @Configurable
 public class Observation extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<Observation>> implements Cloneable{
+	private static final long serialVersionUID = -4573159170603541851L;
 	private static final Logger logger = Logger.getLogger(Observation.class);
 	
 	/**

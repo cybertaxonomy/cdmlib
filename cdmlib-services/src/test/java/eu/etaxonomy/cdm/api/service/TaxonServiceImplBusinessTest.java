@@ -11,17 +11,12 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
-import java.util.Set;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -244,7 +239,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		TaxonNameBase otherHeteroSynonymName = NonViralName.NewInstance(null);
 		Synonym s2 = Synonym.NewInstance(otherHeteroSynonymName, t1.getSec());
 		t1.addSynonym(s2, heteroTypicSynonymRelationshipType, null, null);
-		TaxonNameBase otherHeteroSynonymNameB = NonViralName.NewInstance(null);
+		TaxonNameBase<?,?> otherHeteroSynonymNameB = NonViralName.NewInstance(null);
 		otherHeteroSynonymName.addBasionym(otherHeteroSynonymNameB);
 		Synonym s2b = Synonym.NewInstance(otherHeteroSynonymNameB, t1.getSec());
 		t1.addSynonym(s2b, heteroTypicSynonymRelationshipType, null, null);

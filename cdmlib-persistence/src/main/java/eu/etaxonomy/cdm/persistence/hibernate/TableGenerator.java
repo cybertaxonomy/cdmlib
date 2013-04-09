@@ -3,13 +3,11 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.io.Serializable;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.SessionImplementor;
 import org.hibernate.type.Type;
 
 /**

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore //FIXME tests are failing
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-testSecurity.xml")
+@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-securityTest.xml")
 public class UserServiceImplTest extends CdmIntegrationTest {
 
     protected static final Logger logger = Logger.getLogger(UserServiceImplTest.class);

@@ -108,17 +108,47 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         "TERMVOCABULARY_REPRESENTATION",
         "TERMVOCABULARY_REPRESENTATION_AUD"};
 
-//	@SpringBeanByType
-//	private IAgentDao agentDao;
+    @TestDataSource
+    protected DataSource dataSource;
+
+    private PlatformTransactionManager transactionManager;
+
+    protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+
+    @SpringBeanByType
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    protected IDatabaseConnection getConnection() throws SQLException {
+        IDatabaseConnection connection = null;
+        try {
+            /// FIXME must use unitils.properties: database.schemaNames
+            connection = new DatabaseConnection(dataSource.getConnection(), "PUBLIC");
+
+            DatabaseConfig config = connection.getConfig();
+
+            // FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName
+            //       & database.dialect to find configured DataTypeFactory
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
+                    new H2DataTypeFactory());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return connection;
+    }
+
+//  @SpringBeanByType
+//  private IAgentDao agentDao;
 //
-//	@Before
-//	public void debugExistingUsers(){
-//		StringBuilder agentstr = new StringBuilder();
-//		for(AgentBase agent : agentDao.list(null, null)) {
-//			agentstr.append(agent.getId()).append(", ");
-//		}
-//		System.err.println("####" +  agentstr);
-//	}
+//  @Before
+//  public void debugExistingUsers(){
+//      StringBuilder agentstr = new StringBuilder();
+//      for(AgentBase agent : agentDao.list(null, null)) {
+//          agentstr.append(agent.getId()).append(", ");
+//      }
+//      System.err.println("####" +  agentstr);
+//  }
 
     @Before
     public void startH2Server() throws Exception {
@@ -140,29 +170,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         }
     }
 
-    @TestDataSource
-    protected DataSource dataSource;
-
-    private PlatformTransactionManager transactionManager;
-    protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
-
-    protected IDatabaseConnection getConnection() throws SQLException {
-        IDatabaseConnection connection = null;
-        try {
-            /// FIXME must use unitils.properties: database.schemaNames
-            connection = new DatabaseConnection(dataSource.getConnection(), "PUBLIC");
-
-            DatabaseConfig config = connection.getConfig();
-
-            // FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName
-            //       & database.dialect to find configured DataTypeFactory
-            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-                    new H2DataTypeFactory());
-        } catch (Exception e) {
-            logger.error(e);
-        }
-        return connection;
-    }
 
     /**
      * Prints the data set to an output stream, using the
@@ -492,12 +499,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 
         return new String(outputStream.toByteArray());
     }
-
-    @SpringBeanByType
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-    }
-
 
     @Deprecated // no longer used and for sure not needed at all
     protected void loadDataSet(InputStream dataset) {

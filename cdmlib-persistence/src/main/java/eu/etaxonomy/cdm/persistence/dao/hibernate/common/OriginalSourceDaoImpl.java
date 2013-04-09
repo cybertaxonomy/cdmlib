@@ -65,7 +65,7 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 		
 		Map<String, ISourceable> result = new HashMap<String, ISourceable>();
 		
-		List<ISourceable[]> list = q.list();
+		List<Object[]> list = q.list();
 		for (Object[] pair : list){
 			result.put((String)pair[0], (ISourceable)pair[1]);
 		}

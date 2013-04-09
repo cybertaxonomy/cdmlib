@@ -37,13 +37,17 @@ public class View extends CdmBase implements IReferencedEntity{
 	
 	private String name;
 	private String description;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private Reference reference;
+	private Reference<?> reference;
+	
 	@OneToMany(fetch = FetchType.LAZY)
 	private Set<View> superViews = new HashSet<View>();
+	
 	@Transient
 	private Set<CdmBase> members = new HashSet<CdmBase>();
+	
 	@Transient
 	private Set<CdmBase> nonMembers = new HashSet<CdmBase>();
 	

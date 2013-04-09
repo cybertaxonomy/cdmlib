@@ -3,8 +3,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.molecular;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.GenBankAccession;
 import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 

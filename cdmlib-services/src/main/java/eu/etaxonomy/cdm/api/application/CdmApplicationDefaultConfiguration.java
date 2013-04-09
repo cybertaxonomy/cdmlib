@@ -18,9 +18,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -408,7 +412,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
             logger.debug("Isolation level = " + txDef.getIsolationLevel());
             logger.debug("Timeout = " + txDef.getTimeout());
             logger.debug("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate3.HibernateTransactionManager
+            // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 
@@ -422,6 +426,18 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
         txManager.commit(txStatus);
         return;
     }
+    
+	
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java.lang.String, java.lang.String)
+     */
+    @Override
+	public void authenticate(String username, String password){
+		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+	}
 
 
 

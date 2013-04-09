@@ -32,7 +32,7 @@ public class HomotypicSynonymsShouldBelongToGroupValidator implements
 			
 			if(!accepted.getName().getHomotypicalGroup().equals(synonym.getName().getHomotypicalGroup())) {
 				valid = false;
-				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup.message}").addSubNode("tyoe").addError();				
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup.message}").addNode("tyoe").addConstraintViolation();				
 			}
 		}
 		

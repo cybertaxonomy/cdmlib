@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -29,6 +31,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 @Transactional(TransactionMode.DISABLED)
 public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableServiceBaseTest.class);
 	
 	
@@ -51,22 +54,9 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Class clazz = TaxonNameBase.class;
 		int stepSize = 2;
 		nameService.updateTitleCache(clazz, stepSize, null, null);
-
-//		TaxonNameBase name = nameService.find(UUID.fromString("5d74500b-9fd5-4d18-b9cd-cc1c8a372fec"));
-//		System.out.println(name.getRank().getLabel());
-//		setComplete();
-//		endTransaction();
-//		try {
-//			printDataSet(System.out, new String[]{"TaxonNameBase","DefinedTermBase"});
-////		printDataSet(new FileOutputStream("C:\\tmp\\test.xml"), new String[]{"TaxonNameBase"});
-//		} catch(Exception e) { 
-//			logger.warn(e);
-//		} 
-		
+		commit();
+//		commitAndStartNewTransaction(new String[]{"TaxonNameBase","TaxonNameBase_AUD"});	
 	}
 
 
-	public static Logger getLogger() {
-		return logger;
-	}
 }

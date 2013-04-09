@@ -25,7 +25,10 @@ import eu.etaxonomy.cdm.validation.constraint.NullOrNotEmptyValidator;
 @Constraint(validatedBy = NullOrNotEmptyValidator.class)
 @Documented
 public @interface NullOrNotEmpty {
-String message() default "{eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty.message}";
-Class<? extends Payload>[] payload() default {};
-Class<?>[] groups() default {};
+	
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty.message}";
+	
+	Class<? extends Payload>[] payload() default {};
+	
+	Class<?>[] groups() default {};
 }

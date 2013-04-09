@@ -26,7 +26,10 @@ import eu.etaxonomy.cdm.validation.constraint.CorrectEpithetsForRankValidator;
 @Constraint(validatedBy = CorrectEpithetsForRankValidator.class)
 @Documented
 public @interface CorrectEpithetsForRank {
-String message() default "{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.message}";
-Class<? extends Payload>[] payload() default {};
-Class<?>[] groups() default {};
+	
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.message}";
+	
+	Class<? extends Payload>[] payload() default {};
+	
+	Class<?>[] groups() default {};
 }

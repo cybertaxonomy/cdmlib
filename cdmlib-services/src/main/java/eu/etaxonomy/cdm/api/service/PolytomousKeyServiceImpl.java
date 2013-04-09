@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+@Transactional(readOnly = false)
 public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao> implements IPolytomousKeyService {
 
 	private IIdentificationKeyDao identificationKeyDao;

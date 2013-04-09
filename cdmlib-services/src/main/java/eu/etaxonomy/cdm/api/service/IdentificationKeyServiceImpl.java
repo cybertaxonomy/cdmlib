@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 
 @Service
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = true)
 public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
 
     IIdentificationKeyDao dao;

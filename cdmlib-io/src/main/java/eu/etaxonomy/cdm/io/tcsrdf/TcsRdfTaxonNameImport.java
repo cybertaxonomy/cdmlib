@@ -162,7 +162,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						}
 					}
 					if (state.getConfig().isPublishReferences()){
-						((Reference)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+						((Reference<?>)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 					}
 				}
 						

@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @version 1.0
  */
 @Service
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = true)
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao> implements IDescriptionService {
 
     private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);

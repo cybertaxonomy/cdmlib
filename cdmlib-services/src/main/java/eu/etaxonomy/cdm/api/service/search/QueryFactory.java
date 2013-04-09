@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -39,7 +38,7 @@ public class QueryFactory {
 
     public static final Logger logger = Logger.getLogger(QueryFactory.class);
 
-    private LuceneSearch luceneSearch;
+    private final LuceneSearch luceneSearch;
 
     Set<String> textFieldNames = new HashSet<String>();
 
@@ -59,25 +58,35 @@ public class QueryFactory {
     }
 
     /**
+     * Creates a new Term query. Depending on whether <code>isTextField</code> is set true or not the
+     * supplied <code>queryString</code> will be parsed by using the according analyzer or not.
+     * Setting <code>isTextField</code> to <code>false</code> is useful for searching for uuids etc.
+     *
      * @param fieldName
      * @param queryString
      * @param isTextField whether this field is a field containing free text in contrast to e.g. ID fields.
-     * @return
+     *     If <code>isTextField</code> to <code>true</code> the <code>queryString</code> will be parsed by
+     *     using the according analyzer.
+     * @return the resulting <code>TermQuery</code> or <code>null</code> in case of an <code>ParseException</code>
+     *
+     * TODO consider throwing the ParseException !!!!
      */
-    public Query newTermQuery(String fieldName, String queryString, boolean isTextField){
+    public Query newTermQuery(String fieldName, String queryString, boolean isTextField) {
 
-        if(isTextField){
-            textFieldNames.add(fieldName);
-        }
-
-         // in order to support the full query syntax we must use the parser here
         String luceneQueryString = fieldName + ":(" + queryString + ")";
-        try {
-            return luceneSearch.parse(luceneQueryString);
-        } catch (ParseException e) {
-            logger.error(e);
+        if (isTextField) {
+            textFieldNames.add(fieldName);
+            // in order to support the full query syntax we must use the parser
+            // here
+            try {
+                return luceneSearch.parse(luceneQueryString);
+            } catch (ParseException e) {
+                logger.error(e);
+            }
+            return null;
+        } else {
+            return new TermQuery(new Term(fieldName, queryString));
         }
-        return null;
     }
 
     /**

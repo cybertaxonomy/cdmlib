@@ -98,7 +98,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             criteria.setProjection(Projections.rowCount());
 
-            return (Integer)criteria.uniqueResult();
+            return ((Number)criteria.uniqueResult()).intValue();
         } else {
             if(features != null && !features.isEmpty()) {
                 Integer count = 0;
@@ -170,7 +170,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         inner.setProjection(Projections.countDistinct("id"));
 
-        return (Integer) inner.uniqueResult();
+        return ((Number) inner.uniqueResult()).intValue();
     }
 
     public int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
@@ -204,7 +204,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             criteria.setProjection(Projections.rowCount());
 
-            return (Integer)criteria.uniqueResult();
+            return ((Number)criteria.uniqueResult()).intValue();
         } else {
             if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty()) && (markerTypes == null || markerTypes.isEmpty())) {
                 AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
@@ -432,7 +432,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             criteria.setProjection(Projections.rowCount());
 
-            return (Integer)criteria.uniqueResult();
+            return ((Number)criteria.uniqueResult()).intValue();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameDescription.class,auditEvent.getRevisionNumber());
 
@@ -493,7 +493,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         Integer[] resultIds = new Integer[intermediateResult.size()];
         for(int i = 0; i < resultIds.length; i++) {
-                resultIds[i] = (Integer)intermediateResult.get(i);
+                resultIds[i] = ((Number)intermediateResult.get(i)).intValue();
         }
 
         Criteria outer = null;
@@ -557,9 +557,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         Integer[] resultIds = new Integer[intermediateResult.size()];
         for(int i = 0; i < resultIds.length; i++) {
             if(orderHints == null || orderHints.isEmpty()) {
-                resultIds[i] = (Integer)intermediateResult.get(i);
+                resultIds[i] = ((Number)intermediateResult.get(i)).intValue();
             } else {
-              resultIds[i] = (Integer)((Object[])intermediateResult.get(i))[0];
+              resultIds[i] = ((Number)((Object[])intermediateResult.get(i))[0]).intValue();
             }
         }
 

@@ -17,8 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -249,12 +248,12 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					boolean colExists = true;
 					try {
 						colExists = state.getConfig().getSource().checkColumnExists("Name", "Source_Acc");
-					} catch (MethodNotSupportedException e) {
+					} catch (NoSuchMethodException e) {
 						logger.debug("Source does not support 'checkColumnExists'");
 					}
 					if (colExists){
 						String sourceAcc = rs.getString("Source_Acc");
-						if (CdmUtils.isNotEmpty(sourceAcc)){
+						if (StringUtils.isNotBlank(sourceAcc)){
 							ExtensionType sourceAccExtensionType = getExtensionType(state, SOURCE_ACC_UUID, "Source_Acc","Source_Acc","Source_Acc");
 							Extension datesExtension = Extension.NewInstance(taxonNameBase, sourceAcc, sourceAccExtensionType);
 						}

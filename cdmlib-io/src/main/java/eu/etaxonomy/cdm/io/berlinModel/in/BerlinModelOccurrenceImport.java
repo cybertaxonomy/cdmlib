@@ -128,7 +128,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 int newTaxonId = rs.getInt("taxonId");
                 String tdwgCodeString = rs.getString("TDWGCode");
                 String emCodeString = state.getConfig().isIncludesAreaEmCode() ? rs.getString("EMCode") : null;
-                Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
+                Integer emStatusId = nullSafeInt(rs, "emOccurSumCatId");
                 
                 try {
                 	//status

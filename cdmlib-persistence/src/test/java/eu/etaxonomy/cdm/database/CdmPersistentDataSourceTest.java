@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.hibernate.cache.CacheProvider;
-import org.hibernate.cache.NoCacheProvider;
+import org.hibernate.cache.internal.NoCachingRegionFactory;
+import org.hibernate.cache.spi.RegionFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -193,7 +193,7 @@ public class CdmPersistentDataSourceTest {
 		Properties properties = (Properties)propValue.getValue();
 		assertEquals(hbm2dll.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
 		assertEquals(dataSource.getDatabaseType().getHibernateDialect(), properties.getProperty("hibernate.dialect"));
-		assertEquals(NoCacheProvider.class.getName(), properties.getProperty("hibernate.cache.provider_class"));
+		assertEquals(NoCachingRegionFactory.class.getName(), properties.getProperty("hibernate.cache.region.factory_class"));
 		assertEquals(String.valueOf(false), properties.getProperty("hibernate.show_sql"));
 		assertEquals(String.valueOf(false), properties.getProperty("hibernate.format_sql"));
 
@@ -218,7 +218,7 @@ public class CdmPersistentDataSourceTest {
 		boolean showSql = false;
 		boolean formatSql = false;
 		boolean registerSearchListener = false;
-		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
+		Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
 		
 		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 		PropertyValues propValues = beanDef.getPropertyValues();
@@ -230,7 +230,7 @@ public class CdmPersistentDataSourceTest {
 		Properties properties = (Properties)propValue.getValue();
 		assertEquals(hbm2dll.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
 		assertEquals(dataSource.getDatabaseType().getHibernateDialect(), properties.getProperty("hibernate.dialect"));
-		assertEquals(cacheProviderClass.getName(), properties.getProperty("hibernate.cache.provider_class"));
+		assertEquals(cacheProviderClass.getName(), properties.getProperty("hibernate.cache.region.factory_class"));
 		assertEquals(String.valueOf(showSql), properties.getProperty("hibernate.show_sql"));
 		assertEquals(String.valueOf(formatSql), properties.getProperty("hibernate.format_sql"));
 	}

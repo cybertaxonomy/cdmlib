@@ -1182,6 +1182,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return Float.valueOf(doubleObject.toString());
 		}
 	}
+	
+
+	/**
+	 * Returns <code>null</code> for all blank strings. Identity function otherwise.
+	 * @param str
+	 * @return
+	 */
+	protected String NB(String str) {
+		if (StringUtils.isBlank(str)){
+			return null;
+		}else{
+			return str;
+		}
+	}
 
 	
 }

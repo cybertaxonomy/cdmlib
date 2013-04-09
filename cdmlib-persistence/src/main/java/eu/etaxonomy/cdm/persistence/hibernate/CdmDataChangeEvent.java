@@ -12,12 +12,12 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 import java.io.Serializable;
 
 import org.apache.log4j.Logger;
-import org.hibernate.event.AbstractEvent;
-import org.hibernate.event.EventSource;
-import org.hibernate.event.PostDeleteEvent;
-import org.hibernate.event.PostInsertEvent;
-import org.hibernate.event.PostLoadEvent;
-import org.hibernate.event.PostUpdateEvent;
+import org.hibernate.event.spi.AbstractEvent;
+import org.hibernate.event.spi.EventSource;
+import org.hibernate.event.spi.PostDeleteEvent;
+import org.hibernate.event.spi.PostInsertEvent;
+import org.hibernate.event.spi.PostLoadEvent;
+import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
