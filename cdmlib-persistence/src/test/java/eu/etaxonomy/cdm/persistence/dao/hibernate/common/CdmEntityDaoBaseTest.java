@@ -82,7 +82,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         cdmBase = Taxon.NewInstance(null, null);
         cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
 
-        taxonEditorToken = new TestingAuthenticationToken("taxonEditor", "password",  "TAXONBASE.CREATE", "TAXONBASE.UPDATE");
+        taxonEditorToken = new TestingAuthenticationToken("taxonEditor", "password",  "TAXONBASE.[CREATE]", "TAXONBASE.[UPDATE]");
         adminToken = new TestingAuthenticationToken("admin", "password",  "ALL.ADMIN");
         testerToken = new TestingAuthenticationToken("tester", "password");
 
@@ -203,9 +203,9 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         try{
             cdmEntityDaoBase.save(cdmBase);
             commitAndStartNewTransaction(null);
+            logger.error("Expected failure of evaluation.");
         } catch (RuntimeException e){
-            securityException = findSecurityRuntimeException(e);
-            logger.error("Unexpected failure of evaluation.", securityException);
+            securityException = findSecurityRuntimeException(e);            
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
