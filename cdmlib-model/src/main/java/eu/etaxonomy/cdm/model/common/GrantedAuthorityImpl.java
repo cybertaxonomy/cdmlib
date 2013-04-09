@@ -65,6 +65,18 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         }
         return 0;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GrantedAuthority) {
+        	if(this.authority == null && ((GrantedAuthority) o).getAuthority() == null) {
+        		return true;
+        	} else {
+        		return this.authority.equals(((GrantedAuthority) o).getAuthority());
+        	}
+        }
+        return false;
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
