@@ -120,6 +120,10 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     public EnumSet<CRUD> getOperation(){
         return operation;
     }
+    
+    public void setOperation(EnumSet<CRUD> operation) {
+    	this.operation = operation;
+    }
 
     public UUID getTargetUUID(){
         return targetUuid;
@@ -155,7 +159,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         //  \\.?               -> .
         //  (?:(\\w*))(?:\\{([\\da-z\\-]+)\\})? -> Permmission and targetUuid
         //
-        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:(\\w*))(?:\\{([\\da-z\\-]+)\\})?";
+        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
         Pattern pattern = Pattern.compile(regex);
         String[] tokens = new String[4];
         logger.debug("parsing '" + authority + "'");
