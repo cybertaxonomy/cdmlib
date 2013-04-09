@@ -697,7 +697,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			if (xmlBean == null){
 				//TODO warn or info
 				logger.debug("Unknown Element 'bean id=" +strDataSourceName + "' ");
-			};
+			}
 			return xmlBean;
 		}
 	}

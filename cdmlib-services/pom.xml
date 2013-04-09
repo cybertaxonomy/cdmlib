@@ -69,72 +69,21 @@
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-grouping</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--         <groupId>org.unitils</groupId> -->
-<!--         <artifactId>unitils-core</artifactId> -->
-<!--         <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-database</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-dbunit</artifactId>
       <scope>test</scope>
     </dependency>
-<!--      <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-easymock</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-mock</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-inject</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--      <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-orm</artifactId> -->
-<!--       <exclusions> -->
-<!--       	<exclusion> -->
-<!--       		<groupId>javax.persistence</groupId> -->
-<!-- 	      	<artifactId>persistence-api</artifactId> -->
-<!--       	</exclusion> -->
-<!--       </exclusions> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-     <dependency>
+    <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-spring</artifactId>
       <scope>test</scope>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.dbunit</groupId> -->
-<!--       <artifactId>dbunit</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
        <scope>test</scope>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>com.carrotsearch</groupId> -->
-<!--       <artifactId>junit-benchmarks</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>org.springframework.test</artifactId>
@@ -158,7 +107,6 @@
     <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
-    <version>3.0.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.lsid</groupId>
