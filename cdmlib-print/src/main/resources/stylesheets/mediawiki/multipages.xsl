@@ -350,6 +350,15 @@
         
         <xsl:value-of select="concat('{{Two_Leveled_Features_Title|',representation_L10n,'}}')"></xsl:value-of>
         
+        <xsl:for-each select="feature">
+            <xsl:value-of select="concat('{{Second_Level_Feature|Name=',representation_L10n,'|Elements=')"></xsl:value-of>
+            <!-- TODO create Element -->
+            <xsl:for-each select="descriptionelements/descriptionelement">
+                <xsl:value-of select="concat('{{Second_Level_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"></xsl:value-of>
+            </xsl:for-each>
+            <xsl:text>}}</xsl:text>
+        </xsl:for-each>
+        
     </xsl:template>
     <!--.............................................-->
 
