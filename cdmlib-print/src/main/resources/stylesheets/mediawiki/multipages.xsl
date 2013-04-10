@@ -251,7 +251,7 @@
         <xsl:call-template name="chapter">
             <xsl:with-param name="title">References</xsl:with-param>
         </xsl:call-template>
-        <references/>
+       <xsl:text>{{Show_References}}</xsl:text>
     </xsl:template>
  
     
@@ -260,7 +260,8 @@
         <xsl:param name="descriptionelements" />
         
         <!--only calling this for ag salcifolia what about the other uuids???-->
-        <ref name="{$name-uuid}">
+        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$name-uuid,'|Content=')"></xsl:value-of>
+        <!--<ref name="{$name-uuid}">-->
             <!-- iterate through all the description elements fo the citation feature -->
         <xsl:for-each select="$descriptionelements/descriptionelement">          
             <!-- TODO sorting only works for the first citation, implement correctly -->
@@ -291,7 +292,8 @@
             </xsl:for-each>
 
         </xsl:for-each>
-        </ref>
+        <!--</ref>-->
+        <xsl:text>}}</xsl:text>
     </xsl:template>
     <!--ref name="SC078">{{aut|Mohrig, W.; Menzel, F.}} 1992: Neue Arten europäischer Trauermücken (Diptera, Sciaridae). ''An International Journal of Dipterological Research'', '''3'''(1-2), 1–16.</ref-->
     
@@ -386,11 +388,16 @@
 
     <!-- description features -->
 
+    <!-- TODO: for first and second level: 
+        check if there is a page that describes the feature 
+        and use Parameter "Link=pagename" with templates Tax_Feature or 
+        Second_Level_Feature-->
+
     <xsl:template match="descriptions" name="descriptions">
         <xsl:for-each select="features/feature">
             <xsl:choose>
                 <xsl:when test="count(feature)!=0">
-                    <xsl:call-template name="secondLevelDescriptionElements"/> 
+                    <xsl:call-template name="secondLevelDescriptionElements"/>
                 </xsl:when>
                 <xsl:otherwise>
                     <!-- everything but Citation -->
@@ -404,20 +411,23 @@
     </xsl:template>
 
     <!--.............................................-->
-    
+
     <xsl:template name="secondLevelDescriptionElements">
-        
-        <xsl:value-of select="concat('{{Two_Leveled_Features_Title|',representation_L10n,'}}')"></xsl:value-of>
-        
+
+        <xsl:value-of select="concat('{{Two_Leveled_Features_Title|',representation_L10n,'}}')"/>
+
         <xsl:for-each select="feature">
-            <xsl:value-of select="concat('{{Second_Level_Feature|Name=',representation_L10n,'|Elements=')"></xsl:value-of>
+            <xsl:value-of
+                select="concat('{{Second_Level_Feature|Name=',representation_L10n,'|Elements=')"/>
             <!-- TODO create Element -->
             <xsl:for-each select="descriptionelements/descriptionelement">
-                <xsl:value-of select="concat('{{Second_Level_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"></xsl:value-of>
+                <xsl:value-of
+                    select="concat('{{Second_Level_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"
+                />
             </xsl:for-each>
             <xsl:text>}}</xsl:text>
         </xsl:for-each>
-        
+
     </xsl:template>
     <!--.............................................-->
 
@@ -456,7 +466,8 @@
         <xsl:value-of
             select="concat('{{Tax_Feature|Name=',representation_L10n, '|Elements={{Feature_Text|' )"/>
         <xsl:choose>
-            <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'"> <!-- feature is not "Distribution" -->
+            <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
+                <!-- feature is not "Distribution" -->
                 <xsl:apply-templates
                     select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
             </xsl:when>
