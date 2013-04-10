@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>cdmlib-parent</artifactId>
 		<groupId>eu.etaxonomy</groupId>
-		<version>3.2.0-SNAPSHOT</version>
+		<version>3.1.4-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -44,33 +44,22 @@
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.odftoolkit</groupId>
-			<artifactId>odfdom</artifactId> <!-- isn't this odfdom-java ?? -->
-			<version>0.8.6</version>
+			<artifactId>odfdom-java</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
-			<version>1.1.3</version>
 		</dependency>
 	</dependencies>
 </project>

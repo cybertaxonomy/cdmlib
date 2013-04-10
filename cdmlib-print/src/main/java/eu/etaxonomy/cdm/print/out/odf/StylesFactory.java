@@ -12,15 +12,16 @@ package eu.etaxonomy.cdm.print.out.odf;
 
 import org.apache.log4j.Logger;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.doc.office.OdfOfficeStyles;
-import org.odftoolkit.odfdom.doc.style.OdfDefaultStyle;
-import org.odftoolkit.odfdom.doc.style.OdfStyle;
-import org.odftoolkit.odfdom.doc.style.OdfStyleParagraphProperties;
-import org.odftoolkit.odfdom.doc.style.OdfStyleTabStop;
-import org.odftoolkit.odfdom.doc.style.OdfStyleTabStops;
-import org.odftoolkit.odfdom.doc.style.OdfStyleTextProperties;
 import org.odftoolkit.odfdom.dom.element.OdfStyleBase;
+import org.odftoolkit.odfdom.dom.element.style.StyleParagraphPropertiesElement;
+import org.odftoolkit.odfdom.dom.element.style.StyleTabStopElement;
+import org.odftoolkit.odfdom.dom.element.style.StyleTabStopsElement;
+import org.odftoolkit.odfdom.dom.element.style.StyleTextPropertiesElement;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
+import org.odftoolkit.odfdom.dom.style.props.OdfStyleProperty;
+import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeStyles;
+import org.odftoolkit.odfdom.incubator.doc.style.OdfDefaultStyle;
+import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 
 /**
  * @author n.hoffmann
@@ -28,14 +29,15 @@ import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
  * @version 1.0
  */
 public class StylesFactory implements IStyleNames{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StylesFactory.class);
 	
 	OdfOfficeStyles officeStyles;
 	OdfDefaultStyle defaultStyle;
-	OdfStyleParagraphProperties paragraphProperties;
+	StyleParagraphPropertiesElement paragraphProperties;
 
-	OdfStyleTabStops tabStops;
-	OdfStyleTabStop tabStop;
+	StyleTabStopsElement tabStops;
+	StyleTabStopElement tabStop;
 
 
 	public StylesFactory(OdfTextDocument outputDocument) {
@@ -63,16 +65,16 @@ public class StylesFactory implements IStyleNames{
 		style = officeStyles.newStyle(HEADING_ACCEPTED_TAXON,
 				OdfStyleFamily.Paragraph);
 		style.setStyleDisplayNameAttribute("Accepted Taxon Heading");
-		style.setProperty(OdfStyleParagraphProperties.MarginTop, "0.25cm");
-		style.setProperty(OdfStyleParagraphProperties.MarginBottom, "0.25cm");
+		style.setProperty(StyleParagraphPropertiesElement.MarginTop, "0.25cm");
+		style.setProperty(StyleParagraphPropertiesElement.MarginBottom, "0.25cm");
 		setFontWeight(style, "bold");
 		setFontSize(style, "20pt");
 		
 		style = officeStyles.newStyle(HEADING_FEATURE,
 				OdfStyleFamily.Paragraph);
 		style.setStyleDisplayNameAttribute("Feature Heading");
-		style.setProperty(OdfStyleParagraphProperties.MarginTop, "0.25cm");
-		style.setProperty(OdfStyleParagraphProperties.MarginBottom, "0.25cm");
+		style.setProperty(StyleParagraphPropertiesElement.MarginTop, "0.25cm");
+		style.setProperty(StyleParagraphPropertiesElement.MarginBottom, "0.25cm");
 		setFontWeight(style, "bold");
 		setFontSize(style, "14pt");
 	}
@@ -153,20 +155,20 @@ public class StylesFactory implements IStyleNames{
 	
 
 	private void setFontWeight(OdfStyleBase style, String value) {
-		style.setProperty(OdfStyleTextProperties.FontWeight, value);
-		style.setProperty(OdfStyleTextProperties.FontWeightAsian, value);
-		style.setProperty(OdfStyleTextProperties.FontWeightComplex, value);
+		style.setProperty(StyleTextPropertiesElement.FontWeight, value);
+		style.setProperty(StyleTextPropertiesElement.FontWeightAsian, value);
+		style.setProperty(StyleTextPropertiesElement.FontWeightComplex, value);
 	}
 
 	private void setFontStyle(OdfStyleBase style, String value) {
-		style.setProperty(OdfStyleTextProperties.FontStyle, value);
-		style.setProperty(OdfStyleTextProperties.FontStyleAsian, value);
-		style.setProperty(OdfStyleTextProperties.FontStyleComplex, value);
+		style.setProperty(StyleTextPropertiesElement.FontStyle, value);
+		style.setProperty(StyleTextPropertiesElement.FontStyleAsian, value);
+		style.setProperty(StyleTextPropertiesElement.FontStyleComplex, value);
 	}
 
 	private void setFontSize(OdfStyleBase style, String value) {
-		style.setProperty(OdfStyleTextProperties.FontSize, value);
-		style.setProperty(OdfStyleTextProperties.FontSizeAsian, value);
-		style.setProperty(OdfStyleTextProperties.FontSizeComplex, value);
+		style.setProperty(StyleTextPropertiesElement.FontSize, value);
+		style.setProperty(StyleTextPropertiesElement.FontSizeAsian, value);
+		style.setProperty(StyleTextPropertiesElement.FontSizeComplex, value);
 	}
 }

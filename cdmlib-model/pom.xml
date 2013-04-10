@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.1.4-SNAPSHOT</version>
   <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -132,57 +132,57 @@
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-database</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbmaintainer</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-easymock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-mock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-inject</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <scope>test</scope>
-      <exclusions>
-     	<exclusion>
-     		<groupId>javax.persistence</groupId>
-      		<artifactId>persistence-api</artifactId>
-     	</exclusion>
-      </exclusions>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-spring</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-core</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-database</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-dbunit</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-easymock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-mock</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-inject</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-orm</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--       <exclusions> -->
+<!--      	<exclusion> -->
+<!--      		<groupId>javax.persistence</groupId> -->
+<!--       		<artifactId>persistence-api</artifactId> -->
+<!--      	</exclusion> -->
+<!--       </exclusions> -->
+<!--     </dependency> -->
+<!--      <dependency> -->
+<!--       <groupId>org.unitils</groupId> -->
+<!--       <artifactId>unitils-spring</artifactId> -->
+<!--       <scope>test</scope> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>org.springframework.jdbc</artifactId>
@@ -214,31 +214,7 @@
     <dependency>
 		<groupId>org.jadira.usertype</groupId>
 		<artifactId>usertype.jodatime</artifactId>
-		<version>2.0.1</version>
 	</dependency>
-    
-<!--     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time-hibernate</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>ehcache</artifactId>
-          <groupId>ehcache</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>cglib-full</artifactId>
-          <groupId>cglib</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hibernate</artifactId>
-          <groupId>org.hibernate</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>hibernate</artifactId>
-          <groupId>hibernate</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency> -->
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
