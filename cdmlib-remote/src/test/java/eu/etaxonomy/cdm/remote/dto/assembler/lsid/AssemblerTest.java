@@ -35,6 +35,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -73,6 +74,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+@Ignore
 public class AssemblerTest extends UnitilsJUnit4 {
 
     public static final Logger logger = Logger.getLogger(AssemblerTest.class);

@@ -19,6 +19,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.oxm.Marshaller;
 import org.unitils.UnitilsJUnit4;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Team;
 import eu.etaxonomy.remote.dto.rdf.Rdf;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+@Ignore
 public class RdfViewTest extends UnitilsJUnit4 {
 	
 	@SpringBeanByType

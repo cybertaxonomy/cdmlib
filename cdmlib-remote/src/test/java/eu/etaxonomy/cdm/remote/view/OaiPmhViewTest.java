@@ -15,6 +15,7 @@ import org.hibernate.envers.RevisionType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.remote.view.oaipmh.dc.GetRecordView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+@Ignore
 public class OaiPmhViewTest extends UnitilsJUnit4 {
 
     public static final Logger logger = Logger.getLogger(OaiPmhViewTest.class);
