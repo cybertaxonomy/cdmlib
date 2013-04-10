@@ -169,12 +169,12 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
-   	 <!-- only needed as long as hibernate-c3p0 is still dependend on c3p0/c3p0/0.9.1 -->
-   	 <dependency>
-			<groupId>com.mchange</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.2</version>
-		</dependency>
+   	<!-- only needed as long as hibernate-c3p0 is still dependend on c3p0/c3p0/0.9.1 -->
+   	<dependency>
+		<groupId>com.mchange</groupId>
+		<artifactId>c3p0</artifactId>
+		<version>0.9.2</version>
+	</dependency>
     
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -187,7 +187,6 @@
     <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
-        <version>1.8.2</version>
      </dependency>
      <dependency>
           <groupId>commons-lang</groupId>
