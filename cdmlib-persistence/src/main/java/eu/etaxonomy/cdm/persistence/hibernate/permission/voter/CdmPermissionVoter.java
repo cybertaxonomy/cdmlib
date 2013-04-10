@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
  * @date Sep 4, 2012
  *
  */
-public abstract class CdmPermissionVoter implements AccessDecisionVoter /*<Object>*/ {
+public abstract class CdmPermissionVoter implements AccessDecisionVoter <Object> {
 
     public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
 

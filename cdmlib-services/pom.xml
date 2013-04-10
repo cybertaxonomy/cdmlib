@@ -69,21 +69,6 @@
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-grouping</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--         <groupId>org.unitils</groupId> -->
-<!--         <artifactId>unitils-core</artifactId> -->
-<!--         <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-database</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-dbmaintainer</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-dbunit</artifactId>
@@ -93,22 +78,12 @@
       <groupId>org.unitils</groupId>
       <artifactId>unitils-spring</artifactId>
       <scope>test</scope>
-    </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.dbunit</groupId> -->
-<!--       <artifactId>dbunit</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
+    </dependency> 
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
        <scope>test</scope>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>com.carrotsearch</groupId> -->
-<!--       <artifactId>junit-benchmarks</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>org.springframework.test</artifactId>
@@ -124,10 +99,6 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>osgi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
     </dependency>
     <dependency>
         <groupId>org.springframework.security</groupId>

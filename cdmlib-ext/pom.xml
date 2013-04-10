@@ -37,7 +37,7 @@
       <artifactId>unitils-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- probably most unitis dependencies can be deleted from here -->
+<!--     probably most unitis dependencies can be deleted from here -->
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-database</artifactId>
@@ -76,24 +76,13 @@
     </dependency>
      <dependency>
       <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <exclusions>
-      	<exclusion>
-      		<groupId>javax.persistence</groupId>
-	      	<artifactId>persistence-api</artifactId>
-      	</exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
       <artifactId>unitils-spring</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
-    </dependency>
+    </dependency> 
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
