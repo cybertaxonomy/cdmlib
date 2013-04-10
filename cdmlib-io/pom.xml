@@ -118,42 +118,23 @@
       <artifactId>xmlunit</artifactId>
     </dependency>
     <dependency>
-    <groupId>org.apache.poi</groupId>
-    <artifactId>poi</artifactId>
-  </dependency>
-  <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>org.springframework.oxm</artifactId>
-    </dependency>
-  <dependency>
-    <groupId>com.yourkit</groupId>
-    <artifactId>yjp-controller-api-redist</artifactId>
-    <!--  version>10.0.3</version> -->
-    <version>9.0.8</version>
-  </dependency>
-<!--    <dependency> -->
-<!--        <groupId>org.springframework.ws</groupId> -->
-<!--        <artifactId>spring-xml</artifactId> -->
-<!--        <version>2.1.2.RELEASE</version> -->
-<!--        <exclusions> -->
-<!--          <exclusion> -->
-<!--            <groupId>org.springframework</groupId> -->
-<!--            <artifactId>spring-core</artifactId> -->
-<!--          </exclusion> -->
-<!--          <exclusion> -->
-<!--            <groupId>org.springframework</groupId> -->
-<!--            <artifactId>spring-context</artifactId> -->
-<!--          </exclusion> -->
-<!--          <exclusion> -->
-<!--            <groupId>org.springframework</groupId> -->
-<!--            <artifactId>spring-beans</artifactId> -->
-<!--          </exclusion> -->
-<!--        </exclusions> -->
-<!--      </dependency> -->
-     <dependency>
-          <groupId>identificationKeyAPI</groupId>
-          <artifactId>identificationKeyAPI</artifactId>
-      </dependency>
+	    <groupId>org.apache.poi</groupId>
+	    <artifactId>poi</artifactId>
+	  </dependency>
+	  <dependency>
+	      <groupId>org.springframework</groupId>
+	      <artifactId>org.springframework.oxm</artifactId>
+	    </dependency>
+	  <dependency>
+	    <groupId>com.yourkit</groupId>
+	    <artifactId>yjp-controller-api-redist</artifactId>
+	    <!--  version>10.0.3</version> -->
+	    <version>9.0.8</version>
+	  </dependency>
+	  <dependency>
+		<groupId>identificationKeyAPI</groupId>
+	    <artifactId>identificationKeyAPI</artifactId>
+	  </dependency>
   </dependencies>
 </project>
 
