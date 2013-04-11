@@ -1608,6 +1608,7 @@ cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/TransformatorTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModuleTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/pdf/PdfOutputModuleTest.java -text
 cdmlib-print/src/test/resources/20100719-1939-xml_export.xml -text
+cdmlib-print/src/test/resources/20130403-1752-output.xml -text
 cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/input.xml -text
 cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml -text
 cdmlib-remote-webapp/LICENSE.TXT -text
