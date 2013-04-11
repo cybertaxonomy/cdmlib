@@ -160,11 +160,14 @@
                    <!-- add taxo tree -->
                      <xsl:value-of select="concat('{{Taxo Tree|',$parent-title, '}}')"/> 
                    
-                   <!-- add contents of taxon page -->
-                    <xsl:apply-templates select="Taxon"/> 
+                   <!-- add contents of taxon page -->                   
+
+                    <xsl:apply-templates select="Taxon"/>
+                    <xsl:call-template name="display-references"/>
                     
                     <!-- put page to corresponding tax category -->
                     <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
+
                 </text>
             </revision>
         </page>
@@ -241,6 +244,58 @@
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    
+    <!-- these templates provide the citations -->
+    
+    <xsl:template name="display-references">
+        <xsl:call-template name="chapter">
+            <xsl:with-param name="title">References</xsl:with-param>
+        </xsl:call-template>
+        <references/>
+    </xsl:template>
+ 
+    
+    <xsl:template name="citations">
+        <xsl:param name="name-uuid"/>
+        <xsl:param name="descriptionelements" />
+        
+        <!--only calling this for ag salcifolia what about the other uuids???-->
+        <ref name="{$name-uuid}">
+            <!-- iterate through all the description elements fo the citation feature -->
+        <xsl:for-each select="$descriptionelements/descriptionelement">          
+            <!-- TODO sorting only works for the first citation, implement correctly -->
+            <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
+
+            <xsl:for-each select="sources/e">
+                <xsl:if test="nameUsedInSource/uuid=$name-uuid">
+                    <!--xsl:text>; </xsl:text-->
+                    <xsl:text>{{aut|</xsl:text>
+                        <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
+                        <xsl:for-each select="citation/authorTeam/teamMembers/e">
+                            <xsl:value-of select="lastname"/>
+                            <xsl:choose>
+                                <xsl:when test="position() != last()"><xsl:text> &amp; </xsl:text></xsl:when>
+                            </xsl:choose>
+                        </xsl:for-each>
+                    <xsl:text>}} </xsl:text>
+                    <xsl:value-of select="citation/datePublished/start"/>
+                    <xsl:text>: </xsl:text>
+                    <xsl:value-of select="citation/title"/>
+                        <!--xsl:value-of select="citation/authorTeam/lastname"/>
+                        <xsl:text> (</xsl:text>
+                        <xsl:value-of select="citation/datePublished/start"/>
+                        <xsl:text>: </xsl:text>
+                        <xsl:value-of select="citationMicroReference"/>
+                        <xsl:text>)</xsl:text-->
+                </xsl:if>
+            </xsl:for-each>
+
+        </xsl:for-each>
+        </ref>
+    </xsl:template>
+    <!--ref name="SC078">{{aut|Mohrig, W.; Menzel, F.}} 1992: Neue Arten europäischer Trauermücken (Diptera, Sciaridae). ''An International Journal of Dipterological Research'', '''3'''(1-2), 1–16.</ref-->
+    
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- these templates provide the synonomy -->
 
@@ -252,6 +307,10 @@
         <xsl:apply-templates select="../name"/>
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="heterotypicSynonymyGroups"/>
+        <xsl:call-template name="citations">
+            <xsl:with-param name="descriptionelements" select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+            <xsl:with-param name="name-uuid" select="../name/uuid"/>
+        </xsl:call-template>
     </xsl:template>
 
     <!--.............................................-->
