@@ -244,59 +244,81 @@
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    
+
     <!-- these templates provide the citations -->
-    
+
     <xsl:template name="display-references">
         <xsl:call-template name="chapter">
             <xsl:with-param name="title">References</xsl:with-param>
         </xsl:call-template>
-       <xsl:text>{{Show_References}}</xsl:text>
+        <xsl:text>{{Show_References}}</xsl:text>
     </xsl:template>
- 
-    
+
+
     <xsl:template name="citations">
         <xsl:param name="name-uuid"/>
-        <xsl:param name="descriptionelements" />
-        
-        <!--only calling this for ag salcifolia what about the other uuids???-->
-        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$name-uuid,'|Content=')"></xsl:value-of>
+        <xsl:param name="descriptionelements"/>
+
         <!--<ref name="{$name-uuid}">-->
-            <!-- iterate through all the description elements fo the citation feature -->
-        <xsl:for-each select="$descriptionelements/descriptionelement">          
-            <!-- TODO sorting only works for the first citation, implement correctly -->
+        <!-- iterate through all the description elements for the citation feature -->
+        <xsl:for-each select="$descriptionelements/descriptionelement">
+
             <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
+
+            <xsl:variable name="citation-uuid" select="sources/e[1]/citation/uuid"/>
 
             <xsl:for-each select="sources/e">
                 <xsl:if test="nameUsedInSource/uuid=$name-uuid">
-                    <!--xsl:text>; </xsl:text-->
+
+                    <!-- use the citation-uuid as a unique name for the reference -->
+                    <xsl:value-of
+                        select="concat('{{ViBRANT_Reference|Name=',$citation-uuid,'|Content=')"/>
                     <xsl:text>{{aut|</xsl:text>
-                        <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
-                        <xsl:for-each select="citation/authorTeam/teamMembers/e">
-                            <xsl:value-of select="lastname"/>
-                            <xsl:choose>
-                                <xsl:when test="position() != last()"><xsl:text> &amp; </xsl:text></xsl:when>
-                            </xsl:choose>
-                        </xsl:for-each>
+
+
+                    <xsl:choose>
+                        <xsl:when test="citation/authorTeam/teamMembers/e[1]/lastname != ''">
+                            <xsl:for-each select="citation/authorTeam/teamMembers/e">
+                                <xsl:value-of select="lastname"/>
+                                <xsl:choose>
+                                    <xsl:when test="position() != last()">
+                                        <xsl:text> &amp; </xsl:text>
+                                    </xsl:when>
+                                </xsl:choose>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="citation/authorTeam/lastname"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
                     <xsl:text>}} </xsl:text>
-                    <xsl:value-of select="citation/datePublished/start"/>
-                    <xsl:text>: </xsl:text>
-                    <xsl:value-of select="citation/title"/>
-                        <!--xsl:value-of select="citation/authorTeam/lastname"/>
-                        <xsl:text> (</xsl:text>
+                    <xsl:if test="citation/datePublished/start != ''">
                         <xsl:value-of select="citation/datePublished/start"/>
                         <xsl:text>: </xsl:text>
-                        <xsl:value-of select="citationMicroReference"/>
-                        <xsl:text>)</xsl:text-->
+                    </xsl:if>
+                    <xsl:value-of select="citation/title"/>
+                    <xsl:text>.</xsl:text>
+                    <xsl:value-of select="citation/pages"/>
+                    <xsl:text>.</xsl:text>
+
+                    <xsl:if test="citation/type = 'Book' or citation/type = 'BookSection'">
+                        <xsl:if test="citation/placePublished != '' or citation/publisher != ''">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="citation/placePublished"/>
+                        <xsl:text>, </xsl:text>
+                        <xsl:value-of select="citation/publisher"/>
+                        <xsl:text>.</xsl:text>
+                        </xsl:if>
+                    </xsl:if>
+                    <xsl:text>}}</xsl:text>
                 </xsl:if>
             </xsl:for-each>
-
+            <!--</ref>-->
         </xsl:for-each>
-        <!--</ref>-->
-        <xsl:text>}}</xsl:text>
+
     </xsl:template>
     <!--ref name="SC078">{{aut|Mohrig, W.; Menzel, F.}} 1992: Neue Arten europäischer Trauermücken (Diptera, Sciaridae). ''An International Journal of Dipterological Research'', '''3'''(1-2), 1–16.</ref-->
-    
+
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- these templates provide the synonomy -->
@@ -307,12 +329,15 @@
             <xsl:with-param name="title">Synonomy</xsl:with-param>
         </xsl:call-template>
         <xsl:apply-templates select="../name"/>
-        <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
-        <xsl:apply-templates select="heterotypicSynonymyGroups"/>
         <xsl:call-template name="citations">
-            <xsl:with-param name="descriptionelements" select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+            <xsl:with-param name="descriptionelements"
+                select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template>
+
+        <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
+        <xsl:apply-templates select="heterotypicSynonymyGroups"/>
+
     </xsl:template>
 
     <!--.............................................-->
