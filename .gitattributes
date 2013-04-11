@@ -1628,7 +1628,6 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml 
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsp/index.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/test/test.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/css/csv_export.css -text
