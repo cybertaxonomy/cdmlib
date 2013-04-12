@@ -37,6 +37,8 @@ src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbExportActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbImportActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/pilotOutputHtml/SimpleDescriptionOutput.java -text
+src/main/java/eu/etaxonomy/cdm/app/proibiosphere/SynthesysCacheActivator.java -text
+src/main/java/eu/etaxonomy/cdm/app/proibiosphere/TaxonXImportLauncher.java -text
 src/main/java/eu/etaxonomy/cdm/app/redlist/RoteListeDbChecklistActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/references/EndNoteImportActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/sdd/AnthuriumActivator.java -text
