@@ -40,6 +40,7 @@ public class UnitsGatheringEvent {
     private static final Logger logger = Logger.getLogger(UnitsGatheringEvent.class);
     private static final boolean DEBUG = false;
     private final GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+    private final boolean useTDWGarea = false;
 
     /*
      * Constructor
@@ -85,6 +86,13 @@ public class UnitsGatheringEvent {
             List<String> tmpTeam = new ArrayList<String>(new HashSet<String>(team));
             this.setTeam(StringUtils.join(tmpTeam," & "), config);
         }
+    }
+
+    /**
+     *
+     */
+    public UnitsGatheringEvent() {
+        // TODO Auto-generated constructor stub
     }
 
     public GatheringEvent getGatheringEvent(){

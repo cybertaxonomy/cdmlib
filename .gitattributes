@@ -390,6 +390,14 @@ src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXModsImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXNomenclatureImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXDataHolder.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXExtractor.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXImport.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXImportConfigurator.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXImportState.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXModsExtractor.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXTreatmentExtractor.java -text
+src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXXMLFieldGetter.java -text
 src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text
 src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeXmlMapperBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmTextElementMapper.java -text

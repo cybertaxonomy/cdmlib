@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -50,7 +51,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -74,13 +74,15 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @author p.kelbert
  * @created 29.10.2008
  * @version 1.0
- *
+ */
+/**
  * @author pkelbert
  * @date 13 mars 2013
  *
  */
 @Component
-public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenSynthesysExcelImportState>  implements ICdmIO<SpecimenSynthesysExcelImportState> {
+public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenSynthesysExcelImportState>
+implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
     private static final Logger logger = Logger.getLogger(SpecimenSythesysExcelImport.class);
 
@@ -107,6 +109,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     protected String gatheringTeam;
     protected String gatheringAgent;
     protected String originalsource;
+    protected String identifier;
+    protected String gatheringNotes;
 
     private DerivedUnitBase derivedUnitBase;
     private Reference<?> ref = null;
@@ -116,6 +120,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     protected ArrayList<String> identificationList = new ArrayList<String>();
     protected ArrayList<String> multimediaObjects = new ArrayList<String>();
     private boolean keepAtomisedDate=true;
+    private boolean useTDWGarea = true;
 
     boolean DEBUG =false;
 
@@ -130,6 +135,9 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * return empty string instead of null
      * */
     public class MyHashMap<K,V> extends HashMap<K,V> {
+        /**
+         *
+         */
         private static final long serialVersionUID = -6230407405666753405L;
 
         @SuppressWarnings("unchecked")
@@ -187,8 +195,10 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         tx = startTransaction();
         ref = getReferenceService().find(ref.getUuid());
         classification = getClassificationService().find(classification.getUuid());
-        if (derivedUnitBase != null){
-        	derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
+        try{
+            derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
+        }catch(Exception e){
+            //logger.warn("derivedunit up to date or not created yet");
         }
     }
 
@@ -224,6 +234,14 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         country = unit.get("country");
         isocountry = unit.get("isoCountry");
         locality = unit.get("locality");
+        String habitat = unit.get("habitat");
+        String stateProvince = unit.get("stateProvince");
+        if (!stateProvince.isEmpty()) {
+            locality=stateProvince+", "+locality;
+        }
+        if (!habitat.isEmpty()){
+            locality+=", "+habitat;
+        }
 
         fieldNumber = unit.get("field number");
 
@@ -234,7 +252,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
         String coll =unit.get("collector");
         if (!coll.isEmpty()) {
-            if (coll.indexOf("& al.")!=-1 || coll.indexOf("et al.") != -1 || coll.indexOf(" al. ")!=-1 || coll.indexOf("&") != -1 || coll.indexOf(" et ") != -1) {
+            if (coll.indexOf("& al.")!=-1 || coll.indexOf("et al.") != -1 || coll.indexOf(" al. ")!=-1 ||
+                    coll.indexOf("&") != -1 || coll.indexOf(" et ") != -1 || coll.indexOf(";")!=-1) {
                 gatheringTeam = coll;
             } else{
                 //single
@@ -242,14 +261,20 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             }
         }
 
-        identificationList.add(taxonName+" "+author);
+        if(!taxonName.contains(author)) {
+            identificationList.add(taxonName+" "+author);
+        } else {
+            identificationList.add(taxonName);
+        }
 
         gatheringYear = unit.get("year");
         gatheringMonth = unit.get("month");
         gatheringDay = unit.get("day");
         gatheringDate = unit.get("date");
 
+        gatheringNotes = unit.get("eventRemarks");
         originalsource = unit.get("originalsource");
+        identifier = unit.get("identifier");
     }
 
 
@@ -354,7 +379,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 try {
                     Taxon cc= getTaxonService().findBestMatchingTaxon(scientificName);
                     if (cc != null){
-                        if ((cc.getSec() == null || cc.getSec().toString().isEmpty()) || (cc.getSec() != null && cc.getSec().getTitleCache().equalsIgnoreCase(ref.getTitleCache()))) {
+                        if ((cc.getSec() == null || cc.getSec().toString().isEmpty()) || (cc.getSec() != null &&
+                                cc.getSec().getTitleCache().equalsIgnoreCase(ref.getTitleCache()))) {
                             if(cc.getSec() == null || cc.getSec().toString().isEmpty()){
                                 cc.setSec(ref);
                                 getTaxonService().saveOrUpdate(cc);
@@ -382,7 +408,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     taxonName = parseScientificName(scientificName);
                 }
                 else{
-                    taxonName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
+                    taxonName = NonViralName.NewInstance(null);
                     taxonName.setTitleCache(scientificName, true);
                 }
                 getNameService().save(taxonName);
@@ -400,7 +426,11 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             determinationEvent.setPreferredFlag(preferredFlag);
 
             determinationEvent.setIdentifiedUnit(derivedUnitBase);
-
+            if (!identifier.isEmpty()){
+                Person p = Person.NewInstance();
+                p.setTitleCache(identifier, true);
+                determinationEvent.setActor(p);
+            }
             derivedUnitBase.addDetermination(determinationEvent);
 
             makeIndividualsAssociation(taxon,determinationEvent);
@@ -448,7 +478,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
         if(nomenclatureCode == null){
-            taxonName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
+            taxonName = NonViralName.NewInstance(null);
             taxonName.setTitleCache(scientificName, true);
             return taxonName;
         }
@@ -483,7 +513,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         //      }
         //TODO: parsing of ViralNames?
         if(problem){
-            taxonName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
+            taxonName = NonViralName.NewInstance(null);
             taxonName.setTitleCache(scientificName, true);
         }
         return taxonName;
@@ -551,34 +581,39 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 Reference<?> reference = ReferenceFactory.newGeneric();
                 reference.setTitleCache(originalsource, true);
                 derivedUnitBase.addSource(originalsource, "", reference, "");
+            }else{
+                derivedUnitBase.addSource(unitID,"",ref,ref.getCitation());
             }
             /**
              * INSTITUTION & COLLECTION
              */
             //manage institution
-            Institution institution = getInstitution(config);
-            //manage collection
-            Collection collection = getCollection(institution, config);
-            //link specimen & collection
-            derivedUnitFacade.setCollection(collection);
+            if (!institutionCode.isEmpty()){
+                Institution institution = getInstitution(config);
+                //manage collection
+                if (!collectionCode.isEmpty()){
+                    Collection collection = getCollection(institution, config);
+                    //link specimen & collection
+                    derivedUnitFacade.setCollection(collection);
+                }
+            }
 
             /**
              * GATHERING EVENT
              */
-
             // gathering event
             UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), locality, languageIso,
                     longitude, latitude, gatheringAgent, gatheringTeam,config);
-
             // country
-            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(isocountry, country, this);
+            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
+            unitsGatheringArea.useTDWGareas(this.useTDWGarea);
+            unitsGatheringArea.setParams(isocountry, country, getOccurrenceService());
             NamedArea areaCountry = unitsGatheringArea.getArea();
 
 
 
             // copy gathering event to facade
             GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
-
             //join gatheringEvent to fieldObservation
             derivedUnitFacade.setGatheringEvent(gatheringEvent);
 
@@ -587,6 +622,9 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             //derivedUnitFacade.setCollector(gatheringEvent.getCollector());
             derivedUnitFacade.setCountry(areaCountry);
             derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+            if (gatheringNotes != null && !gatheringNotes.isEmpty()) {
+                derivedUnitFacade.setFieldNotes(gatheringNotes);
+            }
 
 
             /*
@@ -620,7 +658,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
 
             //add fieldNumber
-            derivedUnitFacade.setFieldNumber(NB(fieldNumber));
+            derivedUnitFacade.setFieldNumber(fieldNumber);
 
             //add Multimedia URLs
             if(multimediaObjects.size()>0){
@@ -731,6 +769,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         if (state.getConfig().doAskForDate()) {
             keepAtomisedDate = askQuestion("Gathering dates can be stored in either atomised fieds (day month year) or in a concatenated field."+
                     "\nWhich value do you want to store?\nPress 1 for the atomised, press 2 for the concatenated field, and then press enter.");
+            useTDWGarea = askQuestion("Use TDWG area or WaterbodyOrCountry/namedarea?\n Press 1 for TDWG areas\n Press 2 for classics WaterbodyOrCountry.");
         }
 
         tx = startTransaction();
@@ -738,6 +777,17 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         ref = state.getConfig().getTaxonReference();
         if (ref == null){
             ref = state.getConfig().getSourceReference();
+        }
+        AgentBase<?> agent= ref.getAuthorTeam();
+        if (agent != null){
+            if (agent.getClass().equals(Team.class)){
+                for (Person p : ((Team) agent).getTeamMembers()){
+                    getAgentService().saveOrUpdate(p);
+                }
+            }
+            if (agent.getClass().equals(Person.class)){
+                getAgentService().saveOrUpdate(agent);
+            }
         }
         getReferenceService().saveOrUpdate(ref);
         setClassification(state);
@@ -788,28 +838,34 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @param state
      */
     private void prepareCollectors(ArrayList<HashMap<String, String>> unitsList, SpecimenSynthesysExcelImportState state) {
+        System.out.println("PREPARE COLLECTORS");
         List<String> collectors = new ArrayList<String>();
         List<String> teams = new ArrayList<String>();
         List<List<String>> collectorinteams = new ArrayList<List<String>>();
         String tmp;
-        for (HashMap<String,String> unit:unitsList){
+        for (HashMap<String,String> unit : unitsList){
             tmp=null;
             tmp = unit.get("collector");
             if (tmp != null && !tmp.isEmpty()) {
-                if (tmp.indexOf("et al.") != -1 || tmp.indexOf(" al. ")!=-1 || tmp.indexOf("& al.")!=-1 ) {
+                if (tmp.indexOf("et al.") != -1 || tmp.indexOf(" al. ")!=-1 || tmp.indexOf("& al.")!=-1  ) {
                     if (!tmp.trim().isEmpty()) {
                         teams.add(tmp.trim());
                     }
                 } else{
-                    if(tmp.indexOf(" et ")!=-1 || tmp.indexOf("&")!=-1){
+                    if(tmp.indexOf(" et ")!=-1 || tmp.indexOf("&")!=-1 || tmp.indexOf(";") !=-1){
                         List<String> collteam = new ArrayList<String>();
                         String[] tmp1 = tmp.split(" et ");
                         for (String elt:tmp1){
                             String tmp2[] = elt.split("&");
                             for (String elt2:tmp2) {
                                 if (!elt2.trim().isEmpty()) {
-                                    collectors.add(elt2.trim());
-                                    collteam.add(elt2.trim());
+                                    String tmp3[] = elt.split(";");
+                                    for (String elt3:tmp3) {
+                                        if (!elt3.isEmpty()){
+                                            collectors.add(elt3.trim());
+                                            collteam.add(elt3.trim());
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -861,7 +917,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         if (!uuids.isEmpty()){
             List<AgentBase> existingPersons = getAgentService().find(uuids);
             for (AgentBase existingP:existingPersons){
-                titleCachePerson.put(existingP.getTitleCache(),(Person) existingP);
+                titleCachePerson.put(existingP.getTitleCache(),CdmBase.deproxy(existingP, Person.class));
             }
         }
 
@@ -889,7 +945,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
         Map<UUID, AgentBase> uuuidPerson = getAgentService().save(personToadd);
         for (UUID u:uuuidPerson.keySet()){
-            titleCachePerson.put(uuuidPerson.get(u).getTitleCache(),(Person) uuuidPerson.get(u) );
+            titleCachePerson.put(uuuidPerson.get(u).getTitleCache(),CdmBase.deproxy(uuuidPerson.get(u), Person.class) );
         }
 
 

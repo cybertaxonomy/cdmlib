@@ -455,8 +455,7 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.longitude = Double.valueOf(group.item(0)
-                    .getTextContent());
+            dataHolder.longitude = Double.valueOf(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.longitude = null;
         }
@@ -466,8 +465,7 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.latitude = Double
-                    .valueOf(group.item(0).getTextContent());
+            dataHolder.latitude = Double.valueOf(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.latitude = null;
         }
