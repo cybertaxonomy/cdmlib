@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -139,7 +140,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         specimen = Specimen.NewInstance();
 
-        derivationEvent = DerivationEvent.NewInstance();
+        derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         specimen.setDerivedFrom(derivationEvent);
         fieldObservation = FieldObservation.NewInstance();
         fieldObservation.addDerivationEvent(derivationEvent);
@@ -177,6 +178,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Specimen middleSpecimen = Specimen.NewInstance();
         firstFieldObject = FieldObservation.NewInstance();
 
+		//TODO maybe we should define concrete event types here
         DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
         DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance();
         firstDerivationEvent = DerivationEvent.NewInstance();
@@ -1471,7 +1473,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 1 duplicate now", 1,
                 specimenFacade.getDuplicates().size());
         Specimen newSpecimen2 = Specimen.NewInstance();
-        DerivationEvent newDerivationEvent = DerivationEvent.NewInstance();
+        DerivationEvent newDerivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         newSpecimen2.setDerivedFrom(newDerivationEvent);
         Assert.assertSame(
                 "The derivation event should be 'newDerivationEvent'",
