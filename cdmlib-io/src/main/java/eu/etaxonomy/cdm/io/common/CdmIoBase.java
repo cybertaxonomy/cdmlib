@@ -176,7 +176,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
             logger.debug("Isolation level = " + txDef.getIsolationLevel());
             logger.debug("Timeout = " + txDef.getTimeout());
             logger.debug("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate3.HibernateTransactionManager
+            // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 
