@@ -239,7 +239,8 @@
     <xsl:template match="Taxon" name="Taxon">
         <xsl:apply-templates select="synonymy"/>
         <xsl:apply-templates select="descriptions"/>
-
+        <xsl:call-template name="gallery"/>
+        
 
     </xsl:template>
 
@@ -465,13 +466,13 @@
 
         <xsl:value-of
             select="concat('{{Tax_Feature|Name=',representation_L10n, '|Elements={{Feature_Text|' )"/>
-        <!--<xsl:choose>
-           <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">-->
+        <xsl:choose>
+            <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
                 <!-- feature is not "Distribution" -->
                 <xsl:apply-templates
                     select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
-            <!--</xsl:when>
-        </xsl:choose>-->
+            </xsl:when>
+        </xsl:choose>
 
         <xsl:text>}}}}</xsl:text>
 
@@ -508,39 +509,22 @@
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- image gallery -->
-
-    <xsl:template match="uri">
-        <!--fo:block text-align="center"-->
-        <fo:block keep-with-next="always" text-align="center">
-            
-            <!--fo:inline text-align="center"-->
-            <!--xsl:variable name="graphic" select="e/representations/e/parts/e/uri"/-->
-            
-            <!-- Is there a description element of type Figure for this TaxonNode?-->
-            
-            <xsl:variable name="graphic" select="."/>
-            
-            <fo:external-graphic content-height="scale-to-fit" height="{$graphic-height}"
-                scaling="uniform" src="{$graphic}" padding-before="30" padding-after="2"
-                display-align="center"/>
-            <!--/fo:inline-->
-        </fo:block>
-        <fo:block>
-            <fo:leader leader-pattern="rule" leader-alignment="{$taxon-page-inner-margin}"
-                rule-thickness="0.8pt" leader-length="114mm"/>
-        </fo:block>
-        <fo:block>
-            
-            <!--fo:leader leader-pattern="rule" leader-length="120mm"/-->
-            <fo:inline font-size="{$taxon-name-size-font}">
-                <!--go back up to the description element and get the text for the Figure legend -->
-                <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
-            </fo:inline>
-        </fo:block>
+    
+    <xsl:template name="gallery">
+        <!--<xsl:text>{{ViBRANT_Gallery|Files=</xsl:text>--> {{chapter|Images}} <xsl:value-of
+            select="concat('===',./name/titleCache,'===')"/>
+        <xsl:apply-templates select="//media/e/representations/e/parts/e/uri"/>
+        <!--<xsl:text>}}</xsl:text>-->
     </xsl:template>
-
-
-
+    
+    <xsl:template match="uri">
+        <xsl:text>FOO</xsl:text>
+        <xsl:value-of select="."/>
+        <!--go back up to the description element and get the text for the Figure legend -->
+        <!--<xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>-->
+        
+    </xsl:template>
+    
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->
 
 
