@@ -57,8 +57,8 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
 @Audited
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = {Level3.class})
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> implements Cloneable{
-
-  static Logger logger = Logger.getLogger(NameRelationship.class);
+	private static final long serialVersionUID = -615987333520172043L;
+	private static final Logger logger = Logger.getLogger(NameRelationship.class);
 
     //The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
