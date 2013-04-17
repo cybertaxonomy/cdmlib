@@ -141,7 +141,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
     //TODO Val #3379
-//  @NullOrNotEmpty
+//  @NullOrNotEmpty  //TODO this redundant with @NotEmpty (Level3) below
     @Size(max = 255)
     @Pattern(regexp = "[A-Z][a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForUninomial.message}")
     @NotEmpty(groups = Level3.class)
