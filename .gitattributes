@@ -424,7 +424,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDocumentB
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExporter.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/profiler/ProfilerController.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndNoteImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportState.java -text
@@ -548,6 +547,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TaxonTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TermTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TestCdmSchemaGenerator.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/URIEncoder.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/profiler/ProfilerController.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/reference/EndnoteRecordsImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/IkeyPlusImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/KeyActivator.java -text
