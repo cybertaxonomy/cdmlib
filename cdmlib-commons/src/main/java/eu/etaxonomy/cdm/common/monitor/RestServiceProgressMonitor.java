@@ -26,26 +26,32 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
         super();
     }
 
+    @Override
     public String getTaskName(){
         return taskName;
     }
 
+    @Override
     public String getSubTask(){
         return subTask;
     }
 
+    @Override
     public int getTotalWork() {
         return totalWork;
     }
 
+    @Override
     public double getWorkDone() {
         return workDone;
     }
 
+    @Override
     public boolean isFailed() {
         return isFailed;
     }
 
+    @Override
     public void setIsFailed(boolean isStopped) {
         this.isFailed = isStopped;
     }
@@ -70,10 +76,12 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
         super.internalWorked(work);
     }
 
+    @Override
     public boolean isDone() {
         return isDone;
     }
 
+    @Override
     public void setDone(boolean isDone) {
         this.isDone = isDone;
     }
