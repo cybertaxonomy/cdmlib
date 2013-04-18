@@ -20,8 +20,10 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
@@ -109,7 +111,7 @@ public class TransmissionEngineDistribution {
         try {
             controller.forceGC();
             logger.info("capturing snapshot ... ");
-//            logger.info("new snapshot file: " + controller.captureMemorySnapshot());
+            logger.info("new snapshot file: " + controller.captureMemorySnapshot());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,7 +140,6 @@ public class TransmissionEngineDistribution {
 
     @Autowired
     private HibernateTransactionManager transactionManager;
-
 
     private List<PresenceAbsenceTermBase> byAreaIgnoreStatusList = null;
 
@@ -370,6 +371,9 @@ public class TransmissionEngineDistribution {
     protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor) {
 
         int batchSize = 1000;
+
+//        captureMemorySnapshot();
+
         TransactionStatus txStatus = startTransaction(false);
 
         // reload superAreas TODO is it faster to getSession().merge(object) ??
@@ -384,6 +388,11 @@ public class TransmissionEngineDistribution {
         int pageIndex = 0;
         boolean isLastPage = false;
         while (!isLastPage) {
+
+            if(txStatus == null) {
+                // transaction has been comitted at the end of this batch, start a new one
+                txStatus = startTransaction(false);
+            }
 
             //TODO limit by classification if not null
             taxonPager = taxonService.page(Taxon.class, batchSize, pageIndex++, null, null);
@@ -458,9 +467,9 @@ public class TransmissionEngineDistribution {
             // commit for every batch, otherwise the persistent context
             // may grow too much and eats up all the heap
             commitTransaction(txStatus);
-            txStatus = startTransaction(false);
+            txStatus = null;
 
-            captureMemorySnapshot();
+//            captureMemorySnapshot();
 
         } // next batch of taxa
 
@@ -514,6 +523,11 @@ public class TransmissionEngineDistribution {
             boolean isLastPage = false;
             SubProgressMonitor taxonSubMonitor = null;
             while (!isLastPage) {
+
+                if(txStatus == null) {
+                    // transaction has been comitted at the end of this batch, start a new one
+                    txStatus = startTransaction(false);
+                }
 
                 taxonPager = classificationService
                         .pageRankSpecificRootNodes(classification, rank, batchSize, pageIndex++, null);
@@ -586,9 +600,7 @@ public class TransmissionEngineDistribution {
                 // commit for every batch, otherwise the persistent context
                 // may grow too much and eats up all the heap
                 commitTransaction(txStatus);
-                txStatus = startTransaction(false);
-
-                captureMemorySnapshot();
+                txStatus = null;
 
             } // next batch
 
@@ -596,16 +608,24 @@ public class TransmissionEngineDistribution {
             subMonitor.worked(1);
 
         } // next Rank
+//        captureMemorySnapshot();
         subMonitor.done();
     }
 
     /**
-*
-*/
+     *
+     */
     private void flushAndClear() {
         logger.debug("flushing and clearing session ...");
         getSession().flush();
-//        Search.getFullTextSession(getSession()).flushToIndexes();
+        try {
+            Search.getFullTextSession(getSession()).flushToIndexes();
+        } catch (HibernateException e) {
+            /* IGNORE - Hibernate Search Event listeners not configured ... */
+            if(!e.getMessage().startsWith("Hibernate Search Event listeners not configured")){
+                throw e;
+            }
+        }
         getSession().clear();
     }
 
