@@ -47,6 +47,7 @@
              <value>Sequence.genBankAccession</value>
 
              <value>Annotation.annotationType</value>
+             <value>Marker.markerType</value>
 
              <value>DerivationEvent.derivatives</value>
              <value>DerivationEvent.originals</value>
@@ -407,7 +408,7 @@
         <value>metaClass</value><!-- DefaultExclude -->
         <value>id</value>
         <!--
-            TODO temporarily commented out,
+            commented out,
             see  #3347 (services and REST service controller for molecular classes implemented)
         <value>annotations</value>
         <value>markers</value>

@@ -35,18 +35,18 @@ public class DescriptionUtility {
     public static <T extends DescriptionElementBase> Set<T> preferComputed(Set<T> descriptionElements) {
 
         Set<T> computedDistributions = new HashSet<T>(descriptionElements.size());
-        Set<T> editedDistributions = new HashSet<T>(descriptionElements.size());
+        Set<T> otherDistributions = new HashSet<T>(descriptionElements.size());
         for(T distribution : descriptionElements){
             if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
                 computedDistributions.add(distribution);
             } else {
-                editedDistributions.add(distribution);
+                otherDistributions.add(distribution);
             }
         }
         if(computedDistributions.size() > 0){
             return computedDistributions;
         } else {
-            return editedDistributions;
+            return otherDistributions;
         }
     }
 
