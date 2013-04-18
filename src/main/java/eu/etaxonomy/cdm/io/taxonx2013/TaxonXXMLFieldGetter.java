@@ -8,10 +8,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -22,12 +18,9 @@ public class TaxonXXMLFieldGetter {
     private final Document doc;
 
 
-    private IReferenceService referenceService;
-    private IAgentService agentService;
     private NomenclaturalCode nomenclaturalCode;
     private Classification classification;
-    private INameService nameService;
-    private ITaxonService taxonService;
+    private TaxonXImport importer;
 
 
     public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document){
@@ -36,10 +29,11 @@ public class TaxonXXMLFieldGetter {
 
 
     public void parseFile(){
+        System.out.println("PARSE");
         //taxonx
         Node root = doc.getFirstChild();
-        TaxonXModsExtractor modsextractor = new TaxonXModsExtractor(agentService);
-        TaxonXTreatmentExtractor treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,nameService,taxonService,referenceService);
+        TaxonXModsExtractor modsextractor = new TaxonXModsExtractor(importer);
+        TaxonXTreatmentExtractor treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer);
 
         //taxonHeader, taxonBody
         NodeList nodes = root.getChildNodes();
@@ -52,7 +46,7 @@ public class TaxonXXMLFieldGetter {
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("mods:mods")){
                         Reference<?> ref = modsextractor.extractMods(nodes2.item(j));
                         System.out.println("reference: "+ref.getTitleCache());
-                        referenceService.saveOrUpdate(ref);
+                        importer.getReferenceService().saveOrUpdate(ref);
                     }
                 }
             }
@@ -69,31 +63,6 @@ public class TaxonXXMLFieldGetter {
     }
 
 
-
-
-    /**
-     * @param referenceService
-     */
-    public void setReferenceService(IReferenceService referenceService) {
-        this.referenceService = referenceService;
-
-    }
-
-
-
-
-    /**
-     * @param agentService
-     */
-    public void setAgentService(IAgentService agentService) {
-        this.agentService = agentService;
-
-    }
-
-
-    /**
-     * @param nomenclaturalCode
-     */
     public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
        this.nomenclaturalCode = nomenclaturalCode;
 
@@ -109,19 +78,10 @@ public class TaxonXXMLFieldGetter {
 
 
     /**
-     * @param nameService
+     * @param taxonXImport
      */
-    public void setNameService(INameService nameService) {
-        this.nameService = nameService;
-
-    }
-
-
-    /**
-     * @param taxonService
-     */
-    public void setTaxonService(ITaxonService taxonService) {
-        this.taxonService = taxonService;
+    public void setImporter(TaxonXImport taxonXImport) {
+       this.importer=taxonXImport;
 
     }
 

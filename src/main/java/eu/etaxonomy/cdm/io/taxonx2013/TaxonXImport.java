@@ -84,14 +84,15 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
 
     @Override
     public void doInvoke(TaxonXImportState state) {
+        System.out.println("INVOKE?");
         taxonXstate = state;
         tx = startTransaction();
 
         logger.info("INVOKE TaxonXImport ");
         URI sourceName = this.taxonXstate.getConfig().getSource();
 
-        this.taxonXstate.getConfig().getClassificationName();
-        this.taxonXstate.getConfig().getClassificationUuid();
+//        this.taxonXstate.getConfig().getClassificationName();
+//        this.taxonXstate.getConfig().getClassificationUuid();
 
         ref = this.taxonXstate.getConfig().getSourceReference();
         setClassification(taxonXstate);
@@ -113,12 +114,9 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             Document document = builder.parse(is);
 
             taxonXFieldGetter = new TaxonXXMLFieldGetter(dataHolder, prefix,document);
-            taxonXFieldGetter.setReferenceService(getReferenceService());
-            taxonXFieldGetter.setAgentService(getAgentService());
-            taxonXFieldGetter.setNameService(getNameService());
-            taxonXFieldGetter.setTaxonService(getTaxonService());
             taxonXFieldGetter.setNomenclaturalCode(this.taxonXstate.getConfig().getNomenclaturalCode());
             taxonXFieldGetter.setClassification(classification);
+            taxonXFieldGetter.setImporter(this);
             taxonXFieldGetter.parseFile();
 
         } catch (MalformedURLException e) {

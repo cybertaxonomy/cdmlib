@@ -13,7 +13,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -24,15 +23,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class TaxonXModsExtractor extends TaxonXExtractor{
 
     private final Map<String,UUID> personMap = new HashMap<String, UUID>();
-    private final IAgentService agentService;
 
     Logger logger = Logger.getLogger(getClass());
+    TaxonXImport importer;
 
     /**
      * @param agentService
      */
-    public TaxonXModsExtractor(IAgentService agentService) {
-        this.agentService = agentService;
+    public TaxonXModsExtractor(TaxonXImport importer) {
+        this.importer = importer;
     }
 
     public Reference<?> extractMods(Node node){
@@ -157,10 +156,13 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                 }
                 if (!personMap.containsKey(p.getTitleCache()) && newPerson){
-                    UUID uuid = agentService.saveOrUpdate(p);
+                    UUID uuid = importer.getAgentService().saveOrUpdate(p);
                     personMap.put(p.getTitleCache(),uuid);
                 }else{
-                    p = (Person) agentService.find(personMap.get(p.getTitleCache()));
+                    try{
+                    p = (Person) importer.getAgentService().find(personMap.get(p.getTitleCache()));
+                    }catch(Exception e){logger.warn("PERSON EXISTS "+p);
+                    }
                 }
                 if (newPerson) {
                     authorTeam.addTeamMember(p);
@@ -169,10 +171,10 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             }
         }
         if (!personMap.containsKey(authorTeam.getTitleCache()) && newTeam){
-            UUID uuid = agentService.saveOrUpdate(authorTeam);
+            UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
             personMap.put(authorTeam.getTitleCache(),uuid);
         }else{
-            authorTeam =  (Team) agentService.find(personMap.get(authorTeam.getTitleCache()));
+            authorTeam =  (Team) importer.getAgentService().find(personMap.get(authorTeam.getTitleCache()));
         }
         if (newTeam) {
             ref.setAuthorTeam(authorTeam);
@@ -204,6 +206,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         b.setTitleCache(content,true);
                         b.setTitle(content);
                         b.generateTitle();
+
                         ref.setInBook(b);
                     }
                 }

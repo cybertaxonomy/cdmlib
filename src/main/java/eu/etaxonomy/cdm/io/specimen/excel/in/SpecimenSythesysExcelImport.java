@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -607,8 +609,8 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             unitsGatheringArea.useTDWGareas(this.useTDWGarea);
-            unitsGatheringArea.setParams(isocountry, country, getOccurrenceService());
-            NamedArea areaCountry = unitsGatheringArea.getArea();
+            unitsGatheringArea.setParams(isocountry, country, getOccurrenceService(),getTermService());
+            WaterbodyOrCountry areaCountry = (WaterbodyOrCountry) unitsGatheringArea.getCountry();
 
 
 
@@ -621,7 +623,9 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
             //derivedUnitFacade.setCollector(gatheringEvent.getCollector());
             derivedUnitFacade.setCountry(areaCountry);
-            derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+            for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
+                derivedUnitFacade.addCollectingArea((NamedArea) area);
+                }
             if (gatheringNotes != null && !gatheringNotes.isEmpty()) {
                 derivedUnitFacade.setFieldNotes(gatheringNotes);
             }
@@ -630,7 +634,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             /*
              * merge AND STORE DATA
              */
-            getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
+//            getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
             getTermService().saveLanguageData(unitsGatheringEvent.getLocality());
 
 

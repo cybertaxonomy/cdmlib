@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -158,8 +159,12 @@ public class UnitsGatheringEvent {
      * @param area: the NamedArea to add
      */
 
-    public void addArea(NamedArea area){
-        this.gatheringEvent.addCollectingArea(area);
+    public void addArea(DefinedTermBase area){
+        if (area.isInstanceOf(NamedArea.class)) {
+            this.gatheringEvent.addCollectingArea((NamedArea) area);
+        } else {
+            logger.info("OUPPPPSS :"+area.getClass());
+        }
     }
 
 

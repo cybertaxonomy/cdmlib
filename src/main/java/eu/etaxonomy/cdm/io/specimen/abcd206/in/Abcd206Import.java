@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -239,13 +241,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     dataHolder.longitude, dataHolder.latitude, dataHolder.gatheringAgentList, dataHolder.gatheringTeamList,abcdstate.getConfig());
 
             // country
-            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(dataHolder.isocountry, dataHolder.country, getOccurrenceService());
-            NamedArea areaCountry = unitsGatheringArea.getArea();
+            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(dataHolder.isocountry, dataHolder.country, getOccurrenceService(), getTermService());
+            WaterbodyOrCountry areaCountry = (WaterbodyOrCountry) unitsGatheringArea.getCountry();
 
             // other areas
-            unitsGatheringArea = new UnitsGatheringArea(dataHolder.namedAreaList);
-            ArrayList<NamedArea> nas = unitsGatheringArea.getAreas();
-            for (NamedArea namedArea : nas) {
+            unitsGatheringArea = new UnitsGatheringArea(dataHolder.namedAreaList,getTermService());
+            ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
+            for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
             }
 
@@ -255,7 +257,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
             derivedUnitFacade.setCollector(gatheringEvent.getCollector());
             derivedUnitFacade.setCountry(areaCountry);
-            derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+            for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
+            derivedUnitFacade.addCollectingArea((NamedArea) area);
+            }
+//            derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
 
             // TODO exsiccatum
 
@@ -279,11 +284,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             /*
              * merge AND STORE DATA
              */
-            getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
+//            getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
 
-            for (NamedArea area : nas) {
-                getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
-            }
+//            for (NamedArea area : nas) {
+//                getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
+//            }
             getTermService().saveLanguageData(unitsGatheringEvent.getLocality());
 
             // handle collection data

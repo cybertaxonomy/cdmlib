@@ -9,14 +9,8 @@
 
 package eu.etaxonomy.cdm.io.taxonx2013;
 
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 
-import org.apache.log4j.Logger;
-import org.jdom.Element;
-
-import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -31,7 +25,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @version 1.0
  */
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
+//	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 
 	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
@@ -46,13 +40,13 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
 
-	private boolean doAutomaticParsing = true;
-
-
 	private String originalSourceTaxonNamespace = "TaxonConcept";
 	private String originalSourceId;
 
-	@Override
+	private static Reference<?> sourceRef = null;
+
+	@SuppressWarnings("unchecked")
+    @Override
     protected void makeIoClassList(){
 		ioClassList = new Class[]{
 		        TaxonXImport.class,
@@ -79,42 +73,43 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 		setDestination(destination);
 	}
 
+	/**
+     * @param url
+     * @param destination
+     */
+    private TaxonXImportConfigurator(ICdmDataSource destination) {
+        super(defaultTransformer);
+        setDestination(destination);
+    }
+
 
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public TaxonXImportState getNewState() {
 		return new TaxonXImportState(this);
 	}
 
-	public Element getSourceRoot(){
-		URI source = getSource();
-		try {
-			URL url;
-			url = source.toURL();
-			Object o = url.getContent();
-			InputStream is = (InputStream)o;
-			Element root = XmlHelp.getRoot(is);
-			return root;
-		} catch (Exception e) {
-			logger.error("The source '" + source + "' has errors.", e);
-		}
-		return null;
-	}
-
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
-	@Override
+	@SuppressWarnings("rawtypes")
+    @Override
 	public Reference getSourceReference() {
-		//TODO
-		logger.warn("getSource Reference not yet implemented");
-		Reference<?> result = ReferenceFactory.newDatabase();
-		result.setTitleCache("XXX", true);
-		return result;
+	    if (sourceReference == null){
+            sourceReference =  ReferenceFactory.newGeneric();
+
+            if (getSourceRefUuid() != null){
+                sourceReference.setUuid(getSourceRefUuid());
+            }
+            if (sourceRef != null){
+                sourceReference.setTitleCache(sourceRef.getTitleCache(), true);
+            }
+        }
+        return sourceReference;
 	}
 
 
@@ -197,10 +192,24 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
      * @param b
      */
     public void setDoAutomaticParsing(boolean b) {
-        this.doAutomaticParsing=b;
 
     }
 
+    /**
+     * @param destination
+     * @return
+     */
+    public static TaxonXImportConfigurator NewInstance(ICdmDataSource destination) {
+        return new TaxonXImportConfigurator(destination);
+    }
+
+    /**
+     * @param reference
+     */
+    public static void setSourceRef(Reference<?> reference) {
+       sourceRef = reference;
+
+    }
 
 
 }

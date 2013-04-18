@@ -10,14 +10,21 @@
 package eu.etaxonomy.cdm.io.specimen;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
 /**
@@ -27,9 +34,12 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
  */
 public class UnitsGatheringArea {
 
-    private NamedArea area = NamedArea.NewInstance();
-    private final ArrayList<NamedArea> areas = new ArrayList<NamedArea>();
+    private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
     private boolean useTDWGarea = false;
+    private ITermService termService;
+    private IOccurrenceService occurrenceService;
+    private DefinedTermBase<?> wbc = null;
+    Logger logger = Logger.getLogger(this.getClass());
 
 
     /*
@@ -39,37 +49,36 @@ public class UnitsGatheringArea {
      * @param country
      * @param app
      */
-    public UnitsGatheringArea(String isoCountry, String country, IOccurrenceService occurrenceService){
-        this.setCountry(isoCountry, country, occurrenceService);
+    public UnitsGatheringArea(String isoCountry, String country, IOccurrenceService occurrenceService, ITermService termService){
+        this.termService = termService;
+        this.occurrenceService = occurrenceService;
+        this.setCountry(isoCountry, country);
     }
 
     public UnitsGatheringArea(){
 
     }
 
-    public void setParams(String isoCountry, String country, IOccurrenceService occurrenceService){
-        this.setCountry(isoCountry, country, occurrenceService);
+    public void setParams(String isoCountry, String country, IOccurrenceService occurrenceService, ITermService termService){
+        this.termService = termService;
+        this.occurrenceService = occurrenceService;
+        this.setCountry(isoCountry, country);
     }
 
     /*
      * Constructor
      * Set a list of NamedAreas
      */
-    public UnitsGatheringArea(List<String> namedAreaList){
+    public UnitsGatheringArea(List<String> namedAreaList,ITermService termService ){
+        this.termService = termService;
         this.setAreaNames(namedAreaList);
     }
 
-    /*
-     * Return the current NamedArea
-     */
-    public NamedArea getArea(){
-        return this.area;
-    }
 
     /*
      * Return the current list of NamedAreas
      */
-    public ArrayList<NamedArea> getAreas(){
+    public ArrayList<DefinedTermBase> getAreas(){
         return this.areas;
     }
 
@@ -77,12 +86,64 @@ public class UnitsGatheringArea {
      * Set the list of NamedAreas
      * @param namedAreas
      */
+    @SuppressWarnings("rawtypes")
     public void setAreaNames(List<String> namedAreas){
-        for (String strNamedArea : namedAreas){
-            this.area.setLabel(strNamedArea);
-            this.areas.add(this.area);
-            this.area = NamedArea.NewInstance();
+        List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
+        termsList.addAll(termService.list(Continent.class, 0, 0, null, null));
+        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+
+        logger.info(termService.list(Continent.class, 0, 0, null, null));
+
+        HashSet<String> areaToAdd= new HashSet<String>();
+        HashSet<UUID> areaSet = new HashSet<UUID>();
+
+        HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
+        for (String namedAreaStr : namedAreas){
+            for (DefinedTermBase na:termsList){
+                if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
+                    if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
+                        matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
+                    }
+                }
+            }
+            logger.info("matchingterms: "+matchingTerms.keySet().toString());
+            UUID areaUUID = askForArea(namedAreaStr, matchingTerms);
+            logger.info("selected area: "+areaUUID);
+            if (areaUUID == null){
+                areaToAdd.add(namedAreaStr);
+            } else {
+                areaSet.add(areaUUID);
+            }
+
         }
+        for (String areaStr:areaToAdd){
+            NamedArea ar = NamedArea.NewInstance();
+            ar.setTitleCache(areaStr, true);
+            termService.saveOrUpdate(ar);
+            this.areas.add(ar);
+        }
+        if (!areaSet.isEmpty()){
+            List<DefinedTermBase> ldtb = termService.find(areaSet);
+            if (!ldtb.isEmpty()) {
+                this.areas.addAll(ldtb);
+            }
+        }
+    }
+
+    private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms){
+        matchingTerms.put("Nothing matches, create a new area",null);
+    JFrame frame = new JFrame("I have a question");
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    String s = (String)JOptionPane.showInputDialog(
+            frame,
+            "Several CDM-areas could match the current '"+namedAreaStr,
+            "Select the right one from the list",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            matchingTerms.keySet().toArray(),
+            null);
+
+    return matchingTerms.get(s);
     }
 
     /*
@@ -94,39 +155,38 @@ public class UnitsGatheringArea {
      * @param fullName: the country's full name
      * @param app: the CDM application controller
      */
-    public void setCountry(String iso, String fullName, IOccurrenceService occurrenceService){
-        if (useTDWGarea && !fullName.isEmpty()){
-            area = TdwgArea.getAreaByTdwgLabel(fullName);
-        }
-        if (!useTDWGarea || area == null || fullName.isEmpty()){
-            WaterbodyOrCountry country = null;
-            List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
-            if (StringUtils.isNotBlank(iso)){
-                //TODO move to termservice
-                country = occurrenceService.getCountryByIso(iso);
-            }
-            if (country != null){
-                area.addWaterbodyOrCountry(country);
-                area.setLabel(country.getTitleCache());
-            }
-            else{
-                if (!fullName.isEmpty()){
-                    //TODO move to termservice
-                    countries = occurrenceService.getWaterbodyOrCountryByName(fullName);
-                }
-                if (countries.size() >0){
-                    area.addWaterbodyOrCountry(countries.get(0));
-                    area.setLabel(countries.get(0).getTitleCache());
-                }
-                else{
-                    area.setTitleCache(fullName,true);
-                    area.setLabel(fullName);
-                    area.setLevel(NamedAreaLevel.COUNTRY());
-                }
-            }
-        }
+    public void setCountry(String iso, String fullName){
+        List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
+        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
 
+        HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 
+        if (iso != null & !iso.isEmpty()){
+            wbc = occurrenceService.getCountryByIso(iso);
+        }
+        if (wbc == null){
+            if (fullName != null && !fullName.isEmpty()){
+
+                    for (DefinedTermBase<?> na:termsList){
+                        if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
+                            if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
+                                matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
+                            }
+                        }
+                    }
+                    logger.info("matchingterms: "+matchingTerms.keySet().toString());
+                    UUID areaUUID = askForArea(fullName, matchingTerms);
+                    logger.info("selected area: "+areaUUID);
+                    if (areaUUID == null){
+                        NamedArea ar = NamedArea.NewInstance();
+                        ar.setTitleCache(fullName, true);
+                        termService.saveOrUpdate(ar);
+                        wbc = ar;
+                    } else {
+                        wbc = termService.find(areaUUID);
+                    }
+            }
+        }
     }
 
     /**
@@ -135,6 +195,13 @@ public class UnitsGatheringArea {
     public void useTDWGareas(boolean useTDWGarea) {
         this.useTDWGarea=useTDWGarea;
 
+    }
+
+    /**
+     * @return
+     */
+    public DefinedTermBase<?> getCountry() {
+        return wbc;
     }
 
 }
