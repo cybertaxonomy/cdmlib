@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller.ext;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,8 +41,11 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -140,7 +144,21 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         //languages
         List<Language> langs = LocaleContext.getLanguages();
 
-        Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, null, null, null, null, null);
+        Set<Scope> scopes = null;
+        Set<NamedArea> geographicalScope = null;
+        Set<MarkerType> markerTypes = new HashSet<MarkerType>();
+        markerTypes.add(MarkerType.COMPUTED());
+        Integer pageSize = null;
+        Integer pageNumber = null;
+        List<String> propertyPaths = null;
+
+        // prefer COMPUTED  TaxonDescription over others //TODO preliminar implmentation
+        Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
+
+        if(page.getCount() == 0){
+            page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
+        }
+
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
             backLayer, langs);

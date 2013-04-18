@@ -21,7 +21,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -401,22 +400,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return vocabularyDao.findByUuid(uuid);
     }
 
+    /**
+     * FIXME Candidate for harmonization
+     * descriptionElementService.listDescriptionElementsForTaxon
+     */
     @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
-            Class<? extends T> type, Integer pageSize,
+            Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-        //FIXME remove cast
-        return (List<T>) dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+        return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
     }
 
-    public List<DescriptionElementBase> getDescriptionElementsForTaxon(
-            Taxon taxon, FeatureTree featureTree,
-            Class<? extends DescriptionElementBase> type, Integer pageSize,
-            Integer pageNumber, List<String> propertyPaths) {
-         //FIXME remove cast
-         return (List<DescriptionElementBase>) dao.getDescriptionElementForTaxon(taxon, featureTree.getDistinctFeatures(), type, pageSize, pageNumber, propertyPaths);
-    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IDescriptionService#generateNaturalLanguageDescription(eu.etaxonomy.cdm.model.description.FeatureTree, eu.etaxonomy.cdm.model.description.TaxonDescription, eu.etaxonomy.cdm.model.common.Language, java.util.List)
