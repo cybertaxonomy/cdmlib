@@ -99,7 +99,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
         logger.info("doAccumulateDistributions()" + request.getServletPath());
 
-        transmissionEngineDistribution.updatePriorities();
+//        transmissionEngineDistribution.updatePriorities();
 
         String processLabel = "accumulating distributions";
 

@@ -26,6 +26,10 @@
               <prop key="hibernate.format_sql">false</prop>
               <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
               <prop key="hibernate.search.default.indexBase">${eu.etaxonomy.cdm.search.index.path}</prop><!-- set in applicationContext.xml -->
+
+              <!-- disabling hibernate search for testing -->
+              <prop key="hibernate.search.autoregister_listeners">false</prop>
+
             </props>
         </property>
     </bean>
