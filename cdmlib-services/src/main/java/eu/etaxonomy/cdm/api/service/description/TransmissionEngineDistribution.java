@@ -33,9 +33,9 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -101,7 +102,7 @@ public class TransmissionEngineDistribution {
      * A map which contains the status terms as key and the priority as value
      * The map will contain both, the PresenceTerms and the AbsenceTerms
      */
-    private Map<PresenceAbsenceTermBase, Integer> statusPriorityMap = null;
+    private Map<PresenceAbsenceTermBase<?>, Integer> statusPriorityMap = null;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -116,14 +117,14 @@ public class TransmissionEngineDistribution {
     private IClassificationService classificationService;
 
     @Autowired
-    private INameService nameService;
+    private IVocabularyService vocabularyService;
 
     @Autowired
     private HibernateTransactionManager transactionManager;
 
-    private List<PresenceAbsenceTermBase> byAreaIgnoreStatusList = null;
+    private List<PresenceAbsenceTermBase<?>> byAreaIgnoreStatusList = null;
 
-    private List<PresenceAbsenceTermBase> byRankIgnoreStatusList = null;
+    private List<PresenceAbsenceTermBase<?>> byRankIgnoreStatusList = null;
 
     private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<NamedArea, Set<NamedArea>>();
 
@@ -140,10 +141,10 @@ public class TransmissionEngineDistribution {
      *
      * @return the byAreaIgnoreStatusList
      */
-    public List<PresenceAbsenceTermBase> getByAreaIgnoreStatusList() {
+    public List<PresenceAbsenceTermBase<?>> getByAreaIgnoreStatusList() {
         if(byAreaIgnoreStatusList == null ){
             byAreaIgnoreStatusList = Arrays.asList(
-                    new PresenceAbsenceTermBase[] {
+                    new PresenceAbsenceTermBase<?>[] {
                             AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(),
                             AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(),
                             AbsenceTerm.NATIVE_REPORTED_IN_ERROR(),
@@ -158,7 +159,7 @@ public class TransmissionEngineDistribution {
     /**
      * @param byAreaIgnoreStatusList the byAreaIgnoreStatusList to set
      */
-    public void setByAreaIgnoreStatusList(List<PresenceAbsenceTermBase> byAreaIgnoreStatusList) {
+    public void setByAreaIgnoreStatusList(List<PresenceAbsenceTermBase<?>> byAreaIgnoreStatusList) {
         this.byAreaIgnoreStatusList = byAreaIgnoreStatusList;
     }
 
@@ -170,11 +171,11 @@ public class TransmissionEngineDistribution {
      *
      * @return the byRankIgnoreStatusList
      */
-    public List<PresenceAbsenceTermBase> getByRankIgnoreStatusList() {
+    public List<PresenceAbsenceTermBase<?>> getByRankIgnoreStatusList() {
 
         if (byRankIgnoreStatusList == null) {
             byRankIgnoreStatusList = Arrays.asList(
-                    new PresenceAbsenceTermBase[] {
+                    new PresenceAbsenceTermBase<?>[] {
                             PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()
                     });
         }
@@ -184,7 +185,7 @@ public class TransmissionEngineDistribution {
     /**
      * @param byRankIgnoreStatusList the byRankIgnoreStatusList to set
      */
-    public void setByRankIgnoreStatusList(List<PresenceAbsenceTermBase> byRankIgnoreStatusList) {
+    public void setByRankIgnoreStatusList(List<PresenceAbsenceTermBase<?>> byRankIgnoreStatusList) {
         this.byRankIgnoreStatusList = byRankIgnoreStatusList;
     }
 
@@ -202,7 +203,7 @@ public class TransmissionEngineDistribution {
     @SuppressWarnings("rawtypes")
     private void initializeStatusPriorityMap() {
 
-        statusPriorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
+        statusPriorityMap = new HashMap<PresenceAbsenceTermBase<?>, Integer>();
         Integer priority;
 
         // PresenceTerms
@@ -232,7 +233,7 @@ public class TransmissionEngineDistribution {
      * @param b
      * @return
      */
-    private PresenceAbsenceTermBase choosePreferred(PresenceAbsenceTermBase a, PresenceAbsenceTermBase b){
+    private PresenceAbsenceTermBase<?> choosePreferred(PresenceAbsenceTermBase<?> a, PresenceAbsenceTermBase<?> b){
 
         if (statusPriorityMap == null) {
             initializeStatusPriorityMap();
@@ -266,8 +267,7 @@ public class TransmissionEngineDistribution {
      * @param term
      * @return the priority value
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Integer getPriorityFor(DefinedTermBase term) {
+    private Integer getPriorityFor(DefinedTermBase<?> term) {
         Set<Extension> extensions = term.getExtensions();
         for(Extension extension : extensions){
             if(!extension.getType().equals(ExtensionType.ORDER())) {
@@ -547,7 +547,7 @@ public class TransmissionEngineDistribution {
                         }
 
                         for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
-                            PresenceAbsenceTermBase status = distribution.getStatus();
+                            PresenceAbsenceTermBase<?> status = distribution.getStatus();
                             NamedArea area = distribution.getArea();
                             if (status == null || getByRankIgnoreStatusList().contains(status)){
                               continue;
@@ -649,7 +649,7 @@ public class TransmissionEngineDistribution {
      */
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());
-        OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
+        OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary<Rank>) vocabularyService.getVocabulary(VocabularyEnum.Rank);
         return rankVocabulary.getNextHigherTerm(rank);
     }
 
@@ -731,12 +731,11 @@ public class TransmissionEngineDistribution {
      * This method must be called in a transactional context and the transaction should be committed after
      * running this method.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void updatePriorities() {
 
         TransactionStatus txStatus = startTransaction(false);
 
-        Map<PresenceAbsenceTermBase, Integer> priorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
+        Map<PresenceAbsenceTermBase<?>, Integer> priorityMap = new HashMap<PresenceAbsenceTermBase<?>, Integer>();
 
         priorityMap.put(AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
         priorityMap.put(PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);
@@ -755,9 +754,9 @@ public class TransmissionEngineDistribution {
         priorityMap.put(PresenceTerm.NATIVE(), 130); // null
         priorityMap.put(PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);
 
-        for(PresenceAbsenceTermBase term : priorityMap.keySet()) {
+        for(PresenceAbsenceTermBase<?> term : priorityMap.keySet()) {
             // load the term
-            term = (PresenceAbsenceTermBase) termService.load(term.getUuid());
+            term = (PresenceAbsenceTermBase<?>) termService.load(term.getUuid());
             // find the extension
             Extension priotityExtension = null;
             Set<Extension> extensions = term.getExtensions();
