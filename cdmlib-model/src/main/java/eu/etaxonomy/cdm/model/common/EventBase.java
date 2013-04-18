@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 })
 @XmlRootElement(name = "EventBase")
 @MappedSuperclass
+@Audited
 public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	private static final long serialVersionUID = -1859035632758446593L;
 	@SuppressWarnings("unused")

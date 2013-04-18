@@ -31,6 +31,7 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
     FeatureTree.class
 })
 @MappedSuperclass
+@Audited
 public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCacheStrategy >{
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")

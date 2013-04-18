@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "RelationshipBase")
 @XmlRootElement(name = "RelationshipBase")
 @MappedSuperclass
+@Audited
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase implements Cloneable {
     private static final long serialVersionUID = -5030154633820061997L;
     @SuppressWarnings("unused")

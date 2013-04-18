@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -111,7 +112,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	public void setUp() throws Exception {
 		specimen = Specimen.NewInstance();
 
-		derivationEvent = DerivationEvent.NewInstance();
+		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		specimen.setDerivedFrom(derivationEvent);
 		fieldObservation = FieldObservation.NewInstance();
 		fieldObservation.addDerivationEvent(derivationEvent);
@@ -159,9 +160,10 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		Specimen middleSpecimen = Specimen.NewInstance();
 		firstFieldObject = FieldObservation.NewInstance();
 
-		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
-		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance();
-		firstDerivationEvent = DerivationEvent.NewInstance();
+		//TODO maybe we should define concrete event types here
+		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(null);
+		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance(null);
+		firstDerivationEvent = DerivationEvent.NewInstance(null);
 
 		collectionSpecimen.setDerivedFrom(lastDerivationEvent);
 

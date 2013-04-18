@@ -1253,6 +1253,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/GatheringEvent
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IMethodCache.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MarkerTypeAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MediaAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/QueryParseException.java -text
@@ -2034,7 +2035,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionCo
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineOccurrence.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineDistribution.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text
@@ -2074,6 +2075,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/Statistics
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/statistics/StatisticsTypeEnum.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/AbstractRelationshipEdge.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/util/TaxonRelationshipEdge.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/DescriptionUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
@@ -2110,7 +2112,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusin
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineOccurrenceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineDistributionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
@@ -2137,7 +2139,6 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSu
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_s2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_s3.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_s4.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/NeededForCorrectTermLoadingTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001-cdm.h2.sql -text
 cdmlib-services/src/test/resources/dbscripts/hibernate.properties -text

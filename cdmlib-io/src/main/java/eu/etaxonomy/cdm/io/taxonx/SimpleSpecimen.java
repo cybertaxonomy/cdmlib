@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -50,7 +51,7 @@ public class SimpleSpecimen {
 		fieldObservation.setGatheringEvent(gatheringEvent);
 		
 		//derivationEvent
-		derivationEvent = DerivationEvent.NewInstance();
+		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		derivationEvent.addOriginal(fieldObservation);
 		
 		//derivedUnit

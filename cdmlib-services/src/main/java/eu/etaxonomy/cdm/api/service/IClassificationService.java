@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -65,6 +66,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @deprecated use loadTaxonNode(TaxonNode taxonNode, ...) instead
      * if you have a classification and a taxon that is in it, you should also have the according taxonNode
      */
+    @Deprecated
     public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID classificationUuid, List<String> propertyPaths);
 
     /**
@@ -74,6 +76,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      * @deprecated use TaxonNodeService instead
      */
+    @Deprecated
     public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 
     /**
@@ -91,8 +94,48 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * 		equivalent of starting at the beginning of the recordset)
      * @param propertyPaths
      * @return
+     * @deprecated use {@link #listRankSpecificRootNodes(Classification, Rank, Integer, Integer, List)} instead
      */
+    @Deprecated
     public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths);
+
+
+    /**
+     * Loads all TaxonNodes of the specified classification for a given Rank or lower.
+     * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
+     * Rank the according node associated with the next lower Rank is taken as root node in this case.
+     * So the nodes returned may reference Taxa with different Ranks.
+     *
+     * If the <code>rank</code> is null the absolute root nodes will be returned.
+     *
+     * @param classification may be null for all classifications
+     * @param rank the set to null for to get the root nodes of classifications
+     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+     * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths
+     * @return
+     *
+     */
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
+
+    /**
+     * Loads all TaxonNodes of the specified classification for a given Rank or lower.
+     * If a branch of the classification tree is not containing a TaxonNode with a Taxon at the given
+     * Rank the according node associated with the next lower Rank is taken as root node in this case.
+     * So the nodes returned may reference Taxa with different Ranks.
+     *
+     * If the <code>rank</code> is null the absolute root nodes will be returned.
+     *
+     * @param classification may be null for all classifications
+     * @param rank the set to null for to get the root nodes of classifications
+     * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+     * @param pageIndex The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param propertyPaths
+     * @return
+     *
+     */
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * @param taxonNode
@@ -150,6 +193,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @deprecated move to TaxonNodeService
      * @return
      */
+    @Deprecated
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 
     /**
@@ -171,6 +215,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *  @deprecated use getAllMediaForChildNodes(TaxonNode taxonNode, ...) instead
      * if you have a classification and a taxon that is in it, you should also have the according taxonNode
      */
+    @Deprecated
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, Classification taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     /**
@@ -191,6 +236,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      * @deprecated use TaxonNodeService instead
      */
+    @Deprecated
     public UUID removeTaxonNode(TaxonNode taxonNode);
 
     /**
@@ -199,6 +245,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      * @deprecated use TaxonNodeService instead
      */
+    @Deprecated
     public UUID saveTaxonNode(TaxonNode taxonNode);
 
     /**
@@ -207,6 +254,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @return
      * @deprecated use TaxonNodeService instead
      */
+    @Deprecated
     public Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
 
     /**

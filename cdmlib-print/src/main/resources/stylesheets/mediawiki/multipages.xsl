@@ -239,7 +239,8 @@
     <xsl:template match="Taxon" name="Taxon">
         <xsl:apply-templates select="synonymy"/>
         <xsl:apply-templates select="descriptions"/>
-
+        <xsl:call-template name="gallery"/>
+        
 
     </xsl:template>
 
@@ -506,7 +507,24 @@
         <!--/fo:block -->
     </xsl:template>
 
-
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- image gallery -->
+    
+    <xsl:template name="gallery">
+        <!--<xsl:text>{{ViBRANT_Gallery|Files=</xsl:text>--> {{chapter|Images}} <xsl:value-of
+            select="concat('===',./name/titleCache,'===')"/>
+        <xsl:apply-templates select="//media/e/representations/e/parts/e/uri"/>
+        <!--<xsl:text>}}</xsl:text>-->
+    </xsl:template>
+    
+    <xsl:template match="uri">
+        <xsl:text>FOO</xsl:text>
+        <xsl:value-of select="."/>
+        <!--go back up to the description element and get the text for the Figure legend -->
+        <!--<xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>-->
+        
+    </xsl:template>
+    
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->
 
 

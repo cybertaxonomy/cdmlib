@@ -140,10 +140,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @Field
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[A-Z][a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForUninomial.message}")
-    @NotEmpty(groups = Level3.class)
+    @NullOrNotEmpty 
+    @NotEmpty(groups = Level3.class)  //TODO shouldn't this be only @NotNull as @NullOrNotEmpty already checks for not being empty.
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")

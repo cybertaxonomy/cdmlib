@@ -49,7 +49,14 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
 
 
-
+/**
+ * @author unknown
+ *
+ * @param <T>
+ * @deprecated Use current methods for alternative spelling suggestions. This class is no longer supported
+ * after migration to hibernate 4.x.
+ */
+@Deprecated
 public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 		extends HibernateDaoSupport
 		implements IAlternativeSpellingSuggestionParser {

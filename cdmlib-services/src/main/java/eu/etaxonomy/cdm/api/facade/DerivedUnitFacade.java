@@ -45,11 +45,13 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -701,7 +703,7 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * @param derivationEvent2
+	 * @param derivationEvent
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
@@ -713,8 +715,7 @@ public class DerivedUnitFacade {
 			recursionAvoidSet = new HashSet<SpecimenOrObservationBase>();
 		}
 		Set<FieldObservation> result = new HashSet<FieldObservation>();
-		Set<SpecimenOrObservationBase> originals = derivationEvent
-				.getOriginals();
+		Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
 		for (SpecimenOrObservationBase original : originals) {
 			if (original.isInstanceOf(FieldObservation.class)) {
 				result.add(CdmBase.deproxy(original, FieldObservation.class));
@@ -726,8 +727,7 @@ public class DerivedUnitFacade {
 				}
 				DerivedUnitBase derivedUnit = CdmBase.deproxy(original,
 						DerivedUnitBase.class);
-				DerivationEvent originalDerivation = derivedUnit
-						.getDerivedFrom();
+				DerivationEvent originalDerivation = derivedUnit.getDerivedFrom();
 				// Set<DerivationEvent> derivationEvents =
 				// original.getDerivationEvents();
 				// for (DerivationEvent originalDerivation : derivationEvents){
@@ -2124,10 +2124,29 @@ public class DerivedUnitFacade {
 			return null;
 		}
 		if (result == null && createIfNotExists) {
-			result = DerivationEvent.NewInstance();
+			DerivationEventType type = null;
+			if (isAccessioned(derivedUnit)){
+				type = DerivationEventType.ACCESSIONING();
+			}
+			
+			result = DerivationEvent.NewInstance(type);
 			derivedUnit.setDerivedFrom(result);
 		}
 		return result;
+	}
+
+	/**
+	 * TODO still unclear which classes do definetly require accessioning.
+	 * Only return true for those classes which are clear.
+	 * @param derivedUnit
+	 * @return
+	 */
+	private boolean isAccessioned(DerivedUnitBase<?> derivedUnit) {
+		if (derivedUnit.isInstanceOf(Specimen.class) ){
+			return CdmBase.deproxy(derivedUnit, Specimen.class).getClass().equals(Specimen.class);
+		}else{
+			return false;
+		}
 	}
 
 	@Transient

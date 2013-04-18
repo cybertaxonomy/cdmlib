@@ -9,24 +9,37 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -47,10 +60,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- * The TransmissionEngineOccurrence is meant to be used from within a service class.
+ * The TransmissionEngineDistribution is meant to be used from within a service class.
  *
  * <h2>GENERAL NOTES </h2>
- *<em>TODO: These notes are directly taken from original Transmission Engine Occurrence
+ * <em>TODO: These notes are directly taken from original Transmission Engine Occurrence
  * version 14 written in Visual Basic and still need to be
  * adapted to the java version of the transmission engine!</em>
  *
@@ -77,30 +90,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Feb 22, 2013
  */
 @Service
-@Transactional(readOnly = false)
-public class TransmissionEngineOccurrence {
 
-    public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineOccurrence.priority:";
+public class TransmissionEngineDistribution { //TODO extends IoBase?
 
-    public static final Logger logger = Logger.getLogger(TransmissionEngineOccurrence.class);
+    public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
 
-    private static final Integer batchSize = 1000;
+    public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
 
 
     /**classification
      * A map which contains the status terms as key and the priority as value
      * The map will contain both, the PresenceTerms and the AbsenceTerms
      */
-    private Map<PresenceAbsenceTermBase, Integer> statusPriorityMap = null;
-
-//    private ICdmApplicationConfiguration repo;
-//    @Autowired
-//    public void setRepository(ICdmApplicationConfiguration repo){
-//        this.repo = repo;
-//    }
-//    public ICdmApplicationConfiguration getRepository(){
-//        return repo;
-//    }
+    private Map<PresenceAbsenceTermBase<?>, Integer> statusPriorityMap = null;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -115,12 +117,14 @@ public class TransmissionEngineOccurrence {
     private IClassificationService classificationService;
 
     @Autowired
-    private INameService nameService;
+    private INameService mameService;
 
+    @Autowired
+    private HibernateTransactionManager transactionManager;
 
-    private List<PresenceAbsenceTermBase> byAreaIgnoreStatusList = null;
+    private List<PresenceAbsenceTermBase<?>> byAreaIgnoreStatusList = null;
 
-    private List<PresenceAbsenceTermBase> byRankIgnoreStatusList = null;
+    private List<PresenceAbsenceTermBase<?>> byRankIgnoreStatusList = null;
 
     private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<NamedArea, Set<NamedArea>>();
 
@@ -137,10 +141,10 @@ public class TransmissionEngineOccurrence {
      *
      * @return the byAreaIgnoreStatusList
      */
-    public List<PresenceAbsenceTermBase> getByAreaIgnoreStatusList() {
+    public List<PresenceAbsenceTermBase<?>> getByAreaIgnoreStatusList() {
         if(byAreaIgnoreStatusList == null ){
             byAreaIgnoreStatusList = Arrays.asList(
-                    new PresenceAbsenceTermBase[] {
+                    new PresenceAbsenceTermBase<?>[] {
                             AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(),
                             AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(),
                             AbsenceTerm.NATIVE_REPORTED_IN_ERROR(),
@@ -155,7 +159,7 @@ public class TransmissionEngineOccurrence {
     /**
      * @param byAreaIgnoreStatusList the byAreaIgnoreStatusList to set
      */
-    public void setByAreaIgnoreStatusList(List<PresenceAbsenceTermBase> byAreaIgnoreStatusList) {
+    public void setByAreaIgnoreStatusList(List<PresenceAbsenceTermBase<?>> byAreaIgnoreStatusList) {
         this.byAreaIgnoreStatusList = byAreaIgnoreStatusList;
     }
 
@@ -167,11 +171,11 @@ public class TransmissionEngineOccurrence {
      *
      * @return the byRankIgnoreStatusList
      */
-    public List<PresenceAbsenceTermBase> getByRankIgnoreStatusList() {
+    public List<PresenceAbsenceTermBase<?>> getByRankIgnoreStatusList() {
 
         if (byRankIgnoreStatusList == null) {
             byRankIgnoreStatusList = Arrays.asList(
-                    new PresenceAbsenceTermBase[] {
+                    new PresenceAbsenceTermBase<?>[] {
                             PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()
                     });
         }
@@ -181,7 +185,7 @@ public class TransmissionEngineOccurrence {
     /**
      * @param byRankIgnoreStatusList the byRankIgnoreStatusList to set
      */
-    public void setByRankIgnoreStatusList(List<PresenceAbsenceTermBase> byRankIgnoreStatusList) {
+    public void setByRankIgnoreStatusList(List<PresenceAbsenceTermBase<?>> byRankIgnoreStatusList) {
         this.byRankIgnoreStatusList = byRankIgnoreStatusList;
     }
 
@@ -189,7 +193,7 @@ public class TransmissionEngineOccurrence {
      *
      * @param superAreas
      */
-    public TransmissionEngineOccurrence() {
+    public TransmissionEngineDistribution() {
     }
 
     /**
@@ -199,7 +203,7 @@ public class TransmissionEngineOccurrence {
     @SuppressWarnings("rawtypes")
     private void initializeStatusPriorityMap() {
 
-        statusPriorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
+        statusPriorityMap = new HashMap<PresenceAbsenceTermBase<?>, Integer>();
         Integer priority;
 
         // PresenceTerms
@@ -229,7 +233,7 @@ public class TransmissionEngineOccurrence {
      * @param b
      * @return
      */
-    private PresenceAbsenceTermBase choosePreferred(PresenceAbsenceTermBase a, PresenceAbsenceTermBase b){
+    private PresenceAbsenceTermBase<?> choosePreferred(PresenceAbsenceTermBase<?> a, PresenceAbsenceTermBase<?> b){
 
         if (statusPriorityMap == null) {
             initializeStatusPriorityMap();
@@ -263,8 +267,7 @@ public class TransmissionEngineOccurrence {
      * @param term
      * @return the priority value
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Integer getPriorityFor(DefinedTermBase term) {
+    private Integer getPriorityFor(DefinedTermBase<?> term) {
         Set<Extension> extensions = term.getExtensions();
         for(Extension extension : extensions){
             if(!extension.getType().equals(ExtensionType.ORDER())) {
@@ -287,19 +290,46 @@ public class TransmissionEngineOccurrence {
     /**
      * runs both steps
      * <ul>
-     *  <li>Step 1: Accumulate occurrence records by area</li>
-     *  <li> Step 2: Accumulate by ranks staring from lower rank to upper rank, the status of all children
-     * are accumulated on each rank starting from lower rank to upper rank.</li>
+     * <li>Step 1: Accumulate occurrence records by area</li>
+     * <li>Step 2: Accumulate by ranks starting from lower rank to upper rank,
+     * the status of all children are accumulated on each rank starting from
+     * lower rank to upper rank.</li>
      * </ul>
      *
      * @param superAreas
+     *            the areas to which the subordinate areas should be projected.
      * @param lowerRank
      * @param upperRank
      * @param classification
+     * @param classification
+     *            limit the accumulation process to a specific classification
+     *            (not yet implemented)
+     * @param monitor
+     *            the progress monitor to use for reporting progress to the
+     *            user. It is the caller's responsibility to call done() on the
+     *            given monitor. Accepts null, indicating that no progress
+     *            should be reported and that the operation cannot be cancelled.
      */
-    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification) {
-        accumulateByArea(superAreas, classification);
-        accumulateByRank(lowerRank, upperRank, classification);
+    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification,
+            IProgressMonitor monitor) {
+
+        if(monitor == null){
+            monitor = new NullProgressMonitor();
+        }
+
+        logger.info("Hibernate JDBC Batch size: " + ((SessionFactoryImplementor)getSession().getSessionFactory()).getSettings().getJdbcBatchSize()); // . Configuration().getProperty("hibernate.jdbc.batch_size");
+
+        monitor.beginTask("Accumulating distributions", 400);
+
+        accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200));
+        accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200));
+    }
+
+    /**
+     * @return
+     */
+    private Session getSession() {
+        return descriptionService.getSession();
     }
 
     /**
@@ -312,42 +342,77 @@ public class TransmissionEngineOccurrence {
      * <li>the source references of the accumulated distributions are also accumulated into the new distribution,,</li>
      * <li>this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
      * </ul>
+     *
+     * @param superAreas
+     *      the areas to which the subordinate areas should be projected
+     * @param classification
+     *      limit the accumulation process to a specific classification (not yet implemented)
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification) {
+    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor) {
+
+        int batchSize = 1000;
+
+        TransactionStatus txStatus = startTransaction(false);
+
+        // reload superAreas TODO is it faster to getSession().merge(object) ??
+        Set<UUID> superAreaUuids = new HashSet<UUID>(superAreas.size());
+        for (NamedArea superArea : superAreas){
+            superAreaUuids.add(superArea.getUuid());
+        }
+        List<DefinedTermBase> superAreaList = termService.find(superAreaUuids);
 
         // visit all accepted taxa
-        List<TaxonBase> taxa = null;
-        int start = 0;
-        while (true) {
-            taxa = taxonService.list(Taxon.class, batchSize, start, null, null); //TODO limit by classification is not null
-            logger.debug("accumulateByArea() - next " + batchSize + " taxa at position " + start);
-            if (taxa.size() == 0){
+        Pager<TaxonBase> taxonPager = null;
+        int pageIndex = 0;
+        boolean isLastPage = false;
+        while (!isLastPage) {
+
+            if(txStatus == null) {
+                // transaction has been comitted at the end of this batch, start a new one
+                txStatus = startTransaction(false);
+            }
+
+            //TODO limit by classification if not null
+            taxonPager = taxonService.page(Taxon.class, batchSize, pageIndex++, null, null);
+
+            if(taxonPager.getCurrentIndex() == 0){
+                subMonitor.beginTask("Accumulating by area ",  taxonPager.getCount());
+            }
+
+            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
+
+            if (taxonPager.getRecords().size() == 0){
                 break;
             }
-            for(TaxonBase taxonBase : taxa) {
+            isLastPage = taxonPager.getRecords().size() < batchSize;
+
+            // iterate over the taxa and accumulate areas
+            for(TaxonBase taxonBase : taxonPager.getRecords()) {
                 if(logger.isDebugEnabled()){
                     logger.debug("accumulateByArea() - taxon :" + taxonBase.getTitleCache());
                 }
-                Taxon taxon = (Taxon)taxonBase;
 
+                Taxon taxon = (Taxon)taxonBase;
+                TaxonDescription description = findComputedDescription(taxon, true);
                 List<Distribution> distributions = distributionsFor(taxon);
 
                 // Step through superAreas for accumulation of subAreas
-                for (NamedArea superArea : superAreas){
+                for (DefinedTermBase superAreaTermBase : superAreaList){
+                    NamedArea superArea = (NamedArea)superAreaTermBase;
+
                     // accumulate all sub area status
-                    superArea = (NamedArea) termService.load(superArea.getUuid());
-                    PresenceAbsenceTermBase accumulatedStatus = null;
+                    PresenceAbsenceTermBase<?> accumulatedStatus = null;
                     Set<NamedArea> subAreas = getSubAreasFor(superArea);
                     for(NamedArea subArea : subAreas){
-                        if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByArea() - \t\t" + subArea.getLabel());
+                        if(logger.isTraceEnabled()){
+                            logger.trace("accumulateByArea() - \t\t" + subArea.getLabel());
                         }
                         // step through all distributions for the given subArea
                         for(Distribution distribution : distributions){
-                            if(distribution.getArea().equals(subArea) && distribution.getStatus() != null) {
-                                PresenceAbsenceTermBase status = distribution.getStatus();
-                                if(logger.isDebugEnabled()){
-                                    logger.debug("accumulateByArea() - \t\t" + subArea.getLabel() + ": " + status.getLabel());
+                            if(distribution.getArea() != null && distribution.getArea().equals(subArea) && distribution.getStatus() != null) {
+                                PresenceAbsenceTermBase<?> status = distribution.getStatus();
+                                if(logger.isTraceEnabled()){
+                                    logger.trace("accumulateByArea() - \t\t" + subArea.getLabel() + ": " + status.getLabel());
                                 }
                                 // skip all having a status value different of those in byAreaIgnoreStatusList
                                 if (getByAreaIgnoreStatusList().contains(status)){
@@ -357,21 +422,35 @@ public class TransmissionEngineOccurrence {
                             }
                         }
                     } // next sub area
-
                     if (accumulatedStatus != null) {
                         if(logger.isDebugEnabled()){
                             logger.debug("accumulateByArea() - \t >> " + superArea.getLabel() + ": " + accumulatedStatus.getLabel());
                         }
                         // store new distribution element for superArea in taxon description
-                        TaxonDescription description = findComputedDescription(taxon, true);
                         Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
+                        newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                         description.addElement(newDistribitionElement);
-                        descriptionService.saveOrUpdate(description);
                     }
+
                 } // next super area ....
+
+                descriptionService.saveOrUpdate(description);
+                taxonService.saveOrUpdate(taxon);
+                subMonitor.worked(1);
+
             } // next taxon
-            start = start + batchSize;
-        }
+
+            taxonPager = null;
+            flushAndClear();
+
+            // commit for every batch, otherwise the persistent context
+            // may grow too much and eats up all the heap
+            commitTransaction(txStatus);
+            txStatus = null;
+
+        } // next batch of taxa
+
+        subMonitor.done();
     }
 
    /**
@@ -387,7 +466,11 @@ public class TransmissionEngineOccurrence {
     *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
     *</ul>
     */
-    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification) {
+    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor) {
+
+        int batchSize = 500;
+
+        TransactionStatus txStatus = startTransaction(false);
 
         // the loadRankSpecificRootNodes() method not only finds
         // taxa of the specified rank but also taxa of lower ranks
@@ -395,22 +478,51 @@ public class TransmissionEngineOccurrence {
         // remember which taxa have been processed already
         Set<Integer> taxaProcessedIds = new HashSet<Integer>();
 
+        Rank currentRank = lowerRank;
+        List<Rank> ranks = new ArrayList<Rank>();
+        ranks.add(currentRank);
+        while (!currentRank.isHigher(upperRank)) {
+            currentRank = findNextHigherRank(currentRank);
+            ranks.add(currentRank);
+        }
 
-        //TODO loop over ranks from lower to higher
-        Rank rank = lowerRank;
-        while (!rank.isHigher(upperRank)) {
+        int ticksPerRank = 100;
+        subMonitor.beginTask("Accumulating by rank", ranks.size() * ticksPerRank);
+
+        for (Rank rank : ranks) {
+
             if(logger.isDebugEnabled()){
                 logger.debug("accumulateByRank() - at Rank '" + rank.getLabel() + "'");
             }
-            int start = 0;
-            while (true) {
-                List<TaxonNode> taxonNodes = classificationService
-                        .loadRankSpecificRootNodes(classification, rank, batchSize, start, null);
-                logger.debug("accumulateByRank() - next " + batchSize + " taxa at position " + start);
-                if (taxonNodes.size() == 0){
+
+            Pager<TaxonNode> taxonPager = null;
+            int pageIndex = 0;
+            boolean isLastPage = false;
+            SubProgressMonitor taxonSubMonitor = null;
+            while (!isLastPage) {
+
+                if(txStatus == null) {
+                    // transaction has been comitted at the end of this batch, start a new one
+                    txStatus = startTransaction(false);
+                }
+
+                taxonPager = classificationService
+                        .pageRankSpecificRootNodes(classification, rank, batchSize, pageIndex++, null);
+
+                if(taxonSubMonitor == null) {
+                    taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
+                    taxonSubMonitor.beginTask("Accumulating by rank " + rank.getLabel(), taxonPager.getCount());
+
+                }
+
+                logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
+
+                isLastPage = taxonPager.getRecords().size() < batchSize;
+                if (taxonPager.getRecords().size() == 0){
                     break;
                 }
-                for(TaxonNode taxonNode : taxonNodes) {
+
+                for(TaxonNode taxonNode : taxonPager.getRecords()) {
 
                     Taxon taxon = taxonNode.getTaxon();
                     if (taxaProcessedIds.contains(taxon.getId())) {
@@ -421,16 +533,22 @@ public class TransmissionEngineOccurrence {
                     }
                     taxaProcessedIds.add(taxon.getId());
                     if(logger.isDebugEnabled()){
-                        logger.debug("accumulateByRank() - taxon :" + taxon.getTitleCache());
+                        logger.debug("accumulateByRank() [" + rank.getLabel() + "] - taxon :" + taxon.getTitleCache());
                     }
 
                     // Step through direct taxonomic children for accumulation
-
+                    @SuppressWarnings("rawtypes")
                     Map<NamedArea, PresenceAbsenceTermBase> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTermBase>();
 
                     for (TaxonNode subTaxonNode : taxonNode.getChildNodes()){
+
+                        getSession().setReadOnly(taxonNode, true);
+                        if(logger.isTraceEnabled()){
+                            logger.trace("                   subtaxon :" + subTaxonNode.getTaxon().getTitleCache());
+                        }
+
                         for(Distribution distribution : distributionsFor(subTaxonNode.getTaxon()) ) {
-                            PresenceAbsenceTermBase status = distribution.getStatus();
+                            PresenceAbsenceTermBase<?> status = distribution.getStatus();
                             NamedArea area = distribution.getArea();
                             if (status == null || getByRankIgnoreStatusList().contains(status)){
                               continue;
@@ -444,17 +562,84 @@ public class TransmissionEngineOccurrence {
                         for (NamedArea area : accumulatedStatusMap.keySet()) {
                             // store new distribution element in new Description
                             Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
+                            newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                             description.addElement(newDistribitionElement);
                         }
+                        taxonService.saveOrUpdate(taxon);
                         descriptionService.saveOrUpdate(description);
                     }
+                    taxonSubMonitor.worked(1); // one taxon worked
+
                 } // next taxon node ....
-                start = start + batchSize;
+
+                taxonPager = null;
+                flushAndClear();
+
+                // commit for every batch, otherwise the persistent context
+                // may grow too much and eats up all the heap
+                commitTransaction(txStatus);
+                txStatus = null;
+
             } // next batch
-            rank = findNextHigherRank(rank);
+
+            taxonSubMonitor.done();
+            subMonitor.worked(1);
+
         } // next Rank
+
+        subMonitor.done();
     }
 
+    /**
+     *
+     */
+    private void flushAndClear() {
+        logger.debug("flushing and clearing session ...");
+        getSession().flush();
+        try {
+            Search.getFullTextSession(getSession()).flushToIndexes();
+        } catch (HibernateException e) {
+            /* IGNORE - Hibernate Search Event listeners not configured ... */
+            if(!e.getMessage().startsWith("Hibernate Search Event listeners not configured")){
+                throw e;
+            }
+        }
+        getSession().clear();
+    }
+
+
+    // TODO merge with CdmApplicationDefaultConfiguration#startTransaction() into common base class
+    public TransactionStatus startTransaction(Boolean readOnly) {
+
+        DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
+        defaultTxDef.setReadOnly(readOnly);
+        TransactionDefinition txDef = defaultTxDef;
+
+        // Log some transaction-related debug information.
+        if (logger.isDebugEnabled()) {
+            logger.debug("Transaction name = " + txDef.getName());
+            logger.debug("Transaction facets:");
+            logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
+            logger.debug("Isolation level = " + txDef.getIsolationLevel());
+            logger.debug("Timeout = " + txDef.getTimeout());
+            logger.debug("Read Only = " + txDef.isReadOnly());
+            // org.springframework.orm.hibernate4.HibernateTransactionManager
+            // provides more transaction/session-related debug information.
+        }
+
+        TransactionStatus txStatus = transactionManager.getTransaction(txDef);
+
+        getSession().setFlushMode(FlushMode.COMMIT);
+
+        return txStatus;
+    }
+
+    // TODO merge with CdmApplicationDefaultConfiguration#startTransaction() into common base class
+    public void commitTransaction(TransactionStatus txStatus){
+        logger.debug("commiting transaction ...");
+        transactionManager.commit(txStatus);
+        return;
+    }
 
     /**
      * returns the next higher rank
@@ -466,7 +651,7 @@ public class TransmissionEngineOccurrence {
      */
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());
-        OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
+        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
         return rankVocabulary.getNextHigherTerm(rank);
     }
 
@@ -489,13 +674,23 @@ public class TransmissionEngineOccurrence {
                 logger.debug("reusing description for " + taxon.getTitleCache());
                 if (doClear) {
                     int deleteCount = 0;
+                    Set<DescriptionElementBase> deleteCandidates = new HashSet<DescriptionElementBase>();
                     for (DescriptionElementBase descriptionElement : description.getElements()) {
                         if(descriptionElement instanceof Distribution) {
-                            descriptionService.deleteDescriptionElement(descriptionElement);
-                            deleteCount++;
+                            deleteCandidates.add(descriptionElement);
                         }
                     }
-                    logger.debug("\t" + deleteCount +" distributions cleared");
+                    if(deleteCandidates.size() > 0){
+                        for(DescriptionElementBase descriptionElement : deleteCandidates) {
+                            description.removeElement(descriptionElement);
+                            descriptionService.deleteDescriptionElement(descriptionElement);
+                            descriptionElement = null;
+                            deleteCount++;
+                        }
+                        descriptionService.saveOrUpdate(description);
+                        logger.debug("\t" + deleteCount +" distributions cleared");
+                    }
+
                 }
                 return description;
             }
@@ -516,6 +711,9 @@ public class TransmissionEngineOccurrence {
     private Set<NamedArea> getSubAreasFor(NamedArea superArea) {
 
         if(!subAreaMap.containsKey(superArea)) {
+            if(logger.isDebugEnabled()){
+                logger.debug("loading included areas for " + superArea.getLabel());
+            }
             subAreaMap.put(superArea, superArea.getIncludes());
         }
         return subAreaMap.get(superArea);
@@ -535,9 +733,11 @@ public class TransmissionEngineOccurrence {
      * This method must be called in a transactional context and the transaction should be committed after
      * running this method.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void updatePriorities() {
-        Map<PresenceAbsenceTermBase, Integer> priorityMap = new HashMap<PresenceAbsenceTermBase, Integer>();
+
+        TransactionStatus txStatus = startTransaction(false);
+
+        Map<PresenceAbsenceTermBase<?>, Integer> priorityMap = new HashMap<PresenceAbsenceTermBase<?>, Integer>();
 
         priorityMap.put(AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(), 1);
         priorityMap.put(PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(), 2);
@@ -556,9 +756,9 @@ public class TransmissionEngineOccurrence {
         priorityMap.put(PresenceTerm.NATIVE(), 130); // null
         priorityMap.put(PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(), 999);
 
-        for(PresenceAbsenceTermBase term : priorityMap.keySet()) {
+        for(PresenceAbsenceTermBase<?> term : priorityMap.keySet()) {
             // load the term
-            term = (PresenceAbsenceTermBase) termService.load(term.getUuid());
+            term = (PresenceAbsenceTermBase<?>) termService.load(term.getUuid());
             // find the extension
             Extension priotityExtension = null;
             Set<Extension> extensions = term.getExtensions();
@@ -584,5 +784,6 @@ public class TransmissionEngineOccurrence {
             }
         }
 
+        commitTransaction(txStatus);
     }
 }

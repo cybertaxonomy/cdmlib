@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,11 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
-import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
-import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 
 @Controller
 @RequestMapping(value = {"/manage"})
@@ -46,6 +42,7 @@ public class ManagementController
 
     @Autowired
     public ProgressMonitorController progressMonitorController;
+
 
     /**
      * There should only be one processes operating on the lucene index
@@ -106,6 +103,7 @@ public class ManagementController
         if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
             indexMonitorUuid = progressUtil.registerNewMonitor();
             Thread subThread = new Thread(){
+                @Override
                 public void run(){
                     indexer.reindex(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
@@ -137,6 +135,7 @@ public class ManagementController
         if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
             indexMonitorUuid = progressUtil.registerNewMonitor();
             Thread subThread = new Thread(){
+                @Override
                 public void run(){
                     indexer.purge(progressMonitorController.getMonitor(indexMonitorUuid));
                 }

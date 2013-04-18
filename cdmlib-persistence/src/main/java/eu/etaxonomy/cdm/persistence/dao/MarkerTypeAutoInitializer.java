@@ -9,22 +9,22 @@
 */
 package eu.etaxonomy.cdm.persistence.dao;
 
-import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
 
 /**
  * @author a.kohlbecker
  * @date 30.07.2010
  *
  */
-public class AnnotationTypeAutoInitializer extends AutoPropertyInitializer<Annotation> {
+public class MarkerTypeAutoInitializer extends AutoPropertyInitializer<Marker> {
 
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.BeanAutoInitializer#initialize(eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public void initialize(Annotation bean) {
-        beanInitializer.initializeInstance(bean.getAnnotationType());
+    public void initialize(Marker bean) {
+        beanInitializer.initializeInstance(bean.getMarkerType());
     }
 
 }

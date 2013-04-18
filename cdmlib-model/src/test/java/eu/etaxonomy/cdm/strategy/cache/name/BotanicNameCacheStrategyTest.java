@@ -108,7 +108,7 @@ public class BotanicNameCacheStrategyTest {
 		citationRef.setVolume("1");
 		citationRef.setEdition("ed. 8");
 		GregorianCalendar testDate = new GregorianCalendar();
-		testDate.set(1768, 3, 1);
+		testDate.set(1768, 3, 2);
 		
 		TimePeriod period = TimePeriod.NewInstance(testDate);
 		
@@ -186,9 +186,9 @@ public class BotanicNameCacheStrategyTest {
 	 */
 	@Test
 	public final void testGetFullTitleCache() {
-		assertNull(speciesNameString, strategy.getFullTitleCache(null));
+		assertNull("Full title cache of null object should return null", strategy.getFullTitleCache(null));
 		//NOTE: Unclear if the date part should contain the full date or only the year. Undefined Behaviour.
-		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 1.4.1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
+		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2.4.1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
 		
 //		assertNull(subSpeciesNameString, strategy.getFullTitleCache(null));
 //		assertEquals("Abies alba app phrase L. Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));

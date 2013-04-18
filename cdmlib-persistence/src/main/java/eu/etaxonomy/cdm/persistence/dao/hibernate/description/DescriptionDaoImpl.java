@@ -63,6 +63,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         indexedClasses[2] = SpecimenDescription.class;
     }
 
+    @Override
     public int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status) {
         checkNotInPriorView("DescriptionDaoImpl.countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status)");
         Query query = null;
@@ -78,6 +79,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         return ((Long)query.uniqueResult()).intValue();
     }
 
+    @Override
     public int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<? extends DescriptionElementBase> clazz) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -137,6 +139,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
     }
 
+    @Override
     public int countDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
         checkNotInPriorView("DescriptionDaoImpl.countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> features)");
         Criteria inner = null;
@@ -173,6 +176,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         return ((Number) inner.uniqueResult()).intValue();
     }
 
+    @Override
     public int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -242,6 +246,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
     }
 
+    @Override
     public List<DescriptionElementBase> getDescriptionElements(DescriptionBase description, Set<Feature> features,Class<? extends DescriptionElementBase> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
@@ -268,7 +273,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 }
             }
 
-            List<DescriptionElementBase> results = (List<DescriptionElementBase>)criteria.list();
+            List<DescriptionElementBase> results = criteria.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -290,7 +295,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     }
 
                     query.add(AuditEntity.relatedId("feature").eq(f.getId()));
-                    result.addAll((List<DescriptionElementBase>)query.getResultList());
+                    result.addAll(query.getResultList());
                 }
             } else {
                 AuditQuery query = null;
@@ -313,6 +318,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
     }
 
+    @Override
     public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -347,7 +353,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 }
             }
 
-            List<TaxonDescription> results = (List<TaxonDescription>)criteria.list();
+            List<TaxonDescription> results = criteria.list();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -368,7 +374,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     }
                 }
 
-                List<TaxonDescription> results = (List<TaxonDescription>)query.getResultList();
+                List<TaxonDescription> results = query.getResultList();
                 defaultBeanInitializer.initializeAll(results, propertyPaths);
                 return results;
             } else {
@@ -377,6 +383,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
     }
 
+    @Override
     public List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -393,7 +400,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
               }
           }
 
-          List<TaxonNameDescription> results = (List<TaxonNameDescription>)criteria.list();
+          List<TaxonNameDescription> results = criteria.list();
 
           defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -412,7 +419,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                   }
             }
 
-            List<TaxonNameDescription> results = (List<TaxonNameDescription>)query.getResultList();
+            List<TaxonNameDescription> results = query.getResultList();
 
             defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -421,6 +428,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     }
 
+    @Override
     public int countTaxonNameDescriptions(TaxonNameBase name) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -452,6 +460,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
      *
      * outer.add(Subqueries.propertyIn("id", inner));
      */
+    @Override
     public List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("DescriptionDaoImpl.listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber)");
         Criteria inner = null;
@@ -485,7 +494,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         inner.setProjection(Projections.distinct(Projections.id()));
 
-        List<Object> intermediateResult = (List<Object>)inner.list();
+        List<Object> intermediateResult = inner.list();
 
         if(intermediateResult.isEmpty()) {
             return new ArrayList<DescriptionBase>();
@@ -514,11 +523,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
         }
 
-        List<DescriptionBase> results = (List<DescriptionBase>)outer.list();
+        List<DescriptionBase> results = outer.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
+    @Override
     public List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("DescriptionDaoImpl.searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 
@@ -549,10 +559,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         addOrder(criteria,orderHints);
 
-        List<Object> intermediateResult = (List<Object>)criteria.list();
+        List<Object> intermediateResult = criteria.list();
 
-        if(intermediateResult.isEmpty())
+        if(intermediateResult.isEmpty()) {
             return new ArrayList<TaxonDescription>();
+        }
 
         Integer[] resultIds = new Integer[intermediateResult.size()];
         for(int i = 0; i < resultIds.length; i++) {
@@ -567,11 +578,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         criteria.add(Restrictions.in("id", resultIds));
         addOrder(criteria,orderHints);
 
-        List<TaxonDescription> results = (List<TaxonDescription>)criteria.list();
+        List<TaxonDescription> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
+    @Override
     public List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
 
         Criteria crit = getSession().createCriteria(CommonTaxonName.class);
@@ -587,10 +599,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 crit.setFirstResult(pageNumber * pageSize);
             }
         }
-        List<CommonTaxonName> results = (List<CommonTaxonName>)crit.list();
+        List<CommonTaxonName> results = crit.list();
         return results;
     }
 
+    @Override
     public Integer countDescriptionByCommonName(String queryString, MatchMode matchMode) {
         //TODO inprove performance
         List<CommonTaxonName> results =  searchDescriptionByCommonName(queryString, matchMode, null, null);
@@ -624,6 +637,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     }
 
 
+    @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(
             Taxon taxon, Set<Feature> features,
             Class<T> type, Integer pageSize,
@@ -658,7 +672,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             }
         }
 
-        List<T> results = (List<T>) query.list();
+        List<T> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
 
         return results;
@@ -671,22 +685,22 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	public List<Media> listTaxonDescriptionMedia(UUID taxonUuid,
 			Boolean limitToGalleries, Set<MarkerType> markerTypes,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		
+
 	       	AuditEvent auditEvent = getAuditEventFromContext();
 	        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 	            String queryString = " SELECT media " +
 					getTaxonDescriptionMediaQueryString(
 						taxonUuid, limitToGalleries,  markerTypes);
-	            queryString += 
-	    			" GROUP BY media " 
+	            queryString +=
+	    			" GROUP BY media "
 //	    						" ORDER BY index(media) "  //not functional
 	    			;
-	            
+
 	            Query query = getSession().createQuery(queryString);
 
 	            setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
-	            
-	            
+
+
 //	            addMarkerTypesCriterion(markerTypes, hql);
 
 	            if(pageSize != null) {
@@ -696,7 +710,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	                }
 	            }
 
-	            List<Media> results = (List<Media>)query.list();
+	            List<Media> results = query.list();
 
 	            defaultBeanInitializer.initializeAll(results, propertyPaths);
 
@@ -705,7 +719,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	        	throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid, boolean restrictToGalleries)");
 	        }
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#countTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set)
@@ -718,36 +732,36 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         	String queryString = " SELECT count(DISTINCT media) " +
 	        	getTaxonDescriptionMediaQueryString(
 					taxonUuid, limitToGalleries, markerTypes);
-	    
+
         	Query query = getSession().createQuery(queryString);
         	setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
         	return ((Long)query.uniqueResult()).intValue();
 		}else{
         	throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
 		}
-		
+
 	}
 
 	private void setTaxonDescriptionMediaParameters(Query query, UUID taxonUuid, Boolean limitToGalleries, Set<MarkerType> markerTypes) {
 		if(taxonUuid != null){
 		    query.setParameter("uuid", taxonUuid);
 		}
-		
+
 	}
 
 	/**
 	 * @param taxonUuid
 	 * @param restrictToGalleries
-	 * @param markerTypes 
+	 * @param markerTypes
 	 * @return
 	 */
 	private String getTaxonDescriptionMediaQueryString(UUID taxonUuid,
 			Boolean restrictToGalleries, Set<MarkerType> markerTypes) {
 		String fromQueryString =
 			" FROM DescriptionElementBase as deb INNER JOIN " +
-				" deb.inDescription as td " 
-				+ " INNER JOIN td.taxon as t " 
-				+ " JOIN deb.media as media " 
+				" deb.inDescription as td "
+				+ " INNER JOIN td.taxon as t "
+				+ " JOIN deb.media as media "
 				+ " LEFT JOIN td.markers marker ";
 
 		String whereQueryString = " WHERE (1=1) ";
@@ -761,15 +775,15 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			whereQueryString += " AND (1=0";
 			for (MarkerType markerType : markerTypes){
 				whereQueryString += " OR ( marker.markerType.id = " + markerType.getId() + " AND marker.flag is true)";
-				
+
 			}
 			whereQueryString += ") ";
 		}
-		
+
 		return fromQueryString + whereQueryString;
-		
+
 	}
-	
-    
-    
+
+
+
 }

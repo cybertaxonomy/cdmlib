@@ -134,9 +134,8 @@ public class TestSpecimen {
 		specimen.addSource(source);
 		
 		FieldObservation fieldObservation = FieldObservation.NewInstance();
-		DerivationEvent derivationEvent = DerivationEvent.NewInstance();
+		DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.GATHERING_IN_SITU());
 		derivationEvent.addDerivative(specimen);
-		derivationEvent.setType(DerivationEventType.GATHERING_IN_SITU());
 		fieldObservation.addDerivationEvent(derivationEvent);
 		fieldObservation.setGatheringEvent(gatheringEvent);
 		

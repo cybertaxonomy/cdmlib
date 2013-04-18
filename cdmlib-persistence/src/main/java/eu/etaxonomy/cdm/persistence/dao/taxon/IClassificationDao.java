@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.taxon;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 /**
@@ -37,5 +37,8 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @return
      */
     public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths);
+
+    public long countRankSpecificRootNodes(Classification classification, Rank rank);
+
 
 }
