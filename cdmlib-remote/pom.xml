@@ -146,19 +146,11 @@
       <groupId>net.sf.dozer</groupId>
       <artifactId>dozer</artifactId>
     </dependency>
-<!--     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency> -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-cglib-repack</artifactId>
     </dependency>
-<!--     <dependency>
-    <groupId>org.hibernate</groupId>
-    <artifactId>hibernate-core</artifactId>
-  </dependency> -->
-  <dependency>
+  	<dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-ehcache</artifactId>
     </dependency>
@@ -190,18 +182,7 @@
       <artifactId>stax</artifactId>
     </dependency>
 
-    <!-- JSP TAG LIBS -->
- <!--    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-      <version>1.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>x</artifactId>
-      <version>1.1.2</version>
-      <type>tld</type>
-    </dependency> -->
+
     <!--  Connection Pooling  -->
         <dependency>
             <groupId>org.hibernate</groupId>
