@@ -64,8 +64,6 @@ public class ProgressMonitorUtil {
             mv.addObject(jsonpRedirect);
 
         } else {
-            // TODO consider using the RedirectView instead
-//            response.sendError(303, processLabel + " started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
             RedirectView redirectView = new RedirectView(monitorPath);
             mv.setView(redirectView);
         }
