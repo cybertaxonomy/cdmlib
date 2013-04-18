@@ -616,13 +616,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         TransactionDefinition txDef = defaultTxDef;
 
         // Log some transaction-related debug information.
-        if (logger.isDebugEnabled()) {
-            logger.debug("Transaction name = " + txDef.getName());
-            logger.debug("Transaction facets:");
-            logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
-            logger.debug("Isolation level = " + txDef.getIsolationLevel());
-            logger.debug("Timeout = " + txDef.getTimeout());
-            logger.debug("Read Only = " + txDef.isReadOnly());
+        if (logger.isTraceEnabled()) {
+            logger.trace("Transaction name = " + txDef.getName());
+            logger.trace("Transaction facets:");
+            logger.trace("Propagation behavior = " + txDef.getPropagationBehavior());
+            logger.trace("Isolation level = " + txDef.getIsolationLevel());
+            logger.trace("Timeout = " + txDef.getTimeout());
+            logger.trace("Read Only = " + txDef.isReadOnly());
             // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }

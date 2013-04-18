@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -173,7 +172,6 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    @Ignore
     public void testArea_area() throws FileNotFoundException {
 
         addDistributions(
@@ -206,7 +204,6 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    @Ignore
     public void testArea_rank_and_area() throws FileNotFoundException {
 
         addDistributions(
@@ -268,6 +265,8 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
              description.addElement(distribution);
         }
         taxonService.saveOrUpdate(taxon);
+        // need to write to database for transmission engine
+        commitAndStartNewTransaction(null);
     }
 
 
