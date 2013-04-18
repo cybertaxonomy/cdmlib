@@ -33,9 +33,9 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -91,7 +90,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date Feb 22, 2013
  */
 @Service
-public class TransmissionEngineDistribution {
+
+public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
 
@@ -117,7 +117,7 @@ public class TransmissionEngineDistribution {
     private IClassificationService classificationService;
 
     @Autowired
-    private IVocabularyService vocabularyService;
+    private INameService mameService;
 
     @Autowired
     private HibernateTransactionManager transactionManager;
@@ -428,6 +428,7 @@ public class TransmissionEngineDistribution {
                         }
                         // store new distribution element for superArea in taxon description
                         Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
+                        newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                         description.addElement(newDistribitionElement);
                     }
 
@@ -561,6 +562,7 @@ public class TransmissionEngineDistribution {
                         for (NamedArea area : accumulatedStatusMap.keySet()) {
                             // store new distribution element in new Description
                             Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
+                            newDistribitionElement.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
                             description.addElement(newDistribitionElement);
                         }
                         taxonService.saveOrUpdate(taxon);
@@ -649,7 +651,7 @@ public class TransmissionEngineDistribution {
      */
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());
-        OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary<Rank>) vocabularyService.getVocabulary(VocabularyEnum.Rank);
+        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
         return rankVocabulary.getNextHigherTerm(rank);
     }
 
