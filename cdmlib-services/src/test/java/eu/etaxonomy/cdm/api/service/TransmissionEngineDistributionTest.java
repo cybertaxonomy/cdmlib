@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineOccurrence;
+import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @date Feb 26, 2013
  *
  */
-public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegrationTest {
+public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
     private static Logger logger = Logger.getLogger(DescriptionServiceImplTest.class);
@@ -80,7 +80,7 @@ public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegratio
     private IReferenceService referenceService;
 
     @SpringBeanByType
-    private TransmissionEngineOccurrence engine;
+    private TransmissionEngineDistribution engine;
 
     // --- Distributions --- //
     // tdwg3 level YUG :  Yugoslavia
@@ -130,7 +130,7 @@ public class TransmissionEngineOccurrenceTest extends CdmTransactionalIntegratio
     public void testPriorities() throws FileNotFoundException {
 
         Set extensions = termService.load(PresenceTerm.CULTIVATED().getUuid()).getExtensions();
-        assertEquals(TransmissionEngineOccurrence.EXTENSION_VALUE_PREFIX + "45", ((Extension)extensions.iterator().next()).getValue());
+        assertEquals(TransmissionEngineDistribution.EXTENSION_VALUE_PREFIX + "45", ((Extension)extensions.iterator().next()).getValue());
     }
 
     @Test

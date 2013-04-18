@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.description.TransmissionEngineOccurrence;
+import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -550,7 +550,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
     public void aggregateDistributions(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank) {
 
-//        TransmissionEngineOccurrence engine = new TransmissionEngineOccurrence(superAreas, lowerRank, upperRank);
+//        transmissionEngineDistribution engine = new transmissionEngineDistribution(superAreas, lowerRank, upperRank);
 
     }
 

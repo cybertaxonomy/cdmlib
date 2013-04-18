@@ -2034,7 +2034,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/NameDeletionCo
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineOccurrence.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineDistribution.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text
@@ -2110,7 +2110,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusin
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineOccurrenceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineDistributionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text

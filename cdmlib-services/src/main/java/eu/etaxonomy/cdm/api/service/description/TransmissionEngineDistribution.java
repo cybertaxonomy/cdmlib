@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,10 +46,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
- * The TransmissionEngineOccurrence is meant to be used from within a service class.
+ * The TransmissionEngineDistribution is meant to be used from within a service class.
  *
  * <h2>GENERAL NOTES </h2>
- *<em>TODO: These notes are directly taken from original Transmission Engine Occurrence
+ * <em>TODO: These notes are directly taken from original Transmission Engine Occurrence
  * version 14 written in Visual Basic and still need to be
  * adapted to the java version of the transmission engine!</em>
  *
@@ -78,11 +77,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 @Service
 @Transactional(readOnly = false)
-public class TransmissionEngineOccurrence {
+public class TransmissionEngineDistribution {
 
-    public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineOccurrence.priority:";
+    public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
 
-    public static final Logger logger = Logger.getLogger(TransmissionEngineOccurrence.class);
+    public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
 
     private static final Integer batchSize = 1000;
 
@@ -189,7 +188,7 @@ public class TransmissionEngineOccurrence {
      *
      * @param superAreas
      */
-    public TransmissionEngineOccurrence() {
+    public TransmissionEngineDistribution() {
     }
 
     /**
@@ -293,7 +292,7 @@ public class TransmissionEngineOccurrence {
      * </ul>
      *
      * @param superAreas
-     *      the areas to which the subordinate areas should be projected
+     *      the areas to which the subordinate areas should be projected.
      * @param lowerRank
      * @param upperRank
      * @param classification
@@ -302,12 +301,8 @@ public class TransmissionEngineOccurrence {
      */
     public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification) {
 
-        List<NamedArea> superAreasReloaded = new ArrayList<NamedArea>(superAreas.size());
-        for(NamedArea area : superAreas){
-            superAreasReloaded.add((NamedArea) termService.load(area.getUuid()));
-
-        }
-        accumulateByArea(superAreasReloaded, classification);
+        // superAreas will be reloaded internally in accumulateByArea
+        accumulateByArea(superAreas, classification);
         accumulateByRank(lowerRank, upperRank, classification);
     }
 
