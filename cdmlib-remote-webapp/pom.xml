@@ -62,20 +62,13 @@
         <classifier>jdk15</classifier>
       </dependency>
 
-
-      <!-- XmlView -->
-      
-      <dependency>
-      	<groupId>xom</groupId>
-        <artifactId>xom</artifactId>
-      </dependency>
-
+      <!-- Profiling -->
       <dependency>
         <groupId>com.yourkit</groupId>
         <artifactId>yjp-controller-api-redist</artifactId>
         <scope>test</scope>
     </dependency>
- 
+
   </dependencies>
 
     <build>
