@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -150,7 +149,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                }
             );
 
-        engine.accumulate(superAreas, lowerRank, upperRank, null);
+        engine.accumulate(superAreas, lowerRank, upperRank, null, null);
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -187,7 +186,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(1, lapsana_communis_alpina.getDescriptions().size());
 
-        engine.accumulate(superAreas, lowerRank, upperRank, classification);
+        engine.accumulate(superAreas, lowerRank, upperRank, classification, null);
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -222,7 +221,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                }
             );
 
-        engine.accumulate(superAreas, lowerRank, upperRank, null);
+        engine.accumulate(superAreas, lowerRank, upperRank, null, null);
 
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         assertEquals(2, lapsana_communis.getDescriptions().size());

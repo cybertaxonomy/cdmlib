@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +25,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
 /**
  * @author a.mueller
@@ -50,11 +49,39 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         indexedClasses[0] = Classification.class;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank,
             Integer limit, Integer start, List<String> propertyPaths){
 
-        List<TaxonNode> results;
+        Query query = prepareRankSpecificRootNodes(classification, rank, false);
+
+        if(limit != null) {
+            query.setMaxResults(limit);
+            if(start != null) {
+                query.setFirstResult(start);
+            }
+        }
+
+        List<TaxonNode> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+
+    }
+
+    @Override
+    public long countRankSpecificRootNodes(Classification classification, Rank rank) {
+
+        Query query = prepareRankSpecificRootNodes(classification, rank, true);
+        return (Long)query.uniqueResult();
+    }
+
+    /**
+     * @param classification
+     * @param rank
+     * @return
+     */
+    private Query prepareRankSpecificRootNodes(Classification classification, Rank rank, boolean doCount) {
         Query query;
 
         String whereClassification = "";
@@ -62,13 +89,15 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
             whereClassification = " AND tn.classification = :classification ";
         }
 
+        String selectWhat = doCount ? "count(distinct tn)" : "distinct tn";
+
         if(rank == null){
-            String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
+            String hql = "SELECT " + selectWhat + " FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
                 " WHERE tn.parent = null " +
                 whereClassification;
             query = getSession().createQuery(hql);
         } else {
-            String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
+            String hql = "SELECT " + selectWhat + " FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
                 " WHERE " +
                 " (tn.taxon.name.rank = :rank" +
                 "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent = null)" +
@@ -83,19 +112,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         if (classification != null){
             query.setParameter("classification", classification);
         }
-
-        if(limit != null) {
-            query.setMaxResults(limit);
-            if(start != null) {
-                query.setFirstResult(start);
-            }
-        }
-
-        results = query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
-
+        return query;
     }
+
+
 
     @Override
     public UUID delete(Classification persistentObject){

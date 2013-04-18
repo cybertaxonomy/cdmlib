@@ -9,12 +9,14 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,10 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -286,24 +292,37 @@ public class TransmissionEngineDistribution {
     /**
      * runs both steps
      * <ul>
-     *  <li>Step 1: Accumulate occurrence records by area</li>
-     *  <li>Step 2: Accumulate by ranks starting from lower rank to upper rank, the status of all children
-     * are accumulated on each rank starting from lower rank to upper rank.</li>
+     * <li>Step 1: Accumulate occurrence records by area</li>
+     * <li>Step 2: Accumulate by ranks starting from lower rank to upper rank,
+     * the status of all children are accumulated on each rank starting from
+     * lower rank to upper rank.</li>
      * </ul>
      *
      * @param superAreas
-     *      the areas to which the subordinate areas should be projected.
+     *            the areas to which the subordinate areas should be projected.
      * @param lowerRank
      * @param upperRank
      * @param classification
      * @param classification
-     *      limit the accumulation process to a specific classification (not yet implemented)
+     *            limit the accumulation process to a specific classification
+     *            (not yet implemented)
+     * @param monitor
+     *            the progress monitor to use for reporting progress to the
+     *            user. It is the caller's responsibility to call done() on the
+     *            given monitor. Accepts null, indicating that no progress
+     *            should be reported and that the operation cannot be cancelled.
      */
-    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification) {
+    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification,
+            IProgressMonitor monitor) {
 
+        if(monitor == null){
+            monitor = new NullProgressMonitor();
+        }
+
+        monitor.beginTask("Accumulating distributions", 400);
         // superAreas will be reloaded internally in accumulateByArea
-        accumulateByArea(superAreas, classification);
-        accumulateByRank(lowerRank, upperRank, classification);
+        accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200));
+        accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200));
     }
 
     /**
@@ -322,41 +341,58 @@ public class TransmissionEngineDistribution {
      * @param classification
      *      limit the accumulation process to a specific classification (not yet implemented)
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification) {
+    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor) {
+
+        // reload superAreas TODO is it faster to termService.getSession().merge(object) ??
+        Set<UUID> superAreaUuids = new HashSet<UUID>(superAreas.size());
+        for (NamedArea superArea : superAreas){
+            superAreaUuids.add(superArea.getUuid());
+        }
+        List<DefinedTermBase> superAreaList = termService.find(superAreaUuids);
 
         // visit all accepted taxa
-        List<TaxonBase> taxa = null;
+        Pager<TaxonBase> taxonPager = null;
         int start = 0;
         while (true) {
-            taxa = taxonService.list(Taxon.class, batchSize, start, null, null); //TODO limit by classification is not null
+
+            //TODO limit by classification if not null
+            taxonPager = taxonService.page(Taxon.class, batchSize, start, null, null);
+            subMonitor.beginTask("Accumulating by area ",  taxonPager.getCount());
+
             logger.debug("accumulateByArea() - next " + batchSize + " taxa at position " + start);
-            if (taxa.size() == 0){
+            if (taxonPager.getRecords().size() == 0){
                 break;
             }
-            for(TaxonBase taxonBase : taxa) {
+
+            for(TaxonBase taxonBase : taxonPager.getRecords()) {
                 if(logger.isDebugEnabled()){
                     logger.debug("accumulateByArea() - taxon :" + taxonBase.getTitleCache());
                 }
                 Taxon taxon = (Taxon)taxonBase;
 
+                // if the taxon has a COMPUTED description existing distributions will be
+                // deleted and the transaction is restarted
+                TaxonDescription description = findComputedDescription(taxon, true);
+
                 List<Distribution> distributions = distributionsFor(taxon);
 
                 // Step through superAreas for accumulation of subAreas
-                for (NamedArea superArea : superAreas){
+                for (DefinedTermBase superAreaTermBase : superAreaList){
+                    NamedArea superArea = (NamedArea)superAreaTermBase;
+
                     // accumulate all sub area status
-                    superArea = (NamedArea) termService.load(superArea.getUuid());
-                    PresenceAbsenceTermBase accumulatedStatus = null;
+                    PresenceAbsenceTermBase<?> accumulatedStatus = null;
                     Set<NamedArea> subAreas = getSubAreasFor(superArea);
                     for(NamedArea subArea : subAreas){
-                        if(logger.isDebugEnabled()){
-                            logger.debug("accumulateByArea() - \t\t" + subArea.getLabel());
+                        if(logger.isTraceEnabled()){
+                            logger.trace("accumulateByArea() - \t\t" + subArea.getLabel());
                         }
                         // step through all distributions for the given subArea
                         for(Distribution distribution : distributions){
                             if(distribution.getArea().equals(subArea) && distribution.getStatus() != null) {
-                                PresenceAbsenceTermBase status = distribution.getStatus();
-                                if(logger.isDebugEnabled()){
-                                    logger.debug("accumulateByArea() - \t\t" + subArea.getLabel() + ": " + status.getLabel());
+                                PresenceAbsenceTermBase<?> status = distribution.getStatus();
+                                if(logger.isTraceEnabled()){
+                                    logger.trace("accumulateByArea() - \t\t" + subArea.getLabel() + ": " + status.getLabel());
                                 }
                                 // skip all having a status value different of those in byAreaIgnoreStatusList
                                 if (getByAreaIgnoreStatusList().contains(status)){
@@ -366,20 +402,20 @@ public class TransmissionEngineDistribution {
                             }
                         }
                     } // next sub area
-
                     if (accumulatedStatus != null) {
                         if(logger.isDebugEnabled()){
                             logger.debug("accumulateByArea() - \t >> " + superArea.getLabel() + ": " + accumulatedStatus.getLabel());
                         }
                         // store new distribution element for superArea in taxon description
-                        TaxonDescription description = findComputedDescription(taxon, true);
                         Distribution newDistribitionElement = Distribution.NewInstance(superArea, accumulatedStatus);
                         description.addElement(newDistribitionElement);
                         descriptionService.saveOrUpdate(description);
                     }
                 } // next super area ....
+                subMonitor.worked(1);
             } // next taxon
             start = start + batchSize;
+            subMonitor.done();
         }
     }
 
@@ -396,7 +432,7 @@ public class TransmissionEngineDistribution {
     *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
     *</ul>
     */
-    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification) {
+    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor) {
 
         // the loadRankSpecificRootNodes() method not only finds
         // taxa of the specified rank but also taxa of lower ranks
@@ -404,22 +440,35 @@ public class TransmissionEngineDistribution {
         // remember which taxa have been processed already
         Set<Integer> taxaProcessedIds = new HashSet<Integer>();
 
+        Rank currentRank = lowerRank;
+        List<Rank> ranks = new ArrayList<Rank>();
+        ranks.add(currentRank);
+        while (!currentRank.isHigher(upperRank)) {
+            currentRank = findNextHigherRank(currentRank);
+            ranks.add(currentRank);
+        }
 
-        //TODO loop over ranks from lower to higher
-        Rank rank = lowerRank;
-        while (!rank.isHigher(upperRank)) {
+        int ticksPerRank = 100;
+        subMonitor.beginTask("Accumulating by rank", ranks.size() * ticksPerRank);
+
+        for (Rank rank : ranks) {
             if(logger.isDebugEnabled()){
                 logger.debug("accumulateByRank() - at Rank '" + rank.getLabel() + "'");
             }
             int start = 0;
             while (true) {
-                List<TaxonNode> taxonNodes = classificationService
-                        .loadRankSpecificRootNodes(classification, rank, batchSize, start, null);
-                logger.debug("accumulateByRank() - next " + batchSize + " taxa at position " + start);
-                if (taxonNodes.size() == 0){
+                Pager<TaxonNode> taxonPager = classificationService
+                        .pageRankSpecificRootNodes(classification, rank, batchSize, start, null);
+
+                SubProgressMonitor taxonSubMonitor = new SubProgressMonitor(subMonitor, ticksPerRank);
+                taxonSubMonitor.beginTask("Accumulating by rank " + rank.getLabel(), taxonPager.getCount());
+
+                if (taxonPager.getRecords().size() == 0){
                     break;
                 }
-                for(TaxonNode taxonNode : taxonNodes) {
+
+                logger.debug("accumulateByRank() - next " + batchSize + " taxa at position " + start);
+                for(TaxonNode taxonNode : taxonPager.getRecords()) {
 
                     Taxon taxon = taxonNode.getTaxon();
                     if (taxaProcessedIds.contains(taxon.getId())) {
@@ -435,6 +484,7 @@ public class TransmissionEngineDistribution {
 
                     // Step through direct taxonomic children for accumulation
 
+                    @SuppressWarnings("rawtypes")
                     Map<NamedArea, PresenceAbsenceTermBase> accumulatedStatusMap = new HashMap<NamedArea, PresenceAbsenceTermBase>();
 
                     for (TaxonNode subTaxonNode : taxonNode.getChildNodes()){
@@ -457,11 +507,14 @@ public class TransmissionEngineDistribution {
                         }
                         descriptionService.saveOrUpdate(description);
                     }
+                    taxonSubMonitor.worked(1); // one taxon worked
                 } // next taxon node ....
                 start = start + batchSize;
+                taxonSubMonitor.done();
             } // next batch
-            rank = findNextHigherRank(rank);
+            subMonitor.worked(1);
         } // next Rank
+        subMonitor.done();
     }
 
 
@@ -498,13 +551,23 @@ public class TransmissionEngineDistribution {
                 logger.debug("reusing description for " + taxon.getTitleCache());
                 if (doClear) {
                     int deleteCount = 0;
+                    Set<DescriptionElementBase> deleteCandidates = new HashSet<DescriptionElementBase>();
                     for (DescriptionElementBase descriptionElement : description.getElements()) {
                         if(descriptionElement instanceof Distribution) {
-                            descriptionService.deleteDescriptionElement(descriptionElement);
-                            deleteCount++;
+                            deleteCandidates.add(descriptionElement);
                         }
                     }
-                    logger.debug("\t" + deleteCount +" distributions cleared");
+                    if(deleteCandidates.size() > 0){
+                        for(DescriptionElementBase descriptionElement : deleteCandidates) {
+                            description.removeElement(descriptionElement);
+                            descriptionService.deleteDescriptionElement(descriptionElement);
+                            descriptionElement = null;
+                            deleteCount++;
+                        }
+                        descriptionService.saveOrUpdate(description);
+                        logger.debug("\t" + deleteCount +" distributions cleared");
+                    }
+
                 }
                 return description;
             }
@@ -525,6 +588,9 @@ public class TransmissionEngineDistribution {
     private Set<NamedArea> getSubAreasFor(NamedArea superArea) {
 
         if(!subAreaMap.containsKey(superArea)) {
+            if(logger.isDebugEnabled()){
+                logger.debug("loading included areas for " + superArea.getLabel());
+            }
             subAreaMap.put(superArea, superArea.getIncludes());
         }
         return subAreaMap.get(superArea);

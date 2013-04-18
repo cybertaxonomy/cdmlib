@@ -25,6 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -84,6 +87,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadTaxonNodeByTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.UUID, java.util.List)
      */
+    @Override
     public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID classificationUuid, List<String> propertyPaths){
         Classification tree = dao.load(classificationUuid);
         TaxonNode node = tree.getNode(taxon);
@@ -91,6 +95,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         return loadTaxonNode(node.getUuid(), propertyPaths);
     }
 
+    @Override
     @Deprecated // use loadTaxonNode(UUID, List<String>) instead
     public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths){
         return taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
@@ -104,6 +109,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
      */
+    @Override
+    @Deprecated
     public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths){
 
         List<TaxonNode> rootNodes = dao.loadRankSpecificRootNodes(classification, rank, limit , start, propertyPaths);
@@ -117,12 +124,41 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         return rootNodes;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IClassificationService#listRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
+            Integer pageIndex, List<String> propertyPaths) {
+        return pageRankSpecificRootNodes(classification, rank, pageSize, pageIndex, propertyPaths).getRecords();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IClassificationService#pageRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank, Integer pageSize,
+            Integer pageIndex, List<String> propertyPaths) {
+        Long numberOfResults = dao.countRankSpecificRootNodes(classification, rank);
+
+        List<TaxonNode> results = new ArrayList<TaxonNode>();
+        if (numberOfResults > 0) { // no point checking again
+
+            results = dao.loadRankSpecificRootNodes(classification, rank, PagerUtils.limitFor(pageSize),
+                    PagerUtils.startFor(pageSize, pageIndex), propertyPaths);
+        }
+
+        return new DefaultPagerImpl<TaxonNode>(pageIndex, numberOfResults.intValue(), pageSize, results);
+
+    }
+
     /**
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
      * FIXME Candidate for harmonization
      * move to classification service
      */
+    @Override
     public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
@@ -152,6 +188,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadTreeBranchToTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
      */
+    @Override
     public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification, Rank baseRank, List<String> propertyPaths){
         Classification tree = dao.load(classification.getUuid());
         taxon = (Taxon) taxonDao.load(taxon.getUuid());
@@ -167,6 +204,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List)
      */
+    @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
             List<String> propertyPaths) {
         taxonNode = taxonNodeDao.load(taxonNode.getUuid());
@@ -180,6 +218,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List)
      */
+    @Override
     public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, Classification classification, List<String> propertyPaths){
         Classification tree = dao.load(classification.getUuid());
         taxon = (Taxon) taxonDao.load(taxon.getUuid());
@@ -198,6 +237,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#getTaxonNodeByUuid(java.util.UUID)
      */
+    @Override
     public TaxonNode getTaxonNodeByUuid(UUID uuid) {
         return taxonNodeDao.findByUuid(uuid);
     }
@@ -206,6 +246,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#getTreeNodeByUuid(java.util.UUID)
      */
+    @Override
     public ITreeNode getTreeNodeByUuid(UUID uuid){
         ITreeNode treeNode = taxonNodeDao.findByUuid(uuid);
         if(treeNode == null){
@@ -218,6 +259,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#listClassifications(java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
+    @Override
     public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(limit, start, orderHints, propertyPaths);
     }
@@ -225,12 +267,14 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#removeTaxonNode(eu.etaxonomy.cdm.model.taxon.Classification)
      */
+    @Override
     public UUID removeTaxonNode(TaxonNode taxonNode) {
         return taxonNodeDao.delete(taxonNode);
     }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#removeTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
      */
+    @Override
     public UUID removeTreeNode(ITreeNode treeNode) {
         if(treeNode instanceof Classification){
             return dao.delete((Classification) treeNode);
@@ -242,6 +286,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.Classification)
      */
+    @Override
     public UUID saveTaxonNode(TaxonNode taxonNode) {
         return taxonNodeDao.save(taxonNode);
     }
@@ -250,6 +295,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTaxonNodeAll(java.util.Collection)
      */
+    @Override
     public Map<UUID, TaxonNode> saveTaxonNodeAll(
             Collection<TaxonNode> taxonNodeCollection) {
         return taxonNodeDao.saveAll(taxonNodeCollection);
@@ -258,6 +304,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
      */
+    @Override
     public UUID saveTreeNode(ITreeNode treeNode) {
         if(treeNode instanceof Classification){
             return dao.save((Classification) treeNode);
@@ -267,6 +314,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         return null;
     }
 
+    @Override
     public List<TaxonNode> getAllNodes(){
         return taxonNodeDao.list(null,null);
     }
@@ -275,6 +323,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.Classification)
      */
+    @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification) {
         return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification);
     }
@@ -290,6 +339,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List, int, int, int, java.lang.String[])
      */
+    @Override
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(
             TaxonNode taxonNode, List<String> propertyPaths, int size,
             int height, int widthOrDuration, String[] mimeTypes) {
@@ -332,6 +382,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     }
 
+    @Override
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, Classification taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
         TaxonNode node = taxTree.getNode(taxon);
 
@@ -339,6 +390,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
 
+    @Override
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
      */

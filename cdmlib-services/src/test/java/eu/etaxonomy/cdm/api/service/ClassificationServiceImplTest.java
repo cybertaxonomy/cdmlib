@@ -16,10 +16,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -150,16 +149,16 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
      */
     @Test
     @DataSet
-    public final void testloadRankSpecificRootNodes(){
+    public final void testlistRankSpecificRootNodes(){
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
-        List<TaxonNode> taxonNodes = service.loadRankSpecificRootNodes(null, null, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, null, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(1, taxonNodes.size());
 
-        taxonNodes = service.loadRankSpecificRootNodes(classification, null, null, null, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, null, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(1, taxonNodes.size());
 
-        taxonNodes = service.loadRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), null, null, NODE_INIT_STRATEGY);
+        taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
 
     }
