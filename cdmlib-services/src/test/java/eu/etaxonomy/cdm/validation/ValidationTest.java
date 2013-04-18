@@ -77,7 +77,6 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	@Before
 	public void setUp() {
 
-
 		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 	}
