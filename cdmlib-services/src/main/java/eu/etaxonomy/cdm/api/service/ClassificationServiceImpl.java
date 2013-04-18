@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -59,24 +58,25 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
-    
+
     @Autowired
     private ITaxonDao taxonDao;
-    
+
     @Autowired
     private IBeanInitializer defaultBeanInitializer;
-    
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
      */
+    @Override
     @Autowired
     protected void setDao(IClassificationDao dao) {
         this.dao = dao;
     }
-    
+
     private Comparator<? super TaxonNode> taxonNodeComparator;
-    
+
     @Autowired
     public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
         this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
@@ -377,7 +377,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
         }
 
-
         return result;
 
     }
@@ -389,8 +388,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         return getAllMediaForChildNodes(node, propertyPaths, size, height, widthOrDuration, mimeTypes);
     }
 
-
-    @Override
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
      */
