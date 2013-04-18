@@ -239,7 +239,6 @@ public class EditGeoServiceUtilities {
 
 		groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
-
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
         Map<String, String> parameters = new HashMap<String, String>();
@@ -339,10 +338,11 @@ public class EditGeoServiceUtilities {
     }
 
 
-	/**
+    /**
 	 * Fills the layerMap and the statusList
+	 *
 	 * @param distributions
-	 * @param layerMap
+	 * @param layerMap see {@link #addAreaToLayerMap(Map, List, Distribution, NamedArea, IGeoServiceAreaMapping)}
 	 * @param statusList
 	 */
 	private static void groupStylesAndLayers(Set<Distribution> distributions,
@@ -365,18 +365,31 @@ public class EditGeoServiceUtilities {
 			//group areas by layers and styles
 			NamedArea area = distribution.getArea();
 
-
-            addArea(layerMap, statusList, distribution, area, mapping);
+            addAreaToLayerMap(layerMap, statusList, distribution, area, mapping);
         }
     }
 
 	/**
+	 * A layer map holds the following information:
+	 *
+	 * <ul>
+	 *   <li><b>String</b>: the WMSLayerName which matches the level of the
+	 *   contained distributions areas</li>
+	 *   <li><b>StyleMap</b>:</li>
+	 *   <ul>
+	 *     <li><b>Integer</b>: the index of the status in the
+	 *     <code>statusList</code></li>
+	 *     <li><b>Set{@code<Distribution>}</b>: the set of distributions having the
+	 *     same Status, the status list is populated in {@link #groupStylesAndLayers(Set, Map, List, IGeoServiceAreaMapping)}</li>
+	 *   </ul>
+	 * </ul>
+	 *
 	 * @param layerMap
 	 * @param statusList
 	 * @param distribution
 	 * @param area
 	 */
-	private static void addArea(Map<String, Map<Integer,
+	private static void addAreaToLayerMap(Map<String, Map<Integer,
 			Set<Distribution>>> layerMap,
 			List<PresenceAbsenceTermBase<?>> statusList,
 			Distribution distribution,
@@ -391,7 +404,7 @@ public class EditGeoServiceUtilities {
                 // if no layer is mapped this area descend into sub areas in order to project
                 // the distribution to those
                 for(NamedArea subArea : area.getIncludes()){
-                    addArea(layerMap, statusList, distribution, subArea, mapping);
+                    addAreaToLayerMap(layerMap, statusList, distribution, subArea, mapping);
                 }
 
             } else {
@@ -401,7 +414,7 @@ public class EditGeoServiceUtilities {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
                     layerMap.put(geoLayerString, styleMap);
                 }
-                addDistributionToMap(distribution, styleMap, statusList);
+                addDistributionToStyleMap(distribution, styleMap, statusList);
 
             }
         }
@@ -575,7 +588,7 @@ public class EditGeoServiceUtilities {
 	}
 
 
-    private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
+    private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTermBase<?>> statusList) {
         PresenceAbsenceTermBase<?> status = distribution.getStatus();
         if (status == null) {
