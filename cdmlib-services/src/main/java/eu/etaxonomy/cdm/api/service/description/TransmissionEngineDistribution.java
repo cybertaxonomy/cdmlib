@@ -31,8 +31,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import com.yourkit.api.Controller;
-
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -98,24 +96,6 @@ public class TransmissionEngineDistribution {
 
     public static final Logger logger = Logger.getLogger(TransmissionEngineDistribution.class);
 
-    private Controller controller = null;
-
-    private void captureMemorySnapshot() {
-        if (controller == null) {
-            try {
-                controller = new Controller();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            controller.forceGC();
-            logger.info("capturing snapshot ... ");
-            logger.info("new snapshot file: " + controller.captureMemorySnapshot());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**classification
      * A map which contains the status terms as key and the priority as value
@@ -372,8 +352,6 @@ public class TransmissionEngineDistribution {
 
         int batchSize = 1000;
 
-//        captureMemorySnapshot();
-
         TransactionStatus txStatus = startTransaction(false);
 
         // reload superAreas TODO is it faster to getSession().merge(object) ??
@@ -468,8 +446,6 @@ public class TransmissionEngineDistribution {
             // may grow too much and eats up all the heap
             commitTransaction(txStatus);
             txStatus = null;
-
-//            captureMemorySnapshot();
 
         } // next batch of taxa
 
@@ -608,7 +584,7 @@ public class TransmissionEngineDistribution {
             subMonitor.worked(1);
 
         } // next Rank
-//        captureMemorySnapshot();
+
         subMonitor.done();
     }
 
@@ -628,6 +604,7 @@ public class TransmissionEngineDistribution {
         }
         getSession().clear();
     }
+
 
     // TODO merge with CdmApplicationDefaultConfiguration#startTransaction() into common base class
     public TransactionStatus startTransaction(Boolean readOnly) {
