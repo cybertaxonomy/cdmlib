@@ -152,6 +152,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /**
      * flush the current session
      */
+    //TODO move into super class CdmApplicationDefaultConfiguration#flush() ?
     public void flush() {
         sessionFactory.getCurrentSession().flush();
     }
@@ -160,6 +161,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
      * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction()
      */
     @Override
+    //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(), remove duplicate
     public TransactionStatus startTransaction() {
         return startTransaction(false);
     }
@@ -192,12 +194,14 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     }
 
     @Override
+    //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean), remove duplicate?
     public void commitTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.commit(txStatus);
         return;
     }
 
+    //TODO move into super class CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
     public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.rollback(txStatus);
