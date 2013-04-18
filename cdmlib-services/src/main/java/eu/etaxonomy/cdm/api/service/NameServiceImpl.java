@@ -23,7 +23,6 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
@@ -271,6 +270,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
      * duplicate of findByName
      */
+    @Override
     @Deprecated
     public List getNamesByName(String name){
         return super.findCdmObjectsByTitle(name);
@@ -280,6 +280,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * TODO candidate for harmonization
      * new name findByName
      */
+    @Override
     public List<NonViralName> getNamesByNameCache(String nameCache){
         List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
         return result;
@@ -292,17 +293,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      *
      * findByTitle
      */
+    @Override
     public List<NonViralName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByTitle(titleCache, matchMode, null, null, null ,propertyPaths);
         return result;
     }
-    
+
     /**
      * TODO candidate for harmonization
      * new name saveHomotypicalGroups
      *
      * findByTitle
      */
+    @Override
     public List<NonViralName> findNamesByNameCache(String nameCache, MatchMode matchMode, List<String> propertyPaths){
         List result = dao.findByName(nameCache, matchMode, null, null, null ,propertyPaths);
         return result;
@@ -312,6 +315,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
      * Replace by load(UUID, propertyPaths)
      */
+    @Override
     @Deprecated
     public NonViralName findNameByUuid(UUID uuid, List<String> propertyPaths){
         return (NonViralName)dao.findByUuid(uuid, null ,propertyPaths);
@@ -320,6 +324,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     /**
      * TODO candidate for harmonization
      */
+    @Override
     public List getNamesByName(String name, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(name, sessionObject);
     }
@@ -328,6 +333,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
      * duplicate of findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths)
      */
+    @Override
     @Deprecated
     public List findNamesByTitle(String title){
         return super.findCdmObjectsByTitle(title);
@@ -337,6 +343,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @deprecated To be removed for harmonization see http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryConventions
      * duplicate of findByTitle()
      */
+    @Override
     @Deprecated
     public List findNamesByTitle(String title, CdmBase sessionObject){
         return super.findCdmObjectsByTitle(title, sessionObject);
@@ -346,6 +353,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * TODO candidate for harmonization
      * new name saveHomotypicalGroups
      */
+    @Override
     @Transactional(readOnly = false)
     public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
         return homotypicalGroupDao.saveAll(homotypicalGroups);
@@ -355,6 +363,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * TODO candidate for harmonization
      * new name saveTypeDesignations
      */
+    @Override
     @Transactional(readOnly = false)
     public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
         return typeDesignationDao.saveAll(typeDesignationCollection);
@@ -364,6 +373,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * TODO candidate for harmonization
      * new name saveReferencedEntities
      */
+    @Override
     @Transactional(readOnly = false)
     public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
         return referencedEntityDao.saveAll(referencedEntityCollection);
@@ -381,6 +391,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * TODO candidate for harmonization
      * new name getNomenclaturalStatus
      */
+    @Override
     public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
         return nomStatusDao.list(limit, start);
     }
@@ -389,6 +400,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * TODO candidate for harmonization
      * new name getTypeDesignations
      */
+    @Override
     public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
         return typeDesignationDao.getAllTypeDesignations(limit, start);
     }
@@ -396,6 +408,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * FIXME Candidate for harmonization
      * homotypicalGroupService.list
      */
+    @Override
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
         return homotypicalGroupDao.list(limit, start);
     }
@@ -404,6 +417,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * FIXME Candidate for harmonization
      * remove
      */
+    @Override
     @Deprecated
     public List<RelationshipBase> getAllRelationships(int limit, int start){
         return dao.getAllRelationships(limit, start);
@@ -411,10 +425,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     /**
      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.Rank)
+     * is this not the same as termService.getVocabulary(VocabularyEnum.Rank)
+     * since this returns OrderedTermVocabulary
+     *
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
      */
+    @Override
     public OrderedTermVocabulary<Rank> getRankVocabulary() {
         String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
         UUID uuid = UUID.fromString(uuidString);
@@ -429,11 +446,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      *  (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
      */
+    @Override
     public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
         String uuidString = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
         UUID uuid = UUID.fromString(uuidString);
         TermVocabulary<NameRelationshipType> nameRelTypeVocabulary =
-            (TermVocabulary)vocabularyDao.findByUuid(uuid);
+            vocabularyDao.findByUuid(uuid);
         return nameRelTypeVocabulary;
     }
 
@@ -443,11 +461,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
      */
+    @Override
     public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
         String uuidString = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
         UUID uuid = UUID.fromString(uuidString);
         TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary =
-            (TermVocabulary)vocabularyDao.findByUuid(uuid);
+            vocabularyDao.findByUuid(uuid);
         return nomStatusTypeVocabulary;
     }
 
@@ -457,11 +476,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      *  (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
      */
+    @Override
     public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
         String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
         UUID uuid = UUID.fromString(uuidString);
         TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary =
-            (TermVocabulary)vocabularyDao.findByUuid(uuid);
+            vocabularyDao.findByUuid(uuid);
         return typeDesigStatusVocabulary;
     }
 
@@ -472,6 +492,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
      */
+    @Override
     public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary() {
         String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
         UUID uuid = UUID.fromString(uuidString);
@@ -481,11 +502,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
 
+    @Override
     @Autowired
     protected void setDao(ITaxonNameDao dao) {
         this.dao = dao;
     }
 
+    @Override
     public Pager<HybridRelationship> getHybridNames(NonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countHybridNames(name, type);
 
@@ -523,29 +546,35 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
     }
 
+    @Override
     public List<NameRelationship> listFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
+    @Override
     public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
         return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
     }
 
+    @Override
     public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
+    @Override
     public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
         return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
     }
 
+    @Override
     public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status,
             Integer pageSize, Integer pageNumber) {
         return getTypeDesignations(name, status, pageSize, pageNumber, null);
     }
 
+    @Override
     public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status,
                 Integer pageSize, Integer pageNumber, List<String> propertyPaths){
         Integer numberOfResults = dao.countTypeDesignations(name, status);
@@ -562,6 +591,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * FIXME Candidate for harmonization
      * rename search
      */
+    @Override
     public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
@@ -577,10 +607,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#getUuidAndTitleCacheOfNames()
      */
+    @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
         return dao.getUuidAndTitleCacheOfNames();
     }
 
+    @Override
     public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
         Integer numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
 
@@ -592,6 +624,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
           return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    @Override
     public HomotypicalGroup findHomotypicalGroup(UUID uuid) {
         return homotypicalGroupDao.findByUuid(uuid);
     }
