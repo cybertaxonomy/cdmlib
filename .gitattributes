@@ -1469,6 +1469,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permissio
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/profiler/ProfilerController.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
