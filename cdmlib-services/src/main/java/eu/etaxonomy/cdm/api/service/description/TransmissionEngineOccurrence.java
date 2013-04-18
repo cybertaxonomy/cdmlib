@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +20,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -288,17 +288,26 @@ public class TransmissionEngineOccurrence {
      * runs both steps
      * <ul>
      *  <li>Step 1: Accumulate occurrence records by area</li>
-     *  <li> Step 2: Accumulate by ranks staring from lower rank to upper rank, the status of all children
+     *  <li>Step 2: Accumulate by ranks starting from lower rank to upper rank, the status of all children
      * are accumulated on each rank starting from lower rank to upper rank.</li>
      * </ul>
      *
      * @param superAreas
+     *      the areas to which the subordinate areas should be projected
      * @param lowerRank
      * @param upperRank
      * @param classification
+     * @param classification
+     *      limit the accumulation process to a specific classification (not yet implemented)
      */
     public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification) {
-        accumulateByArea(superAreas, classification);
+
+        List<NamedArea> superAreasReloaded = new ArrayList<NamedArea>(superAreas.size());
+        for(NamedArea area : superAreas){
+            superAreasReloaded.add((NamedArea) termService.load(area.getUuid()));
+
+        }
+        accumulateByArea(superAreasReloaded, classification);
         accumulateByRank(lowerRank, upperRank, classification);
     }
 
@@ -312,6 +321,11 @@ public class TransmissionEngineOccurrence {
      * <li>the source references of the accumulated distributions are also accumulated into the new distribution,,</li>
      * <li>this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
      * </ul>
+     *
+     * @param superAreas
+     *      the areas to which the subordinate areas should be projected
+     * @param classification
+     *      limit the accumulation process to a specific classification (not yet implemented)
      */
     protected void accumulateByArea(List<NamedArea> superAreas, Classification classification) {
 
