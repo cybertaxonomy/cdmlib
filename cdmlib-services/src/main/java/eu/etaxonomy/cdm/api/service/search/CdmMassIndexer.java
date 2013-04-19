@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -211,7 +212,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return new Class[] {
                 DescriptionElementBase.class,
                 Classification.class,
-                TaxonBase.class
+                TaxonBase.class,
+                TaxonNameBase.class
                 };
     }
 }
