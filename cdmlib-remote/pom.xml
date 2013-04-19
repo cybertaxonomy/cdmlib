@@ -126,8 +126,8 @@
 	    <dependency>
 	      <groupId>org.easymock</groupId>
 	      <artifactId>easymock</artifactId>
-	    </dependency>	    
-	    
+	    </dependency>
+
 	    <dependency>
 	      <groupId>com.ibm.lsid</groupId>
 	      <artifactId>lsid-server</artifactId>
@@ -181,6 +181,14 @@
       <groupId>stax</groupId>
       <artifactId>stax</artifactId>
     </dependency>
+
+        <!-- JsonView -->
+        <dependency>
+            <!-- for xml serialization (net.sf.json.xml.XMLSerializer)  -->
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+        </dependency>
+
 
 
     <!--  Connection Pooling  -->
