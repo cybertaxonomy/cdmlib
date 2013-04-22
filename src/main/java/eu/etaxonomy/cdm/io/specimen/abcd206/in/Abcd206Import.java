@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -242,7 +241,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(dataHolder.isocountry, dataHolder.country, getOccurrenceService(), getTermService());
-            WaterbodyOrCountry areaCountry = (WaterbodyOrCountry) unitsGatheringArea.getCountry();
+            unitsGatheringArea.setConfig(abcdstate.getConfig());
+            DefinedTermBase areaCountry =  unitsGatheringArea.getCountry();
 
             // other areas
             unitsGatheringArea = new UnitsGatheringArea(dataHolder.namedAreaList,getTermService());
@@ -256,7 +256,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             derivedUnitFacade.setLocality(gatheringEvent.getLocality());
             derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
             derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-            derivedUnitFacade.setCountry(areaCountry);
+            derivedUnitFacade.setCountry((NamedArea)areaCountry);
             for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
             derivedUnitFacade.addCollectingArea((NamedArea) area);
             }

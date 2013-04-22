@@ -22,6 +22,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -40,6 +43,7 @@ public class UnitsGatheringArea {
     private IOccurrenceService occurrenceService;
     private DefinedTermBase<?> wbc = null;
     Logger logger = Logger.getLogger(this.getClass());
+    private ImportConfiguratorBase<?, ?> config;
 
 
     /*
@@ -56,7 +60,7 @@ public class UnitsGatheringArea {
     }
 
     public UnitsGatheringArea(){
-
+        //
     }
 
     public void setParams(String isoCountry, String country, IOccurrenceService occurrenceService, ITermService termService){
@@ -106,13 +110,19 @@ public class UnitsGatheringArea {
                     }
                 }
             }
-            logger.info("matchingterms: "+matchingTerms.keySet().toString());
-            UUID areaUUID = askForArea(namedAreaStr, matchingTerms);
+//            logger.info("matchingterms: "+matchingTerms.keySet().toString());
+            UUID areaUUID = null;
+            areaUUID = getNamedAreaDecision(namedAreaStr);
+
+            if (areaUUID == null){
+                areaUUID = askForArea(namedAreaStr, matchingTerms);
+            }
             logger.info("selected area: "+areaUUID);
             if (areaUUID == null){
                 areaToAdd.add(namedAreaStr);
             } else {
                 areaSet.add(areaUUID);
+                addNamedAreaDecision(namedAreaStr,areaUUID);
             }
 
         }
@@ -121,6 +131,7 @@ public class UnitsGatheringArea {
             ar.setTitleCache(areaStr, true);
             termService.saveOrUpdate(ar);
             this.areas.add(ar);
+            addNamedAreaDecision(areaStr,ar.getUuid());
         }
         if (!areaSet.isEmpty()){
             List<DefinedTermBase> ldtb = termService.find(areaSet);
@@ -132,18 +143,18 @@ public class UnitsGatheringArea {
 
     private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms){
         matchingTerms.put("Nothing matches, create a new area",null);
-    JFrame frame = new JFrame("I have a question");
-    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    String s = (String)JOptionPane.showInputDialog(
-            frame,
-            "Several CDM-areas could match the current '"+namedAreaStr,
-            "Select the right one from the list",
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            matchingTerms.keySet().toArray(),
-            null);
+        JFrame frame = new JFrame("I have a question");
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        String s = (String)JOptionPane.showInputDialog(
+                frame,
+                "Several CDM-areas could match the current '"+namedAreaStr,
+                "Select the right one from the list",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                matchingTerms.keySet().toArray(),
+                null);
 
-    return matchingTerms.get(s);
+        return matchingTerms.get(s);
     }
 
     /*
@@ -167,26 +178,61 @@ public class UnitsGatheringArea {
         if (wbc == null){
             if (fullName != null && !fullName.isEmpty()){
 
-                    for (DefinedTermBase<?> na:termsList){
-                        if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
-                            if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
-                                matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
-                            }
+                for (DefinedTermBase<?> na:termsList){
+                    if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
+                        if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
+                            matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
                         }
                     }
-                    logger.info("matchingterms: "+matchingTerms.keySet().toString());
-                    UUID areaUUID = askForArea(fullName, matchingTerms);
+                }
+//                logger.info("matchingterms: "+matchingTerms.keySet().toString());
+                UUID areaUUID = null;
+                areaUUID = getNamedAreaDecision(fullName);
+
+                if (areaUUID == null){
+                    areaUUID = askForArea(fullName, matchingTerms);
                     logger.info("selected area: "+areaUUID);
-                    if (areaUUID == null){
-                        NamedArea ar = NamedArea.NewInstance();
-                        ar.setTitleCache(fullName, true);
-                        termService.saveOrUpdate(ar);
-                        wbc = ar;
-                    } else {
-                        wbc = termService.find(areaUUID);
-                    }
+                }
+                if (areaUUID == null){
+                    NamedArea ar = NamedArea.NewInstance();
+                    ar.setTitleCache(fullName, true);
+                    termService.saveOrUpdate(ar);
+                    wbc = ar;
+                } else {
+                    wbc = termService.find(areaUUID);
+                }
+                addNamedAreaDecision(fullName,wbc.getUuid());
             }
         }
+    }
+
+    /**
+     * @param fullName
+     * @param uuid
+     */
+    private void addNamedAreaDecision(String fullName, UUID uuid) {
+        if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
+            ((SpecimenSynthesysExcelImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+        }
+        if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
+            ((Abcd206ImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+        }
+
+    }
+
+    /**
+     * @param fullName
+     * @return
+     */
+    private UUID getNamedAreaDecision(String fullName) {
+        UUID areaUUID = null;
+        if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
+            areaUUID = ((SpecimenSynthesysExcelImportConfigurator) config).getNamedAreaDecision(fullName);
+        }
+        if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
+            areaUUID = ((Abcd206ImportConfigurator) config).getNamedAreaDecision(fullName);
+        }
+        return areaUUID;
     }
 
     /**
@@ -202,6 +248,22 @@ public class UnitsGatheringArea {
      */
     public DefinedTermBase<?> getCountry() {
         return wbc;
+    }
+
+    /**
+     * @param config
+     */
+    public void setConfig(SpecimenSynthesysExcelImportConfigurator config) {
+        this.config=config;
+
+    }
+
+    /**
+     * @param config2
+     */
+    public void setConfig(Abcd206ImportConfigurator config) {
+        this.config=config;
+
     }
 
 }

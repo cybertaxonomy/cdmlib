@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -167,7 +166,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
      */
     private void setClassification(SpecimenSynthesysExcelImportState state) {
         if (classification == null){
-            if (state.getConfig().getClassificationName()!=null && state.getConfig().getClassificationName().equalsIgnoreCase("chenopodium")) {
+            if (state.getConfig().getClassificationName()!=null && state.getConfig().getClassificationName().equalsIgnoreCase("Goosefoots")) {
                 classification = getClassificationService().find(UUID.fromString("2c2dc41c-9891-42cd-9cd5-8b28dfdd1b8a"));
                 if (classification ==null){
                     String name = state.getConfig().getClassificationName();
@@ -242,7 +241,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             locality=stateProvince+", "+locality;
         }
         if (!habitat.isEmpty()){
-            locality+=", "+habitat;
+            locality+=" (Habitat: "+habitat+")";
         }
 
         fieldNumber = unit.get("field number");
@@ -435,7 +434,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             }
             derivedUnitBase.addDetermination(determinationEvent);
 
-            makeIndividualsAssociation(taxon,determinationEvent);
+            makeIndividualsAssociation(taxon,determinationEvent,config);
 
             getOccurrenceService().saveOrUpdate(derivedUnitBase);
         }
@@ -609,8 +608,9 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             unitsGatheringArea.useTDWGareas(this.useTDWGarea);
+            unitsGatheringArea.setConfig(config);
             unitsGatheringArea.setParams(isocountry, country, getOccurrenceService(),getTermService());
-            WaterbodyOrCountry areaCountry = (WaterbodyOrCountry) unitsGatheringArea.getCountry();
+            DefinedTermBase areaCountry =unitsGatheringArea.getCountry();
 
 
 
@@ -622,7 +622,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             derivedUnitFacade.setLocality(gatheringEvent.getLocality());
             derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
             //derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-            derivedUnitFacade.setCountry(areaCountry);
+            derivedUnitFacade.setCountry((NamedArea)areaCountry);
             for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
                 derivedUnitFacade.addCollectingArea((NamedArea) area);
                 }
@@ -718,7 +718,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         return null;
     }
 
-    private void makeIndividualsAssociation(Taxon taxon, DeterminationEvent determinationEvent) {
+    private void makeIndividualsAssociation(Taxon taxon, DeterminationEvent determinationEvent, SpecimenSynthesysExcelImportConfigurator config) {
         //        try{
         //            taxon = (Taxon) getTaxonService().find(taxon.getUuid());
         //        }
@@ -746,6 +746,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         for (Reference<?> citation : determinationEvent.getReferences()) {
             indAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
         }
+        indAssociation.addSource(null,null,config.getDataReference(),null);
 
         taxonDescription.addElement(indAssociation);
         taxonDescription.setTaxon(taxon);

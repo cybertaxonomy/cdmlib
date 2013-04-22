@@ -46,6 +46,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
 
+    private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+
     //TODO
     private static IInputTransformer defaultTransformer = null;
 
@@ -249,6 +251,24 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     public String getDefaultAuthor(){
         return defaultAuthor;
     }
+
+    public Map<String,UUID> getNamedAreaDecisions() {
+        return namedAreaDecisions;
+    }
+
+    public void setNamedAreaDecisions(Map<String,UUID> namedAreaDecisions) {
+        this.namedAreaDecisions = namedAreaDecisions;
+    }
+
+    public void putNamedAreaDecision(String areaStr,UUID uuid){
+        this.namedAreaDecisions.put(areaStr,uuid);
+    }
+
+    public UUID getNamedAreaDecision(String areaStr){
+        return namedAreaDecisions.get(areaStr);
+    }
+
+
 
 
 

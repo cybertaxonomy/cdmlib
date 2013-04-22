@@ -106,16 +106,41 @@ public class UnitsGatheringEvent {
      * @param langageIso
      */
     public void setLocality(ITermService termService, String locality, String languageIso){
-        LanguageString loc;
+//        System.out.println("SET LOCALITY");
+        LanguageString loc = null;
+        List<LanguageString> languages = termService.getAllLanguageStrings(0, 0);
+        boolean locFound=false;
         if (languageIso == null || termService.getLanguageByIso(languageIso) == null){
-            if (languageIso != null && termService.getLanguageByIso(languageIso) == null ){
-                logger.info("unknown iso used for the locality: "+languageIso);
+            //            if (languageIso != null && termService.getLanguageByIso(languageIso) == null ){
+            //                logger.info("unknown iso used for the locality: "+languageIso);
+            //            }
+            for (LanguageString ls:languages){
+                if (ls.getText().equalsIgnoreCase(locality)){
+                    loc=ls;
+                    locFound=true;
+//                    System.out.println("REUSE LOCALITY");
+                }
             }
-            //FIXME should be UNKNOWN
-            loc = LanguageString.NewInstance(locality, Language.DEFAULT());
+            if (!locFound){
+                loc = LanguageString.NewInstance(locality, Language.DEFAULT());
+                termService.saveLanguageData(loc);
+                languages.add(loc);
+            }
         }else{
-            loc = LanguageString.NewInstance(locality, termService.getLanguageByIso(languageIso));
+            for (LanguageString ls:languages){
+                if (ls.getText().equalsIgnoreCase(locality) && ls.getLanguage().equals(termService.getLanguageByIso(languageIso))){
+                    loc=ls;
+                    locFound=true;
+//                    System.out.println("REUSE LOCALITY");
+                }
+            }
+            if (!locFound) {
+                loc = LanguageString.NewInstance(locality, termService.getLanguageByIso(languageIso));
+                termService.saveLanguageData(loc);
+                languages.add(loc);
+            }
         }
+        if (loc == null){logger.warn("PROBLEM LOCALITY");}
         this.gatheringEvent.setLocality(loc);
     }
 
@@ -175,14 +200,14 @@ public class UnitsGatheringEvent {
      * USED - create each time a new Collector
      */
     public void setCollector(String collectorName, SpecimenSynthesysExcelImportConfigurator config){
-//        System.out.println("collectors : "+collectorNames.toString());
-            Person collector;
-            collector = Person.NewInstance();
-            collector.setTitleCache(collectorName, true);
-            if (DEBUG) {
-                System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
-            }
-            this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
+        //        System.out.println("collectors : "+collectorNames.toString());
+        Person collector;
+        collector = Person.NewInstance();
+        collector.setTitleCache(collectorName, true);
+        if (DEBUG) {
+            System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
+        }
+        this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
 
     }
 
@@ -193,14 +218,14 @@ public class UnitsGatheringEvent {
      * USED - create each time a new Collector
      */
     public void setCollector(String collectorName, Abcd206ImportConfigurator config){
-//        System.out.println("collectors : "+collectorNames.toString());
-            Person collector;
-            collector = Person.NewInstance();
-            collector.setTitleCache(collectorName, true);
-            if (DEBUG) {
-                System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
-            }
-            this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
+        //        System.out.println("collectors : "+collectorNames.toString());
+        Person collector;
+        collector = Person.NewInstance();
+        collector.setTitleCache(collectorName, true);
+        if (DEBUG) {
+            System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
+        }
+        this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
     }
 
     /**
@@ -224,9 +249,9 @@ public class UnitsGatheringEvent {
                     String tmp2[] = elt.split("&");
                     for (String elt2:tmp2) {
                         if (!elt2.trim().isEmpty()) {
-                           Person p = Person.NewInstance();
-                           p.setTitleCache(elt2);
-                           t.addTeamMember(p);
+                            Person p = Person.NewInstance();
+                            p.setTitleCache(elt2);
+                            t.addTeamMember(p);
                         }
                     }
                 }
@@ -252,9 +277,9 @@ public class UnitsGatheringEvent {
                     String tmp2[] = elt.split("&");
                     for (String elt2:tmp2) {
                         if (!elt2.trim().isEmpty()) {
-                           Person p = Person.NewInstance();
-                           p.setTitleCache(elt2);
-                           t.addTeamMember(p);
+                            Person p = Person.NewInstance();
+                            p.setTitleCache(elt2);
+                            t.addTeamMember(p);
                         }
                     }
                 }
