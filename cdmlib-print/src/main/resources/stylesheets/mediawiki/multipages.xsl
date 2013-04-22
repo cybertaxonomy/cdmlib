@@ -1,6 +1,9 @@
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:functx="http://www.functx.com">
+    
+    <xsl:import href="functx-1.0-doc-2007-01.xsl"/>
     <xsl:output method="xml" indent="yes"/>
+ 
     <!-- Authors: Sybille & Lorna -->
     <!-- Date: March/April 2013 -->
 
@@ -238,30 +241,32 @@
         <xsl:apply-templates select="key"/>
         <xsl:apply-templates select="descriptions"/>
         <xsl:call-template name="gallery"/>
-        
+
 
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    
+
     <!-- these templates provide the citations -->
-    
+
     <xsl:template name="display-references">
         <xsl:call-template name="chapter">
             <xsl:with-param name="title">References</xsl:with-param>
         </xsl:call-template>
-       <xsl:text>{{Show_References}}</xsl:text>
+        <xsl:text>{{Show_References}}</xsl:text>
     </xsl:template>
 
+
     <xsl:template name="citationsold">
+
         <xsl:param name="name-uuid"/>
-        <xsl:param name="descriptionelements" />
-        
+        <xsl:param name="descriptionelements"/>
+
         <!--only calling this for ag salcifolia what about the other uuids???-->
-        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$name-uuid,'|Content=')"></xsl:value-of>
+        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$name-uuid,'|Content=')"/>
         <!--<ref name="{$name-uuid}">-->
-            <!-- iterate through all the description elements fo the citation feature -->
-        <xsl:for-each select="$descriptionelements/descriptionelement">          
+        <!-- iterate through all the description elements fo the citation feature -->
+        <xsl:for-each select="$descriptionelements/descriptionelement">
             <!-- TODO sorting only works for the first citation, implement correctly -->
             <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
 
@@ -273,6 +278,7 @@
                         <xsl:with-param name="reference-node" select="citation"/>
                     </xsl:call-template>
                     <!-- use the citation-uuid as a unique name for the reference -->
+
 
                 </xsl:if>
             </xsl:for-each>
@@ -365,6 +371,8 @@
         <!--</ref>-->
 
     </xsl:template>
+
+
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- these templates provide the polytomous key 
@@ -472,7 +480,8 @@
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="heterotypicSynonymyGroups"/>
         <!--xsl:call-template name="citations">
-            <xsl:with-param name="descriptionelements" select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+            <xsl:with-param name="descriptionelements"
+                select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template-->
     </xsl:template>
@@ -640,14 +649,17 @@
 
         <xsl:value-of
             select="concat('{{Tax_Feature|Name=',representation_L10n, '|Elements={{Feature_Text|' )"/>
+        <!--
         <xsl:choose>
-            <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
-                <!-- feature is not "Distribution" -->
-                <xsl:apply-templates
-                    select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
+            <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">-->
+        <!-- feature is not "Distribution" -->
+
+        <xsl:apply-templates
+            select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
+        <!--
             </xsl:when>
         </xsl:choose>
-
+        -->
         <xsl:text>}}}}</xsl:text>
 
 
@@ -683,14 +695,29 @@
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- image gallery -->
-    
+
     <xsl:template name="gallery">
-        <!--<xsl:text>{{ViBRANT_Gallery|Files=</xsl:text>--> {{chapter|Images}} <xsl:value-of
-            select="concat('===',./name/titleCache,'===')"/>
-        <xsl:apply-templates select="//media/e/representations/e/parts/e/uri"/>
-        <!--<xsl:text>}}</xsl:text>-->
+        <xsl:text>{{ViBRANT_Gallery|Files=</xsl:text>
+
+        <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
+        <xsl:text>}}</xsl:text>
     </xsl:template>   
+
+
+    <xsl:template name="gallery_file"/>
+
+    <xsl:template match="media/e/representations/e/parts/e/uri">
+        
+        <xsl:value-of select="concat('{{Gallery_File|Filename=',functx:substring-after-last(.,'/'), '|Caption=')"/>
+            <!--,'}}')"/>--> 
+        <!--go back up to the description element and get the text for the Figure legend -->
+        <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
+        <xsl:text>}}</xsl:text>
+    </xsl:template>
+
+
     
+
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->
 
 
@@ -823,5 +850,8 @@
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    
+
+    
 
 </xsl:stylesheet>
