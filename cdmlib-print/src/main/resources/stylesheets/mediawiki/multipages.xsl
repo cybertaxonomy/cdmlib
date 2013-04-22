@@ -232,12 +232,10 @@
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-
-
-
     <!-- we run this for the content of the page -->
     <xsl:template match="Taxon" name="Taxon">
         <xsl:apply-templates select="synonymy"/>
+        <xsl:apply-templates select="key"/>
         <xsl:apply-templates select="descriptions"/>
         <xsl:call-template name="gallery"/>
         
@@ -254,9 +252,8 @@
         </xsl:call-template>
        <xsl:text>{{Show_References}}</xsl:text>
     </xsl:template>
- 
-    
-    <xsl:template name="citations">
+
+    <xsl:template name="citationsold">
         <xsl:param name="name-uuid"/>
         <xsl:param name="descriptionelements" />
         
@@ -270,35 +267,187 @@
 
             <xsl:for-each select="sources/e">
                 <xsl:if test="nameUsedInSource/uuid=$name-uuid">
-                    <!--xsl:text>; </xsl:text-->
-                    <xsl:text>{{aut|</xsl:text>
-                        <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
-                        <xsl:for-each select="citation/authorTeam/teamMembers/e">
-                            <xsl:value-of select="lastname"/>
-                            <xsl:choose>
-                                <xsl:when test="position() != last()"><xsl:text> &amp; </xsl:text></xsl:when>
-                            </xsl:choose>
-                        </xsl:for-each>
-                    <xsl:text>}} </xsl:text>
-                    <xsl:value-of select="citation/datePublished/start"/>
-                    <xsl:text>: </xsl:text>
-                    <xsl:value-of select="citation/title"/>
-                        <!--xsl:value-of select="citation/authorTeam/lastname"/>
-                        <xsl:text> (</xsl:text>
-                        <xsl:value-of select="citation/datePublished/start"/>
-                        <xsl:text>: </xsl:text>
-                        <xsl:value-of select="citationMicroReference"/>
-                        <xsl:text>)</xsl:text-->
+
+                    <!-- call reference template with sources/e/citation -->
+                    <xsl:call-template name="reference">
+                        <xsl:with-param name="reference-node" select="citation"/>
+                    </xsl:call-template>
+                    <!-- use the citation-uuid as a unique name for the reference -->
+
                 </xsl:if>
             </xsl:for-each>
-
+            <!--</ref>-->
         </xsl:for-each>
-        <!--</ref>-->
-        <xsl:text>}}</xsl:text>
     </xsl:template>
-    <!--ref name="SC078">{{aut|Mohrig, W.; Menzel, F.}} 1992: Neue Arten europäischer Trauermücken (Diptera, Sciaridae). ''An International Journal of Dipterological Research'', '''3'''(1-2), 1–16.</ref-->
     
+    <xsl:template name="citations">
+        <xsl:param name="name-uuid"/>
+        <xsl:param name="descriptionelements"/>
+        
+        <!--<ref name="{$name-uuid}">-->
+        <!-- iterate through all the description elements for the citation feature -->
+        <xsl:for-each select="$descriptionelements/descriptionelement">
+            
+            <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
+            
+            <xsl:variable name="citation-uuid" select="sources/e[1]/citation/uuid"/>
+            
+            <xsl:for-each select="sources/e">
+                <xsl:if test="nameUsedInSource/uuid=$name-uuid">
+                    
+                    <!-- call reference template with sources/e/citation -->
+                    <xsl:call-template name="reference">
+                        <xsl:with-param name="reference-node" select="citation"/>
+                    </xsl:call-template>
+                    <!-- use the citation-uuid as a unique name for the reference -->
+                    
+                </xsl:if>
+            </xsl:for-each>
+            <!--</ref>-->
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template name="reference">
+
+        <xsl:param name="reference-node"/>
+        <!--TODO Do we need to sort the list of references in WikiMedia or will they just appear in numbered order as they occur in the names-->
+        <!--xsl:sort select="sources/e[1]/citation/datePublished/start"/-->
+
+        <!-- use the citation-uuid as a unique name for the reference -->
+        <xsl:variable name="citation-uuid" select="$reference-node/uuid"/>
+
+        <!-- use the citation-uuid as a unique name for the reference -->
+        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$citation-uuid,'|Content=')"/>
+        <xsl:text>{{aut|</xsl:text>
+
+        <xsl:choose>
+            <xsl:when test="$reference-node/authorTeam/teamMembers/e[1]/lastname != ''">
+                <xsl:for-each select="$reference-node/authorTeam/teamMembers/e">
+                    <xsl:value-of select="$reference-node/lastname"/>
+                    <xsl:choose>
+                        <xsl:when test="position() != last()">
+                            <xsl:text> &amp; </xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$reference-node/authorTeam/lastname"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>}} </xsl:text>
+        <xsl:if test="$reference-node/datePublished/start != ''">
+            <xsl:value-of select="$reference-node/datePublished/start"/>
+            <xsl:text>: </xsl:text>
+        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="$reference-node/inReference/node()">
+                <xsl:value-of select="$reference-node/inReference/title"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$reference-node/title"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>.</xsl:text>
+        <xsl:value-of select="$reference-node/pages"/>
+        <xsl:text>.</xsl:text>
+
+        <xsl:if test="$reference-node/type = 'Book' or $reference-node/type = 'BookSection'">
+            <xsl:if test="$reference-node/placePublished != '' or $reference-node/publisher != ''">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$reference-node/placePublished"/>
+                <xsl:text>, </xsl:text>
+                <xsl:value-of select="$reference-node/publisher"/>
+                <xsl:text>.</xsl:text>
+            </xsl:if>
+        </xsl:if>
+        <xsl:text>}}</xsl:text>
+        <!--</ref>-->
+
+    </xsl:template>
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <!-- these templates provide the polytomous key 
+
+    For example:
+    {{Lead | 1=4| 2= jeunes couverts de cils simples et glanduleux mais jamais de cils denticulés ou branchus| 
+    result = Erica trimera (Flora of XX) | result text = ''Erica trimera''}}
+    -->
+    <xsl:template match="key" name="key">
+        
+        <xsl:param name="uuidFamily">210a8214-4e69-401a-8e47-c7940d990bdd</xsl:param>
+        <xsl:param name="uuidGenus">1b11c34c-48a8-4efa-98d5-84f7f66ef43a</xsl:param>
+        <xsl:param name="uuidSubgenus">78786e16-2a70-48af-a608-494023b91904</xsl:param>
+        
+        <xsl:if test="HashMap/records/e">
+            
+            <xsl:call-template name="chapter">
+                <xsl:with-param name="title">Key</xsl:with-param>
+            </xsl:call-template>
+            
+            <xsl:variable name="key-name" select="HashMap/titleCache"/>
+            <xsl:value-of
+                select="concat('{{Key Start | id =',$key-name,'|title=',$key-name,'|edited by=L.Morris}}')"/>
+            
+            
+            <!--xsl:if test="ArrayList/e"-->
+            <xsl:for-each select="HashMap/records/e">
+                
+                <xsl:variable name="node-number" select="nodeNumber"/>
+                <xsl:variable name="child-statement" select="childStatement"/>
+                
+                <!-- TaxonLinkDto or PolytomousKeyNodeLinkDto-->
+                <!--xsl:value-of select="concat('{{Decision | id =', $node-number, '| lead 1 = ', $child-statement)"/-->
+                <xsl:value-of select="concat('{{Lead | 1 =', $node-number)"/>
+                
+                <xsl:if test="edgeNumber = 2">
+                    <xsl:text>*</xsl:text>
+                </xsl:if>
+                
+                <xsl:value-of select="concat('| 2 =', $child-statement)"/>
+                
+                
+                <xsl:choose>
+                    <xsl:when test="links/e[1]/class = 'PolytomousKeyNodeLinkDto'">
+                        <xsl:variable name="link-node-number" select="links/e[1]/nodeNumber"/>
+                        <xsl:value-of select="concat('| 3 =', $link-node-number)"/>
+                    </xsl:when>
+                    <xsl:when test="links/e[1]/class = 'TaxonLinkDto'">
+                        
+                        <xsl:text>| result  = '' </xsl:text>
+                        <xsl:variable name="taxonUuid" select="links/e[1]/uuid"/>
+                        <xsl:variable name="genus"
+                            select="//Taxon/uuid[.=$taxonUuid]/../name/genusOrUninomial"/>
+                        <xsl:choose>
+                            <xsl:when test="taxonUuid = $uuidSubgenus">
+                                <xsl:variable name="repr"
+                                    select="//Taxon/uuid[.='71cd0e8d-47eb-4c66-829a-e21c705ee660']/../name/rank/representation_L10n"/>
+                                <xsl:value-of select="concat($genus, '. ', $repr)"/>
+                            </xsl:when>
+                            <xsl:when test="taxonUuid = $uuidGenus">
+                                <xsl:apply-templates select="$genus"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:variable name="specificEpithet"
+                                    select="//Taxon/uuid[.=$taxonUuid]/../name/specificEpithet"/>
+                                <!-- abbreviate the genus for species names -->
+                                <xsl:value-of select="concat($genus, ' ', $specificEpithet)"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:text>''</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise/>
+                </xsl:choose>
+                
+                <xsl:text>}}</xsl:text>
+                
+            </xsl:for-each>
+            
+            <xsl:text>{{Key End}}</xsl:text>
+        </xsl:if>
+        
+    </xsl:template>
+    
 
     <!-- these templates provide the synonomy -->
 
@@ -308,12 +457,24 @@
             <xsl:with-param name="title">Synonomy</xsl:with-param>
         </xsl:call-template>
         <xsl:apply-templates select="../name"/>
-        <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
-        <xsl:apply-templates select="heterotypicSynonymyGroups"/>
+        
         <xsl:call-template name="citations">
-            <xsl:with-param name="descriptionelements" select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+            <xsl:with-param name="descriptionelements"
+                select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template>
+        
+        <!-- do we call reference difectly or nitations as above -->
+        <!--xsl:call-template name="reference">
+            <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
+        </xsl:call-template-->
+        
+        <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
+        <xsl:apply-templates select="heterotypicSynonymyGroups"/>
+        <!--xsl:call-template name="citations">
+            <xsl:with-param name="descriptionelements" select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+            <xsl:with-param name="name-uuid" select="../name/uuid"/>
+        </xsl:call-template-->
     </xsl:template>
 
     <!--.............................................-->
@@ -321,9 +482,22 @@
     <xsl:template match="homotypicSynonymsByHomotypicGroup">
         <xsl:for-each select="e">
             <xsl:text>{{Homotypic Synonym|1|</xsl:text>
-
             <xsl:apply-templates select="name"/>
             <xsl:text>}}</xsl:text>
+
+            <!--homotypicSynonymsByHomotypicGroup/e/name/nomenclaturalReference-->
+            <!--xsl:apply-templates select="name/nomenclaturalReference"/-->
+            <xsl:call-template name="reference">
+                <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
+            </xsl:call-template>
+
+            <!--LORNA Why are we calling citations as well as References. Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
+            <!--xsl:call-template name="citations">
+                <xsl:with-param name="descriptionelements"
+                    select="../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+                <xsl:with-param name="name-uuid" select="name/uuid"/>
+            </xsl:call-template-->
+
         </xsl:for-each>
     </xsl:template>
 
@@ -515,15 +689,7 @@
             select="concat('===',./name/titleCache,'===')"/>
         <xsl:apply-templates select="//media/e/representations/e/parts/e/uri"/>
         <!--<xsl:text>}}</xsl:text>-->
-    </xsl:template>
-    
-    <xsl:template match="uri">
-        <xsl:text>FOO</xsl:text>
-        <xsl:value-of select="."/>
-        <!--go back up to the description element and get the text for the Figure legend -->
-        <!--<xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>-->
-        
-    </xsl:template>
+    </xsl:template>   
     
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->
 
@@ -593,7 +759,7 @@
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!--we replace html i> with mediawiki templates-->
-    <xsl:template match="text" name="replace_html_tags">
+    <xsl:template match="texty" name="replace_html_tags">
         <xsl:call-template name="replace-tags">
             <xsl:with-param name="text-string" select="."/>
         </xsl:call-template>
