@@ -12,14 +12,12 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import static java.net.HttpURLConnection.*;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.protocol.HTTP;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,33 +65,33 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
      * @return
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, params = "pageNumber")
+    @RequestMapping(method = RequestMethod.GET)
     public Pager<T> doPage(
-            @RequestParam(value = "pageNumber") Integer pageIndex,
+            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "class", required = false) Class<T> type,
+            @RequestParam(value = "class", required = false) Class type,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
             {
 
-        logger.info("doGet() " + request.getServletPath());
+        logger.info("doPage() " + requestPathAndQuery(request));
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
         return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, DEFAULT_INIT_STRATEGY);
     }
 
-    /**
-     * Parameter less method to be used as default when request without parameter are made. Otherwise
-     * the nameless methods {@link #doPage(Integer, Integer, Class)} and {@link #doList(Integer, Integer, Class)}
-     * are ambigous.
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public Pager<T> doPage(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        return doPage(null, null, null, request, response);
-    }
+//    /**
+//     * Parameter less method to be used as default when request without parameter are made. Otherwise
+//     * the nameless methods {@link #doPage(Integer, Integer, Class)} and {@link #doList(Integer, Integer, Class)}
+//     * are ambigous.
+//     * @return
+//     * @throws IOException
+//     */
+//    @RequestMapping(method = RequestMethod.GET)
+//    public Pager<T> doPage(HttpServletRequest request, HttpServletResponse response) throws IOException{
+//        return doPage(null, null, null, request, response);
+//    }
 
     /**
      * @param start
@@ -114,10 +112,10 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "class", required = false) Class<T> type,
             HttpServletRequest request,
             HttpServletResponse response) {
-        
+
         if (request != null)
         {
-            logger.info("doGet() " + request.getServletPath());
+            logger.info("doList() " + requestPathAndQuery(request));
         }
 
         //if(start == null){ start = 0;}
