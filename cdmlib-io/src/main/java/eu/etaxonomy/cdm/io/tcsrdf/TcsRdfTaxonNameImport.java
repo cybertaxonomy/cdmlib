@@ -131,7 +131,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			try {
 				Rank rank = TcsRdfTransformer.rankString2Rank(strRank);
 				NomenclaturalCode nomCode = TcsRdfTransformer.nomCodeString2NomCode(strNomenclaturalCode);
-				TaxonNameBase nameBase = nomCode.getNewTaxonNameInstance(rank);
+				TaxonNameBase<?,?> nameBase = nomCode.getNewTaxonNameInstance(rank);
 				
 				Set<String> omitAttributes = null;
 				makeStandardMapper(elTaxonName, nameBase, omitAttributes, standardMappers);
@@ -142,8 +142,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				tcsNamespace = config.getCommonNamespace();
 				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
 				if (value != null){
-					ReferenceFactory refFactory = ReferenceFactory.newInstance();
-					IGeneric nomRef = refFactory.newGeneric(); //TODO
+					IGeneric nomRef = ReferenceFactory.newGeneric(); //TODO
 					nomRef.setTitleCache(value, true);
 					nameBase.setNomenclaturalReference(nomRef);
 					
