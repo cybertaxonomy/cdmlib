@@ -117,9 +117,8 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	}
 	
 	
-	protected static final Reference unknownSec(){
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		Reference result = refFactory.newGeneric();
+	protected static final Reference<?> unknownSec(){
+		Reference<?> result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
 		return result;
 	}
@@ -190,14 +189,14 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 				childName = "AccordingTo";
 				obligatory = false;
 				Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-				Reference sec = makeAccordingTo(elAccordingTo, referenceMap, success);
+				Reference<?> sec = makeAccordingTo(elAccordingTo, referenceMap, success);
 				elementList.add(childName.toString());
 				// TODO may sec be null?
 				if (sec == null){
 					sec = unknownSec();
 				}
 				
-				TaxonBase taxonBase;
+				TaxonBase<?> taxonBase;
 				if (synonymIdSet.contains(strId)){
 					taxonBase = Synonym.NewInstance(taxonName, sec);
 				}else{
@@ -344,14 +343,14 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	 * @param elTaxonRelationships
 	 * @param success
 	 */
-	private void makeTaxonRelationships(TaxonBase name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
+	private void makeTaxonRelationships(TaxonBase<?> name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
 		//TaxonRelationships are handled in TcsXmlTaxonRelationsImport
 		return;
 	}
 	
 
 	
-	private void makeSpecimenCircumscription(TaxonBase name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
+	private void makeSpecimenCircumscription(TaxonBase<?> name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
 		if (elSpecimenCircumscription != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
@@ -359,14 +358,14 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	}
 	
 	
-	private void makeCharacterCircumscription(TaxonBase name, Element elCharacterCircumscription, ResultWrapper<Boolean> success){
+	private void makeCharacterCircumscription(TaxonBase<?> name, Element elCharacterCircumscription, ResultWrapper<Boolean> success){
 		if (elCharacterCircumscription != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
 		}
 	}
 	
-	private void makeProviderLink(TaxonBase name, Element elProviderLink, ResultWrapper<Boolean> success){
+	private void makeProviderLink(TaxonBase<?> name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
@@ -374,7 +373,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	}
 	
 
-	private void makeProviderSpecificData(TaxonBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
+	private void makeProviderSpecificData(TaxonBase<?> name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
 		if (elProviderSpecificData != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
