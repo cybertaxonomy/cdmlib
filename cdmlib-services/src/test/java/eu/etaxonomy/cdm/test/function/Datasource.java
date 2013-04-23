@@ -121,7 +121,7 @@ public class Datasource {
 			
 			Person agent = Person.NewInstance();
 			appCtr.getAgentService().save(agent);
-			TaxonNameBase tn = BotanicalName.NewInstance(null);
+			TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
 			appCtr.getNameService().save(tn);
 			appCtr.close();
 		} catch (SQLException e) {
@@ -144,7 +144,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase tn = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 		
@@ -164,7 +164,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase tn = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -206,8 +206,7 @@ public class Datasource {
 			String nameCache = "testName";
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			Reference ref = refFactory.newGeneric();
+			Reference<?> ref = ReferenceFactory.newGeneric();
 			ref.setTitleCache("mySec", true);
 			Taxon taxon = Taxon.NewInstance(name, ref);
 			TaxonDescription description = TaxonDescription.NewInstance();
