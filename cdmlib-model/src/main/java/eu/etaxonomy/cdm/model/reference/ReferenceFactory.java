@@ -25,15 +25,6 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 public class ReferenceFactory {
 	private static final Logger logger = Logger.getLogger(ReferenceFactory.class);
 	
-	
-	/**
-	 * @return
-	 * @deprecated //use static methods instead
-	 */
-	public static ReferenceFactory newInstance(){
-		return new ReferenceFactory();
-	}
-	
 	public static Reference newArticle(){
 		Reference<ArticleDefaultCacheStrategy> article = new Reference(ReferenceType.Article);
 		article.setCacheStrategy(ReferenceType.Article.getCacheStrategy());
@@ -133,9 +124,9 @@ public class ReferenceFactory {
 		return refBase;
 	}
 
-	public Reference newBookSection(Reference book, Person partAuthor,
+	public static Reference newBookSection(Reference book, Person partAuthor,
 			String sectionTitle, String pages) {
-		Reference bookSection = newBookSection();
+		Reference<?> bookSection = newBookSection();
 		bookSection.setAuthorTeam(partAuthor);
 		bookSection.setTitle(sectionTitle);
 		bookSection.setPages(pages);
@@ -144,7 +135,7 @@ public class ReferenceFactory {
 
 	public static Reference newArticle(Reference inJournal, Person partAuthor,
 			String title, String pages, String series, String volume, TimePeriod datePublished) {
-		Reference article = newArticle();
+		Reference<?> article = newArticle();
 		article.setInReference(inJournal);
 		article.setAuthorTeam(partAuthor);
 		article.setTitle(title);
