@@ -83,7 +83,7 @@ public class ReferenceFactory {
 	}
 	
 	public static Reference newGeneric(){
-		Reference generic = new Reference<GenericDefaultCacheStrategy>(ReferenceType.Generic);
+		Reference<?> generic = new Reference<GenericDefaultCacheStrategy>(ReferenceType.Generic);
 		generic.setCacheStrategy(ReferenceType.Generic.getCacheStrategy());
 		return generic;
 	}
