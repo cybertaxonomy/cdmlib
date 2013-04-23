@@ -18,15 +18,12 @@ import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-//import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -37,18 +34,17 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TestModel {
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestModel.class);
-	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	public void testSomething(){
 		
 		logger.info("Create name objects...");
 		logger.info(NomenclaturalStatusType.NUDUM().getRepresentation(Language.LATIN()).getAbbreviatedLabel());
-		NonViralName tn = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> tn = NonViralName.NewInstance(Rank.SPECIES());
 		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		Reference sec = refFactory.newJournal();
+		Reference<?> sec = ReferenceFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
 		
 		logger.info("Create taxon objects...");
@@ -77,8 +73,8 @@ public class TestModel {
 	}
 	
 	public void testParentRelation(){
-		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		Reference ref = refFactory.newJournal();
+		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
+		Reference<?> ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -88,7 +84,7 @@ public class TestModel {
 	}
 	
 	public void testDescription(){
-		Reference ref = refFactory.newJournal();
+		Reference<?> ref = ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(null, ref);
 		TaxonDescription desc = TaxonDescription.NewInstance();
 		taxon.addDescription(desc);
