@@ -38,10 +38,9 @@ public class DatabaseInitialiser {
 
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		IJournal sec = refFactory.newJournal();
-		NonViralName nvName = BotanicalName.NewInstance(Rank.SPECIES());
-		Taxon tax = Taxon.NewInstance(nvName, (Reference)sec);
+		IJournal sec = ReferenceFactory.newJournal();
+		NonViralName<?> nvName = BotanicalName.NewInstance(Rank.SPECIES());
+		Taxon tax = Taxon.NewInstance(nvName, (Reference<?>)sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nvName.setNameCache(speciesname);
 		nvName.setTitleCache(speciesname, true);
