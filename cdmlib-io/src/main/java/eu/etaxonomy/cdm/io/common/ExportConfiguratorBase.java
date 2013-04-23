@@ -83,9 +83,8 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 //	@Override
 	public IDatabase getSourceReference() {
 		//TODO //needed
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (this.sourceReference == null){
-			sourceReference = refFactory.newDatabase();
+			sourceReference = ReferenceFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase(), true);
 			}
