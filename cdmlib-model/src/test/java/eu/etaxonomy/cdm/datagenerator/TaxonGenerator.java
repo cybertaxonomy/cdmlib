@@ -41,12 +41,11 @@ public class TaxonGenerator {
 	private Random rnd = new Random();
 
 	public static Taxon getTestTaxon(){
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.", true);
-		Reference sec = refFactory.newDatabase();
+		Reference<?> sec = ReferenceFactory.newDatabase();
 		sec.setTitleCache("Flora lunaea", true);
-		Reference citationRef = refFactory.newBook();
+		Reference<?> citationRef = ReferenceFactory.newBook();
 		citationRef.setTitleCache("Sp. lunarum", true);
 		
         //genus taxon with Name, combinationAuthor, 
