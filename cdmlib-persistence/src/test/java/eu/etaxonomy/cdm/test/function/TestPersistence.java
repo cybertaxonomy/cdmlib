@@ -10,25 +10,15 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.cfg.SettingsFactory;
-import org.hibernate.tuple.PojoInstantiator;
 
-//import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-//import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -46,13 +36,12 @@ public class TestPersistence {
 	public void testAppController(){
 		
 		logger.info("Create name objects...");
-		NonViralName tn = NonViralName.NewInstance(Rank.SPECIES());
+		NonViralName<?> tn = NonViralName.NewInstance(Rank.SPECIES());
 		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		Reference sec = refFactory.newJournal();
+		Reference<?> sec = ReferenceFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
 		
 		logger.info("Create taxon objects...");
