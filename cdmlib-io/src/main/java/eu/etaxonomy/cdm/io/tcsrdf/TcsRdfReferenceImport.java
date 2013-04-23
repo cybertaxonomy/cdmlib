@@ -203,7 +203,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		
 		Namespace rdfNamespace = config.getRdfNamespace();
 		Namespace publicationNamespace = config.getPublicationNamespace();
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		
 		String idNamespace = "PublicationCitation";
 		tcsElementName = "PublicationCitation";
@@ -229,7 +228,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			try {
 				Reference<?> ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
 				if (ref==null){
-					ref = refFactory.newGeneric();
+					ref = ReferenceFactory.newGeneric();
 				}
 				
 				Set<String> omitAttributes = null;
@@ -240,7 +239,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsNamespace = publicationNamespace;
 				String strAuthorship = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				//TODO
-				TeamOrPersonBase authorTeam = Team.NewInstance();
+				TeamOrPersonBase<?> authorTeam = Team.NewInstance();
 				authorTeam.setTitleCache(strAuthorship, true);
 				ref.setAuthorTeam(authorTeam);
 				
@@ -255,7 +254,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsElementName = "parentPublication";
 				tcsNamespace = publicationNamespace;
 				String strParent = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
-				Reference parent = referenceMap.get(strParent);
+				Reference<?> parent = referenceMap.get(strParent);
 				if (parent != null){
 					if ((ref.getType().equals(ReferenceType.Article)) && (parent.getType().equals(ReferenceType.Journal))){
 						((IArticle)ref).setInJournal((IJournal)parent);
@@ -312,7 +311,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		}
 		
 		//change conceptRef uuid
-		Reference sec = referenceMap.get(config.getSourceSecId());
+		Reference<?> sec = referenceMap.get(config.getSourceSecId());
 		if (sec == null){
 			sec = nomRefMap.get(config.getSourceSecId());	
 		}
