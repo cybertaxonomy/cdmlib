@@ -916,7 +916,11 @@ public class DerivedUnitFacade {
 	private boolean addMedia(Media media, SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
 		if (media != null) {
 			List<Media> mediaList = getMediaList(specimen, true);
-			return mediaList.add(media);
+			if (! mediaList.contains(media)){
+				return mediaList.add(media);
+			}else{
+				return true;
+			}
 		} else {
 			return false;
 		}
