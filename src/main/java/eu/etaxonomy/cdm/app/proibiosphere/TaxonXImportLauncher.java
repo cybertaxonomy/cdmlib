@@ -8,8 +8,15 @@
  */
 
 package eu.etaxonomy.cdm.app.proibiosphere;
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
@@ -27,12 +34,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
 public class TaxonXImportLauncher {
-    @SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(TaxonXImportLauncher.class);
+    private static final Logger log = Logger.getLogger(TaxonXImportLauncher.class);
+//    private static final Logger log = Logger.getLogger(CdmEntityDaoBase.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-    final static String xmlSource = "/home/pkelbert/Documents/Proibiosphere/ChenopodiumXML/1362148061170_Chenopodium_K_hn_U_1993_tx.xml";
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 
 
     static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
@@ -48,22 +54,69 @@ public class TaxonXImportLauncher {
 
     public static void main(String[] args) {
 
+        String plaziUrl = "http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/";
+        List<String> sourcesStr =  new ArrayList<String>();
 
-        URI source;
+
+        URL plaziURL;
         try {
-            //         org.h2.tools.Server.createWebServer(new String[]{}).start();
-            URI uri = new File(xmlSource).toURI();
-            source = new URI(uri.toString());
-            System.out.println(source.toString());
-            System.out.println("Start import from  TaxonX Data");
+            plaziURL = new URL(plaziUrl);
+            BufferedReader in = new BufferedReader(new InputStreamReader(plaziURL.openStream()));
 
-            ICdmDataSource destination = cdmDestination;
-            TaxonXImportConfigurator taxonxImportConfigurator = TaxonXImportConfigurator.NewInstance(source,  destination);
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                if (inputLine.indexOf("<exist:resource name=\"1365680052008_") > -1) {
+                    String filename = inputLine.split("name=\"")[1].split("\"")[0];
+                    sourcesStr.add(plaziUrl+filename);
+                    log.info(plaziUrl+filename);
+                }
+            }
+            in.close();
+        } catch (MalformedURLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-            taxonxImportConfigurator.setClassificationName(taxonxImportConfigurator.getSourceReferenceTitle());
-            taxonxImportConfigurator.setCheck(check);
-            taxonxImportConfigurator.setDbSchemaValidation(hbm2dll);
-            taxonxImportConfigurator.setDoAutomaticParsing(true);
+        //        System.exit(0);
+
+        //        sourcesStr.add("/home/pkelbert/Documents/Proibiosphere/ChenopodiumXML/1362148061170_Chenopodium_K_hn_U_1993_tx.xml");
+
+        List<URI> sources = new ArrayList<URI>();
+        for (String src: sourcesStr){
+            URI uri;
+            try {
+                uri = new URL(src).toURI();
+                sources.add(new URI(uri.toString()));
+            } catch (MalformedURLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (URISyntaxException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+
+        log.info("Start import from  TaxonX Data");
+        log.debug("bwahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+        System.out.println("gna");
+
+        ICdmDataSource destination = cdmDestination;
+        TaxonXImportConfigurator taxonxImportConfigurator = TaxonXImportConfigurator.NewInstance(destination);
+
+        taxonxImportConfigurator.setClassificationName(taxonxImportConfigurator.getSourceReferenceTitle());
+        taxonxImportConfigurator.setCheck(check);
+        taxonxImportConfigurator.setDbSchemaValidation(hbm2dll);
+        taxonxImportConfigurator.setDoAutomaticParsing(true);
+
+     // invoke import
+        CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
+
+        for (URI source:sources){
+            log.info("START : "+source.getPath());
+            taxonxImportConfigurator.setSource(source);
             // taxonxImportConfigurator.setDoMatchTaxa(true);
             // taxonxImportConfigurator.setReUseTaxon(true);
 
@@ -71,14 +124,16 @@ public class TaxonXImportLauncher {
 
 
             Reference<?> reference = ReferenceFactory.newGeneric();
-//            String tref = askQuestion("Import source? (ie Plazi document ID)");
-            String tref="plazi";
+            //            String tref = askQuestion("Import source? (ie Plazi document ID)");
+            String tref="PLAZI - "+source.getPath().split("/")[source.getPath().split("/").length-1];
             reference.setTitleCache(tref,true);
             reference.setTitle(tref);
             reference.generateTitle();
-            taxonxImportConfigurator.setSourceReference(reference);
 
-//            String tnomenclature = askQuestion("ICBN or ICZN ?");
+            taxonxImportConfigurator.setSourceReference(reference);
+            taxonxImportConfigurator.setSourceRef(reference);
+
+            //            String tnomenclature = askQuestion("ICBN or ICZN ?");
             String tnomenclature = "ICBN";
             if (tnomenclature.equalsIgnoreCase("ICBN")) {
                 taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
@@ -89,14 +144,20 @@ public class TaxonXImportLauncher {
 
             //   taxonxImportConfigurator.setTaxonReference(null);
 
-            // invoke import
-            CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
             //new Test().invoke(tcsImportConfigurator);
+            log.info("INVOKE");
+            taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
             taxonImport.invoke(taxonxImportConfigurator);
-            System.out.println("End import from SpecimenData ("+ source.toString() + ")...");
-        } catch (Exception e) {
-            e.printStackTrace();
+            log.info("End import from SpecimenData ("+ source.toString() + ")...");
+
+//          //deduplicate
+//            ICdmApplicationConfiguration app = taxonImport.getCdmAppController();
+//            int count = app.getAgentService().deduplicate(Person.class, null, null);
+//            logger.warn("Deduplicated " + count + " persons.");
+//            count = app.getReferenceService().deduplicate(Reference.class, null, null);
+//            logger.warn("Deduplicated " + count + " references.");
         }
+
 
     }
 
