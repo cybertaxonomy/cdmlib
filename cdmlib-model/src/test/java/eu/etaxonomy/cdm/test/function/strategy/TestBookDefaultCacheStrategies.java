@@ -44,7 +44,7 @@ public class TestBookDefaultCacheStrategies {
 		//BookSection
 		System.out.println("*********** BOOK SECTION**************");
 		Person partAuthor = Person.NewTitledInstance("PartAuthorTitle");
-		Reference bookSection = ReferenceFactory.newInstance().newBookSection(book, partAuthor, "SectionTitle der Biene", "222-234");
+		Reference bookSection = ReferenceFactory.newBookSection(book, partAuthor, "SectionTitle der Biene", "222-234");
 		System.out.println("FULL: " + bookSection.getNomenclaturalCitation("344"));
 		System.out.println("Citation: " + bookSection.getCitation());
 		System.out.println("Titel: " + bookSection.getTitleCache());
@@ -56,7 +56,7 @@ public class TestBookDefaultCacheStrategies {
 		inJournal.setAuthorTeam(journalAuthor);
 		inJournal.setTitle("JournalTitle");
 		inJournal.setIssn("issn");
-		Reference<?> article = ReferenceFactory.newInstance().newArticle(inJournal, partAuthor, "artTitel", "123-456", "ser4", "55", TimePeriod.NewInstance(cal));
+		Reference<?> article = ReferenceFactory.newArticle(inJournal, partAuthor, "artTitel", "123-456", "ser4", "55", TimePeriod.NewInstance(cal));
 		System.out.println("FULL: " + article.getNomenclaturalCitation("922 fig"));
 		System.out.println("Citation: " + article.getCitation());
 		System.out.println("Titel: " + article.getTitleCache());
