@@ -913,8 +913,7 @@ public class DerivedUnitFacade {
 	 *         {@link java.util.Collection#add(Object) Collection.add(E e)}
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private boolean addMedia(Media media, SpecimenOrObservationBase<?> specimen)
-			throws DerivedUnitFacadeNotSupportedException {
+	private boolean addMedia(Media media, SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
 		if (media != null) {
 			List<Media> mediaList = getMedia(specimen, true);
 			return mediaList.add(media);
