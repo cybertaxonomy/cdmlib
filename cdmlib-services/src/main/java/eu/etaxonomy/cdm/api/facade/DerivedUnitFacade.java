@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
