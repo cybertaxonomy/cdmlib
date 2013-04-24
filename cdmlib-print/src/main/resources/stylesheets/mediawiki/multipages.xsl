@@ -1,9 +1,10 @@
 
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:functx="http://www.functx.com">
-    
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:functx="http://www.functx.com">
+
     <xsl:import href="functx-1.0-doc-2007-01.xsl"/>
     <xsl:output method="xml" indent="yes"/>
- 
+
     <!-- Authors: Sybille & Lorna -->
     <!-- Date: March/April 2013 -->
 
@@ -285,28 +286,28 @@
             <!--</ref>-->
         </xsl:for-each>
     </xsl:template>
-    
+
     <xsl:template name="citations">
         <xsl:param name="name-uuid"/>
         <xsl:param name="descriptionelements"/>
-        
+
         <!--<ref name="{$name-uuid}">-->
         <!-- iterate through all the description elements for the citation feature -->
         <xsl:for-each select="$descriptionelements/descriptionelement">
-            
+
             <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
-            
+
             <xsl:variable name="citation-uuid" select="sources/e[1]/citation/uuid"/>
-            
+
             <xsl:for-each select="sources/e">
                 <xsl:if test="nameUsedInSource/uuid=$name-uuid">
-                    
+
                     <!-- call reference template with sources/e/citation -->
                     <xsl:call-template name="reference">
                         <xsl:with-param name="reference-node" select="citation"/>
                     </xsl:call-template>
                     <!-- use the citation-uuid as a unique name for the reference -->
-                    
+
                 </xsl:if>
             </xsl:for-each>
             <!--</ref>-->
@@ -382,46 +383,46 @@
     result = Erica trimera (Flora of XX) | result text = ''Erica trimera''}}
     -->
     <xsl:template match="key" name="key">
-        
+
         <xsl:param name="uuidFamily">210a8214-4e69-401a-8e47-c7940d990bdd</xsl:param>
         <xsl:param name="uuidGenus">1b11c34c-48a8-4efa-98d5-84f7f66ef43a</xsl:param>
         <xsl:param name="uuidSubgenus">78786e16-2a70-48af-a608-494023b91904</xsl:param>
-        
+
         <xsl:if test="HashMap/records/e">
-            
+
             <xsl:call-template name="chapter">
                 <xsl:with-param name="title">Key</xsl:with-param>
             </xsl:call-template>
-            
+
             <xsl:variable name="key-name" select="HashMap/titleCache"/>
             <xsl:value-of
                 select="concat('{{Key Start | id =',$key-name,'|title=',$key-name,'|edited by=L.Morris}}')"/>
-            
-            
+
+
             <!--xsl:if test="ArrayList/e"-->
             <xsl:for-each select="HashMap/records/e">
-                
+
                 <xsl:variable name="node-number" select="nodeNumber"/>
                 <xsl:variable name="child-statement" select="childStatement"/>
-                
+
                 <!-- TaxonLinkDto or PolytomousKeyNodeLinkDto-->
                 <!--xsl:value-of select="concat('{{Decision | id =', $node-number, '| lead 1 = ', $child-statement)"/-->
                 <xsl:value-of select="concat('{{Lead | 1 =', $node-number)"/>
-                
+
                 <xsl:if test="edgeNumber = 2">
                     <xsl:text>*</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:value-of select="concat('| 2 =', $child-statement)"/>
-                
-                
+
+
                 <xsl:choose>
                     <xsl:when test="links/e[1]/class = 'PolytomousKeyNodeLinkDto'">
                         <xsl:variable name="link-node-number" select="links/e[1]/nodeNumber"/>
                         <xsl:value-of select="concat('| 3 =', $link-node-number)"/>
                     </xsl:when>
                     <xsl:when test="links/e[1]/class = 'TaxonLinkDto'">
-                        
+
                         <xsl:text>| result  = '' </xsl:text>
                         <xsl:variable name="taxonUuid" select="links/e[1]/uuid"/>
                         <xsl:variable name="genus"
@@ -446,16 +447,16 @@
                     </xsl:when>
                     <xsl:otherwise/>
                 </xsl:choose>
-                
+
                 <xsl:text>}}</xsl:text>
-                
+
             </xsl:for-each>
-            
+
             <xsl:text>{{Key End}}</xsl:text>
         </xsl:if>
-        
+
     </xsl:template>
-    
+
 
     <!-- these templates provide the synonomy -->
 
@@ -465,18 +466,18 @@
             <xsl:with-param name="title">Synonomy</xsl:with-param>
         </xsl:call-template>
         <xsl:apply-templates select="../name"/>
-        
+
         <xsl:call-template name="citations">
             <xsl:with-param name="descriptionelements"
                 select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template>
-        
+
         <!-- do we call reference difectly or nitations as above -->
         <!--xsl:call-template name="reference">
             <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
         </xsl:call-template-->
-        
+
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="heterotypicSynonymyGroups"/>
         <!--xsl:call-template name="citations">
@@ -674,23 +675,9 @@
 
     <xsl:template match="text">
 
-        <xsl:choose>
-            <xsl:when test="contains(.,&quot;&lt;b&gt;&quot;)">
-                <xsl:call-template name="add-markup">
-                    <xsl:with-param name="str" select="."/>
-                    <!--xsl:with-param name="tag-name" select="b"/-->
-                    <xsl:with-param name="tag-name">b</xsl:with-param>
-                </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:call-template name="add-markup">
-                    <xsl:with-param name="str" select="."/>
-                    <xsl:with-param name="tag-name">i</xsl:with-param>
-                </xsl:call-template>
-            </xsl:otherwise>
-        </xsl:choose>
-
-        <!--/fo:block -->
+        <xsl:call-template name="replace-tags">
+            <xsl:with-param name="text-string" select="."/>
+        </xsl:call-template>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -701,22 +688,23 @@
 
         <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
         <xsl:text>}}</xsl:text>
-    </xsl:template>   
+    </xsl:template>
 
 
     <xsl:template name="gallery_file"/>
 
     <xsl:template match="media/e/representations/e/parts/e/uri">
-        
-        <xsl:value-of select="concat('{{ViBRANT_Gallery_File|Filename=',functx:substring-after-last(.,'/'), '|Caption=')"/>
-            <!--,'}}')"/>--> 
+
+        <xsl:value-of
+            select="concat('{{ViBRANT_Gallery_File|Filename=',functx:substring-after-last(.,'/'), '|Caption=')"/>
+        <!--,'}}')"/>-->
         <!--go back up to the description element and get the text for the Figure legend -->
         <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
         <xsl:text>}}</xsl:text>
     </xsl:template>
 
 
-    
+
 
     <!--+++++++++++++++++++++++++++++L A Y O U T ++++++++++++++++++++++++++++++++++++++ -->
 
@@ -785,36 +773,29 @@
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-    <!--we replace html i> with mediawiki templates-->
-    <xsl:template match="texty" name="replace_html_tags">
-        <xsl:call-template name="replace-tags">
-            <xsl:with-param name="text-string" select="."/>
-        </xsl:call-template>
+    <!--we replace html <i> and <b> with mediawiki templates-->
 
-    </xsl:template>
 
     <!--.............................................-->
 
     <xsl:template name="replace-tags">
         <xsl:param name="text-string"/>
-        <xsl:choose>
-            <xsl:when test="contains($text-string,';&lt;b&gt;')">
-                <xsl:call-template name="add-markup">
-                    <xsl:with-param name="str" select="$text-string"/>
-                    <!--xsl:with-param name="tag-name" select="b"/-->
-                    <xsl:with-param name="wiki-template">Bold</xsl:with-param>
-                    <xsl:with-param name="tag-name">b</xsl:with-param>
-                </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:call-template name="add-markup">
-                    <xsl:with-param name="str" select="$text-string"/>
-                    <xsl:with-param name="wiki-template">Italic</xsl:with-param>
-                    <xsl:with-param name="tag-name">i</xsl:with-param>
-                </xsl:call-template>
-            </xsl:otherwise>
-        </xsl:choose>
 
+        <!-- first replace bold tags and put the result in text-string2 -->
+        <xsl:variable name="text-string2">
+            <xsl:call-template name="add-markup">
+                <xsl:with-param name="str" select="$text-string"/>
+                <xsl:with-param name="wiki-template">Bold</xsl:with-param>
+                <xsl:with-param name="tag-name">b</xsl:with-param>
+            </xsl:call-template>
+        </xsl:variable>
+        
+        <!-- second replace italic tags on text-string2 -->
+        <xsl:call-template name="add-markup">
+            <xsl:with-param name="str" select="$text-string2"/>
+            <xsl:with-param name="wiki-template">Italic</xsl:with-param>
+            <xsl:with-param name="tag-name">i</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!--.............................................-->
@@ -831,16 +812,23 @@
             <xsl:value-of select="concat('&lt;/', $tag-name, '&gt;')"> </xsl:value-of>
         </xsl:variable>
 
-
         <xsl:choose>
+            <!-- if the tag occures in the string -->
             <xsl:when test="contains($str, $opening-tag) and contains($str, $closing-tag)">
+                
+                <!-- separate string before, inside and after the tag -->
                 <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
                 <xsl:variable name="inside-tag"
                     select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
                 <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
+                
+                <!-- built the new string by putting in the mediawiki template -->
                 <xsl:value-of select="concat($before-tag,'{{',$wiki-template,'|',$inside-tag,'}}')"/>
-                <xsl:call-template name="replace-tags">
-                    <xsl:with-param name="text-string" select="$after-tag"/>
+                <!-- in the part after the closing tag could be more tag, so we do arecursive call -->
+                <xsl:call-template name="add-markup">
+                    <xsl:with-param name="str" select="$after-tag"/>
+                    <xsl:with-param name="wiki-template" select="$wiki-template"></xsl:with-param>
+                    <xsl:with-param name="tag-name" select="$tag-name"></xsl:with-param>
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
@@ -850,8 +838,8 @@
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    
 
-    
+
+
 
 </xsl:stylesheet>
