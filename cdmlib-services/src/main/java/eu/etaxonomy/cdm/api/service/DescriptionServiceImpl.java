@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -284,6 +285,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
                     }
             }
         }
+
+        // filter distributions
+        Collection<Distribution> filteredDistributions = DescriptionUtility.preferComputed(distList);
+        distList.clear();
+        distList.addAll(filteredDistributions);
 
         //ordering the areas
         tree.orderAsTree(distList, omitLevels);
