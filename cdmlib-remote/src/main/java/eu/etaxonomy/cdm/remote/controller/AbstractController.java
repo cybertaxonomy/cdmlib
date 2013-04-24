@@ -33,7 +33,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
     });
 
     public static final Logger logger = Logger.getLogger(AbstractController.class);
-    
+
 	protected SERVICE service;
 
 	public abstract void setService(SERVICE service);

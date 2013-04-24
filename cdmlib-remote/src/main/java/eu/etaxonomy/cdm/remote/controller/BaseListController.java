@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,8 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
+
+    public static final Logger logger = Logger.getLogger(BaseListController.class);
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
