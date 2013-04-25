@@ -21,6 +21,7 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public enum CdmBaseType {
 
     TAXON(TaxonBase.class),
+    NONVIRALNAME(TaxonNameBase.class),
     DESCRIPTION_ELEMENT(DescriptionElementBase.class),
     DESCRIPTION(DescriptionBase.class);
     // TODO add all others
