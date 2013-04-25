@@ -113,6 +113,41 @@ public class ManagementController
         // send redirect "see other"
         return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
     }
+    
+    /**
+    *
+    * Create dictionaries for all cdm entities listed in {@link ICdmMassIndexer#dictionaryClasses()}.
+    * Re-dicting will not purge the dictionaries.
+    * @param frontendBaseUrl if the CDM server is running behind a reverse proxy you need
+    *            to supply the base URL of web service front-end which is
+    *            provided by the proxy server.
+    * @param request
+    * @param respone
+    * @return
+    * @throws Exception
+    */
+   @RequestMapping(value = { "redict" }, method = RequestMethod.GET)
+   public ModelAndView doRedict(
+            @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+       String processLabel = "Re-Dicting";
+       ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
+
+       if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+           indexMonitorUuid = progressUtil.registerNewMonitor();
+           Thread subThread = new Thread(){
+               @Override
+               public void run(){
+                   indexer.createDictionary(progressMonitorController.getMonitor(indexMonitorUuid));
+               }
+           };
+           subThread.start();
+       }
+       // send redirect "see other"
+       return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
+   }
 
     /**
      * This will wipe out the index.
