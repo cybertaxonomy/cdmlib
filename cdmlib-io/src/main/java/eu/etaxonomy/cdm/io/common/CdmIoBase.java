@@ -145,9 +145,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
      */
     protected abstract void doInvoke(STATE state);
 
-
     @Autowired
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     /**
      * flush the current session
