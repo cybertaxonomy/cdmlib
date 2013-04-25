@@ -130,7 +130,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 //
                 if(!auth.hasProperty()){
                     if ( !auth.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
-                        logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
+                        logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
                         return ACCESS_GRANTED;
                     }
                     if ( vr.isUuidMatch  && vr.isClassMatch && vr.isPermissionMatch){
