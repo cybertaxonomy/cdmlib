@@ -288,7 +288,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     @Override
     public void updateProgress(STATE state, String message) {
         updateProgress(state, message, 1);
-    };
+    }
 
     @Override
     public void updateProgress(STATE state, String message, int worked) {
