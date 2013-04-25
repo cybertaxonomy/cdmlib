@@ -26,6 +26,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
 import org.apache.lucene.search.grouping.TermAllGroupsCollector;
@@ -42,6 +43,8 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -148,6 +151,9 @@ public class LuceneSearch {
         if (type.equals(TaxonBase.class)) {
             type = Taxon.class;
         }
+        if (type.equals(TaxonNameBase.class)) {
+            type = NonViralName.class;
+        }
         return type;
     }
 
@@ -229,6 +235,17 @@ public class LuceneSearch {
         return luceneQuery;
     }
 
+    /**
+     * @param maxNoOfHits
+     * @return
+     * @throws IOException
+     */
+    public TopDocs executeSearch(int maxNoOfHits) throws IOException {
+    	Query fullQuery = expandQuery();
+    	logger.info("lucene query string to be parsed: " + fullQuery.toString());
+    	return getSearcher().search(fullQuery, maxNoOfHits);
+    	
+    }
     /**
      * @param luceneQuery
      * @param clazz the type as additional filter criterion
@@ -342,7 +359,6 @@ public class LuceneSearch {
 
     public void setHighlightFields(String[] textFieldNamesAsArray) {
         this.highlightFields = textFieldNamesAsArray;
-
     }
 
     public String[] getHighlightFields() {

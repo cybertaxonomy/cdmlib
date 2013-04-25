@@ -10,17 +10,22 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.queryParser.ParseException;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -150,6 +155,30 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return
 	 */
 	public List getNamesByName(String name, CdmBase sessionObject);
+	
+	/**
+	 * Fuzzy matching for the taxon name elements. The input name is first atomised using the {@link NonViralNameParserImpl}
+	 * into its separate parts (genusOrUninomial,infraGenericEpithet,specificEpithet,infraGenericEpithet,authorshipCache).
+	 * Each field is then matched separately with the same accuracy parameter.
+	 *  
+	 * @param name taxon name to fuzzy match
+	 * @param accuracy value > 0.0 and < 1.0 which determines the accuracy of the result.
+	 * @param languages list of languages to consider when matching (currently not used)
+	 * @param highlightFragments
+	 * @param propertyPaths 
+	 * @param maxNoOfResults 
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public List<SearchResult<TaxonNameBase>> findByNameFuzzySearch(
+            String name,
+            float accuracy,
+            List<Language> languages,
+            boolean highlightFragments, 
+            List<String> propertyPaths,
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
 
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
 
