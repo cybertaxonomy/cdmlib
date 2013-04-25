@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
 
 import org.apache.log4j.Level;
+import org.apache.lucene.queryParser.ParseException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -41,7 +42,9 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.DocUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 
 import eu.etaxonomy.cdm.remote.controller.BaseController;
 import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
@@ -56,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -114,6 +118,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
     private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
+    
     @Autowired
     private ITaxonService taxonService;
     
@@ -123,6 +128,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     
     @Autowired
     private ICommonService commonService;
+    
     /** Hibernate name search initialisation strategy */
     private static final List<String> NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {
             "combinationAuthorTeam.$",
@@ -379,7 +385,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         }
                     }
                     // update name search object
-                    ns.addToResponseList(nvn.getTitleCache(), nvn.getNameCache(), nvn.getUuid()
+                    ns.addToResponseList(nvn.getTitleCache(), nvn.getNameCache(), 0, nvn.getUuid()
                             .toString(), tbSet, accTbSet);
                 }
                 nsList.add(ns);
@@ -395,6 +401,130 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         return mv;
     }
 
+    /**
+     * Returns a list of scientific names similar to the <code>{query}</code>
+     * string pattern. Each of these scientific names is accompanied by a list of
+     * name uuids, a list of taxon uuids and a list of accepted taxon uuids.
+     * The underlying (Lucene FuzzyQuery) string distance metric used is based on a 
+     * fail-fast Levenshtein distance algorithm (is aborted if it is discovered that 
+     * the mimimum distance between the words is greater than some threshold)
+     * <p>
+     * Endpoint documentation can be found <a href="{@docRoot}/../remote/name-catalogue-fuzzy.html">here</a>
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/fuzzy</b>
+     *
+     * @param query
+     *                The scientific name pattern(s) to query for. Any wildcard characters in the
+     *                query are removed.
+     * @param accuracy
+     *                Similarity measure (between 0 and 1) to impose on the matching algorithm.
+     *                Briefly described, this is equivalent to the edit distance between the two words, divided by 
+     *                the length of the shorter of the compared terms.
+     * @param hits               
+     *            Maximum number of responses to be returned.    
+     * @param request Http servlet request.
+     * @param response Http servlet response.
+     * @return a List of {@link NameSearch} objects each corresponding to a
+     *         single query. These are built from {@link TaxonNameBase} entities
+     *         which are in turn initialized using the {@link #NAME_SEARCH_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(value = { "fuzzy" }, method = RequestMethod.GET, params = {"query"})
+    public ModelAndView doGetNameFuzzySearch(@RequestParam(value = "query", required = true) String[] queries,
+    		@RequestParam(value = "accuracy", required = false, defaultValue = "0.5") String accuracy,
+    		@RequestParam(value = "hits", required = false, defaultValue = "10") String hits,
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ModelAndView mv = new ModelAndView();
+        List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
+        float acc = 0.5f;
+        int h = 10;
+        try {
+        	acc = Float.parseFloat(accuracy);
+        	h = Integer.parseInt(hits);
+        } catch(NumberFormatException nfe) {
+        	ErrorResponse er = new ErrorResponse();
+        	er.setErrorMessage("accuracy or hits parameter is not a number");
+        	mv.addObject(er);
+            return mv;
+        }
+        // search through each query
+        for (String query : queries) {
+        	if(query.equals("")) {
+				ErrorResponse er = new ErrorResponse();
+                er.setErrorMessage("Empty query field");
+                nsList.add(er);
+                continue;
+        	}
+        	// remove wildcards if any
+            String queryWOWildcards = getQueryWithoutWildCards(query);
+            // convert first char to upper case
+            char[] stringArray = queryWOWildcards.toCharArray();
+            stringArray[0] = Character.toUpperCase(stringArray[0]);
+            queryWOWildcards = new String(stringArray);
+            logger.info("doGetNameSearch()" + request.getServletPath() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
+            //List<NonViralName> nameList = new ArrayList<NonViralName>();
+            List<SearchResult<TaxonNameBase>> nameSearchList = new ArrayList<SearchResult<TaxonNameBase>>();
+            try {            	            
+				nameSearchList = service.findByNameFuzzySearch(
+				        queryWOWildcards,
+				        acc,
+				        null,
+				        false, 
+				        NAME_SEARCH_INIT_STRATEGY,
+				        h);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				ErrorResponse er = new ErrorResponse();
+                er.setErrorMessage("Could not parse name : " + queryWOWildcards);
+                nsList.add(er);
+                continue;
+			} 
+     
+
+            // if search is successful then get related information , else return error
+            if (nameSearchList == null || !nameSearchList.isEmpty()) {
+                NameSearch ns = new NameSearch();
+                ns.setRequest(query);
+
+                for (SearchResult searchResult : nameSearchList) {
+                	NonViralName nvn = HibernateProxyHelper.deproxy(searchResult.getEntity(), NonViralName.class);
+                	
+                    // we need to retrieve both taxon uuid of name queried and
+                    // the corresponding accepted taxa.
+                    // reason to return accepted taxa also, is to be able to get from
+                    // scientific name to taxon concept in two web service calls.
+                    Set<TaxonBase> tbSet = nvn.getTaxonBases();
+                    Set<TaxonBase> accTbSet = new HashSet<TaxonBase>();
+                    for (TaxonBase tb : tbSet) {
+                        // if synonym then get accepted taxa.
+                        if (tb instanceof Synonym) {
+                            Synonym synonym = (Synonym) tb;
+                            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
+                            for (SynonymRelationship sr : synRelationships) {
+                                Taxon accTaxon = sr.getAcceptedTaxon();
+                                accTbSet.add(accTaxon);
+                            }
+                        } else {
+                            accTbSet.add(tb);
+                        }
+                    }
+                    // update name search object
+                    ns.addToResponseList(nvn.getTitleCache(), nvn.getNameCache(), searchResult.getMaxScore(), nvn.getUuid()
+                            .toString(), tbSet, accTbSet);
+                }
+                nsList.add(ns);
+
+            } else {
+                ErrorResponse er = new ErrorResponse();
+                er.setErrorMessage("No Taxon Name matches : " + query + ", for given accuracy");
+                nsList.add(er);
+            }
+        }        
+
+        mv.addObject(nsList);
+        return mv;
+    }
 
     /**
      * Returns a documentation page for the Name Information API.
@@ -988,6 +1118,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             String classificationKey = removeInternalWhitespace(c.getTitleCache());
             if(c.getReference() != null) {
                 refTitleCache = c.getReference().getTitleCache();
+                c.getAllNodes();
             }
             // default is the first element of the list
             // always created with the same sorting (DESCENDING)
