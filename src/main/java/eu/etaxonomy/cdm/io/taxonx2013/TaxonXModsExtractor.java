@@ -41,8 +41,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         List<String> roleList = new ArrayList<String>();
         String content="";
 
-//        int reftype = askQuestion("What kind of reference is it?\n 1: Generic\n 2: Book\n 3: Article\n" +
-//                " 4 : BookSection\n 5 : Journal\n 6 : Printseries\n 7: Thesis ");
+        //        int reftype = askQuestion("What kind of reference is it?\n 1: Generic\n 2: Book\n 3: Article\n" +
+        //                " 4 : BookSection\n 5 : Journal\n 6 : Printseries\n 7: Thesis ");
         int reftype=4;
         Reference<?> ref= getReferenceType(reftype);
         for (int i=0; i<children.getLength();i++){
@@ -91,7 +91,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             if (children.item(i).getNodeName().equalsIgnoreCase("mods:location")){
                 NodeList tmp = children.item(i).getChildNodes();
                 for (int j=0;j<tmp.getLength();j++){
-//                    System.out.println("Child of mods:location: "+tmp.item(j).getNodeName());
+                    //                    System.out.println("Child of mods:location: "+tmp.item(j).getNodeName());
                     if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:url")) {
                         content = tmp.item(j).getTextContent().trim();
                         if (!content.isEmpty() && content != "http://un.availab.le") {
@@ -131,7 +131,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             NodeList tmp = node.getChildNodes();
             for (int j=0;j<tmp.getLength();j++){
                 newPerson=false;
-//                System.out.println("Child of modsnametype: "+tmp.item(j).getNodeName());
+                //                System.out.println("Child of modsnametype: "+tmp.item(j).getNodeName());
                 Person p = Person.NewInstance();
                 if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:namePart")) {
                     content=tmp.item(j).getTextContent().trim();
@@ -160,7 +160,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     personMap.put(p.getTitleCache(),uuid);
                 }else{
                     try{
-                    p = (Person) importer.getAgentService().find(personMap.get(p.getTitleCache()));
+                        p = (Person) importer.getAgentService().find(personMap.get(p.getTitleCache()));
                     }catch(Exception e){logger.warn("PERSON EXISTS "+p);
                     }
                 }
@@ -190,6 +190,21 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
      */
     private void addRelatedMods(Node node, Map<String, String> modsMap, Reference<?> ref) {
         NodeList tmp =node.getChildNodes();
+        NodeList partNodes = null;
+        NodeList children = null;
+
+        List<String> originInfo = null;
+        List<String> partList = null;
+
+        TimePeriod date;
+
+        String publisher="";
+        String publishplace="";
+        String pstart="";
+        String pend="";
+
+        Map<String,String> mapmap=null;
+
         Map<String, String> relatedInfoMap = new HashMap<String, String>();
         List<String> roleList = new ArrayList<String>();
         String content="";
@@ -206,16 +221,14 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         b.setTitleCache(content,true);
                         b.setTitle(content);
                         b.generateTitle();
-
                         ref.setInBook(b);
                     }
                 }
-
             }
 
             if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:originInfo")) {
-                NodeList children = tmp.item(j).getChildNodes();
-                List<String> originInfo = new ArrayList<String>();
+                children = tmp.item(j).getChildNodes();
+                originInfo = new ArrayList<String>();
                 for (int i=0;i<children.getLength();i++){
                     content=children.item(i).getTextContent().trim();
                     if (!content.isEmpty()) {
@@ -224,8 +237,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             ref.setDatePublished(TimePeriod.parseString(content));
                         }
                     }
-                    String publisher="";
-                    String publishplace="";
+                    publisher="";
+                    publishplace="";
                     if (children.item(i).getNodeName().contains("publisher")) {
                         try{
                             publisher=children.item(i).getChildNodes().item(0).getTextContent().trim();
@@ -250,22 +263,42 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
 
             if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:name")){
-                Map<String,String> mapmap = getModsNames(tmp.item(j),ref);
+                mapmap = getModsNames(tmp.item(j),ref);
                 if (!mapmap.isEmpty()) {
                     roleList.add(mapmap.toString());
                 }
             }
             if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:part")){
-                NodeList children = tmp.item(j).getChildNodes();
-                List<String> partList = new ArrayList<String>();
+                children = tmp.item(j).getChildNodes();
+                partList = new ArrayList<String>();
                 for (int i=0;i<children.getLength();i++){
-                    Map<String,String> mapmap = new HashMap<String, String>();
+                    mapmap = new HashMap<String, String>();
                     System.out.println(children.item(i).getNodeName());
+
+                    if (children.item(i).getNodeName().equalsIgnoreCase("mods:date")){
+                        content = children.item(i).getTextContent().trim();
+                        if (!content.isEmpty()){
+                            date = TimePeriod.parseString(content);
+                            ref.setDatePublished(date);
+                        }
+                    }
+                    if (children.item(i).getNodeName().equalsIgnoreCase("mods:detail") &&
+                            children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("volume")){
+                        partNodes = children.item(i).getChildNodes();
+                        for (int k=0; k<partNodes.getLength();k++){
+                            if (partNodes.item(k).getNodeName().equalsIgnoreCase("mods:number")) {
+                                content = partNodes.item(k).getTextContent().trim();
+                                if (!content.isEmpty()) {
+                                    ref.setVolume(content);
+                                }
+                            }
+                        }
+                    }
                     if (children.item(i).getNodeName().equalsIgnoreCase("mods:extent")) {
                         mapmap.put("unit", children.item(i).getAttributes().getNamedItem("unit").getNodeValue());
-                        NodeList partNodes = children.item(i).getChildNodes();
-                        String pstart="";
-                        String pend="";
+                        partNodes = children.item(i).getChildNodes();
+                        pstart="";
+                        pend="";
                         for (int k=0; k<partNodes.getLength();k++){
                             if (partNodes.item(k).getNodeName().equalsIgnoreCase("mods:start")) {
                                 content = partNodes.item(k).getTextContent().trim();

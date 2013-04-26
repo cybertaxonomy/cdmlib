@@ -21,6 +21,7 @@ public class TaxonXXMLFieldGetter {
     private NomenclaturalCode nomenclaturalCode;
     private Classification classification;
     private TaxonXImport importer;
+    private TaxonXImportState configState;
 
 
     public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document){
@@ -33,7 +34,7 @@ public class TaxonXXMLFieldGetter {
         //taxonx
         Node root = doc.getFirstChild();
         TaxonXModsExtractor modsextractor = new TaxonXModsExtractor(importer);
-        TaxonXTreatmentExtractor treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer);
+        TaxonXTreatmentExtractor treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, configState);
 
         //taxonHeader, taxonBody
         NodeList nodes = root.getChildNodes();
@@ -82,6 +83,15 @@ public class TaxonXXMLFieldGetter {
      */
     public void setImporter(TaxonXImport taxonXImport) {
        this.importer=taxonXImport;
+
+    }
+
+
+    /**
+     * @param state
+     */
+    public void setConfig(TaxonXImportState state) {
+       this.configState=state;
 
     }
 

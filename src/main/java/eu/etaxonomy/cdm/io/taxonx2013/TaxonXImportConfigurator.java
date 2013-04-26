@@ -1,20 +1,24 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -25,55 +29,59 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @version 1.0
  */
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
-//	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
+    //	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 
-	//if true the information in the mods part (taxonxHeader)
-	private boolean doMods = true;
-	private boolean doFacts = true;
-	private boolean doTypes = true;
-
-
-	//TODO
-	private static IInputTransformer defaultTransformer = null;
+    //if true the information in the mods part (taxonxHeader)
+    private boolean doMods = true;
+    private boolean doFacts = true;
+    private boolean doTypes = true;
 
 
-	//if false references in this rdf file are not published in the bibliography list
-	private boolean isPublishReferences = true;
+    //TODO
+    private static IInputTransformer defaultTransformer = null;
 
-	private String originalSourceTaxonNamespace = "TaxonConcept";
-	private String originalSourceId;
 
-	private static Reference<?> sourceRef = null;
+    //if false references in this rdf file are not published in the bibliography list
+    private boolean isPublishReferences = true;
 
-	@SuppressWarnings("unchecked")
+    private String originalSourceTaxonNamespace = "TaxonConcept";
+    private String originalSourceId;
+
+    private Map<String, Person> titleCachePerson;
+    private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+
+
+    private static Reference<?> sourceRef = null;
+
+    @SuppressWarnings("unchecked")
     @Override
     protected void makeIoClassList(){
-		ioClassList = new Class[]{
-		        TaxonXImport.class,
-		};
-	}
+        ioClassList = new Class[]{
+                TaxonXImport.class,
+        };
+    }
 
-	/**
-	 * @param uri
-	 * @param destination
-	 * @return
-	 */
-	public static TaxonXImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
-		return new TaxonXImportConfigurator(uri, destination);
-	}
+    /**
+     * @param uri
+     * @param destination
+     * @return
+     */
+    public static TaxonXImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
+        return new TaxonXImportConfigurator(uri, destination);
+    }
 
 
-	/**
-	 * @param url
-	 * @param destination
-	 */
-	private TaxonXImportConfigurator(URI uri, ICdmDataSource destination) {
-		super(defaultTransformer);
-		setSource(uri);
-		setDestination(destination);
-	}
+    /**
+     * @param url
+     * @param destination
+     */
+    private TaxonXImportConfigurator(URI uri, ICdmDataSource destination) {
+        super(defaultTransformer);
+        setSource(uri);
+        setDestination(destination);
+    }
 
-	/**
+    /**
      * @param url
      * @param destination
      */
@@ -84,22 +92,22 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
-	@SuppressWarnings("unchecked")
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public TaxonXImportState getNewState() {
-		return new TaxonXImportState(this);
-	}
+        return new TaxonXImportState(this);
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
-	@SuppressWarnings("rawtypes")
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
+     */
+    @SuppressWarnings("rawtypes")
     @Override
-	public Reference getSourceReference() {
-	    if (sourceReference == null){
+    public Reference getSourceReference() {
+        if (sourceReference == null){
             sourceReference =  ReferenceFactory.newGeneric();
 
             if (getSourceRefUuid() != null){
@@ -110,83 +118,83 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
             }
         }
         return sourceReference;
-	}
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
+     */
+    @Override
     public String getSourceNameString() {
-		if (this.getSource() == null){
-			return null;
-		}else{
-			return this.getSource().toString();
-		}
-	}
+        if (this.getSource() == null){
+            return null;
+        }else{
+            return this.getSource().toString();
+        }
+    }
 
-	public String getOriginalSourceTaxonNamespace() {
-		return originalSourceTaxonNamespace;
-	}
+    public String getOriginalSourceTaxonNamespace() {
+        return originalSourceTaxonNamespace;
+    }
 
-	public void setOriginalSourceTaxonNamespace(String originalSourceTaxonNamespace) {
-		this.originalSourceTaxonNamespace = originalSourceTaxonNamespace;
-	}
+    public void setOriginalSourceTaxonNamespace(String originalSourceTaxonNamespace) {
+        this.originalSourceTaxonNamespace = originalSourceTaxonNamespace;
+    }
 
-	public String getOriginalSourceId() {
-		return originalSourceId;
-	}
+    public String getOriginalSourceId() {
+        return originalSourceId;
+    }
 
-	public void setOriginalSourceId(String originalSourceId) {
-		this.originalSourceId = originalSourceId;
-	}
-
-
-	/**
-	 * @return the doMods
-	 */
-	public boolean isDoMods() {
-		return doMods;
-	}
-
-	/**
-	 * @param doMods the doMods to set
-	 */
-	public void setDoMods(boolean doMods) {
-		this.doMods = doMods;
-	}
+    public void setOriginalSourceId(String originalSourceId) {
+        this.originalSourceId = originalSourceId;
+    }
 
 
-	public boolean isDoFacts() {
-		return doFacts;
-	}
-	public void setDoFacts(boolean doFacts) {
-		this.doFacts = doFacts;
-	}
+    /**
+     * @return the doMods
+     */
+    public boolean isDoMods() {
+        return doMods;
+    }
+
+    /**
+     * @param doMods the doMods to set
+     */
+    public void setDoMods(boolean doMods) {
+        this.doMods = doMods;
+    }
+
+
+    public boolean isDoFacts() {
+        return doFacts;
+    }
+    public void setDoFacts(boolean doFacts) {
+        this.doFacts = doFacts;
+    }
 
 
 
-	public boolean isDoTypes() {
-		return doTypes;
-	}
-	public void setDoTypes(boolean doTypes) {
-		this.doTypes = doTypes;
-	}
+    public boolean isDoTypes() {
+        return doTypes;
+    }
+    public void setDoTypes(boolean doTypes) {
+        this.doTypes = doTypes;
+    }
 
 
-	/**
-	 * @return the isPublishReferences
-	 */
-	public boolean isPublishReferences() {
-		return isPublishReferences;
-	}
+    /**
+     * @return the isPublishReferences
+     */
+    public boolean isPublishReferences() {
+        return isPublishReferences;
+    }
 
-	/**
-	 * @param isPublishReferences the isPublishReferences to set
-	 */
-	public void setPublishReferences(boolean isPublishReferences) {
-		this.isPublishReferences = isPublishReferences;
-	}
+    /**
+     * @param isPublishReferences the isPublishReferences to set
+     */
+    public void setPublishReferences(boolean isPublishReferences) {
+        this.isPublishReferences = isPublishReferences;
+    }
 
     /**
      * @param b
@@ -207,9 +215,38 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
      * @param reference
      */
     public static void setSourceRef(Reference<?> reference) {
-       sourceRef = reference;
+        sourceRef = reference;
 
     }
 
+    /**
+     * @return
+     */
+    public Map<String, Person> getPersons() {
+        return titleCachePerson;
+    }
 
+    /**
+     * @param titleCachePerson
+     */
+    public void setPersons(Map<String, Person> titleCachePerson) {
+        this.titleCachePerson=titleCachePerson;
+        System.out.println(titleCachePerson);
+
+    }
+    public Map<String,UUID> getNamedAreaDecisions() {
+        return namedAreaDecisions;
+    }
+
+    public void setNamedAreaDecisions(Map<String,UUID> namedAreaDecisions) {
+        this.namedAreaDecisions = namedAreaDecisions;
+    }
+
+    public void putNamedAreaDecision(String areaStr,UUID uuid){
+        this.namedAreaDecisions.put(areaStr,uuid);
+    }
+
+    public UUID getNamedAreaDecision(String areaStr){
+        return namedAreaDecisions.get(areaStr);
+    }
 }

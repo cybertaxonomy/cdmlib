@@ -117,6 +117,7 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             taxonXFieldGetter.setNomenclaturalCode(this.taxonXstate.getConfig().getNomenclaturalCode());
             taxonXFieldGetter.setClassification(classification);
             taxonXFieldGetter.setImporter(this);
+            taxonXFieldGetter.setConfig(state);
             taxonXFieldGetter.parseFile();
 
         } catch (MalformedURLException e) {
