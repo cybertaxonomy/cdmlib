@@ -42,23 +42,9 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.ICdDvd;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.IPatent;
-import eu.etaxonomy.cdm.model.reference.IPersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.IPrintSeries;
 import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
-import eu.etaxonomy.cdm.model.reference.IProceedings;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.IReport;
-import eu.etaxonomy.cdm.model.reference.IThesis;
-import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.bukhman
@@ -69,7 +55,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 	private static final Logger logger = Logger.getLogger(EndnoteRecordsImport.class);
 
 	private static int modCount = 1000;
-	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	public EndnoteRecordsImport(){
 		super();
@@ -140,20 +125,20 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			IPublicationBase publicationBase = null;			
 			CdmBase cdmBase = null;   
 			
-			Reference article = refFactory.newArticle();				
-			Reference book = refFactory.newBook();
-			Reference bookSection = refFactory.newBookSection();
-			Reference thesis = refFactory.newThesis();
-			Reference journal = refFactory.newJournal();
-			Reference patent =  refFactory.newPatent();
-			Reference generic = refFactory.newGeneric();
-			Reference personalCommunication = refFactory.newPersonalCommunication();
-			Reference proceedings  = refFactory.newProceedings();
-			Reference printSeries = refFactory.newPrintSeries();
-			Reference cdDvd = refFactory.newCdDvd();
-			Reference database = refFactory.newDatabase();
-			Reference report = refFactory.newReport();
-			Reference webPage = refFactory.newWebPage();
+			Reference<?> article = ReferenceFactory.newArticle();				
+			Reference<?> book = ReferenceFactory.newBook();
+			Reference<?> bookSection = ReferenceFactory.newBookSection();
+			Reference<?> thesis = ReferenceFactory.newThesis();
+			Reference<?> journal = ReferenceFactory.newJournal();
+			Reference<?> patent =  ReferenceFactory.newPatent();
+			Reference<?> generic = ReferenceFactory.newGeneric();
+			Reference<?> personalCommunication = ReferenceFactory.newPersonalCommunication();
+			Reference<?> proceedings  = ReferenceFactory.newProceedings();
+			Reference<?> printSeries = ReferenceFactory.newPrintSeries();
+			Reference<?> cdDvd = ReferenceFactory.newCdDvd();
+			Reference<?> database = ReferenceFactory.newDatabase();
+			Reference<?> report = ReferenceFactory.newReport();
+			Reference<?> webPage = ReferenceFactory.newWebPage();
 			Institution school = Institution.NewInstance();
 			Team authorTeam = Team.NewInstance();		 
 			
@@ -258,7 +243,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					reference = webPage;
 				}else {
 					logger.warn("The type was not found...");
-					reference = (Reference) generic;
+					reference = generic;
 					success = false;
 				}		 			
 			}
@@ -555,23 +540,23 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							title_new.toString();
 							
 							if (strName_reftype.equals("Article")) {
-								map_article.put(title_new.toString(), (Reference) article);
-								Reference give_article = map_article.get(title_new.toString());
+								map_article.put(title_new.toString(), article);
+								Reference<?> give_article = map_article.get(title_new.toString());
 								give_article.setTitle(title_new.toString());
 								reference=give_article;
 							}else if (strName_reftype.equals("Book")) {
 								map_book.put(title_new.toString(), book);
-								Reference give_book = map_book.get(title_new.toString());
+								Reference<?> give_book = map_book.get(title_new.toString());
 								give_book.setTitle(title_new.toString());
 								reference=give_book;
 							}else if (strName_reftype.equals("Book Section")){
 								map_book_section.put(title_new.toString(), bookSection);
-								Reference give_book_section = map_book_section.get(title_new.toString());
+								Reference<?> give_book_section = map_book_section.get(title_new.toString());
 								give_book_section.setTitle(title_new.toString());
 								reference=give_book_section;
 							}else if (strName_reftype.equalsIgnoreCase("Patent")) {
 								map_patent.put(title_new.toString(), patent);
-								Reference give_patent = map_patent.get(title_new.toString());
+								Reference<?> give_patent = map_patent.get(title_new.toString());
 								give_patent.setTitle(title_new.toString());
 								reference=give_patent;
 							}else if (strName_reftype.equalsIgnoreCase("Personal Communication")){
@@ -579,52 +564,52 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 								reference=personalCommunication;
 							}else if (strName_reftype.equalsIgnoreCase("Journal")) {
 								map_journal.put(title_new.toString(), journal);
-								Reference give_journal = map_journal.get(title_new.toString());
+								Reference<?> give_journal = map_journal.get(title_new.toString());
 								give_journal.setTitle(title_new.toString());
 								reference=give_journal;
 							}else if (strName_reftype.equalsIgnoreCase("CdDvd")) {
 								map_cdDvd.put(title_new.toString(), cdDvd);
-								Reference give_cdDvd = map_cdDvd.get(title_new.toString());
+								Reference<?> give_cdDvd = map_cdDvd.get(title_new.toString());
 								give_cdDvd.setTitle(title_new.toString());
 								reference=give_cdDvd;
 							}else if (strName_reftype.equalsIgnoreCase("Database")) {
 								map_database.put(title_new.toString(), database);
-								Reference give_database = map_database.get(title_new.toString());
+								Reference<?> give_database = map_database.get(title_new.toString());
 								give_database.setTitle(title_new.toString());
 								reference=give_database;
 							}else if (strName_reftype.equalsIgnoreCase("WebPage")) {
 								map_webPage.put(title_new.toString(), webPage);
-								Reference give_webPage = map_webPage.get(title_new.toString());
+								Reference<?> give_webPage = map_webPage.get(title_new.toString());
 								give_webPage.setTitle(title_new.toString());
 								reference=give_webPage;
 							}else if (strName_reftype.equalsIgnoreCase("Report")) {
 								map_report.put(title_new.toString(), report);
-								Reference give_report = map_report.get(title_new.toString());
+								Reference<?> give_report = map_report.get(title_new.toString());
 								give_report.setTitle(title_new.toString());
 								reference=give_report;
 							}else if (strName_reftype.equalsIgnoreCase("Thesis")) {
 								map_thesis.put(title_new.toString(), thesis);
-								Reference give_thesis = map_thesis.get(title_new.toString());
+								Reference<?> give_thesis = map_thesis.get(title_new.toString());
 								give_thesis.setTitle(title_new.toString());
 								reference=give_thesis;
 							}else if (strName_reftype.equalsIgnoreCase("Print Series")){
 								map_printSeries.put(title_new.toString(), printSeries);
-								Reference give_printSeries = map_printSeries.get(title_new.toString());
+								Reference<?> give_printSeries = map_printSeries.get(title_new.toString());
 								give_printSeries.setTitle(title_new.toString());
 							}else if (strName_reftype.equals("Journal Article")){
 								map_article.put(title_new.toString(), article);
-								Reference give_article = map_article.get(title_new.toString());
+								Reference<?> give_article = map_article.get(title_new.toString());
 								give_article.setTitle(title_new.toString());
 								reference=give_article;
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 								map_proceedings.put(title_new.toString(), proceedings);
-								Reference give_proceedings = map_proceedings.get(title_new.toString());
+								Reference<?> give_proceedings = map_proceedings.get(title_new.toString());
 								give_proceedings.setTitle(title_new.toString());
 								reference=give_proceedings;
 							}else {
 								logger.warn("The type was not found...");
 								map_generic.put(title_new.toString(), generic);
-								Reference give_generic = map_generic.get(title_new.toString());
+								Reference<?> give_generic = map_generic.get(title_new.toString());
 								give_generic.setTitle(title_new.toString());
 								reference=give_generic;
 								success = false; 
@@ -654,7 +639,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						 
 						if (strName_reftype.equals("Book Section")){
 				    		if (secondary_title != null) {
-				    			Reference give_book =map_book.get(secondary_title);
+				    			Reference<?> give_book =map_book.get(secondary_title);
 				    			if (give_book!= null) {
 				    				bookSection.setInBook(give_book);
 				    				give_book.setTitle(secondary_title);
@@ -668,7 +653,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				    	}else {
 							logger.warn("The type was not found...");
 							map_generic.put(secondary_title, generic);
-							Reference give_generic = map_generic.get(secondary_title);
+							Reference<?> give_generic = map_generic.get(secondary_title);
 							give_generic.setTitle(secondary_title);
 							reference=give_generic;
 							success = false; 
@@ -786,7 +771,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			    	if (strName_reftype.equals("Journal Article")){		    		
 			    		
 			    		if (periodical != null) {	    			 	
-			    			Reference give_journal = map_journal.get(periodical);
+			    			Reference<?> give_journal = map_journal.get(periodical);
 							if (give_journal!= null) {
 								article.setInJournal(give_journal);	
 								give_journal.setTitle(periodical);
