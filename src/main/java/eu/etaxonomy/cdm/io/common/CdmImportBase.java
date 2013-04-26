@@ -914,7 +914,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
-		Reference ref = null;
+		Reference<?> ref = null;
 		return getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
 	}
 	
