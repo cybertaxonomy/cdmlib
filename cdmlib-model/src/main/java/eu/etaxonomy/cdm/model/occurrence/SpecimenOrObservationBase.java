@@ -44,6 +44,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -113,6 +114,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 	@XmlElement(name = "IndividualCount")
 	@Field(analyze = Analyze.NO)
+	@NumericField
 	@Min(0)
 	private Integer individualCount;
 

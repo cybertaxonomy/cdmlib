@@ -70,8 +70,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	// Software can go and grap these terms incl labels and description.
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
-	@Field(analyze = Analyze.NO)
 	@Type(type="uriUserType")
+	@Field(analyze = Analyze.NO)
 	private URI termSourceUri;
 
 
