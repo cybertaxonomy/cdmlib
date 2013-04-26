@@ -294,12 +294,6 @@ src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularRecord.java -text
 src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaZipExport.java -text
 src/main/java/eu/etaxonomy/cdm/io/dwca/out/IDwcaAreaRecord.java -text
 src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermMapping.java -text
-src/main/java/eu/etaxonomy/cdm/io/events/IIoEvent.java -text
-src/main/java/eu/etaxonomy/cdm/io/events/IIoObserver.java -text
-src/main/java/eu/etaxonomy/cdm/io/events/IoEventBase.java -text
-src/main/java/eu/etaxonomy/cdm/io/events/IoProblemEvent.java -text
-src/main/java/eu/etaxonomy/cdm/io/events/IoProgressEvent.java -text
-src/main/java/eu/etaxonomy/cdm/io/events/LoggingIoObserver.java -text
 src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
