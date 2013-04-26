@@ -343,7 +343,6 @@ src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDocumentBuilder.jav
 src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExporter.java -text
-src/main/java/eu/etaxonomy/cdm/io/profiler/ProfilerController.java -text
 src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndNoteImportBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportState.java -text
