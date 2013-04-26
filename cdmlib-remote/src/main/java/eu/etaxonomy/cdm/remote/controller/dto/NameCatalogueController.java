@@ -447,6 +447,13 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         	mv.addObject(er);
             return mv;
         }
+        
+        if(acc < 0.0 || acc >= 1.0) {
+        	ErrorResponse er = new ErrorResponse();
+        	er.setErrorMessage("accuracy should be >= 0.0 and < 1.0");
+        	mv.addObject(er);
+            return mv;
+        }
         // search through each query
         for (String query : queries) {
         	if(query.equals("")) {
