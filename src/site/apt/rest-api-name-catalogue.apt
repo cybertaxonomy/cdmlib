@@ -19,6 +19,10 @@ Name Catalogue REST API
 		*** {{{./remote/name-catalogue-name-info.html} name information}}	: This web service endpoint provides information related a specific name uuid.
 	
 		*** {{{./remote/name-catalogue-taxon-info.html} taxon information}} 	: This web service endpoint provides information related a specific taxon uuid.
+		
+		*** {{{./remote/name-catalogue-taxon-accepted.html} accepted name search}} 	: This web service endpoint serves as a search engine for retrieving taxonomic information of the accepted name of the synonomy to which the queried scientific name belongs. 
+		
+		*** {{{./remote/name-catalogue-taxon-fuzzy.html} fuzzy name search}} 	: This web service endpoint serves as a fuzzy search for taxonomic names.
 	
 	[]
 	
@@ -34,3 +38,7 @@ Name Catalogue REST API
 	*** name information 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/name}} 	
 	
 	*** taxon information 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/taxon}} 	
+	
+	*** accepted name search 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/accepted} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/accepted}}
+	
+	*** fuzzy name search 	: {{{http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/fuzzy} http://dev.e-taxonomy.eu/cdmserver/col/name_catalogue/fuzzy}}

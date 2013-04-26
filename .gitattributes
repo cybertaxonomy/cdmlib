@@ -2210,7 +2210,9 @@ src/site/apt/index.apt -text
 src/site/apt/oai-pmh.apt -text
 src/site/apt/overview.apt -text
 src/site/apt/reference.apt -text
+src/site/apt/remote/name-catalogue-accepted.apt -text
 src/site/apt/remote/name-catalogue-default.apt -text
+src/site/apt/remote/name-catalogue-fuzzy.apt -text
 src/site/apt/remote/name-catalogue-name-info.apt -text
 src/site/apt/remote/name-catalogue-taxon-info.apt -text
 src/site/apt/remote/search-fulltext-info.apt -text
