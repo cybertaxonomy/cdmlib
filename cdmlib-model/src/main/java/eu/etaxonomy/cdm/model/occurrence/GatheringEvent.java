@@ -89,6 +89,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@IndexedEmbedded
 	private NamedArea country;
 
     @XmlElementWrapper(name = "CollectingAreas")

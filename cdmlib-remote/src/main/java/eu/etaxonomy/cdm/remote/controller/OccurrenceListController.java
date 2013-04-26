@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,11 +17,12 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.queryParser.ParseException;
+import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,19 +31,15 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
-import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.RectanglePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
@@ -79,6 +74,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(Rectangle.class, new RectanglePropertyEditor());
     }
 
     /**
@@ -120,6 +116,59 @@ public class OccurrenceListController extends IdentifiableListController<Specime
                 maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 orderHints, DEFAULT_INIT_STRATEGY);
 
+    }
+
+    /**
+     *
+     * @param clazz
+     * @param queryString
+     * @param boundingBox
+     *            as
+     *            minx(minlongitute),miny(minlatitute),maxx(maxlongitute),max(
+     *            maxlatitute), e.g. 13.112,52.374,13.681,52.641 for the Berlin
+     *            area
+     * @param languages
+     * @param highlighting
+     * @param pageNumber
+     * @param pageSize
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     * @throws ParseException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"findByFullText"})
+    public Pager<SearchResult<SpecimenOrObservationBase>> dofindByFullText(
+            @RequestParam(value = "clazz", required = false) Class<? extends SpecimenOrObservationBase<?>> clazz,
+            @RequestParam(value = "query", required = false) String queryString,
+            @RequestParam(value = "bbox", required = false) Rectangle boundingBox,
+            @RequestParam(value = "languages", required = false) List<Language> languages,
+            @RequestParam(value = "hl", required = false) Boolean highlighting,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException {
+
+         logger.info("findByFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         pagerParams.normalizeAndValidate(response);
+
+         if(highlighting == null){
+             highlighting = false;
+         }
+
+         if(queryString == null && boundingBox == null) {
+             HttpStatusMessage.fromString("Either query or bbox must be given").send(response);
+             return null;
+         }
+
+        Pager<SearchResult<SpecimenOrObservationBase>> pager = service.findByFullText(clazz, queryString, boundingBox, languages,
+                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null),
+                initializationStrategy);
+        return pager;
     }
 
 }

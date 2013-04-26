@@ -48,12 +48,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
     /**
      * fragmentNumber - max number of sentence fragments to return
      */
-    private int fragmentNumber = 5;
+    private final int fragmentNumber = 5;
     /**
      * fragmentSize - the max number of characters for each fragment
      */
-    private int fragmentSize = 100;
-    private LuceneSearch luceneSearch;
+    private final int fragmentSize = 100;
+    private final LuceneSearch luceneSearch;
 
     /**
      * Use this constructor if you do not wish to retrieve highlighted terms found in the best sections of a text.
@@ -82,6 +82,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * This slows down the query immense or throws TooManyClauses exceptions if
      * too many terms match the wildcard.
      */
+    @Override
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 

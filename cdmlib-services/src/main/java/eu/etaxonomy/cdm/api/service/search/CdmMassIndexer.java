@@ -46,11 +46,9 @@ import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author Andreas Kohlbecker
@@ -278,11 +276,13 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         monitor.subTask("optimizing");
         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        subMonitor.beginTask("optimizing", 1);
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         fullTextSession.getSearchFactory().optimize();
+        fullTextSession.flushToIndexes();
+        fullTextSession.clear();
 
-        subMonitor.beginTask("optimizing", 1);
         subMonitor.done();
     }
 
@@ -355,10 +355,11 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public Class[] indexedClasses() {
         return new Class[] {
-                DescriptionElementBase.class,
+//                DescriptionElementBase.class, ##### FIXME disabled for testing
                 Classification.class,
-                TaxonBase.class,
-                TaxonNameBase.class
+//                TaxonBase.class, ##### FIXME disabled for testing
+//                TaxonNameBase.class, ##### FIXME disabled for testing
+                SpecimenOrObservationBase.class
                 };
     }
     

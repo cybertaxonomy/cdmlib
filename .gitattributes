@@ -653,6 +653,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/GroupByTaxonClassBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IGroupByClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IdFieldOptions.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NotNullAwareIdBridge.java -text
@@ -1825,6 +1826,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/MetadataPrefixEditor.
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaLevelPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/RankPropertyEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/RectanglePropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/SetSpecEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UUIDListPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UUIDPropertyEditor.java -text

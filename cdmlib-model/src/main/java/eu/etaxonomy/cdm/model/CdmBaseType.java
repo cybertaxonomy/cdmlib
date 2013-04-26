@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -35,7 +36,8 @@ public enum CdmBaseType {
     TAXON(TaxonBase.class),
     NONVIRALNAME(TaxonNameBase.class),
     DESCRIPTION_ELEMENT(DescriptionElementBase.class),
-    DESCRIPTION(DescriptionBase.class);
+    DESCRIPTION(DescriptionBase.class),
+    SPECIMEN_OR_OBSERVATIONBASE(SpecimenOrObservationBase.class);
     // TODO add all others
 
     private Class<? extends CdmBase> baseClass;

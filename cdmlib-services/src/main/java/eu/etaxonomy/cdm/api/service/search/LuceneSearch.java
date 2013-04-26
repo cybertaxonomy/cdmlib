@@ -37,9 +37,11 @@ import org.hibernate.Session;
 import org.hibernate.search.ProjectionConstants;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
+import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.ClassBridges;
 
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.IGroupByClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -56,7 +58,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    private static final String GROUP_BY_FIELD = GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD;
+    private String groupByField = "id";
 
     public final static String ID_FIELD = "id";
 
@@ -131,6 +133,38 @@ public class LuceneSearch {
     public LuceneSearch(Session session, Class<? extends CdmBase> directorySelectClass) {
          this.session = session;
          this.directorySelectClass = directorySelectClass;
+         findGroupByField();
+    }
+
+    /**
+     * Searches the {@link ClassBridge} annotations for a
+     * {@link IGroupByClassBridge} and sets the groupByField for this search
+     * accordingly
+     */
+    private void findGroupByField() {
+
+        ClassBridge[] classBridgeArray = null;
+        ClassBridges classBridges = directorySelectClass.getAnnotation(ClassBridges.class);
+
+        if(classBridges != null){
+            classBridgeArray = classBridges.value();
+        } else {
+            ClassBridge classBridge = directorySelectClass.getAnnotation(ClassBridge.class);
+            if(classBridge != null){
+                classBridgeArray = new ClassBridge[] {classBridge};
+            }
+        }
+
+        if(classBridgeArray != null){
+            for (ClassBridge classBridge : classBridgeArray) {
+                if(IGroupByClassBridge.class.isAssignableFrom(classBridge.getClass())){
+                    groupByField = ((IGroupByClassBridge)classBridge).getGroupByField();
+                    // there should always only be one IGroupByClassBridge
+                    break;
+                }
+            }
+        }
+
     }
 
     /**
@@ -287,7 +321,7 @@ public class LuceneSearch {
 
         // perform the search (needs two passes for grouping)
         // - first pass
-        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
+        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
         getSearcher().search(fullQuery, firstPassCollector);
         Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
@@ -298,8 +332,8 @@ public class LuceneSearch {
         boolean getScores = true;
         boolean getMaxScores = true;
         boolean fillFields = true;
-        TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(GROUP_BY_FIELD);
-        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
+        TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
+        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
         getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
         TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
