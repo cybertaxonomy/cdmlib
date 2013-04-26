@@ -29,11 +29,9 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
 import org.hibernate.search.engine.spi.SearchFactoryImplementor;
-import org.hibernate.search.indexes.spi.IndexManager;
 import org.hibernate.search.indexes.impl.DirectoryBasedIndexManager;
-import org.hibernate.search.store.DirectoryProvider;
+import org.hibernate.search.indexes.spi.IndexManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
@@ -46,9 +44,12 @@ import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author Andreas Kohlbecker
@@ -355,10 +356,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public Class[] indexedClasses() {
         return new Class[] {
-//                DescriptionElementBase.class, ##### FIXME disabled for testing
+                DescriptionElementBase.class,
                 Classification.class,
-//                TaxonBase.class, ##### FIXME disabled for testing
-//                TaxonNameBase.class, ##### FIXME disabled for testing
+                TaxonBase.class,
+                TaxonNameBase.class,
                 SpecimenOrObservationBase.class
                 };
     }
