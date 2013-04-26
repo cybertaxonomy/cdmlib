@@ -32,17 +32,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date Oct 4, 2012
  *
  */
-public class GroupByTaxonClassBridge extends AbstractClassBridge implements IGroupByClassBridge{
+public class GroupByTaxonClassBridge extends AbstractClassBridge{
 
     public static final String GROUPBY_TAXON_FIELD = "groupby_taxon.id";
 
     public GroupByTaxonClassBridge() {
         super();
-    }
-
-    @Override
-    public String getGroupByField() {
-        return GROUPBY_TAXON_FIELD;
     }
 
     /**

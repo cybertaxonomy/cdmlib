@@ -653,7 +653,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/GroupByTaxonClassBridge.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IGroupByClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IdFieldOptions.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NotNullAwareIdBridge.java -text

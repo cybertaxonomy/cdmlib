@@ -37,16 +37,13 @@ import org.hibernate.Session;
 import org.hibernate.search.ProjectionConstants;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
-import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.ClassBridges;
 
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.hibernate.search.IGroupByClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -133,47 +130,22 @@ public class LuceneSearch {
     public LuceneSearch(Session session, Class<? extends CdmBase> directorySelectClass) {
          this.session = session;
          this.directorySelectClass = directorySelectClass;
-         findGroupByField();
     }
 
     /**
-     * Searches the {@link ClassBridge} annotations for a
-     * {@link IGroupByClassBridge} and sets the groupByField for this search
-     * accordingly
+     * @param session
      */
-    private void findGroupByField() {
-
-        ClassBridge[] classBridgeArray = null;
-        ClassBridges classBridges = directorySelectClass.getAnnotation(ClassBridges.class);
-
-        if(classBridges != null){
-            classBridgeArray = classBridges.value();
-        } else {
-            ClassBridge classBridge = directorySelectClass.getAnnotation(ClassBridge.class);
-            if(classBridge != null){
-                classBridgeArray = new ClassBridge[] {classBridge};
-            }
-        }
-
-        if(classBridgeArray != null){
-            for (ClassBridge classBridge : classBridgeArray) {
-                if(IGroupByClassBridge.class.isAssignableFrom(classBridge.getClass())){
-                    groupByField = ((IGroupByClassBridge)classBridge).getGroupByField();
-                    // there should always only be one IGroupByClassBridge
-                    break;
-                }
-            }
-        }
-
+    public LuceneSearch(Session session, String groupByField, Class<? extends CdmBase> directorySelectClass) {
+         this.session = session;
+         this.directorySelectClass = directorySelectClass;
+         this.groupByField = groupByField;
     }
 
     /**
      * TODO the abstract base class DescriptionElementBase can not be used, so
      * we are using an arbitraty subclass to find the DirectoryProvider, future
      * versions of hibernate search my allow using abstract base classes see
-     * http
-     * ://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of
-     * -a-given-class-in-java
+     * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
      *
      * @param type must not be null
      * @return
@@ -278,7 +250,7 @@ public class LuceneSearch {
     	Query fullQuery = expandQuery();
     	logger.info("lucene query string to be parsed: " + fullQuery.toString());
     	return getSearcher().search(fullQuery, maxNoOfHits);
-    	
+
     }
     /**
      * @param luceneQuery
