@@ -240,12 +240,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     dataHolder.longitude, dataHolder.latitude, dataHolder.gatheringAgentList, dataHolder.gatheringTeamList,abcdstate.getConfig());
 
             // country
-            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(dataHolder.isocountry, dataHolder.country, getOccurrenceService(), getTermService());
-            unitsGatheringArea.setConfig(abcdstate.getConfig());
+            UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
+            unitsGatheringArea.setConfig(abcdstate.getConfig(),getOccurrenceService(), getTermService());
+            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country);
+
             DefinedTermBase areaCountry =  unitsGatheringArea.getCountry();
 
             // other areas
-            unitsGatheringArea = new UnitsGatheringArea(dataHolder.namedAreaList,getTermService());
+            unitsGatheringArea = new UnitsGatheringArea();
+            unitsGatheringArea.setConfig(abcdstate.getConfig(),getOccurrenceService(),getTermService());
+            unitsGatheringArea.setAreas(dataHolder.namedAreaList);
             ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);

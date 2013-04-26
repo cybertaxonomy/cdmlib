@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
+import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -46,26 +48,12 @@ public class UnitsGatheringArea {
     private ImportConfiguratorBase<?, ?> config;
 
 
-    /*
-     * Constructor
-     * Set/create country
-     * @param isoCountry (try to used the isocode first)
-     * @param country
-     * @param app
-     */
-    public UnitsGatheringArea(String isoCountry, String country, IOccurrenceService occurrenceService, ITermService termService){
-        this.termService = termService;
-        this.occurrenceService = occurrenceService;
-        this.setCountry(isoCountry, country);
-    }
-
     public UnitsGatheringArea(){
         //
     }
 
-    public void setParams(String isoCountry, String country, IOccurrenceService occurrenceService, ITermService termService){
-        this.termService = termService;
-        this.occurrenceService = occurrenceService;
+    public void setParams(String isoCountry, String country){
+
         this.setCountry(isoCountry, country);
     }
 
@@ -73,8 +61,7 @@ public class UnitsGatheringArea {
      * Constructor
      * Set a list of NamedAreas
      */
-    public UnitsGatheringArea(List<String> namedAreaList,ITermService termService ){
-        this.termService = termService;
+    public void setAreas(List<String> namedAreaList ){
         this.setAreaNames(namedAreaList);
     }
 
@@ -172,11 +159,11 @@ public class UnitsGatheringArea {
 
         HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 
-        if (iso != null & !iso.isEmpty()){
+        if (!StringUtils.isEmpty(iso)){
             wbc = occurrenceService.getCountryByIso(iso);
         }
         if (wbc == null){
-            if (fullName != null && !fullName.isEmpty()){
+            if (!StringUtils.isEmpty(fullName)){
 
                 for (DefinedTermBase<?> na:termsList){
                     if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
@@ -217,6 +204,9 @@ public class UnitsGatheringArea {
         if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
             ((Abcd206ImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
         }
+        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
+            ((TaxonXImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+        }
 
     }
 
@@ -226,11 +216,15 @@ public class UnitsGatheringArea {
      */
     private UUID getNamedAreaDecision(String fullName) {
         UUID areaUUID = null;
+        System.out.println("getNamedAreaDecision "+config);
         if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
             areaUUID = ((SpecimenSynthesysExcelImportConfigurator) config).getNamedAreaDecision(fullName);
         }
         if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
             areaUUID = ((Abcd206ImportConfigurator) config).getNamedAreaDecision(fullName);
+        }
+        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
+            areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
         }
         return areaUUID;
     }
@@ -253,16 +247,30 @@ public class UnitsGatheringArea {
     /**
      * @param config
      */
-    public void setConfig(SpecimenSynthesysExcelImportConfigurator config) {
+    public void setConfig(SpecimenSynthesysExcelImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
         this.config=config;
+        this.termService = termService;
+        this.occurrenceService = occurrenceService;
 
     }
 
     /**
      * @param config2
      */
-    public void setConfig(Abcd206ImportConfigurator config) {
+    public void setConfig(Abcd206ImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
         this.config=config;
+        this.termService = termService;
+        this.occurrenceService = occurrenceService;
+
+    }
+
+    /**
+     * @param config2
+     */
+    public void setConfig(TaxonXImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
+        this.config=config;
+        this.termService = termService;
+        this.occurrenceService = occurrenceService;
 
     }
 

@@ -13,13 +13,16 @@ package eu.etaxonomy.cdm.io.specimen;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
+import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -65,6 +68,20 @@ public class UnitsGatheringEvent {
         }
     }
 
+    public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
+            Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
+        if (!StringUtils.isEmpty(locality)) {
+            this.setLocality(termService, locality, null);
+        }
+                this.setCoordinates(longitude, latitude);
+        if (!StringUtils.isEmpty(collectorName)) {
+            this.setCollector(collectorName, config, agentService);
+        }
+        //        if (!team.isEmpty()) {
+        //            this.setTeam(team, config);
+        //        }
+    }
+
     /*
      * Constructor
      * Fill in the locality, coordinates and the collector(s) for the current GatheringEvent
@@ -96,6 +113,19 @@ public class UnitsGatheringEvent {
         // TODO Auto-generated constructor stub
     }
 
+    /**
+     * @param termService
+     * @param locality
+     * @param object
+     * @param object2
+     * @param object3
+     * @param collector
+     */
+    public UnitsGatheringEvent(ITermService termService, String locality, Object object, Object object2,
+            Object object3, String collector) {
+        // TODO Auto-generated constructor stub
+    }
+
     public GatheringEvent getGatheringEvent(){
         return this.gatheringEvent;
     }
@@ -106,7 +136,7 @@ public class UnitsGatheringEvent {
      * @param langageIso
      */
     public void setLocality(ITermService termService, String locality, String languageIso){
-//        System.out.println("SET LOCALITY");
+        //        System.out.println("SET LOCALITY");
         LanguageString loc = null;
         List<LanguageString> languages = termService.getAllLanguageStrings(0, 0);
         boolean locFound=false;
@@ -118,7 +148,7 @@ public class UnitsGatheringEvent {
                 if (ls.getText().equalsIgnoreCase(locality)){
                     loc=ls;
                     locFound=true;
-//                    System.out.println("REUSE LOCALITY");
+                    //                    System.out.println("REUSE LOCALITY");
                 }
             }
             if (!locFound){
@@ -131,7 +161,7 @@ public class UnitsGatheringEvent {
                 if (ls.getText().equalsIgnoreCase(locality) && ls.getLanguage().equals(termService.getLanguageByIso(languageIso))){
                     loc=ls;
                     locFound=true;
-//                    System.out.println("REUSE LOCALITY");
+                    //                    System.out.println("REUSE LOCALITY");
                 }
             }
             if (!locFound) {
@@ -208,6 +238,25 @@ public class UnitsGatheringEvent {
             System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
         }
         this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
+
+    }
+
+    /*
+     * Create a new collector or collector's team
+     * @param: collectorNames: the list of names to add as collector/collectorTeam
+     * USED - create each time a new Collector
+     */
+    public void setCollector(String collectorName, TaxonXImportConfigurator config, IAgentService agentService){
+        //        System.out.println("collectors : "+collectorNames.toString());
+        Person collector;
+        collector = Person.NewInstance();
+        collector.setTitleCache(collectorName, true);
+        Person collector_db = config.getPersons().get(collector.getTitleCache());
+        if (collector_db == null) {
+            UUID uuid = agentService.saveOrUpdate(collector);
+            collector_db=(Person) agentService.find(uuid);
+        }
+        this.gatheringEvent.setCollector(collector_db);
 
     }
 

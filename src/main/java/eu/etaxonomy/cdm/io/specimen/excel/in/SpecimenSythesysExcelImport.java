@@ -608,8 +608,8 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             unitsGatheringArea.useTDWGareas(this.useTDWGarea);
-            unitsGatheringArea.setConfig(config);
-            unitsGatheringArea.setParams(isocountry, country, getOccurrenceService(),getTermService());
+            unitsGatheringArea.setConfig(config, getOccurrenceService(),getTermService());
+            unitsGatheringArea.setParams(isocountry, country);
             DefinedTermBase areaCountry =unitsGatheringArea.getCountry();
 
 
