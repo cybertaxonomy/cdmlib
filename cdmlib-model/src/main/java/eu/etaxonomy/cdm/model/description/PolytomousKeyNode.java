@@ -118,6 +118,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * this rare to avoid a more complicated <code>List<Taxon></code> structure for the standard
  * case.</li>
  * 
+ * The {@link PolytomousKey#getRoot() root node of the key} may represent the entry point
+ * question or feature but does naturally neither have a statement nor a linked taxon as 
+ * there is no prior decision yet. 
+ * 
  * <h4>Notes</h4>
  * <p>
  * A polytomous key node can be referenced from multiple other nodes via the 
