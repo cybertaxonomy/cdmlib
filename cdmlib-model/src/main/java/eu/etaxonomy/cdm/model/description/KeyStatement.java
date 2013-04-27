@@ -289,5 +289,18 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 			return null;
 		}
 	}
+	
+//********************* toString() *************************************/
+	
+	@Override
+	public String toString(){
+		if (label != null && ! label.isEmpty()){
+			String result = label.values().iterator().next().getText();
+			return result;
+		}else{
+			return super.toString();
+		}
+		
+	}
 
 }
