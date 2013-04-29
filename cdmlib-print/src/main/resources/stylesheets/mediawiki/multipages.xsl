@@ -696,7 +696,7 @@
     <xsl:template match="media/e/representations/e/parts/e/uri">
 
         <xsl:value-of
-            select="concat('{{ViBRANT_Gallery_File|Filename=',functx:substring-after-last(.,'/'), '|Caption=')"/>
+            select="concat('{{ViBRANT_Gallery_File|Filename=',functx:substring-after-last(.,'/'), '|Description=')"/>
         <!--,'}}')"/>-->
         <!--go back up to the description element and get the text for the Figure legend -->
         <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
