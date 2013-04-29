@@ -175,7 +175,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 */
 	protected Classification makeTreeMemSave(STATE state, Reference ref){
 		String treeName = "Classification (Import)";
-		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+		if (ref != null && StringUtils.isNotBlank(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
 		Classification tree = Classification.NewInstance(treeName);
@@ -367,7 +367,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
-			DefinedTermBase term = getTermService().find(uuid);
+			DefinedTermBase<?> term = getTermService().find(uuid);
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
