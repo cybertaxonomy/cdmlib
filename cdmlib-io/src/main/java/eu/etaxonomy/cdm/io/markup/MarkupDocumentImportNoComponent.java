@@ -30,6 +30,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -134,7 +135,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private static final String COLLECTOR = "collector";
 	private static final String COLLECTION = "collection";
 	private static final String COORDINATES = "coordinates";
-	private static final String COUPLET = "couplet";
 	private static final String DATES = "dates";
 	private static final String DEDICATION = "dedication";
 	private static final String DEFAULT_MEDIA_URL = "defaultMediaUrl";
@@ -167,12 +167,9 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private static final String INFRANK = "infrank";
 	private static final String INFRAUT = "infraut";
 	private static final String INFRPARAUT = "infrparaut";
-	private static final String IS_SPOTCHARACTERS = "isSpotcharacters";
 	private static final String ISSUE = "issue";
 	private static final String ITALICS = "italics";
 	private static final String KEY = "key";
-	private static final String KEY_TITLE = "keyTitle";
-	private static final String KEYNOTES = "keynotes";
 	private static final String LIFE_CYCLE_PERIODS = "lifeCyclePeriods";
 	private static final String LOCALITY = "locality";
 	private static final String LOST = "lost";
@@ -184,7 +181,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private static final String NOT_FOUND = "notFound";
 	private static final String NOT_SEEN = "notSeen";
 	private static final String NOTES = "notes";
-	private static final String NUM = "num";
 	private static final String ORIGINAL_DETERMINATION = "originalDetermination";
 	private static final String PAGES = "pages";
 	private static final String PARAUT = "paraut";
@@ -193,7 +189,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private static final String PUBNAME = "pubname";
 	private static final String PUBTITLE = "pubtitle";
 	private static final String PUBTYPE = "pubtype";
-	private static final String QUESTION = "question";
 	private static final String QUOTE = "quote";
 	private static final String RANK = "rank";
 	private static final String REF = "ref";
@@ -204,11 +199,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private static final String TAXON = "taxon";
 	private static final String TAXONTITLE = "taxontitle";
 	private static final String TAXONTYPE = "taxontype";
-	private static final String TEXT = "text";
 	private static final String TEXT_SECTION = "textSection";
-	private static final String TO_COUPLET = "toCouplet";
-	private static final String TO_KEY = "toKey";
-	private static final String TO_TAXON = "toTaxon";
 	private static final String TYPE = "type";
 	private static final String TYPE_STATUS = "typeStatus";
 	private static final String TREATMENT = "treatment";
@@ -235,15 +226,18 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 
 	private IEditGeoService editGeoService;
 	
+	private MarkupKeyImport keyImport;
+	
 	public MarkupDocumentImportNoComponent(MarkupDocumentImport docImport) {
 		super(docImport);
 		this.editGeoService = docImport.getEditGeoService();
+		keyImport = new MarkupKeyImport(docImport);
 	}
 
 	public void doInvoke(MarkupImportState state) throws XMLStreamException { 
 		XMLEventReader reader = state.getReader();
 		
-		// publication
+		// publication (= root element)
 		String elName = PUBLICATION;
 		boolean hasPublication = false;
 		
@@ -268,8 +262,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 
 	}
 
-	private void handlePublication(MarkupImportState state, XMLEventReader reader, XMLEvent currentEvent, 
-			String elName) throws XMLStreamException {
+	private void handlePublication(MarkupImportState state, XMLEventReader reader, XMLEvent currentEvent, String elName) throws XMLStreamException {
 
 		// attributes
 		StartElement element = currentEvent.asStartElement();
@@ -491,7 +484,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 						fireWarningEvent(warning, next, 12);
 					}
 					
-					makeKeyNodes(state, parentEvent, taxonTitle);
+					keyImport.makeKeyNodes(state, parentEvent, taxonTitle);
 					state.setCurrentTaxon(null);
 					state.setCurrentTaxonNum(null);
 					save(taxon, state);
@@ -524,7 +517,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				} else if (isStartingElement(next, TEXT_SECTION)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, KEY)) {
-					handleKey(state, reader, next);
+					keyImport.handleKey(state, reader, next);
 				} else if (isStartingElement(next, NOMENCLATURE)) {
 					handleNomenclature(state, reader, next);
 					hasNomenclature = true;
@@ -571,279 +564,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			}
 		}
 		throw new IllegalStateException("<Taxon> has no closing tag");
-	}
-
-	private void makeKeyNodes(MarkupImportState state, XMLEvent event, String taxonTitle) {
-		Taxon taxon = state.getCurrentTaxon();
-		String num = state.getCurrentTaxonNum();
-		
-		String nameString = CdmBase.deproxy(taxon.getName(), NonViralName.class).getNameCache();
-//		String nameString = taxonTitle;
-		
-		//try to find matching lead nodes 
-		UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, nameString);
-		Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
-		
-		if (num != null){//same without using the num
-			UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", nameString);
-			Set<PolytomousKeyNode> noNumMatchingNodes = handleMatchingNodes(state, taxon, noNumLeadsKey);
-			if(noNumMatchingNodes.size() > 0){
-				String message ="Taxon matches additional key node when not considering <num> attribute in taxontitle. This may be correct but may also indicate an error.";
-				fireWarningEvent(message, event, 1);
-			}
-		}
-		//report missing match, if num exists
-		if (matchingNodes.isEmpty() && num != null){
-			String message = "Taxon has <num> attribute in taxontitle but no matching key nodes exist: %s, Key: %s";
-			message = String.format(message, num, leadsKey.toString());
-			fireWarningEvent(message, event, 1);
-		}
-		
-	}
-	
-	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
-		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
-		for (PolytomousKeyNode matchingNode : matchingNodes){
-			state.getUnmatchedLeads().removeNode(leadsKey, matchingNode);
-			matchingNode.setTaxon(taxon);
-			state.getPolytomousKeyNodesToSave().add(matchingNode);
-		}
-		return matchingNodes;
-	}
-
-	private void handleKey(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
-		// attributes
-		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		String isSpotcharacters = getAndRemoveAttributeValue(attributes, IS_SPOTCHARACTERS);
-		if (isNotBlank(isSpotcharacters) ) {
-			//TODO isSpotcharacters
-			String message = "Attribute isSpotcharacters not yet implemented for <key>";
-			fireWarningEvent(message, parentEvent, 4);
-		}
-		
-		PolytomousKey key = PolytomousKey.NewInstance();
-		key.addTaxonomicScope(state.getCurrentTaxon());
-		state.setCurrentKey(key);
-		
-		boolean isFirstCouplet = true;
-		while (reader.hasNext()) {
-			XMLEvent next = readNoWhitespace(reader);
-			if (isMyEndingElement(next, parentEvent)) {
-				save(key, state);
-				state.setCurrentKey(null);
-				return;
-			} else if (isEndingElement(next, KEYNOTES)){
-				popUnimplemented(next.asEndElement());
-			} else if (isStartingElement(next, KEY_TITLE)) {
-				handleKeyTitle(state, reader, next);
-			} else if (isStartingElement(next, KEYNOTES)) {
-				//TODO
-				handleNotYetImplementedElement(next);
-			} else if (isStartingElement(next, COUPLET)) {
-				PolytomousKeyNode node = null;
-				if (isFirstCouplet){
-					node = key.getRoot();
-					isFirstCouplet = false;
-				}
-				handleCouplet(state, reader, next, node);
-			} else {
-				handleUnexpectedElement(next);
-			}
-		}
-		throw new IllegalStateException("<key> has no closing tag");
-	}
-
-	/**
-	 * @param state
-	 * @param reader
-	 * @param key
-	 * @param next
-	 * @throws XMLStreamException
-	 */
-	private void handleKeyTitle(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
-		PolytomousKey key = state.getCurrentKey();
-		String keyTitle = getCData(state, reader, parentEvent);
-		String standardTitles = "(?i)(Key\\sto\\sthe\\s(genera|species|varieties|forms))";
-		
-		if (isNotBlank(keyTitle) ){
-			if (!state.getConfig().isReplaceStandardKeyTitles() || ! keyTitle.matches(standardTitles)){
-				key.setTitleCache(keyTitle, true);
-			}
-		}
-	}
-
-	private void handleCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode parentNode) throws XMLStreamException {
-		String num = getOnlyAttribute(parentEvent, NUM, true);
-		List<PolytomousKeyNode> childList = new ArrayList<PolytomousKeyNode>(); 
-		
-		while (reader.hasNext()) {
-			XMLEvent next = readNoWhitespace(reader);
-			if (isMyEndingElement(next, parentEvent)) {
-				completeCouplet(state, parentEvent, parentNode, num, childList);
-				return;
-			} else if (isStartingElement(next, QUESTION)) {
-				handleQuestion(state, reader, next, childList);
-			} else if (isStartingElement(next, KEYNOTES)) {
-				//TODO
-				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, KEYNOTES)) {
-				//TODO
-				popUnimplemented(next.asEndElement());
-			} else {
-				handleUnexpectedElement(next);
-			}
-		}
-		throw new IllegalStateException("<couplet> has no closing tag");
-	}
-
-	/**
-	 * @param state
-	 * @param parentEvent
-	 * @param parentNode
-	 * @param num
-	 * @param childList
-	 */
-	private void completeCouplet(MarkupImportState state, XMLEvent parentEvent,
-			PolytomousKeyNode parentNode, String num, List<PolytomousKeyNode> childList) {
-		if (parentNode != null){
-			for (PolytomousKeyNode childNode : childList){
-				parentNode.addChild(childNode);
-			}
-		}else if (isNotBlank(num)){
-			UnmatchedLeadsKey unmatchedKey = UnmatchedLeadsKey.NewInstance(state.getCurrentKey(), num);
-			Set<PolytomousKeyNode> nodes = state.getUnmatchedLeads().getNodes(unmatchedKey);
-			for(PolytomousKeyNode nodeToMatch: nodes){
-				for (PolytomousKeyNode childNode : childList){
-					nodeToMatch.addChild(childNode);
-				}
-				state.getUnmatchedLeads().removeNode(unmatchedKey, nodeToMatch);
-			}
-		}else{
-			String message = "Parent num could not be matched. Please check if num (%s) is correct";
-			message = String.format(message, num);
-			fireWarningEvent(message, parentEvent, 6);
-		}
-	}
-
-	private void handleQuestion(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, List<PolytomousKeyNode> nodesList) throws XMLStreamException {
-		// attributes
-		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		//needed only for data lineage
-		String questionNum = getAndRemoveRequiredAttributeValue(parentEvent, attributes, NUM);
-		
-		PolytomousKeyNode myNode = PolytomousKeyNode.NewInstance();
-		myNode.setKey(state.getCurrentKey());  //to avoid NPE while computing num in PolytomousKeyNode in case this node is not matched correctly with a parent
-		nodesList.add(myNode);
-		
-		while (reader.hasNext()) {
-			XMLEvent next = readNoWhitespace(reader);
-			if (isMyEndingElement(next, parentEvent)) {
-				return;
-			} else if (isStartingElement(next, TEXT)) {
-				String text = getCData(state, reader, next);
-				KeyStatement statement = KeyStatement.NewInstance(text);
-				myNode.setStatement(statement);
-			} else if (isStartingElement(next, COUPLET)) {
-				//TODO test
-				handleCouplet(state, reader, next, myNode);
-			} else if (isStartingElement(next, TO_COUPLET)) {
-				handleToCouplet(state, reader, next, myNode);
-			} else if (isStartingElement(next, TO_TAXON)) {
-				handleToTaxon(state, reader, next, myNode);
-			} else if (isStartingElement(next, TO_KEY)) {
-				//TODO
-				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, TO_KEY)){
-				//TODO
-				popUnimplemented(next.asEndElement());
-			} else if (isStartingElement(next, KEYNOTES)) {
-				//TODO
-				handleNotYetImplementedElement(next);
-			} else if (isEndingElement(next, KEYNOTES)){
-				//TODO
-				popUnimplemented(next.asEndElement());
-			} else {
-				handleUnexpectedElement(next);
-			}
-		}
-		throw new IllegalStateException("<question> has no closing tag");
-	}
-
-	private void handleToCouplet(MarkupImportState state, XMLEventReader reader, XMLEvent next, PolytomousKeyNode node) throws XMLStreamException {
-		String num = getOnlyAttribute(next, NUM, true);
-		String cData = getCData(state, reader, next, false);
-		if (isNotBlank(cData) && ! cData.equals(num)){
-			String message = "CData ('%s') not handled in <toCouplet>";
-			message = String.format(message, cData);
-			fireWarningEvent(message, next, 4);
-		}
-		UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(state.getCurrentKey(), num);
-		state.getUnmatchedLeads().addKey(unmatched, node);
-	}
-
-	private void handleToTaxon(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode node) throws XMLStreamException {
-		Map<String, Attribute> attributes = getAttributes(parentEvent);
-		String num = getAndRemoveAttributeValue(attributes, NUM);
-		String taxonStr = getCData(state, reader, parentEvent, false);
-		//TODO ?
-		taxonStr = makeTaxonKey(taxonStr, state.getCurrentTaxon());
-		UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(num, taxonStr);
-		state.getUnmatchedLeads().addKey(unmatched, node);
-		return;
-	}
-	
-	private String makeTaxonKey(String strGoto, Taxon taxon) {
-		String result = "";
-		if (strGoto == null){
-			return "";
-		}
-		
-		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-		String strGenusName = name.getGenusOrUninomial();
-		
-		
-		strGoto = strGoto.replaceAll("\\([^\\(\\)]*\\)", "");  //replace all brackets
-		strGoto = strGoto.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
-		
-		strGoto = strGoto.trim();  
-		String[] split = strGoto.split("\\s");
-		for (int i = 0; i<split.length; i++){
-			String single = split[i];
-			if (isGenusAbbrev(single, strGenusName)){
-				split[i] = strGenusName;
-			}
-			if (isInfraSpecificMarker(single)){
-				String strSpeciesEpi = name.getSpecificEpithet();
-				if (isBlank(result)){
-					result += strGenusName + " " + strSpeciesEpi;
-				}
-			}
-			result = (result + " " + split[i]).trim();
-		}
-		return result;
-	}
-	
-
-	private boolean isInfraSpecificMarker(String single) {
-		try {
-			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
-				return true;
-			}else{
-				return false;
-			}
-		} catch (UnknownCdmTypeException e) {
-			return false;
-		}
-	}
-	
-	private boolean isGenusAbbrev(String single, String strGenusName) {
-		if (! single.matches("[A-Z]\\.?")) {
-			return false;
-		}else if (single.length() == 0 || strGenusName == null || strGenusName.length() == 0){
-			return false; 
-		}else{
-			return single.charAt(0) == strGenusName.charAt(0);
-		}
 	}
 
 	/**
@@ -1952,40 +1672,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		return createAuthor(collectorStr);
 	}
 
-	private String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
-		return getCData(state, reader, next, true);
-	}
-		
-	/**
-	 * Reads character data. Any element other than character data or the ending
-	 * tag will fire an unexpected element event.
-	 * 
-	 * @param state
-	 * @param reader
-	 * @param next
-	 * @return
-	 * @throws XMLStreamException
-	 */
-	private String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next,boolean checkAttributes) throws XMLStreamException {
-		if (checkAttributes){
-			checkNoAttributes(next);
-		}
-
-		String text = "";
-		while (reader.hasNext()) {
-			XMLEvent myNext = readNoWhitespace(reader);
-			if (isMyEndingElement(myNext, next)) {
-				return text;
-			} else if (myNext.isCharacters()) {
-				text += myNext.asCharacters().getData();
-			} else {
-				handleUnexpectedElement(myNext);
-			}
-		}
-		throw new IllegalStateException("Event has no closing tag");
-
-	}
-
 	/**
 	 * Creates the name defined by a nom tag. Adds it to the given homotypical
 	 * group (if not null).
@@ -2160,7 +1846,11 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				} else if (rank.isInfraGeneric()) {
 					name.setInfraGenericEpithet(toFirstCapital(value));
 				} else if (rank.isSpecies()) {
-					name.setSpecificEpithet(value.toLowerCase());
+					if (isFirstCapitalWord(value)){ //capital letters are allowed for species epithet in case of person names (e.g. Manilkara Welwitschii Engl.
+						name.setSpecificEpithet(value);
+					}else{
+						name.setSpecificEpithet(value.toLowerCase());
+					}
 				} else if (rank.isInfraSpecific()) {
 					name.setInfraSpecificEpithet(value.toLowerCase());
 				} else {
@@ -2333,7 +2023,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		return name;
 	}
 
-	private void handleName(MarkupImportState state, XMLEventReader reader,
+	private void handleName(MarkupImportState state, XMLEventReader reader, 
 			XMLEvent parentEvent, Map<String, String> nameMap)
 			throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
@@ -3129,7 +2819,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
-				handleUnexpectedEndElement(next.asEndElement());
+				handleUnexpectedElement(next);
 			}
 		}
 		throw new IllegalStateException("<DistributionLocality> has no closing tag");

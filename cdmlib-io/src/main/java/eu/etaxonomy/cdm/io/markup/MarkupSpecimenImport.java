@@ -16,15 +16,12 @@ import org.apache.log4j.Logger;
  * @created 30.05.2012
  * 
  */
-public class MarkupSpecimenImport  {
+public class MarkupSpecimenImport   extends MarkupImportBase  {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupSpecimenImport.class);
 
-	private MarkupDocumentImport docImport;
-	
-
 	public MarkupSpecimenImport(MarkupDocumentImport docImport) {
-		super();
-		this.docImport = docImport;
+		super(docImport);
 	}
 
 

@@ -27,13 +27,13 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
-import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -56,13 +56,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller
  * @created 04.08.2008
- * @version 1.0
  */
 public abstract class MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
 	
 	protected static final String CLASS = "class";
+	protected static final String NUM = "num";
 
 	protected MarkupDocumentImport docImport;
 	
@@ -474,7 +474,7 @@ public abstract class MarkupImportBase  {
 	 */
 	protected void handleNotYetImplementedElement(XMLEvent event) {
 		QName qName = event.asStartElement().getName();
-		boolean isTopLevel = unhandledElements.size() == 0;
+		boolean isTopLevel = unhandledElements.isEmpty();
 		unhandledElements.push(qName);
 		if (isTopLevel){
 			fireNotYetImplementedElement(event.getLocation(), qName, 1);
@@ -566,6 +566,23 @@ public abstract class MarkupImportBase  {
 		text = StringUtils.trimToEmpty(text);
 		text = text.replaceAll("\\s+", " ");
 		return text;
+	}
+	
+
+	/**
+	 * Checks if all words in the given string start with a capital letter but do not have any further capital letter.
+	 * @param word the string to be checekd. Usually should be a single word.
+	 * @return true if the above is the case, false otherwise
+	 */
+	protected boolean isFirstCapitalWord(String word) {
+		if (WordUtils.capitalizeFully(word).equals(word)){
+			return true;
+		}else if (WordUtils.capitalizeFully(word,new char[]{'-'}).equals(word)){
+			//for words like Le-Testui (which is a species epithet)
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 
@@ -687,6 +704,53 @@ public abstract class MarkupImportBase  {
 		return docImport.getLanguage(state, uuid, label, text, labelAbbrev, voc);
 	}
 	
+// *************************************** Concrete methods **********************************************/
+	
+	
+	/**
+	 * Reads character data. Any element other than character data or the ending
+	 * tag will fire an unexpected element event.
+     *
+	 * @see #getCData(MarkupImportState, XMLEventReader, XMLEvent, boolean)
+	 * @param state
+	 * @param reader
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
+		return getCData(state, reader, next, true);
+	}
+		
+	/**
+	 * Reads character data. Any element other than character data or the ending
+	 * tag will fire an unexpected element event.
+	 * 
+	 * @param state
+	 * @param reader
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next,boolean checkAttributes) throws XMLStreamException {
+		if (checkAttributes){
+			checkNoAttributes(next);
+		}
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent myNext = readNoWhitespace(reader);
+			if (isMyEndingElement(myNext, next)) {
+				return text;
+			} else if (myNext.isCharacters()) {
+				text += myNext.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(myNext);
+			}
+		}
+		throw new IllegalStateException("Event has no closing tag");
+
+	}
 	
 //********************************************** OLD *************************************	
 
