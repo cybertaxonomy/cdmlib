@@ -211,7 +211,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Returns the value of a given attribute name and returns the attribute from the attributes map. 
+	 * Returns the value of a given attribute name and removes the attribute from the attributes map. 
 	 * @param attributes
 	 * @param attrName
 	 * @return
