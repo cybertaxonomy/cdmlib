@@ -47,7 +47,7 @@
 		
 		* Base scientific name search : 	
 				
-			* {{{queryTara_spinosa} /name_catalogue.json?query=Tara spinosa}}
+			* {{{queryTara_spinosa} /name_catalogue/accepted.json?query=Tara spinosa}}
 								
 	Example Responses :
 		
