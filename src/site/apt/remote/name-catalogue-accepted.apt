@@ -10,6 +10,12 @@
 	The request parameters are :	
 	
 	* '<<query>>' [mandatory] : this could either be the base scientific name or the complete scientific name.
+	
+	* '<<type>>' [optional, default value = <<<name>>>] : this parameter could have the values,
+	
+									* <<<name>>>	: to be used in the case of scientific names without authorship strings other other markers (e.g. Abies alba).
+									
+									* <<<title>>>	: to be used in the case of scientific names with authorship strings and other markers (e.g. Abies alba Mill.).
 				
 	[]
 									

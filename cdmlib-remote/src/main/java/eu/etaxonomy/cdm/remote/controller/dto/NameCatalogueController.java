@@ -402,6 +402,36 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     }
 
     /**
+     * Returns a documentation page for the Fuzzy Name Search API.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/accepted</b>
+     *
+     * @param request Http servlet request.
+     * @param response Http servlet response.
+     * @return Html page describing the Fuzzy Name Search API
+     * @throws IOException
+     */
+    @RequestMapping(value = { "fuzzy" }, method = RequestMethod.GET, params = {})
+    public ModelAndView doGetNameFuzzySearchDocumentation(
+            HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        ModelAndView mv = new ModelAndView();
+        // Read apt documentation file.
+        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-fuzzy.apt");
+        // using input stream as this works for both files in the classes directory
+        // as well as files inside jars
+        InputStream aptInputStream = resource.getInputStream();
+        // Build Html View
+        Map<String, String> modelMap = new HashMap<String, String>();
+        // Convert Apt to Html
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
+        mv.addAllObjects(modelMap);
+
+        HtmlView hv = new HtmlView();
+        mv.setView(hv);
+        return mv;
+    }
+    /**
      * Returns a list of scientific names similar to the <code>{query}</code>
      * string pattern. Each of these scientific names is accompanied by a list of
      * name uuids, a list of taxon uuids and a list of accepted taxon uuids.
@@ -942,6 +972,37 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             }
         }
         mv.addObject(tiList);
+        return mv;
+    }
+    
+    /**
+     * Returns a documentation page for the Accepted Name Search API.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue/accepted</b>
+     *
+     * @param request Http servlet request.
+     * @param response Http servlet response.
+     * @return Html page describing the Accepted Name Search API
+     * @throws IOException
+     */
+    @RequestMapping(value = { "accepted" }, method = RequestMethod.GET, params = {})
+    public ModelAndView doGetAcceptedNameSearchDocumentation(
+            HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        ModelAndView mv = new ModelAndView();
+        // Read apt documentation file.
+        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/name-catalogue-accepted.apt");
+        // using input stream as this works for both files in the classes directory
+        // as well as files inside jars
+        InputStream aptInputStream = resource.getInputStream();
+        // Build Html View
+        Map<String, String> modelMap = new HashMap<String, String>();
+        // Convert Apt to Html
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
+        mv.addAllObjects(modelMap);
+
+        HtmlView hv = new HtmlView();
+        mv.setView(hv);
         return mv;
     }
     
