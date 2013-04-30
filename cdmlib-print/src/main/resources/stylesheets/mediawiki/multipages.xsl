@@ -159,7 +159,7 @@
  <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
                    <!-- add taxo tree -->
-                     <xsl:value-of select="concat('{{Taxo Tree|',$parent-title, '}}')"/> 
+                     <xsl:value-of select="concat('{{Taxo Tree| parentTaxon=',$parent-title, '}}')"/> 
                    
                    <!-- add contents of taxon page -->                   
 
@@ -235,6 +235,8 @@
 
     <!-- we run this for the content of the page -->
     <xsl:template match="Taxon" name="Taxon">
+        <!--
+        -->
         <xsl:apply-templates select="synonymy"/>
         <xsl:apply-templates select="key"/>
         <xsl:apply-templates select="descriptions"/>
@@ -458,7 +460,8 @@
     <!-- these templates provide the synonomy -->
 
     <xsl:template match="synonymy" name="synonymy">
-        <!--<xsl:text>&#xA;'''Synonymy'''&#xA;&#xA;</xsl:text>-->
+        <!--<xsl:text>&#xA;'''Synonymy'''&#xA;&#xA;</xsl:text>
+    -->
         <xsl:call-template name="chapter">
             <xsl:with-param name="title">Synonomy</xsl:with-param>
         </xsl:call-template>
@@ -596,15 +599,15 @@
 
     <xsl:template name="secondLevelDescriptionElements">
 
-        <xsl:value-of select="concat('{{Two_Leveled_Features_Title|',representation_L10n,'}}')"/>
+        <xsl:value-of select="concat('{{Higher_Level_Feature_Title|',representation_L10n,'}}')"/>
 
         <xsl:for-each select="feature">
             <xsl:value-of
-                select="concat('{{Second_Level_Feature|name=',representation_L10n,'|elements=')"/>
+                select="concat('{{Nested_Feature|name=',representation_L10n,'|elements=')"/>
             <!-- TODO create Element -->
             <xsl:for-each select="descriptionelements/descriptionelement">
                 <xsl:value-of
-                    select="concat('{{Second_Level_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"
+                    select="concat('{{Nested_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"
                 />
             </xsl:for-each>
             <xsl:text>}}</xsl:text>
@@ -786,7 +789,7 @@
                 <xsl:with-param name="tag-name">b</xsl:with-param>
             </xsl:call-template>
         </xsl:variable>
-        
+
         <!-- second replace italic tags on text-string2 -->
         <xsl:call-template name="add-markup">
             <xsl:with-param name="str" select="$text-string2"/>
@@ -812,20 +815,20 @@
         <xsl:choose>
             <!-- if the tag occures in the string -->
             <xsl:when test="contains($str, $opening-tag) and contains($str, $closing-tag)">
-                
+
                 <!-- separate string before, inside and after the tag -->
                 <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
                 <xsl:variable name="inside-tag"
                     select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
                 <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
-                
+
                 <!-- built the new string by putting in the mediawiki template -->
                 <xsl:value-of select="concat($before-tag,'{{',$wiki-template,'|',$inside-tag,'}}')"/>
                 <!-- in the part after the closing tag could be more tag, so we do arecursive call -->
                 <xsl:call-template name="add-markup">
                     <xsl:with-param name="str" select="$after-tag"/>
-                    <xsl:with-param name="wiki-template" select="$wiki-template"></xsl:with-param>
-                    <xsl:with-param name="tag-name" select="$tag-name"></xsl:with-param>
+                    <xsl:with-param name="wiki-template" select="$wiki-template"/>
+                    <xsl:with-param name="tag-name" select="$tag-name"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
