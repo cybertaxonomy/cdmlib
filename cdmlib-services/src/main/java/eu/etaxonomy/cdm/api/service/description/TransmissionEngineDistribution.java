@@ -320,7 +320,8 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         logger.info("Hibernate JDBC Batch size: "
                 + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
 
-        monitor.beginTask("Accumulating distributions", 400);
+        int workTicks = mode.equals(AggregationMode.byAreasAndRanks) ? 400 : 200;
+        monitor.beginTask("Accumulating distributions", workTicks);
 
         if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
             accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
@@ -473,7 +474,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
     *</ul>
     */
-    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor,boolean doClearDescriptions) {
+    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
 
         int batchSize = 500;
 
