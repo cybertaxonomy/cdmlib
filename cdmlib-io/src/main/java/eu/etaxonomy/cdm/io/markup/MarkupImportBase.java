@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
@@ -33,9 +35,15 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -55,6 +63,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
@@ -64,14 +73,34 @@ public abstract class MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
 	
+	protected static final String ALTITUDE = "altitude";
+	protected static final String ANNOTATION = "annotation";
+	protected static final String BOLD = "bold";
+	protected static final String BR = "br";
+	protected static final String CITATION = "citation";
 	protected static final String CLASS = "class";
+	protected static final String COORDINATES = "coordinates";
+	protected static final String DATES = "dates";
+	protected static final String GATHERING = "gathering";
+	protected static final String FULL_NAME = "fullName";
+	protected static final String ITALICS = "italics";
 	protected static final String NUM = "num";
+	protected static final String NOTES = "notes";
+	protected static final String PUBLICATION = "publication";
+	protected static final String SPECIMEN_TYPE = "specimenType";
+	protected static final String STATUS = "status";
+	protected static final String SUB_HEADING = "subHeading";
+	protected static final String TYPE = "type";
+	protected static final String TYPE_STATUS = "typeStatus";
+
 
 	protected MarkupDocumentImport docImport;
-	
+	private IEditGeoService editGeoService;
+
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
+		this.editGeoService = docImport.getEditGeoService();
 	}
 
 	private Stack<QName> unhandledElements = new Stack<QName>();
@@ -572,6 +601,28 @@ public abstract class MarkupImportBase  {
 	}
 	
 
+
+	/**
+	 * Removes whitespaces at beginning and end and makes the first letter
+	 * a capital letter and all other letters small letters.
+	 * @param value
+	 * @return
+	 */
+	protected String toFirstCapital(String value) {
+		if (StringUtils.isBlank(value)){
+			return value;
+		}else{
+			String result = "";
+			value = value.trim();
+			result += value.trim().substring(0,1).toUpperCase();
+			if (value.length()>1){
+				result += value.substring(1).toLowerCase();
+			}
+			return result;
+		}
+	}
+
+	
 	/**
 	 * Checks if all words in the given string start with a capital letter but do not have any further capital letter.
 	 * @param word the string to be checekd. Usually should be a single word.
@@ -708,7 +759,53 @@ public abstract class MarkupImportBase  {
 	}
 	
 // *************************************** Concrete methods **********************************************/
+
+
+	/**
+	 * @param state
+	 * @param classValue
+	 * @param byAbbrev
+	 * @return
+	 */
+	protected Rank makeRank(MarkupImportState state, String value, boolean byAbbrev) {
+		Rank rank = null;
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		try {
+			boolean useUnknown = true;
+			NomenclaturalCode nc = makeNomenclaturalCode(state);
+			if (byAbbrev) {
+				rank = Rank.getRankByAbbreviation(value, nc, useUnknown);
+			} else {
+				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
+			}
+			if (rank.equals(Rank.UNKNOWN_RANK())) {
+				rank = null;
+			}
+		} catch (UnknownCdmTypeException e) {
+			// doNothing
+		}
+		return rank;
+	}
+
+
+
+	protected TeamOrPersonBase<?> createAuthor(String authorTitle) {
+		// TODO atomize and also use by name creation
+		TeamOrPersonBase<?> result = Team.NewTitledInstance(authorTitle, authorTitle);
+		return result;
+	}
 	
+	protected String getAndRemoveMapKey(Map<String, String> map, String key) {
+		String result = map.get(key);
+		map.remove(key);
+		if (result != null) {
+			result = normalize(result);
+		}
+		return StringUtils.stripToNull(result);
+	}
+
 
 	/**
 	 * Creates a {@link NonViralName} object depending on the defined {@link NomenclaturalCode}
@@ -737,6 +834,126 @@ public abstract class MarkupImportBase  {
 			nc = NomenclaturalCode.ICBN; // default;
 		}
 		return nc;
+	}
+
+
+	/**
+	 * @param state
+	 * @param levelString
+	 * @param next
+	 * @return
+	 */
+	protected NamedAreaLevel makeNamedAreaLevel(MarkupImportState state,
+			String levelString, XMLEvent next) {
+		NamedAreaLevel level;
+		try {
+			level = state.getTransformer().getNamedAreaLevelByKey(levelString);
+			if (level == null) {
+				UUID levelUuid = state.getTransformer().getNamedAreaLevelUuid(levelString);
+				if (levelUuid == null) {
+					String message = "Unknown distribution locality class (named area level): %s. Create new level instead.";
+					message = String.format(message, levelString);
+					fireWarningEvent(message, next, 6);
+				}
+				level = getNamedAreaLevel(state, levelUuid, levelString, levelString, levelString, null);
+			}
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return level;
+	}
+	
+
+	/**
+	 * @param state
+	 * @param areaName
+	 * @param level
+	 * @return 
+	 */
+	protected NamedArea makeArea(MarkupImportState state, String areaName, NamedAreaLevel level) {
+		
+		//TODO FM vocabulary
+		TermVocabulary<NamedArea> voc = null; 
+		NamedAreaType areaType = null;
+		
+		NamedArea area = null;
+		try {
+			area = state.getTransformer().getNamedAreaByKey(areaName);
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (area == null){
+			boolean isNewInState = false;
+			UUID uuid = state.getAreaUuid(areaName);
+			if (uuid == null){
+				isNewInState = true;
+				
+				
+				try {
+					uuid = state.getTransformer().getNamedAreaUuid(areaName);
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+			CdmImportBase.TermMatchMode matchMode = CdmImportBase.TermMatchMode.UUID_LABEL;
+			area = getNamedArea(state, uuid, areaName, areaName, areaName, areaType, level, voc, matchMode);
+			if (isNewInState){
+				state.putAreaUuid(areaName, area.getUuid());
+				
+				//TODO just for testing -> make generic and move to better place
+				String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+				String layerFieldName ="nam";
+				
+				if ("Bangka".equals(areaName)){
+					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Luzon".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("HERMANA MAYOR ISLAND#CENTRAL LUZON",
+							"HERMANA MENOR ISLAND#CENTRAL LUZON",
+							"CENTRAL LUZON");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Mindanao".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("NORTHERN MINDANAO",
+							"SOUTHERN MINDANAO",
+							"WESTERN MINDANAO");
+					//TODO to be continued
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Palawan".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("PALAWAN#SOUTHERN TAGALOG");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+
+			}
+		}
+		return area;
 	}
 
 	
