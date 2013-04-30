@@ -709,30 +709,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		return taxon;
 	}
 
-	/**
-	 * @param state
-	 * @param rank
-	 * @return
-	 */
-	private NonViralName<?> createNameByCode(MarkupImportState state, Rank rank) {
-		NonViralName<?> name;
-		NomenclaturalCode nc = makeNomenclaturalCode(state);
-		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
-		return name;
-	}
-
-	/**
-	 * @param state
-	 * @return
-	 */
-	private NomenclaturalCode makeNomenclaturalCode(MarkupImportState state) {
-		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
-		if (nc == null) {
-			nc = NomenclaturalCode.ICBN; // default;
-		}
-		return nc;
-	}
-
 	private String handleTaxonTitle(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		//attributes
 		String text = "";
@@ -1770,7 +1746,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	}
 
 	private void fillName(MarkupImportState state, Map<String, String> nameMap,
-			NonViralName name, XMLEvent event) {
+			NonViralName<?> name, XMLEvent event) {
 
 		// Ranks: family, subfamily, tribus, genus, subgenus, section,
 		// subsection, species, subspecies, variety, subvariety, forma
@@ -1828,9 +1804,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	 * @param event
 	 * @param infrankStr
 	 */
-	private void makeRankDecision(MarkupImportState state,
-			Map<String, String> nameMap, NonViralName<?> name, XMLEvent event,
-			String infrankStr) {
+	private void makeRankDecision(MarkupImportState state, Map<String, String> nameMap, 
+			NonViralName<?> name, XMLEvent event, String infrankStr) {
 		// TODO ranks
 		for (String key : nameMap.keySet()) {
 			Rank rank = makeRank(state, key, false);
@@ -1893,7 +1868,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			return value;
 		}else{
 			String result = "";
-			result += value.substring(0,1).toUpperCase();
+			value = value.trim();
+			result += value.trim().substring(0,1).toUpperCase();
 			if (value.length()>1){
 				result += value.substring(1).toLowerCase();
 			}

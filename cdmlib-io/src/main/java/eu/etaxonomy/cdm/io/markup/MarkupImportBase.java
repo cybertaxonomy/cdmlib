@@ -48,6 +48,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -705,6 +708,37 @@ public abstract class MarkupImportBase  {
 	}
 	
 // *************************************** Concrete methods **********************************************/
+	
+
+	/**
+	 * Creates a {@link NonViralName} object depending on the defined {@link NomenclaturalCode}
+	 * and the given parameters.
+	 * @param state
+	 * @param rank
+	 * @return
+	 */
+	protected NonViralName<?> createNameByCode(MarkupImportState state, Rank rank) {
+		NonViralName<?> name;
+		NomenclaturalCode nc = makeNomenclaturalCode(state);
+		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
+		return name;
+	}
+	
+
+	/**
+	 * Returns the {@link NomenclaturalCode} for this import. Default is {@link NomenclaturalCode#ICBN} if
+	 * no code is defined.
+	 * @param state
+	 * @return
+	 */
+	protected NomenclaturalCode makeNomenclaturalCode(MarkupImportState state) {
+		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+		if (nc == null) {
+			nc = NomenclaturalCode.ICBN; // default;
+		}
+		return nc;
+	}
+
 	
 	
 	/**

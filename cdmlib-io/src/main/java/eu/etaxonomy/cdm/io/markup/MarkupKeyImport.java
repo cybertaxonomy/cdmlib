@@ -261,12 +261,16 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		String taxonKeyStr = makeTaxonKey(taxonCData, state.getCurrentTaxon(), parentEvent.getLocation());
 		taxonNotExists = taxonNotExists || (isBlank(num) && state.isOnlyNumberedTaxaExist());
 		if (taxonNotExists){
-			Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.UNKNOWN_RANK()), null);
+			NonViralName<?> name = createNameByCode(state, Rank.UNKNOWN_RANK());
+			Taxon taxon = Taxon.NewInstance(name, null);
 			taxon.getName().setTitleCache(taxonKeyStr, true);
 			node.setTaxon(taxon);
 		}else{
 			UnmatchedLeadsKey unmatched = UnmatchedLeadsKey.NewInstance(num, taxonKeyStr);
 			state.getUnmatchedLeads().addKey(unmatched, node);
+//			String message = "The following key leads are unmatched: %s";
+//			message = String.format(message, state.getUnmatchedLeads().toString());
+//			fireWarningEvent(message, parentEvent, 6);
 		}
 		return;
 	}
@@ -289,14 +293,18 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 		String strGenusName = name.getGenusOrUninomial();
 		
-		String bracketPattern = ".*\\([^\\(\\)]*\\).*";
-		if (strGoto.matches(bracketPattern)){
-			fireWarningEvent("toTaxon has bracket", makeLocationStr(location), 4);
+		final String bracketPattern = "\\([^\\(\\)]*\\)";
+		final String bracketPatternSomewhere = String.format(".*%s.*", bracketPattern);
+		if (strGoto.matches(bracketPatternSomewhere)){
+			fireWarningEvent("toTaxon has bracket: " + strGoto, makeLocationStr(location), 4);
 			strGoto = strGoto.replaceAll(bracketPattern, "");  //replace all brackets
 		}
 		strGoto = strGoto.replaceAll("\\s+", " "); //replace multiple whitespaces by exactly one whitespace
 		
-		strGoto = strGoto.trim();  
+		strGoto = strGoto.trim();
+		strGoto = strGoto.replaceAll("\\s+\\.", "\\.");   // " ." may be created by bracket replacement
+		strGoto = strGoto.replaceAll("\\.\\.", "\\.");   //replace
+		
 		String[] split = strGoto.split("\\s");
 		//handle single epithets and markers
 		for (int i = 0; i<split.length; i++){
@@ -313,7 +321,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			result = (result + " " + split[i]).trim();
 		}
 		//remove trailing "."
-		if (result.endsWith(".")){
+		while (result.endsWith(".")){
 			result = result.substring(0, result.length()-1).trim();
 		}
 		return result;
