@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
+import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -93,6 +94,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
+            @RequestParam(value= "mode", required = true) final AggregationMode mode,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -116,7 +118,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
                 public void run() {
                     Pager<NamedArea> areaPager = termService.list(NamedAreaLevel.TDWG_LEVEL3(), (NamedAreaType) null,
                             null, null, (List<OrderHint>) null, term_init_strategy);
-                    transmissionEngineDistribution.accumulate(areaPager.getRecords(), Rank.SUBSPECIES(), Rank.GENUS(),
+                    transmissionEngineDistribution.accumulate(mode, areaPager.getRecords(), Rank.SUBSPECIES(), Rank.GENUS(),
                             null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                 }
             };

@@ -310,19 +310,26 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *            given monitor. Accepts null, indicating that no progress
      *            should be reported and that the operation cannot be cancelled.
      */
-    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification,
-            IProgressMonitor monitor) {
+    public void accumulate(AggregationMode mode, List<NamedArea> superAreas, Rank lowerRank, Rank upperRank,
+            Classification classification, IProgressMonitor monitor) {
 
-        if(monitor == null){
+        if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
 
-        logger.info("Hibernate JDBC Batch size: " + ((SessionFactoryImplementor)getSession().getSessionFactory()).getSettings().getJdbcBatchSize()); // . Configuration().getProperty("hibernate.jdbc.batch_size");
+        logger.info("Hibernate JDBC Batch size: "
+                + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
 
         monitor.beginTask("Accumulating distributions", 400);
 
-        accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200));
-        accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200));
+        if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
+            accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
+                    mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
+        }
+        if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
+            accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
+                    mode.equals(AggregationMode.byRanks));
+        }
     }
 
     /**
@@ -348,7 +355,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      * @param classification
      *      limit the accumulation process to a specific classification (not yet implemented)
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor) {
+    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
 
         int batchSize = 1000;
 
@@ -393,7 +400,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
 
                 Taxon taxon = (Taxon)taxonBase;
-                TaxonDescription description = findComputedDescription(taxon, true);
+                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                 List<Distribution> distributions = distributionsFor(taxon);
 
                 // Step through superAreas for accumulation of subAreas
@@ -466,7 +473,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
     *</ul>
     */
-    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor) {
+    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor,boolean doClearDescriptions) {
 
         int batchSize = 500;
 
@@ -558,7 +565,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     }
 
                     if(accumulatedStatusMap.size() > 0) {
-                        TaxonDescription description = findComputedDescription(taxon, false);
+                        TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                         for (NamedArea area : accumulatedStatusMap.keySet()) {
                             // store new distribution element in new Description
                             Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
@@ -785,5 +792,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         }
 
         commitTransaction(txStatus);
+    }
+
+    public enum AggregationMode {
+        byAreas,
+        byRanks,
+        byAreasAndRanks
+
     }
 }
