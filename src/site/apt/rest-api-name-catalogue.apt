@@ -20,9 +20,9 @@ Name Catalogue REST API
 	
 		*** {{{./remote/name-catalogue-taxon-info.html} taxon information}} 	: This web service endpoint provides information related a specific taxon uuid.
 		
-		*** {{{./remote/name-catalogue-taxon-accepted.html} accepted name search}} 	: This web service endpoint serves as a search engine for retrieving taxonomic information of the accepted name of the synonomy to which the queried scientific name belongs. 
+		*** {{{./remote/name-catalogue-accepted.html} accepted name search}} 	: This web service endpoint serves as a search engine for retrieving taxonomic information of the accepted name of the synonomy to which the queried scientific name belongs. 
 		
-		*** {{{./remote/name-catalogue-taxon-fuzzy.html} fuzzy name search}} 	: This web service endpoint serves as a fuzzy search for taxonomic names.
+		*** {{{./remote/name-catalogue-fuzzy.html} fuzzy name search}} 	: This web service endpoint serves as a fuzzy search for taxonomic names.
 	
 	[]
 	
