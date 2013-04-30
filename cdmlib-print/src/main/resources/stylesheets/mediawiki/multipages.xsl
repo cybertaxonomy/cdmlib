@@ -130,16 +130,13 @@
                     <username>Sybille Test</username>
                 </contributor>
                 <text xml:space="preserve">
-                    
                     <!-- redirekt to corresponding page -->
                     <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"/>
-
-                    <!-- add parent categorie if exists -->
+<!-- add parent categorie if exists -->
                     <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
                         <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
-                    </xsl:if>
-              
-                </text>
+                    </xsl:if>              
+               </text>
             </revision>
         </page>
 
@@ -159,7 +156,7 @@
                     </username>
                 </contributor>
                 <text xml:space="preserve">
-                    <!-- add table of contents -->
+ <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
                    <!-- add taxo tree -->
                      <xsl:value-of select="concat('{{Taxo Tree|',$parent-title, '}}')"/> 
@@ -264,7 +261,7 @@
         <xsl:param name="descriptionelements"/>
 
         <!--only calling this for ag salcifolia what about the other uuids???-->
-        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$name-uuid,'|Content=')"/>
+        <xsl:value-of select="concat('{{ViBRANT_Reference|name=',$name-uuid,'|content=')"/>
         <!--<ref name="{$name-uuid}">-->
         <!-- iterate through all the description elements fo the citation feature -->
         <xsl:for-each select="$descriptionelements/descriptionelement">
@@ -324,7 +321,7 @@
         <xsl:variable name="citation-uuid" select="$reference-node/uuid"/>
 
         <!-- use the citation-uuid as a unique name for the reference -->
-        <xsl:value-of select="concat('{{ViBRANT_Reference|Name=',$citation-uuid,'|Content=')"/>
+        <xsl:value-of select="concat('{{ViBRANT_Reference|name=',$citation-uuid,'|content=')"/>
         <xsl:text>{{aut|</xsl:text>
 
         <xsl:choose>
@@ -603,7 +600,7 @@
 
         <xsl:for-each select="feature">
             <xsl:value-of
-                select="concat('{{Second_Level_Feature|Name=',representation_L10n,'|Elements=')"/>
+                select="concat('{{Second_Level_Feature|name=',representation_L10n,'|elements=')"/>
             <!-- TODO create Element -->
             <xsl:for-each select="descriptionelements/descriptionelement">
                 <xsl:value-of
@@ -634,11 +631,11 @@
 
     <xsl:template name="commonTaxonName">
 
-        <xsl:value-of select="concat('{{Tax_Feature|Name=',representation_L10n,'|Elements=')"/>
+        <xsl:value-of select="concat('{{Tax_Feature|name=',representation_L10n,'|elements=')"/>
         <xsl:for-each select="descriptionelements/descriptionelement">
             <xsl:text/>
             <xsl:value-of
-                select="concat('{{Common_Name_Feature_Element|Name=',name,'|Language=',language/representation_L10n,'}}')"
+                select="concat('{{Common_Name_Feature_Element|name=',name,'|language=',language/representation_L10n,'}}')"
             />
         </xsl:for-each>
         <xsl:text>}}</xsl:text>
@@ -649,7 +646,7 @@
     <xsl:template name="textData">
 
         <xsl:value-of
-            select="concat('{{Tax_Feature|Name=',representation_L10n, '|Elements={{Feature_Text|' )"/>
+            select="concat('{{Tax_Feature|name=',representation_L10n, '|elements={{Feature_Text|' )"/>
         <!--
         <xsl:choose>
             <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">-->
@@ -684,9 +681,9 @@
     <!-- image gallery -->
 
     <xsl:template name="gallery">
-        <xsl:text>{{ViBRANT_Gallery|Files=</xsl:text>
-
+        <xsl:text>{{ViBRANT_Gallery|files=</xsl:text>
         <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
+
         <xsl:text>}}</xsl:text>
     </xsl:template>
 
@@ -696,7 +693,7 @@
     <xsl:template match="media/e/representations/e/parts/e/uri">
 
         <xsl:value-of
-            select="concat('{{ViBRANT_Gallery_File|Filename=',functx:substring-after-last(.,'/'), '|Description=')"/>
+            select="concat('{{ViBRANT_Gallery_File|filename=',functx:substring-after-last(.,'/'), '|description=')"/>
         <!--,'}}')"/>-->
         <!--go back up to the description element and get the text for the Figure legend -->
         <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
@@ -714,7 +711,7 @@
     <!-- think also of template changes in the mediawiki -->
     <!-- TODO: wrap TOC layout in a mediawiki template -->
 
-    <xsl:template name="TOC"> {{ViBRANT_TOC}} </xsl:template>
+    <xsl:template name="TOC">{{ViBRANT_TOC}}</xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
