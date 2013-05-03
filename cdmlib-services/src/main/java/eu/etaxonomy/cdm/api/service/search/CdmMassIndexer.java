@@ -62,7 +62,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
 
-    private static final int BATCH_SIZE = 10000;
+    private static final int BATCH_SIZE = 100;
 
     public HibernateTransactionManager transactionManager;
 
