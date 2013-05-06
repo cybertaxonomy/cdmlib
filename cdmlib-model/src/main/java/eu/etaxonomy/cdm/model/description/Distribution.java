@@ -29,6 +29,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -156,24 +157,35 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     /**
      * Special equal method for building an sorted distribution tree.
      * @param dist the distribution to compare <code>this</code> area with.
-     * @return true, if both areas do have equal labels and both area levels do have equal label, false otherwise.
+     * @return true, if both areas do have equal labels and both area levels 
+     * do have equal label or are both null, false otherwise.
      */
     public boolean equalsForTree(Distribution dist){
-       boolean result = false;
-       NamedArea thisArea = this.getArea();
-       NamedArea distArea = dist.getArea();
+    	boolean result = false;
+       	NamedArea thisArea = this.getArea();
+       	NamedArea distArea = dist.getArea();
         
-       //avoid NPE 
-       if (thisArea == null || distArea == null || thisArea.getLabel() == null || 
-        		thisArea.getLevel() == null || this.getArea().getLevel().getLabel() == null || dist.getArea().getLevel() == null){
-        	return false;
+       	//avoid NPE 
+       	if (thisArea == null || distArea == null || thisArea.getLabel() == null) {
+    	   return false;
         }
         //same area level and area label returns true
-        if (thisArea.getLabel().compareTo(distArea.getLabel()) == 0 &&
-                this.getArea().getLevel().getLabel().compareTo(dist.getArea().getLevel().getLabel()) == 0){
-            result = true;
-        }        
-        return result;
+        if (thisArea.getLabel().compareTo(distArea.getLabel()) == 0 ){
+        	NamedAreaLevel thisLevel = thisArea.getLevel();
+        	NamedAreaLevel distLevel = distArea.getLevel();
+        	
+        	if ((thisLevel == null) && (distLevel == null)){
+        		result = true;
+        	}else{
+        		if ((thisLevel == null) || (thisLevel.getLabel() == null) || (distLevel == null)){
+        			return false;
+        		}
+    	        if (thisLevel.getLabel().compareTo(distLevel.getLabel()) == 0){
+    	        	result = true;
+    	        }
+        	}
+        }
+       return result;
     }
 
     /**
