@@ -3,7 +3,7 @@
     xmlns:functx="http://www.functx.com">
 
     <xsl:import href="functx-1.0-doc-2007-01.xsl"/>
-    <xsl:output method="xml" indent="yes"/>
+    <!--<xsl:output method="xml" indent="yes"/>-->
 
     <!-- Authors: Sybille & Lorna -->
     <!-- Date: March/April 2013 -->
@@ -116,6 +116,11 @@
         </xsl:variable>
 
         <!-- create category -->
+        <xsl:text>
+            <!-- this creates a newline before the <page> 
+            if it was not there, the page could not be imported by the mediawiki-->
+        </xsl:text>
+        
         <page>
             <title>
                 <xsl:text>Category:</xsl:text>
@@ -717,7 +722,6 @@
     <xsl:template name="TOC">{{ViBRANT_TOC}}</xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-
     <xsl:template name="chapter">
         <xsl:param name="title"/>
         <xsl:value-of select="concat('{{Chapter|',$title,'}}')"/>
