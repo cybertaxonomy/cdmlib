@@ -76,10 +76,7 @@
                     <namespace key="421" case="first-letter">Layer talk</namespace>
                 </namespaces>
             </siteinfo>
-
             <xsl:apply-templates select="//TaxonNode"/>
-            <!-- TODO we cannot just call every node, we have to parse the tree
-             to gather tree structure for the categories tree-->
         </mediawiki>
     </xsl:template>
 
@@ -89,7 +86,6 @@
     every taxon node.  -->
     <!-- TODO create a template for page creating and for categorie creating -->
     <xsl:template match="TaxonNode" name="TaxonNode">
-
         <!-- as we will need the title more than once, we create a variable-->
         <xsl:variable name="title">
             <xsl:call-template name="title">
@@ -160,7 +156,7 @@
                         <xsl:value-of select="$username"/>
                     </username>
                 </contributor>
-                <text xml:space="preserve">
+                <text xml:space="default" >
  <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
                    <!-- add taxo tree -->
@@ -466,8 +462,7 @@
 
     <xsl:template match="synonymy" name="synonymy">
         <!--<xsl:text>&#xA;'''Synonymy'''&#xA;&#xA;</xsl:text>
-    -->
-        <xsl:call-template name="chapter">
+    --><xsl:call-template name="chapter">
             <xsl:with-param name="title">Synonomy</xsl:with-param>
         </xsl:call-template>
         <xsl:apply-templates select="../name"/>
