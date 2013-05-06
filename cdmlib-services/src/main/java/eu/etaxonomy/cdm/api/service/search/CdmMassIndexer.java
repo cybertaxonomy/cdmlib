@@ -27,6 +27,7 @@ import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.engine.spi.SearchFactoryImplementor;
@@ -62,7 +63,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
 
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 2000;
 
     public HibernateTransactionManager transactionManager;
 
@@ -89,7 +90,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         Long countResult = countEntities(type);
         int numOfBatches = calculateNumOfBatches(countResult);
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, numOfBatches);
+        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
         // Scrollable results will avoid loading too many objects in memory
@@ -105,9 +106,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                     batchesWorked++;
                     fullTextSession.flushToIndexes(); // apply changes to indexes
                     fullTextSession.clear(); // clear since the queue is processed
-                    //                calculateNumOfBatches(index == countResult ? countResult : index);
+                    subMonitor.worked(1);
                     logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
-                    subMonitor.internalWorked(1);
                     //if(index / BATCH_SIZE > 10 ) break;
                 }
             }
@@ -122,12 +122,12 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param type
      * @param monitor
      */
-    protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {        
+    protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
         String indexName = null;
         if(type.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
         	indexName = type.getAnnotation(org.hibernate.search.annotations.Indexed.class).index();
@@ -139,23 +139,23 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(indexName);
         IndexReader indexReader = searchFactory.getIndexReaderAccessor().open(type);
     	List<String> idFields = getIndexedDeclaredFields(type);
-    	        
+
         monitor.subTask("creating dictionary " + type.getSimpleName());
-               
+
         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
         subMonitor.beginTask("Creating dictionary " + type.getSimpleName(), 1);
-        
+
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
         SpellChecker spellChecker = null;
-    	try {    		
+    	try {
     		spellChecker = new SpellChecker(directory);
     		Iterator<String> itr = idFields.iterator();
     		while(itr.hasNext()) {
     			String indexedField = itr.next();
-    			logger.info("creating dictionary for field " + indexedField);    			
+    			logger.info("creating dictionary for field " + indexedField);
     			Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
     			IndexWriterConfig iwc = new IndexWriterConfig(Configuration.luceneVersion, searchFactory.getAnalyzer(type));
-    			spellChecker.indexDictionary(dictionary, iwc, true);    			
+    			spellChecker.indexDictionary(dictionary, iwc, true);
     		}
     		subMonitor.internalWorked(1);
     	} catch (IOException e) {
@@ -169,7 +169,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
             monitor.done();
     	} finally {
-    		searchFactory.getIndexReaderAccessor().close(indexReader);    	
+    		searchFactory.getIndexReaderAccessor().close(indexReader);
     	}
     	if (spellChecker != null) {
     		try {
@@ -179,11 +179,11 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     			logger.error("IOException when closing spellchecker", e);
     		}
     	}
-    	
+
     	logger.info("end creating dictionary " + type.getName());
     	subMonitor.done();
     }
-    
+
     /**
      * @param countResult
      * @return
@@ -209,12 +209,12 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         logger.info("purging " + type.getName());
         fullTextSession.purgeAll(type);
 
-        
+
         SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)Search.getFullTextSession(getSession()).getSearchFactory();
-        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());        
+        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
         SpellChecker spellChecker = null;
-    	try {    		
+    	try {
     		spellChecker = new SpellChecker(directory);
     		spellChecker.clearIndex();
     	} catch (IOException e) {
@@ -223,7 +223,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             //monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
             //monitor.done();
     	}
-    	
+
     	if (spellChecker != null) {
     		try {
     			logger.info("closing spellchecker ");
@@ -246,13 +246,18 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = totalBatchCount() + 1; // +1 for optimize
+        int steps = indexedClasses().length + 1; // +1 for optimize
         monitor.beginTask("Reindexing " + indexedClasses().length + " classes", steps);
 
-        for(Class type : indexedClasses()){
+        for(Class<? extends CdmBase> type : indexedClasses()){
             reindex(type, monitor);
+            // clear the session after each class to free memory
+            getSession().clear();
         }
-        optimize(monitor);
+
+        optimize();
+        monitor.worked(1);
+
         monitor.done();
     }
 
@@ -269,22 +274,16 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         for(Class type : dictionaryClasses()){
         	createDictionary(type, monitor);
         }
-      
-        monitor.done();
-		
-	}
-    protected void optimize(IProgressMonitor monitor) {
 
-        monitor.subTask("optimizing");
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-        subMonitor.beginTask("optimizing", 1);
+        monitor.done();
+
+	}
+    protected void optimize() {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         fullTextSession.getSearchFactory().optimize();
         fullTextSession.flushToIndexes();
         fullTextSession.clear();
-
-        subMonitor.done();
     }
 
     /**
@@ -309,36 +308,37 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = indexedClasses().length; // +1 for optimize
+        int steps = indexedClasses().length + 1; // +1 for optimize
         monitor.beginTask("Purging " + indexedClasses().length + " classes", steps);
 
-        for(Class type : indexedClasses()){
+        for(Class<? extends CdmBase> type : indexedClasses()){
             purge(type, monitor);
             monitor.worked(1);
         }
 
 //        // need to commit and start new transaction before optimizing
-//        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-//        Transaction tx = fullTextSession.getTransaction();
-//        tx.commit();
-//        fullTextSession.beginTransaction(); // will be committed automatically at the end of this method since this class is transactional
+        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        Transaction tx = fullTextSession.getTransaction();
+        tx.commit();
+        fullTextSession.beginTransaction(); // will be committed automatically at the end of this method since this class is transactional
 
-//        optimize(monitor);
+        optimize();
+        monitor.worked(1);
 
         monitor.done();
     }
 
-    
+
     /**
      * Returns a list of declared indexable fields within a class through reflection.
-     * 
+     *
      * @param clazz
      * @return
      */
     private List<String> getIndexedDeclaredFields(Class clazz) {
     	List<String> idFields = new ArrayList<String>();
     	if(clazz.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
-    		Field[] declaredFields = clazz.getDeclaredFields();    		
+    		Field[] declaredFields = clazz.getDeclaredFields();
     		for(int i=0;i<declaredFields.length;i++ ) {
     			logger.info("checking field " + declaredFields[i].getName());
     			if(declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Field.class) ||
@@ -347,14 +347,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     				logger.info("adding field " + declaredFields[i].getName());
     			}
     		}
-    	}    	
+    	}
     	return idFields;
     }
     /**
      * @return
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public Class[] indexedClasses() {
+    public Class<? extends CdmBase>[] indexedClasses() {
         return new Class[] {
                 DescriptionElementBase.class,
                 Classification.class,
@@ -363,18 +364,18 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 SpecimenOrObservationBase.class
                 };
     }
-    
+
     /**
      * @return
      */
     @Override
     public Class[] dictionaryClasses() {
-        return new Class[] {               
+        return new Class[] {
         		NonViralName.class
                 };
     }
 
 
-    
+
 
 }

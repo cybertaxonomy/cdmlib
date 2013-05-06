@@ -51,9 +51,6 @@ public class ManagementController
      */
     private static UUID indexMonitorUuid = null;
 
-
-    private static final int DEFAULT_PAGE_SIZE = 25;
-
     /*
      * return page not found http error (404) for unknown or incorrect UUIDs
      * (non-Javadoc)
@@ -94,6 +91,7 @@ public class ManagementController
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
     public ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+             @RequestParam(value = "priority", required = false) Integer priority,
              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -108,12 +106,16 @@ public class ManagementController
                     indexer.reindex(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
         // send redirect "see other"
         return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
     }
-    
+
     /**
     *
     * Create dictionaries for all cdm entities listed in {@link ICdmMassIndexer#dictionaryClasses()}.
@@ -129,6 +131,7 @@ public class ManagementController
    @RequestMapping(value = { "redict" }, method = RequestMethod.GET)
    public ModelAndView doRedict(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -143,6 +146,10 @@ public class ManagementController
                    indexer.createDictionary(progressMonitorController.getMonitor(indexMonitorUuid));
                }
            };
+           if(priority == null) {
+               priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+           }
+           subThread.setPriority(priority);
            subThread.start();
        }
        // send redirect "see other"
@@ -160,6 +167,7 @@ public class ManagementController
     @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
     public ModelAndView doPurge(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -175,6 +183,10 @@ public class ManagementController
                     indexer.purge(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
 
