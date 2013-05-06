@@ -9,6 +9,8 @@
 -->
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
+  
+  
 
   <!-- ############### Constants and definitions ################### -->
 
@@ -43,6 +45,7 @@
   <xsl:param name="taxon-header-after-bg-color">white</xsl:param>
   <xsl:param name="taxon-header-size-font">7pt</xsl:param>
 
+  <xsl:param name="distribution-size-font">8pt</xsl:param>
 
   <xsl:param name="taxon-name-indentation">4mm</xsl:param>
   <xsl:param name="taxon-name-size-font">8pt</xsl:param>
@@ -147,11 +150,21 @@
         <!-- format taxa -->
         <fo:flow flow-name="xsl-region-body">
           <fo:block font-family="{$global-family-font}" font-size="{$global-size-font}"
-            line-height="{$global-line-height}">
+            line-height="{$global-line-height}" linefeed-treatment="preserve">
             <xsl:for-each select="//TaxonNode">
               <xsl:apply-templates select="."/>
             </xsl:for-each>
+            
+            <fo:block text-align="center" text-transform="uppercase" font-weight="bold" linefeed-treatment="preserve">
+              <xsl:text>REFERENCES</xsl:text>
+              <xsl:text>&#xA;</xsl:text>
+              
+            </fo:block>
+            <xsl:text>&#xA;</xsl:text>
+            <xsl:call-template name="References"/>
           </fo:block>
+
+
         </fo:flow>
 
 
@@ -389,11 +402,12 @@
           <fo:inline keep-with-next.within-line="always">
 
             <xsl:if test="not(starts-with($representation, 'Figures'))">
-              <fo:inline text-decoration="underline" keep-with-next.within-line="always">
+              <!-- The headings are in English - do we want to remove them altogether or have French headings -->
+              <!--fo:inline text-decoration="underline" keep-with-next.within-line="always">
 
                 <xsl:value-of select="representation_L10n"/>
               </fo:inline>
-              <fo:inline>: </fo:inline>
+              <fo:inline>: </fo:inline-->
             </xsl:if>
 
             <xsl:for-each select="descriptionelements/descriptionelement">
@@ -431,10 +445,10 @@
             and place it next to the appropriate taxon in the output-->
 
               <!--xsl:if test="not(starts-with($representation, 'Figures'))"-->
-              <xsl:if test="position() = 1">
+              <!--xsl:if test="position() = 1"-->
                 <!--xsl:value-of select="../../../../../../Taxon/name/titleCache"/-->
                 <xsl:apply-templates select="media/e/representations/e/parts/e/uri"/>
-              </xsl:if>
+              <!--/xsl:if-->
               <!--xsl:apply-templates select="e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates-->
 
             </xsl:for-each>
@@ -445,28 +459,11 @@
         <!--/xsl:if-->
       </xsl:for-each>
 
-
-      <!--xsl:apply-templates select="../../../../../../../../../synonymy[1]/homotypicSynonymsByHomotypicGroup[1]/e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates-->
-
     </fo:block>
 
   </xsl:template>
 
   <!-- IMAGES -->
-
-  <!--xsl:template match="media"-->
-  <xsl:template match="uriprob">
-    <fo:block>
-      <xsl:variable name="graphic" select="."/>
-      <fo:external-graphic content-height="450%" scaling="uniform" src="{$graphic}"
-        padding-before="100" padding-after="30"/>
-      <!--xsl:apply-templates select="../multilanguageText_L10n/text"/-->
-      <fo:inline font-size="{$taxon-name-size-font}">
-        <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
-      </fo:inline>
-    </fo:block>
-  </xsl:template>
-
   <xsl:template match="uri">
     <!--fo:block text-align="center"-->
     <fo:block keep-with-next="always" text-align="center">
@@ -540,7 +537,8 @@
     <xsl:choose>
       <xsl:when test="contains($str, $opening-tag)">
         <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
-        <xsl:variable name="inside-tag" select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
+        <xsl:variable name="inside-tag"
+          select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
         <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
         <xsl:choose>
           <xsl:when test="contains($before-tag, '#x2014;')">
@@ -574,7 +572,7 @@
             </fo:inline>
           </xsl:otherwise>
         </xsl:choose>
-        <!-- call template recursively with the remaining text after the tag -->       
+        <!-- call template recursively with the remaining text after the tag -->
         <xsl:call-template name="add-markup">
           <xsl:with-param name="str" select="$after-tag"/>
           <xsl:with-param name="tag-name" select="$tag-name"/>
@@ -716,6 +714,7 @@
         <xsl:otherwise>
           <fo:inline font-weight="bold">
             <xsl:text> Matériel examiné </xsl:text>
+            <xsl:text>&#xA;</xsl:text>
           </fo:inline>
         </xsl:otherwise>
 
@@ -846,7 +845,7 @@
             select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
           <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template>
-        <xsl:text>.**********</xsl:text>
+        <!--xsl:text>.**********</xsl:text-->
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="../name/typeDesignations"/>
       </fo:block>
@@ -879,6 +878,7 @@
             <xsl:with-param name="descriptionelements"
               select="../../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="name/uuid"/>
+            
           </xsl:call-template>
           <xsl:apply-templates select="name/typeDesignations"/>
         </xsl:for-each>
@@ -919,6 +919,188 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:for-each>
+  </xsl:template>
+
+  
+  <!-- this template is for the list of all citations at the end of the PDF -->
+  <!-- references are under //citation and under //nomenclaturalReference and //inReference-->
+  <!-- could try //class[.='Reference']/parent::node() to get all References -->
+  <xsl:key name="citations-by-uuid" match="//citation | //nomenclaturalReference" use="uuid" />
+  <!--xsl:key name="nomenclaturalrefs-by-uuid" match="//nomenclaturalReference" use="uuid" /-->
+
+  <xsl:template name="References"> 
+    <!-- new line for the end of the section -->
+    <xsl:text>&#xA;</xsl:text>
+        
+    <!--nomenclaturalReference or citation-->
+    <!-- problem with this is that if the same reference occurs under citaiton and under nomenclaturalReference it appears twice -->
+    <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]"-->
+    
+    <xsl:for-each select="//nomenclaturalReference[count(. | key('citations-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]">
+    <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1]"-->
+      <!--xsl:for-each select="//nomenclaturalReference"-->
+        <xsl:sort select="authorTeam/lastname | authorTeam/teamMembers/e[1]/lastname" />
+      <xsl:sort select="datePublished/start"></xsl:sort>
+
+      <fo:block linefeed-treatment="preserve">
+        <fo:inline>        
+          <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->                      
+              <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">               
+                <!--xsl:text>&#xA;</xsl:text-->
+                <xsl:choose>
+                  <xsl:when test="authorTeam/teamMembers/e[1]/lastname != ''">
+                    <xsl:for-each select="authorTeam/teamMembers/e">
+                      <fo:inline>
+                        <xsl:value-of select="lastname"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="firstname"/>
+                        <xsl:choose>
+                          <xsl:when test="position() != last()">
+                            <xsl:text> &amp; </xsl:text>
+                          </xsl:when>
+                        </xsl:choose>
+                      </fo:inline>
+                    </xsl:for-each>
+                  </xsl:when>
+                  <xsl:otherwise test="authorTeam/lastname != ''">
+                    <fo:inline>
+                      <xsl:value-of select="authorTeam/lastname"/>
+                      <xsl:text> </xsl:text>
+                      <xsl:value-of select="authorTeam/firstname"/>
+                    </fo:inline>                                 
+                  </xsl:otherwise>
+                </xsl:choose>                            
+                
+                <xsl:if test="datePublished/start != ''">
+                  <xsl:text> (</xsl:text>
+                  <xsl:value-of select="datePublished/start"/>
+                  <xsl:text>) </xsl:text>
+                </xsl:if>                
+                
+                <xsl:apply-templates select="title"/>
+                <xsl:apply-templates select="volume"/>
+                <xsl:apply-templates select="pages"/>
+                <xsl:apply-templates select="placePublished"/>
+                <xsl:apply-templates select="publisher"/>
+                
+                <!-- if inReference has child nodes-->
+                <xsl:if test="count(inReference/*) &gt; 0">
+                  
+                  <xsl:text>In </xsl:text>
+                  <xsl:apply-templates select="inReference/title"/>
+                  <xsl:apply-templates select="inReference/volume"/>
+                  <xsl:apply-templates select="inReference/pages"/>
+                  <xsl:apply-templates select="inReference/placePublished"/>
+                  <xsl:apply-templates select="inReference/publisher"/>
+                </xsl:if>
+                <!--add template match to self:: that works for the above whether it's a citation or nomenclaturalReference -->              
+                <!-- new line for the end of the section -->
+                <xsl:text>&#xA;</xsl:text>             
+              </xsl:if>                  
+        </fo:inline>      
+      </fo:block>     
+    </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template match="*">
+
+    <xsl:value-of select="."/>
+      
+    <xsl:if test="name(.) = 'title' or name(.) = 'publisher' or name(.) = 'pages'">
+      <!-- . if pages or publisher or title - comma if placePublished -->
+      <xsl:text>. </xsl:text> 
+    </xsl:if>
+    
+    <xsl:if test="name(.) = 'volume'">
+      <xsl:text>: </xsl:text>
+    </xsl:if>
+    
+    <xsl:if test="(../type = 'Book' or ../type = 'BookSection') and name(.) = 'placePublished' and . != ''">
+      <xsl:text>, </xsl:text> 
+    </xsl:if>
+   
+
+  </xsl:template>
+  
+
+  <xsl:template name="Referencesold">
+    
+      <!-- need to sort by lastname of the first author i.e. //citation/authorTeam/teamMembers/e[1]/lastname -->
+      <xsl:for-each select="//citation">
+
+        <!-- TODO sorting only works for the first citation, implement correctly -->
+        <xsl:sort select="authorTeam/lastname"/>
+        <xsl:sort select="authorTeam/teamMembers/e[1]/lastname"/>
+        <fo:block>
+        <fo:inline>
+          
+          <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->
+          <xsl:variable name="prev_citation_uuid" select="preceding-sibling::citation/uuid"/>
+          <xsl:variable name="citation_uuid" select="uuid"/>
+          <xsl:text>preceeding:</xsl:text>
+          <xsl:value-of select="preceding-sibling::citation[1]/uuid"></xsl:value-of>
+          <xsl:text>current:</xsl:text>
+          <xsl:value-of select="uuid"></xsl:value-of>
+
+          <!--xsl:value-of select="preceding-sibling::citation/uuid"></xsl:value-of-->
+
+          <!--xsl:if test="$citation_uuid != $prev_citation_uuid"-->
+          <xsl:if test="preceding-sibling::citation[1]/uuid  != uuid">   
+            
+           <!-- .[not(preceding-sibling::Link[@personId   = current()/@personId -->
+          <xsl:choose>
+                         
+            <xsl:when test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">                                     
+            
+              <xsl:choose>
+                <xsl:when test="authorTeam/teamMembers/e[1]/lastname != ''">
+                <xsl:for-each select="authorTeam/teamMembers/e">
+                  <fo:inline font-weight="bold">
+                    <xsl:value-of select="lastname"/>
+                    <xsl:choose>
+                      <xsl:when test="position() != last()">
+                        <xsl:text> &amp; </xsl:text>
+                      </xsl:when>
+                    </xsl:choose>
+                  </fo:inline>
+                </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise test="authorTeam/lastname != ''">
+                  <fo:inline font-weight="bold">
+                    <xsl:value-of select="authorTeam/lastname"/>
+                  </fo:inline>                                 
+                </xsl:otherwise>
+              </xsl:choose>                            
+              
+              <xsl:if test="datePublished/start != ''">
+                <xsl:text> (</xsl:text>
+                <xsl:value-of select="datePublished/start"/>
+                <xsl:text>) </xsl:text>
+              </xsl:if>
+              <xsl:value-of select="title"/>
+              <xsl:text>.</xsl:text>
+              <xsl:value-of select="pages"/>
+              <xsl:text>.</xsl:text>
+              
+              <!-- new line for the end of the section -->
+              <xsl:text>&#xA;</xsl:text>
+              
+            </xsl:when>
+            <!--xsl:otherwise>
+              <xsl:text>HELLO&#xA;</xsl:text>
+            </xsl:otherwise-->
+          </xsl:choose>
+          </xsl:if>
+          
+        </fo:inline>
+
+    </fo:block>
+    <xsl:text>&#xA;</xsl:text>
+      </xsl:for-each>
+      
+
+
+
   </xsl:template>
 
   <xsl:template match="typeDesignations">

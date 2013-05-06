@@ -33,12 +33,20 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
     });
 
     public static final Logger logger = Logger.getLogger(AbstractController.class);
-    
+
 	protected SERVICE service;
 
 	public abstract void setService(SERVICE service);
 
     protected static final Integer DEFAULT_PAGE_SIZE = 30;
+
+    /**
+     * Default thread priority for long term processes which are running in
+     * separate threads. These batch processes are usually monitored with the
+     * {@link ProgressMonitorController}. This value must be lower than
+     * {@link Thread#NORM_PRIORITY}
+     */
+    public static final int DEFAULT_BATCH_THREAD_PRIORITY = 3;
 
     protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
 

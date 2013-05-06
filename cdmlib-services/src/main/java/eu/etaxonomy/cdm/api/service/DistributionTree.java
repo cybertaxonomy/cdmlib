@@ -45,7 +45,7 @@ public class DistributionTree extends Tree<Distribution>{
          boolean result = false;
          Iterator<TreeNode<Distribution>> it = root.getChildren().iterator();
          while (it.hasNext() && !result) {
-             TreeNode<Distribution> node = (TreeNode<Distribution>) it.next();
+             TreeNode<Distribution> node = it.next();
              if (node.getData().equalsForTree(treeNode.getData())) {
                  result = true;
              }
@@ -65,7 +65,7 @@ public class DistributionTree extends Tree<Distribution>{
         TreeNode<Distribution> result = null;
         Iterator<TreeNode<Distribution>> it = root.children.iterator();
         while (!found && it.hasNext()) {
-            result = (TreeNode<Distribution>) it.next();
+            result = it.next();
             if (result.data.equalsForTree(TreeNode.data)){
                 found = true;
             }
@@ -175,10 +175,6 @@ public class DistributionTree extends Tree<Distribution>{
             //if distribution.status is not relevant
             Distribution dummyDistributionElement = Distribution.NewInstance(highestArea, null);
             highestDistNode = new TreeNode<Distribution>(dummyDistributionElement);
-        }
-
-        if(highestDistNode.data.getModifyingText().isEmpty()){
-            highestDistNode.data.putModifyingText(Language.ENGLISH(), "test"); // FIXME what is this ?????
         }
 
         if (root.getChildren().isEmpty() || !containsChild(root, highestDistNode)) {

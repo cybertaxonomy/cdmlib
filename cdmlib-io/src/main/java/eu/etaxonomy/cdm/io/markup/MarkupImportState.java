@@ -39,6 +39,7 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 
 	private UnmatchedLeads unmatchedLeads;
+	private boolean onlyNumberedTaxaExist; //attribute in <key>
 
 	private Set<FeatureNode> featureNodesToSave = new HashSet<FeatureNode>();
 	
@@ -238,7 +239,13 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public UUID putAreaUuid(String key, UUID value) {
 		return areaMap.put(key, value);
 	}
-	
-	
+
+	public boolean isOnlyNumberedTaxaExist() {
+		return onlyNumberedTaxaExist;
+	}
+
+	public void setOnlyNumberedTaxaExist(boolean onlyNumberedTaxaExist) {
+		this.onlyNumberedTaxaExist = onlyNumberedTaxaExist;
+	}
 
 }

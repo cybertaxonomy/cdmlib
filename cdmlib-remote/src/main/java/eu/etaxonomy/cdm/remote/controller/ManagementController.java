@@ -51,9 +51,6 @@ public class ManagementController
      */
     private static UUID indexMonitorUuid = null;
 
-
-    private static final int DEFAULT_PAGE_SIZE = 25;
-
     /*
      * return page not found http error (404) for unknown or incorrect UUIDs
      * (non-Javadoc)
@@ -94,6 +91,7 @@ public class ManagementController
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
     public ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+             @RequestParam(value = "priority", required = false) Integer priority,
              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -108,11 +106,55 @@ public class ManagementController
                     indexer.reindex(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
         // send redirect "see other"
         return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
     }
+
+    /**
+    *
+    * Create dictionaries for all cdm entities listed in {@link ICdmMassIndexer#dictionaryClasses()}.
+    * Re-dicting will not purge the dictionaries.
+    * @param frontendBaseUrl if the CDM server is running behind a reverse proxy you need
+    *            to supply the base URL of web service front-end which is
+    *            provided by the proxy server.
+    * @param request
+    * @param respone
+    * @return
+    * @throws Exception
+    */
+   @RequestMapping(value = { "redict" }, method = RequestMethod.GET)
+   public ModelAndView doRedict(
+            @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+       String processLabel = "Re-Dicting";
+       ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
+
+       if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+           indexMonitorUuid = progressUtil.registerNewMonitor();
+           Thread subThread = new Thread(){
+               @Override
+               public void run(){
+                   indexer.createDictionary(progressMonitorController.getMonitor(indexMonitorUuid));
+               }
+           };
+           if(priority == null) {
+               priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+           }
+           subThread.setPriority(priority);
+           subThread.start();
+       }
+       // send redirect "see other"
+       return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
+   }
 
     /**
      * This will wipe out the index.
@@ -125,6 +167,7 @@ public class ManagementController
     @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
     public ModelAndView doPurge(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -140,6 +183,10 @@ public class ManagementController
                     indexer.purge(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
 

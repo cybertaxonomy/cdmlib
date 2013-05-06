@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -232,7 +233,7 @@ public class EditGeoServiceUtilities {
 			return "";
 		}
 
-		Set<Distribution> filteredDistributions = DescriptionUtility.preferComputed(distributions);
+		Collection<Distribution> filteredDistributions = DescriptionUtility.preferComputed(distributions);
 
 		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
@@ -345,7 +346,7 @@ public class EditGeoServiceUtilities {
 	 * @param layerMap see {@link #addAreaToLayerMap(Map, List, Distribution, NamedArea, IGeoServiceAreaMapping)}
 	 * @param statusList
 	 */
-	private static void groupStylesAndLayers(Set<Distribution> distributions,
+	private static void groupStylesAndLayers(Collection<Distribution> distributions,
 			Map<String, Map<Integer,Set<Distribution>>> layerMap,
 			List<PresenceAbsenceTermBase<?>> statusList,
 			IGeoServiceAreaMapping mapping) {

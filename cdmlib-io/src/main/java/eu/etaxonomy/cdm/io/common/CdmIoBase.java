@@ -145,9 +145,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
      */
     protected abstract void doInvoke(STATE state);
 
-
     @Autowired
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     /**
      * flush the current session
@@ -288,7 +287,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     @Override
     public void updateProgress(STATE state, String message) {
         updateProgress(state, message, 1);
-    };
+    }
 
     @Override
     public void updateProgress(STATE state, String message, int worked) {

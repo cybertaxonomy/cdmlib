@@ -48,12 +48,12 @@ public class SearchResultBuilder implements ISearchResultBuilder {
     /**
      * fragmentNumber - max number of sentence fragments to return
      */
-    private int fragmentNumber = 5;
+    private final int fragmentNumber = 5;
     /**
      * fragmentSize - the max number of characters for each fragment
      */
-    private int fragmentSize = 100;
-    private LuceneSearch luceneSearch;
+    private final int fragmentSize = 100;
+    private final LuceneSearch luceneSearch;
 
     /**
      * Use this constructor if you do not wish to retrieve highlighted terms found in the best sections of a text.
@@ -82,6 +82,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      * This slows down the query immense or throws TooManyClauses exceptions if
      * too many terms match the wildcard.
      */
+    @Override
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
                 String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
 
@@ -126,6 +127,60 @@ public class SearchResultBuilder implements ISearchResultBuilder {
                 searchResult.setEntity(entity);
             }
 
+            // add highlight fragments
+            if(highlighter != null){
+                Map<String, String[]> fieldFragmentMap = null;
+                for(Document doc: searchResult.getDocs()){
+                    fieldFragmentMap = merge(fieldFragmentMap, highlighter.getFragmentsWithHighlightedTerms(luceneSearch.getAnalyzer(), query, highlightFields, doc, fragmentNumber, fragmentSize));
+                }
+                searchResult.setFieldHighlightMap(fieldFragmentMap);
+            }
+
+            // finally add the final result to the list
+            searchResults.add(searchResult);
+        }
+
+        return searchResults;
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocs,
+                String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException {
+
+        List<SearchResult<T>> searchResults = new ArrayList<SearchResult<T>>();
+
+        if(topDocs == null){
+            return searchResults;
+        }
+
+        SearchResultHighligther highlighter = null;
+        if(highlightFields  != null && highlightFields.length > 0){
+            highlighter = new SearchResultHighligther();
+        }
+
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+
+        	String cdmEntityId = null;
+        	SearchResult<T> searchResult = new SearchResult<T>();
+
+        	Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
+        	searchResult.addDoc(document);
+
+        	if(cdmEntityId == null){                    
+        		cdmEntityId = findId(idFields, document);
+        	}
+
+        	//TODO use findByUuid(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths)
+        	//      instead or even better a similar findById(List<Integer> ids) however this is not yet implemented
+        	if(cdmEntityId != null){
+        		T entity = dao.load(Integer.valueOf(cdmEntityId), propertyPaths);
+        		searchResult.setEntity(entity);
+        	}
+        	searchResult.setScore(scoreDoc.score);
+        	searchResult.setMaxScore(scoreDoc.score);
             // add highlight fragments
             if(highlighter != null){
                 Map<String, String[]> fieldFragmentMap = null;

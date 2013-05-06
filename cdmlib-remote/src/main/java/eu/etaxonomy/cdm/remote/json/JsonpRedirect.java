@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.json;
 
-import java.net.URL;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**

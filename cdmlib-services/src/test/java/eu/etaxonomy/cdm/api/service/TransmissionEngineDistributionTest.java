@@ -25,6 +25,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
+import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -149,7 +150,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                }
             );
 
-        engine.accumulate(superAreas, lowerRank, upperRank, null, null);
+        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -186,7 +187,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(1, lapsana_communis_alpina.getDescriptions().size());
 
-        engine.accumulate(superAreas, lowerRank, upperRank, classification, null);
+        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, classification, null);
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -221,7 +222,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
                }
             );
 
-        engine.accumulate(superAreas, lowerRank, upperRank, null, null);
+        engine.accumulate(AggregationMode.byAreasAndRanks, superAreas, lowerRank, upperRank, null, null);
 
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         assertEquals(2, lapsana_communis.getDescriptions().size());
@@ -265,6 +266,8 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
              description.addElement(distribution);
         }
         taxonService.saveOrUpdate(taxon);
+        // need to write to database for transmission engine
+        commitAndStartNewTransaction(null);
     }
 
 

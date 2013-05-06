@@ -310,19 +310,33 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      *            given monitor. Accepts null, indicating that no progress
      *            should be reported and that the operation cannot be cancelled.
      */
-    public void accumulate(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank, Classification classification,
-            IProgressMonitor monitor) {
+    public void accumulate(AggregationMode mode, List<NamedArea> superAreas, Rank lowerRank, Rank upperRank,
+            Classification classification, IProgressMonitor monitor) {
 
-        if(monitor == null){
+        if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
 
-        logger.info("Hibernate JDBC Batch size: " + ((SessionFactoryImplementor)getSession().getSessionFactory()).getSettings().getJdbcBatchSize()); // . Configuration().getProperty("hibernate.jdbc.batch_size");
+        logger.info("Hibernate JDBC Batch size: "
+                + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
 
-        monitor.beginTask("Accumulating distributions", 400);
+        int workTicks = mode.equals(AggregationMode.byAreasAndRanks) ? 400 : 200;
+        monitor.beginTask("Accumulating distributions", workTicks + 1 );
 
-        accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200));
-        accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200));
+
+        monitor.subTask("updating Priorities");
+        updatePriorities();
+        monitor.worked(1);
+        monitor.setTaskName("Accumulating distributions");
+
+        if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
+            accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
+                    mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks));
+        }
+        if (mode.equals(AggregationMode.byRanks) || mode.equals(AggregationMode.byAreasAndRanks)) {
+            accumulateByRank(lowerRank, upperRank, classification, new SubProgressMonitor(monitor, 200),
+                    mode.equals(AggregationMode.byRanks));
+        }
     }
 
     /**
@@ -348,7 +362,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      * @param classification
      *      limit the accumulation process to a specific classification (not yet implemented)
      */
-    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor) {
+    protected void accumulateByArea(List<NamedArea> superAreas, Classification classification,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
 
         int batchSize = 1000;
 
@@ -393,7 +407,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 }
 
                 Taxon taxon = (Taxon)taxonBase;
-                TaxonDescription description = findComputedDescription(taxon, true);
+                TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                 List<Distribution> distributions = distributionsFor(taxon);
 
                 // Step through superAreas for accumulation of subAreas
@@ -466,7 +480,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
     *    this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
     *</ul>
     */
-    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor) {
+    protected void accumulateByRank(Rank lowerRank, Rank upperRank, Classification classification,  IProgressMonitor subMonitor, boolean doClearDescriptions) {
 
         int batchSize = 500;
 
@@ -558,7 +572,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                     }
 
                     if(accumulatedStatusMap.size() > 0) {
-                        TaxonDescription description = findComputedDescription(taxon, false);
+                        TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                         for (NamedArea area : accumulatedStatusMap.keySet()) {
                             // store new distribution element in new Description
                             Distribution newDistribitionElement = Distribution.NewInstance(area, accumulatedStatusMap.get(area));
@@ -616,13 +630,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         TransactionDefinition txDef = defaultTxDef;
 
         // Log some transaction-related debug information.
-        if (logger.isDebugEnabled()) {
-            logger.debug("Transaction name = " + txDef.getName());
-            logger.debug("Transaction facets:");
-            logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
-            logger.debug("Isolation level = " + txDef.getIsolationLevel());
-            logger.debug("Timeout = " + txDef.getTimeout());
-            logger.debug("Read Only = " + txDef.isReadOnly());
+        if (logger.isTraceEnabled()) {
+            logger.trace("Transaction name = " + txDef.getName());
+            logger.trace("Transaction facets:");
+            logger.trace("Propagation behavior = " + txDef.getPropagationBehavior());
+            logger.trace("Isolation level = " + txDef.getIsolationLevel());
+            logger.trace("Timeout = " + txDef.getTimeout());
+            logger.trace("Read Only = " + txDef.isReadOnly());
             // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
@@ -730,8 +744,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     /**
      * Sets the priorities for presence and absence terms, the priorities are stored in extensions.
-     * This method must be called in a transactional context and the transaction should be committed after
-     * running this method.
+     * This method will start a new transaction and commits it after the work is done.
      */
     public void updatePriorities() {
 
@@ -785,5 +798,12 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         }
 
         commitTransaction(txStatus);
+    }
+
+    public enum AggregationMode {
+        byAreas,
+        byRanks,
+        byAreasAndRanks
+
     }
 }

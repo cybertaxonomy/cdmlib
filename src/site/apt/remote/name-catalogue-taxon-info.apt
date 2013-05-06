@@ -45,7 +45,11 @@
 							
 				* <<<rank>>> : rank of taxon.
 				
+				* <<<source>>> : information related to the source of the taxonomic data.		
+				
 				* <<<taxonStatus>>> : taxonomic status of taxon.
+				
+				* <<<taxonomicScrutiny>>> : information relating to taxonomic scrutiny.				
 								
 				* <<<title>>> : complete scientific name of taxon.
 															
@@ -54,13 +58,13 @@
 			
 				* <<<name>>> : complete scientific name of related taxon.				
 				
-				* <<<rank>>> : rank of related taxon.									
+				* <<<rank>>> : rank of related taxon.										
 				
 				* <<<relationshipType>>> : type of relationship the requested taxon has with the related taxon.
 					
 				* <<<sourceUrl>>> : stable url which represents the related taxon.
 					
-				* <<<taxonStatus>>> : taxonomic status of related taxon.
+				* <<<taxonStatus>>> : taxonomic status of related taxon.				
 				
 				* <<<taxonUuid>>> : uuid of related taxon.
 				
@@ -99,48 +103,16 @@
 										
 ---
 
-[{
-    "request": {
-        "taxonUuid": "f50e5d94-fa75-45a7-905e-091c1cfb3fa8"
-    },
-    "response": {
-        "relatedTaxa": [],
-        "taxon": {
-            "classification": {
-                "Kingdom": "Animalia",
-                "Phylum": "Chordata",
-                "Class": "Aves",
-                "Order": "Ciconiiformes",
-                "Family": "Threskiornithidae",
-                "Genus": "Platalea",
-                "Species": "Platalea leucorodia Linnaeus, 1758"
-            },
-            "flags": {
-                "doubtful": "false"
-            },
-            "name": "Platalea leucorodia Linnaeus, 1758",
-            "rank": "Species",
-            "taxonStatus": "accepted",
-            "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
-        }
-    }
-}]
+[
 
----		
-
-		* Single taxon uuid request with all possible classifications : {taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8&classification=all} [{{{CDM_Taxonomic_Taxon_Information_API}back}}]
-										
----
-
-[{
-    "request": {
-        "taxonUuid": "f50e5d94-fa75-45a7-905e-091c1cfb3fa8"
-    },
-    "response": {
-        "relatedTaxa": [],
-        "taxon": {
-            "classification": {
-                "CatalogueOfLife": {
+    {
+        "request": {
+            "taxonUuid": "ee6880b3-64f0-472f-b089-40f518d30888"
+        },
+        "response": {
+            "relatedTaxa": [ ],
+            "taxon": {
+                "classification": {
                     "Kingdom": "Animalia",
                     "Phylum": "Chordata",
                     "Class": "Aves",
@@ -148,18 +120,76 @@
                     "Family": "Threskiornithidae",
                     "Genus": "Platalea",
                     "Species": "Platalea leucorodia Linnaeus, 1758"
-                }
-            },
-            "flags": {
-                "doubtful": "false"
-            },
-            "name": "Platalea leucorodia Linnaeus, 1758",
-            "rank": "Species",
-            "taxonStatus": "accepted",
-            "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+                },
+                "flags": {
+                    "doubtful": "false"
+                },
+                "name": "Platalea leucorodia Linnaeus, 1758",
+                "rank": "Species",
+                "source": {
+                    "datasetID": "",
+                    "datasetName": "",
+                    "url": ""
+                },
+                "taxonStatus": "accepted",
+                "taxonomicScrutiny": {
+                    "accordingTo": "ITIS Global in Species 2000 & ITIS Catalogue of Life: 24th September 2012",
+                    "modified": "29-09-2012"
+                },
+                "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 24th September 2012"
+            }
         }
     }
-}]
+
+]
+
+---		
+
+		* Single taxon uuid request with all possible classifications : {taxonUuid=f50e5d94-fa75-45a7-905e-091c1cfb3fa8&classification=all} [{{{CDM_Taxonomic_Taxon_Information_API}back}}]
+										
+---
+
+[
+
+    {
+        "request": {
+            "taxonUuid": "ee6880b3-64f0-472f-b089-40f518d30888"
+        },
+        "response": {
+            "relatedTaxa": [ ],
+            "taxon": {
+                "classification": {
+                    "CatalogueOfLife": {
+                        "Kingdom": "Animalia",
+                        "Phylum": "Chordata",
+                        "Class": "Aves",
+                        "Order": "Ciconiiformes",
+                        "Family": "Threskiornithidae",
+                        "Genus": "Platalea",
+                        "Species": "Platalea leucorodia Linnaeus, 1758"
+                    }
+                },
+                "flags": {
+                    "doubtful": "false"
+                },
+                "name": "Platalea leucorodia Linnaeus, 1758",
+                "rank": "Species",
+                "source": {
+                    "datasetID": "",
+                    "datasetName": "",
+                    "url": ""
+                },
+                "taxonStatus": "accepted",
+                "taxonomicScrutiny": {
+                    "accordingTo": "ITIS Global in Species 2000 & ITIS Catalogue of Life: 24th September 2012",
+                    "modified": "29-09-2012"
+                },
+                "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 24th September 2012"
+            }
+        }
+    }
+
+]
 
 ---		
 
@@ -167,57 +197,90 @@
 										
 ---
 
-[{
-    "request": {
-        "taxonUuid": "f50e5d94-fa75-45a7-905e-091c1cfb3fa8"
+[
+
+    {
+        "request": {
+            "taxonUuid": "ee6880b3-64f0-472f-b089-40f518d30888"
+        },
+        "response": {
+            "relatedTaxa": [ ],
+            "taxon": {
+                "classification": {
+                    "Kingdom": "Animalia",
+                    "Phylum": "Chordata",
+                    "Class": "Aves",
+                    "Order": "Ciconiiformes",
+                    "Family": "Threskiornithidae",
+                    "Genus": "Platalea",
+                    "Species": "Platalea leucorodia Linnaeus, 1758"
+                },
+                "flags": {
+                    "doubtful": "false"
+                },
+                "name": "Platalea leucorodia Linnaeus, 1758",
+                "rank": "Species",
+                "source": {
+                    "datasetID": "",
+                    "datasetName": "",
+                    "url": ""
+                },
+                "taxonStatus": "accepted",
+                "taxonomicScrutiny": {
+                    "accordingTo": "ITIS Global in Species 2000 & ITIS Catalogue of Life: 24th September 2012",
+                    "modified": "29-09-2012"
+                },
+                "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 24th September 2012"
+            }
+        }
     },
-    "response": {
-        "relatedTaxa": [],
-        "taxon": {
-            "classification": {
-                "Kingdom": "Animalia",
-                "Phylum": "Chordata",
-                "Class": "Aves",
-                "Order": "Ciconiiformes",
-                "Family": "Threskiornithidae",
-                "Genus": "Platalea",
-                "Species": "Platalea leucorodia Linnaeus, 1758"
-            },
-            "flags": {
-                "doubtful": "false"
-            },
-            "name": "Platalea leucorodia Linnaeus, 1758",
-            "rank": "Species",
-            "taxonStatus": "accepted",
-            "title": "Platalea leucorodia Linnaeus, 1758 sec. ITIS Global in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
+    {
+        "request": {
+            "taxonUuid": "443020ef-9a11-40e1-8099-04352db08583"
+        },
+        "response": {
+            "relatedTaxa": [
+                {
+                    "name": "Caesalpinia spinosa (Molina) untze",
+                    "rank": "Species",
+                    "relationshipType": "synonym of",
+                    "source": {
+                        "datasetID": "",
+                        "datasetName": "",
+                        "url": ""
+                    },
+                    "taxonStatus": "accepted",
+                    "taxonUuid": "194834a1-4367-4ac2-93fe-327b15e05229",
+                    "taxonomicScrutiny": {
+                        "accordingTo": "ILDIS in Species 2000 & ITIS Catalogue of Life: 24th September 2012",
+                        "modified": "29-09-2012"
+                    },
+                    "title": "Caesalpinia spinosa (Molina) untze sec. ILDIS in Species 2000 & ITIS Catalogue of Life: 24th September 2012"
+                }
+            ],
+            "taxon": {
+                "classification": { },
+                "flags": {
+                    "doubtful": "false"
+                },
+                "name": "Tara spinosa (Molina) ritton & Rose",
+                "rank": "Species",
+                "source": {
+                    "datasetID": "",
+                    "datasetName": "",
+                    "url": ""
+                },
+                "taxonStatus": "synonym",
+                "taxonomicScrutiny": {
+                    "accordingTo": "ILDIS in Species 2000 & ITIS Catalogue of Life: 24th September 2012",
+                    "modified": "29-09-2012"
+                },
+                "title": "Tara spinosa (Molina) ritton & Rose sec. ILDIS in Species 2000 & ITIS Catalogue of Life: 24th September 2012"
+            }
         }
     }
-}, {
-    "request": {
-        "taxonUuid": "d2afbe0b-9e14-44d6-acbd-d3fd2e426bfe"
-    },
-    "response": {
-        "relatedTaxa": [{
-            "name": "Caesalpinia spinosa (Molina) untze",
-            "rank": "Species",
-            "relationshipType": "synonym of",
-            "sourceUrl": "",
-            "taxonStatus": "accepted",
-            "taxonUuid": "b1f44778-45bb-4537-8eb5-d2bd8ce698aa",
-            "title": "Caesalpinia spinosa (Molina) untze sec. ILDIS in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
-        }],
-        "taxon": {
-            "classification": {},
-            "flags": {
-                "doubtful": "false"
-            },
-            "name": "Tara spinosa (Molina) ritton & Rose",
-            "rank": "Species",
-            "taxonStatus": "synonym",
-            "title": "Tara spinosa (Molina) ritton & Rose sec. ILDIS in Species 2000 & ITIS Catalogue of Life: 30th May 2012"
-        }
-    }
-}]
+
+]
 
 ---					
 			

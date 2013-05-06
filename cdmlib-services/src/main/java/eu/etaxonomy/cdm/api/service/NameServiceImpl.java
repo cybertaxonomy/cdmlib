@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.regex.RegexQuery;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,9 +40,16 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
+import eu.etaxonomy.cdm.api.service.search.QueryFactory;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -65,6 +82,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 @Service
@@ -536,6 +554,96 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return results;
     }
 
+    
+    protected LuceneSearch prepareFindByFuzzySearch(Class<? extends CdmBase> clazz, 
+    		NonViralName nvn,
+    		float accuracy,
+    		List<Language> languages,
+            boolean highlightFragments) {
+        BooleanQuery finalQuery = new BooleanQuery();
+        BooleanQuery textQuery = new BooleanQuery();
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        luceneSearch.setSortFields(sortFields);
+
+        // ---- search criteria
+        luceneSearch.setClazz(clazz);
+        String similarity = Float.toString(accuracy);
+        if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {        	
+        	textQuery.add(queryFactory.newTermQuery("genusOrUninomial", nvn.getGenusOrUninomial() + "~" + similarity), Occur.SHOULD);
+        } else {
+        	textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
+        }
+        
+        if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
+        	textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", nvn.getInfraGenericEpithet() + "~" + similarity), Occur.SHOULD);
+        } else {
+        	textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+        }
+        
+        if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
+        	textQuery.add(queryFactory.newTermQuery("specificEpithet", nvn.getSpecificEpithet() + "~" + similarity), Occur.SHOULD);
+        } else {
+        	textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+        }
+        
+        if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
+        	textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", nvn.getInfraSpecificEpithet() + "~" + similarity), Occur.SHOULD);
+        } else {
+        	textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+        }
+        
+        if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
+        	textQuery.add(queryFactory.newTermQuery("authorshipCache", nvn.getAuthorshipCache() + "~" + similarity), Occur.SHOULD);
+        } else {
+        	textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
+        }
+        
+        finalQuery.add(textQuery, Occur.MUST);
+
+        luceneSearch.setQuery(finalQuery);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
+    }
+    
+    public List<SearchResult<TaxonNameBase>> findByNameFuzzySearch(
+            String name,
+            float accuracy,
+            List<Language> languages,
+            boolean highlightFragments, 
+            List<String> propertyPaths,
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+
+    	logger.info("Name to fuzzy search for : " + name);
+    	// parse the input name
+    	NonViralNameParserImpl parser = new NonViralNameParserImpl();
+    	NonViralName nvn = parser.parseFullName(name);
+    	if(name != null && !name.equals("") && nvn == null) {
+    		throw new ParseException("Could not parse name " + name);
+    	}
+        LuceneSearch luceneSearch = prepareFindByFuzzySearch(null, nvn, accuracy, languages, highlightFragments);
+
+        // --- execute search        
+        TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.NONVIRALNAME, "id");
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        
+        @SuppressWarnings("rawtypes")
+        List<SearchResult<TaxonNameBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocs, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
+
+        return searchResults;
+
+    }
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#pageNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */

@@ -17,10 +17,9 @@ import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
+import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-
-import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
@@ -56,6 +55,7 @@ import sun.security.provider.PolicyParser.ParsingException;
  *
  *
  * @author k.luther
+ * @author Andreas Kohlbecker
  */
 public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGrantedAuthorityConverter {
 
@@ -120,7 +120,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     public EnumSet<CRUD> getOperation(){
         return operation;
     }
-    
+
     public void setOperation(EnumSet<CRUD> operation) {
     	this.operation = operation;
     }

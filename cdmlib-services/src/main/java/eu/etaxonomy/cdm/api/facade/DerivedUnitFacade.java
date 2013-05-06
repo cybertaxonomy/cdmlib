@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -913,11 +912,14 @@ public class DerivedUnitFacade {
 	 *         {@link java.util.Collection#add(Object) Collection.add(E e)}
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private boolean addMedia(Media media, SpecimenOrObservationBase<?> specimen)
-			throws DerivedUnitFacadeNotSupportedException {
+	private boolean addMedia(Media media, SpecimenOrObservationBase<?> specimen) throws DerivedUnitFacadeNotSupportedException {
 		if (media != null) {
-			List<Media> mediaList = getMedia(specimen, true);
-			return mediaList.add(media);
+			List<Media> mediaList = getMediaList(specimen, true);
+			if (! mediaList.contains(media)){
+				return mediaList.add(media);
+			}else{
+				return true;
+			}
 		} else {
 			return false;
 		}
@@ -936,12 +938,11 @@ public class DerivedUnitFacade {
 	private boolean removeMedia(Media media,
 			SpecimenOrObservationBase<?> specimen)
 			throws DerivedUnitFacadeNotSupportedException {
-		List<Media> mediaList = getMedia(specimen, true);
+		List<Media> mediaList = getMediaList(specimen, true);
 		return mediaList == null ? null : mediaList.remove(media);
 	}
 
-	private List<Media> getMedia(SpecimenOrObservationBase<?> specimen,
-			boolean createIfNotExists)
+	private List<Media> getMediaList(SpecimenOrObservationBase<?> specimen, boolean createIfNotExists)
 			throws DerivedUnitFacadeNotSupportedException {
 		TextData textData = getMediaTextData(specimen, createIfNotExists);
 		return textData == null ? null : textData.getMedia();
@@ -1620,7 +1621,7 @@ public class DerivedUnitFacade {
 	@Transient
 	public List<Media> getFieldObjectMedia() {
 		try {
-			List<Media> result = getMedia(getFieldObservation(false), false);
+			List<Media> result = getMediaList(getFieldObservation(false), false);
 			return result == null ? new ArrayList<Media>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
@@ -1938,7 +1939,7 @@ public class DerivedUnitFacade {
 	public List<Media> getDerivedUnitMedia() {
 		testDerivedUnit();
 		try {
-			List<Media> result = getMedia(derivedUnit, false);
+			List<Media> result = getMediaList(derivedUnit, false);
 			return result == null ? new ArrayList<Media>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);

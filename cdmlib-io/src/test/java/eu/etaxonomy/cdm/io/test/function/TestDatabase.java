@@ -174,13 +174,12 @@ public class TestDatabase {
 		taxonomicNames.add(nameRoot2);
 		
         // references
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		sec = refFactory.newBook();
+		sec = ReferenceFactory.newBook();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Plant Speciation", true);
 		references.add(sec);
 		
-		citRef = refFactory.newDatabase();
+		citRef = ReferenceFactory.newDatabase();
 		citRef.setAuthorTeam(linne);
 		citRef.setTitleCache("BioCASE", true);
 		references.add(citRef);

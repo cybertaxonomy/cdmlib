@@ -75,6 +75,19 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		result.putLabel(Language.DEFAULT(), defaultLanguageLabel);
 		return result;
 	}
+
+	/**
+	 * Factory method for a key statement.
+	 * @param language the language of the first representation of the statement. Must not be <code>null</code>.
+	 * @param label the text of statement in the given language.
+	 * @return
+	 */
+	public static KeyStatement NewInstance(Language language, String label){
+		assert language != null : "Language for KeyStatement must not be null";
+		KeyStatement result = new KeyStatement();
+		result.putLabel(language, label);
+		return result;
+	}
 	
 	/**
 	 * 
@@ -288,6 +301,19 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+//********************* toString() *************************************/
+	
+	@Override
+	public String toString(){
+		if (label != null && ! label.isEmpty()){
+			String result = label.values().iterator().next().getText();
+			return result;
+		}else{
+			return super.toString();
+		}
+		
 	}
 
 }

@@ -9,8 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -32,10 +32,10 @@ public class DescriptionUtility {
      * @param descriptionElements
      * @return only the computed description elements other wise all others.
      */
-    public static <T extends DescriptionElementBase> Set<T> preferComputed(Set<T> descriptionElements) {
+    public static <T extends DescriptionElementBase> Collection<T> preferComputed(Collection<T> descriptionElements) {
 
-        Set<T> computedDistributions = new HashSet<T>(descriptionElements.size());
-        Set<T> otherDistributions = new HashSet<T>(descriptionElements.size());
+        Collection<T> computedDistributions = new HashSet<T>(descriptionElements.size());
+        Collection<T> otherDistributions = new HashSet<T>(descriptionElements.size());
         for(T distribution : descriptionElements){
             if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
                 computedDistributions.add(distribution);

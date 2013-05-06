@@ -51,6 +51,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  *
  */
 public class NonViralNameParserImplTest {
+	private static final NomenclaturalCode ICBN = NomenclaturalCode.ICBN;
+
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImplTest.class);
 	
 	final private String strNameFamily = "Asteraceae";
@@ -90,7 +92,7 @@ public class NonViralNameParserImplTest {
 	@Before
 	public void setUp() throws Exception {
 		parser = NonViralNameParserImpl.NewInstance();
-		botanicCode = NomenclaturalCode.ICBN;
+		botanicCode = ICBN;
 	}
 
 
@@ -149,16 +151,16 @@ public class NonViralNameParserImplTest {
 		//Uninomials
 		ZoologicalName milichiidae = (ZoologicalName)parser.parseSimpleName("Milichiidae", NomenclaturalCode.ICZN, null);
 		assertEquals("Family rank expected", Rank.FAMILY(), milichiidae.getRank());
-		BotanicalName crepidinae = (BotanicalName)parser.parseSimpleName("Crepidinae", NomenclaturalCode.ICBN, null);
+		BotanicalName crepidinae = (BotanicalName)parser.parseSimpleName("Crepidinae", ICBN, null);
 		assertEquals("Family rank expected", Rank.SUBTRIBE(), crepidinae.getRank());
-		BotanicalName abies = (BotanicalName)parser.parseSimpleName("Abies", NomenclaturalCode.ICBN, null);
+		BotanicalName abies = (BotanicalName)parser.parseSimpleName("Abies", ICBN, null);
 		assertEquals("Family rank expected", Rank.GENUS(), abies.getRank());
 		
 		abies.addParsingProblem(ParserProblem.CheckRank);
 		parser.parseSimpleName(abies, "Abies", abies.getRank(), true);
 		assertTrue(abies.getParsingProblems().contains(ParserProblem.CheckRank));
 		
-		BotanicalName rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", NomenclaturalCode.ICBN, null);
+		BotanicalName rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", ICBN, null);
 		assertTrue("Rosaceae have rank family", rosa.getRank().equals(Rank.FAMILY()));
 		assertTrue("Rosaceae must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
 		parser.parseSimpleName(rosa, "Rosaceaex", abies.getRank(), true);
@@ -166,7 +168,7 @@ public class NonViralNameParserImplTest {
 		assertTrue("Rosaceaex must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
 	
 		//repeat but remove warning after first parse
-		rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", NomenclaturalCode.ICBN, null);
+		rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", ICBN, null);
 		assertTrue("Rosaceae have rank family", rosa.getRank().equals(Rank.FAMILY()));
 		assertTrue("Rosaceae must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
 		rosa.removeParsingProblem(ParserProblem.CheckRank);
@@ -278,7 +280,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
 		//Autonym
-		BotanicalName autonymName = (BotanicalName)parser.parseFullName("Abies alba Mill. var. alba", NomenclaturalCode.ICBN, null);
+		BotanicalName autonymName = (BotanicalName)parser.parseFullName("Abies alba Mill. var. alba", ICBN, null);
 		assertFalse("Autonym should be parsable", autonymName.hasProblem());
 		
 		
@@ -922,7 +924,7 @@ public class NonViralNameParserImplTest {
 		
 		//volume, edition
 		String strNoSeparator = "Abies alba Mill. Sp. Pl. ed. 3, 4(5): 455. 1987";
-		NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, NomenclaturalCode.ICBN, rankSpecies);
+		NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, ICBN, rankSpecies);
 		assertTrue(nameNoSeparator.hasProblem());
 		list = nameNoSeparator.getParsingProblems();
 		assertTrue("Problem is missing name-reference separator", list.contains(ParserProblem.NameReferenceSeparation));
@@ -1025,65 +1027,68 @@ public class NonViralNameParserImplTest {
 		
 		
 		String testParsable = "Pithecellobium macrostachyum Benth.";
-		assertTrue(isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue(isParsable(testParsable, ICBN));
 
 		testParsable = "Pithecellobium macrostachyum (Benth.)";
-		assertTrue(isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue(isParsable(testParsable, ICBN));
 		
 		testParsable = "Pithecellobium macrostachyum (Benth., 1845)";
 		assertTrue(isParsable(testParsable, NomenclaturalCode.ICZN));
 
 		testParsable = "Pithecellobium macrostachyum L., Sp. Pl. 3: n\u00B0 123. 1753."; //00B0 is degree character
-		assertTrue(isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue(isParsable(testParsable, ICBN));
 		
 		testParsable = "Hieracium lachenalii subsp. acuminatum (Jord.) Zahn in Hegi, Ill. Fl. Mitt.-Eur. 6: 1285. 1929";
-		assertTrue("Reference title should support special characters as separators like - and &", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference title should support special characters as separators like - and &", isParsable(testParsable, ICBN));
 		
 		testParsable = "Hieracium lachenalii subsp. acuminatum (Jord.) Zahn in Hegi, Ill. Fl. Mitt.&Eur. 6: 1285. 1929";
-		assertTrue("Reference title should support special characters as separators like - and &", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference title should support special characters as separators like - and &", isParsable(testParsable, ICBN));
 		
 		testParsable = "Hieracium lachenalii subsp. acuminatum (Jord.) Zahn in Hegi, Ill. Fl. Mitt.-Eur.& 6: 1285. 1929";
-		assertFalse("Reference title should not support special characters like - and & at the end of the title", isParsable(testParsable, NomenclaturalCode.ICBN));
-		assertTrue("Problem must be reference title", getProblems(testParsable, NomenclaturalCode.ICBN).
+		assertFalse("Reference title should not support special characters like - and & at the end of the title", isParsable(testParsable, ICBN));
+		assertTrue("Problem must be reference title", getProblems(testParsable, ICBN).
 				contains(ParserProblem.UnparsableReferenceTitle));
 		
 		testParsable = "Hieracium lachenalii subsp. acuminatum (Jord.) Zahn in Hegi, Ill. Fl. Mitt.:Eur. 6: 1285. 1929";
-		assertFalse("Reference title should not support detail separator", isParsable(testParsable, NomenclaturalCode.ICBN));
-		assertTrue("Problem must be reference title", getProblems(testParsable, NomenclaturalCode.ICBN).
+		assertFalse("Reference title should not support detail separator", isParsable(testParsable, ICBN));
+		assertTrue("Problem must be reference title", getProblems(testParsable, ICBN).
 				contains(ParserProblem.UnparsableReferenceTitle));
 
 		testParsable = "Hieracium lachenalii subsp. acuminatum (Jord.) Zahn in Hegi, Ill. Fl. (Mitt.) 6: 1285. 1929";
-		assertTrue("Reference title should support brackets", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference title should support brackets", isParsable(testParsable, ICBN));
 
 		testParsable = "Hieracium lachenalii subsp. acuminatum (Jord.) Zahn in Hegi, Ill. Fl. (Mitt.) 6: 1285. 1929";
-		assertTrue("Reference title should support brackets", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference title should support brackets", isParsable(testParsable, ICBN));
 		
 		testParsable = "Hieracium lachenalii Zahn, nom. illeg.";
-		assertTrue("Reference should not be obligatory if a nom status exist", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference should not be obligatory if a nom status exist", isParsable(testParsable, ICBN));
 	
 		testParsable = "Hieracium lachenalii, nom. illeg.";
-		assertTrue("Authorship should not be obligatory if followed by nom status", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Authorship should not be obligatory if followed by nom status", isParsable(testParsable, ICBN));
 
 		testParsable = "Hieracium lachenalii, Ill. Fl. (Mitt.) 6: 1285. 1929";
-		assertFalse("Author is obligatory if followed by reference", isParsable(testParsable, NomenclaturalCode.ICBN));
-		assertTrue("Problem must be name-reference separation", getProblems(testParsable, NomenclaturalCode.ICBN).
+		assertFalse("Author is obligatory if followed by reference", isParsable(testParsable, ICBN));
+		assertTrue("Problem must be name-reference separation", getProblems(testParsable, ICBN).
 				contains(ParserProblem.NameReferenceSeparation));
 
 		testParsable = "Hieracium lachenalii in Hegi, Ill. Fl. (Mitt.) 6: 1285. 1929";
-		assertFalse("Author is obligatory if followed by reference", isParsable(testParsable, NomenclaturalCode.ICBN));
-		assertTrue("Problem must be name-reference separation", getProblems(testParsable, NomenclaturalCode.ICBN).
+		assertFalse("Author is obligatory if followed by reference", isParsable(testParsable, ICBN));
+		assertTrue("Problem must be name-reference separation", getProblems(testParsable, ICBN).
 				contains(ParserProblem.NameReferenceSeparation));
 		
 		testParsable = "Abies alba Mill. var. alba";
-		assertTrue("Autonym problem", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Autonym problem", isParsable(testParsable, ICBN));
+		
+		testParsable = "Scleroblitum abc Ulbr. in Engler & Prantl, Nat. Pflanzenfam., ed. 2, 16c: 495. 1934.";
+		assertTrue("Volume with subdivision", isParsable(testParsable, ICBN));
 
 		
 		testParsable = "Hieracium antarcticum d'Urv. in M\u00E9m. Soc. Linn. Paris 4: 608. 1826";
 //		testParsable = "Hieracium antarcticum Urv. in M\u00E9m. Soc. Linn. Paris 4: 608. 1826";
-		assertTrue("Name with apostrophe is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Name with apostrophe is not parsable", isParsable(testParsable, ICBN));
 
 		testParsable = "Cichorium intybus subsp. glaucum (Hoffmanns. & Link) Tzvelev in Komarov, Fl. SSSR 29: 17. 1964";
-		assertTrue("Reference containing a word in uppercase is not parsable", isParsable(testParsable, NomenclaturalCode.ICBN));
+		assertTrue("Reference containing a word in uppercase is not parsable", isParsable(testParsable, ICBN));
 	}
 	
 	
@@ -1140,7 +1145,7 @@ public class NonViralNameParserImplTest {
 		Assert.assertEquals("If this line reached everything should be ok", "Milichiidae", nvn.getGenusOrUninomial());
 		
 		String anotherExample = "Scorzonera hispanica var. brevifolia Boiss. & Balansa in Boissier, Diagn. Pl. Orient., ser. 2 6: 119. 1859.";
-		nvn = this.parser.parseReferencedName(anotherExample, NomenclaturalCode.ICBN, null);
+		nvn = this.parser.parseReferencedName(anotherExample, ICBN, null);
 		parsingProblem = nvn.getParsingProblem();
 		Assert.assertEquals("Problem should be 0", 0, parsingProblem);
 		Assert.assertEquals("Titlecache", "Scorzonera hispanica var. brevifolia Boiss. & Balansa", nvn.getTitleCache());
@@ -1148,7 +1153,7 @@ public class NonViralNameParserImplTest {
 		
 		String unparsable = "Taraxacum nevskii L., Trudy Bot. Inst. Nauk S.S.S.R., Ser. 1, Fl. Sist. Vyssh. Rast. 4: 293. 1937.";
 		String unparsableA = "Taraxacum nevskii L. in Trudy Bot. Inst. Nauk: 293. 1937.";
-		nvn = this.parser.parseReferencedName(unparsable, NomenclaturalCode.ICBN, null);
+		nvn = this.parser.parseReferencedName(unparsable, ICBN, null);
 		Assert.assertEquals("Titlecache", "Taraxacum nevskii L.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Taraxacum", nvn.getGenusOrUninomial());
 		parsingProblem = nvn.getParsingProblem();
@@ -1156,7 +1161,7 @@ public class NonViralNameParserImplTest {
 		
 		String unparsable2 = "Hieracium pxxx Dahlst., Kongl. Svenska Vetensk. Acad. Handl. ser. 2, 26(3): 255. 1894";
 		String unparsable2A = "Hieracium pxxx Dahlst., Kongl Svenska Vetensk Acad Handl, 26: 255. 1894.";
-		nvn = this.parser.parseReferencedName(unparsable2, NomenclaturalCode.ICBN, null);
+		nvn = this.parser.parseReferencedName(unparsable2, ICBN, null);
 		Assert.assertEquals("Titlecache", "Hieracium pxxx Dahlst.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Hieracium", nvn.getGenusOrUninomial());
 		parsingProblem = nvn.getParsingProblem();
@@ -1164,7 +1169,7 @@ public class NonViralNameParserImplTest {
 		
 		
 		String again = "Adiantum emarginatum Bory ex. Willd., Species Plantarum, ed. 4,5,1: 449,450. 1810";
-		nvn = this.parser.parseReferencedName(again, NomenclaturalCode.ICBN, null);
+		nvn = this.parser.parseReferencedName(again, ICBN, null);
 		Assert.assertEquals("Titlecache", "Adiantum emarginatum Bory ex Willd.", nvn.getTitleCache());
 		Assert.assertEquals("If this line reached everything should be ok", "Adiantum", nvn.getGenusOrUninomial());
 		

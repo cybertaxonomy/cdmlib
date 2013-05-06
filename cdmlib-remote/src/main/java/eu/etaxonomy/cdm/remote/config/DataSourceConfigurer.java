@@ -206,9 +206,9 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         try {
             jndiFactory.afterPropertiesSet();
         } catch (IllegalArgumentException e) {
-            logger.error(e);
+            logger.error(e, e);
         } catch (NamingException e) {
-            logger.error(e);
+            logger.error(e, e);
         }
         Object obj = jndiFactory.getObject();
         return (DataSource)obj;

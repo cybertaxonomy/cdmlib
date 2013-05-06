@@ -9,9 +9,12 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
+import java.util.Map;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.LuceneOptions;
+import org.hibernate.search.bridge.ParameterizedBridge;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -21,11 +24,18 @@ import eu.etaxonomy.cdm.model.common.Representation;
  * @date Jun 4, 2012
  *
  */
-public class DefinedTermBaseClassBridge extends AbstractClassBridge {
+public class DefinedTermBaseClassBridge extends AbstractClassBridge implements ParameterizedBridge {
+
+    /**
+     *
+     */
+    private static final String INCLUDE_PARENT_TERMS_KEY = "includeParentTerms";
+    private boolean includeParentTerms = false;
 
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
      */
+    @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
 
         if(value == null){
@@ -57,6 +67,21 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge {
             addRepresentationField(name, representation, "label", representation.getLabel(), document, luceneOptions);
             addRepresentationField(name, representation, "abbreviatedLabel", representation.getAbbreviatedLabel(), document, luceneOptions);
         }
+
+        if(includeParentTerms){
+
+            DefinedTermBase parentTerm = term.getPartOf();
+            while(parentTerm != null){
+                Field setOfParentsField = new Field(name + "setOfParents",
+                        parentTerm.getUuid().toString(),
+                        luceneOptions.getStore(),
+                        luceneOptions.getIndex(),
+                        luceneOptions.getTermVector());
+                document.add(setOfParentsField);
+                parentTerm = parentTerm.getPartOf();
+            }
+
+        }
     }
 
     /**
@@ -86,5 +111,17 @@ public class DefinedTermBaseClassBridge extends AbstractClassBridge {
         allField.setBoost(luceneOptions.getBoost());
         document.add(langField);
     }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.search.bridge.ParameterizedBridge#setParameterValues(java.util.Map)
+     */
+    @Override
+    public void setParameterValues(Map<String, String> parameters) {
+        if(parameters.containsKey(INCLUDE_PARENT_TERMS_KEY)){
+            includeParentTerms = Boolean.parseBoolean(parameters.get(INCLUDE_PARENT_TERMS_KEY));
+        }
+
+    }
+
 
 }

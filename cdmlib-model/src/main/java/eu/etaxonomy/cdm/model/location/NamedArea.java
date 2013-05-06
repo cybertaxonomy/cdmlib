@@ -38,9 +38,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -77,6 +80,9 @@ import eu.etaxonomy.cdm.model.media.Media;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
+@ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
+    @Parameter(name="includeParentTerms", value="true")
+})
 public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private static final long serialVersionUID = 6248434369557403036L;
     @SuppressWarnings("unused")
@@ -116,7 +122,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
-    private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
+    private final Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaType type;
@@ -203,6 +209,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         this.pointApproximation = pointApproximation;
     }
 
+    @Override
     @XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -210,6 +217,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         return super.getKindOf();
     }
 
+    @Override
     public void setKindOf(NamedArea kindOf){
         super.setKindOf(kindOf);
     }
@@ -245,10 +253,12 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         return (NamedArea) area;
     }
 
+    @Override
     public void setPartOf(NamedArea partOf){
         this.partOf = partOf;
     }
 
+    @Override
     @XmlElementWrapper(name = "Generalizations", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlElement(name = "GeneralizationOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlIDREF
@@ -257,10 +267,12 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         return super.getGeneralizationOf();
     }
 
+    @Override
     protected void setGeneralizationOf(Set<NamedArea> value){
         super.setGeneralizationOf(value);
     }
 
+    @Override
     @XmlElementWrapper(name = "Includes", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlElement(name = "Include", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlIDREF
@@ -269,6 +281,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         return super.getIncludes();
     }
 
+    @Override
     protected void setIncludes(Set<NamedArea> includes) {
         super.setIncludes(includes);
     }
@@ -281,7 +294,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
         NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms);
 
-        String levelString = (String)csvLine.get(6);
+        String levelString = csvLine.get(6);
 
         if(levelString != null && levelString.length() != 0) {
             UUID levelUuid = UUID.fromString(levelString);
@@ -289,7 +302,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             newInstance.setLevel(level);
         }
 
-        String partOfString = (String)csvLine.get(7);
+        String partOfString = csvLine.get(7);
 
         if(partOfString != null && partOfString.length() != 0) {
             UUID partOfUuid = UUID.fromString(partOfString);
@@ -377,6 +390,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return null;
         }
 
+        @Override
         public String toString() {
             return toString(false, 0);
         }
@@ -445,6 +459,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return node;
         }
 
+        @Override
         public String toString() {
             return toString(false, 0);
         }
@@ -521,6 +536,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
      */
+    @Override
     public String toString(){
         String result, label, level = "";
 

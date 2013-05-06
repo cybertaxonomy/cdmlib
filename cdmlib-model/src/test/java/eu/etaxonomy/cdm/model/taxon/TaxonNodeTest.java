@@ -74,15 +74,14 @@ public class TaxonNodeTest {
 	@Before
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		taxonomicView1 = Classification.NewInstance(viewName1);
 		taxonomicView2 = Classification.NewInstance("Test View 2");
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
-		ref1 = refFactory.newJournal();
-		ref2 = refFactory.newBook();
-		ref3 = refFactory.newGeneric();
+		ref1 = ReferenceFactory.newJournal();
+		ref2 = ReferenceFactory.newBook();
+		ref3 = ReferenceFactory.newGeneric();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
 		taxon2 = Taxon.NewInstance(taxonName2, ref1);
 		taxon3 = Taxon.NewInstance(taxonName3, ref3);

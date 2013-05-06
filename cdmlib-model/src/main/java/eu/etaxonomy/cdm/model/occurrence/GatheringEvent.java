@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.NumericField;
 import org.hibernate.validator.constraints.Length;
 import org.joda.time.Partial;
 
@@ -46,7 +47,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The event when gathering a specimen or recording a field observation only
@@ -80,6 +80,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	private LanguageString locality;
 
 	@XmlElement(name = "ExactLocation")
+	@IndexedEmbedded
 	private Point exactLocation;
 
 
@@ -88,6 +89,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@IndexedEmbedded
 	private NamedArea country;
 
     @XmlElementWrapper(name = "CollectingAreas")
@@ -108,21 +110,25 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 	// meter above/below sea level of the surface
 	@XmlElement(name = "AbsoluteElevation")
-	@Field(analyze = Analyze.NO)
+	@Field
+	@NumericField
 	private Integer absoluteElevation;
 
 	@XmlElement(name = "AbsoluteElevationError")
 	@Field(analyze = Analyze.NO)
+	@NumericField
 	private Integer absoluteElevationError;
 
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
 	@XmlElement(name = "DistanceToGround")
 	@Field(analyze = Analyze.NO)
+	@NumericField
 	private Integer distanceToGround;
 
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
 	@XmlElement(name = "DistanceToWaterSurface")
 	@Field(analyze = Analyze.NO)
+	@NumericField
 	private Integer distanceToWaterSurface;
 
 	/**

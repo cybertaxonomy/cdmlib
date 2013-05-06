@@ -117,8 +117,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         //TODO
         if (this.sourceReference == null){
             logger.warn("getSource Reference not yet fully implemented");
-            ReferenceFactory refFactory = ReferenceFactory.newInstance();
-            sourceReference = refFactory.newDatabase();
+            sourceReference = ReferenceFactory.newDatabase();
             sourceReference.setTitleCache("ABCD specimen import", true);
         }
         return sourceReference;

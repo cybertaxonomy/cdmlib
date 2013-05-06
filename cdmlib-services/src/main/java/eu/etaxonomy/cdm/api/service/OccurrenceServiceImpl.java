@@ -10,16 +10,24 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.SortField;
+import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -27,10 +35,18 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
+import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
+import eu.etaxonomy.cdm.api.service.search.QueryFactory;
+import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -279,6 +295,74 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
 
+    }
+
+    @Override
+    public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
+            Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle boundingBox, List<Language> languages,
+            boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+
+        LuceneSearch luceneSearch = prepareByFullTextSearch(clazz, queryString, boundingBox, languages, highlightFragments);
+
+        // --- execute search
+        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.SPECIMEN_OR_OBSERVATIONBASE, "id");
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        @SuppressWarnings("rawtypes")
+        List<SearchResult<SpecimenOrObservationBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
+
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+
+        return new DefaultPagerImpl<SearchResult<SpecimenOrObservationBase>>(pageNumber, totalHits, pageSize,
+                searchResults);
+
+    }
+
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param languages
+     * @param highlightFragments
+     * @return
+     */
+    private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle bbox,
+            List<Language> languages, boolean highlightFragments) {
+
+        BooleanQuery finalQuery = new BooleanQuery();
+        BooleanQuery textQuery = new BooleanQuery();
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), FieldObservation.class);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        // --- criteria
+        luceneSearch.setClazz(clazz);
+        if(queryString != null){
+            textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+            finalQuery.add(textQuery, Occur.MUST);
+        }
+
+        // --- spacial query
+        if(bbox != null){
+            finalQuery.add(QueryFactory.buildSpatialQueryByRange(bbox, "gatheringEvent.exactLocation.point"), Occur.MUST);
+        }
+
+        luceneSearch.setQuery(finalQuery);
+
+        // --- sorting
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false)};
+        luceneSearch.setSortFields(sortFields);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
     }
 
 }

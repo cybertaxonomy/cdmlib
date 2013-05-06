@@ -28,7 +28,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
@@ -51,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -1472,7 +1472,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), DescriptionElementBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.STRING, false)};

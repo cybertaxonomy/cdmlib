@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -60,8 +59,7 @@ public class TestService {
 
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	private static CdmApplicationController appCtr;
-	ReferenceFactory refFactory = ReferenceFactory.newInstance();
-
+	
 	public void testAppController() {
 		logger.info("Create name objects...");
 		NonViralName<?> nvn = NonViralName.NewInstance(Rank.SPECIES());
@@ -71,7 +69,7 @@ public class TestService {
 
 		logger.info("Create reference objects...");
 
-		Reference sec = refFactory.newJournal();
+		Reference<?> sec = ReferenceFactory.newJournal();
 		sec.setTitleCache("TestJournal", true);
 
 		logger.info("Create taxon objects...");
@@ -148,7 +146,7 @@ public class TestService {
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		Reference ref = refFactory.newJournal();
+		Reference<?> ref = ReferenceFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
 		logger.info("Save taxon ...");
@@ -186,7 +184,7 @@ public class TestService {
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		Reference ref = refFactory.newJournal();
+		Reference<?> ref = ReferenceFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -210,7 +208,7 @@ public class TestService {
 	public void testTransientRank(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(transientRank);
-		Reference ref =  refFactory.newJournal();
+		Reference<?> ref =  ReferenceFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 
 		logger.info("Save taxon ...");

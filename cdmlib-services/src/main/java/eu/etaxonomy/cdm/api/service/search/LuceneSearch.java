@@ -26,6 +26,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
 import org.apache.lucene.search.grouping.TermAllGroupsCollector;
@@ -38,10 +39,11 @@ import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -53,7 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    private static final String GROUP_BY_FIELD = GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD;
+    private String groupByField = "id";
 
     public final static String ID_FIELD = "id";
 
@@ -131,12 +133,19 @@ public class LuceneSearch {
     }
 
     /**
+     * @param session
+     */
+    public LuceneSearch(Session session, String groupByField, Class<? extends CdmBase> directorySelectClass) {
+         this.session = session;
+         this.directorySelectClass = directorySelectClass;
+         this.groupByField = groupByField;
+    }
+
+    /**
      * TODO the abstract base class DescriptionElementBase can not be used, so
      * we are using an arbitraty subclass to find the DirectoryProvider, future
      * versions of hibernate search my allow using abstract base classes see
-     * http
-     * ://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of
-     * -a-given-class-in-java
+     * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
      *
      * @param type must not be null
      * @return
@@ -147,6 +156,9 @@ public class LuceneSearch {
         }
         if (type.equals(TaxonBase.class)) {
             type = Taxon.class;
+        }
+        if (type.equals(TaxonNameBase.class)) {
+            type = NonViralName.class;
         }
         return type;
     }
@@ -230,6 +242,17 @@ public class LuceneSearch {
     }
 
     /**
+     * @param maxNoOfHits
+     * @return
+     * @throws IOException
+     */
+    public TopDocs executeSearch(int maxNoOfHits) throws IOException {
+    	Query fullQuery = expandQuery();
+    	logger.info("lucene query string to be parsed: " + fullQuery.toString());
+    	return getSearcher().search(fullQuery, maxNoOfHits);
+
+    }
+    /**
      * @param luceneQuery
      * @param clazz the type as additional filter criterion
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
@@ -270,7 +293,7 @@ public class LuceneSearch {
 
         // perform the search (needs two passes for grouping)
         // - first pass
-        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
+        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
         getSearcher().search(fullQuery, firstPassCollector);
         Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
@@ -281,8 +304,8 @@ public class LuceneSearch {
         boolean getScores = true;
         boolean getMaxScores = true;
         boolean fillFields = true;
-        TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(GROUP_BY_FIELD);
-        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
+        TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
+        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
         getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
         TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
@@ -342,7 +365,6 @@ public class LuceneSearch {
 
     public void setHighlightFields(String[] textFieldNamesAsArray) {
         this.highlightFields = textFieldNamesAsArray;
-
     }
 
     public String[] getHighlightFields() {
