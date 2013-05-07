@@ -27,7 +27,6 @@ import org.hibernate.FlushMode;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.engine.spi.SearchFactoryImplementor;
@@ -210,7 +209,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.purgeAll(type);
 
 
-        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)Search.getFullTextSession(getSession()).getSearchFactory();
+        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)fullTextSession.getSearchFactory();
         IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
         SpellChecker spellChecker = null;
@@ -220,8 +219,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     	} catch (IOException e) {
     		logger.error("IOException when creating dictionary", e);
     		//TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-            //monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-            //monitor.done();
+            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
+            monitor.done();
     	}
 
     	if (spellChecker != null) {
@@ -315,16 +314,16 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             purge(type, monitor);
             monitor.worked(1);
         }
-
-//        // need to commit and start new transaction before optimizing
+        // need to flush to the index before optimizing
+        // the purge method is not doing the flushing by itself
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        Transaction tx = fullTextSession.getTransaction();
-        tx.commit();
-        fullTextSession.beginTransaction(); // will be committed automatically at the end of this method since this class is transactional
+        fullTextSession.flushToIndexes();
 
+        // optimize
         optimize();
         monitor.worked(1);
 
+        // done
         monitor.done();
     }
 
