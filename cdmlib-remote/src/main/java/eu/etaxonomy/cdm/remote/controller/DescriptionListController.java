@@ -96,6 +96,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
     public ModelAndView doAccumulateDistributions(
             @RequestParam(value= "mode", required = true) final AggregationMode mode,
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
@@ -122,6 +123,10 @@ public class DescriptionListController extends IdentifiableListController<Descri
                             null, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
 

@@ -19,7 +19,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -41,9 +40,9 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 @RequestMapping(value="/progress/")
 public class ProgressMonitorController {
 
-    private Map<UUID, IRestServiceProgressMonitor> monitors = new HashMap<UUID, IRestServiceProgressMonitor>();
+    private final Map<UUID, IRestServiceProgressMonitor> monitors = new HashMap<UUID, IRestServiceProgressMonitor>();
 
-    private Map<UUID, Long> timeoutMap = new HashMap<UUID, Long>();
+    private final Map<UUID, Long> timeoutMap = new HashMap<UUID, Long>();
 
     private Thread cleanUpThread = null;
 
@@ -51,12 +50,12 @@ public class ProgressMonitorController {
      * Time out in minutes for monitors which are done.
      * A monitor which is set done will be removed after this interval.
      */
-    private int cleanUpTimeout = 1;
+    private final int cleanUpTimeout = 1;
 
     /**
      *
      */
-    private int cleanUpInterval = 1000 * 10; // 10 seconds
+    private final int cleanUpInterval = 1000 * 10; // 10 seconds
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -67,6 +66,7 @@ public class ProgressMonitorController {
 
         this.cleanUpThread = new Thread(){
 
+            @Override
             public void run() {
                 scheduledCeanUp();
                 try {
@@ -141,9 +141,17 @@ public class ProgressMonitorController {
     }
 
     /**
-     * @param request the request for which to create he path for, is needed to read the file extension from.
-     * @param uuid the uuid key of the monitor
-     * @return
+     * provides the relative path to the ProgressMonitor speified by its uuid.
+     * File extensions like .xml, .json used during the initial request will be
+     * preserved in order to not to break the content type negotiation.
+     *
+     * @param request
+     *            the request for which to create he path for. The file
+     *            extension will be read from the servlet path and is appended
+     *            to the resulting path.
+     * @param uuid
+     *            the uuid key of the monitor
+     * @return the path of the ProgressMonitor
      */
     public String pathFor(HttpServletRequest request, UUID uuid){
         String fileExtension = FilenameUtils.getExtension(request.getServletPath());

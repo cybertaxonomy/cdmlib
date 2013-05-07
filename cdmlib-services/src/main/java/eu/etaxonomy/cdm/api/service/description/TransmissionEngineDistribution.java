@@ -321,7 +321,13 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
                 + ((SessionFactoryImplementor) getSession().getSessionFactory()).getSettings().getJdbcBatchSize());
 
         int workTicks = mode.equals(AggregationMode.byAreasAndRanks) ? 400 : 200;
-        monitor.beginTask("Accumulating distributions", workTicks);
+        monitor.beginTask("Accumulating distributions", workTicks + 1 );
+
+
+        monitor.subTask("updating Priorities");
+        updatePriorities();
+        monitor.worked(1);
+        monitor.setTaskName("Accumulating distributions");
 
         if (mode.equals(AggregationMode.byAreas) || mode.equals(AggregationMode.byAreasAndRanks)) {
             accumulateByArea(superAreas, classification, new SubProgressMonitor(monitor, 200),
@@ -738,8 +744,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
     /**
      * Sets the priorities for presence and absence terms, the priorities are stored in extensions.
-     * This method must be called in a transactional context and the transaction should be committed after
-     * running this method.
+     * This method will start a new transaction and commits it after the work is done.
      */
     public void updatePriorities() {
 
