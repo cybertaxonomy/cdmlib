@@ -8,8 +8,13 @@
     <!-- Authors: Sybille & Lorna -->
     <!-- Date: March/April 2013 -->
 
-    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-
+    <!--++++++++++ global vars ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    
+    <!-- mediawiki prefix -->
+    <xsl:variable name="page-prefix">
+        <xsl:text>Internal:</xsl:text>
+    </xsl:variable>
+    
     <!-- create a timestamp for the whole going -->
     <xsl:variable name="timestamp">
         <xsl:value-of
@@ -132,7 +137,7 @@
                 </contributor>
                 <text xml:space="preserve">
                     <!-- redirekt to corresponding page -->
-                    <xsl:value-of select="concat('#REDIRECT [[',$title,']]')"/>
+                    <xsl:value-of select="concat('#REDIRECT [[',$page-prefix,$title,']]')"/>
 <!-- add parent categorie if exists -->
                     <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
                         <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
@@ -144,7 +149,7 @@
         <!-- create taxon page -->
         <page>
             <title>
-                <xsl:value-of select="$title"/>
+                <xsl:value-of select="concat($page-prefix,$title)"/>
             </title>
             <revision>
                 <!-- TODO: create seconds without positions after decimal point! -->
