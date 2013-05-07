@@ -614,6 +614,11 @@
                 <xsl:value-of
                     select="concat('{{Nested_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"
                 />
+               <xsl:choose>
+                   <xsl:when test="position() != last()">
+                       <xsl:text>{{EDIT_Delimiter}}</xsl:text>
+                   </xsl:when>
+               </xsl:choose>
             </xsl:for-each>
             <xsl:text>}}</xsl:text>
         </xsl:for-each>
@@ -645,6 +650,11 @@
             <xsl:value-of
                 select="concat('{{Common_Name_Feature_Element|name=',name,'|language=',language/representation_L10n,'}}')"
             />
+            <xsl:choose>
+                <xsl:when test="position() != last()">
+                    <xsl:text>{{EDIT_Delimiter}}</xsl:text>
+                </xsl:when>
+            </xsl:choose>
         </xsl:for-each>
         <xsl:text>}}</xsl:text>
     </xsl:template>
@@ -789,7 +799,7 @@
         <xsl:variable name="text-string2">
             <xsl:call-template name="add-markup">
                 <xsl:with-param name="str" select="$text-string"/>
-                <xsl:with-param name="wiki-template">Bold</xsl:with-param>
+                <xsl:with-param name="wiki-markup">'''</xsl:with-param>
                 <xsl:with-param name="tag-name">b</xsl:with-param>
             </xsl:call-template>
         </xsl:variable>
@@ -797,7 +807,7 @@
         <!-- second replace italic tags on text-string2 -->
         <xsl:call-template name="add-markup">
             <xsl:with-param name="str" select="$text-string2"/>
-            <xsl:with-param name="wiki-template">Italic</xsl:with-param>
+            <xsl:with-param name="wiki-markup">''</xsl:with-param>
             <xsl:with-param name="tag-name">i</xsl:with-param>
         </xsl:call-template>
     </xsl:template>
@@ -806,7 +816,7 @@
 
     <xsl:template name="add-markup">
         <xsl:param name="str"/>
-        <xsl:param name="wiki-template"/>
+        <xsl:param name="wiki-markup"/>
         <xsl:param name="tag-name"/>
 
         <xsl:variable name="opening-tag">
@@ -827,11 +837,12 @@
                 <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
 
                 <!-- built the new string by putting in the mediawiki template -->
-                <xsl:value-of select="concat($before-tag,'{{',$wiki-template,'|',$inside-tag,'}}')"/>
-                <!-- in the part after the closing tag could be more tag, so we do arecursive call -->
+                <xsl:value-of select="concat($before-tag, $wiki-markup, $inside-tag, $wiki-markup)"/>
+                <!-- in the part after the closing tag could be more tag, so we do a recursive call -->
                 <xsl:call-template name="add-markup">
                     <xsl:with-param name="str" select="$after-tag"/>
-                    <xsl:with-param name="wiki-template" select="$wiki-template"/>
+                    <xsl:with-param name="wiki-markup"
+                        select="$wiki-markup"/>
                     <xsl:with-param name="tag-name" select="$tag-name"/>
                 </xsl:call-template>
             </xsl:when>
