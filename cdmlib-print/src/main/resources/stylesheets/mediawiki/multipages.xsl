@@ -319,6 +319,9 @@
         </xsl:for-each>
     </xsl:template>
 
+<!-- an example of mediawiki formtting of references:
+        Mohrig, W.; Menzel, F. 1992: Neue Arten europäischer Trauermücken (Diptera, Sciaridae). An International Journal of Dipterological Research, 3(1-2), 1–16.
+        Authors Date: title. inReferences title in italics, Volume in bold(series), page range -->
     <xsl:template name="reference">
 
         <xsl:param name="reference-node"/>
@@ -335,7 +338,7 @@
         <xsl:choose>
             <xsl:when test="$reference-node/authorTeam/teamMembers/e[1]/lastname != ''">
                 <xsl:for-each select="$reference-node/authorTeam/teamMembers/e">
-                    <xsl:value-of select="$reference-node/lastname"/>
+                    <xsl:value-of select="lastname"/>
                     <xsl:choose>
                         <xsl:when test="position() != last()">
                             <xsl:text> &amp; </xsl:text>
@@ -346,14 +349,34 @@
             <xsl:otherwise>
                 <xsl:value-of select="$reference-node/authorTeam/lastname"/>
             </xsl:otherwise>
+                      
         </xsl:choose>
+        <xsl:value-of select="$citation-uuid"/><!-- DEBUGGING display uuid so can check references against those in Tax Editor -->
+        
         <xsl:text>}} </xsl:text>
         <xsl:if test="$reference-node/datePublished/start != ''">
             <xsl:value-of select="$reference-node/datePublished/start"/>
             <xsl:text>: </xsl:text>
         </xsl:if>
-        <xsl:choose>
+        
+        <xsl:apply-templates select="$reference-node/title"/>
+        
+        <!-- do we need any other info from inReference node - see flore-afrique-centrale.xsl xsl -->
+        <xsl:variable name="wiki-markup">''</xsl:variable>
+       
+        <xsl:if test="$reference-node/inReference/node()">
+            <xsl:value-of select="concat($wiki-markup, $reference-node/inReference/title, $wiki-markup)"/>
+        </xsl:if>
+        <xsl:apply-templates select="$reference-node/volume"/>
+        <xsl:apply-templates select="$reference-node/series"/>
+        <xsl:apply-templates select="$reference-node/pages"/>
+        <xsl:apply-templates select="$reference-node/placePublished"/>
+        <xsl:apply-templates select="$reference-node/publisher"/>
+        
+        <!--xsl:choose>
             <xsl:when test="$reference-node/inReference/node()">
+                <xsl:value-of select="$reference-node/title"/>
+                <xsl:text>. </xsl:text>
                 <xsl:value-of select="$reference-node/inReference/title"/>
             </xsl:when>
             <xsl:otherwise>
@@ -372,13 +395,26 @@
                 <xsl:value-of select="$reference-node/publisher"/>
                 <xsl:text>.</xsl:text>
             </xsl:if>
-        </xsl:if>
+        </xsl:if-->
         <xsl:text>}}</xsl:text>
         <!--</ref>-->
 
     </xsl:template>
 
-
+<!-- wild card match for different children of nomenclaturalReference and citaion nodes -->
+    <xsl:template match="*">       
+        <xsl:value-of select="."/>       
+        <xsl:if test="name(.) = 'title' or name(.) = 'publisher' or name(.) = 'pages'">
+            <!-- . if pages or publisher or title - comma if placePublished -->
+            <xsl:text>. </xsl:text> 
+        </xsl:if>       
+        <xsl:if test="name(.) = 'volume'">
+            <xsl:text>: </xsl:text>
+        </xsl:if>     
+        <xsl:if test="(../type = 'Book' or ../type = 'BookSection') and name(.) = 'placePublished' and . != ''">
+            <xsl:text>, </xsl:text> 
+        </xsl:if>      
+    </xsl:template>
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- these templates provide the polytomous key 
@@ -472,16 +508,15 @@
         </xsl:call-template>
         <xsl:apply-templates select="../name"/>
 
+        <!-- getting nomenclatural refs and citaions for this name-->
+        <xsl:call-template name="reference">
+            <xsl:with-param name="reference-node" select="../name/nomenclaturalReference"/>
+        </xsl:call-template>
         <xsl:call-template name="citations">
             <xsl:with-param name="descriptionelements"
                 select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template>
-
-        <!-- do we call reference difectly or nitations as above -->
-        <!--xsl:call-template name="reference">
-            <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
-        </xsl:call-template-->
 
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="heterotypicSynonymyGroups"/>
@@ -506,12 +541,12 @@
                 <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
             </xsl:call-template>
 
-            <!--LORNA Why are we calling citations as well as References. Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
-            <!--xsl:call-template name="citations">
+            <!--LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
+            <xsl:call-template name="citations">
                 <xsl:with-param name="descriptionelements"
-                    select="../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+                    select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
                 <xsl:with-param name="name-uuid" select="name/uuid"/>
-            </xsl:call-template-->
+            </xsl:call-template>
 
         </xsl:for-each>
     </xsl:template>
@@ -535,11 +570,17 @@
                 <xsl:text>{{Homotypic Synonym|2|</xsl:text>
                 <xsl:apply-templates select="name"/>
                 <xsl:text>}}</xsl:text>
-                <!--xsl:call-template name="citations">
-                <LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101>
-                <xsl:with-param name="descriptionelements" select="../../../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
-                <xsl:with-param name="name-uuid" select="name/uuid"/>
-            </xsl:call-template-->
+                
+                <xsl:call-template name="reference">
+                    <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
+                </xsl:call-template>
+                
+                <!--LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
+                <xsl:call-template name="citations">
+                    <xsl:with-param name="descriptionelements"
+                        select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
+                    <xsl:with-param name="name-uuid" select="name/uuid"/>
+                </xsl:call-template>
             </xsl:for-each>
         </xsl:for-each>
 
