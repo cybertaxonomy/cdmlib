@@ -1618,8 +1618,8 @@ cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml 
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-~]8000.launch -text
-cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
-cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
+cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
+cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
 cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
