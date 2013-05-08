@@ -96,14 +96,14 @@ public class DescriptionUtility {
     }
 
     private static String areaKey(NamedArea area){
-        return String.valueOf(area.getId());
+        return String.valueOf(area.getUuid());
     }
 
     private static String areaKey(Distribution distribution){
         StringBuilder keyBuilder = new StringBuilder();
 
         if(distribution.getArea() != null){
-            keyBuilder.append(distribution.getArea().getId());
+            keyBuilder.append(distribution.getArea().getUuid());
         } else {
             keyBuilder.append("NULL");
         }
