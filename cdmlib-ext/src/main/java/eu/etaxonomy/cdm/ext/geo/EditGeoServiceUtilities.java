@@ -233,7 +233,7 @@ public class EditGeoServiceUtilities {
 			return "";
 		}
 
-		Collection<Distribution> filteredDistributions = DescriptionUtility.preferComputed(distributions);
+		Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions);
 
 		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
