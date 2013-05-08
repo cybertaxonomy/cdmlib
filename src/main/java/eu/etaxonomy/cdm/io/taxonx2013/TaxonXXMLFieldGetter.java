@@ -38,6 +38,7 @@ public class TaxonXXMLFieldGetter {
 
         //taxonHeader, taxonBody
         NodeList nodes = root.getChildNodes();
+        Reference<?> ref = null;
         for (int i=0; i< nodes.getLength();i++) {
             System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxheader")){
@@ -45,7 +46,7 @@ public class TaxonXXMLFieldGetter {
                 for (int j=0; j< nodes2.getLength();j++){
                     System.out.println("nodes2 : "+nodes2.item(j).getNodeName());
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("mods:mods")){
-                        Reference<?> ref = modsextractor.extractMods(nodes2.item(j));
+                        ref = modsextractor.extractMods(nodes2.item(j));
                         System.out.println("reference: "+ref.getTitleCache());
                         importer.getReferenceService().saveOrUpdate(ref);
                     }
@@ -56,7 +57,7 @@ public class TaxonXXMLFieldGetter {
                 for (int j=0; j< nodes2.getLength();j++){
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("tax:treatment")){
                         List<Object> tosave = new ArrayList<Object>();
-                        treatmentextractor.extractTreatment(nodes2.item(j),tosave);
+                        treatmentextractor.extractTreatment(nodes2.item(j),tosave,ref);
                     }
                 }
             }

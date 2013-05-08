@@ -25,7 +25,6 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     private final Map<String,UUID> personMap = new HashMap<String, UUID>();
 
     Logger logger = Logger.getLogger(getClass());
-    TaxonXImport importer;
 
     /**
      * @param agentService
@@ -57,6 +56,13 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             ref.setTitleCache(content,true);
                             ref.setTitle(content);
                             ref.generateTitle();
+
+                            List<Reference> references = importer.getReferenceService().list(Reference.class, 0, 0, null, null);
+                            for(Reference<?> refe:references){
+                                if (refe.getTitleCache().equalsIgnoreCase(ref.getTitleCache())) {
+                                    ref=refe;
+                                }
+                            }
                             System.out.println("REFERENCE "+ref.getTitleCache());
                         }
                     }
@@ -86,6 +92,9 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("issn")) {
                         ref.setIssn(content);
                     }
+                    if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
+                        ref.setIssn("GenericHash: "+content);
+                    }
                 }
             }
             if (children.item(i).getNodeName().equalsIgnoreCase("mods:location")){
@@ -114,6 +123,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         return ref;
     }
 
+    private final String AUTHOR = "author";
+    private final String EDITOR = "editor";
     /**
      * @param item
      * @return
@@ -122,23 +133,25 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         NamedNodeMap attributeMap = node.getAttributes();
         Map<String,String> mapmap = new HashMap<String, String>();
         List<String> roleList = new ArrayList<String>();
-        boolean newPerson=false;
-        boolean newTeam=false;
+        boolean newRole=false;
         String content="";
-        Team authorTeam = Team.NewInstance();
+        String role =null;
+        List<Person> persons = new ArrayList<Person>();
+        List<String> editors= new ArrayList<String>();
+
         if (attributeMap.getNamedItem("type") != null && attributeMap.getNamedItem("type").getNodeValue().equalsIgnoreCase("personal")) {
 
             NodeList tmp = node.getChildNodes();
             for (int j=0;j<tmp.getLength();j++){
-                newPerson=false;
+
                 //                System.out.println("Child of modsnametype: "+tmp.item(j).getNodeName());
-                Person p = Person.NewInstance();
+                Person p=null;
                 if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:namePart")) {
                     content=tmp.item(j).getTextContent().trim();
                     if (!content.isEmpty()) {
                         mapmap.put("namePart",content);
+                        p = Person.NewInstance();
                         p.setTitleCache(content, true);
-                        newPerson=true;
                     }
                 }
                 if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:role")) {
@@ -149,35 +162,62 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             System.out.println("ROLETERM!" +content);
                             if (!content.isEmpty()) {
                                 roleList.add(content);
-                                p.setNomenclaturalTitle(content);
-                                newPerson=true;
+                                //                                p.setNomenclaturalTitle(content);
+                                if (content.equalsIgnoreCase(EDITOR)) {
+                                    role=EDITOR;
+                                }
+                                if (content.equalsIgnoreCase(AUTHOR)) {
+                                    role=AUTHOR;
+                                }
+                                newRole=true;
                             }
                         }
                     }
                 }
-                if (!personMap.containsKey(p.getTitleCache()) && newPerson){
-                    UUID uuid = importer.getAgentService().saveOrUpdate(p);
-                    personMap.put(p.getTitleCache(),uuid);
-                }else{
-                    try{
-                        p = (Person) importer.getAgentService().find(personMap.get(p.getTitleCache()));
-                    }catch(Exception e){logger.warn("PERSON EXISTS "+p);
+                if (newRole){
+                    if (p!=null && role.equals(AUTHOR)) {
+                        UUID uuid = null;
+                        if (!personMap.containsKey(p.getTitleCache())){
+                            uuid = importer.getAgentService().saveOrUpdate(p);
+                            p = (Person) importer.getAgentService().find(uuid);
+                            personMap.put(p.getTitleCache(),uuid);
+                        }else{
+                            uuid = personMap.get(p.getTitleCache());
+                            p = (Person) importer.getAgentService().find(uuid);
+                        }
+                        logger.info("ADD PERSON "+p);
+                        persons.add(p);
                     }
-                }
-                if (newPerson) {
-                    authorTeam.addTeamMember(p);
-                    newTeam=true;
+                    if (p!=null && role.equals(EDITOR)) {
+                        editors.add(p.getTitleCache());
+                    }
                 }
             }
         }
-        if (!personMap.containsKey(authorTeam.getTitleCache()) && newTeam){
-            UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
-            personMap.put(authorTeam.getTitleCache(),uuid);
-        }else{
-            authorTeam =  (Team) importer.getAgentService().find(personMap.get(authorTeam.getTitleCache()));
+        if (persons.size()>0){
+            if (persons.size()==1){
+                ref.setAuthorTeam(persons.get(0));
+            }
+            else{
+                Team authorTeam = Team.NewInstance();
+                for (Person pers:persons){
+                    authorTeam.addTeamMember(pers);
+                }
+
+                if (!personMap.containsKey(authorTeam.getTitleCache()) && authorTeam.getTeamMembers().size()>0){
+                    UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
+                    personMap.put(authorTeam.getTitleCache(),uuid);
+                }else{
+                    if(authorTeam.getTeamMembers().size()>1) {
+                        authorTeam =  (Team) importer.getAgentService().find(personMap.get(authorTeam.getTitleCache()));
+                    }
+                }
+
+                ref.setAuthorTeam(authorTeam);
+            }
         }
-        if (newTeam) {
-            ref.setAuthorTeam(authorTeam);
+        if (editors.size()>0) {
+            ref.setEditor(StringUtils.join(editors,", "));
         }
         mapmap.put("role",StringUtils.join(roleList.toArray(),SPLITTER));
         return mapmap;
@@ -217,11 +257,24 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 if (!content.isEmpty()) {
                     relatedInfoMap.put("titleInfo",content);
                     if (node.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("host")){
-                        IBook b = ReferenceFactory.newBook();
-                        b.setTitleCache(content,true);
-                        b.setTitle(content);
-                        b.generateTitle();
-                        ref.setInBook(b);
+                        List<Reference> references = importer.getReferenceService().list(Reference.class, 0, 0, null, null);
+                        boolean refFound = false;
+                        IBook book = null;
+                        for (Reference<?> refe:references){
+                            if(refe.getTitleCache().equalsIgnoreCase(content)){
+                                refFound=true;
+                                book= refe;
+                            }
+                        }
+                        if (!refFound){
+                            book = ReferenceFactory.newBook();
+                            book.setTitleCache(content,true);
+                            book.setTitle(content);
+                            book.generateTitle();
+                        }
+                        if (ref.getInBook() == null || !ref.getInBook().equals(book)) {
+                            ref.setInBook(book);
+                        }
                     }
                 }
             }
