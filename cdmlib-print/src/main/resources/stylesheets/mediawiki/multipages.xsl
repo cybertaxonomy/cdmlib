@@ -111,7 +111,7 @@
             <!-- else if no higher taxon could be found -->
             <xsl:if test="not(exists(../..)) or not(name(../..)='TaxonNode')">
 
-                <xsl:text>{{No Parent}}</xsl:text>
+                <xsl:text>{{EDIT No Parent available}}</xsl:text>
 
             </xsl:if>
         </xsl:variable>
@@ -165,7 +165,7 @@
  <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
                    <!-- add taxo tree -->
-                     <xsl:value-of select="concat('{{Taxo Tree| parentTaxon=',$parent-title, '}}')"/> 
+                     <xsl:value-of select="concat('{{EDIT_Taxotree| parentTaxon=',$parent-title, '}}')"/> 
                    
                    <!-- add contents of taxon page -->                   
 
@@ -259,7 +259,7 @@
         <xsl:call-template name="chapter">
             <xsl:with-param name="title">References</xsl:with-param>
         </xsl:call-template>
-        <xsl:text>{{Show_References}}</xsl:text>
+        <xsl:text>{{EDIT_Reference_Section}}</xsl:text>
     </xsl:template>
 
 
@@ -269,7 +269,7 @@
         <xsl:param name="descriptionelements"/>
 
         <!--only calling this for ag salcifolia what about the other uuids???-->
-        <xsl:value-of select="concat('{{ViBRANT_Reference|name=',$name-uuid,'|content=')"/>
+        <xsl:value-of select="concat('{{EDIT_Reference|name=',$name-uuid,'|content=')"/>
         <!--<ref name="{$name-uuid}">-->
         <!-- iterate through all the description elements fo the citation feature -->
         <xsl:for-each select="$descriptionelements/descriptionelement">
@@ -332,7 +332,7 @@
         <xsl:variable name="citation-uuid" select="$reference-node/uuid"/>
 
         <!-- use the citation-uuid as a unique name for the reference -->
-        <xsl:value-of select="concat('{{ViBRANT_Reference|name=',$citation-uuid,'|content=')"/>
+        <xsl:value-of select="concat('{{EDIT_Reference|name=',$citation-uuid,'|content=')"/>
         <xsl:text>{{aut|</xsl:text>
 
         <xsl:choose>
@@ -531,7 +531,7 @@
 
     <xsl:template match="homotypicSynonymsByHomotypicGroup">
         <xsl:for-each select="e">
-            <xsl:text>{{Homotypic Synonym|1|</xsl:text>
+            <xsl:text>{{EDIT Homotypic Synonym|1|</xsl:text>
             <xsl:apply-templates select="name"/>
             <xsl:text>}}</xsl:text>
 
@@ -559,7 +559,7 @@
             <!--do foreach for the rest-->
             <!--<xsl:text>==***==</xsl:text>-->
             <xsl:variable name="first-element" select="e[1]"/>
-            <xsl:text>{{Heterotypic Synonym|1|</xsl:text>
+            <xsl:text>{{EDIT Heterotypic Synonym|1|</xsl:text>
             <xsl:apply-templates select="$first-element/name"/>
             <xsl:text>}}</xsl:text>
             <!--<xsl:text>==***==</xsl:text>-->
@@ -567,7 +567,7 @@
             <!-- take the first one to printout as the head of the homotypic group -->
 
             <xsl:for-each select="e[position() &gt; 1]">
-                <xsl:text>{{Homotypic Synonym|2|</xsl:text>
+                <xsl:text>{{EDIT Homotypic Synonym|2|</xsl:text>
                 <xsl:apply-templates select="name"/>
                 <xsl:text>}}</xsl:text>
                 
@@ -645,15 +645,15 @@
 
     <xsl:template name="secondLevelDescriptionElements">
 
-        <xsl:value-of select="concat('{{Higher_Level_Feature_Title|',representation_L10n,'}}')"/>
+        <xsl:value-of select="concat('{{Highlevel_Feature|',representation_L10n,'}}')"/>
 
         <xsl:for-each select="feature">
             <xsl:value-of
-                select="concat('{{Nested_Feature|name=',representation_L10n,'|elements=')"/>
+                select="concat('{{EDIT_Nested_Feature|name=',representation_L10n,'|elements=')"/>
             <!-- TODO create Element -->
             <xsl:for-each select="descriptionelements/descriptionelement">
                 <xsl:value-of
-                    select="concat('{{Nested_Feature_DescrElement|',multilanguageText_L10n/text, '}}')"
+                    select="concat('{{EDIT_Nested_Feature_Element|',multilanguageText_L10n/text, '}}')"
                 />
                <xsl:choose>
                    <xsl:when test="position() != last()">
@@ -685,11 +685,11 @@
 
     <xsl:template name="commonTaxonName">
 
-        <xsl:value-of select="concat('{{Tax_Feature|name=',representation_L10n,'|elements=')"/>
+        <xsl:value-of select="concat('{{EDIT_Feature|name=',representation_L10n,'|elements=')"/>
         <xsl:for-each select="descriptionelements/descriptionelement">
             <xsl:text/>
             <xsl:value-of
-                select="concat('{{Common_Name_Feature_Element|name=',name,'|language=',language/representation_L10n,'}}')"
+                select="concat('{{EDIT_Common_Name|name=',name,'|language=',language/representation_L10n,'}}')"
             />
             <xsl:choose>
                 <xsl:when test="position() != last()">
@@ -705,7 +705,7 @@
     <xsl:template name="textData">
 
         <xsl:value-of
-            select="concat('{{Tax_Feature|name=',representation_L10n, '|elements={{Feature_Text|' )"/>
+            select="concat('{{EDIT_Feature|name=',representation_L10n, '|elements={{EDIT_Feature_Text|' )"/>
         <!--
         <xsl:choose>
             <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">-->
@@ -740,7 +740,7 @@
     <!-- image gallery -->
 
     <xsl:template name="gallery">
-        <xsl:text>{{ViBRANT_Gallery|files=</xsl:text>
+        <xsl:text>{{EDIT_Gallery|files=</xsl:text>
         <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
 
         <xsl:text>}}</xsl:text>
@@ -752,7 +752,7 @@
     <xsl:template match="media/e/representations/e/parts/e/uri">
 
         <xsl:value-of
-            select="concat('{{ViBRANT_Gallery_File|filename=',functx:substring-after-last(.,'/'), '|description=')"/>
+            select="concat('{{EDIT_Gallery_File|filename=',functx:substring-after-last(.,'/'), '|description=')"/>
         <!--,'}}')"/>-->
         <!--go back up to the description element and get the text for the Figure legend -->
         <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
@@ -770,19 +770,19 @@
     <!-- think also of template changes in the mediawiki -->
     <!-- TODO: wrap TOC layout in a mediawiki template -->
 
-    <xsl:template name="TOC">{{ViBRANT_TOC}}</xsl:template>
+    <xsl:template name="TOC">{{EDIT_TOC}}</xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <xsl:template name="chapter">
         <xsl:param name="title"/>
-        <xsl:value-of select="concat('{{Chapter|',$title,'}}')"/>
+        <xsl:value-of select="concat('{{EDIT_Section|',$title,'}}')"/>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <xsl:template name="subchapter">
         <xsl:param name="title"/>
-        <xsl:value-of select="concat('{{Subchapter|',$title,'}}')"/>
+        <xsl:value-of select="concat('{{EDIT_Subsection|',$title,'}}')"/>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -802,20 +802,20 @@
         <xsl:choose>
             <!-- family -->
             <xsl:when test="$taxon/name/rank/uuid='af5f2481-3192-403f-ae65-7c957a0f02b6'">
-                <xsl:value-of select="concat('{{Family name|', $name, '}}')"/>
+                <xsl:value-of select="concat('{{EDIT_Family_Name|', $name, '}}')"/>
             </xsl:when>
             <!-- genus -->
             <xsl:when test="$taxon/name/rank/uuid='1b11c34c-48a8-4efa-98d5-84f7f66ef43a'">
-                <xsl:value-of select="concat('{{Genus name|', $name, '}}')"/>
+                <xsl:value-of select="concat('{{EDIT_Genus Name|', $name, '}}')"/>
             </xsl:when>
             <!--TODO-->
             <!-- subgenus -->
             <xsl:when test="$taxon/name/rank/uuid='78786e16-2a70-48af-a608-494023b91904'">
-                <xsl:value-of select="concat('{{Subgenus name|', $name, '}}')"/>
+                <xsl:value-of select="concat('{{EDIT_Subgenus Name|', $name, '}}')"/>
             </xsl:when>
             <!-- species -->
             <xsl:when test="$taxon/name/rank/uuid='b301f787-f319-4ccc-a10f-b4ed3b99a86d'">
-                <xsl:value-of select="concat('{{Species name|', $name, '}}')"/>
+                <xsl:value-of select="concat('{{EDIT_Species Name|', $name, '}}')"/>
             </xsl:when>
             <xsl:otherwise>
                 <!-- for debugging --> Unformatted title for rank uuid: <xsl:value-of
