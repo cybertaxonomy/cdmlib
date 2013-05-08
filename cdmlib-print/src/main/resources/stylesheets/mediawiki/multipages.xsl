@@ -165,7 +165,7 @@
  <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
                    <!-- add taxo tree -->
-                     <xsl:value-of select="concat('{{EDIT_Taxotree| parentTaxon=',$parent-title, '}}')"/> 
+                     <xsl:value-of select="concat('{{EDIT_Taxotree| parentTaxon=',$page-prefix,$parent-title, '}}')"/> 
                    
                    <!-- add contents of taxon page -->                   
 
