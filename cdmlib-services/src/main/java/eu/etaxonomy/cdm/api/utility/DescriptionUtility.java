@@ -9,12 +9,14 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -46,53 +48,68 @@ public class DescriptionUtility {
      */
     public static Collection<Distribution> filterDistributions(Collection<Distribution> distributions) {
 
-        Map<String, Distribution> computedDistributions = new HashMap<String, Distribution>(distributions.size());
-        Map<String, Distribution> otherDistributions = new HashMap<String, Distribution>(distributions.size());
+        Map<String, Set<Distribution>> computedDistributions = new HashMap<String, Set<Distribution>>(distributions.size());
+        Map<String, Set<Distribution>> otherDistributions = new HashMap<String, Set<Distribution>>(distributions.size());
+        Set<Distribution> removeCandidates = new HashSet<Distribution>();
 
         // 1. sort by computed / not computed
         for(Distribution distribution : distributions){
             if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
-                computedDistributions.put(areaKey(distribution), distribution);
+                if(!computedDistributions.containsKey(areaKey(distribution))){
+                    computedDistributions.put(areaKey(distribution), new HashSet<Distribution>());
+                }
+                computedDistributions.get(areaKey(distribution)).add(distribution);
             } else {
-                otherDistributions.put(areaKey(distribution), distribution);
+                if(!otherDistributions.containsKey(areaKey(distribution))){
+                    otherDistributions.put(areaKey(distribution), new HashSet<Distribution>());
+                }
+                otherDistributions.get(areaKey(distribution)).add(distribution);
             }
         }
 
-        // if no computed elements return all
-        if(computedDistributions.size() == 0){
-            return otherDistributions.values();
-        }
+        // if there are computed elements apply the filter rules
+        if(computedDistributions.size() > 0){
 
-        // 2. apply the filter rules
-        // remove all not computed areas for which a computed area exists
-        for(String keyComputed : computedDistributions.keySet()){
-            otherDistributions.remove(otherDistributions);
-        }
-        Set<Distribution> removeCandidates = new HashSet<Distribution>();
-        for(Distribution distribution : computedDistributions.values()){
-            if(distribution.getArea() != null){
-                NamedArea parentArea = distribution.getArea().getPartOf();
-                while(parentArea != null){
-                    Distribution parentDistribution = computedDistributions.get(areaKey(parentArea));
-                    if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
-                        removeCandidates.add(parentDistribution);
+            // 2. apply the filter rules
+            // prepare removal of all not computed areas for which a computed area exists
+            for(String keyComputed : computedDistributions.keySet()){
+                otherDistributions.remove(otherDistributions);
+            }
 
+            for(Distribution distribution : valuesOfAllInnerSets(computedDistributions.values())){
+                if(distribution.getArea() != null){
+                    NamedArea parentArea = distribution.getArea().getPartOf();
+                    while(parentArea != null){
+                        for(Distribution parentDistribution : computedDistributions.get(areaKey(parentArea))) {
+                            if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
+                                removeCandidates.add(parentDistribution);
+                            }
+                        }
+                        parentArea = parentArea.getPartOf();
                     }
-                    parentArea = parentArea.getPartOf();
                 }
             }
         }
+
+        // finally remove computed distributions if necessary and combine computed and non computed distributions again
+        Set<Distribution> filteredDistributions = new HashSet<Distribution>(otherDistributions.size() + computedDistributions.size());
+        filteredDistributions.addAll(valuesOfAllInnerSets(computedDistributions.values()));
         for(Distribution distribution : removeCandidates){
             computedDistributions.remove(areaKey(distribution));
         }
 
-        // finally combine computed and non computed distributions again
-        Set<Distribution> filteredDistributions = new HashSet<Distribution>(otherDistributions.size() + computedDistributions.size());
-        filteredDistributions.addAll(otherDistributions.values());
-        filteredDistributions.addAll(computedDistributions.values());
+        filteredDistributions.addAll(valuesOfAllInnerSets(otherDistributions.values()));
 
         return filteredDistributions;
 
+    }
+
+    private static <T extends CdmBase> Collection<T> valuesOfAllInnerSets(Collection<Set<T>> collectionOfSets){
+        Collection<T> allValues = new ArrayList<T>();
+        for(Set<T> set : collectionOfSets){
+            allValues.addAll(set);
+        }
+        return allValues;
     }
 
     private static String areaKey(NamedArea area){
