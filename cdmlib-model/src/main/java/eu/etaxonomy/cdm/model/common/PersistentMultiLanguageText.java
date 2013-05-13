@@ -15,6 +15,7 @@ import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.engine.spi.SessionImplementor;
 
 public class PersistentMultiLanguageText extends PersistentMap implements IMultiLanguageText {
+	private static final long serialVersionUID = -7104619652295153920L;
 
 	public PersistentMultiLanguageText(SessionImplementor sessionImplementor, MultilanguageText collection) {
 		super(sessionImplementor, collection);
