@@ -24,6 +24,14 @@
 
     <!-- create the username who changed/created the pages -->
     <xsl:variable name="username">Sybille Test </xsl:variable>
+    
+    <xsl:template name="wiki-newline-comment">
+        <xsl:comment>
+            <xsl:text>&#10;</xsl:text>
+        </xsl:comment>
+    </xsl:template>
+
+    <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!-- this is the start template 
     it creates the mediawiki tag surounding and calls a template to create a page for 
@@ -135,11 +143,12 @@
                 <contributor>
                     <username>Sybille Test</username>
                 </contributor>
-                <text xml:space="preserve">
+                <text xml:space="default">
                     <!-- redirekt to corresponding page -->
                     <xsl:value-of select="concat('#REDIRECT [[',$page-prefix,$title,']]')"/>
 <!-- add parent categorie if exists -->
                     <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
+                        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
                         <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
                     </xsl:if>              
                </text>
