@@ -102,7 +102,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
                 HttpServletRequest request,
                 HttpServletResponse response) throws IOException {
 
-        logger.info("doListByAssociatedTaxon()" + request.getServletPath() + "?" + request.getQueryString());
+        logger.info("doListByAssociatedTaxon()" + request.getRequestURI() + "?" + request.getQueryString());
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 

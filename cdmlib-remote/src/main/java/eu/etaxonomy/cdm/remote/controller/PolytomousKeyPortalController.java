@@ -58,7 +58,7 @@ public class PolytomousKeyPortalController extends BaseController<PolytomousKey,
 			HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		logger.info("doLoadWithNodes() - " + request.getServletPath());
+		logger.info("doLoadWithNodes() - " + request.getRequestURI());
 
 		ModelAndView mv = new ModelAndView();
 		

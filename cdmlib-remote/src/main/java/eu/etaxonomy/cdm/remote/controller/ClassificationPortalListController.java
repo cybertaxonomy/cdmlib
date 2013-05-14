@@ -63,6 +63,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     private ITermService termService;
 
+    @Override
     @Autowired
     public void setService(IClassificationService service) {
         this.service = service;
@@ -101,7 +102,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
     @RequestMapping(value = { "/portal/classification" }, method = RequestMethod.GET)
     public List<Classification> getClassifications(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        logger.info("getClassification() " + request.getServletPath());
+        logger.info("getClassification() " + requestPathAndQuery(request));
         return service.list(null, null, null,null, CLASSIFICATION_INIT_STRATEGY);
     }
 
@@ -135,7 +136,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
             HttpServletResponse response
             ) throws IOException {
 
-        logger.info("getChildNodesAtRank() " + request.getServletPath());
+        logger.info("getChildNodesAtRank() " + request.getRequestURI());
         Classification tree = null;
         Rank rank = null;
         if(treeUuid != null){
@@ -180,7 +181,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
             @PathVariable("taxonUuid") UUID taxonUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getChildNodesOfTaxon() " + request.getServletPath());
+        logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
         Classification tree = service.find(treeUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
@@ -215,7 +216,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
             @PathVariable("rankUuid") UUID rankUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getPathFromTaxonToRank() " + request.getServletPath());
+        logger.info("getPathFromTaxonToRank() " + request.getRequestURI());
 
         Classification tree = service.find(treeUuid);
         Rank rank = findRank(rankUuid);

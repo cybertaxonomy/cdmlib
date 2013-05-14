@@ -137,7 +137,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAnnotations() - " + request.getServletPath());
+        logger.info("getAnnotations() - " + request.getRequestURI());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
@@ -148,7 +148,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("uuid_list") UuidList descriptionUuidList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
             HttpServletRequest request, HttpServletResponse response) {
-        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
+        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getRequestURI());
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {

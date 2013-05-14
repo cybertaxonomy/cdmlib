@@ -67,7 +67,7 @@ public class OccurrenceController extends BaseController<SpecimenOrObservationBa
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetDerivedFrom()" + request.getServletPath());
+        logger.info("doGetDerivedFrom()" + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
         SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);

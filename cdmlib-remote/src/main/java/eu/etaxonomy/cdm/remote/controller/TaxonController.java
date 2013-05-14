@@ -96,7 +96,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAccepted() " + request.getServletPath());
+        logger.info("getAccepted() " + request.getRequestURI());
         TaxonBase tb = service.load(uuid);
         HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
         if(tb instanceof Taxon){
@@ -116,7 +116,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetClassifications(): " + request.getServletPath());
+        logger.info("doGetClassifications(): " + request.getRequestURI());
         TaxonBase taxonBase = service.load(uuid);
 
         if (taxonBase == null){
@@ -146,7 +146,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doListSpecimensOrObservations() - " + request.getServletPath());
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -171,7 +171,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 

@@ -139,7 +139,7 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
             method = RequestMethod.GET)
     public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameDescriptions()" + request.getServletPath());
+        logger.info("doGetNameDescriptions()" + request.getRequestURI());
         TaxonNameBase tnb = service.load(uuid, null);
         Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
         return p.getRecords();
