@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
+import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
@@ -274,7 +275,7 @@ public class TermUpdater_314_315 extends TermUpdaterBase implements ITermUpdater
 	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
-		return null;
+		return TermUpdater_31_33.NewInstance();
 	}
 
 	/* (non-Javadoc)
