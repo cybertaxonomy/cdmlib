@@ -12,24 +12,20 @@ package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -44,7 +40,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OriginalSource", propOrder = {
-    "idInSource",
+    "type",
+	"idInSource",
     "idNamespace"
 })
 @XmlRootElement(name = "OriginalSource")
@@ -57,12 +54,18 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
 	
+	@XmlAttribute(name ="type")
+	@Column(name="refType")
+	@NotNull
+	private OriginalSourceType type;
+	
 	//The object's ID in the source, where the alternative string comes from
 	@XmlElement(name = "IdInSource")
 	private String idInSource;
 	
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
+
 
 	/**
 	 * Constructor

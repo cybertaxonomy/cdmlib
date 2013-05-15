@@ -737,6 +737,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/NoDefinedTermClassExcep
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabulary.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSourceBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSourceType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/PersistentMultiLanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/PersistentMultiLanguageTextType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.java -text
