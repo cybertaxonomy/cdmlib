@@ -59,7 +59,7 @@
         <param-name>beanName</param-name>
         <param-value>helloWorld</param-value>
       </init-param>
-      <init-param>
+      <init-param> 
         <description>Widget Set to Use</description>
         <param-name>widgetset</param-name>
         <param-value>eu.etaxonomy.cdm.remote.webapp.view.widgetset.AppWidgetSet</param-value>
