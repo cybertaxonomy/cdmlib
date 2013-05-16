@@ -24,6 +24,11 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
+/**
+ * xxx.
+ * 
+ * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.model.location.NamedArea} 
+ */
 public class DistributionTree extends Tree<Distribution>{
 
     public static final Logger logger = Logger.getLogger(DistributionTree.class);
