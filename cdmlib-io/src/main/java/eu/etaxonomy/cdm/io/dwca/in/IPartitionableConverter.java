@@ -11,12 +11,14 @@ package eu.etaxonomy.cdm.io.dwca.in;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.io.stream.StreamItem;
+
 /**
  * Interface for converter that allow partitioned converting.
  * @author a.mueller
  *
  */
-public interface IPartitionableConverter<IN extends IConverterInput<CsvStreamItem>, OUT extends IConverterOutput, OBJ extends Object> extends IConverter<IN, OUT, OBJ> {
+public interface IPartitionableConverter<IN extends IConverterInput<StreamItem>, OUT extends IConverterOutput, OBJ extends Object> extends IConverter<IN, OUT, OBJ> {
 	
 	
 	/**
@@ -24,7 +26,7 @@ public interface IPartitionableConverter<IN extends IConverterInput<CsvStreamIte
 	 * @return
 	 */
 	//TODO make instream a more generic type of stream
-	public Map<String, Set<String>> getPartitionForeignKeys(IReader<CsvStreamItem> instream);
+	public Map<String, Set<String>> getPartitionForeignKeys(IReader<StreamItem> instream);
 	
 	/**
 	 * Returns a list of namespaces, which are required for related objects loading.

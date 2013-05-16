@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverterBase<DwcaImportState> 
-						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
+						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	private static final String SINGLE_CLASSIFICATION_ID = "1";
 
 	private static final String SINGLE_CLASSIFICATION = "Single Classification";
@@ -53,7 +54,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	}
 
 
-	public IReader<MappedCdmBase> map(CsvStreamItem item){
+	public IReader<MappedCdmBase> map(StreamItem item){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csvRecord = item.map;
@@ -122,55 +123,55 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	
 	
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(ID);
 		return id;
 	}
 
 
-	private void handleSubGenus(CsvStreamItem item, DwcaImportState state) {
+	private void handleSubGenus(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleGenus(CsvStreamItem item, DwcaImportState state) {
+	private void handleGenus(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleFamily(CsvStreamItem item, DwcaImportState state) {
+	private void handleFamily(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleOrder(CsvStreamItem item, DwcaImportState state) {
+	private void handleOrder(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleClass(CsvStreamItem item, DwcaImportState state) {
+	private void handleClass(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handlePhylum(CsvStreamItem item, DwcaImportState state) {
+	private void handlePhylum(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleKingdom(CsvStreamItem item, DwcaImportState state) {
+	private void handleKingdom(StreamItem item, DwcaImportState state) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	private void handleParentNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase<?> taxonBase, String id, List<MappedCdmBase> resultList) {
+	private void handleParentNameUsage(StreamItem item, DwcaImportState state, TaxonBase<?> taxonBase, String id, List<MappedCdmBase> resultList) {
 		if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
 			String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
 			if (id.equals(parentId)){
@@ -218,7 +219,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	}
 
 
-	private Classification getClassification(CsvStreamItem item, List<MappedCdmBase> resultList) {
+	private Classification getClassification(StreamItem item, List<MappedCdmBase> resultList) {
 		Set<Classification> resultSet = new HashSet<Classification>();
 		//
 		if (config.isDatasetsAsClassifications()){
@@ -256,7 +257,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	}
 
 
-	private void handleAcceptedNameUsage(CsvStreamItem item, DwcaImportState state, TaxonBase taxonBase, String id) {
+	private void handleAcceptedNameUsage(StreamItem item, DwcaImportState state, TaxonBase taxonBase, String id) {
 		if (acceptedNameUsageExists(item)){
 			String accId = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
 			handleAcceptedNameUsageParam(item, state, taxonBase, id, accId);
@@ -274,7 +275,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	 * @param accId
 	 * @param taxStatus
 	 */
-	private void handleAcceptedNameUsageParam(CsvStreamItem item,
+	private void handleAcceptedNameUsageParam(StreamItem item,
 			DwcaImportState state, TaxonBase<?> taxonBase, String id, String accId) {
 		if (id.equals(accId)){
 			//mapping to itself needs no further handling
@@ -312,7 +313,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 	 * @param item
 	 * @return
 	 */
-	private boolean acceptedNameUsageExists(CsvStreamItem item) {
+	private boolean acceptedNameUsageExists(StreamItem item) {
 		return exists(TermUri.DWC_ACCEPTED_NAME_USAGE_ID, item) || exists(TermUri.DWC_ACCEPTED_NAME_USAGE, item);
 	}
 
@@ -321,7 +322,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter extends PartitionableConverte
 //**************************** PARTITIONABLE ************************************************
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap){
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap){
 		String value;
 		String key;
 		if ( hasValue(value = item.get(ID))){

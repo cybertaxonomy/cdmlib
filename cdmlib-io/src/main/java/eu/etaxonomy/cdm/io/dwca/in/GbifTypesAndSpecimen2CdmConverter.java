@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
  *
  */
 public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
-						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
+						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifTypesAndSpecimen2CdmConverter.class);
@@ -51,7 +52,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(CsvStreamItem item ){
+	public IReader<MappedCdmBase> map(StreamItem item ){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Reference<?> sourceReference = state.getTransactionalSourceReference();
@@ -115,7 +116,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	}
 
 
-	private Collection getCollection(DwcaImportState state, CsvStreamItem item, List<MappedCdmBase> resultList) {
+	private Collection getCollection(DwcaImportState state, StreamItem item, List<MappedCdmBase> resultList) {
 		String institutionCode = item.get(TermUri.DWC_INSTITUTION_CODE);
 		String collectionCode = item.get(TermUri.DWC_COLLECTION_CODE);
 		//institution
@@ -133,7 +134,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		return collection;
 	}
 		
-	private Collection getCollectionByCollectionCode(CsvStreamItem item, String collectionCode, Institution institution) {
+	private Collection getCollectionByCollectionCode(StreamItem item, String collectionCode, Institution institution) {
 		String namespace = TermUri.DWC_COLLECTION_CODE.toString();
 		List<Collection> result = state.get(namespace, collectionCode, Collection.class);
 		if (result.isEmpty()){
@@ -187,7 +188,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		return newCollection;
 	}
 	
-	private Institution getInstitutionByInstitutionCode(CsvStreamItem item, String institutionCode) {
+	private Institution getInstitutionByInstitutionCode(StreamItem item, String institutionCode) {
 		String namespace = TermUri.DWC_COLLECTION_CODE.toString();
 		List<Institution> result = state.get(namespace, institutionCode, Institution.class);
 		if (result.isEmpty()){
@@ -203,7 +204,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 		return (Institution)result.iterator().next();
 	}
 
-	private boolean hasDerivedUnit(CsvStreamItem item, boolean isType) {
+	private boolean hasDerivedUnit(StreamItem item, boolean isType) {
 		return isNotBlank(item.get(TermUri.DWC_INSTITUTION_CODE)) ||
 				isNotBlank(item.get(TermUri.DWC_COLLECTION_CODE)) ||
 				isNotBlank(item.get(TermUri.DWC_CATALOG_NUMBER))||
@@ -228,7 +229,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	 * @param item
 	 * @return
 	 */
-	private TypeDesignationStatusBase<?> getTypeStatus(String typeStatus, CsvStreamItem item) {
+	private TypeDesignationStatusBase<?> getTypeStatus(String typeStatus, StreamItem item) {
 		//TODO move to transformer or handle somehow different (e.g. transformer for http://vocabularies.gbif.org/vocabularies/type_status ) 
 		//preliminary implementation for those types needed for eMonocots import
 		if (isBlank(typeStatus)){
@@ -246,7 +247,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	}
 
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
 		return id;
 	}
@@ -255,7 +256,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 //********************** PARTITIONABLE **************************************/
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
 		//taxon

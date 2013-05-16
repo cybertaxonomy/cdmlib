@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -47,11 +48,11 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 		this.config = state.getConfig();  //for fast access
 	}
 
-	protected void fireWarningEvent(String message, CsvStreamItem item, Integer severity) {
+	protected void fireWarningEvent(String message, StreamItem item, Integer severity) {
 		fireWarningEvent(message, getDataLocation(item), severity, 1);
 	}
 	
-	private String getDataLocation(CsvStreamItem item) {
+	private String getDataLocation(StreamItem item) {
 		String location = item.getLocation();
 		return location;
 	}
@@ -91,7 +92,7 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 	/**
 	 * Returns the value for the given term in the item.
 	 */
-	protected String getValue(CsvStreamItem item, TermUri term) {
+	protected String getValue(StreamItem item, TermUri term) {
 		return item.get(term.getUriString());
 	}
 	
@@ -101,17 +102,17 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 	 * @param item
 	 * @return true if value is not blank
 	 */
-	protected boolean exists(TermUri term, CsvStreamItem item) {
+	protected boolean exists(TermUri term, StreamItem item) {
 		return ! StringUtils.isBlank(getValue(item, term));
 	}
 	
 
 	
-	public Map<String, Set<String>> getPartitionForeignKeys(IReader<CsvStreamItem> instream) {
+	public Map<String, Set<String>> getPartitionForeignKeys(IReader<StreamItem> instream) {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
 		
 		while (instream.hasNext()){
-			CsvStreamItem next = instream.read();
+			StreamItem next = instream.read();
 			makeForeignKeysForItem(next, result);
 		}
 		return result;
@@ -123,7 +124,7 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 	 * @param next
 	 * @param foreignKeyMap
 	 */
-	protected abstract void makeForeignKeysForItem(CsvStreamItem next, Map<String, Set<String>> foreignKeyMap);
+	protected abstract void makeForeignKeysForItem(StreamItem next, Map<String, Set<String>> foreignKeyMap);
 
 	
 	/**
@@ -151,7 +152,7 @@ public abstract class PartitionableConverterBase<STATE extends DwcaImportState>
 	}
 	
 
-	protected <T extends TaxonBase> T getTaxonBase(String id, CsvStreamItem item, Class<T> clazz, STATE state) {
+	protected <T extends TaxonBase> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
 		if (clazz == null){
 			clazz = (Class)TaxonBase.class;
 		}

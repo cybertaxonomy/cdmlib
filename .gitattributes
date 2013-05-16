@@ -305,7 +305,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/ICsvAreaRecord.java 
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConcatenatingReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonRelationConverter.java -text

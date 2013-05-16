@@ -12,32 +12,26 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.net.URI;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.dwca.in.IImportMapping.MappingType;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
 
 /**
  * @author a.mueller
  * @created 05.05.2011
  */
-public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportState, URI> implements IImportConfigurator {
+public class DwcaImportConfigurator extends StreamImportConfiguratorBase<DwcaImportState, URI> implements IImportConfigurator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new DwcaImportTransformer();
 	
+	private static final String DEFAULT_REF_TITLE = "DwC-A Import";
+	
 	//csv config
 	private boolean isNoQuotes = false;
-	
-	//partitions
-	private boolean usePartitions = true;
-	private int defaultPartitionSize = 2000;
 	
 	//taxon
 	private boolean deduplicateNamePublishedIn = true;
@@ -45,7 +39,6 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	private DatasetUse datasetUse = DatasetUse.CLASSIFICATION;
 	private boolean useSourceReferenceAsSec = false;
 	private boolean useParentAsAcceptedIfAcceptedNotExists = true;
-
 
 	//distribution
 	private boolean excludeLocality = false;   //if set to true the dwc locality is not considered during distribution import
@@ -57,21 +50,12 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	//validation
 	private boolean validateRankConsistency = true;
 	
-	private String sourceReferenceTitle = null;
-	
-	//mapping
-	private IImportMapping.MappingType mappingType = MappingType.InMemoryMapping;
-	
 	public enum DatasetUse{
 		CLASSIFICATION,
 		SECUNDUM,
 		ORIGINAL_SOURCE
-		
 	}
 	
-		
-
-
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -82,7 +66,6 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 	public static DwcaImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new DwcaImportConfigurator(uri, destination);
 	}
-	
 	
 	/**
 	 * @param berlinModelSource
@@ -95,8 +78,6 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 		this.setDestination(destination);
 	}
 	
-	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
@@ -104,52 +85,9 @@ public class DwcaImportConfigurator extends ImportConfiguratorBase<DwcaImportSta
 		return new DwcaImportState(this);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
-	public Reference getSourceReference() {
-		if (this.sourceReference == null){
-			sourceReference = ReferenceFactory.newGeneric();
-			if (StringUtils.isBlank(this.sourceReferenceTitle )){
-				sourceReference.setTitleCache("DwC-A import", true);
-			}else{
-				sourceReference.setTitleCache(this.sourceReferenceTitle, true);
-			}
-		}
-		if (getSourceRefUuid() != null){
-			sourceReference.setUuid(getSourceRefUuid());
-		}else{
-			setSourceRefUuid(sourceReference.getUuid());
-		}
-		return sourceReference;
-	}
-
-	
-	
-	public boolean isUsePartitions() {
-		return usePartitions;
-	}
-
-	public void setUsePartitions(boolean usePartitions) {
-		this.usePartitions = usePartitions;
-	}
-
-	public void setDefaultPartitionSize(int defaultPartitionSize) {
-		this.defaultPartitionSize = defaultPartitionSize;
-	}
-
-	public int getDefaultPartitionSize() {
-		return defaultPartitionSize;
-	}
-
-	public IImportMapping.MappingType getMappingType() {
-		return mappingType;
-	}
-
-	public void setMappingType(IImportMapping.MappingType mappingType) {
-		this.mappingType = mappingType;
+	protected String getDefaultSourceReferenceTitle(){
+		return DEFAULT_REF_TITLE;
 	}
 
 	public boolean isDeduplicateNamePublishedIn() {
