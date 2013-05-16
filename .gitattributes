@@ -1615,6 +1615,8 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
 cdmlib-remote-webapp/pom.xml -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/EditWindow.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/ExportWindow.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/HelloWorld.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/LoginWindow.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/widgetset/AppWidgetSet.gwt.xml -text
