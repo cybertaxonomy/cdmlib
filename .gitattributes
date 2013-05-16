@@ -374,6 +374,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularRecord.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaZipExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/IDwcaAreaRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelRecordStream.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelToStreamConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
