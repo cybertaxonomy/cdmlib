@@ -147,7 +147,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, ANNOTATION)) {
-						// NOT YET IMPLEMENTED
+						// NOT YET IMPLEMENTED  //TODO test handleSimpleAnnotation
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
@@ -376,7 +376,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, ANNOTATION)) {
-						// NOT YET IMPLEMENTED
+						// NOT YET IMPLEMENTED  //TODO test handleSimpleAnnotation
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
@@ -435,6 +435,14 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
 				result.add(individualsAssociation);
+			}else if (next.isCharacters()) {
+				String text = next.asCharacters().getData();
+				if (text.matches("\\.")){
+					//do nothing
+				}else{
+					String message = "Unrecognized text: %s";
+					fireWarningEvent(String.format(message, text), next, 6);
+				}
 			} else {
 				handleUnexpectedElement(next);
 			}

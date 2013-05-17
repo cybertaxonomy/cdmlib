@@ -280,7 +280,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 						// NOT YET IMPLEMENTED
 						popUnimplemented(next.asEndElement());
 					} else if (isEndingElement(next, ANNOTATION)) {
-						// NOT YET IMPLEMENTED
+						// NOT YET IMPLEMENTED //TODO test handleSimpleAnnotation
 						popUnimplemented(next.asEndElement());
 					} else {
 						handleUnexpectedEndElement(next.asEndElement());
@@ -339,7 +339,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 				return;
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next);
+					handleNotYetImplementedElement(next); //TODO test handleSimpleAnnotation
 				} else {
 					handleUnexpectedStartElement(next.asStartElement());
 				}
@@ -606,7 +606,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 				return;
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next);
+					handleNotYetImplementedElement(next); //TODO test handleSimpleAnnotation
 				} else if (isStartingElement(next, ITALICS)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, BOLD)) {

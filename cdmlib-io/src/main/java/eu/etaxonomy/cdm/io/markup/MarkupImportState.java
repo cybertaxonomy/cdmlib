@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -66,6 +69,30 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 	
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
+	
+	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
+	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
+	
+	private Map<String, UUID> featureUuidMap = new HashMap<String, UUID>(); //keep in multiple imports
+
+	/**
+	 * This method resets all those variables that should not be reused from one import to another.
+	 * @see MarkupImportConfigurator#isReuseExistingState()
+	 * @see MarkupImportConfigurator#getNewState()
+	 */
+	protected void reset(){
+		featureNodesToSave = new HashSet<FeatureNode>();
+		polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
+		currentKey = null;
+		defaultLanguage = null;
+		currentTaxon = null;
+		footnoteRegister = new HashMap<String, FootnoteDataHolder>();
+		figureRegister = new HashMap<String, Media>();
+		footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+		figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+	}
 	
 		
 //**************************** CONSTRUCTOR ******************************************/
@@ -246,6 +273,59 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 
 	public void setOnlyNumberedTaxaExist(boolean onlyNumberedTaxaExist) {
 		this.onlyNumberedTaxaExist = onlyNumberedTaxaExist;
+	}
+
+	public Map<String,List<FeatureSorterInfo>> getGeneralFeatureSorterListMap() {
+		return generalFeatureSorterListMap;
+	}
+	public Map<String,List<FeatureSorterInfo>> getCharFeatureSorterListMap() {
+		return charFeatureSorterListMap;
+	}
+	
+	
+	/**
+	 * Adds new lists to the feature sorter list maps using the given key.
+	 * If at least 1 list already existed for the given key, true is returned. False
+	 * @param key Key that identifies the feature sorter list.
+	 * @return <code>true</code> if at least 1 list already exited for the given key. <code>false</code> otherwise.
+	 */
+	public boolean addNewFeatureSorterLists(String key) {
+		//general feature sorter list
+		List<FeatureSorterInfo> generalList = new ArrayList<FeatureSorterInfo>();
+		List<FeatureSorterInfo> previous1 = this.generalFeatureSorterListMap.put(key, generalList);
+		currentGeneralFeatureSorterList = generalList;
+		
+		//character feature sorter list
+		List<FeatureSorterInfo> charList = new ArrayList<FeatureSorterInfo>();
+		List<FeatureSorterInfo> previous2 = this.charFeatureSorterListMap.put(key, charList);
+		currentCharFeatureSorterList = charList;
+		
+		return (previous1 != null || previous2 != null);
+	}
+
+	/**
+	 * 
+	 * @param feature
+	 */
+	public void putFeatureToCharSorterList(Feature feature) {
+		currentCharFeatureSorterList.add(new FeatureSorterInfo(feature)); 
+		
+	}
+
+	/**
+	 * 
+	 * @param feature
+	 */
+	public void putFeatureToGeneralSorterList(Feature feature) {
+		currentGeneralFeatureSorterList.add(new FeatureSorterInfo(feature)); 
+		
+	}
+
+	public void putFeatureUuid(String featureString, UUID uuid) {
+		featureUuidMap.put(featureString, uuid);
+	}
+	public UUID getFeatureUuid(String featureString){
+		return featureUuidMap.get(featureString);
 	}
 
 }

@@ -33,6 +33,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	private boolean replaceStandardKeyTitles = true;
 	
 	private boolean doTaxa = true;
+	
+	private boolean reuseExistingState = false;
 
 	
 	//TODO
@@ -48,7 +50,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	//if true, the keys will be printed after they have been created	
 	private boolean doPrintKeys = false;
 
-	
+	private MarkupImportState state;
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#makeIoClassList()
 	 */
@@ -96,7 +99,16 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
 	public MarkupImportState getNewState() {
-		return new MarkupImportState(this);
+		if (this.isReuseExistingState() == true){
+			if (this.state == null){
+				this.state = new MarkupImportState(this);
+			}
+			return this.state;
+		}else{
+			return new MarkupImportState(this);
+		}
+		
+		
 	}
 	
 
@@ -124,16 +136,7 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		}else{
 			return this.getSource().toString();
 		}
-	}
-
-	public void setClassificationTitle(String classificationTitle) {
-		this.classificationTitle = classificationTitle;
-	}
-
-	public String getClassificationTitle() {
-		return classificationTitle;
-	}
-	
+	}	
 	
 
 	public UUID getLastTaxonUuid() {
@@ -173,6 +176,35 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 
 	public boolean isReplaceStandardKeyTitles() {
 		return replaceStandardKeyTitles;
+	}
+
+	/**
+	 * If true, the state is saved in the configurator between 2 imports using this same configurator.
+	 * Use with care as you may run into memory issues or also data consistency issues otherwise.
+	 * This value must be set before getNewState is called for the <b>first</b> time. The feature is
+	 * experimental.
+	 * @return if reuse existing state is set to true.
+	 */
+	public boolean isReuseExistingState() {
+		return reuseExistingState;
+	}
+
+	/**
+	 * @see #isReuseExistingState()
+	 * @param reuseExistingState
+	 */
+	public void setReuseExistingState(boolean reuseExistingState) {
+		this.reuseExistingState = reuseExistingState;
+	}
+	
+	/**
+	 * If {@link #isReuseExistingState()} is true, this method returns the state.
+	 * This is an experimental workaround for Markup import. The functionality
+	 * should better be moved to CdmImportBase somewhere. 
+	 * @return
+	 */
+	public MarkupImportState getState() {
+		return state;
 	}
 
 	

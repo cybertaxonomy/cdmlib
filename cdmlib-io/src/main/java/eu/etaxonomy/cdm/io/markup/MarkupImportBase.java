@@ -82,6 +82,7 @@ public abstract class MarkupImportBase  {
 	protected static final String COORDINATES = "coordinates";
 	protected static final String DATES = "dates";
 	protected static final String GATHERING = "gathering";
+	protected static final String FOOTNOTE_REF = "footnoteRef";
 	protected static final String FULL_NAME = "fullName";
 	protected static final String ITALICS = "italics";
 	protected static final String NUM = "num";
@@ -251,6 +252,33 @@ public abstract class MarkupImportBase  {
 	protected String getAndRemoveAttributeValue(Map<String, Attribute> attributes, String attrName) {
 		return getAndRemoveAttributeValue(null, attributes, attrName, false, 1);
 	}
+	
+	/**
+	 * Returns the value of a boolean attribute with the given name and removes the attribute from the attributes map. 
+	 * Returns <code>defaultValue</code> if the attribute does not exist. ALso returns <code>defaultValue</code> and throws a warning if the
+	 * attribute has no boolean value (true, false).
+	 * @param 
+	 * @param attributes the 
+	 * @param attrName the name of the attribute
+	 * @param defaultValue the default value to return if attribute does not exist or can not be defined
+	 * @return
+	 */
+	protected Boolean getAndRemoveBooleanAttributeValue(XMLEvent event, Map<String, Attribute> attributes, String attrName, Boolean defaultValue) {
+		String value = getAndRemoveAttributeValue(null, attributes, attrName, false, 1);
+		Boolean result = defaultValue;
+		if (value != null){
+			if (value.equalsIgnoreCase("true")){
+				result = true;
+			}else if (value.equalsIgnoreCase("false")){
+				result = false;
+			}else{
+				String message = "Boolean attribute has no boolean value ('true', 'false') but '%s'";
+				fireWarningEvent(String.format(message, value), makeLocationStr(event.getLocation()), 6, 1);
+			}
+		}
+		return result;
+	}
+
 	
 	/**
 	 * Returns the value of a given attribute name and returns the attribute from the attributes map.
@@ -716,9 +744,25 @@ public abstract class MarkupImportBase  {
 		return StringUtils.isBlank(str);
 	}
 
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);	
 	}	
+	
+
+	/**
+	 * Returns the default language defined in the state. If no default language is defined in the state,
+	 * the CDM default language is returned.
+	 * @param state
+	 * @return
+	 */
+	protected Language getDefaultLanguage(MarkupImportState state) {
+		Language result = state.getDefaultLanguage();
+		if (result == null){
+			result = Language.DEFAULT();
+		}
+		return result;
+	}
+
 
 //*********************** FROM XML IMPORT BASE ****************************************
 	protected boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
@@ -754,7 +798,7 @@ public abstract class MarkupImportBase  {
 		return docImport.getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode);
 	}
 	
-	protected Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+	protected Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<?> voc){
 		return docImport.getLanguage(state, uuid, label, text, labelAbbrev, voc);
 	}
 	
@@ -1002,6 +1046,21 @@ public abstract class MarkupImportBase  {
 		throw new IllegalStateException("Event has no closing tag");
 
 	}
+	
+	/**
+	 * For it returns a pure CData annotation string. This behaviour may change in future. More complex annotations
+	 * should be handled differently.
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected String handleSimpleAnnotation(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		String annotation = getCData(state, reader, parentEvent);
+		return annotation;
+	}
+
 	
 //********************************************** OLD *************************************	
 

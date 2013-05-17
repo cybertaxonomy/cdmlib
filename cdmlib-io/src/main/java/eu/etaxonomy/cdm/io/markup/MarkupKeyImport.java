@@ -22,6 +22,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.markup.UnmatchedLeads.UnmatchedLeadsKey;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -254,9 +255,8 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		String num = getAndRemoveAttributeValue(attributes, NUM);
 		boolean taxonNotExists = checkAndRemoveAttributeValue(attributes, EXISTS, "false");
 		
-		String taxonCData = getCData(state, reader, parentEvent, false).trim();
+		String taxonCData = handleInnerToTaxon(state, reader, parentEvent, node).trim();
 		
-		//TODO ?
 		String taxonKeyStr = makeTaxonKey(taxonCData, state.getCurrentTaxon(), parentEvent.getLocation());
 		taxonNotExists = taxonNotExists || (isBlank(num) && state.isOnlyNumberedTaxaExist());
 		if (taxonNotExists){
@@ -275,6 +275,41 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 	}
 	
 	
+	/**
+	 * Returns the taxon text of the toTaxon element and handles all annotations as ';'-concatenated modifying text.
+	 * Footnote refs are not yet handled.
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @param node
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	private String handleInnerToTaxon(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, PolytomousKeyNode node) throws XMLStreamException {
+		String taxonText = "";
+		String modifyingText = null;
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (isNotBlank(modifyingText)){
+					node.putModifyingText(getDefaultLanguage(state), modifyingText);
+				}
+				return taxonText;
+			} else if (next.isCharacters()) {
+				taxonText += next.asCharacters().getData();
+			} else if (isStartingElement(next, ANNOTATION)) {
+				String annotation = handleSimpleAnnotation(state, reader, next);
+				modifyingText = CdmUtils.concat("; ", modifyingText, annotation);
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				handleNotYetImplementedElement(next);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("Event has no closing tag");
+
+	}
+
 	/**
 	 * Creates a string that represents the given taxon. The string will try to replace e.g.
 	 * abbreviated genus epithets by its full name etc.
@@ -313,14 +348,14 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			}
 			if (isInfraSpecificMarker(single)){
 				String strSpeciesEpi = name.getSpecificEpithet();
-				if (isBlank(result)){
+				if (isBlank(result) && isNotBlank(strSpeciesEpi)){
 					result += strGenusName + " " + strSpeciesEpi;
 				}
 			}
 			result = (result + " " + split[i]).trim();
 		}
-		//remove trailing "."
-		while (result.endsWith(".")){
+		//remove trailing "." except for "sp."
+		while (result.matches(".*(?<!sp)\\.$")){
 			result = result.substring(0, result.length()-1).trim();
 		}
 		return result;
@@ -339,13 +374,29 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 	}
 	
-	private boolean isGenusAbbrev(String single, String strGenusName) {
-		if (! single.matches("[A-Z]\\.?")) {
+	/**
+	 * Checks if <code>abbrev</code> is the short form for the genus name (strGenusName).
+	 * Usually this is the case if <code>abbrev</code> is the first letter (optional with ".") 
+	 * of strGenusName. But in older floras it may also be the first 2 or 3 letters (optional with dot).
+	 * However, we allow only a maximum of 2 letters to be anambigous. In cases with 3 letters better 
+	 * change the original markup data.
+	 * @param single
+	 * @param strGenusName
+	 * @return
+	 */
+	private boolean isGenusAbbrev(String abbrev, String strGenusName) {
+		if (! abbrev.matches("[A-Z][a-z]?\\.?")) {
 			return false;
-		}else if (single.length() == 0 || strGenusName == null || strGenusName.length() == 0){
+		}else if (abbrev.length() == 0 || strGenusName == null || strGenusName.length() == 0){
 			return false; 
 		}else{
-			return single.charAt(0) == strGenusName.charAt(0);
+			abbrev = abbrev.replace(".", "");
+			return strGenusName.startsWith(abbrev);
+//			boolean result = true;
+//			for (int i = 0 ; i < abbrev.length(); i++){
+//				result &= ( abbrev.charAt(i) == strGenusName.charAt(i));
+//			}
+//			return result;
 		}
 	}
 	
