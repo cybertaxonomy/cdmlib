@@ -2011,8 +2011,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MediaServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaNodeComparator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceImpl.java -text
