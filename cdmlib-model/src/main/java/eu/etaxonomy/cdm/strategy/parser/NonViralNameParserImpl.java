@@ -776,11 +776,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 //		    if ( cultivarMarkerRE.match(fullName) ){ funktioniert noch nicht, da es z.B. auch Namen gibt, wie 't Hart
 //		    	result = parseCultivar(fullName);
 //		    }
-		    //hybrids //TODO 2 implement hybrids
-		    //else 
-//		    if (hybridPattern.matcher(fullNameString).find() ){
-//		    	parseHybrid(nameToBeFilled, fullNameString, rank, makeEmpty);
-//		    } else 
+
 		      if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
 				if (rank != null && ! hasCheckRankProblem  && (rank.isSupraGeneric()|| rank.isGenus())){
@@ -971,6 +967,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	private String removeHybridBlanks(String fullNameString) {
+//		if (fullNameString.matches(regex))
+		fullNameString = fullNameString.replaceAll(oWs + "[xX]" + oWs + "(?=[A-Z])", " " + hybridSign + " ");
 		fullNameString = fullNameString.replaceAll(hybridFull, " "+hybridSign).trim();
 		return fullNameString;
 	}
