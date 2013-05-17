@@ -386,10 +386,11 @@ public class NonViralNameParserImplTest {
 		}
 		
 		//Species hybrid
-		NonViralName<?> name1 = parser.parseFullName("Abies alba \u00D7 Pinus bus", botanicCode, null);
+		String hybridCache = "Abies alba \u00D7 Pinus bus";
+		NonViralName<?> name1 = parser.parseFullName(hybridCache, botanicCode, null);
 		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
 		assertEquals("Name must have 2 hybrid parents", 2, name1.getHybridChildRelations().size());
-		assertEquals("Title cache must be correct", "Abies alba \u00D7 Pinus bus", name1.getTitleCache());
+		assertEquals("Title cache must be correct", hybridCache, name1.getTitleCache());
 		List<HybridRelationship> orderedRels = name1.getOrderedChildRelationships();
 		assertEquals("Name must have 2 hybrid parents in ordered list", 2, orderedRels.size());
 		NonViralName<?> firstParent = orderedRels.get(0).getParentName();
@@ -397,7 +398,16 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> secondParent = orderedRels.get(1).getParentName();
 		assertEquals("Name must have Pinus bus as second hybrid parent", "Pinus bus", secondParent.getTitleCache());
 		assertEquals("Hybrid name must have the lowest rank ('species') as rank", Rank.SPECIES(), name1.getRank());
+		assertNull("Name must not have a genus eptithet", name1.getGenusOrUninomial());
+		assertNull("Name must not have a specific eptithet", name1.getSpecificEpithet());
 
+		
+		//x-sign
+		hybridCache = "Abies alba x Pinus bus";
+		name1 = parser.parseFullName(hybridCache, botanicCode, null);
+		assertFalse("Name must be parsable", name1.hasProblem());
+		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
+		
 		//Subspecies first hybrid
 		name1 = parser.parseFullName("Abies alba subsp. beta \u00D7 Pinus bus", botanicCode, null);
 		assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
@@ -430,7 +440,7 @@ public class NonViralNameParserImplTest {
 		secondParent = orderedRels.get(1).getParentName();
 		assertEquals("Name must have Pinus bus Mill. as second hybrid parent", "Pinus bus Mill.", secondParent.getTitleCache());
 		assertEquals("Hybrid name must have the lower rank ('species') as rank", Rank.SPECIES(), name1.getRank());
-		
+	    
 	}
 
 	
