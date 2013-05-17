@@ -799,8 +799,8 @@ public class Rank extends OrderedTermBase<Rank> {
                 throw new UnknownCdmTypeException (errorWarning);
             }
         }else if (rankName.equalsIgnoreCase("Subsection")){
-            if (nc != null && nc.equals(NomenclaturalCode.ICZN)){ return Rank.SECTION_ZOOLOGY();
-            }else if (nc != null && nc.equals(NomenclaturalCode.ICBN)){ return Rank.SECTION_BOTANY();
+            if (nc != null && nc.equals(NomenclaturalCode.ICZN)){ return Rank.SUBSECTION_ZOOLOGY();
+            }else if (nc != null && nc.equals(NomenclaturalCode.ICBN)){ return Rank.SUBSECTION_BOTANY();
             }else{
                 String errorWarning = "Subsection is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
                 logger.warn(errorWarning);
