@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
- * xxx.
+ * TODO javadoc.
  * 
  * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.model.location.NamedArea} 
  */
