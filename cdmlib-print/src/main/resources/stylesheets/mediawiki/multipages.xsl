@@ -26,15 +26,12 @@
     <!-- create the username who changed/created the pages -->
     <xsl:variable name="username">Sybille Test </xsl:variable>
 
-    <xsl:template name="wiki-newline-comment">
-        <xsl:comment>
-            <xsl:text>&#xa; </xsl:text>
-        </xsl:comment>
+    <xsl:template name="wiki-newline">
+        <xsl:text>&#xa;</xsl:text>
     </xsl:template>
 
-    <xsl:template name="wiki-two-newlines-comment">
+    <xsl:template name="wiki-newline-comment">
         <xsl:comment>
-            <xsl:text>&#xa; </xsl:text>
             <xsl:text>&#xa; </xsl:text>
         </xsl:comment>
     </xsl:template>
@@ -158,7 +155,7 @@
                     <xsl:value-of select="concat('#REDIRECT [[',$page-prefix,$title,']]')"/>
                     <!-- add parent categorie if exists -->
                     <xsl:if test="exists(../..) and name(../..)='TaxonNode'">
-                        <xsl:call-template name="wiki-newline-comment"/>
+                        <xsl:call-template name="wiki-newline"/>
                         <xsl:value-of select="concat('[[Category:',$parent-title,']]')"/>
                     </xsl:if>
                 </text>
@@ -186,18 +183,17 @@
                     <xsl:attribute name="xml:space">preserve</xsl:attribute>
                     <!-- add table of contents -->
                     <xsl:call-template name="TOC"/>
-
                     <!-- add taxo tree -->
                     <xsl:value-of
-                        select="concat('{{EDIT_Taxotree| parentTaxon=',$page-prefix,$parent-title, '}}')"/>
-                    <xsl:call-template name="wiki-two-newlines-comment"/>
-
+                        select="concat('{{EDIT_Taxotree| parentTaxon=',$page-prefix,$parent-title,'}}')"/>
+                    <xsl:call-template name="wiki-newline"/>
+                    <xsl:call-template name="wiki-newline"/>
 
                     <!-- add contents of taxon page -->
                     <xsl:apply-templates select="Taxon"/>
                     <xsl:call-template name="display-references"/>
-                    <xsl:call-template name="wiki-newline-comment"/>
-
+                    <xsl:call-template name="wiki-newline"/>
+                    <xsl:call-template name="wiki-newline"/>
                     <!-- put page to corresponding tax category -->
                     <xsl:value-of select="concat('[[Category:',$title, ']]')"/>
 
@@ -242,8 +238,9 @@
             </xsl:when>
             <xsl:otherwise>
                 <!-- for debugging --> Unformatted title for rank uuid: <xsl:value-of
-                    select="$taxon/name/rank/uuid"/>: <xsl:value-of select="$taxon/name/titleCache"
-                />
+                    select="$taxon/name/rank/uuid"/>: <xsl:value-of select="$taxon/name/titleCache">
+                    
+                    </xsl:value-of>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -270,7 +267,10 @@
         <xsl:apply-templates select="synonymy"/>
         <xsl:apply-templates select="key"/>
         <xsl:apply-templates select="descriptions"/>
+        <!-- A change to Figure Gallery: comment following line: -->
         <xsl:call-template name="gallery"/>
+        <!-- TODO to change to Figure Gallery: call figure gallery in the right place
+        what else?-->
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -278,9 +278,6 @@
     <!-- these templates provide the citations -->
 
     <xsl:template name="display-references">
-        <xsl:call-template name="chapter">
-            <xsl:with-param name="title">References</xsl:with-param>
-        </xsl:call-template>
         <xsl:text>{{EDIT_Reference_Section}}</xsl:text>
     </xsl:template>
 
@@ -317,59 +314,59 @@
         Mohrig, W.; Menzel, F. 1992: Neue Arten europäischer Trauermücken (Diptera, Sciaridae). An International Journal of Dipterological Research, 3(1-2), 1–16.
         Authors Date: title. inReferences title in italics, Volume in bold(series), page range -->
     <xsl:template name="reference">
-
         <xsl:param name="reference-node"/>
         <!--TODO Do we need to sort the list of references in WikiMedia or will they just appear in numbered order as they occur in the names-->
         <!--xsl:sort select="sources/e[1]/citation/datePublished/start"/-->
 
-        <!-- use the citation-uuid as a unique name for the reference -->
-        <xsl:variable name="citation-uuid" select="$reference-node/uuid"/>
+        <!-- first of all check if any of the data we show exist: TODO remove this test, 
+            if we modified CDM services, to export proper data -->
+        <xsl:if
+            test="exists($reference-node/authorTeam/teamMembers/e[1]/lastname) 
+            or exists($reference-node/authorTeam/lastname) or exists($reference-node/datePublished/start)
+            or exists($reference-node/title)">
 
-        <!-- use the citation-uuid as a unique name for the reference -->
-        <xsl:value-of select="concat('{{EDIT_Reference|name=',$citation-uuid,'|content=')"/>
-        <xsl:call-template name="wiki-newline-comment"/>
-        <xsl:text>{{aut|</xsl:text>
-        <xsl:choose>
-            <xsl:when test="$reference-node/authorTeam/teamMembers/e[1]/lastname != ''">
-                <xsl:for-each select="$reference-node/authorTeam/teamMembers/e">
-                    <xsl:value-of select="lastname"/>
-                    <xsl:choose>
-                        <xsl:when test="position() != last()">
-                            <xsl:text> &amp; </xsl:text>
-                        </xsl:when>
-                    </xsl:choose>
-                </xsl:for-each>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="$reference-node/authorTeam/lastname"/>
-            </xsl:otherwise>
+            <!-- use the citation-uuid as a unique name for the reference -->
+            <xsl:variable name="citation-uuid" select="$reference-node/uuid"/>
 
-        </xsl:choose>
-        <xsl:value-of select="$citation-uuid"/>
-        <!-- DEBUGGING display uuid so can check references against those in Tax Editor -->
+            <!-- use the citation-uuid as a unique name for the reference -->
+            <xsl:value-of select="concat('{{EDIT_Reference|name=',$citation-uuid,'|content=')"/>
+            <xsl:text>{{aut|</xsl:text>
+            <xsl:choose>
+                <xsl:when test="exists($reference-node/authorTeam/teamMembers)">
+                    <xsl:for-each select="$reference-node/authorTeam/teamMembers/e">
+                        <xsl:value-of select="lastname"/>
+                        <xsl:choose>
+                            <xsl:when test="position() != last()">
+                                <xsl:text> &amp; </xsl:text>
+                            </xsl:when>
+                        </xsl:choose>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$reference-node/authorTeam/lastname"/>
+                </xsl:otherwise>
+            </xsl:choose>
+            <!-- DEBUGGING display uuid so can check references against those in Tax Editor -->
+            <xsl:text>}} </xsl:text>
+            <xsl:if test="$reference-node/datePublished/start != ''">
+                <xsl:value-of select="$reference-node/datePublished/start"/>
+                <xsl:text>: </xsl:text>
+            </xsl:if>
+            <xsl:apply-templates select="$reference-node/title"/>
+            <!-- do we need any other info from inReference node - see flore-afrique-centrale.xsl xsl -->
+            <xsl:variable name="wiki-markup">''</xsl:variable>
 
-        <xsl:text>}} </xsl:text>
-        <xsl:if test="$reference-node/datePublished/start != ''">
-            <xsl:value-of select="$reference-node/datePublished/start"/>
-            <xsl:text>: </xsl:text>
-        </xsl:if>
+            <xsl:if test="$reference-node/inReference/node()">
+                <xsl:value-of
+                    select="concat($wiki-markup, $reference-node/inReference/title, $wiki-markup)"/>
+            </xsl:if>
+            <xsl:apply-templates select="$reference-node/volume"/>
+            <xsl:apply-templates select="$reference-node/series"/>
+            <xsl:apply-templates select="$reference-node/pages"/>
+            <xsl:apply-templates select="$reference-node/placePublished"/>
+            <xsl:apply-templates select="$reference-node/publisher"/>
 
-        <xsl:apply-templates select="$reference-node/title"/>
-
-        <!-- do we need any other info from inReference node - see flore-afrique-centrale.xsl xsl -->
-        <xsl:variable name="wiki-markup">''</xsl:variable>
-
-        <xsl:if test="$reference-node/inReference/node()">
-            <xsl:value-of
-                select="concat($wiki-markup, $reference-node/inReference/title, $wiki-markup)"/>
-        </xsl:if>
-        <xsl:apply-templates select="$reference-node/volume"/>
-        <xsl:apply-templates select="$reference-node/series"/>
-        <xsl:apply-templates select="$reference-node/pages"/>
-        <xsl:apply-templates select="$reference-node/placePublished"/>
-        <xsl:apply-templates select="$reference-node/publisher"/>
-
-        <!--xsl:choose>
+            <!--xsl:choose>
             <xsl:when test="$reference-node/inReference/node()">
                 <xsl:value-of select="$reference-node/title"/>
                 <xsl:text>. </xsl:text>
@@ -392,7 +389,8 @@
                 <xsl:text>.</xsl:text>
             </xsl:if>
         </xsl:if-->
-        <xsl:text>}}</xsl:text>
+            <xsl:text>}}</xsl:text>
+        </xsl:if>
         <!--</ref>-->
         <xsl:call-template name="wiki-newline-comment"/>
     </xsl:template>
@@ -502,8 +500,12 @@
         <xsl:call-template name="chapter">
             <xsl:with-param name="title">Synonomy</xsl:with-param>
         </xsl:call-template>
-        <xsl:apply-templates select="../name"/>
-
+        <!--<xsl:text>{{EDIT_Taxon|</xsl:text>-->
+        <xsl:apply-templates select="../name">
+            <xsl:with-param name="type">Taxon</xsl:with-param>
+        </xsl:apply-templates>
+        <!--<xsl:text>}}</xsl:text>-->
+        <xsl:call-template name="wiki-newline"/>
         <!-- getting nomenclatural refs and citaions for this name-->
         <xsl:call-template name="reference">
             <xsl:with-param name="reference-node" select="../name/nomenclaturalReference"/>
@@ -513,9 +515,10 @@
                 select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
             <xsl:with-param name="name-uuid" select="../name/uuid"/>
         </xsl:call-template>
-        <xsl:call-template name="wiki-two-newlines-comment"/>
         <xsl:apply-templates select="homotypicSynonymsByHomotypicGroup"/>
         <xsl:apply-templates select="heterotypicSynonymyGroups"/>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
         <!--xsl:call-template name="citations">
             <xsl:with-param name="descriptionelements"
                 select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
@@ -530,7 +533,7 @@
             <xsl:text>{{EDIT Homotypic Synonym|1|</xsl:text>
             <xsl:apply-templates select="name"/>
             <xsl:text>}}</xsl:text>
-
+            <xsl:call-template name="wiki-newline-comment"/>
             <!--homotypicSynonymsByHomotypicGroup/e/name/nomenclaturalReference-->
             <!--xsl:apply-templates select="name/nomenclaturalReference"/-->
             <xsl:call-template name="reference">
@@ -544,29 +547,24 @@
                 <xsl:with-param name="name-uuid" select="name/uuid"/>
             </xsl:call-template>
         </xsl:for-each>
-        <xsl:call-template name="wiki-two-newlines-comment"/>
     </xsl:template>
 
     <!--.............................................-->
 
     <xsl:template match="heterotypicSynonymyGroups">
         <xsl:for-each select="e">
-
-            <!--do foreach for the rest-->
-            <!--<xsl:text>==***==</xsl:text>-->
+            <!-- take the first one to printout as the head of the homotypic group -->
             <xsl:variable name="first-element" select="e[1]"/>
             <xsl:text>{{EDIT Heterotypic Synonym|1|</xsl:text>
             <xsl:apply-templates select="$first-element/name"/>
             <xsl:text>}}</xsl:text>
-            <!--<xsl:text>==***==</xsl:text>-->
-
             <!-- take the first one to printout as the head of the homotypic group -->
-
+            <!--do foreach for the rest-->
             <xsl:for-each select="e[position() &gt; 1]">
                 <xsl:text>{{EDIT Homotypic Synonym|2|</xsl:text>
                 <xsl:apply-templates select="name"/>
                 <xsl:text>}}</xsl:text>
-
+                <xsl:call-template name="wiki-newline-comment"/>
                 <xsl:call-template name="reference">
                     <xsl:with-param name="reference-node" select="name/nomenclaturalReference"/>
                 </xsl:call-template>
@@ -577,41 +575,58 @@
                         select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements"/>
                     <xsl:with-param name="name-uuid" select="name/uuid"/>
                 </xsl:call-template>
-                <xsl:call-template name="wiki-two-newlines-comment"/>
-            </xsl:for-each>        
+            </xsl:for-each>
         </xsl:for-each>
-        <xsl:call-template name="wiki-two-newlines-comment"/>
         <!--xsl:apply-templates select="e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates-->
     </xsl:template>
 
     <!--.............................................-->
 
-    <xsl:template match="name">
-        <xsl:apply-templates select="taggedName"/>
+    <xsl:template match="name" name="name">
+        <xsl:param name="type"/>
+        <xsl:apply-templates select="taggedName">
+            <xsl:with-param name="type" select="$type"/>
+        </xsl:apply-templates>
         <!--xsl:apply-templates select="nomenclaturalReference"/-->
     </xsl:template>
 
     <!--.............................................-->
 
     <xsl:template match="taggedName">
-        <xsl:for-each select="e">
-            <!-- TODO mybe some types don't contain font tags, we don't have to call the tmeplate  -->
-            <!--        we could just use <xsl:value-of select="text"/>-->
-            <xsl:choose>
-                <xsl:when test="type='name'">
+        <xsl:param name="type"/>
+        <xsl:choose>
+            <xsl:when test="$type!=''">
+                <xsl:value-of select="concat('{{EDIT_',$type,'|')"/>
+                <xsl:for-each select="e">
+                    <xsl:choose>
+                        <xsl:when test="type='name'">
+                            <xsl:apply-templates select="text"/>
+                            <xsl:text> </xsl:text>
+                        </xsl:when>
+                        <xsl:when test="type='authors'">
+                            <xsl:text>}}</xsl:text>
+                            <xsl:value-of select="concat('{{EDIT_',$type,'_Author|')"/>
+                            <xsl:apply-templates select="text"/>
+                            <xsl:text>}}</xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:for-each select="e">
                     <xsl:apply-templates select="text"/>
                     <xsl:text> </xsl:text>
-                </xsl:when>
-                <xsl:when test="type='authors'">
-                    <xsl:apply-templates select="text"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="text"/>
-                    <xsl:text> </xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:for-each>
-        <xsl:call-template name="wiki-newline-comment"/>
+                </xsl:for-each>
+            </xsl:otherwise>
+        </xsl:choose>
+
+
+
+
+        <!-- TODO mybe some types don't contain font tags, we don't have to call the tmeplate  -->
+        <!--        we could just use <xsl:value-of select="text"/>-->
+
+
         <!--<xsl:text>&#xA;</xsl:text>-->
     </xsl:template>
 
@@ -649,11 +664,13 @@
     <xsl:template name="secondLevelDescriptionElements">
 
         <xsl:value-of select="concat('{{EDIT_Highlevel_Feature|',representation_L10n,'}}')"/>
-        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+        <xsl:call-template name="wiki-newline"/>
         <xsl:for-each select="feature">
+            <!-- TODO change mouseover to TermBase description - after exporting it from CDM -->
             <xsl:value-of
-                select="concat('{{EDIT_Nested_Feature|name=',representation_L10n,'|elements=')"/>
-            <!-- TODO create Element -->
+                select="concat('{{EDIT_Nested_Feature|name=',representation_L10n,'|mouseover=',representation_L10n,'|elements=')"/>
+            <xsl:call-template name="wiki-newline"/>
+            <!-- TODO create Elements -->
             <xsl:for-each select="descriptionelements/descriptionelement">
                 <xsl:value-of
                     select="concat('{{EDIT_Nested_Feature_Element|',multilanguageText_L10n/text, '}}')"/>
@@ -662,11 +679,15 @@
                         <xsl:text>{{EDIT_Delimiter}}</xsl:text>
                     </xsl:when>
                 </xsl:choose>
+                <xsl:if test="position() != last()">
+                    <xsl:call-template name="wiki-newline"/>
+                </xsl:if>
             </xsl:for-each>
             <xsl:text>}}</xsl:text>
-            <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+            <xsl:call-template name="wiki-newline"/>
         </xsl:for-each>
-        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+        <xsl:call-template name="wiki-newline"/>
+
     </xsl:template>
     <!--.............................................-->
 
@@ -689,6 +710,7 @@
     <xsl:template name="commonTaxonName">
 
         <xsl:value-of select="concat('{{EDIT_Feature|name=',representation_L10n,'|elements=')"/>
+        <xsl:call-template name="wiki-newline"/>
         <xsl:for-each select="descriptionelements/descriptionelement">
             <xsl:text/>
             <xsl:value-of
@@ -696,21 +718,21 @@
             <xsl:choose>
                 <xsl:when test="position() != last()">
                     <xsl:text>{{EDIT_Delimiter}}</xsl:text>
-                    <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+                    <xsl:call-template name="wiki-newline"/>
                 </xsl:when>
             </xsl:choose>
         </xsl:for-each>
         <xsl:text>}}</xsl:text>
-        <xsl:call-template name="wiki-two-newlines-comment"></xsl:call-template>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
     </xsl:template>
 
     <!--.............................................-->
 
     <xsl:template name="textData">
-
-        <xsl:value-of
-            select="concat('{{EDIT_Feature|name=',representation_L10n, '|elements={{EDIT_Feature_Text|' )"/>
-        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+        <xsl:value-of select="concat('{{EDIT_Feature|name=',representation_L10n, '|elements=')"/>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:text>{{EDIT_Feature_Text|</xsl:text>
         <!--
         <xsl:choose>
             <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">-->
@@ -723,8 +745,17 @@
         </xsl:choose>
         -->
         <xsl:text>}}}}</xsl:text>
-        <xsl:call-template name="wiki-two-newlines-comment"></xsl:call-template>
-
+        <xsl:choose>
+            <xsl:when test="uuid='6dfb4e78-c67e-410c-8989-c1fb1295abf6'">--> <!-- feature is "Figures -->
+                <!-- A Gallery: uncomment following line -->
+                <!--<xsl:apply-templates
+                    select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>-->
+                <!-- A Gallery: comment following line -->
+                <xsl:call-template name="gallery"/>
+            </xsl:when>
+        </xsl:choose>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
         <!-- LORNA TRY IMAGE HERE -->
         <!--xsl:apply-templates select="descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/-->
 
@@ -745,12 +776,16 @@
     <!-- image gallery -->
 
     <xsl:template name="gallery">
+        <!-- A change to Figure Gallery: delete/comment following line-->
         <xsl:text>{{EDIT_Gallery|files=</xsl:text>
-        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+        <!-- A change to Figure Gallery: uncomment following line -->
+        <!--<xsl:text>{{EDIT_Figure_Gallery|files=</xsl:text>-->
+        <xsl:call-template name="wiki-newline"/>
         <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
 
         <xsl:text>}}</xsl:text>
-        <xsl:call-template name="wiki-two-newlines-comment"></xsl:call-template>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
     </xsl:template>
 
 
@@ -760,11 +795,12 @@
 
         <xsl:value-of
             select="concat('{{EDIT_Gallery_File|filename=',functx:substring-after-last(.,'/'), '|description=')"/>
-        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
         <!--go back up to the description element and get the text for the Figure legend -->
         <xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text"/>
         <xsl:text>}}</xsl:text>
-        <xsl:call-template name="wiki-newline-comment"></xsl:call-template>
+        <xsl:if test="position() != last()">
+            <xsl:call-template name="wiki-newline"/>
+        </xsl:if>
     </xsl:template>
 
 
@@ -776,35 +812,35 @@
     <!-- change here to change the look of the mediawiki output -->
     <!-- please use mediawiki templates -->
     <!-- think also of template changes in the mediawiki -->
-    <!-- TODO: wrap TOC layout in a mediawiki template -->
 
-    <xsl:template name="TOC"> {{EDIT_TOC}} <xsl:call-template name="wiki-two-newlines-comment"/>
-    </xsl:template>
+    <xsl:template name="TOC">{{EDIT_TOC}}</xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <xsl:template name="chapter">
         <xsl:param name="title"/>
-        <xsl:value-of select="concat('{{EDIT_Section|',$title,'}}')"/>
-        <xsl:call-template name="wiki-two-newlines-comment"/>
+        <xsl:value-of select="concat('{{EDIT_Section|title=',$title,'}}')"/>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <xsl:template name="subchapter">
         <xsl:param name="title"/>
-        <xsl:value-of select="concat('{{EDIT_Subsection|',$title,'}}')"/>
-        <xsl:call-template name="wiki-two-newlines-comment"/>
+        <xsl:value-of select="concat('{{EDIT_Subsection|title=',$title,'}}')"/>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- puts in a wiki comment -->
     <xsl:template name="wiki-comment">
-        <xsl:param name="wiki-comment"></xsl:param>
+        <xsl:param name="wiki-comment"/>
         <xsl:comment>
             <xsl:value-of select="concat($wiki-comment,'&#xa;')"/>
         </xsl:comment>
     </xsl:template>
-    
+
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
     <!--this template layouts and displays the name of a 
@@ -848,9 +884,7 @@
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-    <!--we replace html <i> and <b> with mediawiki templates-->
-
-
+    <!--we replace "escaped" html <i> and <b> with mediawiki markup-->
     <!--.............................................-->
 
     <xsl:template name="replace-tags">
