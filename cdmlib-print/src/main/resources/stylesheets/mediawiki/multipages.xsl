@@ -1,4 +1,4 @@
-
+<!DOCTYPE xsl:stylesheet [<!ENTITY hyphen "&#45;" > <!ENTITY ndash "&#x2013;" >]> 
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:functx="http://www.functx.com">
 
@@ -238,9 +238,8 @@
             </xsl:when>
             <xsl:otherwise>
                 <!-- for debugging --> Unformatted title for rank uuid: <xsl:value-of
-                    select="$taxon/name/rank/uuid"/>: <xsl:value-of select="$taxon/name/titleCache">
-                    
-                    </xsl:value-of>
+                    select="$taxon/name/rank/uuid"/>: <xsl:value-of select="$taxon/name/titleCache"
+                > </xsl:value-of>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -267,8 +266,8 @@
         <xsl:apply-templates select="synonymy"/>
         <xsl:apply-templates select="key"/>
         <xsl:apply-templates select="descriptions"/>
-        <!-- A change to Figure Gallery: comment following line: -->
-        <xsl:call-template name="gallery"/>
+        <!-- A change to Gallery: uncomment following line: -->
+        <!--<xsl:call-template name="gallery"/>-->
         <!-- TODO to change to Figure Gallery: call figure gallery in the right place
         what else?-->
     </xsl:template>
@@ -346,12 +345,12 @@
                     <xsl:value-of select="$reference-node/authorTeam/lastname"/>
                 </xsl:otherwise>
             </xsl:choose>
-            <!-- DEBUGGING display uuid so can check references against those in Tax Editor -->
             <xsl:text>}} </xsl:text>
-            <xsl:if test="$reference-node/datePublished/start != ''">
+            <!-- DEBUGGING display uuid so can check references against those in Tax Editor -->
+            <!--<xsl:if test="$reference-node/datePublished/start != ''">
                 <xsl:value-of select="$reference-node/datePublished/start"/>
                 <xsl:text>: </xsl:text>
-            </xsl:if>
+            </xsl:if>-->
             <xsl:apply-templates select="$reference-node/title"/>
             <!-- do we need any other info from inReference node - see flore-afrique-centrale.xsl xsl -->
             <xsl:variable name="wiki-markup">''</xsl:variable>
@@ -397,11 +396,22 @@
 
     <!-- wild card match for different children of nomenclaturalReference and citaion nodes -->
     <xsl:template match="*">
-        <xsl:value-of select="."/>
+
+        <xsl:choose>
+            <xsl:when test="name(.) = 'pages'">
+                <xsl:value-of select="replace(.,'&hyphen;','&ndash;')"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="."/>
+            </xsl:otherwise>
+        </xsl:choose>
+
+        <!--<xsl:text>FOO </xsl:text>-->
         <xsl:if test="name(.) = 'title' or name(.) = 'publisher' or name(.) = 'pages'">
-            <!-- . if pages or publisher or title - comma if placePublished -->
+            <!-- . if publisher or title - comma if placePublished -->
             <xsl:text>. </xsl:text>
         </xsl:if>
+
         <xsl:if test="name(.) = 'volume'">
             <xsl:text>: </xsl:text>
         </xsl:if>
@@ -489,6 +499,7 @@
             </xsl:for-each>
 
             <xsl:text>{{Key End}}</xsl:text>
+            <xsl:call-template name="wiki-newline"></xsl:call-template>
         </xsl:if>
 
     </xsl:template>
@@ -657,6 +668,7 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
+
     </xsl:template>
 
     <!--.............................................-->
@@ -666,25 +678,32 @@
         <xsl:value-of select="concat('{{EDIT_Highlevel_Feature|',representation_L10n,'}}')"/>
         <xsl:call-template name="wiki-newline"/>
         <xsl:for-each select="feature">
-            <!-- TODO change mouseover to TermBase description - after exporting it from CDM -->
-            <xsl:value-of
-                select="concat('{{EDIT_Nested_Feature|name=',representation_L10n,'|mouseover=',representation_L10n,'|elements=')"/>
-            <xsl:call-template name="wiki-newline"/>
-            <!-- TODO create Elements -->
-            <xsl:for-each select="descriptionelements/descriptionelement">
+            <!-- TODO assign TermBase description to parameter description- after exporting it from CDM -->
+            <xsl:if test="uuid!='6dfb4e78-c67e-410c-8989-c1fb1295abf6'">
                 <xsl:value-of
-                    select="concat('{{EDIT_Nested_Feature_Element|',multilanguageText_L10n/text, '}}')"/>
-                <xsl:choose>
-                    <xsl:when test="position() != last()">
-                        <xsl:text>{{EDIT_Delimiter}}</xsl:text>
-                    </xsl:when>
-                </xsl:choose>
-                <xsl:if test="position() != last()">
-                    <xsl:call-template name="wiki-newline"/>
-                </xsl:if>
-            </xsl:for-each>
-            <xsl:text>}}</xsl:text>
-            <xsl:call-template name="wiki-newline"/>
+                    select="concat('{{EDIT_Nested_Feature|name=',representation_L10n,'|description=',representation_L10n,'|elements=')"/>
+                <xsl:call-template name="wiki-newline"/>
+                <!-- TODO create Elements -->
+                <xsl:for-each select="descriptionelements/descriptionelement">
+                    <xsl:value-of
+                        select="concat('{{EDIT_Nested_Feature_Element|',multilanguageText_L10n/text, '}}')"/>
+                    <xsl:choose>
+                        <xsl:when test="position() != last()">
+                            <xsl:text>{{EDIT_Delimiter}}</xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
+                    <xsl:if test="position() != last()">
+                        <xsl:call-template name="wiki-newline"/>
+                    </xsl:if>
+                </xsl:for-each>
+                <xsl:text>}}</xsl:text>
+                <xsl:call-template name="wiki-newline"/>
+            </xsl:if>
+        </xsl:for-each>
+        <xsl:for-each select="feature">
+            <xsl:if test="uuid='6dfb4e78-c67e-410c-8989-c1fb1295abf6'">
+            <xsl:call-template name="featureGallery"/>
+            </xsl:if>
         </xsl:for-each>
         <xsl:call-template name="wiki-newline"/>
 
@@ -745,15 +764,13 @@
         </xsl:choose>
         -->
         <xsl:text>}}}}</xsl:text>
-        <xsl:choose>
-            <xsl:when test="uuid='6dfb4e78-c67e-410c-8989-c1fb1295abf6'">--> <!-- feature is "Figures -->
-                <!-- A Gallery: uncomment following line -->
-                <!--<xsl:apply-templates
+        <!-- feature is "Figures -->
+        <!-- A Gallery: uncomment following line -->
+        <!--<xsl:apply-templates
                     select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>-->
-                <!-- A Gallery: comment following line -->
-                <xsl:call-template name="gallery"/>
-            </xsl:when>
-        </xsl:choose>
+        <!-- A Gallery: comment following line 
+                <xsl:call-template name="gallery"/> -->
+
         <xsl:call-template name="wiki-newline"/>
         <xsl:call-template name="wiki-newline"/>
         <!-- LORNA TRY IMAGE HERE -->
@@ -773,7 +790,7 @@
     </xsl:template>
 
     <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    <!-- image gallery -->
+    <!-- image galleries -->
 
     <xsl:template name="gallery">
         <!-- A change to Figure Gallery: delete/comment following line-->
@@ -783,6 +800,21 @@
         <xsl:call-template name="wiki-newline"/>
         <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
 
+        <xsl:text>}}</xsl:text>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:call-template name="wiki-newline"/>
+    </xsl:template>
+
+
+    <xsl:template name="featureGallery">
+        
+        <xsl:value-of
+            select="concat('{{EDIT_Nested_Feature|name=',representation_L10n,'|description=',representation_L10n,'|elements=}}')"/>
+        <xsl:text>{{EDIT_Figure_Gallery|files=</xsl:text>
+        <xsl:text/>
+        <xsl:call-template name="wiki-newline"/>
+        <xsl:apply-templates select=".//media/e/representations/e/parts/e/uri"/>
+        
         <xsl:text>}}</xsl:text>
         <xsl:call-template name="wiki-newline"/>
         <xsl:call-template name="wiki-newline"/>
