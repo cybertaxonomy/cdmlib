@@ -1157,8 +1157,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.ja
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverterTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestRegExs.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestUUID.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestBookDefaultCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestNameCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonNameParserBotanicalNameImpl.java -text
