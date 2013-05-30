@@ -391,6 +391,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfi
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitRow.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImporterBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImporterBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34URow.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmIDResolver.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmMarshallerListener.java -text
@@ -540,6 +545,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMappingTest.java -te
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportIntegrationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilderTest.java -text
@@ -590,6 +596,9 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImport
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalImplied.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImportTest-input.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImportTest.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/three4U/NormalExplicitImportTest.testUuid-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AgentsTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilderTest-agents.xml -text
