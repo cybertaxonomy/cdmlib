@@ -90,11 +90,10 @@ public class TcsRdfTestActivator {
 			
 			
 			IReferenceService refService = tcsImport.getCdmAppController().getReferenceService();
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			IBook book = refFactory.newBook();
+			IBook book = ReferenceFactory.newBook();
 			//book.setDatePublished(TimePeriod.NewInstance(1945));
 			book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
-			refService.saveOrUpdate((Reference)book);
+			refService.saveOrUpdate((Reference<?>)book);
 			logger.info("End");
 			System.out.println("End import from TCS ("+ source.toString() + ")...");
 		} catch (URISyntaxException e) {

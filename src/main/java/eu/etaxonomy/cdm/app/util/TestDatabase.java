@@ -126,7 +126,7 @@ public class TestDatabase {
 	    element.addStatisticalValue(statisticalValue);
 	    taxNameDescription.addElement(element);
 	    
-	    SpecimenOrObservationBase specimen = Specimen.NewInstance();
+	    SpecimenOrObservationBase<?> specimen = Specimen.NewInstance();
 	    
 	    specimen.setIndividualCount(12);
 	    
@@ -145,7 +145,7 @@ public class TestDatabase {
 //	    List<Synonym> synonyms = new ArrayList<Synonym>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
-		Reference citRef, sec;
+		Reference<?> citRef, sec;
 		BotanicalName name1, name2, name21, nameRoot1, nameFree, synName11, synName12, synName2, synNameFree;
 		BotanicalName nameRoot2, nameR2_1, nameR2_2;
 		Taxon child1, child2, child21, root1T, root2T, freeT;
@@ -230,13 +230,12 @@ public class TestDatabase {
 		taxonomicNames.add(nameRoot2);
 		
         // references
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		sec = refFactory.newBook();
+		sec = ReferenceFactory.newBook();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Plant Specification & Taxonomy", true);
 		references.add(sec);
 		
-		citRef = refFactory.newDatabase();
+		citRef = ReferenceFactory.newDatabase();
 		citRef.setAuthorTeam(linne);
 		citRef.setTitleCache("BioCASE", true);
 		references.add(citRef);

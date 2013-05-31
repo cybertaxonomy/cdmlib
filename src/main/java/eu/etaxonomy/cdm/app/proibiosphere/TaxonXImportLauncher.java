@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.app.proibiosphere;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -23,7 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -43,9 +50,8 @@ public class TaxonXImportLauncher {
 
     //database validation status (create, update, validate ...)
     static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-
-
     static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
+
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
 
@@ -58,13 +64,15 @@ public class TaxonXImportLauncher {
 
     public static void main(String[] args) {
 
-        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&taxonomicName.taxonomicName=Chenopodium";
+        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&taxonomicName.taxonomicName=";
         String plaziUrlDoc = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&MODS.ModsDocID=";
         //        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/xslt/E01DD5BE427421156E0C0BAC56389E0D?xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FLinkers%2FXmlDocumentLinkerData%2Fgg2taxonx.xsl";
         List<String> sourcesStr =  new ArrayList<String>();
         boolean plaziNotServer=false;
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
+//        plaziUrl=plaziUrl+"Chenopodium";
+        plaziUrl=plaziUrlDoc+"0910-2878-5652";
 
         String tnomenclature = "ICBN";
         URL plaziURL;
@@ -79,17 +87,13 @@ public class TaxonXImportLauncher {
             String pageEnd;
             String taxon;
             String link;
+            //TODO lastUpdate field
             if(!plaziNotServer){
                 while ((inputLine = in.readLine()) != null) {
                     if (inputLine.startsWith("<treatment ")){
                         taxon = inputLine.split("taxon=\"")[1].split("\"")[0];
                         docID=inputLine.split("docId=\"")[1].split("\"")[0];
                         link=inputLine.split("link=\"")[1].split("\"")[0];
-                        //                if (inputLine.indexOf("<exist:resource name=\"1362148061170_Cheno") > -1) {
-                        //                    String filename = inputLine.split("name=\"")[1].split("\"")[0];
-                        //                    sourcesStr.add(plaziUrl+filename);
-                        //                    log.info(plaziUrl+filename);
-                        //                }
                         pageStart = inputLine.split("startPage=\"")[1].split("\"")[0];
                         pageEnd = inputLine.split("endPage=\"")[1].split("\"")[0];
                         docList = documents.get(docID);
@@ -108,11 +112,6 @@ public class TaxonXImportLauncher {
                         taxon = inputLine.split("taxon=\"")[1].split("\"")[0];
                         docID=inputLine.split("docId=\"")[1].split("\"")[0];
                         link=inputLine.split("link=\"")[1].split("\"")[0];
-                        //                if (inputLine.indexOf("<exist:resource name=\"1362148061170_Cheno") > -1) {
-                        //                    String filename = inputLine.split("name=\"")[1].split("\"")[0];
-                        //                    sourcesStr.add(plaziUrl+filename);
-                        //                    log.info(plaziUrl+filename);
-                        //                }
                         pageStart = inputLine.split("startPage=\"")[1].split("\"")[0];
                         pageEnd = inputLine.split("endPage=\"")[1].split("\"")[0];
                         docList = documents.get(docID);
@@ -141,30 +140,74 @@ public class TaxonXImportLauncher {
         //        sourcesStr.add("/home/pkelbert/Documents/Proibiosphere/ChenopodiumXML/1362148061170_Chenopodium_K_hn_U_1993_tx.xml");
 
         for (String docId : documents.keySet()){
-            log.info("document "+docId);
-            List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
+            /*remove documents bad quality*/
+            log.info(docId);
+            if (!docId.equalsIgnoreCase("3891-7797-6564")){
+                            log.info("document "+docId);
+                List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
 
-            Map<Integer, List<String>> startPages = new HashMap<Integer, List<String>>();
-            for (String treatment:treatments) {
-                List<String>tmplist = startPages.get(Integer.valueOf(treatment.split("---")[0]));
-                if (tmplist == null) {
-                    tmplist = new ArrayList<String>();
+                Map<Integer, List<String>> startPages = new HashMap<Integer, List<String>>();
+                for (String treatment:treatments) {
+                    List<String>tmplist = startPages.get(Integer.valueOf(treatment.split("---")[0]));
+                    if (tmplist == null) {
+                        tmplist = new ArrayList<String>();
+                    }
+                    tmplist.add(treatment.split("---")[3]);
+                    startPages.put(Integer.valueOf(treatment.split("---")[0]),tmplist);
                 }
-                tmplist.add(treatment.split("---")[3]);
-                startPages.put(Integer.valueOf(treatment.split("---")[0]),tmplist);
-            }
-            List<Integer> pages = new ArrayList<Integer>();
-            pages.addAll(startPages.keySet());
+                List<Integer> pages = new ArrayList<Integer>();
+                pages.addAll(startPages.keySet());
 
-            Collections.sort(pages);
-            log.info(pages);
-            for (int page:pages) {
-               for (String treatment: startPages.get(page)) {
-                sourcesStr.add(treatment);
-            }
+                Collections.sort(pages);
+                //            log.info(pages);
+
+                log.info("Document "+docId+" should have "+treatments.size()+" treatments");
+                int cnt=0;
+                for (String source:treatments){
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder builder;
+                    URL url;
+
+                    try {
+                        builder = factory.newDocumentBuilder();
+                        url = new URL(source.split("---")[3]);
+                        Object o = url.getContent();
+                        InputStream is = (InputStream) o;
+                        Document document = builder.parse(is);
+                        cnt++;
+                    }catch(Exception e){
+                        //  e.printStackTrace();
+                        log.warn(e);
+                    }
+                }
+                log.info("Document "+docId+" has "+cnt+" treatments available");
+                if(treatments.size() != cnt)
+                {
+                    File file = new File("/home/pkelbert/Bureau/urlTaxonXToDoLater.txt");
+                    FileWriter writer;
+                    try {
+                        writer = new FileWriter(file ,true);
+                        writer.write(docId+"\n");
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+
+                }
+                else{
+                    for (int page:pages) {
+                        for (String treatment: startPages.get(page)) {
+                            sourcesStr.add(treatment);
+                        }
+                    }
+                }
             }
         }
-        log.info("SOURCES : "+sourcesStr);
+        log.info("NB SOURCES : "+sourcesStr.size());
+//        sourcesStr = new ArrayList<String>();
+//        sourcesStr.add("http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/4E7390346C05780D32283CCF6F5E4431_tx.xml");
 
         List<URI> sources = new ArrayList<URI>();
         for (String src: sourcesStr){
@@ -186,13 +229,14 @@ public class TaxonXImportLauncher {
         ICdmDataSource destination = cdmDestination;
         TaxonXImportConfigurator taxonxImportConfigurator = TaxonXImportConfigurator.NewInstance(destination);
 
-        taxonxImportConfigurator.setClassificationName(taxonxImportConfigurator.getSourceReferenceTitle());
+        //        taxonxImportConfigurator.setClassificationName(taxonxImportConfigurator.getSourceReferenceTitle());
         taxonxImportConfigurator.setCheck(check);
         taxonxImportConfigurator.setDbSchemaValidation(hbm2dll);
         taxonxImportConfigurator.setDoAutomaticParsing(true);
 
         // invoke import
         CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
+
 
         for (URI source:sources){
             log.info("START : "+source.getPath());
@@ -217,17 +261,16 @@ public class TaxonXImportLauncher {
 
             if (tnomenclature.equalsIgnoreCase("ICBN")) {
                 taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
-                taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
+                //                taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
             }
             if(tnomenclature.equalsIgnoreCase("ICZN")){
                 taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICZN);
-                taxonxImportConfigurator.setClassificationName("Ants");
+                //                taxonxImportConfigurator.setClassificationName("Ants");
             }
 
             //   taxonxImportConfigurator.setTaxonReference(null);
 
-            //new Test().invoke(tcsImportConfigurator);
-            log.info("INVOKE");
+            //            log.info("INVOKE");
 
             taxonImport.invoke(taxonxImportConfigurator);
             log.info("End import from SpecimenData ("+ source.toString() + ")...");
