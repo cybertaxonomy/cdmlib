@@ -1,15 +1,17 @@
 // $Id$
 /**
-* Copyright (C) 2013 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2013 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.taxonx2013;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.UUID;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,9 +38,14 @@ import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
@@ -53,6 +62,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
@@ -103,7 +113,10 @@ public class TaxonXExtractor {
         String collector=null;
         String fieldNumber=null;
         Double latitude=null,longitude=null;
+        TimePeriod tp =null;
+        String day,month,year="";
         String descr="";
+        String type="";
         boolean asso=false;
         NodeList eventContent =null;
         // create facade
@@ -127,48 +140,106 @@ public class TaxonXExtractor {
                 fieldNumber=null;
                 latitude=null;
                 longitude=null;
+                day="";
+                month="";
+                year="";
+                type="";
                 for (int j=0;j<eventContent.getLength();j++){
                     if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:country")){
                         country=eventContent.item(j).getTextContent().trim();
                     }
-                    if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:locality")){
+                    else if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:locality")){
                         locality=eventContent.item(j).getTextContent().trim();
                     }
-                    if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:stateprovince")){
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:stateprovince")){
                         stateprov=eventContent.item(j).getTextContent().trim();
                     }
-                    if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:collector")){
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:collector")){
                         collector=eventContent.item(j).getTextContent().trim();
                     }
-                    if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:decimallongitude")){
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:yearcollected")){
+                        year=eventContent.item(j).getTextContent().trim();
+                    }
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:monthcollected")){
+                        month=eventContent.item(j).getTextContent().trim();
+                    }
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:daycollected")){
+                        day=eventContent.item(j).getTextContent().trim();
+                    }
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:decimallongitude")){
                         String tmp = eventContent.item(j).getTextContent().trim();
                         try{longitude=Double.valueOf(tmp);}catch(Exception e){logger.warn("longitude is not a number");}
                     }
-                    if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:decimallatitude")){
+                    else  if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:decimallatitude")){
                         String tmp = eventContent.item(j).getTextContent().trim();
                         try{latitude=Double.valueOf(tmp);}catch(Exception e){logger.warn("latitude is not a number");}
+                    }else if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:TypeStatus")){
+                        type = eventContent.item(j).getTextContent().trim();
                     }
+                    else {
+                        logger.info("UNEXTRACTED FIELD FOR SPECIMEN "+eventContent.item(j).getNodeName()+", "+eventContent.item(j).getTextContent()) ;
+                    }
+                }
+                if (!day.isEmpty() || !month.isEmpty() || !year.isEmpty()){
+                    try{
+                        if (!year.isEmpty()) {
+                            tp = TimePeriod.NewInstance(Integer.parseInt(year));
+                            if (!month.isEmpty()) {
+                                tp.setStartMonth(Integer.parseInt(month));
+                                if (!day.isEmpty()) {
+                                    tp.setStartDay(Integer.parseInt(day));
+                                }
+                            }
 
+                        }
+                    }catch(Exception e){
+                        logger.warn("Collection date error "+e);
+                    }
                 }
             }
             if(xmldata.item(n).getNodeName().equalsIgnoreCase("#text")){
-                asso=true;
                 descr=xmldata.item(n).getTextContent().trim();
-                specimenOrObservation.setDescr(descr);
+                if (descr.length()>1) {
+                    specimenOrObservation.setDescr(descr);
+                    asso=true;
+                }
             }
             if(xmldata.item(n).getNodeName().equalsIgnoreCase("tax:p")){
-                asso=true;
                 descr=xmldata.item(n).getTextContent().trim();
-                specimenOrObservation.setDescr(descr);
+                if (descr.length()>1) {
+                    specimenOrObservation.setDescr(descr);
+                    asso=true;
+                }
             }
         }
-        if(asso){
+        if(asso && descr.length()>1){
 
-            logger.info("DESCR: "+descr);
-            derivedUnitFacade = getFacade(descr);
-            derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            //            logger.info("DESCR: "+descr);
+            if (!type.isEmpty()) {
+                derivedUnitFacade = getFacade(type);
+                SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
+                SpecimenTypeDesignationStatus stds= getSpecimenTypeDesignationStatusByKey(type);
+                if (stds !=null) {
+                    stds = (SpecimenTypeDesignationStatus) importer.getTermService().find(stds.getUuid());
+                }
+
+                designation.setTypeStatus(stds);
+                derivedUnitFacade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
+
+                derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+                //                designation.setTypeSpecimen(derivedUnitBase);
+                //                TaxonNameBase<?,?> name = taxon.getName();
+                //                name.addTypeDesignation(designation, true);
+            } else {
+                derivedUnitFacade = getFacade(descr);
+                derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            }
+
             unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
                     configState.getConfig(),importer.getAgentService());
+            if(tp!=null) {
+                unitsGatheringEvent.setGatheringDate(tp);
+            }
 
             // country
             unitsGatheringArea = new UnitsGatheringArea();
@@ -207,27 +278,77 @@ public class TaxonXExtractor {
         return specimenOrObservation;
     }
 
+
+    private SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(
+            String key) {
+        if (key == null) {
+            return null;
+        } else if (key.matches("(?i)(T|Type)")) {
+            return SpecimenTypeDesignationStatus.TYPE();
+        } else if (key.matches("(?i)(HT|Holotype)")) {
+            return SpecimenTypeDesignationStatus.HOLOTYPE();
+        } else if (key.matches("(?i)(LT|Lectotype)")) {
+            return SpecimenTypeDesignationStatus.LECTOTYPE();
+        } else if (key.matches("(?i)(NT|Neotype)")) {
+            return SpecimenTypeDesignationStatus.NEOTYPE();
+        } else if (key.matches("(?i)(ST|Syntype)")) {
+            return SpecimenTypeDesignationStatus.SYNTYPE();
+        } else if (key.matches("(?i)(ET|Epitype)")) {
+            return SpecimenTypeDesignationStatus.EPITYPE();
+        } else if (key.matches("(?i)(IT|Isotype)")) {
+            return SpecimenTypeDesignationStatus.ISOTYPE();
+        } else if (key.matches("(?i)(ILT|Isolectotype)")) {
+            return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
+        } else if (key.matches("(?i)(INT|Isoneotype)")) {
+            return SpecimenTypeDesignationStatus.ISONEOTYPE();
+        } else if (key.matches("(?i)(IET|Isoepitype)")) {
+            return SpecimenTypeDesignationStatus.ISOEPITYPE();
+        } else if (key.matches("(?i)(PT|Paratype)")) {
+            return SpecimenTypeDesignationStatus.PARATYPE();
+        } else if (key.matches("(?i)(PLT|Paralectotype)")) {
+            return SpecimenTypeDesignationStatus.PARALECTOTYPE();
+        } else if (key.matches("(?i)(PNT|Paraneotype)")) {
+            return SpecimenTypeDesignationStatus.PARANEOTYPE();
+        } else if (key.matches("(?i)(unsp.|Unspecified)")) {
+            return SpecimenTypeDesignationStatus.UNSPECIFIC();
+        } else if (key.matches("(?i)(2LT|Second Step Lectotype)")) {
+            return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+        } else if (key.matches("(?i)(2NT|Second Step Neotype)")) {
+            return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
+        } else if (key.matches("(?i)(OM|Original Material)")) {
+            return SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL();
+        } else if (key.matches("(?i)(IcT|Iconotype)")) {
+            return SpecimenTypeDesignationStatus.ICONOTYPE();
+        } else if (key.matches("(?i)(PT|Phototype)")) {
+            return SpecimenTypeDesignationStatus.PHOTOTYPE();
+        } else if (key.matches("(?i)(IST|Isosyntype)")) {
+            return SpecimenTypeDesignationStatus.ISOSYNTYPE();
+        } else {
+            return null;
+        }
+    }
     protected DerivedUnitFacade getFacade(String recordBasis) {
-        logger.info("getFacade()");
+        //        logger.info("getFacade()");
         DerivedUnitType type = null;
 
         // create specimen
         if (recordBasis != null) {
-            if (recordBasis.toLowerCase().startsWith("specimen") || recordBasis.toLowerCase().contains("specimen")) {// specimen
+            String recordBasisL = recordBasis.toLowerCase();
+            if (recordBasisL.startsWith("specimen") || recordBasisL.contains("specimen") || recordBasisL.contains("type")) {// specimen
                 type = DerivedUnitType.Specimen;
             }
-            if (recordBasis.toLowerCase().startsWith("observation")) {
+            if (recordBasisL.startsWith("observation")) {
                 type = DerivedUnitType.Observation;
             }
-            if (recordBasis.toLowerCase().contains("fossil")) {
+            if (recordBasisL.contains("fossil")) {
                 type = DerivedUnitType.Fossil;
             }
 
-            if (recordBasis.toLowerCase().startsWith("living")) {
+            if (recordBasisL.startsWith("living")) {
                 type = DerivedUnitType.LivingBeing;
             }
             if (type == null) {
-                logger.info("The basis of record does not seem to be known: " + recordBasis);
+                logger.info("The basis of record does not seem to be known: *" + recordBasisL+"*");
                 type = DerivedUnitType.DerivedUnit;
             }
             // TODO fossils?
@@ -308,7 +429,7 @@ public class TaxonXExtractor {
      * @param state
      */
     protected void prepareCollectors(TaxonXImportState state,IAgentService agentService) {
-        logger.info("PREPARE COLLECTORS");
+        //        logger.info("PREPARE COLLECTORS");
         List<String> collectors = new ArrayList<String>();
         String tmp;
         List<String> collectorsU = new ArrayList<String>(new HashSet<String>(collectors));
@@ -359,12 +480,18 @@ public class TaxonXExtractor {
      * @return
      */
     protected String getFullReference(String name, List<ParserProblem> problems) {
-        logger.info("getFullReference for "+ name);
-        JFrame frame = new JFrame("I have a question");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //        logger.info("getFullReference for "+ name);
+        JTextArea textArea = new JTextArea("Complete the reference '"+name+"' (use Euro+Med Checklist for Plants).\nThe current problem is "+StringUtils.join(problems,"--"));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
+
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String s = (String)JOptionPane.showInputDialog(
-                frame,
-                "Complete the reference '"+name+"' (use Euro+Med Checklist for Plants).\nThe current problem is "+StringUtils.join(problems,"--"),
+                null,
+                scrollPane,
                 "Get full reference name",
                 JOptionPane.PLAIN_MESSAGE,
                 null,
@@ -377,14 +504,19 @@ public class TaxonXExtractor {
      * @param name
      * @return
      */
-    protected String getScientificName(String fullname,String atomised) {
-        logger.info("getScientificName for "+ fullname);
-        JFrame frame = new JFrame("I have a question");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    protected String getScientificName(String fullname,String atomised,String classificationName, String fullParagraph) {
+        //        logger.info("getScientificName for "+ fullname);
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JTextArea textArea = new JTextArea("The names in the free text and in the xml tags do not match : "+fullname+", or "+atomised+"\n"+fullParagraph);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
         String s = (String)JOptionPane.showInputDialog(
-                frame,
-                "The names in the free text and in the xml tags do not match : "+fullname+", or "+atomised,
-                "Which name do I have to use? ",
+                null,
+                scrollPane,
+                "Which name do I have to use? The current classification is "+classificationName,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
@@ -392,13 +524,106 @@ public class TaxonXExtractor {
         return s;
     }
 
+
+    /**
+     * @param name
+     * @return
+     */
+    protected String askFeatureName(String paragraph) {
+        //        logger.info("getScientificName for "+ fullname);
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JTextArea textArea = new JTextArea("How should the feature be named? \n"+paragraph);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "Other");
+        return s;
+    }
+
+
+    /**
+     * @param name
+     * @return
+     */
+    protected Rank askForRank(String fullname,Rank rank, NomenclaturalCode nomenclaturalCode) {
+        //        logger.info("askForRank for "+ fullname+ ", "+rank);
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JTextArea textArea = new JTextArea("What is the correct rank for "+fullname+"?");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
+
+        List<Rank> rankList = new ArrayList<Rank>();
+        rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
+
+        List<String> rankListStr = new ArrayList<String>();
+        for (Rank r:rankList) {
+            rankListStr.add(r.toString());
+        }
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "The rank extracted from the TaxonX file is "+rank.toString(),
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                rankListStr.toArray(),
+                rank.toString());
+
+        Rank cR = null;
+        try {
+            cR = Rank.getRankByEnglishName(s,nomenclaturalCode,true);
+        } catch (UnknownCdmTypeException e) {
+            logger.warn("Unknown rank ?!"+s);
+            logger.warn(e);
+        }
+        return cR;
+    }
+
+    protected String askMultiple(String fullParagraph){
+        JTextArea textArea = new JTextArea("What category is it for this paragraph \n"+fullParagraph);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 400 ) );
+
+        String[] possiblities = {"synonyms","material examined","distribution","image caption","other"};
+
+
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                possiblities,
+                null);
+
+        if (s.equalsIgnoreCase("other")) {
+            s=askFeatureName(fullParagraph);
+        }
+        return s;
+
+    }
+
+
     /**
      * @param t
      * @param classification
      * @return
      */
     protected Taxon askParent(Taxon taxon,Classification classification ) {
-        logger.info("ask Parent ");
+        //        logger.info("ask Parent "+taxon.getTitleCache());
         Set<TaxonNode> allNodes = classification.getAllNodes();
         Map<String,Taxon> nodesMap = new HashMap<String, Taxon>();
 
@@ -407,25 +632,125 @@ public class TaxonXExtractor {
             nodesMap.put(t.getTitleCache(), t);
         }
         List<String> nodeList = new ArrayList<String>();
-        nodeList.add("It is the root");
         for (String nl : nodesMap.keySet()) {
-            nodeList.add(nl);
+            nodeList.add(nl+" - "+nodesMap.get(nl).getName().getRank());
         }
+        Collections.sort(nodeList);
+        nodeList.add(0, "Not here!");
 
         JFrame frame = new JFrame("I have a question");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String s = (String)JOptionPane.showInputDialog(
                 frame,
                 "What is the taxon parent for "+taxon.getTitleCache()+"?",
-                " ",
+                "The current classification is "+classification.getTitleCache(),
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 nodeList.toArray(),
-                null);
+                "Not here!");
 
-        Taxon returnTaxon = nodesMap.get(s);
+        Taxon returnTaxon = nodesMap.get(s.split(" - ")[0]);
+        //        logger.info("ask Parent returns "+s);
         return returnTaxon;
     }
+
+    protected Rank getRank(String r){
+        if (r==null) {
+            r=Rank.UNKNOWN_RANK().toString();
+        }
+        r=r.replace("dwcranks:", "");
+        r =r.replace("dwc:","");
+        //        logger.info("SEARCH RANK FOR "+r);
+
+        Rank rank = Rank.UNKNOWN_RANK();
+        if (r.equalsIgnoreCase("Superfamily")) {
+            rank=Rank.SUPERFAMILY();
+        }
+        if (r.equalsIgnoreCase("Family")) {
+            rank=Rank.FAMILY();
+        }
+        if (r.equalsIgnoreCase("Subfamily")) {
+            rank=Rank.SUBFAMILY();
+        }
+        if (r.equalsIgnoreCase("Tribe")) {
+            rank=Rank.TRIBE();
+        }
+        if (r.equalsIgnoreCase("Subtribe")) {
+            rank=Rank.SUBTRIBE();
+        }
+        if (r.equalsIgnoreCase("Genus")) {
+            rank=Rank.GENUS();
+        }
+        if (r.equalsIgnoreCase("Subgenus")) {
+            rank=Rank.SUBGENUS();
+        }
+        if (r.equalsIgnoreCase("Section")) {
+            rank=Rank.SECTION_BOTANY();
+        }
+        if (r.equalsIgnoreCase("Subsection")) {
+            rank=Rank.SUBSECTION_BOTANY();
+        }
+        if (r.equalsIgnoreCase("Series")) {
+            rank=Rank.SERIES();
+        }
+        if (r.equalsIgnoreCase("Subseries")) {
+            rank=Rank.SUBSERIES();
+        }
+        if (r.equalsIgnoreCase("Species")) {
+            rank=Rank.SPECIES();
+        }
+        if (r.equalsIgnoreCase("Subspecies")) {
+            rank=Rank.SUBSPECIES();
+        }
+        if (r.equalsIgnoreCase("Variety")) {
+            rank=Rank.VARIETY();
+        }
+        if (r.equalsIgnoreCase("Subvariety")) {
+            rank=Rank.SUBVARIETY();
+        }
+        if (r.equalsIgnoreCase("Form")) {
+            rank=Rank.FORM();
+        }
+        if (r.equalsIgnoreCase("Subform")) {
+            rank=Rank.SUBFORM();
+        }
+
+        return rank;
+    }
+
+
+    /**
+     * @param ato: atomised taxon name data
+     * @return rank present in the xmldata fields
+     */
+    protected Rank getRank(Map<String, String> ato) {
+        Rank rank=Rank.UNKNOWN_RANK();
+
+        if (ato == null) {
+            return rank;
+        }
+        if (ato.containsKey("dwc:family")){
+            rank=Rank.FAMILY();
+        }
+        if (ato.containsKey("dwc:tribe") || ato.containsKey("dwcranks:tribe")){
+            rank=Rank.TRIBE();
+        }
+        if (ato.containsKey("dwc:genus")) {
+            rank= Rank.GENUS();
+        }
+        if (ato.containsKey("dwc:subgenus")) {
+            rank= Rank.SUBGENUS();
+        }
+        if (ato.containsKey("dwc:specificepithet") || ato.containsKey("dwc:species")) {
+            rank= Rank.SPECIES();
+        }
+        if (ato.containsKey("dwc:infraspecificepithet")) {
+            rank= Rank.INFRASPECIES();
+        }
+        //popUp(rank.getTitleCache());
+        return rank;
+    }
+
 }
 
 

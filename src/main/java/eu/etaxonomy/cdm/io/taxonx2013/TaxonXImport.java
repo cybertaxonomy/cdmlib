@@ -9,21 +9,28 @@
 
 package eu.etaxonomy.cdm.io.taxonx2013;
 
+import java.awt.Dimension;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
@@ -69,17 +76,84 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
      * @param state
      * @return
      */
-    private void setClassification(TaxonXImportState state) {
-        if (classification == null) {
-            String name = state.getConfig().getClassificationName();
+    private void setClassification(String classificationName) {
+        logger.info("SET CLASSIFICATION "+classification);
 
-            classification = Classification.NewInstance(name, ref,	Language.DEFAULT());
-            if (state.getConfig().getClassificationUuid() != null) {
-                classification.setUuid(state.getConfig().getClassificationUuid());
+        List<Classification> classifList = getClassificationService().list(Classification.class, null, null, null, null);
+        Map<String,Classification> classifDic = new HashMap<String,Classification>();
+        ArrayList<String> nodeList = new ArrayList<String>();
+        for (Classification cla:classifList){
+            nodeList.add(cla.getTitleCache());
+            classifDic.put(cla.getTitleCache(), cla);
+        }
+        nodeList.add(classificationName);
+        nodeList.add("Other classification - add a new one");
+
+        JTextArea textArea = new JTextArea("Which classification do you want to use ? \nThe current value is "+classificationName);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 100 ) );
+
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "Classification",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                nodeList.toArray(),
+                null);
+
+        if (!classifDic.containsKey(s)){
+            if (s.equalsIgnoreCase("Other classification - add a new one")){
+                classificationName = askForValue("classification name ?",classificationName);
             }
+            //new classification
+            classification = Classification.NewInstance(classificationName, ref,   Language.DEFAULT());
             getClassificationService().saveOrUpdate(classification);
             refreshTransaction();
         }
+        else{
+            if (classification == null) {
+                String name = taxonXstate.getConfig().getClassificationName();
+
+                classification = Classification.NewInstance(name, ref,  Language.DEFAULT());
+                if (taxonXstate.getConfig().getClassificationUuid() != null) {
+                    classification.setUuid(taxonXstate.getConfig().getClassificationUuid());
+                }
+                getClassificationService().saveOrUpdate(classification);
+                refreshTransaction();
+            }
+            else{
+                classification = classifDic.get(s);
+            }
+        }
+
+
+    }
+
+    /**
+     * @param string
+     * @return
+     */
+    private String askForValue(String string, String classificationName) {
+        JTextArea textArea = new JTextArea(string);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 100 ) );
+
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "What should be the "+string,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                classificationName);
+
+        return s;
+
     }
 
     @Override
@@ -94,8 +168,8 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
 //        this.taxonXstate.getConfig().getClassificationName();
 //        this.taxonXstate.getConfig().getClassificationUuid();
 
-        ref = this.taxonXstate.getConfig().getSourceReference();
-        setClassification(taxonXstate);
+        ref = taxonXstate.getConfig().getSourceReference();
+
 
         String message = "go taxonx!";
         logger.info(message);
@@ -113,25 +187,45 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             InputStream is = (InputStream) o;
             Document document = builder.parse(is);
 
-            taxonXFieldGetter = new TaxonXXMLFieldGetter(dataHolder, prefix,document);
-            taxonXFieldGetter.setNomenclaturalCode(this.taxonXstate.getConfig().getNomenclaturalCode());
-            taxonXFieldGetter.setClassification(classification);
-            taxonXFieldGetter.setImporter(this);
-            taxonXFieldGetter.setConfig(state);
-            taxonXFieldGetter.parseFile();
+            taxonXFieldGetter = new TaxonXXMLFieldGetter(dataHolder, prefix,document, this,taxonXstate,classification);
+            ref = taxonXFieldGetter.parseMods();
+            logger.info("REF : "+ref.getTitleCache());
+            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
+            setClassification(taxonXstate.getConfig().getClassificationName());
+            taxonXFieldGetter.updateClassification(classification);
+            logger.info("classif :"+classification);
+            taxonXFieldGetter.parseTreatment(ref,sourceName);
 
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
+//        } catch (MalformedURLException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (SAXException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (ParserConfigurationException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+        }catch(Exception e){
             e.printStackTrace();
-        } catch (SAXException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warn(e);
+
+            File file = new File("/home/pkelbert/Bureau/urlTaxonX.txt");
+            FileWriter writer;
+            try {
+                writer = new FileWriter(file ,true);
+                writer.write(sourceName+"\n");
+                writer.flush();
+                writer.close();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+            logger.warn(sourceName);
         }
         commitTransaction(tx);
     }

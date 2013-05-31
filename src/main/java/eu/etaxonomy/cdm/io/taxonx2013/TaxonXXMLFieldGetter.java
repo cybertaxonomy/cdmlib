@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.io.taxonx2013;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,46 +19,73 @@ public class TaxonXXMLFieldGetter {
     private final Document doc;
 
 
-    private NomenclaturalCode nomenclaturalCode;
+    private final NomenclaturalCode nomenclaturalCode;
     private Classification classification;
-    private TaxonXImport importer;
-    private TaxonXImportState configState;
+    private final TaxonXImport importer;
+    private final TaxonXImportState taxonXstate;
+    TaxonXModsExtractor modsextractor;
+    TaxonXTreatmentExtractor treatmentextractor ;
 
-
-    public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document){
+    public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document, TaxonXImport taxonXImport, TaxonXImportState taxonXstate, Classification classif){
         this.doc = document;
+        this.importer = taxonXImport;
+        this.nomenclaturalCode = taxonXstate.getConfig().getNomenclaturalCode();
+        this.classification = classif;
+        logger.info("CLASSIFICATION "+classification);
+        this.taxonXstate=taxonXstate;
+        modsextractor = new TaxonXModsExtractor(importer);
+        treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, taxonXstate);
     }
 
 
-    public void parseFile(){
-        System.out.println("PARSE");
+
+    public Reference<?> parseMods(){
+//        System.out.println("PARSEMODS");
         //taxonx
         Node root = doc.getFirstChild();
-        TaxonXModsExtractor modsextractor = new TaxonXModsExtractor(importer);
-        TaxonXTreatmentExtractor treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, configState);
+
 
         //taxonHeader, taxonBody
         NodeList nodes = root.getChildNodes();
         Reference<?> ref = null;
         for (int i=0; i< nodes.getLength();i++) {
-            System.out.println(nodes.item(i).getNodeName());
+//            System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxheader")){
                 NodeList nodes2 = nodes.item(i).getChildNodes();
                 for (int j=0; j< nodes2.getLength();j++){
-                    System.out.println("nodes2 : "+nodes2.item(j).getNodeName());
+//                    System.out.println("nodes2 : "+nodes2.item(j).getNodeName());
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("mods:mods")){
                         ref = modsextractor.extractMods(nodes2.item(j));
-                        System.out.println("reference: "+ref.getTitleCache());
+//                        System.out.println("reference: "+ref.getTitleCache());
                         importer.getReferenceService().saveOrUpdate(ref);
                     }
                 }
             }
+        }
+        if (ref!=null) {
+            taxonXstate.getConfig().setClassificationName(ref.getTitleCache());
+        } else {
+            taxonXstate.getConfig().setClassificationName( "no reference title");
+        }
+        return ref;
+    }
+
+
+    public void parseTreatment(Reference<?> ref, URI sourceName){
+        System.out.println("PARSETREATMENT "+ref);
+        //taxonx
+        Node root = doc.getFirstChild();
+        //taxonHeader, taxonBody
+        NodeList nodes = root.getChildNodes();
+
+        for (int i=0; i< nodes.getLength();i++) {
+//            System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxBody")){
                 NodeList nodes2 = nodes.item(i).getChildNodes();
                 for (int j=0; j< nodes2.getLength();j++){
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("tax:treatment")){
                         List<Object> tosave = new ArrayList<Object>();
-                        treatmentextractor.extractTreatment(nodes2.item(j),tosave,ref);
+                        treatmentextractor.extractTreatment(nodes2.item(j),tosave,ref,sourceName);
                     }
                 }
             }
@@ -65,34 +93,15 @@ public class TaxonXXMLFieldGetter {
     }
 
 
-    public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
-       this.nomenclaturalCode = nomenclaturalCode;
-
-    }
-
 
     /**
-     * @param classification
+     * @param classification2
      */
-    public void setClassification(Classification classification) {
-       this.classification=classification;
+    public void updateClassification(Classification classification2) {
+       this.classification=classification2;
+       if (treatmentextractor != null) {
+        treatmentextractor.updateClassification(classification);
     }
-
-
-    /**
-     * @param taxonXImport
-     */
-    public void setImporter(TaxonXImport taxonXImport) {
-       this.importer=taxonXImport;
-
-    }
-
-
-    /**
-     * @param state
-     */
-    public void setConfig(TaxonXImportState state) {
-       this.configState=state;
 
     }
 
