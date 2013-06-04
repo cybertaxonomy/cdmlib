@@ -22,12 +22,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -50,10 +52,18 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private PolytomousKey currentKey;
 	
+	private TeamOrPersonBase<?> currentCollector;
+	
+	private Set<NamedArea> currentAreas = new HashSet<NamedArea>();
+	
 	private Language defaultLanguage;
 	
 	private Taxon currentTaxon;
 	private String currentTaxonNum;
+	
+	private boolean taxonInClassification = true;
+	
+	private String latestGenusEpithet = null;
 	
 	private boolean isCitation = false;
 	private boolean isNameType = false;
@@ -88,10 +98,12 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		currentKey = null;
 		defaultLanguage = null;
 		currentTaxon = null;
+		currentCollector = null;
 		footnoteRegister = new HashMap<String, FootnoteDataHolder>();
 		figureRegister = new HashMap<String, Media>();
 		footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+		currentAreas = new HashSet<NamedArea>();
 	}
 	
 		
@@ -327,5 +339,48 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public UUID getFeatureUuid(String featureString){
 		return featureUuidMap.get(featureString);
 	}
+
+	public String getLatestGenusEpithet() {
+		return latestGenusEpithet;
+	}
+
+	public void setLatestGenusEpithet(String latestGenusEpithet) {
+		this.latestGenusEpithet = latestGenusEpithet;
+	}
+
+
+	public boolean isTaxonInClassification() {
+		return taxonInClassification;
+	}
+
+
+	public void setTaxonInClassification(boolean taxonInClassification) {
+		this.taxonInClassification = taxonInClassification;
+	}
+
+
+	public TeamOrPersonBase<?> getCurrentCollector() {
+		return currentCollector;
+	}
+
+
+	public void setCurrentCollector(TeamOrPersonBase<?> currentCollector) {
+		this.currentCollector = currentCollector;
+	}
+
+
+	public void addCurrentArea(NamedArea area) {
+		currentAreas.add(area);	
+	}
+
+
+	public Set<NamedArea> getCurrentAreas() {
+		return currentAreas;
+	}
+	
+	public void removeCurrentAreas(){
+		currentAreas.clear();
+	}
+
 
 }

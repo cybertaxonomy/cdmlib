@@ -43,18 +43,6 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupKeyImport.class);
 	
-	private static final String COUPLET = "couplet";
-	private static final String IS_SPOTCHARACTERS = "isSpotcharacters";
-	private static final String ONLY_NUMBERED_TAXA_EXIST = "onlyNumberedTaxaExist";
-	private static final String EXISTS = "exists";
-	private static final String KEYNOTES = "keynotes";
-	private static final String KEY_TITLE = "keyTitle";
-	private static final String QUESTION = "question";
-	private static final String TEXT = "text";
-	private static final String TO_COUPLET = "toCouplet";
-	private static final String TO_KEY = "toKey";
-	private static final String TO_TAXON = "toTaxon";
-
 	
 	public MarkupKeyImport(MarkupDocumentImport docImport) {
 		super(docImport);
@@ -206,11 +194,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 				return;
 			} else if (isStartingElement(next, TEXT)) {
 				String text = getCData(state, reader, next);
-				Language language = state.getDefaultLanguage();
-				if (language == null){
-					language = Language.DEFAULT();
-				}
-				KeyStatement statement = KeyStatement.NewInstance(language, text);
+				KeyStatement statement = KeyStatement.NewInstance(getDefaultLanguage(state), text);
 				myNode.setStatement(statement);
 			} else if (isStartingElement(next, COUPLET)) {
 				//TODO test
@@ -374,31 +358,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 	}
 	
-	/**
-	 * Checks if <code>abbrev</code> is the short form for the genus name (strGenusName).
-	 * Usually this is the case if <code>abbrev</code> is the first letter (optional with ".") 
-	 * of strGenusName. But in older floras it may also be the first 2 or 3 letters (optional with dot).
-	 * However, we allow only a maximum of 2 letters to be anambigous. In cases with 3 letters better 
-	 * change the original markup data.
-	 * @param single
-	 * @param strGenusName
-	 * @return
-	 */
-	private boolean isGenusAbbrev(String abbrev, String strGenusName) {
-		if (! abbrev.matches("[A-Z][a-z]?\\.?")) {
-			return false;
-		}else if (abbrev.length() == 0 || strGenusName == null || strGenusName.length() == 0){
-			return false; 
-		}else{
-			abbrev = abbrev.replace(".", "");
-			return strGenusName.startsWith(abbrev);
-//			boolean result = true;
-//			for (int i = 0 ; i < abbrev.length(); i++){
-//				result &= ( abbrev.charAt(i) == strGenusName.charAt(i));
-//			}
-//			return result;
-		}
-	}
+
 	
 	
 //******************************** recognize nodes ***********/
@@ -423,7 +383,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			}
 		}
 		//report missing match, if num exists
-		if (matchingNodes.isEmpty() && num != null){
+		if (matchingNodes.isEmpty() /* TODO redo comment && num != null  */){
 			String message = "Taxon has <num> attribute in taxontitle but no matching key nodes exist: %s, Key: %s";
 			message = String.format(message, num, leadsKey.toString());
 			fireWarningEvent(message, event, 1);

@@ -35,6 +35,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	private boolean doTaxa = true;
 	
 	private boolean reuseExistingState = false;
+	
+	private boolean allowCapitalSpeciesEpithet = false;  //set to true if you want to allow specific epithets with capital letter at the beginning. This was allowed by the code for epithets referring to persons such as Beilschmiedia Zenkeri.
 
 	
 	//TODO
@@ -205,6 +207,14 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	 */
 	public MarkupImportState getState() {
 		return state;
+	}
+
+	public boolean isAllowCapitalSpeciesEpithet() {
+		return allowCapitalSpeciesEpithet;
+	}
+
+	public void setAllowCapitalSpeciesEpithet(boolean allowCapitalSpeciesEpithet) {
+		this.allowCapitalSpeciesEpithet = allowCapitalSpeciesEpithet;
 	}
 
 	
