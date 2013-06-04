@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,9 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamImportBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -31,14 +35,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  * @date 23.11.2011
  *
+ * FIXME URI
  */
-public abstract class PartitionableConverterBase<STATE extends DwcaImportState> 
+public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>> 
 		/*implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> */ {
 	
 	private static final Logger logger = Logger.getLogger(PartitionableConverterBase.class);
 
 	protected STATE state;
-	protected DwcaImportConfigurator config;  //for convenience only (must always be same as state.getConfig())
+	protected CONFIG config;  //for convenience only (must always be same as state.getConfig())
 	
 	
 	

@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @date 22.11.2011
  *
  */
-public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
+public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	private static final Logger logger = Logger.getLogger(GbifReferenceCsv2CdmConverter.class);
@@ -56,7 +56,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	/**
 	 * @param state
 	 */
-	public GbifReferenceCsv2CdmConverter(DwcaImportState state) {
+	public GbifReferenceCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 

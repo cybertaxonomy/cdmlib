@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  */
 
 @Component
-public class DwcaImport extends StreamImportBase<DwcaImportConfigurator, DwcaImportState>{
+public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaImportState>{
 	private static final Logger logger = Logger.getLogger(DwcaImport.class);
 
 	@Override
@@ -70,7 +70,7 @@ public class DwcaImport extends StreamImportBase<DwcaImportConfigurator, DwcaImp
 	protected IPartitionableConverter<StreamItem,IReader<CdmBase>, String> getConverter(TermUri namespace, DwcaImportState state) {
 		if (namespace.equals(TermUri.DWC_TAXON)){
 			if (! state.isTaxaCreated()){
-				return new DwcTaxonCsv2CdmTaxonConverter(state);
+				return new DwcTaxonStreamItem2CdmTaxonConverter(state);
 			}else{
 				return new DwcTaxonCsv2CdmTaxonRelationConverter(state);
 			}

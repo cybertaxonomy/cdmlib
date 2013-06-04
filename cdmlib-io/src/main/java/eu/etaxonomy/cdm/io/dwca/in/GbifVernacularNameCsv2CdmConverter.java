@@ -31,7 +31,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
+public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>> 
+					implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifVernacularNameCsv2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
@@ -39,7 +40,7 @@ public class GbifVernacularNameCsv2CdmConverter extends PartitionableConverterBa
 	/**
 	 * @param state
 	 */
-	public GbifVernacularNameCsv2CdmConverter(DwcaImportState state) {
+	public GbifVernacularNameCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 

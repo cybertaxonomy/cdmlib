@@ -4,17 +4,19 @@ import java.net.URI;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
-import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportConfiguratorBase;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  * 
  * @author a.oppermann
  * @date 08.05.2013
  *
  */
-public class ExcelStreamImportConfigurator extends StreamImportConfiguratorBase<ExcelStreamImportState, URI> implements IImportConfigurator {
+public class ExcelStreamImportConfigurator extends DwcaDataImportConfiguratorBase<ExcelStreamImportState> implements IImportConfigurator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelStreamImportConfigurator.class);
 
@@ -22,14 +24,36 @@ public class ExcelStreamImportConfigurator extends StreamImportConfiguratorBase<
 
 	
 	private static IInputTransformer defaultTransformer = null;
+
 	
 	/**
-	 * @param transformer
+	 * Factory method.
+	 * @param uri
+	 * @param destination
+	 * @return
 	 */
-	public ExcelStreamImportConfigurator(IInputTransformer transformer) {
-		super(transformer);
+	public static ExcelStreamImportConfigurator NewInstance(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation){
+		return new ExcelStreamImportConfigurator(uri, destination, nomenclaturalCode, dbSchemaValidation);
 	}
+	
+//	/**
+//	 * @param transformer
+//	 */
+//	public ExcelStreamImportConfigurator(IInputTransformer transformer) {
+//		super(transformer);
+//	}
 
+	/**
+	 * Constructor.
+	 * @param uri
+	 * @param destination
+	 */
+	private ExcelStreamImportConfigurator(URI uri, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode, DbSchemaValidation dbSchemaValidation) {
+		super(uri, destination, defaultTransformer);
+		setDbSchemaValidation(dbSchemaValidation);
+		setNomenclaturalCode(nomenclaturalCode);	
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
@@ -48,29 +72,8 @@ public class ExcelStreamImportConfigurator extends StreamImportConfiguratorBase<
 				ExcelStreamImport.class
 		};
 	}
-	
-	/**
-	 * Factory method.
-	 * @param uri
-	 * @param destination
-	 * @return
-	 */
-	public static ExcelStreamImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
-		return new ExcelStreamImportConfigurator(uri, destination);
-	}
-	
-	/**
-	 * Constructor.
-	 * @param uri
-	 * @param destination
-	 */
-	private ExcelStreamImportConfigurator(URI uri, ICdmDataSource destination) {
-		super(defaultTransformer);
-		this.setSource(uri);
-		this.setDestination(destination);
-	}
 
-
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.dwca.in.StreamImportConfiguratorBase#getDefaultSourceReferenceTitle()
 	 */

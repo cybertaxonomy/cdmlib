@@ -23,21 +23,21 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 /**
  * @author a.mueller
  * @date 22.11.2011
  *
  */
-public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
+public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	@SuppressWarnings("unused")
@@ -48,7 +48,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	/**
 	 * @param state
 	 */
-	public GbifTypesAndSpecimen2CdmConverter(DwcaImportState state) {
+	public GbifTypesAndSpecimen2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 
@@ -116,7 +116,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 	}
 
 
-	private Collection getCollection(DwcaImportState state, StreamItem item, List<MappedCdmBase> resultList) {
+	private Collection getCollection(DwcaDataImportStateBase state, StreamItem item, List<MappedCdmBase> resultList) {
 		String institutionCode = item.get(TermUri.DWC_INSTITUTION_CODE);
 		String collectionCode = item.get(TermUri.DWC_COLLECTION_CODE);
 		//institution

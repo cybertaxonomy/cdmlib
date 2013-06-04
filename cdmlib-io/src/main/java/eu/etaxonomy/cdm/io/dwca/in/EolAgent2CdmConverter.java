@@ -16,28 +16,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
  * @date 22.11.2011
  *
  */
-public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
+public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>> 
+				implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EolAgent2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
@@ -45,7 +40,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImport
 	/**
 	 * @param state
 	 */
-	public EolAgent2CdmConverter(DwcaImportState state) {
+	public EolAgent2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 

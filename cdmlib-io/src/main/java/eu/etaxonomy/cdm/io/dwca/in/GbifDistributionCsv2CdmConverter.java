@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
+public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	@SuppressWarnings("unused")
@@ -44,7 +44,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 	/**
 	 * @param state
 	 */
-	public GbifDistributionCsv2CdmConverter(DwcaImportState state) {
+	public GbifDistributionCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 

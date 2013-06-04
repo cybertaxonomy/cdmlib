@@ -12,23 +12,23 @@ package eu.etaxonomy.cdm.io.excel.bfn;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportStateBase;
 import eu.etaxonomy.cdm.io.dwca.in.DwcaImportState;
-import eu.etaxonomy.cdm.io.stream.StreamImportBase;
-import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 
 /**
  * 
  * @author a.oppermann
  * @date 08.05.2013
  *
+ *
+ *<ROW extends ExcelRowBase>
  */
-public class ExcelStreamImportState extends StreamImportStateBase<ExcelStreamImportConfigurator, StreamImportBase>{
+public class ExcelStreamImportState extends DwcaDataImportStateBase<ExcelStreamImportConfigurator>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
 
 	public ExcelStreamImportState(ExcelStreamImportConfigurator config) {
 		super(config);
 	}
-
-
+	
 }

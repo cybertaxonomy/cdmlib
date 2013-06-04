@@ -306,8 +306,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConcatenatingReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMapping.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonRelationConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonStreamItem2CdmTaxonConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaDataImportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaDataImportConfiguratorBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaDataImportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportState.java -text
@@ -374,7 +377,10 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularRecord.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaZipExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/IDwcaAreaRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelMapReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelRecordItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelRecordStream.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelRecordStream_Old.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportState.java -text
@@ -519,6 +525,7 @@ cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/defaultIoApplicationContext.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.properties -text
+cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/excel/ExcelImportMapping.properties -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/main/resources/mapping/lifeStageToGbif.tsv -text
 cdmlib-io/src/main/resources/mapping/nameTypeStatusToGbif.tsv -text
@@ -544,6 +551,7 @@ cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMappingTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportIntegrationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/three4U/Excel34UImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
@@ -588,6 +596,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/description.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input-original.xls -text

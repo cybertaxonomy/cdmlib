@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.mueller
  * @created 14.05.2013
  */
-public abstract class StreamImportConfiguratorBase<STATE extends StreamImportStateBase, SOURCE> extends ImportConfiguratorBase<STATE, SOURCE> implements IImportConfigurator {
+public abstract class StreamImportConfiguratorBase<STATE extends StreamImportStateBase, SOURCE extends Object> extends ImportConfiguratorBase<STATE, SOURCE> implements IImportConfigurator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StreamImportConfiguratorBase.class);
 	

@@ -22,6 +22,8 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamImportBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -47,9 +49,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @date 22.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
+public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>  extends PartitionableConverterBase<CONFIG, STATE> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
+	private static Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
 	// temporary key for the case that no dataset information is supplied, TODO use something better
@@ -60,7 +62,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	/**
 	 * @param state
 	 */
-	public DwcTaxonCsv2CdmTaxonConverter(DwcaImportState state) {
+	public DwcTaxonStreamItem2CdmTaxonConverter(STATE state) {
 		super(state);
 	}
 

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.stream;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
@@ -41,9 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-
-@Component
-public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase<STATE,?>, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>> extends CdmImportBase<CONFIG, STATE>{
+public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG,StreamImportBase>> extends CdmImportBase<CONFIG, STATE>{
 	private static final Logger logger = Logger.getLogger(StreamImportBase.class);
 
 
