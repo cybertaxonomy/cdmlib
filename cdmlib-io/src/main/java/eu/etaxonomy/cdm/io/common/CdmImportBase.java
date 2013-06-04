@@ -438,7 +438,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					if (levelVoc == null){
 						logger.error("ONLY FOR DEBUG: Level voc is null");
 					}else{
-						logger.warn("ONLY FOR DEBUG: Level voc is not null");
+						logger.info("ONLY FOR DEBUG: Level voc is not null");
 					}
 				}
 				voc.addTerm(namedAreaLevel);
