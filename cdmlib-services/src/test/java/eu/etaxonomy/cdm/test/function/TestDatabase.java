@@ -316,7 +316,7 @@ public class TestDatabase {
 
 	public void testLoadedAnnotationGetAnnotatedObjectCall(){
 		String password = CdmUtils.readInputLine("Password: ");
-		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, NomenclaturalCode.ICBN);
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, NomenclaturalCode.ICNAFP);
 
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
 

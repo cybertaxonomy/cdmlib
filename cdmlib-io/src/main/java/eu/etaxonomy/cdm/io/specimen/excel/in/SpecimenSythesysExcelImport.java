@@ -460,7 +460,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             }
         }
         if (nomenclatureCode.toString().equals("Botanical")){
-            taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
+            taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNAFP,null);
             if (taxonName.hasProblem()) {
                 problem=true;
             }}

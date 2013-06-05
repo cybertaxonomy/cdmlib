@@ -1143,7 +1143,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			}
 		}
 		if (dataHolder.nomenclatureCode.toString().equals("Botanical") || dataHolder.nomenclatureCode.toString().contains("ICBN")) {
-			taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICBN, null);
+			taxonName = nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, null);
 			if (taxonName.hasProblem()) {
 				problem = true;
 			}

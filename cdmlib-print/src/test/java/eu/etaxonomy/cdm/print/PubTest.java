@@ -91,7 +91,7 @@ public class PubTest {
        dataSourceName = (dataSourceName.equals("")) ? "cdm_test4" : dataSourceName;
        username = (username.equals("")) ? "ljm" : username;
        
-       ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_flora_central_africa", 3306, "edit", password, NomenclaturalCode.ICBN);
+       ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_flora_central_africa", 3306, "edit", password, NomenclaturalCode.ICNAFP);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", dataSourceName, 3306, username, password, NomenclaturalCode.ICBN);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_edit_cichorieae", 3306, "ljm", password, NomenclaturalCode.ICBN);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_cichorieae", 3306, "edit", password, NomenclaturalCode.ICBN);

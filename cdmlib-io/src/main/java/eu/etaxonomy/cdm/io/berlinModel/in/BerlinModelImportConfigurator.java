@@ -152,7 +152,7 @@ public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<Berl
 	 * @param destination
 	 */
 	protected BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
-	   super(berlinModelSource, destination, NomenclaturalCode.ICBN, defaultTransformer); //default for Berlin Model
+	   super(berlinModelSource, destination, NomenclaturalCode.ICNAFP, defaultTransformer); //default for Berlin Model
 	}
 	
 	

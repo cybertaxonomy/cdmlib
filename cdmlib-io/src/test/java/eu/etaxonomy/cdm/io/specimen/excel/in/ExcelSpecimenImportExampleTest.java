@@ -61,7 +61,7 @@ public class ExcelSpecimenImportExampleTest extends
 				+ "' does not exist", url);
 		try {
 			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null);
-			configurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
+			configurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();

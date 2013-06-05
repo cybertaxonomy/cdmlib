@@ -136,7 +136,7 @@ public final class TcsXmlTransformer {
 			nomCode = nomCode.trim();
 		}
 		if (nomCode == null){ return null;
-		}else if (nomCode.equals("Botanical")){return NomenclaturalCode.ICBN;
+		}else if (nomCode.equals("Botanical")){return NomenclaturalCode.ICNAFP;
 		}else if (nomCode.equals("Zoological")){return NomenclaturalCode.ICZN;
 		}else if (nomCode.equals("Viral")){return NomenclaturalCode.ICVCN;
 		}else if (nomCode.equals("Bacteriological")){return NomenclaturalCode.ICNB;

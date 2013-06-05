@@ -831,7 +831,7 @@ public abstract class MarkupImportBase  {
 	protected NomenclaturalCode makeNomenclaturalCode(MarkupImportState state) {
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (nc == null) {
-			nc = NomenclaturalCode.ICBN; // default;
+			nc = NomenclaturalCode.ICNAFP; // default;
 		}
 		return nc;
 	}
