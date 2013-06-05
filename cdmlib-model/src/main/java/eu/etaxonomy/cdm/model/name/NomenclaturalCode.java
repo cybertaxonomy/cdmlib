@@ -50,23 +50,28 @@ import eu.etaxonomy.cdm.model.media.Media;
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
 public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serializable {
+	//0
 	/**
 	 * International Code of Nomenclature of Bacteria
 	*/
 	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"), 
+	//1
 	/**
 	 * International Code of Nomenclature for algae, fungi, and plants
 	 * Former International Code of Botanical Nomenclature
 	 */
 	@XmlEnumValue("ICBN") ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP"), 
+	//2
 	/**
 	 * International Code of Cultivated Plants
 	 */
 	@XmlEnumValue("ICNCP") ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"), 
+	//3
 	/**
 	 * International Code of Zoological Nomenclature
 	 */
 	@XmlEnumValue("ICZN") ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"), 
+	//4
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
