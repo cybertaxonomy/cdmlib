@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  *
  */
 public class NonViralNameParserImplTest {
-	private static final NomenclaturalCode ICBN = NomenclaturalCode.ICBN;
+	private static final NomenclaturalCode ICBN = NomenclaturalCode.ICNAFP;
 
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImplTest.class);
 	

@@ -55,9 +55,10 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	*/
 	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"), 
 	/**
-	 * International Code of Botanical Nomenclature
+	 * International Code of Nomenclature for algae, fungi, and plants
+	 * Former International Code of Botanical Nomenclature
 	 */
-	@XmlEnumValue("ICBN") ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICBN"), 
+	@XmlEnumValue("ICBN") ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP"), 
 	/**
 	 * International Code of Cultivated Plants
 	 */
@@ -108,6 +109,9 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 			if(code.name().equals(string)) {
 				return code;
 			}
+		}
+		if ("ICBN".equals(string)){ //former name of the ICNAFP
+			return ICNAFP;
 		}
 		return null;
 	}
@@ -167,14 +171,14 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public NomenclaturalCode readCsvLine(Class<NomenclaturalCode> termClass,
 			List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-		return null;
+		throw new UnsupportedOperationException("readCsvLine not supported by enum class");
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter, eu.etaxonomy.cdm.model.common.IDefinedTerm)
 	 */
 	public void writeCsvLine(CSVWriter writer, NomenclaturalCode term) {
-		logger.warn("write csvLine not yet implemented");
+		throw new UnsupportedOperationException("writeCsvLine not supported by enum class");
 	}
 
 	/**
@@ -191,10 +195,9 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
-		NomenclaturalCode nomCode = this;
 		
 		switch (this){
-		case ICBN:
+		case ICNAFP:
 			result = BotanicalName.NewInstance(rank);
 			break;
 		case ICZN:
@@ -232,7 +235,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
 		Class<? extends T> result;
 		switch (this){
-		case ICBN:
+		case ICNAFP:
 			result = (Class<T>)BotanicalName.class;
 			break;
 		case ICZN:
@@ -260,7 +263,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public String acceptedTaxonStatusLabel(){
 		switch(this){
-		case ICBN:
+		case ICNAFP:
 			return "accepted";
 		case ICZN:
 			return "valid";
@@ -276,7 +279,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public String synonymStatusLabel(){
 		switch(this){
-		case ICBN:
+		case ICNAFP:
 			return "synonym";
 		case ICZN:
 			return "invalid";

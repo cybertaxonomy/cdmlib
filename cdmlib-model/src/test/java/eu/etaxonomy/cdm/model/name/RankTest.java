@@ -9,13 +9,16 @@
  
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -500,7 +503,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testGetRankByNameOrAbbreviation() {
-		NomenclaturalCode bot = NomenclaturalCode.ICBN;
+		NomenclaturalCode bot = NomenclaturalCode.ICNAFP;
 		NomenclaturalCode zoo = NomenclaturalCode.ICZN;
 		try {
 			assertEquals(Rank.VARIETY(), Rank.getRankByAbbreviation("var."));

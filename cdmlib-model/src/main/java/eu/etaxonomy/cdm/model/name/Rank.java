@@ -792,7 +792,7 @@ public class Rank extends OrderedTermBase<Rank> {
         //handle section and subsection (not unique representations)
         if (rankName.equalsIgnoreCase("Section")){
             if (nc != null && nc.equals(NomenclaturalCode.ICZN)){	return Rank.SECTION_ZOOLOGY();
-            }else if (nc != null && nc.equals(NomenclaturalCode.ICBN)){return Rank.SECTION_BOTANY();
+            }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)){return Rank.SECTION_BOTANY();
             }else{
                 String errorWarning = "Section is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
                 logger.warn(errorWarning);
@@ -800,7 +800,7 @@ public class Rank extends OrderedTermBase<Rank> {
             }
         }else if (rankName.equalsIgnoreCase("Subsection")){
             if (nc != null && nc.equals(NomenclaturalCode.ICZN)){ return Rank.SECTION_ZOOLOGY();
-            }else if (nc != null && nc.equals(NomenclaturalCode.ICBN)){ return Rank.SECTION_BOTANY();
+            }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)){ return Rank.SECTION_BOTANY();
             }else{
                 String errorWarning = "Subsection is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
                 logger.warn(errorWarning);
