@@ -54,7 +54,8 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "specimenTypeDesignations.homotypicalGroup.*",
             "sequences.$",
             "sequences.annotations",
-            "markers.markerType"
+            "markers.markerType",
+            "gatheringEvent.$"
     });
 
 
