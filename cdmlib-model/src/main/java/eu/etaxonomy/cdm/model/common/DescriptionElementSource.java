@@ -59,56 +59,62 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementSource.class);
 	
-
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static DescriptionElementSource NewInstance(){
-		return new DescriptionElementSource();
+	public static DescriptionElementSource NewInstance(OriginalSourceType type){
+		return new DescriptionElementSource(type);
 	}
 	
-	public static DescriptionElementSource NewInstance(String id){
-		DescriptionElementSource result = new DescriptionElementSource();
+	public static DescriptionElementSource NewDataImportInstance(String id){
+		DescriptionElementSource result = new DescriptionElementSource(OriginalSourceType.Import);
 		result.setIdInSource(id);
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(String id, String idNamespace){
-		DescriptionElementSource result = NewInstance(id);
+	public static DescriptionElementSource NewDataImportInstance(String id, String idNamespace){
+		DescriptionElementSource result = NewDataImportInstance(id);
 		result.setIdNamespace(idNamespace);
 		return result;
 	}
 	
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, Reference citation){
-		DescriptionElementSource result = NewInstance(id, idNamespace);
+	public static DescriptionElementSource NewDataImportInstance(String id, String idNamespace, Reference ref){
+		DescriptionElementSource result = NewDataImportInstance(id, idNamespace);
+		result.setCitation(ref);
+		return result;
+	}
+	
+	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation){
+		DescriptionElementSource result = NewInstance(type);
+		result.setIdInSource(id);
+		result.setIdNamespace(idNamespace);
 		result.setCitation(citation);		
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, Reference citation, String microCitation){
-		DescriptionElementSource result = NewInstance(id, idNamespace);
-		result.setCitation(citation);
+	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation){
+		DescriptionElementSource result = NewInstance(type, id, idNamespace, citation);
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 	
-	public static DescriptionElementSource NewInstance(String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
-		DescriptionElementSource result = NewInstance(id, idNamespace, citation, microReference);
+	public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+		DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);
 		return result;
 	}
 	
-	public static DescriptionElementSource NewInstance(Reference citation, String microCitation){
-		DescriptionElementSource result = NewInstance();
+	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microCitation){
+		DescriptionElementSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 		result.setCitation(citation);
 		result.setCitationMicroReference(microCitation);
 		return result;
 	}
 
-	public static DescriptionElementSource NewInstance(Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
-		DescriptionElementSource result = NewInstance(citation, microReference);
+	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+		DescriptionElementSource result = NewPrimarySourceInstance(citation, microReference);
 		result.setNameUsedInSource(nameUsedInSource);
 		result.setOriginalNameString(originalNameString);
 		return result;
@@ -132,10 +138,10 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private TaxonNameBase nameUsedInSource;
+	private TaxonNameBase<?,?> nameUsedInSource;
 	
-	private DescriptionElementSource(){
-		
+	private DescriptionElementSource(OriginalSourceType type){
+		super(type);
 	}
 	
 	

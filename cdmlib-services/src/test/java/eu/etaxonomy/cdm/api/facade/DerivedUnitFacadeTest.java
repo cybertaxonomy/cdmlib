@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -1436,42 +1437,31 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testAddGetRemoveSource() {
-        Assert.assertEquals("No sources should exist yet", 0, specimenFacade
-                .getSources().size());
-        Reference reference = ReferenceFactory.newBook();
-        IdentifiableSource source1 = specimenFacade.addSource(reference, "54",
-                "myName");
-        Assert.assertEquals("One source should exist now", 1, specimenFacade
-                .getSources().size());
-        IdentifiableSource source2 = IdentifiableSource.NewInstance("1",
-                "myTable");
+        Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
+        
+        Reference<?> reference = ReferenceFactory.newBook();
+        IdentifiableSource source1 = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, "54", "myName");
+        Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+        IdentifiableSource source2 = IdentifiableSource.NewDataImportInstance("1", "myTable");
         specimenFacade.addSource(source2);
-        Assert.assertEquals("One source should exist now", 2, specimenFacade
-                .getSources().size());
+        Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
         specimenFacade.removeSource(source1);
-        Assert.assertEquals("One source should exist now", 1, specimenFacade
-                .getSources().size());
+        Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
         Reference reference2 = ReferenceFactory.newJournal();
-        IdentifiableSource sourceNotUsed = specimenFacade.addSource(reference2,
-                null, null);
+        IdentifiableSource sourceNotUsed = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference2,null, null);
         specimenFacade.removeSource(sourceNotUsed);
-        Assert.assertEquals("One source should still exist", 1, specimenFacade
-                .getSources().size());
-        Assert.assertEquals("1", specimenFacade.getSources().iterator().next()
-                .getIdInSource());
+        Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());
+        Assert.assertEquals("1", specimenFacade.getSources().iterator().next().getIdInSource());
         specimenFacade.removeSource(source2);
-        Assert.assertEquals("No sources should exist anymore", 0,
-                specimenFacade.getSources().size());
+        Assert.assertEquals("No sources should exist anymore", 0,specimenFacade.getSources().size());
     }
 
     @Test
     public void testAddGetRemoveDuplicate() {
-        Assert.assertEquals("No duplicates should be available yet", 0,
-                specimenFacade.getDuplicates().size());
+        Assert.assertEquals("No duplicates should be available yet", 0,specimenFacade.getDuplicates().size());
         Specimen newSpecimen1 = Specimen.NewInstance();
         specimenFacade.addDuplicate(newSpecimen1);
-        Assert.assertEquals("There should be 1 duplicate now", 1,
-                specimenFacade.getDuplicates().size());
+        Assert.assertEquals("There should be 1 duplicate now", 1,specimenFacade.getDuplicates().size());
         Specimen newSpecimen2 = Specimen.NewInstance();
         DerivationEvent newDerivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         newSpecimen2.setDerivedFrom(newDerivationEvent);
@@ -1479,8 +1469,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 "The derivation event should be 'newDerivationEvent'",
                 newDerivationEvent, newSpecimen2.getDerivedFrom());
         specimenFacade.addDuplicate(newSpecimen2);
-        Assert.assertEquals("There should be 2 duplicates now", 2,
-                specimenFacade.getDuplicates().size());
+        Assert.assertEquals("There should be 2 duplicates now", 2, specimenFacade.getDuplicates().size());
         Assert.assertNotSame(
                 "The derivation event should not be 'newDerivationEvent' anymore",
                 newDerivationEvent, newSpecimen2.getDerivedFrom());
@@ -1501,7 +1490,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         String catalogNumber = "1234890";
         String accessionNumber = "345345";
         String collectorsNumber = "lkjewe";
-        TaxonNameBase storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
+        TaxonNameBase<?,?> storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
         Specimen duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
                 catalogNumber, accessionNumber, storedUnder,

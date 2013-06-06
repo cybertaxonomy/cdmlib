@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -788,14 +789,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public void addOriginalSource(CdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
 			IOriginalSource source;
-			ISourceable sourceable = (ISourceable)cdmBase;
+			ISourceable sourceable = (ISourceable<?>)cdmBase;
 			Object id = idAttributeValue;
 			String strId = String.valueOf(id);
 			String microCitation = null;
+			OriginalSourceType type = OriginalSourceType.Import;
 			if (cdmBase instanceof IdentifiableEntity){
-				source = IdentifiableSource.NewInstance(strId, namespace, citation, microCitation);
+				source = IdentifiableSource.NewInstance(type, strId, namespace, citation, microCitation);
 			}else if (cdmBase instanceof DescriptionElementBase){
-				source = DescriptionElementSource.NewInstance(strId, namespace, citation, microCitation);
+				source = DescriptionElementSource.NewInstance(type, strId, namespace, citation, microCitation);
 			}else{
 				logger.warn("ISourceable not beeing identifiable entities or description element base are not yet supported. CdmBase is of type " + cdmBase.getClass().getName() + ". Original source not added.");
 				return;
@@ -870,7 +872,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonNameDescription getTaxonNameDescription(TaxonNameBase name, boolean isImageGallery, boolean createNewIfNotExists) {
-		Reference ref = null;
+		Reference<?> ref = null;
 		return getTaxonNameDescription(name, ref, isImageGallery, createNewIfNotExists);
 	}
 	
@@ -896,7 +898,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			result = TaxonNameDescription.NewInstance(name);
 			result.setImageGallery(isImageGallery);
 			if (ref != null){
-				result.addSource(null, null, ref, null);
+				result.addImportSource(null, null, ref, null);
 			}
 		}
 		return result;
@@ -939,7 +941,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			result = TaxonDescription.NewInstance(taxon);
 			result.setImageGallery(isImageGallery);
 			if (ref != null){
-				result.addSource(null, null, ref, null);
+				result.addImportSource(null, null, ref, null);
 			}
 		}
 		return result;
@@ -982,7 +984,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			result = SpecimenDescription.NewInstance(specimen);
 			result.setImageGallery(isImageGallery);
 			if (ref != null){
-				result.addSource(null, null, ref, null);
+				result.addImportSource(null, null, ref, null);
 			}
 		}
 		return result;

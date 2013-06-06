@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -550,7 +551,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             if (!originalsource.isEmpty()){
                 Reference<?> reference = ReferenceFactory.newGeneric();
                 reference.setTitleCache(originalsource, true);
-                derivedUnitBase.addSource(originalsource, "", reference, "");
+                derivedUnitBase.addSource(OriginalSourceType.Unknown, originalsource, "", reference, "");
             }
             /**
              * INSTITUTION & COLLECTION
@@ -702,7 +703,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         indAssociation.setFeature(feature);
 
         for (Reference<?> citation : determinationEvent.getReferences()) {
-            indAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
+            indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, null));
         }
 
         taxonDescription.addElement(indAssociation);

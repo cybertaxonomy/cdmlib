@@ -28,9 +28,12 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -2190,15 +2193,16 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * Creates an orignal source, adds it to the specimen and returns it.
+	 * Creates an {@link IOriginalSource orignal source} or type , 
+	 * adds it to the specimen and returns it.
 	 * 
 	 * @param reference
 	 * @param microReference
 	 * @param originalNameString
 	 * @return
 	 */
-	public IdentifiableSource addSource(Reference reference, String microReference, String originalNameString) {
-		IdentifiableSource source = IdentifiableSource.NewInstance(reference, microReference);
+	public IdentifiableSource addSource(OriginalSourceType type, Reference reference, String microReference, String originalNameString) {
+		IdentifiableSource source = IdentifiableSource.NewInstance(type, null, null, reference, microReference);
 		source.setOriginalNameString(originalNameString);
 		addSource(source);
 		return source;

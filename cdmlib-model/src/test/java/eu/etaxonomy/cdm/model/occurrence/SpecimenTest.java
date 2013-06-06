@@ -186,7 +186,7 @@ public class SpecimenTest {
 		Marker marker = Marker.NewInstance(MarkerType.COMPLETE(), false);
 		Rights right = Rights.NewInstance("right", Language.DEFAULT());
 		Media media = Media.NewInstance();
-		IdentifiableSource source = IdentifiableSource.NewInstance("12", "idNamespace");
+		IdentifiableSource source = IdentifiableSource.NewDataImportInstance("12", "idNamespace");
 		
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);

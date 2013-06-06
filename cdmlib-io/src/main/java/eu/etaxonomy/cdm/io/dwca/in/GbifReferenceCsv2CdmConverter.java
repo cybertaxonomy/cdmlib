@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -185,7 +186,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	private void createCitation(TaxonDescription desc, Reference ref, TaxonNameBase nameUsedInSource) {
 		Feature feature = Feature.CITATION();
 		TextData textData = TextData.NewInstance(feature);
-		DescriptionElementSource source = DescriptionElementSource.NewInstance(ref, null, nameUsedInSource, null);
+		DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(ref, null, nameUsedInSource, null);
 		textData.addSource(source);
 		desc.addElement(textData);
 	}

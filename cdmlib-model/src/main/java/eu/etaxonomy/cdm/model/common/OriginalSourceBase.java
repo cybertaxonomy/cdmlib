@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -54,6 +55,7 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
 	
+	
 	@XmlAttribute(name ="type")
 	@Column(name="refType")
 	@NotNull
@@ -70,9 +72,10 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 
 	/**
 	 * Constructor
+	 * @param type2 
 	 */
-	protected OriginalSourceBase(){
-		super();
+	protected OriginalSourceBase(OriginalSourceType type){
+		Assert.notNull(type, "OriginalSourceType must not be null");
 	}
 
 //**************** GETTER / SETTER *******************************/
@@ -111,6 +114,7 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	}
 
 	public void setType(OriginalSourceType type) {
+		Assert.notNull(type, "OriginalSourceType must not be null");
 		this.type = type;
 	}
 
@@ -122,7 +126,7 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
-		OriginalSourceBase result = (OriginalSourceBase)super.clone();
+		OriginalSourceBase<?> result = (OriginalSourceBase<?>)super.clone();
 		
 		//no changes to: idInSource, sourcedObj
 		return result;

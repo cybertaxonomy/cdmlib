@@ -102,9 +102,9 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			
 			String microCitation = null;
 			if (cdmBase instanceof IdentifiableEntity){
-				source = IdentifiableSource.NewInstance(strId, idNamespace, citation, microCitation);
+				source = IdentifiableSource.NewDataImportInstance(strId, idNamespace, citation);
 			}else if (cdmBase instanceof DescriptionElementBase){
-				source = DescriptionElementSource.NewInstance(strId, idNamespace, citation, microCitation);
+				source = DescriptionElementSource.NewDataImportInstance(strId, idNamespace, citation);
 			}else{
 				logger.warn("ISourceable not beeing identifiable entities or description element base are not yet supported. CdmBase is of type " + cdmBase.getClass().getSimpleName() + ". Original source not added.");
 				return;

@@ -20,9 +20,6 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PRINT_SERIES;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.ALL;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCEPT_REFERENCES;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
@@ -67,9 +64,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.IPrintSeries;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -511,8 +506,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			
 			//idInSource
 			String idInSource = (String)valueMap.get("IdInSource".toLowerCase());
-			if (CdmUtils.isNotEmpty(idInSource)){
-				IdentifiableSource source = IdentifiableSource.NewInstance(idInSource);
+			if (isNotBlank(idInSource)){
+				IdentifiableSource source = IdentifiableSource.NewDataImportInstance(idInSource);
 				source.setIdNamespace("import to Berlin Model");
 				referenceBase.addSource(source);
 			}

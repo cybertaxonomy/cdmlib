@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -1935,9 +1936,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String idInSourceSyn= getIdInSource(syn);
 
         if (idInSourceParent != null && idInSourceSyn != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
             potentialCombination.addSource(originalSource);
         }
 
@@ -1998,19 +1999,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // Add the original source
         if (idInSourceSyn != null && idInSourceTaxon != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
 
         }else{
             logger.error("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
         }
@@ -2102,11 +2107,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
 
-        IdentifiableSource originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);
 
-        originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredSynName.addSource(originalSource);
 

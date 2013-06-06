@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -377,7 +378,7 @@ public class IpniService  implements IIpniService{
 
 		//source
 		Reference citation = getIpniCitation(appConfig);
-		ref.addSource(valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
+		ref.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
 
 		
 		
@@ -549,7 +550,7 @@ public class IpniService  implements IIpniService{
 		
 		//source
 		Reference citation = getIpniCitation(appConfig);
-		name.addSource(valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
+		name.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
 		
 		
 //		//TODO
@@ -671,10 +672,10 @@ public class IpniService  implements IIpniService{
 		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
 		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 		
-		Reference citation = getIpniCitation(appConfig);
+		Reference<?> citation = getIpniCitation(appConfig);
 		
 		//id, version
-		person.addSource(valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
+		person.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
 		
 		//dates
 		TimePeriod lifespan = TimePeriod.parseString(valueMap.get(DATES));
@@ -699,7 +700,7 @@ public class IpniService  implements IIpniService{
 
 	
 	private Reference getIpniCitation(ICdmApplicationConfiguration appConfig) {
-		Reference ipniReference;
+		Reference<?> ipniReference;
 		if (appConfig != null){
 			ipniReference = appConfig.getReferenceService().find(uuidIpni);
 			if (ipniReference == null){
@@ -717,7 +718,7 @@ public class IpniService  implements IIpniService{
 	 * @return
 	 */
 	private Reference getNewIpniReference() {
-		Reference ipniReference;
+		Reference<?> ipniReference;
 		ipniReference = ReferenceFactory.newDatabase();
 		ipniReference.setTitleCache("The International Plant Names Index (IPNI)");
 		return ipniReference;

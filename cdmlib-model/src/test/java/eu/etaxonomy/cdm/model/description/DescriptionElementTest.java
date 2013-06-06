@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -71,7 +72,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		Media media = Media.NewInstance(null, 1000, "jpeg", null);
 		categorialData.addMedia(media);
 		
-		DescriptionElementSource source = DescriptionElementSource.NewInstance();
+		DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown);
 		Reference<?> citation = ReferenceFactory.newArticle();
 		citation.setTitle("Test");
 		source.setCitation(citation);

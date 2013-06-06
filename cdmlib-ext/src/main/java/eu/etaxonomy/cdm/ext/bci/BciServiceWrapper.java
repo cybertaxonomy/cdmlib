@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -228,7 +229,7 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		
 		//id, citation
 		Reference citation = getBciCitation(appConfig);
-		result.addSource(id, null, citation, null);
+		result.addSource(OriginalSourceType.Lineage, id, null, citation, null);
 		
 		
 		return result;

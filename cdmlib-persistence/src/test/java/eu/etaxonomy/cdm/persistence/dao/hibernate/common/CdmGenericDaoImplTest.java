@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -632,8 +633,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		article1.addExtension(extension1);
 		article2.addExtension(extension2);
 		
-		IdentifiableSource source1 = IdentifiableSource.NewInstance();
-		IdentifiableSource source2 = IdentifiableSource.NewInstance();
+		IdentifiableSource source1 = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
+		IdentifiableSource source2 = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
 		
 		article1.addSource(source1);
 		article2.addSource(source2);
@@ -655,7 +656,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon1);
 		taxDesc.setTitleCache("taxDesc", true);
-		taxDesc.addSource(null, null, article2, null);
+		taxDesc.addSource(OriginalSourceType.Unknown, null, null, article2, null);
 
 		taxonDao.save(taxon1);
 

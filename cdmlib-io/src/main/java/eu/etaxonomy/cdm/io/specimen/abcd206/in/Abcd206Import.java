@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -594,7 +595,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		indAssociation.setFeature(feature);
 
 		for (Reference<?> citation : determinationEvent.getReferences()) {
-			indAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
+			indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource,
+					null, null, citation, null));
 		}
 
 		taxonDescription.addElement(indAssociation);

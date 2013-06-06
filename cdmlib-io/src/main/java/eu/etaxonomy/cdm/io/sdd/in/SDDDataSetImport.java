@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -421,7 +422,8 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					} else {
 						Reference<?> descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
-						td.addSource(null, null, descriptionSource, null);
+						//TODO type
+						td.addSource(OriginalSourceType.Unknown, null, null, descriptionSource, null);
 						this.associateImageWithCdmBase(ref,descriptionSource);
 					}
 				} else {
@@ -637,7 +639,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				Reference publication = publications.get(citations.get(ref));
+				Reference<?> publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
@@ -645,7 +647,8 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					location.setAnnotationType(annotationType);
 					(publication).addAnnotation(location);
 				}
-				td.addSource(null, null, publication, null);
+				//TODO type
+				td.addSource(OriginalSourceType.Unknown, null, null, publication, null);
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
@@ -912,12 +915,11 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 				if (!id.equals("")) {
 					tnb = NonViralName.NewInstance(null);
 					IdentifiableSource source = null;
-					if (uri != null) {
-						if (!uri.equals("")) {
-							source = IdentifiableSource.NewInstance(id, "TaxonName", ReferenceFactory.newGeneric(), uri);
-						}
+					if (isNotBlank(uri)) {
+						//TODO type
+						source = IdentifiableSource.NewInstance(OriginalSourceType.Unknown, id, "TaxonName", ReferenceFactory.newGeneric(), uri);
 					} else {
-						source = IdentifiableSource.NewInstance(id, "TaxonName");
+						source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 					}
 					tnb.addSource(source);
 					taxonNameBases.put(id,tnb);
@@ -1216,9 +1218,9 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Taxon handleCDNoScope(Namespace sddNamespace,
 			SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
-		NonViralName nonViralName = NonViralName.NewInstance(null);
+		NonViralName<?> nonViralName = NonViralName.NewInstance(null);
 		String id = new String("" + taxonNamesCount);
-		IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
+		IdentifiableSource source = IdentifiableSource.NewDataImportInstance( id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
 		
 		if(cdmState.getConfig().isDoMatchTaxa()){
@@ -1457,7 +1459,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					//  </Representation>
 					Person person = Person.NewInstance();
 					importRepresentation(elAgent, sddNamespace, person, idA, cdmState);
-					person.addSource(IdentifiableSource.NewInstance(idA, "Agent"));
+					person.addSource(IdentifiableSource.NewDataImportInstance(idA, "Agent"));
 
 					/*XIM <Links>
 					Element elLinks = elAgent.getChild("Links",sddNamespace);

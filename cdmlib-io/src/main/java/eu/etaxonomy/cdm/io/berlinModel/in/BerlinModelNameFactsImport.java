@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -133,9 +134,9 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				String category = CdmUtils.Nz(rs.getString("NameFactCategory"));
 				String nameFact = CdmUtils.Nz(rs.getString("nameFact"));
 				
-				TaxonNameBase taxonNameBase = nameMap.get(String.valueOf(nameId));
+				TaxonNameBase<?,?> taxonNameBase = nameMap.get(String.valueOf(nameId));
 				String nameFactRefFk = String.valueOf(nameFactRefFkObj);
-				Reference citation = getReferenceOnlyFromMaps(biblioRefMap, 
+				Reference<?> citation = getReferenceOnlyFromMaps(biblioRefMap, 
 						nomRefMap, nameFactRefFk);
 				
 				if (taxonNameBase != null){
@@ -149,12 +150,12 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 								TaxonNameDescription description = TaxonNameDescription.NewInstance();
 								TextData protolog = TextData.NewInstance(Feature.PROTOLOGUE());
 								protolog.addMedia(media);
-								protolog.addSource(String.valueOf(nameFactId), NAMESPACE, null, null, null, null);
+								protolog.addSource(OriginalSourceType.Import, String.valueOf(nameFactId), NAMESPACE, null, null, null, null);
 								description.addElement(protolog);
 								taxonNameBase.addDescription(description);
 								if (citation != null){
-									description.addSource(null, null, citation, null);
-									protolog.addSource(null, null, citation, nameFactRefDetail, null, null);
+									description.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, null);
+									protolog.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, nameFactRefDetail, null, null);
 								}
 							}//end NAME_FACT_PROTOLOGUE
 						}catch(NullPointerException e){
@@ -168,8 +169,10 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							//TODO language
 							Language language = Language.DEFAULT();
 							additionalPublication.putText(language, nameFact);
-							additionalPublication.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
-									nameFactRefDetail, null, null);
+							additionalPublication.addSource(OriginalSourceType.Import, String.valueOf(nameFactId), NAMESPACE, null,null, null, null);
+							if (citation != null || isNotBlank(nameFactRefDetail)){
+								additionalPublication.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, nameFactRefDetail, null, null);
+							}
 							description.addElement(additionalPublication);
 							taxonNameBase.addDescription(description);
 						}
@@ -180,8 +183,10 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							//TODO language
 							Language language = Language.DEFAULT();
 							bibliography.putText(language, nameFact);
-							bibliography.addSource(String.valueOf(nameFactId), NAMESPACE, citation, 
-									nameFactRefDetail, null, null);
+							bibliography.addSource(OriginalSourceType.Import, String.valueOf(nameFactId), NAMESPACE, null,null, null, null);
+							if (citation != null || isNotBlank(nameFactRefDetail)){
+								bibliography.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, nameFactRefDetail, null, null);
+							}
 							description.addElement(bibliography);
 							taxonNameBase.addDescription(description);
 						}

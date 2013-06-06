@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -57,10 +58,33 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
+		//TODO still needed? Does it throw exception if table does not exist?
 		//drop TypeDesignationBase_TaxonNameBase   //from schemaUpdater 301_31
 		String stepName = "Drop duplicate TypeDesignation-TaxonName table";
 		String tableName = "TypeDesignationBase_TaxonNameBase";
-		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		ISchemaUpdaterStep step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//create original source type column
+		stepName = "Create original source type column";
+		tableName = "OriginalSourceBase";
+		String columnName = "type";
+		//TODO NOT NULL unclear
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true, null);
+		stepList.add(step);
+		
+		//TODO update original source type
+		
+		//create taxon node tree index
+		stepName = "Create taxon node tree index";
+		tableName = "TaxonNode";
+		columnName = "treeIndex";
+		//TODO NOT NULL unclear
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true, null);
+		stepList.add(step);
+		
+		//TODO update tree index
+		
 		
 		
 		

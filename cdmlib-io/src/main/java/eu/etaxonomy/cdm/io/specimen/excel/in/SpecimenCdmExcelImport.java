@@ -232,7 +232,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		
 		
 		} else if(keyValue.key.matches(SOURCE_COLUMN)) {
-			row.putSourceReference(keyValue.index, getOrMakeReference(state, value));	
+			row.putSourceReference(keyValue.index, getOrMakeReference(state, value) );	
 		} else if(keyValue.key.matches(ID_IN_SOURCE_COLUMN)) {
 			row.putIdInSource(keyValue.index, value);		
 		} else if(keyValue.key.matches(EXTENSION_COLUMN)) {

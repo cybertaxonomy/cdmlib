@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -873,12 +874,12 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
 					// vol.13)
 					Reference<?> citation = state.getConfig().getSourceReference();
-					media.addSource(numString, "num", citation, null);
+					media.addImportSource(  numString, "num", citation, null);
 					// TODO name used in source if available
 				}
 				// TODO which citation
 				if (StringUtils.isNotBlank(id)) {
-					media.addSource(id, null, state.getConfig().getSourceReference(), null);
+					media.addImportSource(id, null, state.getConfig().getSourceReference(), null);
 				} else {
 					String message = "Figure id should never be empty or null";
 					fireWarningEvent(message, next, 6);
@@ -1124,7 +1125,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
 					TextData featurePlaceholder = docImport.getFeaturePlaceholder(state, description, feature, true);
 					for (Reference<?> citation : refs) {
-						featurePlaceholder.addSource(null, null, citation, null);
+						featurePlaceholder.addSource(OriginalSourceType.PrimaryTaxonomicSource,
+								null, null, citation, null);
 					}
 				} else {
 					String message = "No reference found in references";

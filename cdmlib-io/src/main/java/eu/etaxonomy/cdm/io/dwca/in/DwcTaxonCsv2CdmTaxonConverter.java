@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -78,7 +79,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		
 		//original source
 		String id = csvTaxonRecord.get(ID);
-		IdentifiableSource source = taxonBase.addSource(id, "Taxon", sourceReference, sourceReferenceDetail);
+		IdentifiableSource source = taxonBase.addImportSource(id, "Taxon", sourceReference, sourceReferenceDetail);
 		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
 		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
@@ -213,7 +214,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
 				Classification classification = Classification.NewInstance(classificationName);
 				//source
-				IdentifiableSource source = classification.addSource(classificationId, "Dataset", sourceReference, sourceReferecenDetail);
+				IdentifiableSource source = classification.addSource(OriginalSourceType.Lineage, classificationId, "Dataset", sourceReference, sourceReferecenDetail);
 				//add to result
 				resultList.add(new MappedCdmBase(idTerm, datasetId, classification));
 				resultList.add(new MappedCdmBase(strTerm, datasetName, classification));
@@ -231,7 +232,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 					taxonBase.setSec(ref);
 				}else{
 					//dataset as original source
-					taxonBase.addSource(null, null, ref, null);
+					taxonBase.addSource(OriginalSourceType.Lineage, null, null, ref, null);
 				}
 			}
 		}else{
@@ -324,7 +325,8 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		if (strScientificNameId != null){
 			if (config.isScientificNameIdAsOriginalSourceId()){
 				if (name != null){
-					IdentifiableSource source = IdentifiableSource.NewInstance(strScientificNameId, TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference, null);
+					IdentifiableSource source = IdentifiableSource.NewDataImportInstance(strScientificNameId, 
+							TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference);
 					name.addSource(source);
 				}
 			}else{
@@ -379,7 +381,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 						fireWarningEvent(message, item, 4);
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
-						newRef.addSource(refId, idTerm.toString(), sourceCitation, null);
+						newRef.addImportSource(refId, idTerm.toString(), sourceCitation, null);
 						MappedCdmBase<Reference> idResult = new MappedCdmBase<Reference>(idTerm, refId, newRef);
 						resultList.add(idResult);
 					}

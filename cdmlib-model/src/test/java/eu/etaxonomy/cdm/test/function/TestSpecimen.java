@@ -124,9 +124,8 @@ public class TestSpecimen {
 		specimen.addMedia(media);
 
 		//Original ID
-		IdentifiableSource source = IdentifiableSource.NewInstance();
 		String id = "22";
-		source.setIdInSource(id);
+		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id);
 		specimen.addSource(source);
 		
 		FieldObservation fieldObservation = FieldObservation.NewInstance();

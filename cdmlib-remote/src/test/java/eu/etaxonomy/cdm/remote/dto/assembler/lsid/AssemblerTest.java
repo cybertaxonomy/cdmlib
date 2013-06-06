@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -166,7 +167,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.setUri(new URI("http://persitent.books.foo/myBook"));
         book.setUuid(UUID.randomUUID());
         book.setVolume("Volume 1");
-        book.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/1"));
+        book.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/1"));
 
         bookSection = ReferenceFactory.newBookSection();
         bookSection.setInReference((Reference)book);
@@ -179,7 +180,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
         bookSection.addCredit(Credit.NewInstance(authorTeam, "Credits to the authorTeam"));
-        bookSection.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/2"));
+        bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
     @Test

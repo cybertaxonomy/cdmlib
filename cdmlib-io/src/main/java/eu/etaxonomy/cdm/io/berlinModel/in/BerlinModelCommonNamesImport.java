@@ -278,7 +278,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				if (nameInSourceFk != null && nameUsedInSource == null){
 					logger.warn("Name used in source (" + nameInSourceFk + ") was not found for common name " + commonNameId);
 				}
-				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
+				DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				for (CommonTaxonName commonTaxonName : commonTaxonNames){
 					commonTaxonName.addSource(source);
 				}

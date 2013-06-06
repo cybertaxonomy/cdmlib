@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -374,14 +375,13 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				List<Map<SourceType, String>> sourceList = sourceDataHolder.getSources();
 				for (Map<SourceType, String> sourceMap : sourceList){
 				
-					DescriptionElementSource source = DescriptionElementSource.NewInstance();
 					//ref
 					Reference<?> ref = ReferenceFactory.newGeneric();
 					boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
 					for (SourceType type : sourceMap.keySet()){
 						String value = sourceMap.get(type);
 						if (type.equals(SourceType.Author)){
-							TeamOrPersonBase author = getAuthorAccordingToConfig(value, state);
+							TeamOrPersonBase<?> author = getAuthorAccordingToConfig(value, state);
 							ref.setAuthorTeam(author);
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
@@ -393,6 +393,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						}
 						refExists = true;
 					}
+					DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 					if (refExists){
 						ref = getReferenceAccordingToConfig(ref, state);
 						source.setCitation(ref);

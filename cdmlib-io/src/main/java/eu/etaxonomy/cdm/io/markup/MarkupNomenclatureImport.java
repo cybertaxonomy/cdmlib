@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -672,7 +673,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 					.getSourceReference(), false, true);
 			TextData citation = TextData.NewInstance(Feature.CITATION());
 			// TODO name used in source
-			citation.addSource(null, null, reference, microCitation);
+			citation.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, reference, microCitation);
 			td.addElement(citation);
 		} else if (TYPE.equalsIgnoreCase(classValue)) {
 			handleNotYetImplementedAttributeValue(parentEvent, CLASS,

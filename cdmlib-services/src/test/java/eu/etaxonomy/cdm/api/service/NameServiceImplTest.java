@@ -548,7 +548,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         TextData textData = TextData.NewInstance("Any text", lang, null);
         textData.setFeature(feature);
         taxonDescription.addElement(textData);
-        DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, name1, "");
+        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(null, null, name1, "");
         textData.addSource(source);
         taxonService.saveOrUpdate(taxon);
         nameService.save(name1);

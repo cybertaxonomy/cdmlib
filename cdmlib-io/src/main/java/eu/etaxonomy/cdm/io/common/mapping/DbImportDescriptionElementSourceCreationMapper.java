@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -93,7 +94,7 @@ public class DbImportDescriptionElementSourceCreationMapper extends DbImportObje
 	 */
 	@Override
 	protected DescriptionElementSource createObject(ResultSet rs)throws SQLException {
-		DescriptionElementSource source = DescriptionElementSource.NewInstance();
+		DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 		return source;
 	}
 

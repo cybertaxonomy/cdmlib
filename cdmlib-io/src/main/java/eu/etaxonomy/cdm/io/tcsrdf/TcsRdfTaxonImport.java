@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -140,7 +141,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			xmlAttributeName = "resource";
 			attributeNamespace = rdfNamespace;
 			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-			TaxonNameBase taxonNameBase = taxonNameMap.get(strNameResource);
+			TaxonNameBase<?,?> taxonNameBase = taxonNameMap.get(strNameResource);
 			if (taxonNameBase == null){
 				logger.warn("Taxon has no name: " + taxonAbout + "; Resource: " + strNameResource);
 			}
@@ -157,7 +158,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			
 //			//FIXME
 //			String secId = "pub_999999";
-			Reference sec = referenceMap.get(strAccordingTo);
+			Reference<?> sec = referenceMap.get(strAccordingTo);
 			if (sec == null){
 				sec = nomRefMap.get(strAccordingTo);
 			}
@@ -165,7 +166,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 				logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
 			}
 			
-			TaxonBase taxonBase;
+			TaxonBase<?> taxonBase;
 			Namespace geoNamespace = config.getGeoNamespace();
 			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace) || isSynonym(elTaxonConcept, config.getPalmNamespace())){
 				//Synonym
@@ -179,10 +180,12 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
 				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 				TaxonDescription description = TaxonDescription.NewInstance(taxon);
-				description.addSource(null, null, taxon.getSec(), null);
+				//TODO type
+				description.addSource(OriginalSourceType.Unknown, null, null, taxon.getSec(), null);
 				for (DescriptionElementBase geo: geoList){
 					description.addElement(geo);
-					DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, taxon.getSec(), null);
+					//TODO type
+					DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown, null, null, taxon.getSec(), null);
 					geo.addSource(source);
 				}
 				taxon.addDescription(description);

@@ -126,7 +126,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					if (i == 1 && state.getConfig().getClassificationUuid() != null){
 						tree.setUuid(state.getConfig().getClassificationUuid());
 					}
-					IdentifiableSource identifiableSource = IdentifiableSource.NewInstance(ptRefFk, TREE_NAMESPACE);
+					IdentifiableSource identifiableSource = IdentifiableSource.NewDataImportInstance(ptRefFk, TREE_NAMESPACE);
 					tree.addSource(identifiableSource);
 					
 					getClassificationService().save(tree);

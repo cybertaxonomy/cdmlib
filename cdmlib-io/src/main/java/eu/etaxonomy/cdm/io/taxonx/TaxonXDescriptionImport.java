@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -111,7 +112,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		TaxonDescription description = TaxonDescription.NewInstance();
 		description.setTitleCache(getDescriptionTitle(state), true);
 		if (modsReference != null){
-			description.addSource(null, null, modsReference, null);
+			description.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, modsReference, null);
 		}
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
@@ -141,7 +142,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 				
 				//add reference
 				if (modsReference != null){
-					descriptionElement.addSource(null, null, modsReference, null, null, null);
+					descriptionElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, modsReference, null, null, null);
 				}
 			}
 

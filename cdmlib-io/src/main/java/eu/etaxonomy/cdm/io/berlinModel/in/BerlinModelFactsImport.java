@@ -305,7 +305,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						}
 						
 						//reference
-						Reference citation = null;
+						Reference<?> citation = null;
 						String factRefFk = String.valueOf(factRefFkObj);
 						if (factRefFkObj != null){
 							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, factRefFk);	
@@ -314,10 +314,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 								logger.warn("Citation not found in referenceMap: " + factRefFk);
 							success = false;
 							}
-						if (citation != null || CdmUtils.isNotEmpty(details)){
-							DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
-							originalSource.setCitation(citation);
-							originalSource.setCitationMicroReference(details);
+						if (citation != null || StringUtils.isNotBlank(details)){
+							DescriptionElementSource originalSource = DescriptionElementSource.NewPrimarySourceInstance(citation, details);
 							textData.addSource(originalSource);
 						}
 						taxonDescription.addElement(textData);

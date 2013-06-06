@@ -30,14 +30,16 @@ public interface ISourceable<T extends IOriginalSource> {
 	
 	
 	/**
-	 * Adds a source that is newly created by its components. If all components are <code>null</null>
+	 * Adds a source that is newly created by its components. If all components except for the 
+	 * type are <code>null</null>
 	 * no source is added.
-	 * @param id
-	 * @param idNamespace
-	 * @param citation
-	 * @param microCitation
+     * @param type the {@link OriginalSourceType type} of the source
+     * @param idInSource the id used in the source 
+     * @param idNamespace the namespace for the id in the source
+     * @param citation the source as a {@link Reference reference}
+     * @param microReference the details (e.g. page number) in the reference
 	 */
-	public T addSource(String id, String idNamespace, Reference citation, String microCitation);
+	public T addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation);
 		
 
 	/**
@@ -45,5 +47,17 @@ public interface ISourceable<T extends IOriginalSource> {
 	 * @param source
 	 */
 	public void removeSource(T source);
+
+    /**
+     * Adds a {@link IOriginalSource source} of {@link OriginalSourceType type} Import to this description element.
+     * 
+     * @param idInSource the id used in the source 
+     * @param idNamespace the namespace for the id in the source
+     * @param citation the source as a {@link Reference reference}
+     * @param microReference the details (e.g. page number) in the reference
+     * @param nameUsedInSource the taxon name used in the source
+     * @param originalNameString the name as text used in the source
+     */
+	public T addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation);
 
 }
