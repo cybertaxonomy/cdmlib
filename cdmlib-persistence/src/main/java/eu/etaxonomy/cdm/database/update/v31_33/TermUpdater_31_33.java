@@ -11,16 +11,13 @@ package eu.etaxonomy.cdm.database.update.v31_33;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
-import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_314_315;
-import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller

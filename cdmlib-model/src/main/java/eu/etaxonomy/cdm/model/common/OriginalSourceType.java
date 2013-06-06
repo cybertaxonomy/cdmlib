@@ -29,29 +29,64 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * The original source type is used to define the type of an {@link OriginalSourceBasesource original source}.<BR>
+ * It is used to distinguish e.g. data lineage when importing data from one database to another from e.g. content oriented
+ * sources such as the citation in a book.
+ * In future they may come further source types. 
  * @author a.mueller
  * @created 15.05.2013
  */
 @XmlEnum
 public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Serializable{
+	
 	//0
 	/**
-	 * Data Lineage describes the data life cycle of electronically available data. A typical use-case for data lineage
-	 * is a data import from one database to another. Sources of type data lineage will store information about the
+	 * Primary Taxonomic Source describes the sources a taxonomist uses to gather certain information. 
+	 * E.g. a taxonomist may have used three books/articles/other references to gather information
+	 * about the distribution status of a taxon.
+	 * He/she will store these references as original source of type Primary Taxonomic Source.
+	 * This is a specification of PROV-O Primary Source 
+	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
+	 *   
+	 */
+	@XmlEnumValue("Primary Taxonomic Source")
+	PrimaryTaxonomicSource(UUID.fromString("c990beb3-3bc9-4dad-bbdf-9c11683493da"), "Primary Taxonomic Source"),
+	
+	//1
+	/**
+	 * Data Lineage describes the data life cycle of electronically available data. A typical use-case for 
+	 * data lineage is a data import from one database to another. Sources of type data lineage will store information about the
 	 * original database and the identifier and table (->namespace) used in the original database.
 	 * There are multiple types of data lineage: Blackbox, Dispatcher, Aggregator ({@link http://de.wikipedia.org/wiki/Data-Lineage})  
 	 */
 	@XmlEnumValue("Data Lineage")
 	Lineage(UUID.fromString("4f9fdf9a-f3b5-490c-96f0-90e050599b0e"), "Data Lineage"),
-	
-	//1
+
+	//2
 	/**
-	 * Content describes the sources a taxonomist uses to gather certain information. E.g. a taxonomist may have used
-	 * three books/articles/other references to gather information about the distribution status of a taxon.
-	 * He/she will store these references as original source of type Content.  
+	 * Database Import is a specialisation of {@value #Lineage}. It describes the electronic import of data 
+	 * from an external datasource into the given datasource. This step may include data transformations also
+	 * but the primary process is the import of data.
+	*/
+	@XmlEnumValue("Database Import")
+	Import(UUID.fromString("2a3902ff-06a7-4307-b542-c743e664b8f2"), "Database Import"),
+
+	//3
+	/**
+	 * Data Transformation is a specification of {@value #Lineage} and describes a data transformation process that happens primarily  on the given dataset
+	 * but may also include external data.
 	 */
-	@XmlEnumValue("Content")
-	Content(UUID.fromString("c990beb3-3bc9-4dad-bbdf-9c11683493da"), "Content"),
+	@XmlEnumValue("Data Transformation")
+	Transformation(UUID.fromString("d59e80e5-cbb7-4658-b74d-0626bbb0da7f"), "Data Transformation"),
+
+
+	//4
+	/**
+	 * Data aggregation is a spcification of {@value #Lineage} and describes the data transformation process
+	 * that primarily includes data aggregation processes but may also include data imports and transformation.
+	 */
+	@XmlEnumValue("Data Aggregation")
+	Aggregation(UUID.fromString("944f2f40-5144-4c81-80d9-f61aa10507b8"), "Data Aggregation"),
+
 	;
 	
 	

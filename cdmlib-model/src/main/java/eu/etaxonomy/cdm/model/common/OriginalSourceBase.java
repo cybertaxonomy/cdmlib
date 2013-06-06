@@ -66,6 +66,7 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
 
+//***************** CONSTRUCTOR ***********************/	
 
 	/**
 	 * Constructor
@@ -74,6 +75,8 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 		super();
 	}
 
+//**************** GETTER / SETTER *******************************/
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getIdInSource()
 	 */
@@ -101,6 +104,15 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	public void setIdNamespace(String idNamespace) {
 		this.idNamespace = idNamespace;
 	}
+	
+
+	public OriginalSourceType getType() {
+		return type;
+	}
+
+	public void setType(OriginalSourceType type) {
+		this.type = type;
+	}
 
 	
 //********************** CLONE ************************************************/
@@ -126,4 +138,5 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 			return super.toString();
 		}
 	}
+
 }

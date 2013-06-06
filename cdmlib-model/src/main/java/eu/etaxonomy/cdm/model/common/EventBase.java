@@ -53,7 +53,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private AgentBase actor;
+	private AgentBase<?> actor;
 
 	@XmlElement(name = "Description")
 	@Field(index=Index.YES)

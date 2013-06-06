@@ -32,10 +32,26 @@ public interface IOriginalSource<T extends ISourceable> {
 
 	/*************** GETTER /SETTER ************************************/
 
+	
+	/**
+	 * Returns the {@link OriginalSourceType type} of the source. The type defines the relationship
+	 * between the current data and the original data. 
+	 * @see OriginalSourceType 
+	 * @return the type of the source
+	 */
+	public OriginalSourceType getType();
+
+	/**
+	 * @see #getType()
+	 * @param type the type to be set
+	 */
+	public void setType(OriginalSourceType type);
+	
 	/**
 	 * Returns the (unique) identifier used in the source.
 	 * If the identifier is not unique, {@link #getIdNamespace() namespace} should be defined.
 	 * The namespace together with the identifier should be unique.
+	 * @return  the identifier used in the source.
 	 */
 	public String getIdInSource();
 
