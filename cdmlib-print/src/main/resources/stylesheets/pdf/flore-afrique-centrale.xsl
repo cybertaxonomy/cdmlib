@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xsl:stylesheet [<!ENTITY mdash "&#x2014;" > <!ENTITY ndash "&#x2013;" >]> 
+<!DOCTYPE xsl:stylesheet [<!ENTITY mdash "&#x2014;" > <!ENTITY ndash "&#x2013;" > <!ENTITY ndash "&#x2715;" >]> 
 
 <!--
   
@@ -7,9 +7,11 @@
   Target Format: Flore d'Afrique Centrale
   
 -->
-<xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="http://exslt.org/common" 
   xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
   
+  <xsl:param name="abstract"/>
+  <xsl:param name="title"/>
   
 
   <!-- ############### Constants and definitions ################### -->
@@ -19,6 +21,7 @@
     *********************************** -->
   <xsl:param name="global-family-font">Times</xsl:param>
   <xsl:param name="global-size-font">10pt</xsl:param>
+  <xsl:param name="global-title-font">10pt</xsl:param>
   <xsl:param name="global-line-height">12pt</xsl:param>
 
   <xsl:param name="global-width-page">159mm</xsl:param>
@@ -29,6 +32,7 @@
   <!-- **********************************   
     ** definitions for taxon pages
     *********************************** -->
+  <xsl:param name="taxon-first-page-top-margin">66mm</xsl:param>
   <xsl:param name="taxon-page-top-margin">32mm</xsl:param>
   <xsl:param name="taxon-page-inner-margin">21mm</xsl:param>
   <xsl:param name="taxon-page-bottom-margin">32mm</xsl:param>
@@ -59,7 +63,7 @@
   <xsl:param name="taxon-page-number-initial">1</xsl:param>
 
   <!-- hardcoded ranks -->
-  <xsl:param name="uuidFamily">210a8214-4e69-401a-8e47-c7940d990bdd</xsl:param>
+  <xsl:param name="uuidFamily">af5f2481-3192-403f-ae65-7c957a0f02b6</xsl:param>
   <xsl:param name="uuidGenus">1b11c34c-48a8-4efa-98d5-84f7f66ef43a</xsl:param>
   <xsl:param name="uuidSubgenus">78786e16-2a70-48af-a608-494023b91904</xsl:param>
 
@@ -95,6 +99,15 @@
 
       <!-- defines page layout -->
       <fo:layout-master-set>
+        
+        <!-- layout for odd taxon pages -->
+        <fo:simple-page-master master-name="taxon_page_first" page-height="{$global-height-page}"
+          page-width="{$global-width-page}" margin-top="{$taxon-first-page-top-margin}"
+          margin-bottom="{$taxon-page-bottom-margin}" margin-left="{$taxon-page-inner-margin}">
+          <fo:region-body margin-right="{$taxon-region-body-outer-margin}"/>
+          <fo:region-before extent="{$taxon-region-before-extent}" region-name="odd-before"/>
+          <fo:region-after extent="{$taxon-region-after-extent}" region-name="odd-after"/>
+        </fo:simple-page-master>
 
         <!-- layout for odd taxon pages -->
         <fo:simple-page-master master-name="taxon_page_odd" page-height="{$global-height-page}"
@@ -122,7 +135,7 @@
         <!-- defines repeatable page-sequence for layout of taxa -->
         <fo:page-sequence-master master-name="taxon_page">
           <fo:repeatable-page-master-alternatives>
-            <fo:conditional-page-master-reference master-reference="taxon_page_odd"
+            <fo:conditional-page-master-reference master-reference="taxon_page_first"
               page-position="first"/>
             <fo:conditional-page-master-reference master-reference="taxon_page_even"
               page-position="rest" odd-or-even="even"/>
@@ -147,29 +160,213 @@
           <xsl:call-template name="left-extent"/>
         </fo:static-content>
 
+        
+        
         <!-- format taxa -->
         <fo:flow flow-name="xsl-region-body">
+          
+          <!--fo:block><xsl:value-of select="$abstract"/></fo:block-->
+          
           <fo:block font-family="{$global-family-font}" font-size="{$global-size-font}"
             line-height="{$global-line-height}" linefeed-treatment="preserve">
+            
+            <fo:block text-align="center" font-weight="bold" font-size="global-title-font" linefeed-treatment="preserve">            
+              <xsl:value-of select="$title"/>
+              <xsl:text>&#xA;</xsl:text>
+              <xsl:text>&#xA;</xsl:text>
+            </fo:block>
+            <fo:block linefeed-treatment="preserve">
+            <fo:inline font-weight="bold"><xsl:text>Abstract. </xsl:text></fo:inline>
+            <xsl:value-of select="$abstract"/>
+              <xsl:text>&#xA;</xsl:text>
+            </fo:block>
+            
             <xsl:for-each select="//TaxonNode">
               <xsl:apply-templates select="."/>
             </xsl:for-each>
             
             <fo:block text-align="center" text-transform="uppercase" font-weight="bold" linefeed-treatment="preserve">
-              <xsl:text>REFERENCES</xsl:text>
               <xsl:text>&#xA;</xsl:text>
-              
+              <xsl:text>REFERENCES</xsl:text>             
             </fo:block>
             <xsl:text>&#xA;</xsl:text>
             <xsl:call-template name="References"/>
+            
+            <fo:block text-align="center" font-weight="bold" linefeed-treatment="preserve">
+              <xsl:text>&#xA;</xsl:text>
+              <xsl:text>Noms scientifiques</xsl:text>             
+            </fo:block>
+            <xsl:text>&#xA;</xsl:text>
+            <xsl:call-template name="scientific-name-index"/>
           </fo:block>
-
-
         </fo:flow>
-
-
       </fo:page-sequence>
     </fo:root>
+  </xsl:template>
+  
+  <!-- TODO shorten this so that not repeating code for creating author in each xsl:when statement -->
+  <xsl:template name="scientific-name-index">   
+    <!-- create a variable for the sorted scientific names for the index, then once sorted can select preceding to get the first occurance of 
+    the genusOrUninomial in the list-->
+    <xsl:variable name="sortedcopy">
+      <xsl:for-each select="//name">
+        <xsl:sort select="genusOrUninomial" data-type="text" order="ascending"></xsl:sort>
+        <xsl:sort select="specificEpithet" data-type="text" order="ascending"></xsl:sort>
+        <xsl:copy-of select="."/>       
+      </xsl:for-each>
+    </xsl:variable>  
+
+    <fo:block margin-bottom="5mm" text-align="justify">    
+      <xsl:for-each select="$sortedcopy/*"><!-- or select="//name/genusOrUninomial-->
+         
+        <xsl:variable name="genus" select="."/>
+        <xsl:choose>
+          <!-- family -->
+          <xsl:when test="rank/uuid='af5f2481-3192-403f-ae65-7c957a0f02b6'">
+            <fo:inline font-style="italic">
+            <xsl:apply-templates select="genusOrUninomial"/>
+            </fo:inline>
+            <xsl:for-each select="taggedName/e">
+              <xsl:if test="type='authors'">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="text"/>
+              </xsl:if>              
+            </xsl:for-each>
+          </xsl:when>
+          <!-- genus -->
+          <xsl:when test="rank/uuid='1b11c34c-48a8-4efa-98d5-84f7f66ef43a'">
+            <fo:block>
+              <fo:inline font-style="italic">
+              <xsl:apply-templates select="genusOrUninomial"/>
+              </fo:inline>
+              <xsl:for-each select="taggedName/e">
+                <xsl:if test="type='authors'">
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="text"/>
+                </xsl:if>              
+              </xsl:for-each>
+            </fo:block>
+          </xsl:when>
+          <!-- subgenus -->
+          <xsl:when test="rank/uuid='78786e16-2a70-48af-a608-494023b91904'">
+            <fo:block>
+              <xsl:apply-templates select="rank/representation_L10n"/>
+              <xsl:text> </xsl:text>
+              <fo:inline font-style="italic">
+              <xsl:apply-templates select="genusOrUninomial"/>
+              </fo:inline>
+              <xsl:for-each select="taggedName/e">
+                <xsl:if test="type='authors'">
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="text"/>
+                </xsl:if>              
+              </xsl:for-each>
+            </fo:block>            
+          </xsl:when>
+          <!-- species -->
+          <xsl:when test="rank/uuid='b301f787-f319-4ccc-a10f-b4ed3b99a86d'">
+            
+            <!--first occurance of the genusOrUninomial in the list is not indented -->
+              <xsl:choose>
+                <xsl:when test="not(preceding::genusOrUninomial[1] = genusOrUninomial)">
+                <fo:block>
+                  <fo:inline font-style="italic">
+                <xsl:apply-templates select="genusOrUninomial"/>
+                <xsl:text> </xsl:text>
+                  <xsl:apply-templates select="specificEpithet"/>
+                  </fo:inline>
+                  <xsl:text> </xsl:text>
+                  <!--xsl:apply-templates select="rank/titleCache"/-->
+                  <xsl:for-each select="taggedName/e">
+                    <xsl:if test="type='authors'">
+                      <xsl:text> </xsl:text>
+                      <xsl:value-of select="text"/>
+                    </xsl:if>              
+                  </xsl:for-each>
+                    
+                </fo:block>
+                </xsl:when>
+                <xsl:otherwise>
+                  <fo:block text-indent="{$taxon-name-indentation}">
+                    <fo:inline font-style="italic">
+                      <xsl:apply-templates select="specificEpithet"/>
+                    </fo:inline>
+                      <xsl:text> </xsl:text>
+                      <!--xsl:apply-templates select="rank/titleCache"/--><!-- for debugging -->
+                    <xsl:for-each select="taggedName/e">
+                      <xsl:if test="type='authors'">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="text"/>
+                      </xsl:if>              
+                    </xsl:for-each>
+                    </fo:block>
+                </xsl:otherwise>
+              </xsl:choose>
+              
+            
+          </xsl:when>
+          <!-- variant d5feb6a5-af5c-45ef-9878-bb4f36aaf490-->
+          <xsl:when test="rank/uuid='d5feb6a5-af5c-45ef-9878-bb4f36aaf490'">
+            <fo:block text-indent="{$taxon-name-indentation}">
+              <xsl:text>&ndash; </xsl:text> <!--concat ndash-->
+              <xsl:apply-templates select="rank/representation_L10n_abbreviatedLabel"/>
+              <xsl:text> </xsl:text>
+              <fo:inline font-style="italic">
+              <xsl:apply-templates select="specificEpithet"/>
+              </fo:inline>
+              
+              <xsl:for-each select="taggedName/e">
+                <xsl:if test="type='authors'">
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="text"/>
+                </xsl:if>              
+              </xsl:for-each>
+            </fo:block>
+          </xsl:when>
+          <!-- sub-species 462a7819-8b00-4190-8313-88b5be81fad5-->
+          <xsl:when test="rank/uuid='462a7819-8b00-4190-8313-88b5be81fad5'">
+            <fo:block text-indent="{$taxon-name-indentation}">
+              <!--xsl:apply-templates select="specificEpithet"/--><!--remove - just for testing -->
+              <xsl:text>- </xsl:text>
+              <xsl:apply-templates select="rank/representation_L10n_abbreviatedLabel"/>
+              <xsl:text> </xsl:text>
+              <fo:inline font-style="italic">
+              <xsl:apply-templates select="infraSpecificEpithet"/>
+              </fo:inline>
+              <!--xsl:variable name="full-name">
+              <xsl:apply-templates select="../taggedName"/> we only want to add the authors from taggedName if taggedName/e/type='author' select text
+              </xsl:variable-->
+              <!--fo:inline font-style="bold">
+                <xsl:apply-templates select="$full-name"></xsl:apply-templates>
+              </fo:inline-->
+              <!--xsl:apply-templates select="substring-after(' ', $full-name)"></xsl:apply-templates-->
+              <!--xsl:call-template name="dispay-author-name">
+                <xsl:with-param name="e" select="../taggedName/e"/>
+              </xsl:call-template-->
+              <xsl:for-each select="taggedName/e">
+                <xsl:if test="type='authors'">
+                  <xsl:text> </xsl:text>
+                  <xsl:value-of select="text"/>
+                </xsl:if>              
+              </xsl:for-each>
+            </fo:block>
+          </xsl:when>
+          <!--xsl:otherwise-->
+            <!-- for debugging LORNA DEBUGGING XSLT CHOOSE: <xsl:value-of
+              select="../rank/uuid"/>: <xsl:value-of select="../titleCache"/>
+          </xsl:otherwise!-->
+        </xsl:choose>    
+      </xsl:for-each>
+    </fo:block>
+  </xsl:template>
+  
+
+  <xsl:template name="dispay-author-name"> <!-- call this template with node e - don't display uninomial for species -->
+    <xsl:param name="e"/>
+      <xsl:if test="$e/type='authors'">
+        <xsl:text>++++++</xsl:text>
+        <xsl:value-of select="$e/text"/>
+      </xsl:if>
   </xsl:template>
 
   <!-- HEADER -->
@@ -284,7 +481,7 @@
       <xsl:choose>
         <!-- family -->
         <xsl:when test="name/rank/uuid='af5f2481-3192-403f-ae65-7c957a0f02b6'">
-          <fo:block text-align="center" text-transform="uppercase">
+          <fo:block font-weight="bold" text-align="center" text-transform="uppercase">
             <xsl:apply-templates select="name/genusOrUninomial"/>
           </fo:block>
         </xsl:when>
@@ -344,6 +541,7 @@
       </xsl:choose>
     </xsl:for-each>
   </xsl:template>
+ 
 
   <!-- first date in brackets -->
   <xsl:template match="nomenclaturalReference">
@@ -447,7 +645,19 @@
               <!--xsl:if test="not(starts-with($representation, 'Figures'))"-->
               <!--xsl:if test="position() = 1"-->
                 <!--xsl:value-of select="../../../../../../Taxon/name/titleCache"/-->
+              
+             <!-- if it has the title map don't show it in the image section -->
+
+              <xsl:if test="not(starts-with(media/e/title_L10n,'Map'))">
                 <xsl:apply-templates select="media/e/representations/e/parts/e/uri"/>
+              </xsl:if>
+              
+              
+              
+              
+              <!--xsl:call-template name="uri">
+                <xsl:with-param name="uri-node" select="media/e/representations/e/parts/e/uri"/>
+              </xsl:call-template-->
               <!--/xsl:if-->
               <!--xsl:apply-templates select="e[1]/name[1]/homotypicalGroup[1]/typifiedNames[1]/e/taxonBases[1]/e/descriptions[1]/e/elements[1]/e[1]/media[1]/e/representations[1]/e/parts[1]/e/uri"></xsl:apply-templates-->
 
@@ -464,26 +674,50 @@
   </xsl:template>
 
   <!-- IMAGES -->
+  
   <xsl:template match="uri">
+    <!--xsl:template name="uri"-->
+      
+    <xsl:param name="uri-node"/>
+    <xsl:variable name="graphic" select="."/>
+    <xsl:variable name="title" select="../../../../../title_L10n"/>
     <!--fo:block text-align="center"-->
-    <fo:block keep-with-next="always" text-align="center">
-
-      <!--fo:inline text-align="center"-->
+    
       <!--xsl:variable name="graphic" select="e/representations/e/parts/e/uri"/-->
 
       <!-- Is there a description element of type Figure for this TaxonNode?-->
+   
+      <xsl:choose>
+        
+        <!--xsl:when test="contains($graphic,'jpg')"-->
+        <xsl:when test="starts-with($title,'Map')">
+          <fo:block keep-with-next="always" text-align="center">
+            
+            <!--fo:inline text-align="center"-->
+            <fo:external-graphic content-height="scale-to-fit" height="50mm"
+              scaling="uniform" src="{$graphic}" padding-before="30" padding-after="2"
+              display-align="center"/>
+            <!--/fo:inline-->
+          </fo:block>
+        </xsl:when>
+        <xsl:otherwise>
+         
+          <fo:block keep-with-next="always" text-align="center">
+            
+            <!--fo:inline text-align="center"-->
+            <fo:external-graphic content-height="scale-to-fit" height="{$graphic-height}"
+              scaling="uniform" src="{$graphic}" padding-before="30" padding-after="2"
+              display-align="center"/>
+            <!--/fo:inline-->
+          </fo:block>
+          <fo:block>
+            <fo:leader leader-pattern="rule" leader-alignment="{$taxon-page-inner-margin}"
+              rule-thickness="0.8pt" leader-length="114mm"/>
+            
+          </fo:block>
+        </xsl:otherwise>
+      </xsl:choose>
 
-      <xsl:variable name="graphic" select="."/>
-
-      <fo:external-graphic content-height="scale-to-fit" height="{$graphic-height}"
-        scaling="uniform" src="{$graphic}" padding-before="30" padding-after="2"
-        display-align="center"/>
-      <!--/fo:inline-->
-    </fo:block>
-    <fo:block>
-      <fo:leader leader-pattern="rule" leader-alignment="{$taxon-page-inner-margin}"
-        rule-thickness="0.8pt" leader-length="114mm"/>
-    </fo:block>
     <fo:block>
 
       <!--fo:leader leader-pattern="rule" leader-length="120mm"/-->
@@ -522,18 +756,18 @@
     <!--/fo:block -->
   </xsl:template>
 
-  <!-- TODO Make this templates shorter by creating generic template for replacing html codes 2013 and 2014-->
+  <!-- TODO Can this template be made shorter by less nesting in the xsl:choose statements -->
   <xsl:template name="add-markup">
     <xsl:param name="str"/>
     <xsl:param name="tag-name"/>
-
+    
     <xsl:variable name="opening-tag">
       <xsl:value-of select="concat('&lt;', $tag-name, '&gt;')"> </xsl:value-of>
     </xsl:variable>
     <xsl:variable name="closing-tag">
       <xsl:value-of select="concat('&lt;/', $tag-name, '&gt;')"> </xsl:value-of>
     </xsl:variable>
-
+    
     <xsl:choose>
       <xsl:when test="contains($str, $opening-tag)">
         <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
@@ -542,19 +776,34 @@
         <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
         <xsl:choose>
           <xsl:when test="contains($before-tag, '#x2014;')">
-            <xsl:call-template name="replace-mdash-html">
-              <xsl:with-param name="value" select="$before-tag"/>
+            <xsl:call-template name="replace-string">
+              <xsl:with-param name="text" select="$before-tag"/>
+              <xsl:with-param name="replace" select="'&amp;#x2014;'" />
+              <xsl:with-param name="with" select="'&mdash;'"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:choose>
               <xsl:when test="contains($before-tag, '#x2013;')">
-                <xsl:call-template name="replace-ndash-html">
-                  <xsl:with-param name="value" select="$before-tag"/>
+                <xsl:call-template name="replace-string">
+                  <xsl:with-param name="text" select="$before-tag"/>
+                  <xsl:with-param name="replace" select="'&amp;#x2013;'" />
+                  <xsl:with-param name="with" select="'&ndash;'"/>
                 </xsl:call-template>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="$before-tag"/>
+                <xsl:choose>
+                  <xsl:when test="contains($str, '#x2716;')">
+                    <xsl:call-template name="replace-string">
+                      <xsl:with-param name="text" select="$before-tag"/>
+                      <xsl:with-param name="replace" select="'&amp;#x2715;'" />
+                      <xsl:with-param name="with" select="'&ndash;'"/>
+                    </xsl:call-template>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="$before-tag"/>
+                  </xsl:otherwise>
+                </xsl:choose>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -581,19 +830,34 @@
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="contains($str, '#x2014;')">
-            <xsl:call-template name="replace-mdash-html">
-              <xsl:with-param name="value" select="$str"/>
+            <xsl:call-template name="replace-string">
+              <xsl:with-param name="text" select="$before-tag"/>
+              <xsl:with-param name="replace" select="'&amp;#x2014;'" />
+              <xsl:with-param name="with" select="'&mdash;'"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
             <xsl:choose>
               <xsl:when test="contains($str, '#x2013;')">
-                <xsl:call-template name="replace-ndash-html">
-                  <xsl:with-param name="value" select="$str"/>
+                <xsl:call-template name="replace-string">
+                  <xsl:with-param name="text" select="$before-tag"/>
+                  <xsl:with-param name="replace" select="'&amp;#x2013;'" />
+                  <xsl:with-param name="with" select="'&ndash;'"/>
                 </xsl:call-template>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="$str"/>
+                <xsl:choose>
+                  <xsl:when test="contains($str, '#x2716;')">
+                    <xsl:call-template name="replace-string">
+                      <xsl:with-param name="text" select="$before-tag"/>
+                      <xsl:with-param name="replace" select="'&amp;#x2715;'" />
+                      <xsl:with-param name="with" select="'&ndash;'"/>
+                    </xsl:call-template>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="$str"/>
+                  </xsl:otherwise>
+                </xsl:choose>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:otherwise>
@@ -601,19 +865,26 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
-  <xsl:template name="replace-ndash-html">
-    <xsl:param name="value"/>
-    <xsl:value-of
-      select="concat(substring-before($value, '&amp;#x2013;'), '&ndash;', substring-after($value, '&amp;#x2013;'))"
-    />
-  </xsl:template>
-
-  <xsl:template name="replace-mdash-html">
-    <xsl:param name="value"/>
-    <xsl:value-of
-      select="concat(substring-before($value, '&amp;#x2014;'), '&mdash;', substring-after($value, '&amp;#x2014;'))"
-    />
+  
+  <xsl:template name="replace-string">
+    <xsl:param name="text"/>
+    <xsl:param name="replace"/>
+    <xsl:param name="with"/>
+    <xsl:choose>
+      <xsl:when test="contains($text,$replace)">
+        <xsl:value-of select="substring-before($text,$replace)"/>
+        <xsl:value-of select="$with"/>
+        <xsl:call-template name="replace-string">
+          <xsl:with-param name="text"
+            select="substring-after($text,$replace)"/>
+          <xsl:with-param name="replace" select="$replace"/>
+          <xsl:with-param name="with" select="$with"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$text"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="remove_ampersands">
@@ -712,7 +983,7 @@
           <xsl:text> &mdash; </xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <fo:inline font-weight="bold">
+          <fo:inline font-weight="bold" keep-with-next="always">
             <xsl:text> Matériel examiné </xsl:text>
             <xsl:text>&#xA;</xsl:text>
           </fo:inline>
@@ -731,6 +1002,17 @@
 
       <xsl:apply-templates
         select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
+      
+      <!-- get the map associated with the distribution, this is temporarily stored as a media object jpg created by 
+        Quentin's GIS software -->
+      <xsl:if test="uuid='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
+        
+        <!-- get the map attached to the feature 'Figures' -->
+        <xsl:apply-templates
+          select="../feature/feature/representation_L10n[.='Figures']/../descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/>
+        <!--media/e/representations/e/parts/e/uri media/e/title_L10n[.='Map']/../representations/e/parts/e/uri"/-->
+      </xsl:if>
+      
     </fo:block>
   </xsl:template>
 
@@ -795,7 +1077,8 @@
                           <xsl:when test="taxonUuid = $uuidSubgenus">
                             <xsl:variable name="repr"
                               select="//Taxon/uuid[.='71cd0e8d-47eb-4c66-829a-e21c705ee660']/../name/rank/representation_L10n"/>
-                            <xsl:value-of select="concat($substring($genus,1,1), '. ', $repr)"/>
+                            <!--xsl:value-of select="concat($substring($genus,1,1), '. ', $repr)"/-->
+                            <xsl:value-of select="concat($genus, '. ', $repr)"/>
                           </xsl:when>
                           <xsl:when test="taxonUuid = $uuidGenus">
                             <fo:block font-weight="bold" text-align="center"
@@ -807,8 +1090,8 @@
                             <xsl:variable name="specificEpithet"
                               select="//Taxon/uuid[.=$taxonUuid]/../name/specificEpithet"/>
                             <!-- abbreviate the genus for species names -->
-                            <xsl:value-of
-                              select="concat(substring($genus,1,1), '. ', $specificEpithet)"/>
+                            <!--xsl:value-of select="concat(substring($genus,1,1), '. ', $specificEpithet)"/-->
+                            <xsl:value-of select="concat($genus, '. ', $specificEpithet)"/>
                           </xsl:otherwise>
                         </xsl:choose>
                       </xsl:when>
@@ -885,7 +1168,8 @@
         <!--xsl:apply-templates select="e[1]/name/typeDesignations" /-->
       </fo:block>
     </xsl:for-each>
-  </xsl:template>
+    
+  </xsl:template>   
 
   <xsl:template name="citations">
     <xsl:param name="name-uuid"/>
@@ -896,6 +1180,59 @@
       <!-- TODO sorting only works for the first citation, implement correctly -->
       <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
       <xsl:for-each select="sources/e">
+        
+        <xsl:variable name="lastname_text" select="citation/authorTeam/lastname"/>
+        <xsl:variable name="prev_lastname_text" select="preceding-sibling::e[1]/citation/authorTeam/lastname"/>
+        
+        <xsl:if test="nameUsedInSource/uuid=$name-uuid">
+          <xsl:text>; </xsl:text>
+          <fo:inline>
+            <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
+            <!--TODO wrap this in a variable and compare the previous variable to this one to see if we're dealing with the same name-->
+            <xsl:for-each select="citation/authorTeam/teamMembers/e">
+              <xsl:value-of select="lastname"/>
+              <xsl:choose>
+                <xsl:when test="position() != last()">
+                  <xsl:text> &amp; </xsl:text>
+                </xsl:when>
+              </xsl:choose>
+            </xsl:for-each>
+
+<xsl:choose>
+            <xsl:when test="$lastname_text != $prev_lastname_text">
+            <xsl:value-of select="citation/authorTeam/lastname"/><!--TODO We print lastname here as well as the author list is this a mistake?-->
+            
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="citation/datePublished/start"/>
+            <xsl:text>: </xsl:text>
+            <xsl:value-of select="citationMicroReference"/>
+            <xsl:text>)</xsl:text>
+            </xsl:when>
+  <xsl:otherwise>
+    <xsl:text> </xsl:text><!-- TODO For the first ref with a particlar name we should open brackets -->
+    <xsl:value-of select="citation/datePublished/start"/>
+    <xsl:if test="citationMicroReference != ''">
+      <xsl:text>: </xsl:text>
+      <xsl:value-of select="citationMicroReference"/>
+    </xsl:if>
+  </xsl:otherwise>
+</xsl:choose>
+          </fo:inline>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template name="citationsworks">
+    <xsl:param name="name-uuid"/>
+    <xsl:param name="descriptionelements"/>
+    <!--xsl:for-each
+      select="../descriptions/features/feature[uuid='99b2842f-9aa7-42fa-bd5f-7285311e0101']/descriptionelements/descriptionelement"-->
+    <xsl:for-each select="$descriptionelements/descriptionelement">
+      <!-- TODO sorting only works for the first citation, implement correctly -->
+      <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
+      <xsl:for-each select="sources/e">
+        
         <xsl:if test="nameUsedInSource/uuid=$name-uuid">
           <xsl:text>; </xsl:text>
           <fo:inline>
@@ -908,7 +1245,7 @@
                 </xsl:when>
               </xsl:choose>
             </xsl:for-each>
-
+            
             <xsl:value-of select="citation/authorTeam/lastname"/>
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
@@ -942,9 +1279,12 @@
         <xsl:sort select="authorTeam/lastname | authorTeam/teamMembers/e[1]/lastname" />
       <xsl:sort select="datePublished/start"></xsl:sort>
 
-      <fo:block linefeed-treatment="preserve">
+      <fo:block linefeed-treatment="preserve" text-align="justify" text-indent="-{$taxon-name-indentation}" start-indent="{$taxon-name-indentation}">
+        
         <fo:inline>        
-          <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->                      
+          <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->
+          
+          <!--I am only listing references which have at least one author name. If there are other references in the database - why don't these have an author name-->
               <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">               
                 <!--xsl:text>&#xA;</xsl:text-->
                 <xsl:choose>

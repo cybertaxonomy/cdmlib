@@ -404,6 +404,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/WarningTolerantValidationEventHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/package-info.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FeatureSorter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FeatureSorterInfo.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FigureDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FootnoteDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
@@ -549,6 +551,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TaxonTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TermTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/TestCdmSchemaGenerator.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/URIEncoder.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/markup/FeatureSorterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/reference/EndnoteRecordsImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/IkeyPlusImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/KeyActivator.java -text
@@ -1155,8 +1158,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.ja
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverterTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestRegExs.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestUUID.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestBookDefaultCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestNameCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonNameParserBotanicalNameImpl.java -text
@@ -1621,8 +1624,8 @@ cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml 
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-~]8000.launch -text
-cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]profile.launch -text
-cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
+cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
+cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
 cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
@@ -2014,8 +2017,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MediaServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MicroFormatQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaNodeComparator.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NamedAreaTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenerator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceImpl.java -text

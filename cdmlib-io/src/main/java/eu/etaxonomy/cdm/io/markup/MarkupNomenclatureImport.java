@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.markup;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
@@ -22,10 +21,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -34,7 +30,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -56,52 +51,23 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @created 30.05.2012
  * 
  */
-public class MarkupNomenclatureImport extends MarkupImportBase  {
+public class MarkupNomenclatureImport extends MarkupImportBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupNomenclatureImport.class);
 
-	private static final String ACCEPTED = "accepted";
-	private static final String ACCEPTED_NAME = "acceptedName";
-	private static final String ALTERNATEPUBTITLE = "alternatepubtitle";
-	private static final String AUTHOR = "author";
-	private static final String DETAILS = "details";
-	private static final String EDITION = "edition";
-	private static final String EDITORS = "editors";
-	private static final String HOMONYM = "homonym";
-	private static final String HOMOTYPES = "homotypes";
-	private static final String INFRANK = "infrank";
-	private static final String INFRAUT = "infraut";
-	private static final String INFRPARAUT = "infrparaut";
-	private static final String ISSUE = "issue";
-	private static final String NAME = "name";
-	private static final String NAME_TYPE = "nameType";
-	private static final String NOM = "nom";
-	private static final String PAGES = "pages";
-	private static final String PARAUT = "paraut";
-	private static final String PUBFULLNAME = "pubfullname";
-	private static final String PUBNAME = "pubname";
-	private static final String PUBTITLE = "pubtitle";
-	private static final String PUBTYPE = "pubtype";
-	private static final String REF_PART = "refPart";
-	private static final String SYNONYM = "synonym";
-	private static final String USAGE = "usage";
-	private static final String VOLUME = "volume";
-	private static final String YEAR = "year";
-	
-	
+
 	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
-	
+
 	private MarkupKeyImport keyImport;
 	private MarkupSpecimenImport specimenImport;
 
-	
-	public MarkupNomenclatureImport(MarkupDocumentImport docImport, MarkupKeyImport keyImport, MarkupSpecimenImport specimenImport) {
+	public MarkupNomenclatureImport(MarkupDocumentImport docImport,
+			MarkupKeyImport keyImport, MarkupSpecimenImport specimenImport) {
 		super(docImport);
 		this.keyImport = keyImport;
 		this.specimenImport = specimenImport;
 	}
 
-	
 	public void handleNomenclature(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
@@ -119,8 +85,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		}
 		return;
 	}
-	
-	private void handleHomotypes(MarkupImportState state, XMLEventReader reader, StartElement parentEvent)
+
+	private void handleHomotypes(MarkupImportState state,
+			XMLEventReader reader, StartElement parentEvent)
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
@@ -152,7 +119,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 					state.setNameType(true);
 					handleNameType(state, reader, next, homotypicalGroup);
 				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
-					specimenImport.handleSpecimenType(state, reader, next, homotypicalGroup);
+					specimenImport.handleSpecimenType(state, reader, next,
+							homotypicalGroup);
 				} else if (isStartingElement(next, NOTES)) {
 					handleNotYetImplementedElement(next);
 				} else {
@@ -166,7 +134,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		throw new IllegalStateException("Homotypes has no closing tag");
 
 	}
-	
+
 	private void handleNameType(MarkupImportState state, XMLEventReader reader,
 			XMLEvent parentEvent, HomotypicalGroup homotypicalGroup)
 			throws XMLStreamException {
@@ -226,7 +194,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		throw new IllegalStateException("Homotypes has no closing tag");
 
 	}
-	
 
 	/**
 	 * Creates the name defined by a nom tag. Adds it to the given homotypical
@@ -239,7 +206,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent,
+	private NonViralName<?> handleNom(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent,
 			HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		boolean isSynonym = false;
 		boolean isNameType = state.isNameType();
@@ -261,72 +229,122 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		}
 
 		Map<String, String> nameMap = new HashMap<String, String>();
-
+		String text = "";
+		
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			if (next.isEndElement()) {
-				if (isMyEndingElement(next, parentEvent)) {
-					// fill the name with all data gathered
-					fillName(state, nameMap, name, next);
-					return name;
-				} else {
-					if (isEndingElement(next, FULL_NAME)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, HOMONYM)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, NOTES)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else if (isEndingElement(next, ANNOTATION)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else {
-						handleUnexpectedEndElement(next.asEndElement());
-					}
-				}
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, FULL_NAME)) {
-					handleNotYetImplementedElement(next);
-					// homotypicalGroup = handleNom(state, reader, next, taxon,
-					// homotypicalGroup);
-				} else if (isStartingElement(next, NUM)) {
-					String num = getCData(state, reader, next);
-					num = num.replace(".", "");
-					num = num.replace(")", "");
-					if (StringUtils.isNotBlank(num)){
-						if (state.getCurrentTaxonNum() != null &&  ! state.getCurrentTaxonNum().equals(num) ){
-							String message = "Taxontitle num and homotypes/nom/num differ ( %s <-> %s ). I use the later one.";
-							message = String.format(message, state.getCurrentTaxonNum(), num);
-							fireWarningEvent(message, next, 4);
-						}
-						state.setCurrentTaxonNum(num);
-					}
-				} else if (isStartingElement(next, NAME)) {
-					handleName(state, reader, next, nameMap);
-				} else if (isStartingElement(next, CITATION)) {
-					handleCitation(state, reader, next, name);
-				} else if (isStartingElement(next, HOMONYM)) {
-					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, NOTES)) {
-					handleNotYetImplementedElement(next);
-				} else if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next);
-				}
+			if (isMyEndingElement(next, parentEvent)) {
+				// fill the name with all data gathered
+				fillName(state, nameMap, name, next);
+				handleNomText(state, parentEvent, text, isNameType);
+				return name;
+			} else if (isEndingElement(next, ANNOTATION)) {
+				// NOT YET IMPLEMENTED //TODO test
+				// handleSimpleAnnotation
+				popUnimplemented(next.asEndElement());
+			}else if (isStartingElement(next, FULL_NAME)) {
+				handleFullName(state, reader, name, next);
+			} else if (isStartingElement(next, NUM)) {
+				handleNomNum(state, reader, next);
+			} else if (isStartingElement(next, NAME)) {
+				handleName(state, reader, next, nameMap);
+			} else if (isStartingElement(next, CITATION)) {
+				handleCitation(state, reader, next, name);
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else if (isStartingElement(next, HOMONYM)) {
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, NOTES)) {
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, ANNOTATION)) {
+				handleNotYetImplementedElement(next);
 			} else {
 				handleUnexpectedElement(next);
 			}
 		}
 		// TODO handle missing end element
 		throw new IllegalStateException("Nom has no closing tag");
-
 	}
 
+	/**
+	 * Handles appearance of text within <nom> tags.
+	 * Usually this is not expected except for some information that is already handled
+	 * elsewhere, e.g. the string Nametype is holding information that is available already
+	 * via the surrounding nametype tag. Therefore this information can be neglected.
+	 * This method is open for upcoming cases which need to be handled. 
+	 * @param state
+	 * @param event
+	 * @param text
+	 * @param isNameType
+	 */
+	private void handleNomText(MarkupImportState state, XMLEvent event, String text, boolean isNameType) {
+		if (isBlank(text)){
+			return;
+		}
+		text = text.trim();
+		//neglect known redundant strings
+		if (isNameType && text.matches("(?i)^Esp[\u00E8\u00C8]ce[·\\-\\s]type\\:$")){
+			return;
+		}//neglect meaningless punctuation
+		else if (isPunctuation(text)){
+			return;	
+		}else{
+			String message = "Unhandled text in <nom> tag: \"%s\"";
+			fireWarningEvent(String.format(message, text), event, 4);
+		}
+	}
+	
+	/**
+	 * @param state
+	 * @param reader
+	 * @param next
+	 * @throws XMLStreamException
+	 */
+	private void handleNomNum(MarkupImportState state, XMLEventReader reader,
+			XMLEvent next) throws XMLStreamException {
+		String num = getCData(state, reader, next);
+		num = num.replace(".", "");
+		num = num.replace(")", "");
+		if (StringUtils.isNotBlank(num)) {
+			if (state.getCurrentTaxonNum() != null
+					&& !state.getCurrentTaxonNum().equals(num)) {
+				String message = "Taxontitle num and homotypes/nom/num differ ( %s <-> %s ). I use the later one.";
+				message = String.format(message,
+						state.getCurrentTaxonNum(), num);
+				fireWarningEvent(message, next, 4);
+			}
+			state.setCurrentTaxonNum(num);
+		}
+	}
 
-	private void handleName(MarkupImportState state, XMLEventReader reader, 
+	/**
+	 * @param state
+	 * @param reader
+	 * @param name
+	 * @param next
+	 * @throws XMLStreamException
+	 */
+	private void handleFullName(MarkupImportState state, XMLEventReader reader,
+			NonViralName<?> name, XMLEvent next) throws XMLStreamException {
+		String fullNameStr;
+		Map<String, Attribute> attrs = getAttributes(next);
+		String rankStr = getAndRemoveRequiredAttributeValue(next,
+				attrs, "rank");
+		Rank rank = makeRank(state, rankStr, false);
+		name.setRank(rank);
+		if (rank == null) {
+			String message = "Rank was computed as null. This must not be.";
+			fireWarningEvent(message, next, 6);
+			name.setRank(Rank.UNKNOWN_RANK());
+		}
+		if (!attrs.isEmpty()) {
+			handleUnexpectedAttributes(next.getLocation(), attrs);
+		}
+		fullNameStr = getCData(state, reader, next);
+		name.setTitleCache(fullNameStr, true);
+	}
+
+	private void handleName(MarkupImportState state, XMLEventReader reader,
 			XMLEvent parentEvent, Map<String, String> nameMap)
 			throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
@@ -337,22 +355,17 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 			if (isMyEndingElement(next, parentEvent)) {
 				nameMap.put(classValue, text);
 				return;
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next.asStartElement());
-				}
+			} else if (isStartingElement(next, ANNOTATION)) {
+				handleNotYetImplementedElement(next); // TODO test
+														// handleSimpleAnnotation
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
-				handleUnexpectedEndElement(next.asEndElement());
+				handleUnexpectedElement(next);
 			}
 		}
 		throw new IllegalStateException("name has no closing tag");
-
 	}
-	
 
 	private void fillName(MarkupImportState state, Map<String, String> nameMap,
 			NonViralName<?> name, XMLEvent event) {
@@ -371,13 +384,18 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		String statusStr = getAndRemoveMapKey(nameMap, STATUS);
 		String notes = getAndRemoveMapKey(nameMap, NOTES);
 
-		makeRankDecision(state, nameMap, name, event, infrank);
+		if (!name.isProtectedTitleCache()) { // otherwise fullName
 
-		// test consistency of rank and authors
-		testRankAuthorConsistency(name, event, authorStr, paraut, infrParAut,infrAut);
+			makeRankDecision(state, nameMap, name, event, infrank);
 
-		// authors
-		makeNomenclaturalAuthors(name, event, authorStr, paraut, infrParAut,infrAut);
+			// test consistency of rank and authors
+			testRankAuthorConsistency(name, event, authorStr, paraut,
+					infrParAut, infrAut);
+
+			// authors
+			makeNomenclaturalAuthors(name, event, authorStr, paraut,
+					infrParAut, infrAut);
+		}
 
 		// status
 		// TODO handle pro parte, pro syn. etc.
@@ -389,7 +407,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 			try {
 				// TODO handle trim earlier
 				statusStr = statusStr.trim();
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
+						.getNomenclaturalStatusTypeByAbbreviation(statusStr);
 				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
 			} catch (UnknownCdmTypeException e) {
 				String message = "Status '%s' could not be recognized";
@@ -405,7 +424,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 
 		return;
 	}
-	
 
 	/**
 	 * @param state
@@ -414,8 +432,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 	 * @param event
 	 * @param infrankStr
 	 */
-	private void makeRankDecision(MarkupImportState state, Map<String, String> nameMap, 
-			NonViralName<?> name, XMLEvent event, String infrankStr) {
+	private void makeRankDecision(MarkupImportState state,
+			Map<String, String> nameMap, NonViralName<?> name, XMLEvent event,
+			String infrankStr) {
 		// TODO ranks
 		for (String key : nameMap.keySet()) {
 			Rank rank = makeRank(state, key, false);
@@ -427,20 +446,33 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 				}
 				String value = nameMap.get(key);
 				if (rank.isSupraGeneric() || rank.isGenus()) {
+					if ((key.equalsIgnoreCase(GENUS_ABBREVIATION)
+							&& isNotBlank(state.getLatestGenusEpithet()) || isGenusAbbrev(
+								value, state.getLatestGenusEpithet()))) {
+						value = state.getLatestGenusEpithet();
+					}
 					name.setGenusOrUninomial(toFirstCapital(value));
 				} else if (rank.isInfraGeneric()) {
 					name.setInfraGenericEpithet(toFirstCapital(value));
 				} else if (rank.isSpecies()) {
-					if (isFirstCapitalWord(value)){ //capital letters are allowed for species epithet in case of person names (e.g. Manilkara Welwitschii Engl.
+					if (state.getConfig().isAllowCapitalSpeciesEpithet()
+							&& isFirstCapitalWord(value)) { // capital letters
+															// are allowed for
+															// species epithet
+															// in case of person
+															// names (e.g.
+															// Manilkara
+															// Welwitschii Engl.
 						name.setSpecificEpithet(value);
-					}else{
+					} else {
 						name.setSpecificEpithet(value.toLowerCase());
 					}
 				} else if (rank.isInfraSpecific()) {
 					name.setInfraSpecificEpithet(value.toLowerCase());
 				} else {
 					String message = "Invalid rank '%s'. Can't decide which epithet to fill with '%s'";
-					message = String.format(message, rank.getTitleCache(),value);
+					message = String.format(message, rank.getTitleCache(),
+							value);
 					fireWarningEvent(message, event, 4);
 				}
 			}
@@ -472,7 +504,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 			}
 		}
 	}
-	
 
 	/**
 	 * @param name
@@ -483,7 +514,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 	 * @param infrAut
 	 */
 	private void makeNomenclaturalAuthors(NonViralName name, XMLEvent event,
-				String authorStr, String paraut, String infrParAut, String infrAut) {
+			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
 				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrAut, event);
@@ -491,21 +522,23 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(infrParAut)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut, event);
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut,
+						event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
 				name.setExBasionymAuthorTeam(authorAndEx[1]);
 			}
 		} else {
-			if (name.getRank() == null){
+			if (name.getRank() == null) {
 				String message = "No rank defined. Check correct usage of authors!";
 				fireWarningEvent(message, event, 4);
-				if (isNotBlank(infrParAut) || isNotBlank(infrAut)){
+				if (isNotBlank(infrParAut) || isNotBlank(infrAut)) {
 					authorStr = infrAut;
 					paraut = infrParAut;
 				}
 			}
 			if (StringUtils.isNotBlank(authorStr)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr, event);
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr,
+						event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
@@ -516,7 +549,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 			}
 		}
 	}
-
 
 	private TeamOrPersonBase[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {
 		authorAndEx = authorAndEx.trim();
@@ -535,7 +567,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		}
 		return result;
 	}
-
 
 	/**
 	 * Returns the (empty) name with the correct homotypical group depending on
@@ -556,7 +587,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 			if (homotypicalGroup != null) {
 				name.setHomotypicalGroup(homotypicalGroup);
 			}
-			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			SynonymRelationshipType synonymType = SynonymRelationshipType
+					.HETEROTYPIC_SYNONYM_OF();
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 			}
@@ -566,9 +598,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		}
 		return name;
 	}
-	
 
-	private void handleCitation(MarkupImportState state, XMLEventReader reader,	XMLEvent parentEvent, NonViralName name) throws XMLStreamException {
+	private void handleCitation(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent, NonViralName name) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		state.setCitation(true);
@@ -577,7 +609,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),REF_PART);
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
+						REF_PART);
 				Reference<?> reference = createReference(state, refMap, next);
 				String microReference = refMap.get(DETAILS);
 				doCitation(state, name, classValue, reference, microReference,
@@ -595,7 +628,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 
 	}
 
-	private void handleRefPart(MarkupImportState state, XMLEventReader reader,XMLEvent parentEvent, Map<String, String> refMap) throws XMLStreamException {
+	private void handleRefPart(MarkupImportState state, XMLEventReader reader,
+			XMLEvent parentEvent, Map<String, String> refMap)
+			throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		String text = "";
@@ -606,7 +641,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 				return;
 			} else if (next.isStartElement()) {
 				if (isStartingElement(next, ANNOTATION)) {
-					handleNotYetImplementedElement(next);
+					handleNotYetImplementedElement(next); // TODO test
+															// handleSimpleAnnotation
 				} else if (isStartingElement(next, ITALICS)) {
 					handleNotYetImplementedElement(next);
 				} else if (isStartingElement(next, BOLD)) {
@@ -624,8 +660,6 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 
 	}
 
-	
-
 	private void doCitation(MarkupImportState state, NonViralName name,
 			String classValue, Reference reference, String microCitation,
 			XMLEvent parentEvent) {
@@ -634,8 +668,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 			name.setNomenclaturalMicroReference(microCitation);
 		} else if (USAGE.equalsIgnoreCase(classValue)) {
 			Taxon taxon = state.getCurrentTaxon();
-			TaxonDescription td = getTaxonDescription(taxon, state
-					.getConfig().getSourceReference(), false, true);
+			TaxonDescription td = getTaxonDescription(taxon, state.getConfig()
+					.getSourceReference(), false, true);
 			TextData citation = TextData.NewInstance(Feature.CITATION());
 			// TODO name used in source
 			citation.addSource(null, null, reference, microCitation);
@@ -650,10 +684,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		}
 	}
 
-
-
 	/**
 	 * Tests if the names rank is consistent with the given author strings.
+	 * NOTE: Tags for authors are differ depending on the rank.
+	 * 
 	 * @param name
 	 * @param event
 	 * @param authorStr
@@ -661,30 +695,32 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void testRankAuthorConsistency(NonViralName name, XMLEvent event, 
-				String authorStr, String paraut, String infrParAut, String infrAut) {
-		if (name.getRank() == null){
+	private void testRankAuthorConsistency(NonViralName name, XMLEvent event,
+			String authorStr, String paraut, String infrParAut, String infrAut) {
+		if (name.getRank() == null) {
 			return;
 		}
 		if (name.getRank().isInfraSpecific()) {
 			if (StringUtils.isBlank(infrParAut)
-					&& StringUtils.isBlank(infrAut)    //was isNotBlank before 29.5.2012
-					&& (StringUtils.isNotBlank(paraut) || StringUtils.isNotBlank(authorStr)) 
-					&& ! name.isAutonym()) {
+					&& StringUtils.isBlank(infrAut) // was isNotBlank before
+													// 29.5.2012
+					&& (StringUtils.isNotBlank(paraut) || StringUtils
+							.isNotBlank(authorStr)) && !name.isAutonym()) {
 				String message = "Rank is infraspecicific but has only specific or higher author(s)";
 				fireWarningEvent(message, event, 4);
 			}
 		} else {
 			// is not infraspecific
-			if (StringUtils.isNotBlank(infrParAut) 	|| StringUtils.isNotBlank(infrAut)) {
+			if (StringUtils.isNotBlank(infrParAut)
+					|| StringUtils.isNotBlank(infrAut)) {
 				String message = "Rank is not infraspecicific but name has infra author(s)";
 				fireWarningEvent(message, event, 4);
 			}
 		}
 	}
-	
 
-	private Reference<?> createReference(MarkupImportState state, Map<String, String> refMap, XMLEvent parentEvent) {
+	private Reference<?> createReference(MarkupImportState state,
+			Map<String, String> refMap, XMLEvent parentEvent) {
 		// TODO
 		Reference<?> reference;
 
@@ -711,9 +747,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 
 			} else {
 				// TODO
-				if (pubName != null){
-					reference  = ReferenceFactory.newBookSection();
-				}else{
+				if (pubName != null) {
+					reference = ReferenceFactory.newBookSection();
+				} else {
 					reference = ReferenceFactory.newBook();
 				}
 			}
@@ -739,8 +775,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 				reference.setInReference(inReference);
 			}
 
-			
-		} else {  //no citation
+		} else { // no citation
 			if (volume != null || "journal".equalsIgnoreCase(type)) {
 				IArticle article = ReferenceFactory.newArticle();
 				if (pubName != null) {
@@ -779,18 +814,20 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		}
 		reference.setVolume(volume);
 		reference.setDatePublished(TimePeriod.parseString(year));
-		//TODO check if this is handled correctly in FM markup
+		// TODO check if this is handled correctly in FM markup
 		reference.setPages(pages);
 
 		// TODO
-		String[] unhandledList = new String[]{ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS};
-		for (String unhandled : unhandledList){
+		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE,
+				NOTES, STATUS };
+		for (String unhandled : unhandledList) {
 			String value = getAndRemoveMapKey(refMap, unhandled);
-			if (isNotBlank(value)){
-				this.handleNotYetImplementedAttributeValue(parentEvent, CLASS, unhandled);
+			if (isNotBlank(value)) {
+				this.handleNotYetImplementedAttributeValue(parentEvent, CLASS,
+						unhandled);
 			}
 		}
-		
+
 		for (String key : refMap.keySet()) {
 			if (!DETAILS.equalsIgnoreCase(key)) {
 				this.fireUnexpectedAttributeValue(parentEvent, CLASS, key);
@@ -799,9 +836,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 
 		return reference;
 	}
-	
 
-	public Reference<?> handleReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+	public Reference<?> handleReference(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent)
+			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
 		boolean hasRefPart = false;
@@ -809,7 +847,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
+						REF_PART);
 				Reference<?> reference = createReference(state, refMap, next);
 				return reference;
 			} else if (isStartingElement(next, REF_PART)) {
@@ -822,6 +861,5 @@ public class MarkupNomenclatureImport extends MarkupImportBase  {
 		// TODO handle missing end element
 		throw new IllegalStateException("<Reference> has no closing tag");
 	}
-
 
 }

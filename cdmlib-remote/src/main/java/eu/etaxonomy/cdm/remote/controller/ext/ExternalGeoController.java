@@ -132,7 +132,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         String bbox = null;
         String backLayer = null;
 
-        logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
+        logger.info("doGetDistributionMapUriParams() " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
 
         // get the descriptions for the taxon
@@ -187,7 +187,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Boolean doReturnImage = null;
         Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
 
-        logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath() + "?" + request.getQueryString());
+        logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
         ModelAndView mv = new ModelAndView();
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);

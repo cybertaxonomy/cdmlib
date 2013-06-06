@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
@@ -334,20 +335,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
 // ************** Hierarchie List ****************************
 
-/*	public boolean equals(NamedArea area){
-        boolean result = false;
-        if (this.getLabel().toString().compareTo(area.getLabel().toString()) == 0){
-            result = true;
-        }
-        return result;
-    }*/
-
-//	public int compareTo(NamedArea area){
-//		return getLabel().compareTo(area.getLabel());
-//	}
-
-
-
     /**
      * This method returns a sorted tree structure which sorts areas by it's level and within the same level
      * alphabetically (TODO to be tested).
@@ -355,6 +342,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
      * This way also areas that have children belonging to different levels can be handled.<BR>
      * The root node is always an empty area node which holds the list of top level areaLevels.
      * AreaLevels with no level defined are handled as if they have a separate level (level="null").
+     * 
+     * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.api.service.DistributionTree}
      *
      * @param areaList
      * @return

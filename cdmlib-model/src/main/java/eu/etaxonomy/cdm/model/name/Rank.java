@@ -794,13 +794,13 @@ public class Rank extends OrderedTermBase<Rank> {
             if (nc != null && nc.equals(NomenclaturalCode.ICZN)){	return Rank.SECTION_ZOOLOGY();
             }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)){return Rank.SECTION_BOTANY();
             }else{
-                String errorWarning = "Section is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
+                String errorWarning = "Section is only defined for ICZN and ICNAFP at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
                 logger.warn(errorWarning);
                 throw new UnknownCdmTypeException (errorWarning);
             }
         }else if (rankName.equalsIgnoreCase("Subsection")){
-            if (nc != null && nc.equals(NomenclaturalCode.ICZN)){ return Rank.SECTION_ZOOLOGY();
-            }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)){ return Rank.SECTION_BOTANY();
+            if (nc != null && nc.equals(NomenclaturalCode.ICZN)){ return Rank.SUBSECTION_ZOOLOGY();
+            }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)){ return Rank.SUBSECTION_BOTANY();
             }else{
                 String errorWarning = "Subsection is only defined for ICZN and ICBN at the moment but here needed for " + ((nc == null)? "(null)": nc.toString());
                 logger.warn(errorWarning);

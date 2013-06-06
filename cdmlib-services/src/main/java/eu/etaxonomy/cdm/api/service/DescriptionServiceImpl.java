@@ -287,11 +287,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         }
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.preferComputed(distList);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList);
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        //ordering the areas
+        //order by areas
         tree.orderAsTree(distList, omitLevels);
         tree.sortChildren();
         return tree;

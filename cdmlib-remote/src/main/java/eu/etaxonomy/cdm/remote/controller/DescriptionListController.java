@@ -100,7 +100,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doAccumulateDistributions()" + request.getServletPath());
+        logger.info("doAccumulateDistributions()" + request.getRequestURI());
 
 //        transmissionEngineDistribution.updatePriorities();
 

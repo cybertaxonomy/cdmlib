@@ -183,14 +183,6 @@ public class LuceneSearch {
      */
     public IndexReader getIndexReader() {
         SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-
-//        OLD
-//        DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(getDirectorySelectClass());
-//        logger.info(directoryProviders[0].getDirectory().toString());
-
-//        ReaderProvider readerProvider = searchFactory.getReaderProvider();
-//        IndexReader reader = readerProvider.openReader(directoryProviders[0]);
-
         IndexReader reader = searchFactory.getIndexReaderAccessor().open(getDirectorySelectClass());
         return reader;
     }
@@ -247,9 +239,9 @@ public class LuceneSearch {
      * @throws IOException
      */
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
-    	Query fullQuery = expandQuery();
-    	logger.info("lucene query string to be parsed: " + fullQuery.toString());
-    	return getSearcher().search(fullQuery, maxNoOfHits);
+        Query fullQuery = expandQuery();
+        logger.info("lucene query string to be parsed: " + fullQuery.toString());
+        return getSearcher().search(fullQuery, maxNoOfHits);
 
     }
     /**

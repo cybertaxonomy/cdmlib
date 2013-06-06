@@ -487,7 +487,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         if(request != null){
-            logger.info("doGetSynonymy() " + request.getServletPath());
+            logger.info("doGetSynonymy() " + request.getRequestURI());
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -520,7 +520,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 throws IOException {
 
         if(request != null){
-            logger.info("getAccepted() " + request.getServletPath());
+            logger.info("getAccepted() " + request.getRequestURI());
         }
 
         TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
@@ -603,7 +603,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public List<TaxonRelationship> doGetTaxonRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetTaxonRelations()" + request.getServletPath());
+        logger.info("doGetTaxonRelations()" + request.getRequestURI());
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
         List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
@@ -633,7 +633,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<NameRelationship> doGetToNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameRelations()" + request.getServletPath());
+        logger.info("doGetNameRelations()" + request.getRequestURI());
         TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
         //List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
@@ -658,7 +658,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<NameRelationship> doGetFromNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameFromNameRelations()" + request.getServletPath());
+        logger.info("doGetNameFromNameRelations()" + request.getRequestURI());
 
         TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
@@ -687,7 +687,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<TypeDesignationBase> doGetNameTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameTypeDesignations()" + request.getServletPath());
+        logger.info("doGetNameTypeDesignations()" + request.getRequestURI());
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         Pager<TypeDesignationBase> p = nameService.getTypeDesignations(taxon.getName(), null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
@@ -730,7 +730,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
         if(request != null){
-            logger.info("doGetDescriptions()" + request.getServletPath());
+            logger.info("doGetDescriptions()" + request.getRequestURI());
         }
         List<DefinedTermBase> markerTypeTerms = null;
         Set<UUID> sMarkerTypeUUIDs = null;
@@ -780,7 +780,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElements() - " + request.getServletPath());
+        logger.info("doGetDescriptionElements() - " + request.getRequestURI());
 
         //ModelAndView mv = new ModelAndView();
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -814,7 +814,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -853,7 +853,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 //			@PathVariable("uuid") UUID uuid,
 //			HttpServletRequest request,
 //			HttpServletResponse response) throws IOException, ClassNotFoundException {
-//		logger.info("doGetSpecimens() - " + request.getServletPath());
+//		logger.info("doGetSpecimens() - " + request.getRequestURI());
 //
 //		ModelAndView mv = new ModelAndView();
 //

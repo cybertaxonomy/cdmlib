@@ -93,7 +93,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             HttpServletResponse response) throws IOException {
 
         if (request != null) {
-        	logger.info("doGetTypeDesignations()" + request.getServletPath());
+        	logger.info("doGetTypeDesignations()" + request.getRequestURI());
         }
         TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
                 (List<String>) null);
@@ -108,7 +108,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
     public List<String> doGetNameCache(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetNameCache()" + request.getServletPath());
+        logger.info("doGetNameCache()" + request.getRequestURI());
         TaxonNameBase tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
         NonViralName nvn = (NonViralName) tnb;
         String nameCacheString = nvn.getNameCache();
@@ -123,7 +123,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
         mv.addObject(service.getTaggedName(uuid));

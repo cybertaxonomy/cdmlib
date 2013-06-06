@@ -288,17 +288,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 result = results.get(i);
 
                 //differentiate taxa and synonyms
+                // new Boolean(result[3].toString()) is due to the fact that result[3] could be a Boolean ora String
+                // see FIXME in 'prepareQuery' for more details
                 if (doTaxa && doSynonyms){
                     if (result[2].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
+                        resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
                     }
                 }else if (doTaxa){
-                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
+                        resultObjects.add( new UuidAndTitleCache(Taxon.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], (Boolean)result[3]));
+                    resultObjects.add( new UuidAndTitleCache(Synonym.class, (UUID) result[0], (String)result[1], new Boolean(result[3].toString())));
                 }
             }
 
@@ -651,6 +653,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 taxa.addAll(subMisappliedNames.list());
             }
 
+            //FIXME : the fourth element of the result should be a boolean, but in the case of a synonym
+            // (which does require a check) a constant boolean (false) value needs to set. It seems that
+            // hql cannot parse a constant boolean value in the select list clause. This implies that the 
+            // resulting object could be a Boolean or a String. The workaround for this is to convert the
+            // resutling object into a String (using toString) and then create a new Boolean object from 
+            // String.
             if (doTaxa && doSynonyms){
                 if(synonyms.size()>0 && taxa.size()>0){                                    
                 	hql = "select " + selectWhat;
@@ -667,8 +675,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
                 	// also return the computed isOrphaned flag
                 	if (doNotReturnFullEntities &&  !doCount ){
-                		hql += ", 'synonym', " + 
-                				" false ";
+                		hql += ", 'synonym', 'false' ";
+
                 	}
                 	hql +=  " from %s t " +
                 			" where t.id in (:synonyms) ";       
@@ -709,8 +717,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
                 	// also return the computed isOrphaned flag
                 	if (doNotReturnFullEntities){
-                		hql += ", 'synonym', " + 
-                				" false ";
+                		hql += ", 'synonym', 'false' ";                 			
                 	}
                 	hql +=  " from %s t " +
                 			" where t.id in (:synonyms) ";                    	

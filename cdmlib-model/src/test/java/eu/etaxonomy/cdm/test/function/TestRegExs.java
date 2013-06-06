@@ -16,21 +16,18 @@ import java.util.UUID;
  * @author a.babadshanjan
  * @created 30.10.2008
  */
-public class TestUUID {
+public class TestRegExs {
 	
 	private static int NBR_OF_UUIDS = 7;
 	
 	public static void generateRandomUUID(int nbr) {
 
-		System.out.println("Generating " + nbr + " UUID(s):");
+		String x = "ESPÈCE·TYPE:";
+		x = "ESPÈCE TYPE:";
+		String re = "(?i)^Esp[\u00E8\u00C8]ce[·\\-\\s]type:$";
+		System.out.println(x.matches(re));
 		
-		for (int i = 0; i < nbr; i++) {
-			
-			UUID uuid = UUID.randomUUID();
-			//int j = i + 1;
-			//System.out.println("UUID #" + j + " = " + uuid);
-			System.out.println(uuid);
-		}
+//		"(?i)^Espèce[·\\-\\s]type\\:$"
 	}
 
 	/**

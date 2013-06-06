@@ -868,7 +868,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 //        commitAndStartNewTransaction(null);
         commit();
         endTransaction();
-        indexer.purge(null);
+        indexer.purge(DefaultProgressMonitor.NewInstance());
         indexer.reindex(DefaultProgressMonitor.NewInstance());
         startNewTransaction();
 //        commitAndStartNewTransaction(null);

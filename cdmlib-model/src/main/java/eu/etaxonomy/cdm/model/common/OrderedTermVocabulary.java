@@ -174,7 +174,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	public void addTerm(T term) {
 		SortedSet<T> sortedTerms = getSortedSetOfTerms();
 		int lowestOrderIndex;
-		if (sortedTerms.size() == 0){
+		if (sortedTerms.isEmpty()){
 			lowestOrderIndex = 0;
 		}else{
 			T first = sortedTerms.first();

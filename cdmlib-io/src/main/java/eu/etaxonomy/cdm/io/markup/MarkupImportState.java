@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -20,11 +22,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlImportState;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -47,10 +52,18 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private PolytomousKey currentKey;
 	
+	private TeamOrPersonBase<?> currentCollector;
+	
+	private Set<NamedArea> currentAreas = new HashSet<NamedArea>();
+	
 	private Language defaultLanguage;
 	
 	private Taxon currentTaxon;
 	private String currentTaxonNum;
+	
+	private boolean taxonInClassification = true;
+	
+	private String latestGenusEpithet = null;
 	
 	private boolean isCitation = false;
 	private boolean isNameType = false;
@@ -66,6 +79,32 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private Map<String, Set<AnnotatableEntity>> figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 	
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
+	
+	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
+	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
+	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
+	
+	private Map<String, UUID> featureUuidMap = new HashMap<String, UUID>(); //keep in multiple imports
+
+	/**
+	 * This method resets all those variables that should not be reused from one import to another.
+	 * @see MarkupImportConfigurator#isReuseExistingState()
+	 * @see MarkupImportConfigurator#getNewState()
+	 */
+	protected void reset(){
+		featureNodesToSave = new HashSet<FeatureNode>();
+		polytomousKeyNodesToSave = new HashSet<PolytomousKeyNode>();
+		currentKey = null;
+		defaultLanguage = null;
+		currentTaxon = null;
+		currentCollector = null;
+		footnoteRegister = new HashMap<String, FootnoteDataHolder>();
+		figureRegister = new HashMap<String, Media>();
+		footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+		figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
+		currentAreas = new HashSet<NamedArea>();
+	}
 	
 		
 //**************************** CONSTRUCTOR ******************************************/
@@ -247,5 +286,101 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void setOnlyNumberedTaxaExist(boolean onlyNumberedTaxaExist) {
 		this.onlyNumberedTaxaExist = onlyNumberedTaxaExist;
 	}
+
+	public Map<String,List<FeatureSorterInfo>> getGeneralFeatureSorterListMap() {
+		return generalFeatureSorterListMap;
+	}
+	public Map<String,List<FeatureSorterInfo>> getCharFeatureSorterListMap() {
+		return charFeatureSorterListMap;
+	}
+	
+	
+	/**
+	 * Adds new lists to the feature sorter list maps using the given key.
+	 * If at least 1 list already existed for the given key, true is returned. False
+	 * @param key Key that identifies the feature sorter list.
+	 * @return <code>true</code> if at least 1 list already exited for the given key. <code>false</code> otherwise.
+	 */
+	public boolean addNewFeatureSorterLists(String key) {
+		//general feature sorter list
+		List<FeatureSorterInfo> generalList = new ArrayList<FeatureSorterInfo>();
+		List<FeatureSorterInfo> previous1 = this.generalFeatureSorterListMap.put(key, generalList);
+		currentGeneralFeatureSorterList = generalList;
+		
+		//character feature sorter list
+		List<FeatureSorterInfo> charList = new ArrayList<FeatureSorterInfo>();
+		List<FeatureSorterInfo> previous2 = this.charFeatureSorterListMap.put(key, charList);
+		currentCharFeatureSorterList = charList;
+		
+		return (previous1 != null || previous2 != null);
+	}
+
+	/**
+	 * 
+	 * @param feature
+	 */
+	public void putFeatureToCharSorterList(Feature feature) {
+		currentCharFeatureSorterList.add(new FeatureSorterInfo(feature)); 
+		
+	}
+
+	/**
+	 * 
+	 * @param feature
+	 */
+	public void putFeatureToGeneralSorterList(Feature feature) {
+		currentGeneralFeatureSorterList.add(new FeatureSorterInfo(feature)); 
+		
+	}
+
+	public void putFeatureUuid(String featureString, UUID uuid) {
+		featureUuidMap.put(featureString, uuid);
+	}
+	public UUID getFeatureUuid(String featureString){
+		return featureUuidMap.get(featureString);
+	}
+
+	public String getLatestGenusEpithet() {
+		return latestGenusEpithet;
+	}
+
+	public void setLatestGenusEpithet(String latestGenusEpithet) {
+		this.latestGenusEpithet = latestGenusEpithet;
+	}
+
+
+	public boolean isTaxonInClassification() {
+		return taxonInClassification;
+	}
+
+
+	public void setTaxonInClassification(boolean taxonInClassification) {
+		this.taxonInClassification = taxonInClassification;
+	}
+
+
+	public TeamOrPersonBase<?> getCurrentCollector() {
+		return currentCollector;
+	}
+
+
+	public void setCurrentCollector(TeamOrPersonBase<?> currentCollector) {
+		this.currentCollector = currentCollector;
+	}
+
+
+	public void addCurrentArea(NamedArea area) {
+		currentAreas.add(area);	
+	}
+
+
+	public Set<NamedArea> getCurrentAreas() {
+		return currentAreas;
+	}
+	
+	public void removeCurrentAreas(){
+		currentAreas.clear();
+	}
+
 
 }

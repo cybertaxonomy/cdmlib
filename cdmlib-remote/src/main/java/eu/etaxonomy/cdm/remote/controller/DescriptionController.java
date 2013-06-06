@@ -127,7 +127,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             HttpServletResponse response) throws IOException {
 
         ModelAndView mv = new ModelAndView();
-        logger.info("doGetDescriptionElement() - " + request.getServletPath());
+        logger.info("doGetDescriptionElement() - " + request.getRequestURI());
         DescriptionElementBase element = service.getDescriptionElementByUuid(uuid);
         if(element == null) {
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
@@ -141,7 +141,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementAnnotations() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementAnnotations() - " + request.getRequestURI());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         if(annotatableEntity == null){
             HttpStatusMessage.UUID_INVALID.send(response);
@@ -158,7 +158,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementStates() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementStates() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -213,7 +213,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
             //@ModelAttribute("omitLevels") HashSet<NamedAreaLevel> levels,
             HttpServletRequest request, HttpServletResponse response) {
-        logger.info("getOrderedDistributions(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
+        logger.info("getOrderedDistributions(" + ObjectUtils.toString(levels) + ") - " + request.getRequestURI());
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {
@@ -231,7 +231,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @PathVariable("featuretree_uuid") UUID featureTreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGenerateNaturalLanguageDescription() - " + request.getServletPath());
+        logger.info("doGenerateNaturalLanguageDescription() - " + request.getRequestURI());
 
         DescriptionBase description = service.load(uuid);
 
@@ -266,7 +266,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doHasStructuredData() - " + request.getServletPath());
+        logger.info("doHasStructuredData() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 

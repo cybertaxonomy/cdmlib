@@ -74,10 +74,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     public static final Logger logger = Logger.getLogger(DataSourceConfigurer.class);
 
-    protected static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
     protected static final String HIBERNATE_DIALECT = "hibernate.dialect";
     protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
     protected static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
+
     /**
      * Attribute to configure the name of the data source as set as bean name in the datasources.xml.
      * This name usually is used as the prefix for the webapplication root path.
@@ -85,12 +85,21 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      * <b>This is a required attribute!</b>
      *
      * @see AbstractWebApplicationConfigurer#findProperty(String, boolean)
+     *
+     * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
+     *
      */
     protected static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";
+    /**
+     * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
+     */
+    public static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
 
     protected static final String DATASOURCE_BEANDEF_DEFAULT = CdmUtils.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
 
     protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
+
+    private String cmdServerInstanceName = null;
 
     /**
      * The file to load the {@link DataSource} beans from.
@@ -310,6 +319,15 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
         logger.error("hibernate dialect mapping for "+url+ " not jet implemented or unavailable");
         return null;
+    }
+
+    public String cmdServerInstanceName(){
+        // test for if this is an instance running in a cdmserver:
+        if(findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false) != null) {
+            String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
+            cmdServerInstanceName =  beanName;
+        }
+        return cmdServerInstanceName;
     }
 
 }

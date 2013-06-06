@@ -280,7 +280,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public Set<DescriptionElementBase> getElements() {
         return this.descriptionElements;
     }
-
+    
     /**
      * Adds an existing {@link DescriptionElementBase elementary description} to the set of
      * {@link #getElements() elementary description data} which constitute <i>this</i>

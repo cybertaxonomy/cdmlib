@@ -34,9 +34,9 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
 
     public static final Logger logger = Logger.getLogger(AbstractController.class);
 
-	protected SERVICE service;
+    protected SERVICE service;
 
-	public abstract void setService(SERVICE service);
+    public abstract void setService(SERVICE service);
 
     protected static final Integer DEFAULT_PAGE_SIZE = 30;
 
@@ -66,11 +66,11 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      * @return request path and query parameters as string.
      */
     protected String requestPathAndQuery(HttpServletRequest request) {
-    	if(request == null) {
-    		return "";
-    	}
+        if(request == null) {
+            return "";
+        }
         StringBuilder b = new StringBuilder();
-        b.append(request.getServletPath());
+        b.append(request.getRequestURI());
         String query = request.getQueryString();
         if(query != null) {
             b.append("?").append(query);

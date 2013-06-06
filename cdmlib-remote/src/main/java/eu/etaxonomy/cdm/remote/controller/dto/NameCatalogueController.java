@@ -343,7 +343,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
             String queryWOWildcards = getQueryWithoutWildCards(query);
             MatchMode mm = getMatchModeFromQuery(query);
-            logger.info("doGetNameSearch()" + request.getServletPath() + " for query \"" + query
+            logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + query
                     + "\" without wild cards : " + queryWOWildcards + " and match mode : " + mm);
             List<NonViralName> nameList = new ArrayList<NonViralName>();
 
@@ -498,7 +498,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             char[] stringArray = queryWOWildcards.toCharArray();
             stringArray[0] = Character.toUpperCase(stringArray[0]);
             queryWOWildcards = new String(stringArray);
-            logger.info("doGetNameSearch()" + request.getServletPath() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
+            logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
             //List<NonViralName> nameList = new ArrayList<NonViralName>();
             List<SearchResult<TaxonNameBase>> nameSearchList = new ArrayList<SearchResult<TaxonNameBase>>();
             try {            	            
@@ -618,7 +618,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         List<RemoteResponse> niList = new ArrayList<RemoteResponse>();
         // loop through each name uuid
         for (String nameUuid : nameUuids) {
-            logger.info("doGetNameInformation()" + request.getServletPath() + " for name uuid \""
+            logger.info("doGetNameInformation()" + request.getRequestURI() + " for name uuid \""
                     + nameUuid + "\"");
             // find name by uuid
             NonViralName nvn = (NonViralName) service.findNameByUuid(UUID.fromString(nameUuid),
@@ -745,7 +745,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         List<RemoteResponse> tiList = new ArrayList<RemoteResponse>();
         // loop through each name uuid
         for (String taxonUuid : taxonUuids) {
-            logger.info("doGetTaxonInformation()" + request.getServletPath() + " for taxon uuid \""
+            logger.info("doGetTaxonInformation()" + request.getRequestURI() + " for taxon uuid \""
                     + taxonUuid);
             // find name by uuid
             TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
@@ -1082,7 +1082,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
             //String queryWOWildcards = getQueryWithoutWildCards(query);
             //MatchMode mm = getMatchModeFromQuery(query);
-            logger.info("doGetAcceptedNameSearch()" + request.getServletPath() + " for query \"" + query);
+            logger.info("doGetAcceptedNameSearch()" + request.getRequestURI() + " for query \"" + query);
             List<NonViralName> nameList = new ArrayList<NonViralName>();
 
             // if "name" search then find by name cache

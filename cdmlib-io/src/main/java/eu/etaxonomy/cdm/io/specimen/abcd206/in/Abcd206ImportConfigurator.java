@@ -76,15 +76,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     }
 
 
-
-
-    //	/* (non-Javadoc)
-    //	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-    //	 */
-    //	public String getSource() {
-    //		return (String)super.getSource();
-    //	}
-
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
      */

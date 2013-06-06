@@ -168,7 +168,8 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 	 */
 	protected XMLEventReader getStaxReader(STATE state)	throws FactoryConfigurationError, XMLStreamException {
 		String fileName = state.getConfig().getSource().toString();
-		InputStream is = getInputStream(state.getConfig());
+		InputStream is = null;
+		is = getInputStream(state.getConfig());  //throws exception and looks like it is not needed.
 		XMLInputFactory staxFactory = XMLInputFactory.newInstance();
 		XMLEventReader reader = staxFactory.createXMLEventReader(fileName, is);
 		return reader;
