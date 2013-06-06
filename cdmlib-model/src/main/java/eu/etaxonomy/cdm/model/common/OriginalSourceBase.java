@@ -56,8 +56,14 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
 	
 	
+	
+	/**
+	 * The {@link OriginalSourceType type} of this source. According to PROV the type has to be thought as 
+	 * an activity that leads from the source entity to the current entity. It is not a property of the
+	 * source itself.
+	 */
 	@XmlAttribute(name ="type")
-	@Column(name="refType")
+	@Column(name="sourceType")
 	@NotNull
 	private OriginalSourceType type;
 	
@@ -70,16 +76,23 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 
 //***************** CONSTRUCTOR ***********************/	
 
+	//for hibernate use only
+	protected OriginalSourceBase() {
+		
+	}
+	
 	/**
 	 * Constructor
 	 * @param type2 
 	 */
 	protected OriginalSourceBase(OriginalSourceType type){
 		Assert.notNull(type, "OriginalSourceType must not be null");
+		this.type = type;
 	}
 
 //**************** GETTER / SETTER *******************************/
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getIdInSource()
 	 */

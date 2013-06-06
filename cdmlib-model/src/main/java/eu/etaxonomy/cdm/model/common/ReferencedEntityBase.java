@@ -63,10 +63,14 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     @XmlElement(name = "OriginalNameString")
 	private String originalNameString;
 
-	public ReferencedEntityBase() {
+// ************ CONSTRUCTOR ********************************************/    
+    
+	//for hibernate use only
+    protected ReferencedEntityBase() {
 		super();
 	}
 
+	
 
 	public ReferencedEntityBase(Reference citation, String citationMicroReference,
 			String originalNameString) {
@@ -75,6 +79,8 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 		this.citation = citation;
 	}
+	
+//********************* GETTER / SETTER *******************************/	
 	
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;

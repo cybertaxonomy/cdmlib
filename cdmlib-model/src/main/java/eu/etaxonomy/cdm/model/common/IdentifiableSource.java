@@ -73,7 +73,7 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	}
 	
 	public static IdentifiableSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation){
-		IdentifiableSource result = NewInstance(OriginalSourceType.Import);
+		IdentifiableSource result = NewInstance(type);
 		result.setIdInSource(id);
 		result.setIdNamespace(idNamespace);
 		result.setCitation(citation);
@@ -99,12 +99,17 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	@NotAudited
 	private IdentifiableEntity<?> sourcedObj;
 
+// ****************** CONSTRUCTOR ********************************/	
+	
+	//for hibernate only
+	private IdentifiableSource() {
+	}
 
 	private IdentifiableSource(OriginalSourceType type) {
 		super(type);
 	}
 	
-
+// ********************** GETTER /SETTER *****************************/
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()
 	 */

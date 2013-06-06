@@ -1095,6 +1095,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabularyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OriginalSourceTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermVocabularyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TimePeriodTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/DefaultTermInitializerTest.java -text

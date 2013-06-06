@@ -140,12 +140,19 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private TaxonNameBase<?,?> nameUsedInSource;
 	
+//*********************** CONSTRUCTOR ******************************/	
+	
+	//for hibernate use only
+	private DescriptionElementSource(){
+		super();
+	}
+	
 	private DescriptionElementSource(OriginalSourceType type){
 		super(type);
 	}
 	
 	
-// **************************  GETTER / SETTER ****************************************************/
+// **************************  GETTER / SETTER ***************************/
 	
 	
 	/* (non-Javadoc)

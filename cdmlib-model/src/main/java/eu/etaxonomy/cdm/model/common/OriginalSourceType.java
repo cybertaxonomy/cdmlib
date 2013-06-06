@@ -125,8 +125,7 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 		//TODO make multi-lingual
 		return readableString;
 	}
-
-
+	
 
 	@Override
     public OriginalSourceType readCsvLine(Class<OriginalSourceType> termClass,
