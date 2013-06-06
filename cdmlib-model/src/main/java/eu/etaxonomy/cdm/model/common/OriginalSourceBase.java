@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="OriginalSourceBase")
-public abstract class OriginalSourceBase<T extends ISourceable> extends ReferencedEntityBase implements Cloneable, IOriginalSource<T> {
+public abstract class OriginalSourceBase<T extends ISourceable> extends ReferencedEntityBase implements IOriginalSource<T>, Cloneable {
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);

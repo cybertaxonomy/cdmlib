@@ -40,16 +40,12 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	
 	//0
 	/**
-	 * Primary Taxonomic Source describes the sources a taxonomist uses to gather certain information. 
-	 * E.g. a taxonomist may have used three books/articles/other references to gather information
-	 * about the distribution status of a taxon.
-	 * He/she will store these references as original source of type Primary Taxonomic Source.
-	 * This is a specification of PROV-O Primary Source 
-	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
+	 * Unknown Provenance is the type to be used if no information is available about the type
+	 * of activity that happened.
 	 *   
 	 */
-	@XmlEnumValue("Primary Taxonomic Source")
-	Unknown(UUID.fromString("c990beb3-3bc9-4dad-bbdf-9c11683493da"), "Primary Taxonomic Source"),
+	@XmlEnumValue("Unknown")
+	Unknown(UUID.fromString("b48a443c-05f2-47ff-b885-1d3bd31118e1"), "Unknown Provenance"),
 	
 	//1
 	/**
@@ -85,8 +81,8 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 
 	//4
 	/**
-	 * Data Transformation is a specification of {@value #Lineage} and describes a data transformation process that happens primarily  on the given dataset
-	 * but may also include external data.
+	 * Data Transformation is a specification of {@value #Lineage} and describes a data transformation process 
+	 * that happens primarily  on the given dataset but may also include external data.
 	 */
 	@XmlEnumValue("Data Transformation")
 	Transformation(UUID.fromString("d59e80e5-cbb7-4658-b74d-0626bbb0da7f"), "Data Transformation"),
@@ -95,11 +91,19 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	//5
 	/**
 	 * Data aggregation is a spcification of {@value #Lineage} and describes the data transformation process
-	 * that primarily includes data aggregation processes but may also include data imports and transformation.
+	 * that primarily includes data aggregation processes but may also include data imports and transformations.
 	 */
 	@XmlEnumValue("Data Aggregation")
 	Aggregation(UUID.fromString("944f2f40-5144-4c81-80d9-f61aa10507b8"), "Data Aggregation"),
 
+	//6
+	/**
+	 * <code>Other</code> is the type to be used if none of the other types is applicable.
+	 */
+	@XmlEnumValue("Other")
+	Other(UUID.fromString("b7c4b7fe-0aef-428a-bb7b-9153a11bf845"), "Other"),
+
+	
 	;
 	
 	

@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
 
@@ -74,6 +75,30 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		//TODO update original source type
+		stepName = "Create original source type column";
+		//all audits to unknown type
+		String query = "UPDATE OriginalSourceBase_AUD SET type = 0 ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		 //all data to unknown
+		query = "UPDATE OriginalSourceBase SET type = 0 ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		 //all imports recognized by idInSOurce and by missing nameInSource
+		query = "UPDATE OriginalSourceBase SET type = 3 WHERE " +
+				"((idInSource IS NOT NULL) OR (idNamespace IS NOT NULL))  AND " +
+				"( nameUsedInSource IS NULL AND originalNameString IS NULL ) ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		 //all imports recognized by idInSOurce and by missing nameInSource
+		query = "UPDATE OriginalSourceBase SET type = 1 WHERE " +
+				"(idInSource IS NULL AND idNamespace IS NULL) AND " +
+				"( citation IS NOT NULL ) ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
 		
 		//create taxon node tree index
 		stepName = "Create taxon node tree index";

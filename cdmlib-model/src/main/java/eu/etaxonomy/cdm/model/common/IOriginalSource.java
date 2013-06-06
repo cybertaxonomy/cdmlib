@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * An original source can be used in different ways.<BR>
  * 1.) As a referencing system. The original source holds all information about the reference, 
- * the microReference (page, figure, ...), the identifier used in for the referenced object in the 
+ * the microReference (page, figure, ...), the identifier used in the source for the referenced object in the 
  * reference, a namespace that makes this identifier unique, the original name string that in 
  * general stores the representation of the referenced object within the source (if the string representation
  * in the source differs from that one unsed in the CDM object)
@@ -24,9 +24,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * and it's namespace (e.g. tablename) as well as the datasource itself maybe stored in an original source.
  * E.g. when importing SDD data here you may store the filename and the id used in the SDD file here.
  *
+ * Starting with v3.3 we started to let this class be influenced by the PROV Ontology 
+ * (http://www.w3.org/TR/2013/NOTE-prov-overview-20130430/). It may move further in this direction in
+ * future. 
+ * The above mentioned ways to use the Original Source are now related to different activity types
+ * (http://www.w3.org/TR/2013/REC-prov-dm-20130430/#term-Activity) in PROV.
+ * 
+ * 
  * @author a.mueller
  * @created 18.09.2009
- * @version 1.0
  */
 public interface IOriginalSource<T extends ISourceable> {
 
