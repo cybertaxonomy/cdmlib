@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -61,7 +62,8 @@ import eu.etaxonomy.cdm.model.location.Point;
     "collectingAreas",
     "collectingMethod",
     "absoluteElevation",
-    "absoluteElevationError",
+    "absoluteElevationMax",
+    "absoluteElevationText",
     "distanceToGround",
     "distanceToWaterSurface"
 })
@@ -108,16 +110,40 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Length(max = 255)
 	private String collectingMethod;
 
-	// meter above/below sea level of the surface
+	/**
+	 * meter above/below sea level of the surface
+	* if absoluteElevationMax is defined this is the minimum value
+	* of the range
+	 */
 	@XmlElement(name = "AbsoluteElevation")
 	@Field
 	@NumericField
 	private Integer absoluteElevation;
-
-	@XmlElement(name = "AbsoluteElevationError")
-	@Field(analyze = Analyze.NO)
+	
+	// meter above/below sea level of the surface, maximum value
+	@XmlElement(name = "AbsoluteElevationMax")
+	@Field
 	@NumericField
-	private Integer absoluteElevationError;
+	private Integer absoluteElevationMax;
+	
+
+	/**
+	 * Maximum value of meter above/below sea level of the surface as text.
+	 * If min/max value exists together with absoluteElevationText
+	 * the later will be preferred for formatting where as the former
+	 * will be used for computations. If the absoluteElevation
+	 * does not require any additional information such as 
+	 * "ca." it is suggested to use min/max value instead. 
+	 */
+	@XmlElement(name = "AbsoluteElevationText")
+	@Field
+	@Size(max=30)
+	private String absoluteElevationText;
+
+//	@XmlElement(name = "AbsoluteElevationError")
+//	@Field(analyze = Analyze.NO)
+//	@NumericField
+//	private Integer absoluteElevationError;
 
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
 	@XmlElement(name = "DistanceToGround")
@@ -242,14 +268,32 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void setAbsoluteElevation(Integer absoluteElevation) {
 		this.absoluteElevation = absoluteElevation;
 	}
+	
 
-	public Integer getAbsoluteElevationError() {
-		return absoluteElevationError;
+	public Integer getAbsoluteElevationMax() {
+		return absoluteElevationMax;
 	}
 
-	public void setAbsoluteElevationError(Integer absoluteElevationError) {
-		this.absoluteElevationError = absoluteElevationError;
+	public void setAbsoluteElevationMax(Integer absoluteElevationMax) {
+		this.absoluteElevationMax = absoluteElevationMax;
 	}
+	
+
+	public String getAbsoluteElevationText() {
+		return absoluteElevationText;
+	}
+
+	public void setAbsoluteElevationText(String absoluteElevationText) {
+		this.absoluteElevationText = absoluteElevationText;
+	}
+
+//	public Integer getAbsoluteElevationError() {
+//		return absoluteElevationError;
+//	}
+//
+//	public void setAbsoluteElevationError(Integer absoluteElevationError) {
+//		this.absoluteElevationError = absoluteElevationError;
+//	}
 
 	public Integer getDistanceToGround() {
 		return distanceToGround;
@@ -306,4 +350,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	private static Set<NamedArea> getNewNamedAreaSet(){
 		return new HashSet<NamedArea>();
 	}
+
+
 }

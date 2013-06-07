@@ -119,7 +119,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		gatheringEvent = GatheringEvent.NewInstance();
 		fieldObservation.setGatheringEvent(gatheringEvent);
 		gatheringEvent.setAbsoluteElevation(absoluteElevation);
-		gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
+//		gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
 		gatheringEvent.setActor(collector);
 		gatheringEvent.setCollectingMethod(collectingMethod);
 		gatheringEvent.setDistanceToGround(distanceToGround);

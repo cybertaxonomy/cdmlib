@@ -50,9 +50,12 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			addJsonElement(json, jsonConfig, "country",bean.getCountry());
 			addJsonElement(json, jsonConfig, "collectingAreas", bean.getCollectingAreas());
 			addJsonElement(json, jsonConfig, "absoluteElevation", bean.getAbsoluteElevation());
-			addJsonElement(json, jsonConfig, "absoluteElevationError", bean.getAbsoluteElevationError());
-			addJsonElement(json, jsonConfig, "absoluteElevationMinimum", bean.getAbsoluteElevationMinimum());
+//			addJsonElement(json, jsonConfig, "absoluteElevationError", bean.getAbsoluteElevationError());
+//			addJsonElement(json, jsonConfig, "absoluteElevationMinimum", bean.getAbsoluteElevationMinimum());
 			addJsonElement(json, jsonConfig, "absoluteElevationMaximum", bean.getAbsoluteElevationMaximum());
+			//new
+			addJsonElement(json, jsonConfig, "absoluteElevationText", bean.absoluteElevationToString());
+			
 			addJsonElement(json, jsonConfig, "collector", bean.getCollector());
 			addJsonElement(json, jsonConfig, "collectingMethod", bean.getCollectingMethod());
 			addJsonElement(json, jsonConfig, "distanceToGround", bean.getDistanceToGround());

@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "TaxonNode", propOrder = {
     "taxon",
     "parent",
+    "treeIndex",
     "classification",
     "childNodes",
     "referenceForParentChildRelation",
@@ -82,6 +83,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     private TaxonNode parent;
     
    
+    @XmlElement(name = "treeIndex")
     @Size(max=255)
     private String treeIndex;	
 
@@ -278,6 +280,12 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 
 //*********** GETTER / SETTER ***********************************/
 
+
+	@Transient
+    public String getTreeIndex() {
+		return treeIndex;
+	}
+    
     public Taxon getTaxon() {
         return taxon;
     }
@@ -559,4 +567,6 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
             return null;
         }
     }
+
+
 }

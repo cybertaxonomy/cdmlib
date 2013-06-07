@@ -90,8 +90,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     FieldObservation fieldObservation;
     GatheringEvent gatheringEvent;
     Integer absoluteElevation = 10;
-    Integer absoluteElevationError = 2;
-    AgentBase collector = Team.NewInstance();
+    Integer absoluteElevationMaximum = 14;
+    AgentBase<?> collector = Team.NewInstance();
     String collectingMethod = "Collection Method";
     Integer distanceToGround = 22;
     Integer distanceToSurface = 50;
@@ -111,7 +111,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     String accessionNumber = "888462535";
     String catalogNumber = "UU879873590";
-    TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies",
+    TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies",
             null, null, null, null, null, null, null);
     String collectorsNumber = "234589913A34";
     Collection collection = Collection.NewInstance();
@@ -148,7 +148,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         gatheringEvent = GatheringEvent.NewInstance();
         fieldObservation.setGatheringEvent(gatheringEvent);
         gatheringEvent.setAbsoluteElevation(absoluteElevation);
-        gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
+        gatheringEvent.setAbsoluteElevationMax(absoluteElevationMaximum);
         gatheringEvent.setActor(collector);
         gatheringEvent.setCollectingMethod(collectingMethod);
         gatheringEvent.setDistanceToGround(distanceToGround);
@@ -517,46 +517,40 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      * .
      */
     @Test
-    public void testGetSetAbsoluteElevationError() {
+    public void testGetSetAbsoluteElevationMaximum() {
         Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("Absolute elevation error must be same",absoluteElevationError, specimenFacade.getAbsoluteElevationError());
-        specimenFacade.setAbsoluteElevationError(4);
-        Assert.assertEquals("Absolute elevation error must be 4",Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
+        Assert.assertEquals("Absolute elevation maximum must be same",absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum());
+        specimenFacade.setAbsoluteElevationMax(4);
+        Assert.assertEquals("Absolute elevation maximum must be 4", Integer.valueOf(4), specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
 
     }
 
     @Test
     public void testGetSetAbsoluteElevationRange() {
-        Integer expected = absoluteElevation - 2;
-        Assert.assertEquals("", expected, specimenFacade.getAbsoluteElevationMinimum());
-        expected = absoluteElevation + 2;
-        Assert.assertEquals("", expected,specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
 
         specimenFacade.setAbsoluteElevationRange(30, 36);
         Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
-        Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevationMinimum());
-        Assert.assertEquals("", Integer.valueOf(33),specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("", Integer.valueOf(3),specimenFacade.getAbsoluteElevationError());
+        Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", "30 - 36",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
-
-        try {
-            specimenFacade.setAbsoluteElevationRange(30, 35);
-            Assert.fail("Odd distance needs to throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            Assert.assertTrue("Exception needs to be thrown", true);
-        }
-
+        specimenFacade.setAbsoluteElevationRange(30, 35);
+        Assert.assertEquals("Odd range should not throw an exception anymore", "30 - 35",specimenFacade.absoluteElevationToString());
+        
         specimenFacade.setAbsoluteElevationRange(41, null);
-        Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMaximum());
-        Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMinimum());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
-        Assert.assertNotNull("", specimenFacade.getAbsoluteElevationError());
-        Assert.assertEquals("", Integer.valueOf(0),specimenFacade.getAbsoluteElevationError());
+        Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
+        Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
+        Assert.assertEquals("", "41",specimenFacade.absoluteElevationToString());
 
         specimenFacade.setAbsoluteElevationRange(null, null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevation());
-        Assert.assertNull("", specimenFacade.getAbsoluteElevationError());
+        Assert.assertNull("", specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertNull("", specimenFacade.absoluteElevationToString());
 
     }
 
@@ -1447,7 +1441,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
         specimenFacade.removeSource(source1);
         Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
-        Reference reference2 = ReferenceFactory.newJournal();
+        Reference<?> reference2 = ReferenceFactory.newJournal();
         IdentifiableSource sourceNotUsed = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference2,null, null);
         specimenFacade.removeSource(sourceNotUsed);
         Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());

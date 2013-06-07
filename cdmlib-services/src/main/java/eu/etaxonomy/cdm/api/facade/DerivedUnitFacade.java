@@ -21,9 +21,11 @@ import java.util.Set;
 
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -1037,7 +1039,31 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	// absolute elevation
+	/**
+	 * Returns the correctly formatted <code>absolute elevation</code> information.
+	 * If absoluteElevationText is set, this will be returned,
+	 * otherwise we absoluteElevation will be returned, followed by absoluteElevationMax 
+	 * if existing, separated by " - " 
+	 * @return
+	 */
+	@Transient
+	public String absoluteElevationToString() {
+		if (! hasGatheringEvent()){
+			return null;
+		}else{
+			GatheringEvent ev = getGatheringEvent(true);
+			if (StringUtils.isNotBlank(ev.getAbsoluteElevationText())){
+				return ev.getAbsoluteElevationText();
+			}else{
+				String min = getAbsoluteElevation() == null? null : String.valueOf(getAbsoluteElevation());
+				String max = getAbsoluteElevationMaximum() == null? null : String.valueOf(getAbsoluteElevationMaximum());
+				String result = CdmUtils.concat(" - ", min, max);
+				return result;
+			}
+		}
+	}
+
+	
 	/**
 	 * meter above/below sea level of the surface
 	 * 
@@ -1046,44 +1072,46 @@ public class DerivedUnitFacade {
 	 **/
 	@Transient
 	public Integer getAbsoluteElevation() {
-		return (hasGatheringEvent() ? getGatheringEvent(true)
-				.getAbsoluteElevation() : null);
+		return (hasGatheringEvent() ? getGatheringEvent(true).getAbsoluteElevation() : null);
 	}
 
 	public void setAbsoluteElevation(Integer absoluteElevation) {
 		getGatheringEvent(true).setAbsoluteElevation(absoluteElevation);
 	}
 
-	// absolute elevation error
-	@Transient
-	public Integer getAbsoluteElevationError() {
-		return (hasGatheringEvent() ? getGatheringEvent(true)
-				.getAbsoluteElevationError() : null);
+	public void setAbsoluteElevationMax(Integer absoluteElevationMax) {
+		getGatheringEvent(true).setAbsoluteElevationMax(absoluteElevationMax);
 	}
+	
+	public void setAbsoluteElevationMax(String absoluteElevationText) {
+		getGatheringEvent(true).setAbsoluteElevationText(absoluteElevationText);
+	}
+	
+//	// absolute elevation error
+//	@Transient
+//	public Integer getAbsoluteElevationError() {
+//		return (hasGatheringEvent() ? getGatheringEvent(true)
+//				.getAbsoluteElevationError() : null);
+//	}
+//
+//	public void setAbsoluteElevationError(Integer absoluteElevationError) {
+//		getGatheringEvent(true).setAbsoluteElevationError(
+//				absoluteElevationError);
+//	}
 
-	public void setAbsoluteElevationError(Integer absoluteElevationError) {
-		getGatheringEvent(true).setAbsoluteElevationError(
-				absoluteElevationError);
-	}
-
-	/**
-	 * @see #getAbsoluteElevation()
-	 * @see #getAbsoluteElevationError()
-	 * @see #setAbsoluteElevationRange(Integer, Integer)
-	 * @see #getAbsoluteElevationMaximum()
-	 */
-	@Transient
-	public Integer getAbsoluteElevationMinimum() {
-		if (!hasGatheringEvent()) {
-			return null;
-		}
-		Integer minimum = getGatheringEvent(true).getAbsoluteElevation();
-		if (getGatheringEvent(true).getAbsoluteElevationError() != null) {
-			minimum = minimum
-					- getGatheringEvent(true).getAbsoluteElevationError();
-		}
-		return minimum;
-	}
+//	/**
+//	 * @see #getAbsoluteElevation()
+//	 * @see #setAbsoluteElevationRange(Integer, Integer)
+//	 * @see #getAbsoluteElevationMaximum()
+//	 */
+//	@Transient
+//	public Integer getAbsoluteElevationMinimum() {
+//		if (!hasGatheringEvent()) {
+//			return null;
+//		}else{
+//			return getGatheringEvent(true).getAbsoluteElevation();
+//		}
+//	}
 
 	/**
 	 * @see #getAbsoluteElevation()
@@ -1095,13 +1123,24 @@ public class DerivedUnitFacade {
 	public Integer getAbsoluteElevationMaximum() {
 		if (!hasGatheringEvent()) {
 			return null;
+		}else{
+			return getGatheringEvent(true).getAbsoluteElevationMax();
 		}
-		Integer maximum = getGatheringEvent(true).getAbsoluteElevation();
-		if (getGatheringEvent(true).getAbsoluteElevationError() != null) {
-			maximum = maximum
-					+ getGatheringEvent(true).getAbsoluteElevationError();
+	}
+	
+	/**
+	 * @see #getAbsoluteElevation()
+	 * @see #getAbsoluteElevationError()
+	 * @see #setAbsoluteElevationRange(Integer, Integer)
+	 * @see #getAbsoluteElevationMinimum()
+	 */
+	@Transient
+	public String getAbsoluteElevationText() {
+		if (!hasGatheringEvent()) {
+			return null;
+		}else{
+			return getGatheringEvent(true).getAbsoluteElevationText();
 		}
-		return maximum;
 	}
 
 	/**
@@ -1120,32 +1159,8 @@ public class DerivedUnitFacade {
 	 * @throws IllegalArgumentException
 	 */
 	public void setAbsoluteElevationRange(Integer minimumElevation, Integer maximumElevation) throws IllegalArgumentException{
-		if (minimumElevation == null || maximumElevation == null) {
-			Integer elevation = minimumElevation;
-			Integer error = 0;
-			if (minimumElevation == null) {
-				elevation = maximumElevation;
-				if (elevation == null) {
-					error = null;
-				}
-			}
-			getGatheringEvent(true).setAbsoluteElevation(elevation);
-			getGatheringEvent(true).setAbsoluteElevationError(error);
-		} else {
-			if (!isEvenDistance(minimumElevation, maximumElevation)) {
-				throw new IllegalArgumentException(
-						"Distance between minimum and maximum elevation must be even but was "
-								+ Math.abs(minimumElevation - maximumElevation));
-			}
-			Integer absoluteElevationError = Math.abs(maximumElevation
-					- minimumElevation);
-			absoluteElevationError = absoluteElevationError / 2;
-			Integer absoluteElevation = minimumElevation
-					+ absoluteElevationError;
-			getGatheringEvent(true).setAbsoluteElevation(absoluteElevation);
-			getGatheringEvent(true).setAbsoluteElevationError(
-					absoluteElevationError);
-		}
+		getGatheringEvent(true).setAbsoluteElevation(minimumElevation);
+		getGatheringEvent(true).setAbsoluteElevationMax(maximumElevation);
 	}
 
 	/**
@@ -1173,8 +1188,7 @@ public class DerivedUnitFacade {
 	// collecting method
 	@Transient
 	public String getCollectingMethod() {
-		return (hasGatheringEvent() ? getGatheringEvent(true)
-				.getCollectingMethod() : null);
+		return (hasGatheringEvent() ? getGatheringEvent(true).getCollectingMethod() : null);
 	}
 
 	public void setCollectingMethod(String collectingMethod) {
@@ -1184,8 +1198,7 @@ public class DerivedUnitFacade {
 	// distance to ground
 	@Transient
 	public Integer getDistanceToGround() {
-		return (hasGatheringEvent() ? getGatheringEvent(true)
-				.getDistanceToGround() : null);
+		return (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToGround() : null);
 	}
 
 	public void setDistanceToGround(Integer distanceToGround) {
@@ -1195,8 +1208,7 @@ public class DerivedUnitFacade {
 	// distance to water surface
 	@Transient
 	public Integer getDistanceToWaterSurface() {
-		return (hasGatheringEvent() ? getGatheringEvent(true)
-				.getDistanceToWaterSurface() : null);
+		return (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToWaterSurface() : null);
 	}
 
 	public void setDistanceToWaterSurface(Integer distanceToWaterSurface) {
