@@ -1083,7 +1083,7 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setAbsoluteElevationMax(absoluteElevationMax);
 	}
 	
-	public void setAbsoluteElevationMax(String absoluteElevationText) {
+	public void setAbsoluteElevationText(String absoluteElevationText) {
 		getGatheringEvent(true).setAbsoluteElevationText(absoluteElevationText);
 	}
 	

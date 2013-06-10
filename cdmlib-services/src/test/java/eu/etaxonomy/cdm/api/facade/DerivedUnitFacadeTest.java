@@ -499,12 +499,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     }
 
     /**
-     * Test method for
+     * Test method for getting and setting absolute elevation.
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevation()}
      * .
      */
     @Test
-    @Ignore // #######DerivationEvent --------------------------- 2
     public void testGetSetAbsoluteElevation() {
         Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
         specimenFacade.setAbsoluteElevation(400);
@@ -554,6 +553,38 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    @Test
+    public void testGetSetAbsoluteElevationText() {
+        Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
+
+        String elevText = "approx. 30 - 35";
+        specimenFacade.setAbsoluteElevationText(elevText);
+        Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertEquals("", elevText,specimenFacade.absoluteElevationToString());
+        
+        specimenFacade.setAbsoluteElevationRange(30, 35);
+        Assert.assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", Integer.valueOf(30), specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", Integer.valueOf(35),specimenFacade.getAbsoluteElevationMaximum());
+
+        
+        specimenFacade.setAbsoluteElevationRange(41, null);
+        Assert.assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
+        
+
+        specimenFacade.setAbsoluteElevationText(null);
+        Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
+        Assert.assertEquals("ToString should change by setting text to null", "41",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
+    }
+
+    
     /**
      */
     @Test
