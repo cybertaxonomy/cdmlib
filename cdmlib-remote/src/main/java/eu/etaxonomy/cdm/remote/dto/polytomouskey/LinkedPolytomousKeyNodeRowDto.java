@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  */
 public class LinkedPolytomousKeyNodeRowDto {
 	
-	private UUID keyNodeUuid;//or should we use the entire polytomous key node?
+	private UUID nodeUuid;//or should we use the entire polytomous key node?
 	private KeyStatement rowQuestion;
 	private Integer nodeNumber = null;
 	private Integer edgeNumber = null;
@@ -42,7 +42,7 @@ public class LinkedPolytomousKeyNodeRowDto {
 	 * @return the keyNodeUuid
 	 */
 	public UUID getKeyNodeUuid() {
-		return keyNodeUuid;
+		return nodeUuid;
 	}
 
 
@@ -50,7 +50,7 @@ public class LinkedPolytomousKeyNodeRowDto {
 	 * @param keyNodeUuid the keyNodeUuid to set
 	 */
 	public void setKeyNodeUuid(UUID keyNodeUuid) {
-		this.keyNodeUuid = keyNodeUuid;
+		this.nodeUuid = keyNodeUuid;
 	}
 
 	/**
