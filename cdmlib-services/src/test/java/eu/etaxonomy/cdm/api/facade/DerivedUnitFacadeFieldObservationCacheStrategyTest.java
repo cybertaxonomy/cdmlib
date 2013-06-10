@@ -184,6 +184,12 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.innerFieldObservation().getTitleCache());
+		
+		String altitudeText = "approx. 40";
+		specimenFacade.setAbsoluteElevationText(altitudeText);
+		correctCache = correctCache.replace("alt. 40 m", "alt. "+ altitudeText + " m");
+		Assert.assertEquals(correctCache, specimenFacade.innerFieldObservation().getTitleCache());
+		
 	}
 
 }

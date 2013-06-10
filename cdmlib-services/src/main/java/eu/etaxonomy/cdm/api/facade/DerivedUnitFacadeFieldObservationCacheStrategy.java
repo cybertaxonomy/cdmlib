@@ -90,9 +90,9 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 		result = CdmUtils.concat(", ", result, facade.getLocalityText());
 		
 		//elevation
-		if (facade.getAbsoluteElevation() != null){
+		if (StringUtils.isNotBlank(facade.absoluteElevationToString())){
 			result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
-			result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
+			result += facade.absoluteElevationToString() + ALTITUDE_POSTFIX;
 		}
 		
 		//exact locality
