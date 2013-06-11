@@ -749,6 +749,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipTermBase.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Representation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermLanguageComparator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermVocabulary.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TimePeriod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/User.java -text
