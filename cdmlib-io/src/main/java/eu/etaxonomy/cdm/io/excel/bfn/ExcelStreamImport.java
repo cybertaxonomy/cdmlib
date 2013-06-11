@@ -64,14 +64,8 @@ public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfi
 		}
 		
 		return;
-}
-	
-	/**
-	 * @return
-	 */
-	private String getWorksheetName() {
-		return null;
 	}
+
 
 
 	/* (non-Javadoc)
@@ -112,15 +106,4 @@ public class ExcelStreamImport extends DwcaDataImportBase<ExcelStreamImportConfi
 		return false;  //we only have 1 import class for excel stream import
 	}
 
-
-	
-	//get ExcelFile
-	
-	//read spreadsheet
-	//read columns 
-	//read rows
-	//read cells
-	//analyze content
-	//map content to CDM model
-	//pass objects to stream scheme of DWC-A importer
 }

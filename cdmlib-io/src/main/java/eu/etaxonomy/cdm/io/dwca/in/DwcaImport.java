@@ -12,14 +12,11 @@ import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.IItemStream;
-import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * 
@@ -52,16 +49,6 @@ public class DwcaImport extends DwcaDataImportBase<DwcaImportConfigurator, DwcaI
 		return;
 	}
 
-	@Override
-	protected void finalizeStream(IItemStream itemStream, DwcaImportState state) {
-		fireWarningEvent("Stream finished", itemStream.getStreamLocation(), 0);
-		if (itemStream.getTerm().equals(TermUri.DWC_TAXON)){
-			if (state.isTaxaCreated() == false){
-				state.setTaxaCreated(true);
-			}
-		}
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.dwca.in.StreamImportBase#getConverter(eu.etaxonomy.cdm.io.dwca.TermUri, eu.etaxonomy.cdm.io.dwca.in.StreamImportStateBase)

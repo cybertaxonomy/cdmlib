@@ -40,7 +40,7 @@ public class ExcelRecordStream  implements IItemStream{
 	private TermUri term;
 	private int line = 0;
 	
-	private Map<Integer,TermUri> mapping;
+	private Map<Integer,String> mapping;
 	
 	private StreamItem next;
 	
@@ -81,51 +81,64 @@ public class ExcelRecordStream  implements IItemStream{
 
 
 	private StreamItem readMe() {
-		
-		
-		if (mapping == null){
-			mapping = getHeaderMapping(sheet.getRow(0));
-		}
-//		int rows = sheet.getPhysicalNumberOfRows();
-		HSSFRow row = sheet.getRow(line++);
-		int i = 0;
-		while (row == null && i++ < 10){
-			row = sheet.getRow(line++);
-			continue;
-		}
-		if (row == null){
-			return null;
-		}else{
-			int cells = row.getPhysicalNumberOfCells();
-			logger.info("\nROW " + row.getRowNum() + " has " + cells + " cell(s).");
-			Map<String, String> map = new HashMap<String, String>();
-			for (int c = 0; c < cells; c++) {
-				HSSFCell cell = row.getCell(c);
-				String value = ExcelUtils.getCellValue(cell);
-				TermUri key = mapping.get(c);
-				map.put(key.getUriString(), value);
-				logger.info("CELL col=" + cell.getColumnIndex() + " VALUE=" + value);
-			}
-			StreamItem resultItem = new StreamItem(term, map, String.valueOf(line));
-			
+		StreamItem resultItem;
+		if (next != null){
+			resultItem = next;
+			next = null;
 			return resultItem;
+		}else{
+		
+			if (mapping == null){
+				mapping = getHeaderMapping(sheet.getRow(line++));
+			}
+	//		int rows = sheet.getPhysicalNumberOfRows();
+			HSSFRow row = sheet.getRow(line++);
+			int i = 0;
+			while (row == null && i++ < 10){
+				row = sheet.getRow(line++);
+				continue;
+			}
+			if (row == null){
+				return null;
+			}else{
+				int cells = row.getPhysicalNumberOfCells();
+				logger.info("\nROW " + row.getRowNum() + " has " + cells + " cell(s).");
+				Map<String, String> map = new HashMap<String, String>();
+				
+				for (int c :mapping.keySet()){
+					HSSFCell cell = row.getCell(c);
+					String value = ExcelUtils.getCellValue(cell);
+					map.put(mapping.get(c), value);
+					logger.info("CELL col=" + cell.getColumnIndex() + " VALUE=" + value);
+				}
+				
+				resultItem = new StreamItem(term, map, String.valueOf(line));
+				
+				return resultItem;
+			}
 		}
 	}
 	
 	/**
-	 * @param row2
+	 * @param row
 	 * @return
 	 */
-	private Map<Integer,TermUri> getHeaderMapping(HSSFRow row) {
-		Map<Integer,TermUri> result = new HashMap<Integer, TermUri>();
+	private Map<Integer,String> getHeaderMapping(HSSFRow row) {
+		Map<Integer,String> result = new HashMap<Integer, String>();
 		
 		int cells = row.getPhysicalNumberOfCells();
 		logger.info("\nROW " + row.getRowNum() + " has " + cells + " cell(s).");
 		for (int c = 0; c < cells; c++) {
 			HSSFCell cell = row.getCell(c);
 			String value = ExcelUtils.getCellValue(cell);
-			TermUri termUri = convert2TermUri(value);
-			result.put(c, termUri);
+			String termUri = convert2semanticKey(value);
+			if (termUri != null){
+				result.put(c, termUri);
+			}else{
+				//TODO fire Event
+				String message = "No mapping defined for column %d '%s'";
+				logger.warn(String.format(message, c + 1, value));
+			}
 		}
 		
 		return result;
@@ -135,14 +148,35 @@ public class ExcelRecordStream  implements IItemStream{
 	 * @param value
 	 * @return
 	 */
-	private TermUri convert2TermUri(String key) {
+	private String convert2semanticKey(String key) {
 		if (key.equalsIgnoreCase("id")){
-			//FIXME in work
-//			return TermUri.Dwc_I
+			return "id";
+		}else if (key.equalsIgnoreCase("ParentId")){
+			return TermUri.DWC_PARENT_NAME_USAGE_ID.getUriString();
+		}else if (key.equalsIgnoreCase("NameStatus")){
+			return TermUri.DWC_TAXONOMIC_STATUS.getUriString();
+		}else if (key.equalsIgnoreCase("Rank")){
+			return TermUri.DWC_TAXON_RANK.getUriString();
+		}else if (key.equalsIgnoreCase("ScientificName")){
+			return TermUri.DWC_SCIENTIFIC_NAME.getUriString();
+		}else if (key.equalsIgnoreCase("Author")){
+			return TermUri.DWC_SCIENTIFIC_NAME_AUTHORS.getUriString();
+			//TODO Taxon Remarks
+		}else if (key.equalsIgnoreCase("Comments")){
+			return TermUri.DWC_TAXON_REMARKS.getUriString();
+		}else if (key.equalsIgnoreCase("Language")){
+			return TermUri.DC_LANGUAGE.getUriString();
+		}else if (key.equalsIgnoreCase("TDWG_1")){
+			return TermUri.DWC_COUNTRY_CODE.getUriString();
+		}else{
+			//TODO fire Event
+			String message = "Key '%s' does not (yet) exist for import";
+			logger.warn(String.format(message, key));
+			return null;
 		}
 		
-		
-		return null;
+	//Language	TDWG_1	TDWG_2	VernacularName	SysCode
+	
 	}
 
 	/* (non-Javadoc)

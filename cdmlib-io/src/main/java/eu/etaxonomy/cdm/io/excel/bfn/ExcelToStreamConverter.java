@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.io.excel.bfn;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -20,21 +19,13 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFName;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.hibernate.dialect.FirebirdDialect;
-import org.springframework.transaction.TransactionStatus;
 
-import bsh.This;
-
-import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.io.dwca.in.CsvStream;
 import eu.etaxonomy.cdm.io.dwca.in.IReader;
 import eu.etaxonomy.cdm.io.dwca.in.ListReader;
 
@@ -118,44 +109,8 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 		} 
 		
 		return new ListReader<ExcelRecordStream>(streamList);
-		
-//		HSSFSheet sheet;
-//		if (worksheetName == null){
-//			sheet = wb.getSheetAt(0);	
-//		}else{
-//			sheet = wb.getSheet(worksheetName);
-//		}
-		
-		
-		
-//		String sheetName = getWorksheetName();
-//		try {
-//			ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(source, sheetName);
-//		
-//			//handleImport
-////			handleRecordList(state, source);
-//			logger.debug("End excel data import"); 
-//	//		return;
-//			IReader<HashMap<String, String>> result = new ListReader<HashMap<String, String>>(recordList);
-//			return result;
-//		} catch (FileNotFoundException e) {
-//			String message = "File not found: " + source;
-//			warnProgress(state, message, e);
-//			logger.error(message);
-//			state.setUnsuccessfull();
-//			return new ListReader<HashMap<String,String>>(new ArrayList<HashMap<String,String>>());
-//		}
 	}
-	
-	
-//	/**
-//	 * @param state
-//	 * @param source2
-//	 */
-//	private void 5(STATE state, URI source2) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+
 
 	/**
 	 * @param wsName
@@ -164,23 +119,13 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 	private TermUri convertSheetName2TermUri(String wsName) {
 		if (StringUtils.isBlank(wsName)){
 			throw new IllegalArgumentException("Worksheet name must not be null or empty");
-		}else if(wsName.equalsIgnoreCase("NormalExplicit.txt")){
+			//FIXME: Hard coded worksheet name should be avoided  
+		}else if(wsName.equalsIgnoreCase("Sheet1")){
 			return TermUri.DWC_TAXON;
 		}else{
 			String message = "Worksheet name %s not yet handled by %s";
 			throw new IllegalArgumentException(String.format(message, wsName, this.getClass().getSimpleName()));
 		}
-	}
-
-	private void initArchive(STATE state){
-
-	}
-
-	/**
-	 * @return
-	 */
-	private String getWorksheetName() {
-		return null;
 	}
 
 	public void warnProgress(STATE state, String message, Throwable e) {

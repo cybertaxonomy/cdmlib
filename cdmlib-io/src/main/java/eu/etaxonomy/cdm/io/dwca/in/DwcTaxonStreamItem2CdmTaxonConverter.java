@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hamcrest.core.IsInstanceOf;
+import org.hibernate.validator.util.NewInstance;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -25,9 +28,16 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamImportBase;
 import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -110,6 +120,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	    //term="http://purl.org/dc/terms/identifier"
 		//currently only LSIDs
 		handleIdentifier(csvTaxonRecord, taxonBase); 
+		
+		//TaxonRemarks
+		handleTaxonRemarks(csvTaxonRecord, taxonBase);
+		
+		//TDWG_1
+		handleTdwgArea(csvTaxonRecord, taxonBase);
+		
 
 		
 		
@@ -163,6 +180,77 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 
 	
+	/**
+	 * @param csvTaxonRecord
+	 * @param taxonBase
+	 */
+	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
+		// TODO Auto-generated method stub
+		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
+		if(taxonBase instanceof Synonym){
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+			Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
+			if(acceptedTaxaList.size()>1){
+				String message = "Synonym is related to more than one accepted Taxa";
+				fireWarningEvent(message, item, 4);
+			}else{
+				for(Taxon taxon : acceptedTaxaList){
+					TaxonDescription td = getTaxonDescription(taxon, false);
+					NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
+
+					if (area == null){
+						area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
+					}
+					if (area != null){
+						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+						td.addElement(distribution);
+					}
+				}
+			}
+		}
+		if(!(taxonBase instanceof Synonym)){
+			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+			TaxonDescription td = getTaxonDescription(taxon, false);
+			NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
+
+			if (area == null){
+				area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
+			}
+			if (area != null){
+				Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+				td.addElement(distribution);
+			}
+		}
+	}
+
+
+	/**
+	 * @param item
+	 * @param taxonBase
+	 */
+	private void handleTaxonRemarks(StreamItem item,TaxonBase<?> taxonBase) {
+		String comment = item.get(TermUri.DWC_TAXON_REMARKS);
+		String langItem = item.get(TermUri.DC_LANGUAGE);
+		Language language = null;
+
+		if(StringUtils.equalsIgnoreCase(langItem, "de")){
+			language = Language.GERMAN();
+		}else if(StringUtils.equalsIgnoreCase(langItem, "en")){
+			language = Language.ENGLISH();
+		}else{
+			language = Language.DEFAULT();
+		}	
+		if(StringUtils.isNotBlank(comment)){
+				Annotation annotation = Annotation.NewInstance(comment, language);
+				taxonBase.addAnnotation(annotation);
+		}else{
+			String message = "Comment is empty or some error appeared while saving: %s";
+//			message = String.format(message);
+			fireWarningEvent(message, item, 1);
+		}
+	}
+
+
 	//TODO handle non LSIDs
 	//TODO handle LSIDs for names
 	private void handleIdentifier(StreamItem csvTaxonRecord, TaxonBase<?> taxonBase) {
