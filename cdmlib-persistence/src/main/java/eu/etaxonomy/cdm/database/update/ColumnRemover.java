@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class ColumnRemover extends SchemaUpdaterStepBase<ColumnRemover> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ColumnRemover.class);
 	
 	private String tableName;

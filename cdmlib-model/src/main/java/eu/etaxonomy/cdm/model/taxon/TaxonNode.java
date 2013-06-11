@@ -48,10 +48,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNode", propOrder = {
-    "taxon",
+	"classification",
+	"taxon",
     "parent",
     "treeIndex",
-    "classification",
+    "sortIndex",
     "childNodes",
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
@@ -86,7 +87,9 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @XmlElement(name = "treeIndex")
     @Size(max=255)
     private String treeIndex;	
-
+    
+    //see comment on children FeatureNode#IndexColumn
+    private Integer sortIndex;
 
     @XmlElement(name = "classification")
     @XmlIDREF

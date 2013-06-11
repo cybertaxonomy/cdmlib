@@ -23,7 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * the node N1.
  * 
  * @author  m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
 @SuppressWarnings("serial")
@@ -60,8 +59,9 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 		"featureTree",
 		"feature",
 		"parent",
-		"children",
+		"treeIndex",
 		"sortIndex",
+		"children",
 		"onlyApplicableIf",
 		"inapplicableIf"
 })
@@ -77,7 +77,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
 	 //TODO Val #3379
 //    @NotNull
 	private FeatureTree featureTree;
@@ -96,6 +96,11 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
     @Cascade(CascadeType.SAVE_UPDATE)
 	@JoinColumn(name="parent_id" /*, insertable=false, updatable=false, nullable=false*/)
 	private FeatureNode parent;
+    
+    
+    @XmlElement(name = "treeIndex")
+    @Size(max=255)
+    private String treeIndex;
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")

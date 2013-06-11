@@ -61,6 +61,8 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
+    
+//    private int termType;
 
     @XmlElementWrapper(name = "Representations")
     @XmlElement(name = "Representation")

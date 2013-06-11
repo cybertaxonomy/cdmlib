@@ -55,8 +55,6 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceBase.class);
 	
-	
-	
 	/**
 	 * The {@link OriginalSourceType type} of this source. According to PROV the type has to be thought as 
 	 * an activity that leads from the source entity to the current entity. It is not a property of the
