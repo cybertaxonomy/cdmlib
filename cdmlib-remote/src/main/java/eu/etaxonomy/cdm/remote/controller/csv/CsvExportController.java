@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -54,7 +55,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 @Controller
 @RequestMapping(value = { "/csv" })
-public class CsvExportController{
+public class CsvExportController extends AbstractController{
 
 	/**
 	 * 
@@ -101,6 +102,7 @@ public class CsvExportController{
 		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
+		logger.info("doExportRedlist()" + requestPathAndQuery(request));
 		defaultExport.invoke(config);
 		try {
 			/*
