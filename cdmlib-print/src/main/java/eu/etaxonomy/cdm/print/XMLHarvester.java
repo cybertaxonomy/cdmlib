@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.Parent;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 
@@ -127,12 +128,18 @@ public class XMLHarvester {
 		Element root = new Element(IXMLElements.ROOT);
 		
 		for(Element taxonNodeElement : taxonNodeElements){
-						
+			
+			logger.warn("Adding taxonNodeElement " + taxonNodeElement.getChildText("uuid")); 
+			
+			//temporarily filter c15e12c1-6118-4929-aed0-b0cc90f5ab22 as it's causing a lazyInitializationException
+			if (!taxonNodeElement.getChildText("uuid").equals("c15e12c1-6118-4929-aed0-b0cc90f5ab22")) {
 			taxonNodeElement.detach();
 			
 			populateTreeNodeContainer(taxonNodeElement);
 			
 			root.addContent(taxonNodeElement);
+			}
+			
 		}
 		
 		
@@ -159,23 +166,34 @@ public class XMLHarvester {
 			List<Element> nodes = XPath.selectNodes(context, path);
 			
 			for(Element node : nodes){
+				
 				String textWithRubbish = node.getText() ;
 				
-				if (textWithRubbish.length() < 5) {
-				logger.debug("textWithRubbish: " + textWithRubbish);
-				return;
-				}
+				if (textWithRubbish.length() > 5) {
 				String cleanedText = textWithRubbish.substring(0, 4);
 				node.setText(cleanedText);	
+				} 
+				/*else {
+					
+					Element parentOfParent = (Element) node.getParent().getParent().getParent();
+					
+					if (parentOfParent.getName().equals("inReference")) {
+					List<Element> parentNodes = XPath.selectNodes(parentOfParent, "//nomenclaturalReference/titleCache");					
+					for(Element parentNode : parentNodes){
+					logger.error("Problem with date for node  with titleCache: " + parentNode.getText());
+					}
+					}
+				}*/
 				
-				Element parent = (Element) node.getParent().getParent();
+				/*Element parent = (Element) node.getParent().getParent();
+
 				if(parent.getName().equals("citation")){
 					Element parent2 = (Element) parent.getParent();
 					parent2.setAttribute("sort", cleanedText);
-				}
+				}*/
 			}
 		} catch (Exception e) {
-			logger.error("Error trying to clean dat published field", e);
+			logger.error("Error trying to clean date published field", e);
 		}
 	}
 
@@ -227,13 +245,17 @@ public class XMLHarvester {
 			populateChildren(taxonNodeElement);
 		}
 		
+		populateTypeDesignations(fullTaxonElement);
 		progressMonitor.worked(1);
 		
 	}	
 	
+	// the name isn't populated in the taxonNode http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/taxonNode/de808dae-e50a-42f2-a4da-bd12f2c2faaf/taxon.json
+	// but can get the name from http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/portal/taxon/8f6d5498-1f4b-420f-a1ae-3f0ed9406bb1.json
 	private void populateTypeDesignations(Element fullTaxonElement) {
 		
 		Element nameElement = fullTaxonElement.getChild("name");
+		Element uuidElement = fullTaxonElement.getChild("uuid");
 		
 		List<Element> typeDesignations = factory.getTypeDesignations(nameElement);
 		
@@ -402,9 +424,25 @@ public class XMLHarvester {
 	 * @param taxonElement
 	 */
 	private void populateSynonyms(Element taxonElement){
-		List<Element> synonymy = factory.getSynonymy(taxonElement);
+		List<Element> synonymy = factory.getSynonymy(taxonElement);		
 		
 		for(Element synonymyNode : synonymy){
+			
+			List<Element> children = synonymyNode.getChildren("e");
+			
+			for(Element child : children){
+				
+				List<Element> children2 = child.getChildren("e");
+				
+				for(Element child2 : children2){
+					
+					if (child2.getChild("name") != null) {
+						populateTypeDesignations(child2);// pass in the name of the synonym from synonymy/e/e/name
+						}
+					
+				}
+			}
+			
 			XMLHelper.addContent(synonymyNode, "synonymy", taxonElement);
 		}
 	}
