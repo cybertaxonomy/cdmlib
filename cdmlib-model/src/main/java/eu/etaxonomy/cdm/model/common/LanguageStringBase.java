@@ -27,9 +27,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
     LanguageString.class
 })
 @MappedSuperclass
+@Audited
 public abstract class LanguageStringBase extends AnnotatableEntity{
     private static final long serialVersionUID = -1892526642162438277L;
     @SuppressWarnings("unused")
@@ -57,7 +58,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @XmlElement(name = "Text")
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Column(length=65536)
-    @Field(index=Index.TOKENIZED)
+    @Field
     @FieldBridge(impl=StripHtmlBridge.class)
     @Lob
     protected String text;

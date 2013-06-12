@@ -186,7 +186,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 	}
 
 	private User makeNewUser(String userString, STATE state){
-		String pwd = getPassword(); 
+		String pwd = getRandomPassword(); 
 		User user = User.NewInstance(userString, pwd);
 		state.putUser(userString, user);
 		getUserService().save(user);
@@ -194,7 +194,7 @@ public abstract class DbImportBase<STATE extends DbImportStateBase<CONFIG, STATE
 		return user;
 	}
 	
-	private String getPassword(){
+	private String getRandomPassword(){
 		String result = UUID.randomUUID().toString();
 		return result;
 	}

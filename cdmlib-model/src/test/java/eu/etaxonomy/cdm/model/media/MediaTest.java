@@ -10,11 +10,9 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import static org.junit.Assert.*;
-
 import java.net.URI;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;

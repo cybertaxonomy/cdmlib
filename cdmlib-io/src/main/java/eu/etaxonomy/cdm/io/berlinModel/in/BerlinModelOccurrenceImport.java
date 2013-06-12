@@ -101,11 +101,12 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
 	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		
-		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
+		Map<String, TaxonBase<?>> taxonMap = (Map<String, TaxonBase<?>>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 			
 		ResultSet rs = partitioner.getResultSet();
 
@@ -128,7 +129,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 int newTaxonId = rs.getInt("taxonId");
                 String tdwgCodeString = rs.getString("TDWGCode");
                 String emCodeString = state.getConfig().isIncludesAreaEmCode() ? rs.getString("EMCode") : null;
-                Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
+                Integer emStatusId = nullSafeInt(rs, "emOccurSumCatId");
                 
                 try {
                 	//status
@@ -289,10 +290,10 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @param taxonMap
 	 * @return
 	 */
-	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, Map<String, TaxonBase> taxonMap, int occurrenceId, Reference<?> sourceSec){
+	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, Map<String, TaxonBase<?>> taxonMap, int occurrenceId, Reference<?> sourceSec){
 		TaxonDescription result = null;
 		if (oldDescription == null || newTaxonId != oldTaxonId){
-			TaxonBase taxonBase = taxonMap.get(String.valueOf(newTaxonId));
+			TaxonBase<?> taxonBase = taxonMap.get(String.valueOf(newTaxonId));
 			//TODO for testing
 			//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 			Taxon taxon;

@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
@@ -47,52 +48,90 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
- * The class represents a node within a {@link PolytomousKey polytomous key}
- * structure. The structure such key is a directed acyclic graph where as
- * instances of <code>PolytomousKeyNode</code>, {@Taxon Taxa}, or even
- * of other {@link PolytomousKey PolytomousKeys} are forming the nodes. A
- * <code>PolytomousKeyNode</code> can have multiple kinds of edges:
- * <p>
- * <h4>Edges</h4>
- * In very rare cases a polytomous key node can have same time an edge to a
- * taxon and other edges to futher child nodes. In this case the determination
- * process may be terminated at this taxon or can proceed if a more accurate
- * determination is wanted.
- * <li>{@link #getChildren() children}:<br>
- * One or multiple subordinate <code>PolytomousKeyNodes</code>. The source node
- * poses a {@link #getQuestion question}, to which the children are providing
- * predefined answers by their {@link #getStatement() statement}. It is also
- * possible that the children's {@link #getStatement() statements} are
- * formulated in a way which makes an explicit question at the source node
- * obsolete. In this case the question may be empty. There is furthermore the
- * {@link #getFeature() feature} property which also plays the role as question.
- * The <code>feature</code> property will most likely be used if the key has
- * been generated automatically. Hand written keys will have a
- * <code>question</code>. An existing question should always be given
- * <b>priority</b> over the <code>feature</code>.
- * <p>
- * <b>Special case:</b> <i>Child nodes with empty statements but taxa as
- * leaf</i> are to treated as if all those taxa where direct children of the
- * source node. That is the nodes in with empty statements are not to be shown,
- * they are only a structural element to connect multiple taxa to a single node,
- * which is otherwise not possible.</li>
- * <li>{@link #getOtherNode() otherNode}: <br>
- * Without this kind of edge which points to other nodes in the same graph edge
- * the key would be a perfect tree structure.</li>
- * <li>{@link #getSubkey() subkey}:<br>
- * Connects two key with each other. The path in the decision graph spans over
- * multiple keys.</li>
- * <li>{@link #getTaxon() taxon}:<br>
- * The taxa are the final leaf nodes of the decision graph, the decision process
- * ends and the respective object has been determined as being a representative
- * of this {@link Taxon}.</li>
+ * This class represents a node within a {@link PolytomousKey polytomous key}
+ * structure. The structure of such a key is a directed tree like acyclic graph
+ * of <code>PolytomousKeyNode</code>s.
+ * A <code>PolytomousKeyNode</code> represents both the node and the edges that lead
+ * to <code>this</code> node, therefore an extra class representing the edges
+ * does not exist.
+ * <BR>
+ * The attribute representing the edge leading from its parent node to <code>this</code>
+ * node is the {@link #getStatement() statement}, attributes leading to the child nodes
+ * are either the {@link #getQuestion() question} or the {@link #getFeature() feature}.
+ * While {@link #getStatement() statements} are required, {@link #getQuestion() questions} and
+ * {@link #getFeature() features} are optional and do typically not exist in classical keys.
+ * Both, {@link #getQuestion() questions} and {@link #getFeature() features}, will be "answered" by the
+ * {@link #getStatement() statements} of the child nodes, where {@link #getQuestion() questions} 
+ * are usually free text used in manually created keys while {@link #getFeature() features} are 
+ * typically used in automatically created keys based on structured descriptive data. 
+ * Only one of them should be defined in a node. However, if both exist the {@link #getQuestion() question}
+ * should always be given <b>priority</b> over the {@link #getFeature() feature}.<br>
+ * 
+ * Typically a node either links to its child nodes (subnodes) or represents a link
+ * to a {@link Taxon taxon}. The later, if taken as part of the tree,  are usually
+ * the leaves of the represented tree like structure (taxonomically they are the 
+ * end point of the decision process).<br>
+ * 
+ * However, there are exceptions to this simple structure:
+ * 
+ * <li>Subnodes and taxon link<br>
+ * 
+ * In rare cases a node can have both, subnodes and a {@link #getTaxon() link to a taxon}.
+ * In this case the taxonomic determination process may be either terminated 
+ * at the given {@link Taxon taxon} or can proceed with the children if a more accurate
+ * determination is wanted. This may be the case e.g. in a key that generally
+ * covers all taxa of rank species and at the same time allows identification of 
+ * subspecies or varieties of these taxa.</li>
+ * 
+ * <li>{@link #getOtherNode() Other nodes}: <br>
+ * 
+ * A node may not only link to its subnodes or to a taxon but it may
+ * also link to {@link #getOtherNode() another node} (with a different parent) of either the same key  
+ * or another key.
+ * <br>
+ * <b>NOTE: </b>
+ * If an {@link #getOtherNode() otherNode} represents a node
+ * of the same tree the key does not represent a strict tree structure
+ * anymore. However, as this is a rare case we will still use this term
+ * at some places.</li>
+ * 
+ * <li>{@link #getSubkey() Subkey}:<br>
+ * 
+ * A node may also link to another key ({@link #getSubkey() subkey}) as a whole, which is
+ * equal to an {@link #getOtherNode() otherNode} link to the root node of the other key.
+ * In this case the path in the decision graph spans over multiple keys.</li>
+ * This structure is typically used when a key covers taxa down to a certain rank, whereas
+ * taxa below this rank are covered by extra keys (e.g. a parent key may cover all taxa 
+ * of rank species while subspecies and varieties are covered by a subkeys for each of these
+ * species.
+ * Another usecase for subkeys is the existence of an alternative key for a certain part
+ * of the decision tree.
+ *  
+ * <li>Multiple taxa<br>
+ * 
+ * Some nodes in legacy keys do link to multiple taxa, meaning that the key ambigous at
+ * this point. To represent such nodes one must use child nodes with empty 
+ * {@link #getStatement() statements} for each such taxon (in all other cases - except for 
+ * root nodes - the <code>statement</code> is required).
+ * Applications that do visualize the key should handle such a node-subnode structure as one
+ * node with multiple taxon links. This complicated data structure has been chosen for 
+ * this rare to avoid a more complicated <code>List<Taxon></code> structure for the standard
+ * case.</li>
+ * 
+ * The {@link PolytomousKey#getRoot() root node of the key} may represent the entry point
+ * question or feature but does naturally neither have a statement nor a linked taxon as 
+ * there is no prior decision yet. 
  * 
  * <h4>Notes</h4>
  * <p>
- * A polytomous key node can be referenced from multiple other nodes. Therefore
- * a node does not have a single parent. Nevertheless it always belongs to a
- * main key though it may be referenced also by other key nodes.
- * 
+ * A polytomous key node can be referenced from multiple other nodes via the 
+ * {@link #getOtherNode() otherNode} attribute of the other nodes. Therefore, though
+ * we speek about a "decision tree" structure a node does not necessarily have only
+ * one parent.
+ * However, nodes are mainly represented in a tree structure and therefore do have
+ * a defined {@link #getParent() parent} which is the "main" parent. But when implementing 
+ * visualizing or editing tools one should keep in mind that this parent may not be 
+ * the only node linking the child node.
  * 
  * @author a.mueller
  * @created 13-Oct-2010
@@ -159,14 +198,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private KeyStatement statement;
 
 	@XmlElement(name = "Question")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private KeyStatement question;
 
 	@XmlElement(name = "Feature")
@@ -205,7 +244,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
 	// @JoinTable(name = "DescriptionElementBase_ModifyingText")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
 	public static final Integer ROOT_NODE_NUMBER = 1;
@@ -527,12 +567,15 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		return children.size() < 1;
 	}
 
-	// ** ********************** QUESTIONS AND STATEMENTS
-	// ******************************/
+	// ** ********************** QUESTIONS AND STATEMENTS ************************/
 
 	/**
-	 * Returns the statement for <code>this</code> PolytomousKeyNode. If the
-	 * user agrees with the statement, the node will be followed.
+	 * Returns the statement for <code>this</code> PolytomousKeyNode. When coming
+	 * from the parent node the user needs to agree with the statement (and disagree
+	 * with all statements of sibling nodes) to follow <code>this</code> node.<BR>
+	 * The statement may stand alone (standard in classical keys) or it may be 
+	 * either the answer to the {@link #getQuestion() question} or the 
+	 * value for the {@link #getFeature() feature} of the parent node.
 	 * 
 	 * @return the statement
 	 * @see #getQuestion()
@@ -578,7 +621,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * A question is answered by statements in leads below this tree node.
 	 * Questions are optional and are usually empty in traditional keys.
 	 * 
-	 * @return the statement
+	 * @return the question
 	 * @see #getStatement()
 	 */
 	public KeyStatement getQuestion() {

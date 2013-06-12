@@ -74,7 +74,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 			
 			criteria.setProjection(Projections.countDistinct("id"));
 			
-			return (Integer)criteria.uniqueResult();
+			return ((Number)criteria.uniqueResult()).intValue();
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());

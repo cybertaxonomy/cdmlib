@@ -10,54 +10,60 @@
 package eu.etaxonomy.cdm.remote.dto.polytomouskey;
 
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 /**
+ * 
+ * A row to display each PolytomousKeyNode in a flat data structure for a LinkedStyle display of the PolytomousKey 
  * @author l.morris
  * @date Jan 25, 2013
  * 
  */
-public class LinkedPolytomousKeyNodeEntryDto {
+public class LinkedPolytomousKeyNodeRowDto {
 	
-	private PolytomousKeyNode key;
-	private KeyStatement entryQuestion;
+	private UUID nodeUuid;//or should we use the entire polytomous key node?
+	private KeyStatement rowQuestion;
 	private Integer nodeNumber = null;
 	private Integer edgeNumber = null;
-	private Feature entryFeature;
-	private KeyStatement childStatement;
+	private Feature rowFeature;
+	private String childStatement;
 	private List<AbstractLinkDto> links;
 	
 	
-	public LinkedPolytomousKeyNodeEntryDto() {
+	public LinkedPolytomousKeyNodeRowDto() {
 	}
+		
 	
-	
 	/**
-	 * @return the key
+	 * @return the keyNodeUuid
 	 */
-	public PolytomousKeyNode getKey() {
-		return key;
+	public UUID getKeyNodeUuid() {
+		return nodeUuid;
+	}
+
+
+	/**
+	 * @param keyNodeUuid the keyNodeUuid to set
+	 */
+	public void setKeyNodeUuid(UUID keyNodeUuid) {
+		this.nodeUuid = keyNodeUuid;
+	}
+
+	/**
+	 * @return the RowQuestion
+	 */
+	public KeyStatement getRowQuestion() {
+		return rowQuestion;
 	}
 	/**
-	 * @param key the key to set
+	 * @param RowQuestion the RowQuestion to set
 	 */
-	public void setKey(PolytomousKeyNode key) {
-		this.key = key;
-	}
-	/**
-	 * @return the entryQuestion
-	 */
-	public KeyStatement getEntryQuestion() {
-		return entryQuestion;
-	}
-	/**
-	 * @param entryQuestion the entryQuestion to set
-	 */
-	public void setEntryQuestion(KeyStatement entryQuestion) {
-		this.entryQuestion = entryQuestion;
+	public void setRowQuestion(KeyStatement RowQuestion) {
+		this.rowQuestion = RowQuestion;
 	}
 	/**
 	 * @return the nodeNumber
@@ -84,27 +90,27 @@ public class LinkedPolytomousKeyNodeEntryDto {
 		this.edgeNumber = edgeNumber;
 	}
 	/**
-	 * @return the entryFeature
+	 * @return the RowFeature
 	 */
-	public Feature getEntryFeature() {
-		return entryFeature;
+	public Feature getRowFeature() {
+		return rowFeature;
 	}
 	/**
-	 * @param entryFeature the entryFeature to set
+	 * @param RowFeature the RowFeature to set
 	 */
-	public void setEntryFeature(Feature entryFeature) {
-		this.entryFeature = entryFeature;
+	public void setRowFeature(Feature RowFeature) {
+		this.rowFeature = RowFeature;
 	}
 	/**
 	 * @return the childStatement
 	 */
-	public KeyStatement getChildStatement() {
+	public String getChildStatement() {
 		return childStatement;
 	}
 	/**
 	 * @param childStatement the childStatement to set
 	 */
-	public void setChildStatement(KeyStatement childStatement) {
+	public void setChildStatement(String childStatement) {
 		this.childStatement = childStatement;
 	}
 	/**

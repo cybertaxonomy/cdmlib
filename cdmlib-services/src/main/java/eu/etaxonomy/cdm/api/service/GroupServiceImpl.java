@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
 public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IGroupService {
 

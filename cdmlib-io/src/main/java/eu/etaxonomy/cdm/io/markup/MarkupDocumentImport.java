@@ -46,12 +46,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author a.mueller
  * 
  */
-/**
- * @author pesiimport
- *
- */
 @Component
 public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator, MarkupImportState> implements ICdmIO<MarkupImportState> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImport.class);
 
 

@@ -17,6 +17,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -24,10 +26,12 @@ import javax.xml.bind.PropertyException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
 import org.apache.xml.resolver.tools.CatalogResolver;
@@ -36,10 +40,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.UncategorizedMappingException;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.xml.validation.SchemaLoaderUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import eu.etaxonomy.cdm.jaxb.CdmNamespacePrefixMapper;
 import eu.etaxonomy.cdm.jaxb.FormattedText;
@@ -83,8 +87,7 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 		return CONTEXT_CLASSES;
 	}
 	
-	public CdmDocumentBuilder() 
-	{
+	public CdmDocumentBuilder()	{
 		 schemas = new Resource[CDM_SCHEMA_FILES.length];
 		
 		for(int i = 0; i < CDM_SCHEMA_FILES.length; i++) {
@@ -102,28 +105,6 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 	}
 		                                        
 		
-//	protected void constructUnmarshaller() throws ParserConfigurationException, SAXException, JAXBException {
-//		unmarshaller = jaxbContext.createUnmarshaller();
-//        unmarshaller.setSchema(schema);
-//	    
-//        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-//	
-//        saxParserFactory.setNamespaceAware(true);
-//        saxParserFactory.setXIncludeAware(true);
-//        saxParserFactory.setValidating(true);
-//        
-//        SAXParser saxParser = saxParserFactory.newSAXParser();
-//        saxParser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-//    			              "http://www.w3.org/2001/XMLSchema");
-//	    xmlReader = saxParser.getXMLReader();
-//	    xmlReader.setEntityResolver(new CatalogResolver());
-//	    xmlReader.setErrorHandler(new DefaultErrorHandler());
-//        unmarshaller.setEventHandler(new WarningTolerantValidationEventHandler());
-//	}
-//		                                        
-//
-//	
-		
 	@Override
 	protected void initJaxbMarshaller(Marshaller marshaller) throws JAXBException {
 		try {
@@ -140,29 +121,27 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 		marshaller.setEventHandler(new WarningTolerantValidationEventHandler());
 		} catch(PropertyException pe) {
 			throw new JAXBException(pe.getMessage(),pe);
-	}
+		}
 	}	
 		
 	protected <T> T unmarshal(Class<T> clazz, InputSource input) {
 		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		Schema schema;
 		try {
-			schema = SchemaLoaderUtils.loadSchema(schemas, "http://www.w3.org/2001/XMLSchema");
-		
-	
-	    saxParserFactory.setNamespaceAware(true);
-	    saxParserFactory.setXIncludeAware(true);
-	    saxParserFactory.setValidating(true);
-	    saxParserFactory.setSchema(schema);
-		
-	    SAXParser saxParser = saxParserFactory.newSAXParser();
-	    XMLReader xmlReader = saxParser.getXMLReader();
-		xmlReader.setEntityResolver(new CatalogResolver());
-		xmlReader.setErrorHandler(new DefaultErrorHandler());
-		SAXSource saxSource = new SAXSource( xmlReader, input);
-	    saxSource.setSystemId(input.getSystemId());
-		
-		return (T)super.unmarshal(saxSource);
+			schema = createSchema();
+		    saxParserFactory.setNamespaceAware(true);
+		    saxParserFactory.setXIncludeAware(true);
+		    saxParserFactory.setValidating(true);
+		    saxParserFactory.setSchema(schema);
+			
+		    SAXParser saxParser = saxParserFactory.newSAXParser();
+		    XMLReader xmlReader = saxParser.getXMLReader();
+			xmlReader.setEntityResolver(new CatalogResolver());
+			xmlReader.setErrorHandler(new DefaultErrorHandler());
+			SAXSource saxSource = new SAXSource( xmlReader, input);
+		    saxSource.setSystemId(input.getSystemId());
+			
+			return (T)super.unmarshal(saxSource);
 		} catch (IOException e) {
 			throw new UncategorizedMappingException(e.getMessage(), e);
 		} catch (SAXException e) {
@@ -172,6 +151,49 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
 	}
 	}
 	
+	private Schema createSchema() throws SAXException, IOException {
+		//method created to avoid dependency of spring-xml like in earlier versions
+		//old implementation was schema = SchemaLoaderUtils.loadSchema(schemas, "http://www.w3.org/2001/XMLSchema");
+		//maybe we can improve this loading in future
+		
+		String schemaLanguage = "http://www.w3.org/2001/XMLSchema";
+		Source[] schemaSources = new Source[schemas.length];
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+		for (int i = 0; i < schemas.length; i++) {
+            schemaSources[i] = makeSchemaSource(reader, schemas[i]);//  new ResourceSource(reader, schemas[i]);
+        }
+		SchemaFactory schemaFactory = SchemaFactory.newInstance(schemaLanguage);
+		return schemaFactory.newSchema(schemaSources);
+	}
+
+	private Source makeSchemaSource(XMLReader reader, Resource resource) throws IOException {
+		Source result = new SAXSource(reader, createInputSource(resource));
+		return result;
+	}
+	
+    private static InputSource createInputSource(Resource resource) throws IOException {
+        InputSource inputSource = new InputSource(resource.getInputStream());
+        inputSource.setSystemId(getSystemId(resource));
+        return inputSource;
+    }
+
+    /** Retrieves the URL from the given resource as System ID. Returns <code>null</code> if it cannot be opened. */
+    private static String getSystemId(Resource resource) {
+        try {
+            return new URI(resource.getURL().toExternalForm()).toString();
+        }
+        catch (IOException ex) {
+            logger.debug("Could not get System ID from [" + resource + "], ex");
+            return null;
+        }
+        catch (URISyntaxException e) {
+            logger.debug("Could not get System ID from [" + resource + "], ex");
+            return null;
+        }
+    }
+	
+
 	public <T> T unmarshal(Class<T> clazz,Reader reader) throws XmlMappingException {
 		InputSource source = new InputSource(reader);
 		return unmarshal(clazz,source);

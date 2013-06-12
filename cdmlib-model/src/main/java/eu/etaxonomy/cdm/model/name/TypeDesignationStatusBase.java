@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,18 +28,18 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
  * will be here referred as "type-bringing" taxon names.
  * <P>
  * The different status indicate whether the {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} used as types
- * in a designation are duplicates, replacements, related specimens etc. 
+ * in a designation are duplicates, replacements, related specimens etc.
  * <P>
  * A standard (ordered) list of type designation status instances will be
  * automatically created as the project starts. But this class allows to extend
  * this standard list by creating new instances of additional type designation
- * status if needed. 
+ * status if needed.
  * <P>
  * This class corresponds to: <ul>
  * <li> NomencalturalTypeTypeTerm according to the TDWG ontology
  * <li> NomenclaturalTypeStatusOfUnitsEnum according to the TCS
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:00
@@ -51,15 +51,17 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 	SpecimenTypeDesignationStatus.class
 })
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
+// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
+// this is needed, otherwise the fields of the also abstract super class are missed during indexing
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<?>> extends OrderedTermBase<T> {
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
-	// ************* CONSTRUCTORS *************/	
-	/** 
+	// ************* CONSTRUCTORS *************/
+	/**
 	 * Class constructor: creates a new empty type designation status instance.
-	 * 
+	 *
 	 * @see 	#NameTypeDesignationStatus(String, String, String)
 	 * @see 	#SpecimenTypeDesignationStatus(String, String, String)
 	 */
@@ -67,13 +69,13 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
 	}
 
 
-	/** 
+	/**
 	 * Class constructor: creates an additional type designation status instance
 	 * with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label
 	 * and a label abbreviation.
-	 * 
+	 *
 	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new type designation status to be created 
+	 * 						 new type designation status to be created
 	 * @param	label  		 the string identifying the new type designation
 	 * 						 status to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the

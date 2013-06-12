@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 @Ignore //TODO indexing does not work at all, even before the unitils upgrade
 public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog(FreeTextSearchIntegration.class);
 
 	@SpringBeanByType
@@ -151,6 +152,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @Ignore //we currently don't use suggest anymore
     public void testSuggestSingleTerm() {
     	String suggestion = taxonDao.suggestQuery("Aram");
     	assertNotNull("suggestQuery should return a String",suggestion);
@@ -158,6 +160,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @Ignore //we currently don't use suggest anymore
     public void testSuggestSingleTermInCompositeQuery() {
     	String suggestion = taxonDao.suggestQuery("Aram italicum");
     	assertNotNull("suggestQuery should return a String",suggestion);
@@ -165,6 +168,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @Ignore //we currently don't use suggest anymore
     public void testSuggestMultipleTermsInCompositeQuery() {
     	String suggestion = taxonDao.suggestQuery("Aram italocum");
     	assertNotNull("suggestQuery should return a String",suggestion);
@@ -172,6 +176,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @Ignore //we currently don't use suggest anymore
     public void testSuggestMultipleTermsInCompositeQueryWithAnd() {
     	String suggestion = taxonDao.suggestQuery("Aram AND italocum");
     	assertNotNull("suggestQuery should return a String",suggestion);

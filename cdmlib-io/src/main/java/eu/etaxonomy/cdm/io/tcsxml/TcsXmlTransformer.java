@@ -164,7 +164,7 @@ public final class TcsXmlTransformer {
 	
 	/** Creates an cdm-Rank by the tcs rank
 	 */
-	public static Reference pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
+	public static Reference<?> pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";
 		String tcsBook = tcsRoot + "Book";
 		String tcsJournal = tcsRoot + "Journal";
@@ -194,15 +194,14 @@ public final class TcsXmlTransformer {
 //		SubReference	A Sub-Reference type publication.
 //		Thesis	A Thesis type publication.
 
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (strPubType == null){return null;
-		}else if (tcsBookSection.equals(strPubType)){return refFactory.newBookSection();
-		}else if (tcsBook.equals(strPubType)){return refFactory.newBook();
-		}else if (tcsArticle.equals(strPubType)){return refFactory.newArticle();
-		}else if (tcsJournal.equals(strPubType)){return refFactory.newJournal();
-		}else if (tcsWebPage.equals(strPubType)){return refFactory.newWebPage();
-		}else if (tcsCommunication.equals(strPubType)){return refFactory.newPersonalCommunication();
-		}else if (tcsBookSeries.equals(strPubType)){return refFactory.newPrintSeries();
+		}else if (tcsBookSection.equals(strPubType)){return ReferenceFactory.newBookSection();
+		}else if (tcsBook.equals(strPubType)){return ReferenceFactory.newBook();
+		}else if (tcsArticle.equals(strPubType)){return ReferenceFactory.newArticle();
+		}else if (tcsJournal.equals(strPubType)){return ReferenceFactory.newJournal();
+		}else if (tcsWebPage.equals(strPubType)){return ReferenceFactory.newWebPage();
+		}else if (tcsCommunication.equals(strPubType)){return ReferenceFactory.newPersonalCommunication();
+		}else if (tcsBookSeries.equals(strPubType)){return ReferenceFactory.newPrintSeries();
 		}	
 		else {
 			throw new UnknownCdmTypeException("Unknown publication type " + strPubType);
@@ -211,7 +210,7 @@ public final class TcsXmlTransformer {
 	
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
-	public static RelationshipTermBase tcsRelationshipType2Relationship (String tcsRelationshipType, ResultWrapper<Boolean> inverse) throws UnknownCdmTypeException{
+	public static RelationshipTermBase<?> tcsRelationshipType2Relationship (String tcsRelationshipType, ResultWrapper<Boolean> inverse) throws UnknownCdmTypeException{
 		if (tcsRelationshipType == null){ return null;
 		
 		//Synonym relationships

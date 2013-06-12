@@ -9,11 +9,11 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
     ">
 
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
       <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
         <property name="namingStrategy">
           <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
         </property>
@@ -21,7 +21,10 @@
         <property name="entityInterceptor" ref="securityHibernateInterceptor" />
 
         <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
-        <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
+
+       <!-- Looks like this is not needed anymore for hibernate 4 -->
+<!--         <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/> -->
+
         <!--
               If dataSource is set, this will override corresponding settings in Hibernate properties.
               If this is set, the Hibernate settings should not define a connection provider to
@@ -38,6 +41,7 @@
      -->
     <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
     <bean id="annotationTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.AnnotationTypeAutoInitializer"></bean>
+    <bean id="markerTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.MarkerTypeAutoInitializer"></bean>
     <bean id="gatheringEventLocationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.GatheringEventLocationAutoInitializer"></bean>
     <bean id="termBaseAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TermBaseAutoInitializer"></bean>
     <bean id="mediaAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.MediaAutoInitializer"></bean>
@@ -48,6 +52,7 @@
            <map>
                <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleCacheAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.Annotation"  value-ref="annotationTypeAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.common.Marker"  value-ref="markerTypeAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"  value-ref="gatheringEventLocationAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.TermBase"  value-ref="termBaseAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.media.Media"  value-ref="mediaAutoInitializer" />

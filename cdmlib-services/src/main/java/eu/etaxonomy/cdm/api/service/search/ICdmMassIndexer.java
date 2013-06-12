@@ -23,5 +23,14 @@ public interface ICdmMassIndexer {
     public abstract void purge(IProgressMonitor monitor);
 
     public Class[] indexedClasses();
+    
+    /**
+     * Create (spell-checking) dictionary listed in {@link ICdmMassIndexer#dictionaryClasses()}.
+     * This action will not purge the dictionary.
+     * @param monitor TODO
+     */
+    public abstract void createDictionary(IProgressMonitor monitor);
+    
+    public Class[] dictionaryClasses();
 
 }

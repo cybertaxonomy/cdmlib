@@ -92,8 +92,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @ManyToOne(fetch = FetchType.LAZY)
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-//	@JoinColumn(name="taxon_fk")
-   @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade(CascadeType.SAVE_UPDATE)
     @IndexedEmbedded
     private Taxon taxon;
 

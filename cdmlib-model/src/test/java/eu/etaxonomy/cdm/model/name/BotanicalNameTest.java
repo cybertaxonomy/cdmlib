@@ -78,14 +78,13 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	@Test
 	public final void testBotanicalNameRankStringStringStringAgentINomenclaturalReferenceString() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Rank rank = Rank.SPECIALFORM();
 		String genusOrUninomial = "Genus";
 		String infraGenericEpithet = "infraGenericEpi";
 		String specificEpithet = "specEpi";
 		String infraSpecificEpithet = "infraSpecificEpi";
-		TeamOrPersonBase combinationAuthorTeam = Team.NewInstance();
-		INomenclaturalReference nomenclaturalReference = refFactory.newArticle();
+		TeamOrPersonBase<?> combinationAuthorTeam = Team.NewInstance();
+		INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
 		String nomenclMicroRef = "microRef";
 		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
 		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);

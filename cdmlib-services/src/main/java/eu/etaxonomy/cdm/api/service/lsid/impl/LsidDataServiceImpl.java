@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service.lsid.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 @Service("lsidDataService")
 @Transactional
 public class LsidDataServiceImpl implements LSIDDataService {
-	
+	private static final Logger logger = Logger.getLogger(LsidDataServiceImpl.class);
+
 	private LSIDRegistry lsidRegistry;
 	
 	@Autowired
@@ -39,7 +41,7 @@ public class LsidDataServiceImpl implements LSIDDataService {
 	}
 
 	public InputStream getData(LSID lsid) throws LSIDServerException {
-		IIdentifiableDao identfiableDAO = lsidRegistry.lookupDAO(lsid);
+		IIdentifiableDao<?> identfiableDAO = lsidRegistry.lookupDAO(lsid);
 		if(identfiableDAO == null) { // we do not have a mapping for lsids with this authority or namespace
 			throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 		}
@@ -62,7 +64,7 @@ public class LsidDataServiceImpl implements LSIDDataService {
 
 	public InputStream getDataByRange(LSID lsid, Integer start, Integer length)
 			throws LSIDServerException {
-		IIdentifiableDao identfiableDAO = lsidRegistry.lookupDAO(lsid);
+		IIdentifiableDao<?> identfiableDAO = lsidRegistry.lookupDAO(lsid);
 		if(identfiableDAO == null) { // we do not have a mapping for lsids with this authority or namespace
 			throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 		}
@@ -85,8 +87,8 @@ public class LsidDataServiceImpl implements LSIDDataService {
 	}
 
 	public void initService(LSIDServiceConfig arg0) throws LSIDServerException {
-		// TODO Auto-generated method stub
-
+		//TODO
+		logger.warn("initService(LSIDServiceConfig) not yet implemented");
 	}
 
 }

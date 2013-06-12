@@ -283,7 +283,7 @@ public class SDDDocumentBuilder {
 		Iterator<Reference> iterator = references.iterator();
 		IDatabase d = ReferenceFactory.newDatabase();
 		while (iterator.hasNext()) {
-			Reference reference = iterator.next();
+			Reference<?> reference = iterator.next();
 			if (reference.getType().equals(ReferenceType.Database)) {
 				buildDataset(baselement, reference);
 			}

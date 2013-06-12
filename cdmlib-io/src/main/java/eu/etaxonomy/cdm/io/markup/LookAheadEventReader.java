@@ -9,14 +9,11 @@
 */
 package eu.etaxonomy.cdm.io.markup;
 
-import javax.mail.MethodNotSupportedException;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.io.common.XmlImportState;
 
 /**
  * @author a.mueller

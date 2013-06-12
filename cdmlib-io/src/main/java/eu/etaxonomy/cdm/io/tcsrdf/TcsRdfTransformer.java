@@ -10,26 +10,15 @@
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-/*import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.PrintSeries;*/
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-//import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -171,15 +160,14 @@ public final class TcsRdfTransformer {
 //		SubReference	A Sub-Reference type publication.
 //		Thesis	A Thesis type publication.
 
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (strPubType == null){return null;
-		}else if (tcsBookSection.equals(strPubType)){return refFactory.newBookSection();
-		}else if (tcsBook.equals(strPubType)){return refFactory.newBook();
-		}else if (tcsArticle.equals(strPubType)){return refFactory.newArticle();
-		}else if (tcsJournal.equals(strPubType)){return refFactory.newJournal();
-		}else if (tcsWebPage.equals(strPubType)){return refFactory.newWebPage();
-		}else if (tcsCommunication.equals(strPubType)){return refFactory.newPersonalCommunication();
-		}else if (tcsBookSeries.equals(strPubType)){return refFactory.newPrintSeries();
+		}else if (tcsBookSection.equals(strPubType)){return ReferenceFactory.newBookSection();
+		}else if (tcsBook.equals(strPubType)){return ReferenceFactory.newBook();
+		}else if (tcsArticle.equals(strPubType)){return ReferenceFactory.newArticle();
+		}else if (tcsJournal.equals(strPubType)){return ReferenceFactory.newJournal();
+		}else if (tcsWebPage.equals(strPubType)){return ReferenceFactory.newWebPage();
+		}else if (tcsCommunication.equals(strPubType)){return ReferenceFactory.newPersonalCommunication();
+		}else if (tcsBookSeries.equals(strPubType)){return ReferenceFactory.newPrintSeries();
 		}	
 		else {
 			throw new UnknownCdmTypeException("Unknown publication type " + strPubType);
@@ -188,7 +176,7 @@ public final class TcsRdfTransformer {
 	
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
-	public static RelationshipTermBase tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
+	public static RelationshipTermBase<?> tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonConcept#";
 		String doesNotInclude  = tcsRoot + "DoesNotInclude";
 		String doesNotOverlap  = tcsRoot + "DoesNotOverlap";

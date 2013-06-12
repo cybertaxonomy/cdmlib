@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 
 /**
  * @author a.kohlbecker
@@ -78,52 +79,29 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
             }
         }
 
-        List<Language> languages = LocaleContext.getLanguages();
-
-        Representation representation;
-        if(Hibernate.isInitialized(term.getRepresentations())){
-            representation = term.getPreferredRepresentation(languages);
-            if(representation != null){
-                if(representation.getLabel() != null && representation.getLabel().length() != 0){
-                    json.element("representation_L10n", representation.getLabel());
-                } else if (representation.getText() != null && representation.getText().length() !=0) {
-                    json.element("representation_L10n", representation.getText());
-                } else {
-                    json.element("representation_L10n", representation.getAbbreviatedLabel());
-                }
-
-                json.element("representation_L10n_abbreviatedLabel", representation.getAbbreviatedLabel());
-
-            }
-            if(!replaceRepresentations){
-                json.element("representations", term.getRepresentations(), jsonConfig);
-            }
-        } else {
-            logger.debug("representations of term not initialized  " + term.getUuid().toString());
+    	TermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term);
+    	if (representation_L10n.getLabel() != null) {
+    		json.element("representation_L10n",representation_L10n.getLabel());    		
+    	}
+    	if (representation_L10n.getAbbreviatedLabel() != null) {
+    		json.element("representation_L10n_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());    		
+    	}
+        if(!replaceRepresentations){
+        	json.element("representations", term.getRepresentations(), jsonConfig);
         }
 
         // add additional representation for RelationShipBase
         if(RelationshipTermBase.class.isAssignableFrom(term.getClass())){
             RelationshipTermBase<?> relTerm = (RelationshipTermBase<?>)term;
-            Representation inverseRepresentation;
-            if(Hibernate.isInitialized(relTerm.getInverseRepresentations())){
-                inverseRepresentation = relTerm.getPreferredInverseRepresentation(languages);
-                if(inverseRepresentation != null){
-                    if(inverseRepresentation.getText() != null && inverseRepresentation.getText().length() != 0){
-                        json.element("inverseRepresentation_L10n", inverseRepresentation.getText());
-                    } else if (inverseRepresentation.getLabel() != null && inverseRepresentation.getLabel().length() !=0) {
-                        json.element("inverseRepresentation_L10n", inverseRepresentation.getLabel());
-                    } else {
-                        json.element("inverseRepresentation_L10n", inverseRepresentation.getAbbreviatedLabel());
-                    }
-
-                    json.element("inverseRepresentation_L10n_abbreviatedLabel", inverseRepresentation.getAbbreviatedLabel());
-                }
-                if(!replaceRepresentations){
-                    json.element("inverseRepresentations", relTerm.getRepresentations(), jsonConfig);
-                }
-            } else {
-                logger.debug("inverseRepresentations of term not initialized  " + relTerm.getUuid().toString());
+            TermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm);
+            if (inverseRepresentation_L10n.getLabel() != null) {
+            	json.element("inverseRepresentation_L10n", inverseRepresentation_L10n.getLabel());            	
+            }
+            if (inverseRepresentation_L10n.getAbbreviatedLabel() != null) {
+            	json.element("inverseRepresentation_L10n_abbreviatedLabel",  inverseRepresentation_L10n.getAbbreviatedLabel());                                	
+            }
+            if(!replaceRepresentations){
+            	json.element("inverseRepresentations", relTerm.getRepresentations(), jsonConfig);
             }
         }
         return json;

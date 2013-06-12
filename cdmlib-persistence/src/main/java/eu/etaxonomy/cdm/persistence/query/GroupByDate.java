@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.persistence.query;
 
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.type.IntegerType;
 import org.hibernate.type.Type;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -34,15 +34,15 @@ public class GroupByDate extends Grouping {
 		if(resolution.equals(Resolution.YEAR)) {
 			StringBuffer selectSqlString = getYearSelect();
 			StringBuffer projectSqlString = getYearProjection();
-			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year"}, new Type[] { Hibernate.INTEGER }),name);
+			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year"}, new Type[] { IntegerType.INSTANCE }),name);
 		} else if(resolution.equals(Resolution.MONTH)) {
 			StringBuffer selectSqlString = getYearMonthSelect();
 			StringBuffer projectSqlString = getYearMonthProjection();
-			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month"}, new Type[] { Hibernate.INTEGER, Hibernate.INTEGER }),name);
+			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month"}, new Type[] { IntegerType.INSTANCE, IntegerType.INSTANCE }),name);
 		} else {
 			StringBuffer selectSqlString = getYearMonthDaySelect();
 			StringBuffer projectSqlString = getYearMonthDayProjection();
-			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month", "day"}, new Type[] { Hibernate.INTEGER, Hibernate.INTEGER, Hibernate.INTEGER }),name);
+			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month", "day"}, new Type[] { IntegerType.INSTANCE, IntegerType.INSTANCE, IntegerType.INSTANCE }),name);
 		}
 	}
 	

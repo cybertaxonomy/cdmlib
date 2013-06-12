@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.remote.controller.NameController;
 import eu.etaxonomy.cdm.remote.controller.TaxonNodeController;
 import eu.etaxonomy.cdm.remote.controller.TaxonNodeListController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
+import eu.etaxonomy.cdm.remote.controller.dto.PolytomousKeyNodeDtoController;
 import eu.etaxonomy.cdm.remote.view.JsonView;
 import eu.etaxonomy.cdm.remote.view.JsonView.Type;
 
@@ -86,6 +87,9 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
     @Autowired
     private FeatureNodeController featureNodeController;
+    
+    @Autowired
+    private PolytomousKeyNodeDtoController polytomousKeyNodeDtoController;
 
     private final IProgressMonitor monitor;
 
@@ -109,27 +113,29 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
      *
      */
     private void initControllers() {
-        classificationListController = (ClassificationListController) applicationConfiguration
-                .getBean("classificationListController");
-        classificationController = (ClassificationController) applicationConfiguration
-                .getBean("classificationController");
-        taxonNodeListController = (TaxonNodeListController) applicationConfiguration
-                .getBean("taxonNodeListController");
-        taxonNodeController = (TaxonNodeController) applicationConfiguration
-                .getBean("taxonNodeController");
+    	classificationListController = (ClassificationListController) applicationConfiguration
+    			.getBean("classificationListController");
+    	classificationController = (ClassificationController) applicationConfiguration
+    			.getBean("classificationController");
+    	taxonNodeListController = (TaxonNodeListController) applicationConfiguration
+    			.getBean("taxonNodeListController");
+    	taxonNodeController = (TaxonNodeController) applicationConfiguration
+    			.getBean("taxonNodeController");
 
-        nameController = (NameController) applicationConfiguration
-                .getBean("nameController");
+    	nameController = (NameController) applicationConfiguration
+    			.getBean("nameController");
 
-        featureTreeListController = (FeatureTreeListController) applicationConfiguration
-                .getBean("featureTreeListController");
-        featureTreeController = (FeatureTreeController) applicationConfiguration
-                .getBean("featureTreeController");
-        featureNodeController = (FeatureNodeController) applicationConfiguration
-                .getBean("featureNodeController");
+    	featureTreeListController = (FeatureTreeListController) applicationConfiguration
+    			.getBean("featureTreeListController");
+    	featureTreeController = (FeatureTreeController) applicationConfiguration
+    			.getBean("featureTreeController");
+    	featureNodeController = (FeatureNodeController) applicationConfiguration
+    			.getBean("featureNodeController");
 
-        taxonPortalController = (TaxonPortalController) applicationConfiguration
-                .getBean("taxonPortalController");
+    	taxonPortalController = (TaxonPortalController) applicationConfiguration
+    			.getBean("taxonPortalController");
+    	
+    	polytomousKeyNodeDtoController = (PolytomousKeyNodeDtoController) applicationConfiguration.getBean("polytomousKeyNodeDtoController");
     }
 
     /**
@@ -387,9 +393,13 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         UUID uuid = XMLHelper.getUuid(nameElement);
 
         Object resultObject = null;
+     
         try {
-            resultObject = nameController.getCdmBaseProperty(uuid,
-                    "typeDesignations", null);
+            resultObject = nameController.getCdmBaseProperty(uuid,"typeDesignations", null);
+            
+    		//LORNA: could use service here directly instead of controller with request set to null
+            //resultObject = nameController.doListNameTypeDesignations(uuid, null, null);
+            		
         } catch (IOException e) {
             monitor.warning(e.getLocalizedMessage(), e);
             logger.error(e);
@@ -400,7 +410,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Javadoc)n
      *
      * @see
      * eu.etaxonomy.printpublisher.IXMLEntityFactory#getDescriptions(org.jdom
@@ -411,6 +421,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         UUID uuid = XMLHelper.getUuid(taxonElement);
 
 		Object resultObject = null;
+		
 		try {
 			resultObject = taxonPortalController.doGetDescriptions(uuid, null,
 					null, null);
@@ -423,6 +434,56 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
         //Element result = render(resultObject);
 
         return result;
+    }
+    
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * eu.etaxonomy.printpublisher.IXMLEntityFactory#getPolytomousKey(org
+     * .jdom.Element)
+     */
+    public Element getPolytomousKey(Element taxonElement) {
+    	xmlView.setJsonConfig(jsonConfigPortal);
+    	UUID uuid = XMLHelper.getUuid(taxonElement);
+
+    	ModelAndView resultObject = null;
+    	try {			
+    		//e.g. uuid 02b6579c-2f6d-4df0-b77c-e5d259ddb307 must be the uuid of the polytomous key. Where do we get that
+    		//check web service calls in portal.......
+    		/////resultObject = polytomousKeyNodeDtoController.doLinkedStyle(uuid, null, null);
+    		resultObject = polytomousKeyNodeDtoController.doLinkedStyleByTaxonomicScope(uuid, null, null, null, null);
+
+    	} catch (IOException e) {
+    		monitor.warning(e.getLocalizedMessage(), e);
+    		logger.error(e);
+    	}
+
+    	Element result = null;
+
+    	if (resultObject.getModel().values().iterator().hasNext()) {
+
+    		result = render(resultObject.getModel().values().iterator().next());
+    	}
+    	
+    	return result;
+
+    	//List<Element> elementList = new ArrayList<Element>();
+
+    	/*if (result != null){
+
+    		for (Object child : result.getChildren()) {
+    			if (child instanceof Element) {
+    				Element childElement = (Element) ((Element) child).clone();
+    				childElement.detach();
+
+    				elementList.add(childElement);
+    			} else {
+    				logger.error("child is not an instance of element");
+    			}
+    		}
+    	}
+    	return elementList;*/
     }
 
     /**

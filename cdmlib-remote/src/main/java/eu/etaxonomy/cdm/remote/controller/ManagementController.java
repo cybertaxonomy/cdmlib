@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,11 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
-import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
-import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 
 @Controller
 @RequestMapping(value = {"/manage"})
@@ -47,15 +43,13 @@ public class ManagementController
     @Autowired
     public ProgressMonitorController progressMonitorController;
 
+
     /**
      * There should only be one processes operating on the lucene index
      * therefore the according progress monitor uuid is stored in
      * this static field.
      */
     private static UUID indexMonitorUuid = null;
-
-
-    private static final int DEFAULT_PAGE_SIZE = 25;
 
     /*
      * return page not found http error (404) for unknown or incorrect UUIDs
@@ -97,6 +91,7 @@ public class ManagementController
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
     public ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+             @RequestParam(value = "priority", required = false) Integer priority,
              HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -106,15 +101,60 @@ public class ManagementController
         if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
             indexMonitorUuid = progressUtil.registerNewMonitor();
             Thread subThread = new Thread(){
+                @Override
                 public void run(){
                     indexer.reindex(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
         // send redirect "see other"
         return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
     }
+
+    /**
+    *
+    * Create dictionaries for all cdm entities listed in {@link ICdmMassIndexer#dictionaryClasses()}.
+    * Re-dicting will not purge the dictionaries.
+    * @param frontendBaseUrl if the CDM server is running behind a reverse proxy you need
+    *            to supply the base URL of web service front-end which is
+    *            provided by the proxy server.
+    * @param request
+    * @param respone
+    * @return
+    * @throws Exception
+    */
+   @RequestMapping(value = { "redict" }, method = RequestMethod.GET)
+   public ModelAndView doRedict(
+            @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+       String processLabel = "Re-Dicting";
+       ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
+
+       if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+           indexMonitorUuid = progressUtil.registerNewMonitor();
+           Thread subThread = new Thread(){
+               @Override
+               public void run(){
+                   indexer.createDictionary(progressMonitorController.getMonitor(indexMonitorUuid));
+               }
+           };
+           if(priority == null) {
+               priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+           }
+           subThread.setPriority(priority);
+           subThread.start();
+       }
+       // send redirect "see other"
+       return progressUtil.respondWithMonitor(frontendBaseUrl, request, response, processLabel, indexMonitorUuid);
+   }
 
     /**
      * This will wipe out the index.
@@ -127,6 +167,7 @@ public class ManagementController
     @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
     public ModelAndView doPurge(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
+            @RequestParam(value = "priority", required = false) Integer priority,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
@@ -137,10 +178,15 @@ public class ManagementController
         if(!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
             indexMonitorUuid = progressUtil.registerNewMonitor();
             Thread subThread = new Thread(){
+                @Override
                 public void run(){
                     indexer.purge(progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
+            if(priority == null) {
+                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+            }
+            subThread.setPriority(priority);
             subThread.start();
         }
 

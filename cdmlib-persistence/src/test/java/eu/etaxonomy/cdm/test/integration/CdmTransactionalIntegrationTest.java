@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.test.integration;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -23,6 +24,13 @@ import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 
+/**
+ * Abstract base class for integration testing a spring / hibernate application using
+ * the unitils testing framework and dbunit.
+ *
+ * This base class extends the {@link CdmItegrationTest} by transactions management features.
+ *
+ */
 @Transactional(TransactionMode.DISABLED) // NOTE: we are handling transaction by ourself in this class, thus we prevent unitils from creating transactions
 public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest {
 
@@ -111,6 +119,11 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      */
     protected void setTransactionDefinition(final TransactionDefinition customDefinition) {
         this.transactionDefinition = customDefinition;
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        logger.debug("before test class");
     }
 
     /**
@@ -264,6 +277,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
             throw new IllegalStateException("No transaction manager set");
         }
         this.complete = true;
+        logger.debug("set complete = true");
     }
 
     /**
@@ -355,12 +369,14 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         commit();
         if(logger.isDebugEnabled()){
             printDataSet(System.out, tableNames);
+            //careful, this will overwrite existing files
+//          writeDbUnitDataSetFile(tableNames);
         }
         startNewTransaction();
     }
 
     /**
-     *
+     * Commit and end transaction
      */
     protected void commit() {
         setComplete();

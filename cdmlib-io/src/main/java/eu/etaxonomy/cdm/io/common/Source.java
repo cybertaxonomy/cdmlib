@@ -16,11 +16,14 @@ package eu.etaxonomy.cdm.io.common;
  */
 
 
-import java.sql.*;
-import java.io.*;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import javax.mail.MethodNotSupportedException;
-
+import org.apache.http.MethodNotSupportedException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -444,7 +447,7 @@ public class Source {
      * @return
      * @throws MethodNotSupportedException
      */
-    public boolean checkColumnExists(String tableName, String dbAttribute) throws MethodNotSupportedException{
+    public boolean checkColumnExists(String tableName, String dbAttribute) throws NoSuchMethodException{
     	if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)|| mDbms.equalsIgnoreCase(SQL_SERVER_2008) ){
     		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
@@ -463,7 +466,7 @@ public class Source {
 				return false;
 			}
     	}else{
-    		throw new MethodNotSupportedException("Check column exist is not supported by the database system");
+    		throw new RuntimeException("Check column exist is not supported by the database system");
     	}
     }
 

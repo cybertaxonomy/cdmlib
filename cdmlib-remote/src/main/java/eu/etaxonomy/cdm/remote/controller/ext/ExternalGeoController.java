@@ -41,7 +41,9 @@ import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -130,7 +132,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         String bbox = null;
         String backLayer = null;
 
-        logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
+        logger.info("doGetDistributionMapUriParams() " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
 
         // get the descriptions for the taxon
@@ -140,7 +142,13 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         //languages
         List<Language> langs = LocaleContext.getLanguages();
 
-        Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
+        Set<Scope> scopes = null;
+        Set<NamedArea> geographicalScope = null;
+        Integer pageSize = null;
+        Integer pageNumber = null;
+        List<String> propertyPaths = null;
+        Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
+
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
             backLayer, langs);
@@ -179,7 +187,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Boolean doReturnImage = null;
         Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
 
-        logger.info("doGetOccurrenceMapUriParams() " + request.getServletPath() + "?" + request.getQueryString());
+        logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
         ModelAndView mv = new ModelAndView();
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);

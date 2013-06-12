@@ -104,7 +104,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
-	private Reference publishedIn;
+	private Reference<?> publishedIn;
 	
 	@XmlElementWrapper(name = "Citations")
 	@XmlElement(name = "Citation")
@@ -116,7 +116,8 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	@XmlElementWrapper(name = "GenBankAccessions")
 	@XmlElement(name = "GenBankAccession")
     @OneToMany(fetch = FetchType.LAZY)
-	private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
+	@Cascade(CascadeType.SAVE_UPDATE)
+    private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
 	
 	@XmlElement(name = "Locus")
     @XmlIDREF
@@ -132,13 +133,24 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
     @OneToMany(fetch = FetchType.LAZY)
 	private Set<Media> chromatograms = new HashSet<Media>();
 	
+//*********************** FACTORY ****************************************************/
+	
+	public static Sequence NewInstance(String sequence){
+		Sequence result = new Sequence();
+		result.setSequence(sequence);
+		return result;
+	}
+	
+//*********************** CONSTRUCTOR ****************************************************/
+	
 	protected Sequence() {
 		super(); // FIXME I think this is explicit - do we really need to call this?
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Sequence>();
 	}
+
+//*********************** GETTER / SETTER ****************************************************/
 	
 	public Locus getLocus(){
-		logger.debug("getLocus");
 		return this.locus;
 	}
 

@@ -81,7 +81,6 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 					if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info(""+pluralString+" handled: " + (i-1));}
 					
 					//
-					int authorisationId = rs.getInt("AuthorisationId");
 					String username = rs.getString("Username");
 					String pwd = rs.getString("Password");
 					

@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
@@ -37,11 +38,12 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 	
 	//authentification token
 	UsernamePasswordAuthenticationToken authenticationToken;
+
+	
 	
 	private Set<IIoObserver> observers = new HashSet<IIoObserver>();
 	
 	//etc
-
 	private IProgressMonitor progressMonitor;
 
 	
@@ -111,6 +113,13 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		this.authenticationToken = token;
 	}
 	
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#authenticateAsDefaultAdmin()
+	 */
+	@Override
+	public void authenticateAsDefaultAdmin() {
+		setAuthentication(Configuration.adminLogin, Configuration.adminPassword);
+	}
+
 	
 }

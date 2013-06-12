@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.view.IAuditEventDao;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class AuditEventService implements IAuditEventService {
 	
 	IAuditEventDao dao;

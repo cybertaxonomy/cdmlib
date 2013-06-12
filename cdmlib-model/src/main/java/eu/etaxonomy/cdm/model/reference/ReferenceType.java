@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -50,13 +50,13 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 @XmlEnum
 public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 	//0
-	@XmlEnumValue("Article")   
+	@XmlEnumValue("Article")
 	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", ArticleDefaultCacheStrategy.class),
 	//1
-	@XmlEnumValue("Book")      
+	@XmlEnumValue("Book")
 	Book(UUID.fromString("9280876c-accb-4c47-873d-46bbf4296f18"), "Book", BookDefaultCacheStrategy.class),
 	//2
-	@XmlEnumValue("Book Section")  
+	@XmlEnumValue("Book Section")
 	BookSection(UUID.fromString("b197435d-deec-46fa-9c66-e0e6c44c57fb"), "Book Section", BookSectionDefaultCacheStrategy.class),
 	//3
 	@XmlEnumValue("CD or DVD")
@@ -97,19 +97,19 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 	//15
 	@XmlEnumValue("Web Page")
 	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", ReferenceBaseDefaultCacheStrategy.class);
-	
+
 	private static final Logger logger = Logger.getLogger(ReferenceType.class);
-	
+
 	private String readableString;
 	private Class<? extends IReferenceBaseCacheStrategy> cacheStrategy;
 	private UUID uuid;
-	
+
 	private ReferenceType(UUID uuid, String defaultString, Class<? extends IReferenceBaseCacheStrategy> cacheStrategy){
 		this.uuid = uuid;
 		readableString = defaultString;
 		this.cacheStrategy = cacheStrategy;
 	}
-	
+
 	@Transient
 	public String getMessage(){
 		return getMessage(Language.DEFAULT());
@@ -121,7 +121,7 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 
 	public IReferenceBaseCacheStrategy getCacheStrategy(){
 		switch(this){
-		case Article: 
+		case Article:
 			return ArticleDefaultCacheStrategy.NewInstance();
 		case Book:
 			return BookDefaultCacheStrategy.NewInstance();
@@ -135,17 +135,18 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 			return JournalDefaultCacheStrategy.NewInstance();
 		case Thesis:
 			return ThesisDefaultCacheStrategy.NewInstance();
+        default:
+            return ReferenceBaseDefaultCacheStrategy.NewInstance();
 		}
-		return ReferenceBaseDefaultCacheStrategy.NewInstance();
 	}
-	
+
 	/**
 	 * Returns true if references of this type have volume information.
 	 */
 	public boolean isVolumeReference(){
 		return (this == Article || isPrintedUnit() || this == Generic);
 	}
-	
+
 	/**
 	 * Returns true if references of this type are publications (inheriting from
 	 * {@link IPublicationBase}) and therefore have a publisher and a publication place.
@@ -153,47 +154,51 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 	public boolean isPublication(){
 		return (this == CdDvd || this == Database || this == Generic
 				|| this == Journal || isPrintedUnit() ||  this == PrintSeries
-				|| this == Report  || this == Thesis 
-				|| this == WebPage || this == Map);			
+				|| this == Report  || this == Thesis
+				|| this == WebPage || this == Map);
 	}
-	
+
 	/**
 	 * Returns true if references of this type are printed units (inheriting from
-	 * {@link IPrintedUnitBase}) and therefore may have an editor, an in-series or an string 
+	 * {@link IPrintedUnitBase}) and therefore may have an editor, an in-series or an string
 	 * representing the series (seriesPart).
 	 */
 	public boolean isPrintedUnit(){
 		return (this == Book || this == Proceedings);
 	}
-	
+
 	/**
 	 * Returns true if references of this type are parts of other references (inheriting from
 	 * {@link ISectionBase}) and therefore may have an in-reference and pages.
 	 */
 	public boolean isSection(){
-		return (this == BookSection || this == InProceedings 
+		return (this == BookSection || this == InProceedings
 				|| isPrintedUnit() || this == Article );
 	}
 
-	
-	public ReferenceType readCsvLine(Class<ReferenceType> termClass,
+
+	@Override
+    public ReferenceType readCsvLine(Class<ReferenceType> termClass,
 			List<String> csvLine, java.util.Map<UUID, DefinedTermBase> terms) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
-	public void writeCsvLine(CSVWriter writer, ReferenceType term) {
+
+	@Override
+    public void writeCsvLine(CSVWriter writer, ReferenceType term) {
 		logger.warn("write csvLine not yet implemented");
 	}
 
-	
-	public UUID getUuid() {
+
+	@Override
+    public UUID getUuid() {
 		return this.uuid;
 	}
 
-	
-	public ReferenceType getByUuid(UUID uuid) {
+
+	@Override
+    public ReferenceType getByUuid(UUID uuid) {
 		for (ReferenceType referenceType : ReferenceType.values()){
 			if (referenceType.getUuid().equals(uuid)){
 				return referenceType;
@@ -202,29 +207,34 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 		return null;
 	}
 
-	
-	public ReferenceType getKindOf() {
+
+	@Override
+    public ReferenceType getKindOf() {
 		return null;
 	}
 
-	
-	public Set<ReferenceType> getGeneralizationOf() {
+
+	@Override
+    public Set<ReferenceType> getGeneralizationOf() {
 		return new HashSet<ReferenceType>();
 	}
 
-	
-	public ReferenceType getPartOf() {
+
+	@Override
+    public ReferenceType getPartOf() {
 		return null;
 	}
 
-	
-	public Set<ReferenceType> getIncludes() {
+
+	@Override
+    public Set<ReferenceType> getIncludes() {
 		return new HashSet<ReferenceType>();
 	}
 
-	
-	public Set<Media> getMedia() {
+
+	@Override
+    public Set<Media> getMedia() {
 		return new HashSet<Media>();
 	}
-	
+
 }

@@ -1,31 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <faqs xmlns="http://maven.apache.org/FML/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd" title="Troubleshooting" toplink="false">
-	<part id="eclipse">
-		<title>Eclipse</title>
-		<faq id="">
-			<question>"The method getTextContent() is undefined for the type Node" in cdmlib-io and/or cdmlib-model.</question>
-			<answer><p>This problem is due to some inconsistency between the <em>JRE System Library</em> and JAXB artifacts that got loaded by maven. In order to solve this you have to open the <em>Preferences</em> dialog for the respective project and open the <em>Java Build Path</em> section. In this section choose <em>Order and Export</em>. Locate <em>JRE System Library</em> and use the buttons on the right to move it up in the list, so it it is located directly beneath the projects source folders. Repeat this for all cdmlib projects where the error occurs.</p><p>You will definitely have to go through this procedure everytime you called <code>mvn eclipse:eclipse</code> as it will regenerate the .project file.</p></answer>
-		</faq>
-	</part>
-	
-	<part id="maven">
-		<title>Maven</title>
-		<faq id="generic-errors">
-			<question>Why do I get "... is not within its bound" errors when running maven install?</question>
-			<answer>
-				<p>For (unfortunately still) unclear reasons we encountered problems using generics.
-		We did not yet resolve this problem but at least found out that this problem does not occur when building with eclipse. 
-		So all you have to do is make sure your projects got compiled by eclipse. In order to do that you have to open the eclipse clean dialog by executing "Projects -> Clean...". In the resulting dialog either select all cdmlib projects or simply check the "Clean all projects" radiobutton. Eclipse will then clean the build directries and execute a new build. <strong>We are working on this and it should be removed in the very near future.</strong></p>
-			</answer>
-		</faq>
-	</part>
 	
 	<part id="log4j">
 		<title>Log4J</title>
 		<faq id="proxyWarnLog_breaks">
 			<question>My logfile is full with "ProxyWarnLog ... breaks ...".</question>
 			<answer>
-				<p>Please add <code>log4j.logger.org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog = error</code> to your log4j.properties file.</p>
+				<p>Please add <code>log4j.logger.org.hibernate.engine.internal.StatefulPersistenceContext = error</code> to your log4j.properties file.</p>
 			</answer>
 		</faq>
 	</part>

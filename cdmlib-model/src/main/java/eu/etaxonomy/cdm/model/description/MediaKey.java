@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -110,8 +111,8 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlElement( name = "KeyRepresentation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	@NotNull
 	private Set<Representation> keyRepresentations = new HashSet<Representation>();
 	

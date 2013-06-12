@@ -42,8 +42,8 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
     public void testPrintDataSet() {
         try {
             ExcludeTableFilter filter = new ExcludeTableFilter();
-            filter.excludeTable("Rights");  //throws exception wiht H2
-            printDataSetWithNull(new FileOutputStream("NewDataSet.xml"), null, filter);
+            filter.excludeTable("Rights");  //throws exception with H2
+            printDataSetWithNull(new FileOutputStream("NewDataSet.xml"), null, filter, null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

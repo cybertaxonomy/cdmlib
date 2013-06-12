@@ -18,9 +18,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -59,10 +63,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @created 21.05.2008
  * @version 1.0
- */
-/**
- * @author a.mueller
- *
  */
 @Component
 public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration, ApplicationContextAware {
@@ -161,6 +161,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
      */
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         this.applicationContext = applicationContext;
@@ -169,6 +170,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 // ****************************** GETTER *************************************************/
 
 
+    @Override
     public final Object getBean(String name){
         return this.applicationContext.getBean(name);
     }
@@ -176,6 +178,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAgentService()
      */
+    @Override
     public IAgentService getAgentService() {
         return this.agentService;
     }
@@ -183,6 +186,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDatabaseService()
      */
+    @Override
     public IDatabaseService getDatabaseService() {
         return this.databaseService;
     }
@@ -190,6 +194,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getNameService()
      */
+    @Override
     public INameService getNameService() {
         return this.nameService;
     }
@@ -197,6 +202,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getReferenceService()
      */
+    @Override
     public IReferenceService getReferenceService() {
         return this.referenceService;
     }
@@ -204,6 +210,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTaxonService()
      */
+    @Override
     public ITaxonService getTaxonService() {
         return this.taxonService;
     }
@@ -212,10 +219,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getClassificationService()
      */
+    @Override
     public IClassificationService getClassificationService() {
         return this.classificationService;
     }
 
+    @Override
     public ITaxonNodeService getTaxonNodeService(){
         return this.taxonNodeService;
     }
@@ -223,6 +232,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDescriptionService()
      */
+    @Override
     public IDescriptionService getDescriptionService(){
         return this.descriptionService;
     }
@@ -231,6 +241,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService()
      */
+    @Override
     public IOccurrenceService getOccurrenceService(){
         return this.occurrenceService;
     }
@@ -239,6 +250,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getMediaService()
      */
+    @Override
     public IMediaService getMediaService(){
         return this.mediaService;
     }
@@ -246,6 +258,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTermService()
      */
+    @Override
     public ITermService getTermService() {
         return this.termService;
     }
@@ -253,6 +266,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
      */
+    @Override
     public ICommonService getCommonService(){
         return this.commonService;
     }
@@ -260,6 +274,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getLocationService()
      */
+    @Override
     public ILocationService getLocationService() {
         return this.locationService;
     }
@@ -267,6 +282,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
      */
+    @Override
     public IUserService getUserService() {
         return this.userService;
     }
@@ -274,6 +290,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
      */
+    @Override
     public IGrantedAuthorityService getGrantedAuthorityService() {
         return this.grantedAuthorityService;
     }
@@ -281,6 +298,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
      */
+    @Override
     public IService<CdmBase> getMainService(){
         return this.mainService;
     }
@@ -288,6 +306,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTransactionManager()
      */
+    @Override
     public PlatformTransactionManager getTransactionManager() {
         return this.transactionManager;
     }
@@ -296,6 +315,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager()
      */
+    @Override
     public ProviderManager getAuthenticationManager() {
         return this.authenticationManager;
     }
@@ -304,6 +324,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#NewConversation()
      */
+    @Override
     public ConversationHolder NewConversation() {
         // TODO make this a prototype
         return new ConversationHolder(dataSource, sessionFactory, transactionManager);
@@ -313,6 +334,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCollectionService()
      */
+    @Override
     public ICollectionService getCollectionService() {
         return collectionService;
     }
@@ -321,6 +343,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureTreeService()
      */
+    @Override
     public IFeatureTreeService getFeatureTreeService() {
         return featureTreeService;
     }
@@ -329,6 +352,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getFeatureNodeService()
      */
+    @Override
     public IFeatureNodeService getFeatureNodeService(){
         return featureNodeService;
     }
@@ -337,6 +361,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getVocabularyService()
      */
+    @Override
     public IVocabularyService getVocabularyService() {
         return vocabularyService;
     }
@@ -344,6 +369,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getIdentificationKeyService()
      */
+    @Override
     public IIdentificationKeyService getIdentificationKeyService(){
         return identificationKeyService;
     }
@@ -351,10 +377,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPolytomousKeyService()
      */
+    @Override
     public IPolytomousKeyService getPolytomousKeyService(){
         return polytomousKeyService;
     }
 
+    @Override
     public IPolytomousKeyNodeService getPolytomousKeyNodeService(){
         return polytomousKeyNodeService;
     }
@@ -379,6 +407,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPermissionEvaluator()
      */
+    @Override
     public PermissionEvaluator getPermissionEvaluator() {
         return permissionEvaluator;
     }
@@ -412,7 +441,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
             logger.debug("Isolation level = " + txDef.getIsolationLevel());
             logger.debug("Timeout = " + txDef.getTimeout());
             logger.debug("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate3.HibernateTransactionManager
+            // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 
@@ -421,11 +450,24 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     }
 
 
+    @Override
     public void commitTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = getTransactionManager();
         txManager.commit(txStatus);
         return;
     }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java.lang.String, java.lang.String)
+     */
+    @Override
+	public void authenticate(String username, String password){
+		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+	}
 
 
 

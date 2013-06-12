@@ -244,7 +244,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
     }
 
     public void authenticate(IImportConfigurator config) {
-         UsernamePasswordAuthenticationToken token = config.getAuthenticationToken();
+        UsernamePasswordAuthenticationToken token = config.getAuthenticationToken();
         if (token != null){
             SecurityContext context = SecurityContextHolder.getContext();
 
@@ -252,7 +252,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
             Authentication authentication = authenticationManager.authenticate(token);
             context.setAuthentication(authentication);
         }
-
+        
     }
 
 }

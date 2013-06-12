@@ -489,7 +489,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if (ref.hasProblem()){
 			ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference,true);
 		}
-		nameToBeFilled.setNomenclaturalReference((Reference)ref);
+		nameToBeFilled.setNomenclaturalReference((Reference<?>)ref);
 		int end = Math.min(strReference.length(), ref.getProblemEnds());
 		ref.setProblemEnds(end);
 	}
@@ -499,7 +499,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param strReference
 	 * @return 
 	 */
-	private INomenclaturalReference makeDetailYearUnparsable(NonViralName nameToBeFilled, String strReference) {
+	private INomenclaturalReference makeDetailYearUnparsable(NonViralName<?> nameToBeFilled, String strReference) {
 		INomenclaturalReference ref;
 		//ref = Generic.NewInstance();
 		
@@ -508,7 +508,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		ref.setProblemEnds(strReference.length());
 		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
 		nameToBeFilled.addParsingProblem(ParserProblem.CheckDetailOrYear);
-		nameToBeFilled.setNomenclaturalReference((Reference)ref);
+		nameToBeFilled.setNomenclaturalReference((Reference<?>)ref);
 		return ref;
 	}
 		
@@ -739,7 +739,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if (fullNameString == null){
 			return null;
 		}else{
-			NonViralName result = getNonViralNameInstance(fullNameString, nomCode, rank);
+			NonViralName<?> result = getNonViralNameInstance(fullNameString, nomCode, rank);
 			parseFullName(result, fullNameString, rank, false);
 			return result;
 		}
@@ -776,11 +776,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 //		    if ( cultivarMarkerRE.match(fullName) ){ funktioniert noch nicht, da es z.B. auch Namen gibt, wie 't Hart
 //		    	result = parseCultivar(fullName);
 //		    }
-		    //hybrids //TODO 2 implement hybrids
-		    //else 
-//		    if (hybridPattern.matcher(fullNameString).find() ){
-//		    	parseHybrid(nameToBeFilled, fullNameString, rank, makeEmpty);
-//		    } else 
+
 		      if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
 				if (rank != null && ! hasCheckRankProblem  && (rank.isSupraGeneric()|| rank.isGenus())){
@@ -887,8 +883,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				 }
 				 nameToBeFilled.setHybridFormula(true);
 				 NomenclaturalCode code = nameToBeFilled.getNomenclaturalCode();
-				 NonViralName firstName = this.parseFullName(firstNameString.trim(), code, rank);
-				 NonViralName secondName = this.parseFullName(secondNameString.trim(), code, rank);
+				 NonViralName<?> firstName = this.parseFullName(firstNameString.trim(), code, rank);
+				 NonViralName<?> secondName = this.parseFullName(secondNameString.trim(), code, rank);
 				 nameToBeFilled.addHybridParent(firstName, HybridRelationshipType.FIRST_PARENT(), null);
 				 nameToBeFilled.addHybridParent(secondName, HybridRelationshipType.SECOND_PARENT(), null);
 				 Rank newRank;
@@ -934,7 +930,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}
 	}
 
-	private void handleHybridBits(NonViralName nameToBeFilled) {
+	private void handleHybridBits(NonViralName<?> nameToBeFilled) {
 		//uninomial
 		String uninomial = CdmUtils.Nz(nameToBeFilled.getGenusOrUninomial());
 		boolean isUninomialHybrid = uninomial.startsWith(hybridSign);
@@ -971,6 +967,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 
 	private String removeHybridBlanks(String fullNameString) {
+//		if (fullNameString.matches(regex))
+		fullNameString = fullNameString.replaceAll(oWs + "[xX]" + oWs + "(?=[A-Z])", " " + hybridSign + " ");
 		fullNameString = fullNameString.replaceAll(hybridFull, " "+hybridSign).trim();
 		return fullNameString;
 	}

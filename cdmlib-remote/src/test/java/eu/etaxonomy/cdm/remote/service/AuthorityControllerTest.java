@@ -47,7 +47,7 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 			lsidAuthority = new LSIDAuthority("fred.org");
 		} catch (MalformedLSIDException e) { }
 		
-		authorityService = EasyMock.createMock(LSIDAuthorityService.class);
+		authorityService = org.easymock.classextension.EasyMock.createMock(LSIDAuthorityService.class);
 		authorityController = new AuthorityController();
 		source = new Object();
 		expiringResponse = new ExpiringResponse(source, null);

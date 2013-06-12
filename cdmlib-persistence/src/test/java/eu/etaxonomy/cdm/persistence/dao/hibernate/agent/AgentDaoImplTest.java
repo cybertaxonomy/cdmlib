@@ -17,13 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -125,8 +122,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         Person person = Person.NewInstance();
         person.setFirstname("ben");
         agentDao.save(person);
-        setComplete();
-        endTransaction();
+        commit();
     }
 
     @Test
@@ -137,8 +133,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         assert person != null : "person must exist";
         person.setFirstname("Benjamin");
         agentDao.update(person);
-        setComplete();
-        endTransaction();
+//        commitAndStartNewTransaction(new String[]{"AGENTBASE_AUD","AGENTBASE"});
+        commit();
     }
 
     @Test

@@ -19,9 +19,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Level;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,7 +35,6 @@ import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.sdd.out.SDDCdmExporter;
 import eu.etaxonomy.cdm.io.sdd.out.SDDExportConfigurator;
 import eu.etaxonomy.cdm.io.sdd.out.SDDExportState;

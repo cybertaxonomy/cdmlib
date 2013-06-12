@@ -16,13 +16,19 @@
           never be without security
         ======================================================================
      -->
-    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
+
+	 <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
 
     <context:component-scan base-package="eu/etaxonomy/cdm/search" />
 
     <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
+
+    <!-- also find the implementation of ICdmApplicationConfiguration (otherwise it is not found by a component scan)
+    <bean name="cdmApplicationDefaultConfiguration" class="eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration">
+    </bean>
+    -->
 
     <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
     <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator">

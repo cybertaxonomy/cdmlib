@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IReferenceDao> implements IReferenceService {
 	
 	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
@@ -76,7 +76,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 	@Override
 	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths) {
 		
-		List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, propertyPaths);
+		List<TaxonBase> taxonList = dao.listCoveredTaxa(reference, includeSubordinateReferences, null, propertyPaths);
 		
 		return taxonList;
 	}

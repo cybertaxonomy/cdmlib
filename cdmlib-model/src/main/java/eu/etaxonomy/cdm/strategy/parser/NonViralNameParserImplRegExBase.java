@@ -81,7 +81,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     
     
     //AuthorString
-    protected static String authorPart = "(" + "(d'|D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
+    protected static String authorPart = "(" + "(d'|D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|v[ao]n|da|de(n|l|\\sla)?)" ;
     protected static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
     protected static String finalTeamSplitter = fWs + "(&)" + fWs;
     protected static String notFinalTeamSplitter = "(" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
@@ -166,7 +166,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String detail = pDetailAlternatives;
     
     //reference
-    protected static String volume = nr4 + "(\\("+ nr4  + "\\))?";
+    protected static String volume = nr4 + "[a-z]?" + "(\\("+ nr4  + "\\))?";
     //this line caused problem https://dev.e-taxonomy.eu/trac/ticket/1556 in its original form: "([\u005E:\\.]" + fWs + ")";
     protected static String anySepChar = "([\u005E:a-zA-Z]" + fWs + ")"; //all characters except for the detail separator, a stricter version would be [,\\-\\&] and some other characters
 //  protected static String anySepChar = "([,\\-\\&\\.\\+\\']" + fWs + ")";    

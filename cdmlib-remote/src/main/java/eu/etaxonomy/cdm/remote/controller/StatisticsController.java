@@ -80,7 +80,7 @@ public class StatisticsController {
 				part, type);
 		List<Statistics> statistics = service
 				.getCountStatistics(configuratorList);
-		logger.info("doStatistics() - " + request.getServletPath());
+		logger.info("doStatistics() - " + request.getRequestURI());
 
 		mv.addObject(statistics);
 		return mv;

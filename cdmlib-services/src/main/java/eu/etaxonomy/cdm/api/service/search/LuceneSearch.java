@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.api.service.search;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
@@ -25,27 +23,27 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.grouping.AllGroupsCollector;
-import org.apache.lucene.search.grouping.FirstPassGroupingCollector;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
-import org.apache.lucene.search.grouping.SecondPassGroupingCollector;
+import org.apache.lucene.search.grouping.TermAllGroupsCollector;
+import org.apache.lucene.search.grouping.TermFirstPassGroupingCollector;
+import org.apache.lucene.search.grouping.TermSecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.hibernate.Session;
+import org.hibernate.search.ProjectionConstants;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
-import org.hibernate.search.engine.DocumentBuilder;
-import org.hibernate.search.reader.ReaderProvider;
-import org.hibernate.search.store.DirectoryProvider;
 
-import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -57,7 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    private static final String GROUP_BY_FIELD = GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD;
+    private String groupByField = "id";
 
     public final static String ID_FIELD = "id";
 
@@ -135,12 +133,19 @@ public class LuceneSearch {
     }
 
     /**
+     * @param session
+     */
+    public LuceneSearch(Session session, String groupByField, Class<? extends CdmBase> directorySelectClass) {
+         this.session = session;
+         this.directorySelectClass = directorySelectClass;
+         this.groupByField = groupByField;
+    }
+
+    /**
      * TODO the abstract base class DescriptionElementBase can not be used, so
      * we are using an arbitraty subclass to find the DirectoryProvider, future
      * versions of hibernate search my allow using abstract base classes see
-     * http
-     * ://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of
-     * -a-given-class-in-java
+     * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
      *
      * @param type must not be null
      * @return
@@ -152,6 +157,9 @@ public class LuceneSearch {
         if (type.equals(TaxonBase.class)) {
             type = Taxon.class;
         }
+        if (type.equals(TaxonNameBase.class)) {
+            type = NonViralName.class;
+        }
         return type;
     }
 
@@ -162,7 +170,7 @@ public class LuceneSearch {
     /**
      * @return
      */
-    public Searcher getSearcher() {
+    public IndexSearcher getSearcher() {
         if(searcher == null){
             searcher = new IndexSearcher(getIndexReader());
             searcher.setDefaultFieldSortScoring(true, true);
@@ -175,12 +183,7 @@ public class LuceneSearch {
      */
     public IndexReader getIndexReader() {
         SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-
-        DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(getDirectorySelectClass());
-        logger.info(directoryProviders[0].getDirectory().toString());
-
-        ReaderProvider readerProvider = searchFactory.getReaderProvider();
-        IndexReader reader = readerProvider.openReader(directoryProviders[0]);
+        IndexReader reader = searchFactory.getIndexReaderAccessor().open(getDirectorySelectClass());
         return reader;
     }
 
@@ -189,7 +192,7 @@ public class LuceneSearch {
      */
     public QueryParser getQueryParser() {
         Analyzer analyzer = getAnalyzer();
-        QueryParser parser = new QueryParser("titleCache", analyzer);
+        QueryParser parser = new QueryParser(Configuration.luceneVersion,  "titleCache", analyzer);
         return parser;
     }
 
@@ -231,6 +234,17 @@ public class LuceneSearch {
     }
 
     /**
+     * @param maxNoOfHits
+     * @return
+     * @throws IOException
+     */
+    public TopDocs executeSearch(int maxNoOfHits) throws IOException {
+        Query fullQuery = expandQuery();
+        logger.info("lucene query string to be parsed: " + fullQuery.toString());
+        return getSearcher().search(fullQuery, maxNoOfHits);
+
+    }
+    /**
      * @param luceneQuery
      * @param clazz the type as additional filter criterion
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
@@ -271,9 +285,9 @@ public class LuceneSearch {
 
         // perform the search (needs two passes for grouping)
         // - first pass
-        FirstPassGroupingCollector firstPassCollector = new FirstPassGroupingCollector(GROUP_BY_FIELD, withinGroupSort, limit);
+        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
         getSearcher().search(fullQuery, firstPassCollector);
-        Collection<SearchGroup> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
+        Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
               return null;
@@ -282,11 +296,11 @@ public class LuceneSearch {
         boolean getScores = true;
         boolean getMaxScores = true;
         boolean fillFields = true;
-        AllGroupsCollector allGroupsCollector = new AllGroupsCollector(GROUP_BY_FIELD);
-        SecondPassGroupingCollector secondPassCollector = new SecondPassGroupingCollector(GROUP_BY_FIELD, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
+        TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
+        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
         getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
-        TopGroups groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
+        TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
         // get max score from very first result
         float maxScore = groupsResult.groups[0].maxScore;
@@ -304,7 +318,7 @@ public class LuceneSearch {
             BooleanQuery filteredQuery = new BooleanQuery();
             BooleanQuery classFilter = new BooleanQuery();
 
-            Term t = new Term(DocumentBuilder.CLASS_FIELDNAME, clazz.getName());
+            Term t = new Term(ProjectionConstants.OBJECT_CLASS, clazz.getName());
             TermQuery termQuery = new TermQuery(t);
 
             classFilter.setBoost(0);
@@ -343,7 +357,6 @@ public class LuceneSearch {
 
     public void setHighlightFields(String[] textFieldNamesAsArray) {
         this.highlightFields = textFieldNamesAsArray;
-
     }
 
     public String[] getHighlightFields() {
@@ -358,18 +371,18 @@ public class LuceneSearch {
      *
      */
     public class TopGroupsWithMaxScore{
-        public TopGroups topGroups;
+        public TopGroups<String> topGroups;
         public float maxScore = Float.NaN;
 
-        TopGroupsWithMaxScore(TopGroups topGroups, int offset, int totalGroupCount, float maxScore){
+        TopGroupsWithMaxScore(TopGroups<String> topGroups, int offset, int totalGroupCount, float maxScore){
             this.maxScore = maxScore;
-            TopGroups newTopGroups;
+            TopGroups<String> newTopGroups;
             if(offset > 0){
-                GroupDocs[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
+                GroupDocs<String>[] newGroupDocs = new GroupDocs[topGroups.groups.length - offset];
                 for(int i = offset; i < topGroups.groups.length; i++){
                     newGroupDocs[i - offset] = topGroups.groups[i];
                 }
-                newTopGroups = new TopGroups(
+                newTopGroups = new TopGroups<String>(
                             topGroups.groupSort,
                             topGroups.withinGroupSort,
                             topGroups.totalHitCount,
@@ -378,7 +391,7 @@ public class LuceneSearch {
             } else {
                 newTopGroups = topGroups;
             }
-            this.topGroups = new TopGroups(newTopGroups, totalGroupCount);
+            this.topGroups = new TopGroups<String>(newTopGroups, totalGroupCount);
         }
 
     }

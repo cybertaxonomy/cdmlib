@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -24,7 +23,6 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -40,7 +38,6 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-//import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -55,9 +52,8 @@ public class TestSpecimen {
 	private static final Logger logger = Logger.getLogger(TestSpecimen.class);
 	
 	public void testSpecimen(){
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		logger.info("Create test taxon ...");
-		Reference sec = refFactory.newDatabase();
+		Reference<?> sec = ReferenceFactory.newDatabase();
 		String fullNameString = "Acanthostyles saucechicoensis (Hieron.) R.M. King & H. Rob.";
 		BotanicalName botanicalName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
 		Taxon taxon = Taxon.NewInstance(botanicalName, sec);
@@ -79,7 +75,7 @@ public class TestSpecimen {
 		
 		logger.info("Create gathering event");
 		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-		AgentBase gatherer = Person.NewTitledInstance("Lorentz,P.G. s.n.");
+		AgentBase<?> gatherer = Person.NewTitledInstance("Lorentz,P.G. s.n.");
 		gatheringEvent.setActor(gatherer);
 		Calendar gatheringDate = Calendar.getInstance();
 		int year = 1922;
@@ -134,9 +130,8 @@ public class TestSpecimen {
 		specimen.addSource(source);
 		
 		FieldObservation fieldObservation = FieldObservation.NewInstance();
-		DerivationEvent derivationEvent = DerivationEvent.NewInstance();
+		DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.GATHERING_IN_SITU());
 		derivationEvent.addDerivative(specimen);
-		derivationEvent.setType(DerivationEventType.GATHERING_IN_SITU());
 		fieldObservation.addDerivationEvent(derivationEvent);
 		fieldObservation.setGatheringEvent(gatheringEvent);
 		
@@ -156,7 +151,7 @@ public class TestSpecimen {
 				logger.warn("FieldObservation: " + fieldObservation2);
 				GatheringEvent gatheringEvent2= fieldObservation2.getGatheringEvent();
 				logger.warn("GatheringEvent: " + gatheringEvent2);
-				AgentBase gatherer2 = gatheringEvent2.getCollector();
+				AgentBase<?> gatherer2 = gatheringEvent2.getCollector();
 				logger.warn("Gatherer: "+  gatherer2);
 			}
 		}

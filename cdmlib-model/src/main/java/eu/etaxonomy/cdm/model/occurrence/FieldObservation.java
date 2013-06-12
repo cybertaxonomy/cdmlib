@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,7 +30,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
@@ -42,7 +41,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
- * In situ observation of a taxon in the field. If a specimen exists, 
+ * In situ observation of a taxon in the field. If a specimen exists,
  * in most cases a parallel field observation object should be instantiated and the specimen then is "derived" from the field unit
  * @author m.doering
  * @version 1.0
@@ -64,11 +63,12 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
 	@XmlElement(name = "FieldNumber")
-	@Field(index=Index.TOKENIZED)
-	@NullOrNotEmpty
+	@Field
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNumber;
-	
+
 	@XmlElement(name = "PrimaryCollector")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -77,13 +77,14 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
     @IndexedEmbedded(depth = 2)
     @Valid
 	private Person primaryCollector;
-	
+
 	@XmlElement(name = "FieldNotes")
-	@Field(index=Index.TOKENIZED)
-	@NullOrNotEmpty
+	@Field
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String fieldNotes;
-	
+
 	@XmlElement(name = "GatheringEvent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -100,9 +101,9 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	public static FieldObservation NewInstance(){
 		return new FieldObservation();
 	}
-	
+
 //****************************** CONSTRUCTOR **************************************/
-	
+
 	/**
 	 * Constructor
 	 */
@@ -110,18 +111,18 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 		super();
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldObservation>();
 	}
-	
+
 // ************************ GETTER / SETTER *******************************************
 
 	public GatheringEvent getGatheringEvent() {
     	return gatheringEvent;
 	}
-	
+
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
 		this.gatheringEvent = gatheringEvent;
 		addGatheringEventPropertyChangeListener();
-	}	
-	
+	}
+
 
 	private void addGatheringEventPropertyChangeListener() {
 		if (gatheringEvent != null){
@@ -138,7 +139,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	public String getFieldNumber() {
 		return fieldNumber;
 	}
-	
+
 	public void setFieldNumber(String fieldNumber) {
 		this.fieldNumber = fieldNumber;
 	}
@@ -157,36 +158,37 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	public Person getPrimaryCollector() {
 		return primaryCollector;
 	}
-	
+
 	public String getFieldNotes() {
 		return fieldNotes;
 	}
-	
+
 	public void setFieldNotes(String fieldNotes) {
 		this.fieldNotes = fieldNotes;
 	}
-	
+
 	// *********** Listener *****************************/
-	
+
 	private PropertyChangeListener getNewGatheringEventPropChangeListener() {
 		PropertyChangeListener listener = new PropertyChangeListener(){
-			
-			public void propertyChange(PropertyChangeEvent event) {
+
+			@Override
+            public void propertyChange(PropertyChangeEvent event) {
 				firePropertyChange(event);
 			}
-			
+
 		};
 		return listener;
 	}
-	
-	//*********** CLONE **********************************/	
-	
-	/** 
+
+	//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> field observation. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> field observation
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
-	 * 
+	 *
 	 * @see SpecimenOrObservationBase#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
@@ -194,7 +196,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	@Override
 	public FieldObservation clone(){
 		try{
-			FieldObservation result = (FieldObservation)super.clone();		
+			FieldObservation result = (FieldObservation)super.clone();
 			//no changes to: fieldNotes, fieldNumber
 			return result;
 		} catch (CloneNotSupportedException e) {
@@ -202,7 +204,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
 
 }

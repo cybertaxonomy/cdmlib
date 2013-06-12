@@ -3,13 +3,11 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.io.Serializable;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.MappingException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.SessionImplementor;
 import org.hibernate.type.Type;
 
 /**
@@ -43,7 +41,7 @@ import org.hibernate.type.Type;
  * You must tell spring to intantiate the ... before the session factory:
  *
  * <pre>
- * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
+ * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate4.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
  * ...
  * </pre>
  *

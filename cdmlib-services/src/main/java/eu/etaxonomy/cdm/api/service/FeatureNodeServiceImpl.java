@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
  * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+@Transactional(readOnly = false)
 public class FeatureNodeServiceImpl extends VersionableServiceBase<FeatureNode, IFeatureNodeDao> implements IFeatureNodeService {
 	private static final Logger logger = Logger.getLogger(FeatureNodeServiceImpl.class);
 	

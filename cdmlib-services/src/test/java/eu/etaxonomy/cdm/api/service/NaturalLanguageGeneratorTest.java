@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.NaturalLanguageGenerator;
 @Ignore //FIXME Remove @Ignore once maximes code is completely comitted
 public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NaturalLanguageGeneratorTest.class);
 	
 	@SpringBeanByType

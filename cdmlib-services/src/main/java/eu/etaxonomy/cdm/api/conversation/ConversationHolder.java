@@ -9,16 +9,22 @@
 
 package eu.etaxonomy.cdm.api.conversation;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate3.SessionHolder;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
+import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -241,8 +247,22 @@ public class ConversationHolder{
 	private Session getSession() {
 		if(longSession == null){
 			logger.info("Creating Session: [" + longSession + "]");
-			longSession = SessionFactoryUtils.getNewSession(getSessionFactory());
-			longSession.setFlushMode(FlushMode.COMMIT);
+			try{
+				//TODO still need to check if connection and session() handling still works correctly
+				//after upgrade to hibernate 4.
+				//With hibernate 4 JDBC {@link Connection connection(s)} will be obtained from the
+				// configured {@link org.hibernate.service.jdbc.connections.spi.ConnectionProvider}
+				//as needed.
+				//Also interesting: http://stackoverflow.com/questions/3526556/session-connection-deprecated-on-hibernate
+				//http://blog-it.hypoport.de/2012/05/10/hibernate-4-migration/
+				longSession = sessionFactory.openSession();
+				longSession.setFlushMode(FlushMode.COMMIT);
+			}
+			catch (HibernateException ex) {
+				throw new DataAccessResourceFailureException("Could not open Hibernate Session", ex);
+			}
+			
+
 		}
 		
 		return longSession;

@@ -31,14 +31,14 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
@@ -51,22 +51,21 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     FeatureTree.class
 })
 @MappedSuperclass
-public abstract class TermBase extends IdentifiableEntity{
+@Audited
+public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCacheStrategy >{
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermBase.class);
 
     @XmlElement(name = "URI")
-    @Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-    @NullOrNotEmpty
-    @Length(max = 255)
+    @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
 
     @XmlElementWrapper(name = "Representations")
     @XmlElement(name = "Representation")
-    @OneToMany(fetch=FetchType.EAGER)
-    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true)
+    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 

@@ -37,8 +37,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  */
 @Ignore /* IGNORE in Suite */
 public class TestC3P0Configuration{
-	private static final Logger logger = Logger
-			.getLogger(TestC3P0Configuration.class);
+	private static final Logger logger = Logger.getLogger(TestC3P0Configuration.class);
 
 	CdmApplicationController appController;
 

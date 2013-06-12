@@ -7,35 +7,43 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>
-
-    <context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
+    <import resource="classpath:/eu/etaxonomy/cdm/defaultIoApplicationContext.xml"/>
 
    <!--
         use TestingTermInitializer
      -->
+    <!-- exclude persistent term initializer as we want to use the TestingTermInitializer instead -->
+    <context:component-scan base-package="eu/etaxonomy/cdm">
+      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
+    </context:component-scan>
     <bean id="testingTermInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
         <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
         <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
         <property name="omit" value="false"/>
     </bean>
-    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+<!-- TODO remove    <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
         <property name="omit" value="true"/>
-    </bean>
+    </bean> -->
 
 
+    <!--
+        NOTE:
+        the database connection is configured in /cdmlib-persistence/src/test/resources/unitils.properties
+    -->
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
 
     <bean id="hibernateProperties"
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLCorrectedDialect</prop>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
-                <prop key="hibernate.search.default.indexBase">./target/test-classes</prop>
+                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
+                <!--  hibernate.search.default.exclusive_index_use=false
+                          locks must not only be released after application shutdown in test environment -->
+                    <prop key="hibernate.search.default.exclusive_index_use">false</prop>
+                <prop key="hibernate.search.default.indexBase">./target/index</prop>
             </props>
         </property>
     </bean>
@@ -52,7 +60,7 @@
     </bean>
 
 
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
+<!--     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>
     </bean>
@@ -63,7 +71,7 @@
       <property name="analyzer">
         <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
       </property>
-    </bean>
+    </bean> -->
 
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <property name="providers">

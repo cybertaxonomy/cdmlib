@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -175,7 +174,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 */
 	protected Classification makeTreeMemSave(STATE state, Reference ref){
 		String treeName = "Classification (Import)";
-		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+		if (ref != null && StringUtils.isNotBlank(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
 		Classification tree = Classification.NewInstance(treeName);
@@ -367,7 +366,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		NamedArea namedArea = state.getNamedArea(uuid);
 		if (namedArea == null){
-			DefinedTermBase term = getTermService().find(uuid);
+			DefinedTermBase<?> term = getTermService().find(uuid);
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
@@ -439,7 +438,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					if (levelVoc == null){
 						logger.error("ONLY FOR DEBUG: Level voc is null");
 					}else{
-						logger.warn("ONLY FOR DEBUG: Level voc is not null");
+						logger.info("ONLY FOR DEBUG: Level voc is not null");
 					}
 				}
 				voc.addTerm(namedAreaLevel);
@@ -914,7 +913,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	public TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
-		Reference ref = null;
+		Reference<?> ref = null;
 		return getTaxonDescription(taxon, ref, isImageGallery, createNewIfNotExists);
 	}
 	
@@ -994,7 +993,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns the textdata that holds general information about a feature for a taxon description.
 	 * This is mainly necessary for descriptions that have more than one description element for
 	 * a given feature such as 'distribution', 'description' or 'common name'. It may also hold
-	 * for hierarchical features where no description element exists for a higher hierarchie level.
+	 * for hierarchical features where no description element exists for a higher hierarchy level.
 	 * Example: the description feature has subfeatures. But some information like authorship, figures,
 	 * sources need to be added to the description itself.
 	 * Currently a feature placeholder is marked by a marker of type 'feature placeholder'. Maybe in future
@@ -1180,6 +1179,20 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return null;
 		}else{
 			return Float.valueOf(doubleObject.toString());
+		}
+	}
+	
+
+	/**
+	 * Returns <code>null</code> for all blank strings. Identity function otherwise.
+	 * @param str
+	 * @return
+	 */
+	protected String NB(String str) {
+		if (StringUtils.isBlank(str)){
+			return null;
+		}else{
+			return str;
 		}
 	}
 

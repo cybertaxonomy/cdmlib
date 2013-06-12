@@ -1,0 +1,84 @@
+                                    ------------------------
+                                    Accepted Name Search API
+                                    ------------------------
+
+{CDM Taxonomic Accepted Name Search API}
+
+	This web service endpoint serves as a search engine for retrieving taxonomic information of the accepted name of the synonomy to which the queried scientific name belongs. 
+	In case of homonyms, this service will return a list. Misapplied names are not considered in this service.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : this could either be the base scientific name or the complete scientific name.
+	
+	* '<<type>>' [optional, default value = <<<name>>>] : this parameter could have the values,
+	
+									* <<<name>>>	: to be used in the case of scientific names without authorship strings other other markers (e.g. Abies alba).
+									
+									* <<<title>>>	: to be used in the case of scientific names with authorship strings and other markers (e.g. Abies alba Mill.).
+				
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<query>>> : scientific name provided as input.
+			
+		* <<<response>>>
+		
+			* <<<acceptedName>>> : accepted name of the synonomy to which the queried scientific name belongs.
+		
+			* <<<authorship>>> : authorship of the accepted name.
+			
+			* <<<classification>>> : classification of the requested taxon.
+			
+			* <<<rank>>> : taxonomic rank of the accepted name.							
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Example Requests :
+		
+		* Base scientific name search : 	
+				
+			* {{{queryTara_spinosa} /name_catalogue/accepted.json?query=Tara spinosa}}
+								
+	Example Responses :
+		
+		* Base scientific name search : {query=Tara spinosa} [{{{CDM_Taxonomic_Accepted_Name_Search_API}back}}]
+										
+---
+[
+
+    {
+        "request": {
+            "query": "Tara spinosa"
+        },
+        "response": [
+            {
+                "acceptedName": "Caesalpinia spinosa",
+                "authorship": "(Molina) untze",
+                "classification": {
+                    "Kingdom": "Plantae",
+                    "Phylum": "Magnoliophyta",
+                    "Class": "Magnoliopsida",
+                    "Order": "Fabales",
+                    "Family": "Fabaceae",
+                    "Genus": "Caesalpinia",
+                    "Species": "Caesalpinia spinosa (Molina) untze"
+                },
+                "rank": "Species"
+            }
+        ]
+    }
+
+]
+
+---		
+

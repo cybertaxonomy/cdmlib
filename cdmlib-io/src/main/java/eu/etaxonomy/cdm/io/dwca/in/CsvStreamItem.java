@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
  */
 public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(CsvStreamItem.class);
+	private static final Logger logger = Logger.getLogger(CsvStreamItem.class);
 
 	public TermUri term;
 	public Map<String, String> map;

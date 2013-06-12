@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 public class QuantitativeData extends DescriptionElementBase implements Cloneable {
 	private static final long serialVersionUID = -2755806455420051488L;
-	@SuppressWarnings("unused")
+
 	private static final Logger logger = Logger.getLogger(QuantitativeData.class);
 	
 	@XmlElement(name = "MeasurementUnit")
@@ -82,8 +82,8 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	
 	@XmlElementWrapper(name = "StatisticalValues")
 	@XmlElement(name = "StatisticalValue")
-	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 

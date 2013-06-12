@@ -141,21 +141,21 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
     @Test
     public void testGetByLsidWithoutVersion() throws Exception {
         LSID lsid = new LSID("urn:lsid:example.org:namespace:1");
-        TaxonBase result = identifiableDao.find(lsid);
+        TaxonBase<?> result = identifiableDao.find(lsid);
         assertNotNull(result);
     }
 
     @Test
     public void testGetByLsidWithVersionCurrent() throws Exception {
         LSID lsid = new LSID("urn:lsid:example.org:namespace:1:2");
-        TaxonBase result = identifiableDao.find(lsid);
+        TaxonBase<?> result = identifiableDao.find(lsid);
         assertNotNull(result);
     }
 
     @Test
     public void testGetByLsidWithVersionPast() throws Exception {
         LSID lsid = new LSID("urn:lsid:example.org:namespace:1:1");
-        TaxonBase result = identifiableDao.find(lsid);
+        TaxonBase<?> result = identifiableDao.find(lsid);
         assertNotNull(result);
     }
 

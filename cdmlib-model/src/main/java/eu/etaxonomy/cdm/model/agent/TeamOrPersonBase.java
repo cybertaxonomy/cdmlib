@@ -17,13 +17,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -41,21 +41,24 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "nomenclaturalTitle"
 })
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
+// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
+// this is needed, otherwise the fields of the also abstract super class are missed during indexing
+@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
     private static final long serialVersionUID = 5216821307314001961L;
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
     @XmlElement(name="NomenclaturalTitle")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field(index=Index.YES)
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     protected String nomenclaturalTitle;
 
     @Transient
     @XmlTransient
-    protected boolean isGeneratingTitleCache = false;
+    protected boolean isGeneratingTitleCache = false;  //state variable to avoid recursions when generating title cache and nomenclatural title
 
     /**
      * Returns the identification string (nomenclatural abbreviation) used in
@@ -63,10 +66,11 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      *
      * @see  INomenclaturalAuthor#getNomenclaturalTitle()
      */
+    @Override
     @Transient
     public String getNomenclaturalTitle() {
         String result = nomenclaturalTitle;
-        if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
+        if (StringUtils.isBlank(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
             result = getTitleCache();
         }
         return result;
@@ -75,6 +79,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     /**
      * @see     #getNomenclaturalTitle()
      */
+    @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = nomenclaturalTitle;
     }
@@ -84,7 +89,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      */
     @Override
     @Transient /*
-                TODO  is this still needed, can't we remove this ??
+                TODO  is the transient annotation still needed, can't we remove this ??
                 @Transient is an absolutely special case and thus leads to several
                 special implementations in order to harmonize this exception again
                 in other parts of the library:
@@ -106,10 +111,10 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
      * @return
      */
     protected String replaceEmptyTitleByNomTitle(String result) {
-        if (CdmUtils.isEmpty(result)){
+        if (StringUtils.isBlank(result)){
             result = nomenclaturalTitle;
         }
-        if (CdmUtils.isEmpty(result)){
+        if (StringUtils.isBlank(result)){
             result = super.getTitleCache();
         }
         return result;

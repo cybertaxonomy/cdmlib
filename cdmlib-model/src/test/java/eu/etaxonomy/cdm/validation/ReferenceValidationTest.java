@@ -25,14 +25,12 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -132,7 +130,7 @@ public class ReferenceValidationTest  {
 		Set<ConstraintViolation<IBookSection>> constraintViolations  = validator.validate(bookSection, Level2.class);
 		assertTrue("There should be one constraint violation as this book has a valid Ref",constraintViolations.size() == 0);
 		
-        Reference article = ReferenceFactory.newArticle();
+        Reference<?> article = ReferenceFactory.newArticle();
         article.setTitleCache("article");
         bookSection.setInReference(article);
         constraintViolations  = validator.validate(bookSection, Level2.class);
@@ -144,7 +142,7 @@ public class ReferenceValidationTest  {
 	@Test
 	public final void testValidationAfterCasting(){
 		
-		((Reference)book).castReferenceToArticle();
+		((Reference<?>)book).castReferenceToArticle();
 		Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be one constraint violations as this article is not valid at level 2 (has an isbn)",constraintViolations.isEmpty());
 	}

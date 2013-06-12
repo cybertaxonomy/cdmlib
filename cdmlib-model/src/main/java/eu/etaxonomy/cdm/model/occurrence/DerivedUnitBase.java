@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,8 +29,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
@@ -62,8 +62,10 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
+// even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
+// this is needed, otherwise the fields of the also abstract super class are missed during indexing
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy> extends SpecimenOrObservationBase<S> implements Cloneable{
 
 	@XmlElement(name = "Collection")
@@ -75,29 +77,33 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	private Collection collection;
 
 	@XmlElement(name = "CatalogNumber")
-	@Field(index=Index.UN_TOKENIZED)
-	@NullOrNotEmpty
+	@Field(analyze = Analyze.NO)
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String catalogNumber;
-	
+
 	@XmlElement(name = "AccessionNumber")
-	@Field(index=Index.UN_TOKENIZED)
-	@NullOrNotEmpty
+	@Field(analyze = Analyze.NO)
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String accessionNumber;
-	
+
 	@XmlElement(name = "CollectorsNumber")
-	@Field(index=Index.UN_TOKENIZED)
-	@NullOrNotEmpty
+	@Field(analyze = Analyze.NO)
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String collectorsNumber;
-	
+
 	@XmlElement(name = "Barcode")
-	@Field(index=Index.UN_TOKENIZED)
-	@NullOrNotEmpty
+	@Field(analyze = Analyze.NO)
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String barcode;
-	
+
 	@XmlElement(name = "StoredUnder")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -105,7 +111,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded
 	private TaxonNameBase storedUnder;
-	
+
 	@XmlElement(name = "DerivedFrom")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -113,12 +119,12 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
-	
+
 	@XmlElementWrapper(name = "SpecimenTypeDesignations")
 	@XmlElement(name = "SpecimenTypeDesignation")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "typeSpecimen")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
-	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
+	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
 	/**
 	 * Constructor
@@ -140,9 +146,9 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 		this.setDerivedFrom(derivedFrom);
 	}
 	/**
-	 * create new unit derived from an existing gathering event, 
+	 * create new unit derived from an existing gathering event,
 	 * thereby creating a new empty field observation
-	 * @param gatheringEvent the gathering event this unit was collected at 
+	 * @param gatheringEvent the gathering event this unit was collected at
 	 */
 	protected DerivedUnitBase(GatheringEvent gatheringEvent) {
 		this(new FieldObservation());
@@ -154,7 +160,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public DerivationEvent getDerivedFrom() {
 		return derivedFrom;
 	}
-	
+
 	public void setDerivedFrom(DerivationEvent derivedFrom){
 		if (getDerivedFrom() != null){
 			getDerivedFrom().getDerivatives().remove(derivedFrom);
@@ -164,11 +170,11 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 			derivedFrom.addDerivative(this);
 		}
 	}
-	
+
 	@Transient
 	public Set<SpecimenOrObservationBase> getOriginals(){
 		if(getDerivedFrom() != null){
-			return getDerivedFrom().getOriginals();			
+			return getDerivedFrom().getOriginals();
 		}
 		return null;
 	}
@@ -176,11 +182,11 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public Collection getCollection(){
 		return this.collection;
 	}
-	
+
 	public void setCollection(Collection collection){
 		this.collection = collection;
 	}
-	
+
 
 	public String getCatalogNumber() {
 		return catalogNumber;
@@ -189,30 +195,30 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public void setCatalogNumber(String catalogNumber) {
 		this.catalogNumber = catalogNumber;
 	}
-	
+
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
 	public String getBarcode() {
 		return barcode;
 	}
-	
+
 	public void setStoredUnder(TaxonNameBase storedUnder) {
 		this.storedUnder = storedUnder;
 	}
-	
+
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
-	
-	
+
+
 	public void setAccessionNumber(String accessionNumber) {
 		this.accessionNumber = accessionNumber;
 	}
-	
+
 	/**
 	 * Will be removed in future versions as semantics is not clear.
-	 * For accessing the collecting number use 
+	 * For accessing the collecting number use
 	 * {@link FieldObservation#getFieldNumber()} instead.
 	 * @return
 	 */
@@ -220,10 +226,10 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public String getCollectorsNumber() {
 		return collectorsNumber;
 	}
-	
+
 	/**
 	 * Will be removed in future versions as semantics is not clear.
-	 * For editing the collecting number use 
+	 * For editing the collecting number use
 	 * {@link FieldObservation#getFieldNumber()} instead.
 	 * @return
 	 */
@@ -231,22 +237,22 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.collectorsNumber = collectorsNumber;
 	}
-	
+
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;
 	}
-	
+
 	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
 		if (specimenTypeDesignation.getTypeSpecimen() == this){
 			return ;
 		}else if (specimenTypeDesignation.getTypeSpecimen() != null){
 			specimenTypeDesignation.getTypeSpecimen().removeSpecimenTypeDesignation(specimenTypeDesignation);
-			
+
 		}
 		specimenTypeDesignations.add(specimenTypeDesignation);
 		specimenTypeDesignation.setTypeSpecimen(this);
 	}
-	
+
 	public void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
 		if (specimenTypeDesignation == null){
 			return;
@@ -256,19 +262,19 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 			specimenTypeDesignation.setTypeSpecimen(null);
 		}
 	}
-		
+
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		return specimenTypeDesignations;
 	}
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> derivedUnitBase. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> specimen
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
-	 * 
+	 *
 	 * @see SpecimenOrObservationBase#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()

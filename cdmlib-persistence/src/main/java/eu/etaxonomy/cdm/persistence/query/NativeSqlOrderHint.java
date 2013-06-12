@@ -7,7 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.util.StringHelper;
+import org.hibernate.internal.util.StringHelper;
 
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
@@ -27,6 +27,8 @@ public class NativeSqlOrderHint extends OrderHint {
 	}
     
 	public class NativeSqlHibernateOrder extends Order {
+		private static final long serialVersionUID = 6439553377404790090L;
+		
 		private String nativeSQL;
 		private Boolean ascending;
 

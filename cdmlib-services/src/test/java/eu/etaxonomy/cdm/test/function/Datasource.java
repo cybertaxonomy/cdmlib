@@ -24,6 +24,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -53,12 +54,15 @@ public class Datasource {
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
 		System.out.println(lsDataSources);
-		CdmPersistentDataSource dataSource = lsDataSources.get(0);
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-//		ICdmDataSource dataSource = CdmDataSource.NewInstance(dbType, "192.168.2.10", "cdm_test_andreas", dbType.getDefaultPort() + "", "edit", "", null, null);
-		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+//		CdmPersistentDataSource dataSource = lsDataSources.get(0);
+//		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String server = "localhost";
+		String database = "cdm_test";
+		String username = "edit";
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource);
+		appCtr = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
 		appCtr.close();
 	}
 	
@@ -117,7 +121,7 @@ public class Datasource {
 			
 			Person agent = Person.NewInstance();
 			appCtr.getAgentService().save(agent);
-			TaxonNameBase tn = BotanicalName.NewInstance(null);
+			TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
 			appCtr.getNameService().save(tn);
 			appCtr.close();
 		} catch (SQLException e) {
@@ -140,7 +144,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase tn = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 		
@@ -160,7 +164,7 @@ public class Datasource {
 		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
-		TaxonNameBase tn = BotanicalName.NewInstance(null);
+		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
 		appCtr.getNameService().save(tn);
 		appCtr.close();
 
@@ -202,8 +206,7 @@ public class Datasource {
 			String nameCache = "testName";
 			name.setNameCache(nameCache);
 			name.setTitleCache(nameCache, true);
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			Reference ref = refFactory.newGeneric();
+			Reference<?> ref = ReferenceFactory.newGeneric();
 			ref.setTitleCache("mySec", true);
 			Taxon taxon = Taxon.NewInstance(name, ref);
 			TaxonDescription description = TaxonDescription.NewInstance();
@@ -333,7 +336,7 @@ public class Datasource {
 	
 	private void test(){
 		System.out.println("Start Datasource");
-		//testNewConfigControler();
+		testNewConfigControler();
     	//testDatabaseChange();
 		
 		//testSqlServer();
@@ -343,7 +346,7 @@ public class Datasource {
 		//testLocalHsql();
 		//testLocalH2();
 		//testWritableResourceDirectory();
-		testH2();
+//		testH2();
 		System.out.println("\nEnd Datasource");
 	}
 	

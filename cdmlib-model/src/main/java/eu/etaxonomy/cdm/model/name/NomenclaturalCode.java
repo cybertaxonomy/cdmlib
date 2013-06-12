@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,23 +22,11 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IDefinedTerm;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)

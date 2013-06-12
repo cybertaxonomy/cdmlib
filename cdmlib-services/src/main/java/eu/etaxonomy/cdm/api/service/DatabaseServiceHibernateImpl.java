@@ -17,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -39,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
 	

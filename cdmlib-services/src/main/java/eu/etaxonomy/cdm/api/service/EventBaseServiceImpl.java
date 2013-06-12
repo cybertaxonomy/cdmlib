@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
  *
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class EventBaseServiceImpl extends AnnotatableServiceBase<EventBase, IEventBaseDao> implements IEventBaseService {
 
     @Override

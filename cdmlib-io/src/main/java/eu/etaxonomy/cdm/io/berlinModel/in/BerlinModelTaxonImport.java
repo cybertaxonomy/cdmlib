@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -295,7 +293,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
-		} catch (MethodNotSupportedException e) {
+		} catch (NoSuchMethodException e) {
 			logger.error("MethodNotSupportedException:" +  e);
 			return false;
 		}

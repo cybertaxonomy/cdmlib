@@ -153,7 +153,7 @@ public class SpecimenTest {
 		collection.setCode("code");
 		DateTime created = new DateTime();
 		Person createdBy = Person.NewTitledInstance("creator");
-		DerivationEvent derivedFrom = DerivationEvent.NewInstance();
+		DerivationEvent derivedFrom = DerivationEvent.NewInstance(null);
 		int id = 22;
 		int individualCount = 25;
 		Stage lifeStage = Stage.NewInstance();
@@ -178,7 +178,7 @@ public class SpecimenTest {
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		String definition = "definition";
 		//TODO
-		DerivationEvent derivationEvent = DerivationEvent.NewInstance();
+		DerivationEvent derivationEvent = DerivationEvent.NewInstance(null);
 		SpecimenDescription description = SpecimenDescription.NewInstance();
 		DeterminationEvent determination = DeterminationEvent.NewInstance();
 		Extension extension = Extension.NewInstance();

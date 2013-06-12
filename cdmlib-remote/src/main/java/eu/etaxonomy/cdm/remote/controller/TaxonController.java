@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -95,7 +96,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAccepted() " + request.getServletPath());
+        logger.info("getAccepted() " + request.getRequestURI());
         TaxonBase tb = service.load(uuid);
         HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
         if(tb instanceof Taxon){
@@ -108,6 +109,21 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             //TODO init Synonyms
         }
         return resultset;
+    }
+
+    @RequestMapping(value = "classifications", method = RequestMethod.GET)
+    public List<Classification> doGetClassifications(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetClassifications(): " + request.getRequestURI());
+        TaxonBase taxonBase = service.load(uuid);
+
+        if (taxonBase == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+
+        return service.listClassifications(taxonBase, null, null, DEFAULT_INIT_STRATEGY);
     }
 
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
@@ -130,7 +146,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doListSpecimensOrObservations() - " + request.getServletPath());
+        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -155,7 +171,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 

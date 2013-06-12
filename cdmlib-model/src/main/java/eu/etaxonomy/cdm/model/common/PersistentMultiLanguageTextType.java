@@ -13,29 +13,36 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
-import org.hibernate.collection.PersistentCollection;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.collection.spi.PersistentCollection;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.usertype.UserCollectionType;
 
+/**
+ * TODO move to eu.etaxonomy.cdm.hibernate
+ * 
+ * @author unknown
+ * 
+ *
+ */
 public class PersistentMultiLanguageTextType implements UserCollectionType {
 	
 	public PersistentMultiLanguageTextType() {
 	}
 
 	public boolean contains(Object collection, Object obj) {
-		Map map = (Map) collection;
+		Map<?,?> map = (Map<?,?>) collection;
 		return map.containsValue(obj);
 	}
 
 	public Iterator getElementsIterator(Object collection) {
-		return ( (java.util.Map) collection ).values().iterator();
+		return ( (Map<?,?>) collection ).values().iterator();
 	}
 
 	public Object indexOf(Object collection, Object element) {
-		Iterator iter = ( (Map) collection ).entrySet().iterator();
+		Iterator<?> iter = ( (Map<?,?>) collection ).entrySet().iterator();
 		while ( iter.hasNext() ) {
-			Map.Entry me = (Map.Entry) iter.next();
+			Map.Entry<?,?> me = (Map.Entry<?,?>) iter.next();
 			//TODO: proxies!
 			if ( me.getValue()==element ) return me.getKey();
 		}
@@ -55,12 +62,12 @@ public class PersistentMultiLanguageTextType implements UserCollectionType {
 	public Object replaceElements(Object original, Object target, CollectionPersister collectionPersister,
 			Object owner,Map copyCache,	SessionImplementor sessionImplementor) throws HibernateException {
 		
-		java.util.Map result = (java.util.Map) target;
+		Map<Object,Object> result = (Map<Object,Object>) target;
 		result.clear();
 		
-		Iterator iter = ( (java.util.Map) original ).entrySet().iterator();
+		Iterator<?> iter = ( (Map<?,?>) original ).entrySet().iterator();
 		while ( iter.hasNext() ) {
-			java.util.Map.Entry me = (java.util.Map.Entry) iter.next();
+			Map.Entry<?,?> me = (Map.Entry<?,?>) iter.next();
 			Object key = collectionPersister.getIndexType().replace( me.getKey(), null, sessionImplementor, owner, copyCache );
 			Object value = collectionPersister.getElementType().replace( me.getValue(), null, sessionImplementor, owner, copyCache );
 			result.put(key, value);

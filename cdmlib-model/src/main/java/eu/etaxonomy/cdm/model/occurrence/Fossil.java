@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @Audited
 @Configurable
 public class Fossil extends Specimen implements Cloneable{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Fossil.class);
 	
 	/**

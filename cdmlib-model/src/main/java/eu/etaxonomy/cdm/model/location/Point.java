@@ -31,6 +31,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Latitude;
+import org.hibernate.search.annotations.Longitude;
+import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.Spatial;
+import org.hibernate.search.annotations.SpatialMode;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -51,21 +57,26 @@ import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionR
 })
 @XmlRootElement(name = "Point")
 @Embeddable
+@Spatial(spatialMode=SpatialMode.RANGE, name="point")
 public class Point implements Cloneable, Serializable {
     private static final long serialVersionUID = 531030660792800636L;
     private static final Logger logger = Logger.getLogger(Point.class);
 
     //TODO was Float but H2 threw errors
     @XmlElement(name = "Longitude")
+    @Longitude(of="point")
     private Double longitude;
 
     @XmlElement(name = "Latitude")
+    @Latitude(of="point")
     private Double latitude;
 
     /**
      * Error radius in Meters
      */
     @XmlElement(name = "ErrorRadius")
+    @Field
+    @NumericField
     private Integer errorRadius = 0;
 
     @XmlElement(name = "ReferenceSystem")

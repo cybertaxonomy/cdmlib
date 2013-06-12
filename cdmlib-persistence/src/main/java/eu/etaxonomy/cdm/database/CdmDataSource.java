@@ -14,8 +14,9 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.cache.CacheProvider;
-import org.hibernate.cache.NoCacheProvider;
+import org.hibernate.cache.internal.NoCachingRegionFactory;
+import org.hibernate.cache.spi.RegionFactory;
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -51,7 +52,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean showSql = false;
 	private boolean formatSql = false;
 	private boolean registerSearchListener = false;
-	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
+	private Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
 
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password){
 		return new CdmDataSource(dbType, server, database, -1, username, password, null, null, null);
@@ -161,7 +162,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getDatasourceBean()
 	 */
-	@SuppressWarnings("unchecked")
 	public BeanDefinition getDatasourceBean(){
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDataSourceClass());
 		//attributes
@@ -176,10 +176,11 @@ public class CdmDataSource extends CdmDataSourceBase {
 		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
 		Properties persistentProperties = getDatasourceProperties();
-		Enumeration<String> keys = (Enumeration)persistentProperties.keys();
+		Enumeration<Object> keys = (Enumeration<Object>)persistentProperties.keys();
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
 			props.addPropertyValue(key, persistentProperties.getProperty(key));
+			Properties a = Environment.getProperties();
 		}
 
 		bd.setPropertyValues(props);
@@ -208,14 +209,14 @@ public class CdmDataSource extends CdmDataSourceBase {
 		boolean showSql = false;
 		boolean formatSql = false;
 		boolean registerSearchListener = false;
-		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
+		Class<? extends RegionFactory> cacheProviderClass = NoCachingRegionFactory.class;
 		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends CacheProvider> cacheProviderClass){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
 			hbm2dll = this.hbm2dll;
@@ -240,7 +241,8 @@ public class CdmDataSource extends CdmDataSourceBase {
 		Properties props = new Properties();
 		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
 		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
-		props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
+//		OLD:props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
+		props.setProperty("hibernate.cache.region.factory_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
 		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
 		props.setProperty("hibernate.search.autoregister_listeners", String.valueOf(registerSearchListener));

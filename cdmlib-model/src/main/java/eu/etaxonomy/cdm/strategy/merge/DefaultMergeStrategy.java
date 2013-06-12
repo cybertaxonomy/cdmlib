@@ -14,7 +14,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,8 +28,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
-import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -493,18 +493,18 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 
 	
 	private static Class getCollectionType(Field field) throws MergeException{
-		Type genericType = (ParameterizedTypeImpl)field.getGenericType();
-		if (genericType instanceof ParameterizedTypeImpl){
-			ParameterizedTypeImpl paraType = (ParameterizedTypeImpl)genericType;
-			Class<?> rawType = paraType.getRawType();
+		Type genericType = (ParameterizedType)field.getGenericType();
+		if (genericType instanceof ParameterizedType/*Impl*/){
+			ParameterizedType paraType = (ParameterizedType)genericType;
+			Type rawType = paraType.getRawType();
 			Type[] arguments = paraType.getActualTypeArguments();
 
 			if (arguments.length == 1){
 				Class collectionClass;
 				if (arguments[0] instanceof Class){
 					collectionClass = (Class)arguments[0];
-				}else if(arguments[0] instanceof TypeVariableImpl){
-					TypeVariableImpl typeVariable = (TypeVariableImpl)arguments[0];
+				}else if(arguments[0] instanceof TypeVariable/*Impl*/){
+					TypeVariable typeVariable = (TypeVariable)arguments[0];
 					GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
 					collectionClass = (Class)genericDeclaration;
 				}else{

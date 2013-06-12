@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -20,44 +20,48 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author a.kohlbecker
  * @date 20.07.2010
- * 
+ *
  */
 @Configuration
 public class LoggingConfigurer extends AbstractWebApplicationConfigurer implements InitializingBean  {
 
-	/**
-	 * 
-	 */
-	private static final String ROLLING_FILE_APPENDER = "rollingFileAppender";
-	private static final String CDM_LOGFILE = "cdm.logfile";
+    /**
+     *
+     */
+    private static final String ROLLING_FILE_APPENDER = "rollingFileAppender";
 
-	protected void configureLogFile() {
-		PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
-		String logFile = findProperty(CDM_LOGFILE, false);
-		if (logFile == null) {
-			logger.info("No logfile specified, runing without.");
-			return;
-		}
-		try {
-			RollingFileAppender appender = new RollingFileAppender(layout, logFile);
-			appender.setName(ROLLING_FILE_APPENDER);
-			appender.setMaxBackupIndex(3);
-			appender.setMaxFileSize("2MB");
-			Logger.getRootLogger().addAppender(appender);
-			logger.info("logging to :" + logFile);
-		} catch (IOException e) {
-			logger.error("Creating RollingFileAppender failed:", e);
-		}
-	}
+    /**
+     * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
+     */
+    private static final String CDM_LOGFILE = "cdm.logfile";
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		configureLogFile();
-	}
-	
-	
+    protected void configureLogFile() {
+        PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
+        String logFile = findProperty(CDM_LOGFILE, false);
+        if (logFile == null) {
+            logger.info("No logfile specified, runing without.");
+            return;
+        }
+        try {
+            RollingFileAppender appender = new RollingFileAppender(layout, logFile);
+            appender.setName(ROLLING_FILE_APPENDER);
+            appender.setMaxBackupIndex(3);
+            appender.setMaxFileSize("2MB");
+            Logger.getRootLogger().addAppender(appender);
+            logger.info("logging to :" + logFile);
+        } catch (IOException e) {
+            logger.error("Creating RollingFileAppender failed:", e);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        configureLogFile();
+    }
+
+
 
 }

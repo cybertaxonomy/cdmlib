@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
+import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.Field.TermVector;
@@ -27,8 +29,8 @@ import org.hibernate.search.bridge.LuceneOptions;
  *
  */
 public class SortFieldOptions implements LuceneOptions {
-
-
+	private static final Logger logger = Logger.getLogger(SortFieldOptions.class);
+	
     @Override
     public Store getStore() {
         return Store.YES;
@@ -45,8 +47,36 @@ public class SortFieldOptions implements LuceneOptions {
     }
 
     @Override
-    public Float getBoost() {
+    public float getBoost() {
         return 1.0f;
     }
+
+	@Override
+	public void addFieldToDocument(String arg0, String arg1, Document arg2) {
+		logger.warn("not yet implemented");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addNumericFieldToDocument(String arg0, Object arg1, Document arg2) {
+		logger.warn("not yet implemented");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String indexNullAs() {
+		// TODO Auto-generated method stub
+		logger.warn("not yet implemented");
+		return null;
+	}
+
+	@Override
+	public boolean isCompressed() {
+		// TODO Auto-generated method stub
+		logger.warn("not yet implemented");
+		return false;
+	}
 
 }

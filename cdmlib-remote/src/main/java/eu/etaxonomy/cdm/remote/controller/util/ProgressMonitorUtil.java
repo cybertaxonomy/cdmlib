@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
  */
 public class ProgressMonitorUtil {
 
-    private ProgressMonitorController progressMonitorController;
+    private final ProgressMonitorController progressMonitorController;
 
     public ProgressMonitorUtil(ProgressMonitorController progressMonitorController) {
 
@@ -48,6 +49,7 @@ public class ProgressMonitorUtil {
      */
     public ModelAndView respondWithMonitor(String frontendBaseUrl, HttpServletRequest request, HttpServletResponse response, String processLabel,
             final UUID monitorUuid) throws IOException {
+
         ModelAndView mv = new ModelAndView();
         String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
         response.setHeader("Location", monitorPath);
@@ -62,7 +64,8 @@ public class ProgressMonitorUtil {
             mv.addObject(jsonpRedirect);
 
         } else {
-            response.sendError(303, processLabel + " started, for progress information please see <a href=\"" + monitorPath + "\">" + monitorPath + "</a>");
+            RedirectView redirectView = new RedirectView(monitorPath);
+            mv.setView(redirectView);
         }
         return mv;
     }

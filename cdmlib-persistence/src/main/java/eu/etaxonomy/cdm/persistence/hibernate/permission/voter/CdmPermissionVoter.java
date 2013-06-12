@@ -18,10 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import sun.security.provider.PolicyParser.ParsingException;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
 /**
@@ -31,13 +29,14 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
  * @date Sep 4, 2012
  *
  */
-public abstract class CdmPermissionVoter implements AccessDecisionVoter {
+public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase> {
 
     public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
 
     /* (non-Javadoc)
      * @see org.springframework.security.access.AccessDecisionVoter#supports(org.springframework.security.access.ConfigAttribute)
      */
+    @Override
     public boolean supports(ConfigAttribute attribute) {
         // all CdmPermissionVoter support CdmAuthority
         return attribute instanceof CdmAuthority;
@@ -46,6 +45,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
     /* (non-Javadoc)
      * @see org.springframework.security.access.AccessDecisionVoter#supports(java.lang.Class)
      */
+    @Override
     public boolean supports(Class<?> clazz) {
         /* NOTE!!!
          * Do not change this, all CdmPermissionVoters must support CdmBase.class
@@ -78,7 +78,8 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
     /* (non-Javadoc)
      * @see org.springframework.security.access.AccessDecisionVoter#vote(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection)
      */
-    public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
+    @Override
+    public int vote(Authentication authentication, CdmBase object, Collection<ConfigAttribute> attributes) {
 
         if(!isResponsibleFor(object)){
             logger.debug("class missmatch => ACCESS_ABSTAIN");
@@ -121,7 +122,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
 
                 vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
-                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(((CdmBase)object).getUuid());
+                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(object.getUuid());
 
                 //
                 // only vote if no property is defined.
@@ -129,7 +130,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter {
                 //
                 if(!auth.hasProperty()){
                     if ( !auth.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
-                        logger.debug("no tragetUuid, class & permission match => ACCESS_GRANTED");
+                        logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
                         return ACCESS_GRANTED;
                     }
                     if ( vr.isUuidMatch  && vr.isClassMatch && vr.isPermissionMatch){

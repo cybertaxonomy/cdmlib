@@ -31,7 +31,7 @@ public class UnmatchedLeads {
 		public static UnmatchedLeadsKey NewInstance(PolytomousKey key, String num){
 			UnmatchedLeadsKey result = new UnmatchedLeadsKey();
 			result.key = key;
-			result.num = num;
+			result.num = num == null? null : num.toLowerCase();
 			return result;
 		}
 		
@@ -42,7 +42,7 @@ public class UnmatchedLeads {
 		
 		public static UnmatchedLeadsKey NewInstance(String numAndTaxon){
 			UnmatchedLeadsKey result = new UnmatchedLeadsKey();
-			result.numAndTaxon = numAndTaxon;
+			result.numAndTaxon = numAndTaxon.toLowerCase();
 			return result;
 		}
 		
@@ -133,7 +133,7 @@ public class UnmatchedLeads {
 			nodes = new HashSet<PolytomousKeyNode>();
 			map.put(key, nodes);
 		}else{
-			String message = "A feature node for this key does already exist: %s";
+			String message = "A key node for this key does already exist: %s";
 			message = String.format(message, key.toString());
 			logger.info(message);
 		}

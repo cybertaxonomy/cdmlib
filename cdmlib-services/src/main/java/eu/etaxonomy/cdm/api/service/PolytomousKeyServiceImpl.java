@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+@Transactional(readOnly = false)
 public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<PolytomousKey, IPolytomousKeyDao> implements IPolytomousKeyService {
 
 	private IIdentificationKeyDao identificationKeyDao;
@@ -115,7 +115,7 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	@Override
 	public Pager<PolytomousKey> findByTaxonomicScope(
 			TaxonBase taxon, Integer pageSize,
-			Integer pageNumber, List<String> propertyPaths) {
+			Integer pageNumber, List<String> propertyPaths, List<String> nodePaths) {
 		
 		List<PolytomousKey> list = new ArrayList<PolytomousKey>();
 		taxon = taxonDao.findById(taxon.getId());
@@ -123,7 +123,13 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
 			list = identificationKeyDao.findByTaxonomicScope(taxon, PolytomousKey.class, pageSize, pageNumber, propertyPaths);
 		}
+		if (nodePaths != null) {
+			for (PolytomousKey polytomousKey : list) {
+				dao.loadNodes(polytomousKey.getRoot(), nodePaths);				
+			}
+		}
 		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults, pageSize, list);
+
 		return pager;
 	}
 

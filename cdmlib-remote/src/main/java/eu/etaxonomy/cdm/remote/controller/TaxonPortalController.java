@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +24,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.http.HttpRequest;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,48 +36,43 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
-import eu.etaxonomy.cdm.api.service.IMarkerService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -115,6 +106,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
+
     public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
 
     @Autowired
@@ -243,27 +235,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     });
 
 
-    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "$",
-            "elements.$",
-            "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
-            "elements.multilanguageText",
-            "elements.media",
-    });
-
-    protected static final List<String> TAXONUSEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
-            "$",
-            "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
-            "sources.$",
             "elements.$",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.multilanguageText",
             "elements.media",
+            "name.$",
+            "name.rank.representations",
+            "name.status.type.representations",
+            "sources.$",
     });
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
@@ -418,7 +401,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             config.setClassification(classification);
         }
 
-        return (Pager<IdentifiableEntity>) service.findTaxaAndNames(config);
+        return service.findTaxaAndNames(config);
     }
 
     /**
@@ -504,7 +487,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         if(request != null){
-            logger.info("doGetSynonymy() " + request.getServletPath());
+            logger.info("doGetSynonymy() " + request.getRequestURI());
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -537,7 +520,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 throws IOException {
 
         if(request != null){
-            logger.info("getAccepted() " + request.getServletPath());
+            logger.info("getAccepted() " + request.getRequestURI());
         }
 
         TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
@@ -553,7 +536,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             Set<TaxonNode> nodes = taxon.getTaxonNodes();
             for (TaxonNode taxonNode : nodes) {
                 if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
-                    resultset.add((Taxon) tb);
+                    resultset.add(tb);
                 }
             }
             if (resultset.size() > 1){
@@ -570,7 +553,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                     Set<TaxonNode> nodes = taxon.getTaxonNodes();
                     for (TaxonNode taxonNode : nodes) {
                         if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
-                            resultset.add((Taxon) tb);
+                            resultset.add(tb);
                         }
                     }
                     if (resultset.size() > 1){
@@ -620,7 +603,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public List<TaxonRelationship> doGetTaxonRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetTaxonRelations()" + request.getServletPath());
+        logger.info("doGetTaxonRelations()" + request.getRequestURI());
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
         List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
@@ -650,7 +633,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<NameRelationship> doGetToNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameRelations()" + request.getServletPath());
+        logger.info("doGetNameRelations()" + request.getRequestURI());
         TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
         //List<NameRelationship> list = nameService.listToNameRelationships(taxonBase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
@@ -675,7 +658,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<NameRelationship> doGetFromNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameFromNameRelations()" + request.getServletPath());
+        logger.info("doGetNameFromNameRelations()" + request.getRequestURI());
 
         TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
@@ -704,7 +687,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<TypeDesignationBase> doGetNameTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameTypeDesignations()" + request.getServletPath());
+        logger.info("doGetNameTypeDesignations()" + request.getRequestURI());
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         Pager<TypeDesignationBase> p = nameService.getTypeDesignations(taxon.getName(), null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
@@ -715,9 +698,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        TaxonBase tb = service.load(uuid, TAXONNODE_INIT_STRATEGY);
-        if(tb instanceof Taxon){
-            return ((Taxon)tb).getTaxonNodes();
+        logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
+        TaxonBase taxon = service.load(uuid, TAXONNODE_INIT_STRATEGY);
+        if(taxon instanceof Taxon){
+            return ((Taxon)taxon).getTaxonNodes();
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
@@ -746,7 +730,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
         if(request != null){
-            logger.info("doGetDescriptions()" + request.getServletPath());
+            logger.info("doGetDescriptions()" + request.getRequestURI());
         }
         List<DefinedTermBase> markerTypeTerms = null;
         Set<UUID> sMarkerTypeUUIDs = null;
@@ -767,16 +751,16 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         if (markerTypeTerms == null) {
 
-            Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+            Pager<TaxonDescription> p = descriptionService.pageTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
             descriptions = p.getRecords();
         }
 
         else if (markerTypeTerms != null && markerTypeTerms.isEmpty()) {
-            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 
         }
         else {
-            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+            descriptions = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
             /*for (TaxonDescription description: descriptions) {
                 for (IdentifiableSource source :description.getSources()) {
                     if (source.getOriginalNameString() != null) {
@@ -796,7 +780,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElements() - " + request.getServletPath());
+        logger.info("doGetDescriptionElements() - " + request.getRequestURI());
 
         //ModelAndView mv = new ModelAndView();
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -807,7 +791,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
        //find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f059"));
        Set<MarkerType> markerTypes =  new HashSet<MarkerType>();
        markerTypes.add(useMarkerType);
-       List<TaxonDescription> descriptionElements = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONUSEDESCRIPTION_INIT_STRATEGY);
+       List<TaxonDescription> descriptionElements = descriptionService.listTaxonDescriptions(t, null, null, markerTypes, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
         //getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths)  load(uuid);
 
         /*if(!(description instanceof TaxonDescription)){
@@ -830,7 +814,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -869,7 +853,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 //			@PathVariable("uuid") UUID uuid,
 //			HttpServletRequest request,
 //			HttpServletResponse response) throws IOException, ClassNotFoundException {
-//		logger.info("doGetSpecimens() - " + request.getServletPath());
+//		logger.info("doGetSpecimens() - " + request.getRequestURI());
 //
 //		ModelAndView mv = new ModelAndView();
 //
@@ -925,15 +909,25 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
             @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+            @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        logger.info("doGetMedia()" + request.getServletPath());
-        Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-        String path = request.getServletPath();
-        List<Media> returnMedia = getMediaForTaxon(t, type, mimeTypes, widthOrDuration, height, size);
+        logger.info("doGetMedia() " + requestPathAndQuery(request));
+
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+
+        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                type, mimeTypes, widthOrDuration, height, size);
         return returnMedia;
     }
 
@@ -944,14 +938,25 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 @PathVariable("uuid") UUID uuid,
                 @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
                 @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
+                @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
+                @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
+                @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
+                @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+                @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
                 @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
                 @RequestParam(value = "height", required = false) Integer height,
                 @RequestParam(value = "size", required = false) Integer size,
                 HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetMedia()" + request.getServletPath());
+
+        logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
+
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_NODES_INIT_STRATEGY);
-        String requestPath = request.getServletPath();
-        List<Media> returnMedia = getMediaForTaxon(taxon, type, mimeTypes, widthOrDuration, height, size);
+
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+
+        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                type, mimeTypes, widthOrDuration, height, size);
         TaxonNode node;
         //looking for all medias of genus
         if (taxon.getTaxonNodes().size()>0){
@@ -967,23 +972,38 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();
                 childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
-                returnMedia.addAll(getMediaForTaxon(childTaxon, type, mimeTypes, widthOrDuration, height, size));
+                returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
+                        includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                        type, mimeTypes, widthOrDuration, height, size));
             }
         }
         return returnMedia;
     }
 
+    /**
+     *
+     * @param taxon
+     * @param includeRelationships
+     * @param type
+     * @param mimeTypes
+     * @param widthOrDuration
+     * @param height
+     * @param size
+     * @return
+     */
+    private List<Media> getMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
+            Class<? extends MediaRepresentationPart> type, String[] mimeTypes, Integer widthOrDuration, Integer height,
+            Integer size) {
 
-    private List<Media> getMediaForTaxon(Taxon taxon, Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size){
-
-        List<Media> taxonGalleryMedia = service.listTaxonDescriptionMedia(taxon, false, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
+        List<Media> taxonGalleryMedia = service.listMedia(taxon, includeRelationships, false, includeTaxonDescriptions,
+                includeOccurrences, includeTaxonNameDescriptions, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
                 mimeTypes, null, widthOrDuration, height, size);
 
         List<Media> filteredMedia = new ArrayList<Media>(mediaRepresentationMap.size());
-        for(Media media : mediaRepresentationMap.keySet()){
+        for (Media media : mediaRepresentationMap.keySet()) {
             media.getRepresentations().clear();
             media.addRepresentation(mediaRepresentationMap.get(media));
             filteredMedia.add(media);
@@ -991,7 +1011,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
         return filteredMedia;
     }
-
 
 // ---------------------- code snippet preserved for possible later use --------------------
 //	@RequestMapping(

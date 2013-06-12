@@ -35,17 +35,21 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 /**
- * Quick and dirty implementation of a location service as needed by the editor
+ * Quick and dirty implementation of a location service as needed by the editor.
+ * 
+ * NOTE: Current implementation does not support the IService methods like {@link #save(DefinedTermBase)}
+ * as no base dao is loaded by autowiring.
  *
  * @author n.hoffman
  * @created 08.04.2009
  * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ILocationService {
 
-    private static final Logger logger = Logger.getLogger(LocationServiceImpl.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(LocationServiceImpl.class);
 
     @Autowired
     protected ITermVocabularyDao vocabularyDao;
@@ -59,7 +63,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#setDao(eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao)
      */
-    @Override
+    @Override 
     protected void setDao(IDefinedTermDao dao) {
         this.dao = dao;
     }

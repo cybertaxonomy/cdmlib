@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -60,9 +60,9 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
     @Test
     @DataSet("CommonServiceImplTest.xml")
     public void testChangeDescriptionElement(){
-        DescriptionBase descBase = service.find(UUID.fromString("eb17b80a-9be6-4642-a6a8-b19a318925e6"));
+        DescriptionBase<?> descBase = service.find(UUID.fromString("eb17b80a-9be6-4642-a6a8-b19a318925e6"));
         Set<DescriptionElementBase> elements = descBase.getElements();
-        Iterator iterator = elements.iterator();
+        Iterator<?> iterator = elements.iterator();
         while (iterator.hasNext()){
             DescriptionElementBase base = (DescriptionElementBase) iterator.next();
             if (base instanceof TextData){
@@ -85,7 +85,7 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
         if (test instanceof TextData){
 
             Set <Entry<Language,LanguageString>> entries = ((TextData) test).getMultilanguageText().entrySet();
-            Iterator entryIterator = entries.iterator();
+            Iterator<?> entryIterator = entries.iterator();
             while (entryIterator.hasNext()){
                 Entry <Language, LanguageString> entry = (Entry<Language, LanguageString>) entryIterator.next();
                 LanguageString langString = entry.getValue();

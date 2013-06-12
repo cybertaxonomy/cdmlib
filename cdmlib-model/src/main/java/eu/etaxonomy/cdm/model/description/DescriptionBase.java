@@ -127,8 +127,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "TaxonInteraction", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TaxonInteraction.class),
         @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class)
     })
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
-    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
+    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @ContainedIn
     private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
@@ -280,7 +280,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     public Set<DescriptionElementBase> getElements() {
         return this.descriptionElements;
     }
-
+    
     /**
      * Adds an existing {@link DescriptionElementBase elementary description} to the set of
      * {@link #getElements() elementary description data} which constitute <i>this</i>

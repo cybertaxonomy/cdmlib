@@ -76,20 +76,20 @@ public class ExcelSpecimenImportExampleTest extends
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
 
-	//
-	// @Test
-	// public void testDoInvoke() {
-	// boolean result = defaultImport.invoke(configurator);
-	// assertTrue("Return value for import.invoke should be true", result);
-	// assertEquals("Number of specimen should be 3", 3,
-	// occurrenceService.count(DerivedUnitBase.class));
-	// assertEquals("Number of field observations should be 3", 3,
-	// occurrenceService.count(FieldObservation.class));
-	//
-	// // printDataSet(System.out, new
-	// String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
-	//
-	// }
+	
+	 @Test
+	 @Ignore
+	 public void testDoInvoke() {
+		 boolean result = defaultImport.invoke(configurator);
+		 assertTrue("Return value for import.invoke should be true", result);
+		 assertEquals("Number of specimen should be 3", 3,
+		 occurrenceService.count(DerivedUnitBase.class));
+		 assertEquals("Number of field observations should be 3", 3,
+		 occurrenceService.count(FieldObservation.class));
+		
+		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
+	
+	 }
 
 	@Test
 	@DataSet

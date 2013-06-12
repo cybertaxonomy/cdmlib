@@ -25,18 +25,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
-import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
-import eu.etaxonomy.cdm.api.service.NamedAreaTree;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -45,9 +41,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
-
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
@@ -137,7 +131,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAnnotations() - " + request.getServletPath());
+        logger.info("getAnnotations() - " + request.getRequestURI());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
         return annotations;
@@ -148,7 +142,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("uuid_list") UuidList descriptionUuidList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
             HttpServletRequest request, HttpServletResponse response) {
-        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getServletPath());
+        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getRequestURI());
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {

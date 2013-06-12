@@ -16,17 +16,24 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.FilteredQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.hibernate.search.spatial.impl.Point;
+import org.hibernate.search.spatial.impl.Rectangle;
+import org.hibernate.search.spatial.impl.SpatialQueryBuilderFromPoint;
 
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -39,7 +46,7 @@ public class QueryFactory {
 
     public static final Logger logger = Logger.getLogger(QueryFactory.class);
 
-    private LuceneSearch luceneSearch;
+    private final LuceneSearch luceneSearch;
 
     Set<String> textFieldNames = new HashSet<String>();
 
@@ -59,25 +66,35 @@ public class QueryFactory {
     }
 
     /**
+     * Creates a new Term query. Depending on whether <code>isTextField</code> is set true or not the
+     * supplied <code>queryString</code> will be parsed by using the according analyzer or not.
+     * Setting <code>isTextField</code> to <code>false</code> is useful for searching for uuids etc.
+     *
      * @param fieldName
      * @param queryString
      * @param isTextField whether this field is a field containing free text in contrast to e.g. ID fields.
-     * @return
+     *     If <code>isTextField</code> to <code>true</code> the <code>queryString</code> will be parsed by
+     *     using the according analyzer.
+     * @return the resulting <code>TermQuery</code> or <code>null</code> in case of an <code>ParseException</code>
+     *
+     * TODO consider throwing the ParseException !!!!
      */
-    public Query newTermQuery(String fieldName, String queryString, boolean isTextField){
+    public Query newTermQuery(String fieldName, String queryString, boolean isTextField) {
 
-        if(isTextField){
-            textFieldNames.add(fieldName);
-        }
-
-         // in order to support the full query syntax we must use the parser here
         String luceneQueryString = fieldName + ":(" + queryString + ")";
-        try {
-            return luceneSearch.parse(luceneQueryString);
-        } catch (ParseException e) {
-            logger.error(e);
+        if (isTextField) {
+            textFieldNames.add(fieldName);
+            // in order to support the full query syntax we must use the parser
+            // here
+            try {
+                return luceneSearch.parse(luceneQueryString);
+            } catch (ParseException e) {
+                logger.error(e);
+            }
+            return null;
+        } else {
+            return new TermQuery(new Term(fieldName, queryString));
         }
-        return null;
     }
 
     /**
@@ -156,7 +173,6 @@ public class QueryFactory {
         return localizedTermQuery;
     }
 
-
     /**
      * @param idFieldName
      * @param entitiy
@@ -202,6 +218,53 @@ public class QueryFactory {
 
     public LuceneSearch getLuceneSearch() {
         return luceneSearch;
+    }
+
+
+    /**
+     * Returns a Lucene Query which rely on double numeric range query
+     * on Latitude / Longitude
+     *
+     *(+/- copied from {@link SpatialQueryBuilderFromPoint#buildSpatialQueryByRange(Point, double, String)})
+     *
+     * @param center center of the search discus
+     * @param radius distance max to center in km
+     * @param fieldName name of the Lucene Field implementing Coordinates
+     * @return Lucene Query to be used in a search
+     * @see Query
+     * @see org.hibernate.search.spatial.Coordinates
+     */
+    public static Query buildSpatialQueryByRange(Rectangle boundingBox, String fieldName) {
+
+        String latitudeFieldName = fieldName + "_HSSI_Latitude";
+        String longitudeFieldName = fieldName + "_HSSI_Longitude";
+
+        Query latQuery= NumericRangeQuery.newDoubleRange(
+                latitudeFieldName, boundingBox.getLowerLeft().getLatitude(),
+                boundingBox.getUpperRight().getLatitude(), true, true
+        );
+
+        Query longQuery= null;
+        if ( boundingBox.getLowerLeft().getLongitude() <= boundingBox.getUpperRight().getLongitude() ) {
+            longQuery = NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+                    boundingBox.getUpperRight().getLongitude(), true, true );
+        }
+        else {
+            longQuery= new BooleanQuery();
+            ( (BooleanQuery) longQuery).add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeft().getLongitude(),
+                    180.0, true, true ), BooleanClause.Occur.SHOULD );
+            ( (BooleanQuery) longQuery).add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
+                    boundingBox.getUpperRight().getLongitude(), true, true ), BooleanClause.Occur.SHOULD );
+        }
+
+        BooleanQuery boxQuery = new BooleanQuery();
+        boxQuery.add( latQuery, BooleanClause.Occur.MUST );
+        boxQuery.add( longQuery, BooleanClause.Occur.MUST );
+
+        return new FilteredQuery(
+                new MatchAllDocsQuery(),
+                new QueryWrapperFilter( boxQuery )
+        );
     }
 
 }

@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>3.1.3-SNAPSHOT</version>
+    <version>3.2.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -66,72 +66,23 @@
        <artifactId>lucene-highlighter</artifactId>
     </dependency>
     <dependency>
-       <!--
-            TODO temporarily added,
-            see http://dev.e-taxonomy.eu/trac/ticket/2031
-            Update Hibernate to latest stable 4.1.1
-       -->
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-grouping</artifactId>
-       <version>3.2.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-core</artifactId>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-database</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbmaintainer</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-dbunit</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-easymock</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-mock</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-inject</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-spring</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
-    </dependency>
+    </dependency> 
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.carrotsearch</groupId>
-      <artifactId>junit-benchmarks</artifactId>
-      <scope>test</scope>
+       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -150,13 +101,8 @@
       <artifactId>osgi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-    </dependency>
-    <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
-    <version>3.0.5.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.lsid</groupId>

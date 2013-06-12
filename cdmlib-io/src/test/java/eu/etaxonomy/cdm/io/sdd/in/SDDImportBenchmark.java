@@ -14,12 +14,13 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
+import org.junit.rules.TestRule;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
@@ -43,8 +44,9 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     INameService nameService;
 
-    @Rule
-    public MethodRule benchmarkRun = new BenchmarkRule();
+    @Rule 
+    //was of Type MethodRule before but this was not implemented in junitbenchmarks 0.5.0 anymore 
+	public TestRule benchmarkRun = new BenchmarkRule();
 
     private SDDImportConfigurator configurator;
 

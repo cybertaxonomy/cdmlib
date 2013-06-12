@@ -10,13 +10,13 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -37,7 +37,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
@@ -77,8 +76,9 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
     //@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
     @XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany (fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
+    @MapKeyJoinColumn(name="multilanguagetext_mapkey_id")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @Field(name="text", store=Store.YES)
     @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     @NotNull

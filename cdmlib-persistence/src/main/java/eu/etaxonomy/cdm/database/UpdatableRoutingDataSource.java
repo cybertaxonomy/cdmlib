@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -127,7 +126,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	}
 
 	// added for compatibility with Java 7
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+	public Logger getParentLogger() /* throws SQLFeatureNotSupportedException (is not compatibel with parent class in Java 6)*/  {
 		// TODO Auto-generated method stub
 		return null;
 	}

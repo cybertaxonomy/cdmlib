@@ -34,7 +34,11 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -171,6 +175,34 @@ public abstract class BerlinModelImportBase extends DbImportBase<BerlinModelImpo
 			dateTime = new DateTime();
 		}
 		return dateTime;
+	}
+	
+	/**
+	 * @param state
+	 * @param newTaxonId
+	 * @param taxonMap
+	 * @param factId
+	 * @return
+	 */
+	protected Taxon getTaxon(BerlinModelImportState state, int taxonId, Map<String, TaxonBase> taxonMap, int factId) {
+		TaxonBase<?> taxonBase = taxonMap.get(String.valueOf(taxonId));
+		
+		//TODO for testing
+		if (taxonBase == null && ! state.getConfig().isDoTaxa()){
+			taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		}
+		
+		Taxon taxon;
+		if ( taxonBase instanceof Taxon ) {
+			taxon = (Taxon) taxonBase;
+		} else if (taxonBase != null) {
+			logger.warn("TaxonBase (" + taxonId + ") for Fact(Specimen) with factId " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
+			return null;
+		} else {
+			logger.warn("TaxonBase (" + taxonId + ") for Fact(Specimen) with factId " + factId + " is null.");
+			return null;
+		}
+		return taxon;
 	}
 
 

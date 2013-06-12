@@ -44,7 +44,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
 
 	private UUID uuid;
-	private TaxonBase cdmBase;
+	private TaxonBase<?> cdmBase;
 	
 	@SpringBeanByType
 	private ITaxonNameDao cdmEntityDaoBase;
@@ -93,8 +93,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		name2.setGenusOrUninomial("Abies");
 		name2.setSpecificEpithet("alba");
 		name2.setAuthorshipCache("Mill.", true);
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		IBook ref = refFactory.newBook();
+		IBook ref = ReferenceFactory.newBook();
 		ref.setTitle("My Book");
 		name2.setNomenclaturalReference(ref);
 		name2.setNomenclaturalMicroReference("44");
@@ -113,7 +112,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		cdmEntityDaoBase.saveOrUpdate(name3);
 		List<TaxonNameBase> taxa = cdmEntityDaoBase.findByTitle("Test");
 		
-		TaxonNameBase nameBase = taxa.get (0);
+		TaxonNameBase<?,?> nameBase = taxa.get (0);
 		BotanicalName botName = (BotanicalName)nameBase;
 		
 		logger.debug("created "+botName.getCreated());

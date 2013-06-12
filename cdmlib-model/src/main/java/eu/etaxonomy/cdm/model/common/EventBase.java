@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.model.common;
 
@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 })
 @XmlRootElement(name = "EventBase")
 @MappedSuperclass
+@Audited
 public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	private static final long serialVersionUID = -1859035632758446593L;
 	@SuppressWarnings("unused")
@@ -44,7 +46,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 
 	@XmlElement(name = "TimePeriod")
 	private TimePeriod timeperiod = TimePeriod.NewInstance();
-	
+
 	@XmlElement(name = "Actor")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -52,38 +54,41 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private AgentBase actor;
-	
+
 	@XmlElement(name = "Description")
-	@Field(index=Index.TOKENIZED)
+	@Field(index=Index.YES)
 	private String description;
-	
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getTimeperiod()
 	 */
-	public TimePeriod getTimeperiod() {
+	@Override
+    public TimePeriod getTimeperiod() {
 		return timeperiod;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#setTimeperiod(eu.etaxonomy.cdm.model.common.TimePeriod)
 	 */
-	public void setTimeperiod(TimePeriod timeperiod) {
+	@Override
+    public void setTimeperiod(TimePeriod timeperiod) {
 		this.timeperiod = timeperiod;
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getActor()
 	 */
-	public AgentBase getActor() {
+	@Override
+    public AgentBase getActor() {
 		return actor;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#setActor(eu.etaxonomy.cdm.model.agent.Agent)
 	 */
-	public void setActor(AgentBase actor) {
+	@Override
+    public void setActor(AgentBase actor) {
 		this.actor = actor;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getDescription()
 	 */
@@ -96,16 +101,16 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> event base. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> event base
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link AnnotatableEntity AnnotatableEntity}.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.AnnotatableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -119,7 +124,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 		//no changes to: description
 		return result;
 	}
-	
 
-	
+
+
 }

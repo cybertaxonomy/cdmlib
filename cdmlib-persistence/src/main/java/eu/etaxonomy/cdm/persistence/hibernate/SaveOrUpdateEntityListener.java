@@ -1,9 +1,8 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.hibernate.HibernateException;
-import org.hibernate.event.SaveOrUpdateEvent;
-import org.hibernate.event.SaveOrUpdateEventListener;
-
+import org.hibernate.event.spi.SaveOrUpdateEvent;
+import org.hibernate.event.spi.SaveOrUpdateEventListener;
 import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +12,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 
-
+@SuppressWarnings("serial")
 public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 
 	public void onSaveOrUpdate(SaveOrUpdateEvent event)

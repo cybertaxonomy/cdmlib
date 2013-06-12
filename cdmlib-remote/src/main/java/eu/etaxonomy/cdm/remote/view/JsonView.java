@@ -10,15 +10,8 @@
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,9 +23,6 @@ import net.sf.json.JsonConfig;
 import net.sf.json.xml.XMLSerializer;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.View;
 
 import eu.etaxonomy.cdm.remote.config.DataSourceProperties;
@@ -58,7 +48,7 @@ public class JsonView extends BaseView implements View{
         JSON("application/json"),
         XML("application/xml");
 
-        private String contentType;
+        private final String contentType;
 
         Type(String contentType){
             this.contentType = contentType;
@@ -101,6 +91,7 @@ public class JsonView extends BaseView implements View{
      * (non-Javadoc)
      * @see org.springframework.web.servlet.View#getContentType()
      */
+    @Override
     public String getContentType() {
         return type.getContentType();
     }
@@ -108,10 +99,11 @@ public class JsonView extends BaseView implements View{
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.remote.view.BaseView#render(java.lang.Object, java.io.PrintWriter, java.lang.String, java.lang.String)
      */
+    @Override
     public void render(Object entity, PrintWriter writer, String jsonpCallback, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String contextPath = null;
-        
+
         if (request != null)
         	{
         	contextPath = request.getContextPath();
@@ -179,6 +171,7 @@ public class JsonView extends BaseView implements View{
      * (non-Javadoc)
      * @see org.springframework.web.servlet.View#render(java.util.Map, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // Retrieve data from model

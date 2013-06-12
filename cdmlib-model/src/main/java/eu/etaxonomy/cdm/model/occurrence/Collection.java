@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -26,9 +26,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -61,35 +60,39 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
-@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="Collection", indexes = { @org.hibernate.annotations.Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> implements Cloneable{
 	private static final long serialVersionUID = -7833674897174732255L;
 	private static final Logger logger = Logger.getLogger(Collection.class);
-	
+
 	@XmlElement(name = "Code")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@NullOrNotEmpty
+	@Field(analyze = Analyze.NO)
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String code;
-	
+
 	@XmlElement(name = "CodeStandard")
-	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	@NullOrNotEmpty
+	@Field(analyze = Analyze.NO)
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String codeStandard;
-	
+
 	@XmlElement(name = "Name")
-	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
-	@NullOrNotEmpty
+	@Field
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
-	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
-	@NullOrNotEmpty
+	@Field
+    //TODO Val #3379
+//	@NullOrNotEmpty
 	@Length(max = 255)
 	private String townOrLocation;
-	
+
 	@XmlElement(name = "Institution")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -97,15 +100,15 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded
 	private Institution institute;
-	
+
 	@XmlElement(name = "SuperCollection")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Collection superCollection;
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -113,7 +116,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	public static Collection NewInstance(){
 		return new Collection();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -127,7 +130,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * 
+	 *
 	 * @param institute    institute
 	 */
 	public void setInstitute(Institution institute){
@@ -139,7 +142,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * 
+	 *
 	 * @param code    code
 	 */
 	public void setCode(String code){
@@ -151,7 +154,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * 
+	 *
 	 * @param codeStandard    codeStandard
 	 */
 	public void setCodeStandard(String codeStandard){
@@ -163,7 +166,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * 
+	 *
 	 * @param name    name
 	 */
 	public void setName(String name){
@@ -175,7 +178,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 	/**
-	 * 
+	 *
 	 * @param townOrLocation    townOrLocation
 	 */
 	public void setTownOrLocation(String townOrLocation){
@@ -195,15 +198,15 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 		this.superCollection = superCollection;
 	}
 
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> collection. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> collection
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link IdentifiableMediaEntity IdentifiableMediaEntity}.
-	 * 
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -225,9 +228,9 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	}
 
 
-	
+
 // *********************** toString() **************************************
-	
+
 	@Override
 	public String toString() {
 		if (StringUtils.isNotBlank(code) || StringUtils.isNotBlank(name)){
@@ -235,5 +238,5 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 		}else{
 			return super.toString();
 		}
-	}	
+	}
 }

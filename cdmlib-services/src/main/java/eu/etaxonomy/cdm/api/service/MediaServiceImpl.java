@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
-@Transactional(readOnly=true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
 
 	@Autowired

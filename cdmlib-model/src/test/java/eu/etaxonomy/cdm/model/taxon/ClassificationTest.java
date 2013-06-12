@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -70,9 +70,9 @@ public class ClassificationTest {
 	private static TaxonNameBase<?,?> taxonName3;
 	private static TaxonNameBase<?,?> taxonName12;
 	private static TaxonNameBase<?,?> taxonName121;
-	private static Reference ref1;
-	private static Reference ref2;
-	private static Reference ref3;
+	private static Reference<?> ref1;
+	private static Reference<?> ref2;
+	private static Reference<?> ref3;
 	//private ReferenceFactory refFactory;
 	
 	
@@ -278,7 +278,7 @@ public class ClassificationTest {
 			CdmBase referencedCdmBase = Person.NewInstance();
 			Set<Class<? extends CdmBase>> allCdmClasses = findAllCdmClasses();
 			
-			Class referencedClass = referencedCdmBase.getClass();
+			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
 			Set<CdmBase> result = new HashSet<CdmBase>();
 			System.out.println("Referenced Class: " + referencedClass.getName());
 			
@@ -312,7 +312,7 @@ public class ClassificationTest {
 			
 		}
 		
-		private boolean handleSingleClass(Class classToBeSearchedFor, Class type, Field field, Class cdmClass, Set<CdmBase> result,CdmBase value){
+		private boolean handleSingleClass(Class<?> classToBeSearchedFor, Class<?> type, Field field, Class<?> cdmClass, Set<CdmBase> result, CdmBase value){
 			if (! Modifier.isStatic(field.getModifiers())){
 				String methodName = StringUtils.rightPad(field.getName(), 30);
 				String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
@@ -325,21 +325,21 @@ public class ClassificationTest {
 			return true;
 		}
 		
-		private Set<Field> getFields(Class clazz){
+		private Set<Field> getFields(Class<?> clazz){
 			Set<Field> result = new HashSet<Field>();
 			for (Field field: clazz.getDeclaredFields()){
 				if (!Modifier.isStatic(field.getModifiers())){
 					result.add(field);	
 				}
 			}
-			Class superclass = clazz.getSuperclass();
+			Class<?> superclass = clazz.getSuperclass();
 			if (CdmBase.class.isAssignableFrom(superclass)){
 				result.addAll(getFields(superclass));
 			}
 			return result;
 		}
 		
-		private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class clazz, CdmBase value){
+		private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class<?> clazz, CdmBase value){
 			//FIXME make not dummy but use dao
 			Set<CdmBase> result = new HashSet<CdmBase>();
 			
@@ -349,7 +349,7 @@ public class ClassificationTest {
 			BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
 			name.setTitleCache("A dummy name", true);
 			result.add(name);
-			Reference ref = ReferenceFactory.newBook();
+			Reference<?> ref = ReferenceFactory.newBook();
 			ref.setTitleCache("A dummy book", true);
 			result.add(ref);
 			
@@ -374,7 +374,7 @@ public class ClassificationTest {
 					Class<?> returnType = method.getReturnType();
 					handleClass(allCdmClasses,returnType);
 					Class<?>[] params = method.getParameterTypes();
-					for (Class paramClass : params){
+					for (Class<?> paramClass : params){
 						handleClass(allCdmClasses, paramClass);
 					}
 				}	
@@ -384,7 +384,7 @@ public class ClassificationTest {
 		if (! withAbstract){
 			Iterator<Class<? extends CdmBase>> iterator = allCdmClasses.iterator();
 			while (iterator.hasNext()){
-				Class clazz = iterator.next();
+				Class<?> clazz = iterator.next();
 				if (Modifier.isAbstract(clazz.getModifiers())){
 					iterator.remove();
 				}
@@ -393,12 +393,12 @@ public class ClassificationTest {
 		return allCdmClasses;
 	}
 	
-	private void handleClass(Set<Class<? extends CdmBase>> allCdmClasses, Class returnType){
+	private void handleClass(Set<Class<? extends CdmBase>> allCdmClasses, Class<?> returnType){
 		if (CdmBase.class.isAssignableFrom(returnType)){
 			if (! allCdmClasses.contains(returnType)){
 				//System.out.println(returnType.getSimpleName());
 				allCdmClasses.add((Class)returnType);
-				Class superClass = returnType.getSuperclass();
+				Class<?> superClass = returnType.getSuperclass();
 				handleClass(allCdmClasses, superClass);
 			}
 		}

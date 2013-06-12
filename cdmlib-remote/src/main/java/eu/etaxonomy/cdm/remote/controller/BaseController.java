@@ -55,13 +55,13 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  * @param <SERVICE>
  */
 
-public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController {
+public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController<T, SERVICE> {
 
-	protected SERVICE service;
+/*	protected SERVICE service;
+	
+	public abstract void setService(SERVICE service);*/
 	
 	protected Class<T> baseClass;
-	
-	public abstract void setService(SERVICE service);
 	
 	public BaseController (){
 		
@@ -89,7 +89,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 				HttpServletRequest request, 
 				HttpServletResponse response) throws IOException {
 		if(request != null)
-			logger.info("doGet() " + request.getServletPath());
+			logger.info("doGet() " + request.getRequestURI());
 		T obj = (T) getCdmBaseInstance(uuid, response, initializationStrategy);
 		return obj;
 	}
@@ -121,7 +121,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		String baseName = FilenameUtils.getBaseName(servletPath);
 		
 		if(request != null)
-			logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getServletPath());
+			logger.info("doGetMethod()[doGet" + StringUtils.capitalize(baseName) + "] " + request.getRequestURI());
 		
 		// <CUT
 //		T instance = getCdmBaseInstance(uuid, response, (List<String>)null);

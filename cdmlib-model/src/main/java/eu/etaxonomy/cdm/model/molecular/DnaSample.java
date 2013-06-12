@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
@@ -51,6 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @Audited
 public class DnaSample extends Specimen implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
 	
 	/**
@@ -70,7 +73,8 @@ public class DnaSample extends Specimen implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch = FetchType.LAZY)
-	private Set<Sequence> sequences = new HashSet<Sequence>();
+	@Cascade(CascadeType.SAVE_UPDATE)
+    private Set<Sequence> sequences = new HashSet<Sequence>();
 
 	
 	

@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -29,7 +28,7 @@ public class SpecimenTypeParser {
 	/**
 	 * see also CentralAfricaFernsTaxonParser#handleTypeLocationPart
 	 */
-	public static final String typeTypePattern = "(holo|lecto|iso|isolecto|syn|isosyn|neo|isoneo)\\.?";
+	public static final String typeTypePattern = "(?i)(holo|lecto|iso|isolecto|syn|isosyn|neo|isoneo|type)\\.?";
 	public static final String collectionPattern = "^[A-Z]+(\\-[A-Z]+)?";
 	
 	
@@ -54,6 +53,8 @@ public class SpecimenTypeParser {
 			status = SpecimenTypeDesignationStatus.NEOTYPE();
 		}else if (type.equalsIgnoreCase("isoneo")){
 			status = SpecimenTypeDesignationStatus.ISONEOTYPE();
+		}else if (type.equalsIgnoreCase("type")){
+			status = SpecimenTypeDesignationStatus.TYPE();
 		}else{
 			String message = "Type Status not supported: " + type;
 			throw new UnknownCdmTypeException(message);

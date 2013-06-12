@@ -13,10 +13,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.EntityEntry;
-import org.hibernate.engine.Status;
-import org.hibernate.event.DeleteEvent;
-import org.hibernate.event.DeleteEventListener;
+import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.Status;
+import org.hibernate.event.spi.DeleteEvent;
+import org.hibernate.event.spi.DeleteEventListener;
+
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IRelated;

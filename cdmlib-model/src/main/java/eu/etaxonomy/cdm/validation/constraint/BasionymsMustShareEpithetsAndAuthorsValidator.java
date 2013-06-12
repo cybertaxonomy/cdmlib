@@ -29,37 +29,37 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 	public boolean isValid(NameRelationship nameRelationship, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 		if(nameRelationship.getType().equals(NameRelationshipType.BASIONYM())) {
-			TaxonNameBase from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonNameBase.class);
-			TaxonNameBase to = CdmBase.deproxy(nameRelationship.getToName(), TaxonNameBase.class);
+			TaxonNameBase<?,?> from = CdmBase.deproxy(nameRelationship.getFromName(), TaxonNameBase.class);
+			TaxonNameBase<?,?> to = CdmBase.deproxy(nameRelationship.getToName(), TaxonNameBase.class);
 			
 			if(from instanceof NonViralName && to instanceof NonViralName) {
-				NonViralName fromName = (NonViralName) from;
-				NonViralName toName = (NonViralName) to;
+				NonViralName<?> fromName = (NonViralName<?>) from;
+				NonViralName<?> toName = (NonViralName<?>) to;
 				if(fromName.getBasionymAuthorTeam() == null || !fromName.getBasionymAuthorTeam().equals(toName.getBasionymAuthorTeam())) {
 					valid = false;
-					constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addSubNode("fromName").addSubNode("basionymAuthorTeam").addError();				
-					constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addSubNode("toName").addSubNode("basionymAuthorTeam").addError();
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("fromName").addNode("basionymAuthorTeam").addConstraintViolation();				
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("toName").addNode("basionymAuthorTeam").addConstraintViolation();
 				}
 
 				String fromNameLastEpithet = fromName.getInfraSpecificEpithet() == null ? fromName.getInfraSpecificEpithet() : fromName.getSpecificEpithet();
 				String toNameLastEpithet = toName.getInfraSpecificEpithet() == null ? toName.getInfraSpecificEpithet() : toName.getSpecificEpithet();
 				if(!fromNameLastEpithet.equals(toNameLastEpithet)) {
 					valid = false;
-					constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addSubNode("fromName").addSubNode("nameCache").addError();				
-					constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addSubNode("toName").addSubNode("nameCache").addError();
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addNode("fromName").addNode("nameCache").addConstraintViolation();				
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addNode("toName").addNode("nameCache").addConstraintViolation();
 				}
 				
 				if(fromName instanceof ZoologicalName && toName instanceof ZoologicalName) {
 					if(!fromName.getNomenclaturalReference().equals(toName.getNomenclaturalReference())) {
 						valid = false;
-						constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addSubNode("fromName").addSubNode("nomenclaturalReference").addError();				
-						constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addSubNode("toName").addSubNode("nomenclaturalReference").addError();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("fromName").addNode("nomenclaturalReference").addConstraintViolation();				
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("toName").addNode("nomenclaturalReference").addConstraintViolation();
 					}
 					
 					if(!fromName.getNomenclaturalMicroReference().equals(toName.getNomenclaturalMicroReference())) {
 						valid = false;
-						constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addSubNode("fromName").addSubNode("nomenclaturalMicroReference").addError();				
-						constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addSubNode("toName").addSubNode("nomenclaturalMicroReference").addError();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("fromName").addNode("nomenclaturalMicroReference").addConstraintViolation();				
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("toName").addNode("nomenclaturalMicroReference").addConstraintViolation();
 					}
 				}
 			}

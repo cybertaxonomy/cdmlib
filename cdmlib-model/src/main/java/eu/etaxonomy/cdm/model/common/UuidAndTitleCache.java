@@ -34,10 +34,17 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	Class<T> type;
 	UUID uuid;
 	String titleCache;
+	boolean isOrphaned;
 	
 	public UuidAndTitleCache(Class<T> type, UUID uuid, String titleCache) {
 		this(uuid, titleCache);
 		this.type = type;
+		this.isOrphaned = false;
+	}
+	
+	public UuidAndTitleCache(Class<T> type, UUID uuid, String titleCache, Boolean isOrphaned) {
+		this(type, uuid, titleCache);		
+		this.isOrphaned = isOrphaned;
 	}
 	
 	/**
@@ -65,6 +72,10 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	
 	public Class<T> getType(){
 		return type;
+	}
+	
+	public boolean getIsOrphaned() {
+		return this.isOrphaned;
 	}
 	
 }

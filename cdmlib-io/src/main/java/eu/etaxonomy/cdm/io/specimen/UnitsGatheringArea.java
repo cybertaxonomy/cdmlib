@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -22,31 +22,32 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 /**
  * @author p.kelbert
  * @created 20.10.2008
- * @version 1.0
  */
 public class UnitsGatheringArea {
 
 	private NamedArea area = NamedArea.NewInstance();
-	private ArrayList<NamedArea> areas = new ArrayList<NamedArea>();
+	private final ArrayList<NamedArea> areas = new ArrayList<NamedArea>();
 
 
-	/*
-	 * Constructor
-	 * Set/create country
+	/**
+	 * Constructor.
+	 * Set/create country.
+	 * Saves the area to the application
 	 * @param isoCountry (try to used the isocode first)
 	 * @param country
 	 * @param app
 	 */
-	public UnitsGatheringArea(String isoCountry, String country, IOccurrenceService occurrenceService){
-		this.setCountry(isoCountry, country, occurrenceService);
+	public UnitsGatheringArea(String isoCountry, String country, ICdmApplicationConfiguration cdmApp){
+		this.setCountry(isoCountry, country, cdmApp);
+//		cdmApp.getTermService().saveOrUpdate(area);
 	}
-	
+
 	/*
 	 * Constructor
 	 * Set a list of NamedAreas
 	 */
-	public UnitsGatheringArea(ArrayList<String> namedAreas){
-		this.setAreaNames(namedAreas);
+	public UnitsGatheringArea(List<String> namedAreaList){
+		this.setAreaNames(namedAreaList);
 	}
 
 	/*
@@ -55,27 +56,27 @@ public class UnitsGatheringArea {
 	public NamedArea getArea(){
 		return this.area;
 	}
-	
+
 	/*
 	 * Return the current list of NamedAreas
 	 */
 	public ArrayList<NamedArea> getAreas(){
 		return this.areas;
 	}
-	
+
 	/*
 	 * Set the list of NamedAreas
 	 * @param namedAreas
 	 */
-	public void setAreaNames(ArrayList<String> namedAreas){
+	public void setAreaNames(List<String> namedAreas){
 		for (String strNamedArea : namedAreas){
 			this.area.setLabel(strNamedArea);
 			this.areas.add(this.area);
 			this.area = NamedArea.NewInstance();
 		}
 	}
-	
-	/*
+
+	/**
 	 * Set the current Country
 	 * Search in the DB if the isoCode is known
 	 * If not, search if the country name is in the DB
@@ -84,27 +85,32 @@ public class UnitsGatheringArea {
 	 * @param fullName: the country's full name
 	 * @param app: the CDM application controller
 	 */
-	public void setCountry(String iso, String fullName, IOccurrenceService occurrenceService){
+	public void setCountry(String iso, String fullName, ICdmApplicationConfiguration cdmApp){
 		WaterbodyOrCountry country = null;
 		List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
 		if (StringUtils.isNotBlank(iso)){
 			//TODO move to termservice
-			country = occurrenceService.getCountryByIso(iso);
+			country = cdmApp.getOccurrenceService().getCountryByIso(iso);
 		}
 		if (country != null){
-			this.area.addWaterbodyOrCountry(country);
-		}else{
-			if (fullName != ""){
+			area.addWaterbodyOrCountry(country);
+			area.setLabel(country.getTitleCache());
+		}
+		else{
+			if (!fullName.isEmpty()){
 				//TODO move to termservice
-				countries = occurrenceService.getWaterbodyOrCountryByName(fullName);
+				countries = cdmApp.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
 			}
 			if (countries.size() >0){
-				this.area.addWaterbodyOrCountry(countries.get(0));
-			}else{
-				this.area.setLabel(fullName);
-				this.area.setLevel(NamedAreaLevel.COUNTRY()); 
+				area.addWaterbodyOrCountry(countries.get(0));
+				area.setLabel(countries.get(0).getTitleCache());
+			}
+			else{
+				area.setLabel(fullName);
+				area.setLevel(NamedAreaLevel.COUNTRY());
 			}
 		}
+		
 	}
-	
+
 }

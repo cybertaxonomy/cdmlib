@@ -12,8 +12,12 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Transient;
 import javax.wsdl.Definition;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,7 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -77,11 +80,13 @@ public class LSIDAuthority extends CdmBase {
 	
     @XmlElement(name = "Namespaces")
     @XmlJavaTypeAdapter(NamespacesAdapter.class)
-	@CollectionOfElements(fetch = FetchType.LAZY)
-	private Map<String,Class<? extends IIdentifiableEntity>> namespaces = new HashMap<String,Class<? extends IIdentifiableEntity>>();
+    @ElementCollection(fetch = FetchType.LAZY)
+	@MapKeyColumn(name="namespaces_mapkey")  //from hibernate 3, maybe changed in future to default "namespaces_key"
+    @Column(name="namespaces_element")   //from hibernate 3, maybe changed in future to default "namespaces"
+    private Map<String,Class<? extends IIdentifiableEntity>> namespaces = new HashMap<String,Class<? extends IIdentifiableEntity>>();
 	
 	/**
-	 * Hibernate requires a no-arguement constructor (this could be private, I suppose)
+	 * Hibernate requires a no-arguement constructor
 	 */
 	private LSIDAuthority() { }
 	
@@ -136,10 +141,17 @@ public class LSIDAuthority extends CdmBase {
 	 * @return
 	 */
 	public boolean equals(Object o) {
-	    if (!(o instanceof LSIDAuthority))
+		if (o == this){
+	    	return true;
+	    }
+	    if (!(o instanceof LSIDAuthority)){
 	        return false;
+	    }
 	    LSIDAuthority auth = (LSIDAuthority)o;
-	    return o.toString().equals(toString());
+	    //is toString really good for equal?
+	    //Waht about empty strings?
+	    //AM
+	    return auth.toString().equals(toString());
 	}
 	
 	/**

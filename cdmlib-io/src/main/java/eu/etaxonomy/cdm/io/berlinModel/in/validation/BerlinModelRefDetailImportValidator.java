@@ -13,8 +13,6 @@ package eu.etaxonomy.cdm.io.berlinModel.in.validation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
@@ -95,7 +93,7 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (MethodNotSupportedException e) {
+		} catch (NoSuchMethodException e) {
 			logger.debug("Source does not support checking existance of 'idInSource' column");
 		}
 		return success;

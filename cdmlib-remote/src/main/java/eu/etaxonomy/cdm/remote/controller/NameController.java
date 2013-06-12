@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 
@@ -91,7 +92,9 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetTypeDesignations()" + request.getServletPath());
+        if (request != null) {
+        	logger.info("doGetTypeDesignations()" + request.getRequestURI());
+        }
         TaxonNameBase tnb = getCdmBaseInstance(uuid, response,
                 (List<String>) null);
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb, null,
@@ -105,7 +108,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
     public List<String> doGetNameCache(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetNameCache()" + request.getServletPath());
+        logger.info("doGetNameCache()" + request.getRequestURI());
         TaxonNameBase tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
         NonViralName nvn = (NonViralName) tnb;
         String nameCacheString = nvn.getNameCache();
@@ -120,7 +123,7 @@ public class NameController extends BaseController<TaxonNameBase, INameService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getServletPath());
+        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
         mv.addObject(service.getTaggedName(uuid));
