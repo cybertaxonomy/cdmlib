@@ -348,40 +348,32 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		if (classification == null)
 			return null; // or MAYDO: throw some Exception???
 
-
-
-		
-		
 		// get all the descriptive source reference ids
 		// ---------------------------------------------
-			
+
 		// preparation
 		List<String> queryStrings = new ArrayList<String>();
 		Map<String, Object> parameters = new HashMap<String, Object>();
 
 		parameters.put("classification", classification);
-		
+
 		Set<Integer> ids = listDescriptiveSourceReferenceIds(classification);
 
-		
 		// get classification reference
 		queryStrings.add("select c.reference.id from Classification as c "
-				+ "where c.id=:classificationId "
-				);
-		//TODO ???	
+				+ "where c.id=:classificationId ");
+		// TODO ???
 		// +"join c.souces as s "
 		// +"join s.citation "
-				
+
 		parameters.put("classificationId", classification.getId());
-		
-		
+
 		// get node relations references:
 		queryStrings
-		.add("select distinct tn.referenceForParentChildRelation.id as c from TaxonNode tn "
-				+ "where tn.classification=:classification "
-				+ "and tn.referenceForParentChildRelation is not null ");
+				.add("select distinct tn.referenceForParentChildRelation.id as c from TaxonNode tn "
+						+ "where tn.classification=:classification "
+						+ "and tn.referenceForParentChildRelation is not null ");
 
-		
 		// get sec references
 		// -------------------------------------------------------------------
 		// taxa
@@ -397,7 +389,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "where tn.classification=:classification "
 						+ "and sr.relatedFrom.sec is not null ");
 
-		
 		// get relationship citations
 		// ---------------------------------------------------------------
 
@@ -440,7 +431,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				+ "and sy.name is not null ");
 
 		// get name relations references:
-		//-------------------------------------------------------
+		// -------------------------------------------------------
 		// Taxa:
 		queryStrings.add("select distinct nr.citation.id from TaxonNode tn "
 				+ "join tn.taxon.name.relationsFromThisName as nr "
@@ -481,7 +472,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// "ReferencedMediaBase"
 		// which has a citation
 
-		// taxa
 		queryStrings
 				.add("select distinct cit.id, seq.publishedIn.id from TaxonNode tn "
 						+ "join tn.taxon.descriptions as db "
@@ -495,11 +485,28 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "and cit is not null "
 						+ "and seq.publishedIn is not null ");
 
+		// traverse to specimenOrObservation via individualsAssociation
+
+		queryStrings
+				.add("select distinct cit.id, seq.publishedIn.id from TaxonNode tn "
+						+ "join tn.taxon.descriptions as db "
+						+ "join db.descriptionElements as ia "
+						+ "join ia.associatedSpecimenOrObservation as so "
+						+ "join so.sequences as seq "
+						+ "join seq.citations as cit "
+
+						+ "where so.class=:dnaSample "
+						+ "and ia.class=:individualsAssociation "
+						+ "and tn.classification=:classification "
+						+ "and cit is not null "
+						+ "and seq.publishedIn is not null ");
+
 		// we do assume, that a name description would not have a
 		// SpecimenOrObservation element
 
 		//
 		parameters.put("dnaSample", "DnaSample");
+		parameters.put("individualsAssociation", "IndividualsAssociation");
 
 		// media
 		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
@@ -513,18 +520,29 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 				+ "and me.citation is not null ");
 
-		
+		// traverse to specimenOrObservation via individualsAssociation
+
+		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
+				+ "join tn.taxon.descriptions as db "
+				+ "join db.descriptionElements as ia "
+				+ "join ia.associatedSpecimenOrObservation as so "
+				+ "join so.sequences as seq " + "join seq.chromatograms as me "
+				+ "where so.class=:dnaSample "
+				+ "and ia.class=:individualsAssociation "
+				+ "and me.class=:referencedMediaBase "
+				+ "and tn.classification=:classification "
+
+				+ "and me.citation is not null ");
+
 		// via media via name description
 		// Taxa:
 		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
 				+ "join tn.taxon.name.descriptions as d "
-				+ "join d.descriptionElements as de "
-				+ "join de.media as me "
+				+ "join d.descriptionElements as de " + "join de.media as me "
 				+ "where tn.classification=:classification "
 				+ "and tn.taxon.name is not null "
 				+ "and me.class=:referencedMediaBase "
-				+ "and me.citation is not null "
-				+ "and tn.taxon is not null "
+				+ "and me.citation is not null " + "and tn.taxon is not null "
 				+ "and tn.taxon.name is not null ");
 
 		// synonyms:
@@ -532,19 +550,19 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				+ "join tn.taxon.synonymRelations as syr "
 				+ "join syr.relatedFrom as sy "
 				+ "join sy.name.descriptions as d "
-				+ "join d.descriptionElements as de "
-				+ "join de.media as me "
+				+ "join d.descriptionElements as de " + "join de.media as me "
 				+ "where tn.classification=:classification "
 				+ "and sy.name is not null "
 				+ "and me.class=:referencedMediaBase "
-				+ "and me.citation is not null "
-				+ "and tn.taxon is not null "
+				+ "and me.citation is not null " + "and tn.taxon is not null "
 				+ "and tn.taxon.name is not null ");
-				
 
-		// TODO get all "Media" from everywhere because it could be
+		// get all "Media" from everywhere because it could be
 		// of the subtype "ReferencedMediaBase"
 		// which has a citation
+
+		// TODO do we need the media from DefinedTermBase???
+		// what can be a Feature!
 
 		// from description element
 		queryStrings.add("select distinct me.citation.id from TaxonNode as tn "
@@ -554,12 +572,11 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 				+ "and me.class=:referencedMediaBase "
 				+ "and me.citation is not null ");
 
-
-
 		// via NamedArea that has 2 media parameter
-		// and a waterbodyOrContinet that has media parameter and has continent parameter
+		// and a waterbodyOrContinet that has media parameter and has continent
+		// parameter
 		// which also has media parameter:
-		
+
 		// from CommonTaxonName or Distribution
 		queryStrings
 				.add("select distinct de.area.shape.citation.id, me1.citation.id, "
@@ -585,61 +602,91 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		parameters.put("commonTaxonName", "CommonTaxonName");
 		parameters.put("distribution", "Distribution");
-		
+
 		// from TaxonDescription:
 		queryStrings
-		.add("select distinct na.shape.citation.id, me1.citation.id, "
-				+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
-				+ "join tn.taxon.descriptions as d "
-				+ "join d.geoScopes as na "
-				+ "join na.media as me1 "
-				+ "join na.waterbodiesOrCountries as wboc "
-				+ "join wboc.media as me2 "
-				+ "join wboc.continents as co "
-				+ "join co.media as me3 "
-				+ "where tn.classification=:classification "
-				+ "and me1.class=:referencedMediaBase "
-				+ "and me1.citation is not null "
-				+ "and me2.class=:referencedMediaBase "
-				+ "and me2.citation is not null "
-				+ "and me3.class=:referencedMediaBase "
-				+ "and me3.citation is not null "
-				+ "and na.shape.class=:referencedMediaBase "
-				+ "and na.shape is not null "
-				);
+				.add("select distinct na.shape.citation.id, me1.citation.id, "
+						+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
+						+ "join tn.taxon.descriptions as d "
+						+ "join d.geoScopes as na " + "join na.media as me1 "
+						+ "join na.waterbodiesOrCountries as wboc "
+						+ "join wboc.media as me2 "
+						+ "join wboc.continents as co "
+						+ "join co.media as me3 "
+						+ "where tn.classification=:classification "
+						+ "and me1.class=:referencedMediaBase "
+						+ "and me1.citation is not null "
+						+ "and me2.class=:referencedMediaBase "
+						+ "and me2.citation is not null "
+						+ "and me3.class=:referencedMediaBase "
+						+ "and me3.citation is not null "
+						+ "and na.shape.class=:referencedMediaBase "
+						+ "and na.shape is not null ");
 
+		// from gathering event
+		queryStrings
+				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id from TaxonNode tn "
+						+ "join tn.taxon.descriptions as db "
+						+ "join db.describedSpecimenOrObservations as fo "
+						+ "join fo.gatheringEvent.collectingAreas as ca "
+						+ "where fo.class=:fieldObservation "
+						+ "and fo.gatheringEvent is not null "
+						+ "and fo.gatheringEvent.country is not null "
+						+ "and fo.gatheringEvent.country.shape is not null "
+						+ "and ca.shape is not null "
+						+ "and ca.shape.class=:referencedMediaBase "
+						+ "and ca.shape.citation is not null "
+						+ "and fo.gatheringEvent.country.shape.class=:referencedMediaBase "
+						+ " and fo.gatheringEvent.country.shape.citation is not null "
+						+ "and tn.classification=:classification ");
 
-		//from gathering event
-		
-		
-		
+		// traverse to specimenOrObservation via individualsAssociation
+
+		queryStrings
+				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id "
+						+ "from TaxonNode tn "
+						+ "join tn.taxon.descriptions as db "
+						+ "join db.descriptionElements as ia "
+						+ "join ia.associatedSpecimenOrObservation as fo "
+						+ "join fo.gatheringEvent.collectingAreas as ca "
+						+ "where fo.class=:fieldObservation "
+						+ "and fo.gatheringEvent is not null "
+						+ "and fo.gatheringEvent.country is not null "
+						+ "and fo.gatheringEvent.country.shape is not null "
+						+ "and ca.shape is not null "
+						+ "and ca.shape.class=:referencedMediaBase "
+						+ "and ca.shape.citation is not null "
+						+ "and fo.gatheringEvent.country.shape.class=:referencedMediaBase "
+						+ " and fo.gatheringEvent.country.shape.citation is not null "
+						+ "and ia.class=:individualsAssociation "
+						+ "and tn.classification=:classification ");
+
+		parameters.put("fieldObservation", "FieldObservation");
 		parameters.put("referencedMediaBase", "ReferencedMediaBase");
-		
-		
+
 		parameters.put("classification", classification);
 
-		
 		// via events
-		//----------------------------------------
+		// ----------------------------------------
 		// determination event:
 		// taxa
 		queryStrings
-		.add("select distinct sor.id from DeterminationEvent dtev, TaxonNode tn "
-				+ "join dtev.setOfReferences as sor "
-				
-				+ "where tn.classification=:classification "
-				+ "and tn.taxon=dtev.taxon ");
-		
+				.add("select distinct sor.id from DeterminationEvent dtev, TaxonNode tn "
+						+ "join dtev.setOfReferences as sor "
+
+						+ "where tn.classification=:classification "
+						+ "and tn.taxon=dtev.taxon ");
+
 		// synonyms
-		
+
 		queryStrings
-		.add("select distinct sor.id from DeterminationEvent dtev, TaxonNode tn "
-				+ "join dtev.setOfReferences as sor "
-				+ "join tn.taxon.synonymRelations as syr "
-				+ "join syr.relatedTo as sy "
-				+ "where tn.classification=:classification "
-				+ "and sy=dtev.taxon ");
-		
+				.add("select distinct sor.id from DeterminationEvent dtev, TaxonNode tn "
+						+ "join dtev.setOfReferences as sor "
+						+ "join tn.taxon.synonymRelations as syr "
+						+ "join syr.relatedTo as sy "
+						+ "where tn.classification=:classification "
+						+ "and sy=dtev.taxon ");
+
 		// TODO get all objects that inherit IdentifiableEntity because it has
 		// an
 		// IdentifiableSource which inherits from OriginalSourceBase
@@ -652,6 +699,34 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// TODO get sources of all references from ids and add the references of
 		// the sources...
 		// iterate in a certain depth REFERENCE_LINK_RECURSION_DEPTH
+
+		for (int i = 0; i < REFERENCE_LINK_RECURSION_DEPTH; i++) {
+			
+//			ids.remove(null);
+			List<Integer> preIds = new ArrayList(ids);
+			
+
+			if (!preIds.isEmpty()) {
+
+				queryStrings.clear();
+				Set<Integer> postIds = new HashSet<Integer>();
+
+				queryStrings
+						.add("select distinct s.citation.id from Reference as R "
+								+ "join R.sources as s "
+								+ "where s.citation is not null "
+//								+ "and s.citation.id is not null "
+								+ " and s.citation.id in (:preIds) "
+								);
+
+				parameters.clear();
+				parameters.put("preIds", preIds);
+				postIds.addAll(processQueriesWithIdDistinctListResult(
+						queryStrings, parameters));
+				ids.addAll(postIds);
+			}
+
+		}
 
 		return Long.valueOf(ids.size());
 	}
