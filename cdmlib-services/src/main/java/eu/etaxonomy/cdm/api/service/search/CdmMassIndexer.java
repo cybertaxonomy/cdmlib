@@ -24,6 +24,7 @@ import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -37,6 +38,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.yourkit.api.Controller;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
@@ -62,9 +65,16 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
 
-    private static final int BATCH_SIZE = 2000;
+    /*
+     *      !!! DO NOTE CHANGE THIS !!!
+     *
+     * batch_size optimized for 200MB of heap memory
+     */
+    private static final int BATCH_SIZE = 200;
 
     public HibernateTransactionManager transactionManager;
+
+    private Controller controller;
 
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
@@ -103,11 +113,17 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 fullTextSession.index(results.get(0)); // index each element
                 if (index % BATCH_SIZE == 0 || index == countResult) {
                     batchesWorked++;
-                    fullTextSession.flushToIndexes(); // apply changes to indexes
-                    fullTextSession.clear(); // clear since the queue is processed
-                    subMonitor.worked(1);
-                    logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
-                    //if(index / BATCH_SIZE > 10 ) break;
+                    try {
+                        fullTextSession.flushToIndexes(); // apply changes to indexes
+                    } catch(ObjectNotFoundException e){
+                        // TODO report this issue to progress monitor once it can report on errors
+                        logger.error("possibly invalid data, thus skipping this batch and continuing with next one", e);
+                    } finally {
+                        fullTextSession.clear(); // clear since the queue is processed
+                        getSession().clear(); // clear session to free memory
+                        subMonitor.worked(1);
+                        logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
+                    }
                 }
             }
         } catch (RuntimeException e) {
@@ -129,15 +145,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
         String indexName = null;
         if(type.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
-        	indexName = type.getAnnotation(org.hibernate.search.annotations.Indexed.class).index();
+            indexName = type.getAnnotation(org.hibernate.search.annotations.Indexed.class).index();
         } else {
-        	//TODO:give some indication that this class is infact not indexed
-        	return;
+            //TODO:give some indication that this class is infact not indexed
+            return;
         }
         SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)Search.getFullTextSession(getSession()).getSearchFactory();
         IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(indexName);
         IndexReader indexReader = searchFactory.getIndexReaderAccessor().open(type);
-    	List<String> idFields = getIndexedDeclaredFields(type);
+        List<String> idFields = getIndexedDeclaredFields(type);
 
         monitor.subTask("creating dictionary " + type.getSimpleName());
 
@@ -146,41 +162,41 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
         SpellChecker spellChecker = null;
-    	try {
-    		spellChecker = new SpellChecker(directory);
-    		Iterator<String> itr = idFields.iterator();
-    		while(itr.hasNext()) {
-    			String indexedField = itr.next();
-    			logger.info("creating dictionary for field " + indexedField);
-    			Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
-    			IndexWriterConfig iwc = new IndexWriterConfig(Configuration.luceneVersion, searchFactory.getAnalyzer(type));
-    			spellChecker.indexDictionary(dictionary, iwc, true);
-    		}
-    		subMonitor.internalWorked(1);
-    	} catch (IOException e) {
-    		logger.error("IOException when creating dictionary", e);
-    		//TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
+        try {
+            spellChecker = new SpellChecker(directory);
+            Iterator<String> itr = idFields.iterator();
+            while(itr.hasNext()) {
+                String indexedField = itr.next();
+                logger.info("creating dictionary for field " + indexedField);
+                Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
+                IndexWriterConfig iwc = new IndexWriterConfig(Configuration.luceneVersion, searchFactory.getAnalyzer(type));
+                spellChecker.indexDictionary(dictionary, iwc, true);
+            }
+            subMonitor.internalWorked(1);
+        } catch (IOException e) {
+            logger.error("IOException when creating dictionary", e);
+            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
             monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
             monitor.done();
-    	} catch (RuntimeException e) {
-    		logger.error("RuntimeException when creating dictionary", e);
-    		//TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
+        } catch (RuntimeException e) {
+            logger.error("RuntimeException when creating dictionary", e);
+            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
             monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
             monitor.done();
-    	} finally {
-    		searchFactory.getIndexReaderAccessor().close(indexReader);
-    	}
-    	if (spellChecker != null) {
-    		try {
-    			logger.info("closing spellchecker ");
-    			spellChecker.close();
-    		} catch (IOException e) {
-    			logger.error("IOException when closing spellchecker", e);
-    		}
-    	}
+        } finally {
+            searchFactory.getIndexReaderAccessor().close(indexReader);
+        }
+        if (spellChecker != null) {
+            try {
+                logger.info("closing spellchecker ");
+                spellChecker.close();
+            } catch (IOException e) {
+                logger.error("IOException when closing spellchecker", e);
+            }
+        }
 
-    	logger.info("end creating dictionary " + type.getName());
-    	subMonitor.done();
+        logger.info("end creating dictionary " + type.getName());
+        subMonitor.done();
     }
 
     /**
@@ -213,24 +229,24 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
         SpellChecker spellChecker = null;
-    	try {
-    		spellChecker = new SpellChecker(directory);
-    		spellChecker.clearIndex();
-    	} catch (IOException e) {
-    		logger.error("IOException when creating dictionary", e);
-    		//TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
+        try {
+            spellChecker = new SpellChecker(directory);
+            spellChecker.clearIndex();
+        } catch (IOException e) {
+            logger.error("IOException when creating dictionary", e);
+            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
             monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
             monitor.done();
-    	}
+        }
 
-    	if (spellChecker != null) {
-    		try {
-    			logger.info("closing spellchecker ");
-    			spellChecker.close();
-    		} catch (IOException e) {
-    			logger.error("IOException when closing spellchecker", e);
-    		}
-    	}
+        if (spellChecker != null) {
+            try {
+                logger.info("closing spellchecker ");
+                spellChecker.close();
+            } catch (IOException e) {
+                logger.error("IOException when closing spellchecker", e);
+            }
+        }
     }
 
 
@@ -250,8 +266,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         for(Class<? extends CdmBase> type : indexedClasses()){
             reindex(type, monitor);
-            // clear the session after each class to free memory
-            getSession().clear();
         }
 
         optimize();
@@ -260,8 +274,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         monitor.done();
     }
 
-	@Override
-	public void createDictionary(IProgressMonitor monitor) {
+    @Override
+    public void createDictionary(IProgressMonitor monitor) {
         if(monitor == null){
             monitor = new NullProgressMonitor();
         }
@@ -271,12 +285,12 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         monitor.beginTask("Creating Dictionary " + dictionaryClasses().length + " classes", steps);
 
         for(Class type : dictionaryClasses()){
-        	createDictionary(type, monitor);
+            createDictionary(type, monitor);
         }
 
         monitor.done();
 
-	}
+    }
     protected void optimize() {
 
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
@@ -335,19 +349,19 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * @return
      */
     private List<String> getIndexedDeclaredFields(Class clazz) {
-    	List<String> idFields = new ArrayList<String>();
-    	if(clazz.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
-    		Field[] declaredFields = clazz.getDeclaredFields();
-    		for(int i=0;i<declaredFields.length;i++ ) {
-    			logger.info("checking field " + declaredFields[i].getName());
-    			if(declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Field.class) ||
-    					declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Fields.class)) {
-    				idFields.add(declaredFields[i].getName());
-    				logger.info("adding field " + declaredFields[i].getName());
-    			}
-    		}
-    	}
-    	return idFields;
+        List<String> idFields = new ArrayList<String>();
+        if(clazz.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
+            Field[] declaredFields = clazz.getDeclaredFields();
+            for(int i=0;i<declaredFields.length;i++ ) {
+                logger.info("checking field " + declaredFields[i].getName());
+                if(declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Field.class) ||
+                        declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Fields.class)) {
+                    idFields.add(declaredFields[i].getName());
+                    logger.info("adding field " + declaredFields[i].getName());
+                }
+            }
+        }
+        return idFields;
     }
     /**
      * @return
@@ -356,9 +370,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public Class<? extends CdmBase>[] indexedClasses() {
         return new Class[] {
+                TaxonBase.class,
                 DescriptionElementBase.class,
                 Classification.class,
-                TaxonBase.class,
                 TaxonNameBase.class,
                 SpecimenOrObservationBase.class
                 };
@@ -370,11 +384,9 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @Override
     public Class[] dictionaryClasses() {
         return new Class[] {
-        		NonViralName.class
+                NonViralName.class
                 };
     }
-
-
 
 
 }
