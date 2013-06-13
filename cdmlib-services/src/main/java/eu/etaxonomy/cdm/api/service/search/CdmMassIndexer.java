@@ -39,8 +39,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yourkit.api.Controller;
-
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
@@ -73,8 +71,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     private static final int BATCH_SIZE = 200;
 
     public HibernateTransactionManager transactionManager;
-
-    private Controller controller;
 
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
