@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.test.function;
 
 import static org.junit.Assert.assertEquals;
+
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -20,19 +22,25 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import org.springframework.orm.hibernate4.HibernateSystemException;
+import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
@@ -50,21 +58,16 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
- * <h2>NOTE</h2>
- * This is a test for sole development purposes, it is not
- * touched by 'mvn test' since it is not matching the "\/**\/*Test" pattern,
- * but it should be annotate with @Ignore when running the project a s junit suite in eclipse
- *
- * TODO refactor the Transaction Handling into Conversation Manager
+ * This test class is an exhaustive testing ground for conversations (a.k.a long running sessions)
+ * implemented in the CDM Library by the {@link eu.etaxonomy.cdm.api.conversation.ConversationHolder ConversationHolder}.
  *
  * @author n.hoffmann
  *
  */
 @Transactional(TransactionMode.DISABLED)
-@Ignore /* IGNORE in Suite */
-public class TestConcurrentSession extends CdmIntegrationTest{
+public class ConcurrentSessionTest extends CdmIntegrationTest {
 
-	private static final Logger logger = Logger.getLogger(TestConcurrentSession.class);
+	private static final Logger logger = Logger.getLogger(ConcurrentSessionTest.class);
 
 	@SpringBeanByType
 	private SessionFactory sessionFactory;
@@ -84,99 +87,179 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
 
-	Resource applicationContextResource = new ClassPathResource("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml");
+	ConversationHolder conversationHolder1 = null;
+	ConversationHolder conversationHolder2 = null;
+	ConversationHolder conversationHolder3 = null;
 
-
-
-	private ConversationHolder conversationHolder1;
-	private ConversationHolder conversationHolder2;
-	private ConversationHolder conversationHolder3;
+	DataSource targetDataSource;
 
 	private UUID taxonUuid1 = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 	private UUID taxonUuid2 = UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46");
-	private UUID taxonUuid3 = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 
 	private UUID referenceUuid1 = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
 	private UUID referenceUuid2 = UUID.fromString("ad4322b7-4b05-48af-be70-f113e46c545e");
 
-	/**
-	 *
-	 */
-	private TransactionDefinition definition = null;
 
 
 
 	@Before
 	public void setup(){
-		conversationHolder1 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
-		conversationHolder2 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
-		conversationHolder3 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
+		targetDataSource = ((TransactionAwareDataSourceProxy)dataSource).getTargetDataSource();
 	}
 
 	@After
 	public void tearDown(){
+		if(conversationHolder1 != null) {			
+			conversationHolder1.close();
+		}
+		if(conversationHolder2 != null) {			
+			conversationHolder2.close();
+		}
+		if(conversationHolder3 != null) {
+			conversationHolder3.close();
+		}
+
+		
 	}
 
+	/**
+	 * We want to know if the data really gets persisted.
+	 */
+	@Test
+	@DataSet("ConcurrentSessionTest.xml")
+	public void testProofOfDataPersistency(){
+
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		// first conversation
+		conversationHolder1.bind();
+		conversationHolder1.startTransaction();
+		// get a taxon
+		TaxonBase taxonBase = taxonService.find(taxonUuid1);
+		// get a reference
+		Reference reference = referenceService.find(referenceUuid2);
+		// make sure
+		assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
+		// set the reference as the taxons new sec
+		taxonBase.setSec(reference);
+		// save and commit
+		taxonService.save(taxonBase);
+		conversationHolder1.commit();
+
+
+		// second conversation
+		conversationHolder2.bind();
+		conversationHolder2.startTransaction();
+		// load the same taxon in a different session
+		TaxonBase taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
+		// load the reference
+		Reference referenceInSecondTransaction = referenceService.find(referenceUuid2);
+		// we assume that
+		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
+		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);
+	}
+	
 	/**
 	 * Test the general possibility to open two sessions at the same time
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testTwoSessions(){
-
-		conversationHolder1.bind();
-		conversationHolder1.startTransaction();
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
+		conversationHolder1.bind();		
 		int context1Count = taxonDao.count();
 
 		conversationHolder2.bind();
 		int context2Count = taxonDao.count();
 
-//		assertNotSame("The contexts sessions should be distinct.", conversationHolder1.getSession(), conversationHolder2.getSession());
 		assertEquals("Both contexts should yield the same results(at least if " +
 				"there where no write operations in between)", context1Count, context2Count);
 	}
 
 	/**
-	 * Getting the same taxon from two different sessions. However, the resulting objects should not be the same.
+	 * Getting the same taxon from two different sessions using the taxon dao. 
+	 * However, the resulting objects should be equal but not be the same.
 	 */
-	@Test
+	@Test	
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testTwoSessionsEqualTaxon(){
-
+		conversationHolder1 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
+		
 		conversationHolder1.bind();
 		TaxonBase taxonBase1 = taxonDao.findByUuid(taxonUuid1);
 
 		conversationHolder2.bind();
 		TaxonBase taxonBase2 = taxonDao.findByUuid(taxonUuid1);
 
-		assertEquals("The objects should be equal.", taxonBase1, taxonBase2);
-		assertNotSame("The objects should not be the same.", taxonBase1, taxonBase2);
+		assertEquals("The objects should be equal.", taxonBase1, taxonBase2);		
+		assertNotSame("The objects should be the same.", taxonBase1, taxonBase2);		
 	}
 
 	/**
-	 *
+	 * Getting the same taxon from two different sessions using the taxon service. 
+	 * However, the resulting objects should be equal but not be the same.
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testTwoSessionsEqualTaxonWithTaxonService(){
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
 		conversationHolder1.bind();
 		TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
 
 		conversationHolder2.bind();
 		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
-
+		
+		
 		assertEquals("The objects should be equal", taxonBase1, taxonBase2);
 		assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
 	}
+	
+	/**
+	 * Interveaving conversations to test session within and outside conversations.
+	 */
+	@Test
+	@DataSet("ConcurrentSessionTest.xml")
+	public void interveaveConversations(){		
+		TaxonBase<?> taxonBase1 = taxonService.find(taxonUuid1);		
+		Session h4Session = taxonService.getSession();
+		
+		assertNull(TransactionSynchronizationManager.getResource(sessionFactory));
+					
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		SessionHolder sessionHolder1 = (SessionHolder)TransactionSynchronizationManager.getResource(sessionFactory);		
+		Session session1 = sessionHolder1.getSession();	
+		assertNotSame("The sessions should not be the same", h4Session, session1);
+		TaxonBase<?> taxonBase2 = taxonService.find(taxonUuid1);
+		SessionHolder sessionHolder2 = (SessionHolder)TransactionSynchronizationManager.getResource(sessionFactory);		
+		Session session2 = sessionHolder2.getSession();	
+		assertEquals("The session holders should be equal", sessionHolder1, sessionHolder2);
+		assertEquals("The sessions should be equal", session1, session2);
+		conversationHolder1.close();
+				
+		h4Session = taxonService.getSession();
+		assertNotSame("The sessions should not be the same", h4Session, session2);
+		TaxonBase<?> taxonBase3 = taxonService.find(taxonUuid1);
+		h4Session = taxonService.getSession();
+		TaxonBase<?> taxonBase4 = taxonService.find(taxonUuid1);
 
+	}
+	
 
 	/**
-	 * The session should still be open after committing a transaction.
+	 * Testing multiple transactions for the same conversation holder.
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testLongConversationWithMultipleTransactions(){
 
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
 		conversationHolder1.bind();
 		TransactionStatus txStatusOne = conversationHolder1.startTransaction();
 		TaxonBase taxonBase1 = taxonDao.findByUuid(taxonUuid1);
@@ -201,12 +284,15 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testSwitchSessions(){
 
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
 		conversationHolder1.bind();
-		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
+//		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
 		TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
 
 		conversationHolder2.bind();
-		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition );
+//		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition );
 		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
 
 		conversationHolder1.bind();
@@ -214,54 +300,60 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 
 
 	}
-
+	
+	/**
+	 * Lazy loaded objects should be the same in different transactions within the 
+	 * same conversation.
+	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testReaccessingTheSameLazyLoadedObjectInTwoDifferentTransactions(){
 
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		conversationHolder1.bind();
 		TransactionStatus tx1 = conversationHolder1.startTransaction();
 		TaxonBase t1 = taxonService.find(taxonUuid1);
 
 		TaxonNameBase n1 = t1.getName();
 		TransactionStatus tx2 = conversationHolder1.commit(true);
-
-		// I wonder if this breaks
+		
 		TaxonNameBase n2 = t1.getName();
 
 		assertSame(n1, n2);
 		assertNotSame(tx1, tx2);
 
 	}
-
-	@Test
-	@Ignore
-	/*
-	 * for some reason object identity is not guaranteed anymore when accessing the
-	 * same object in the same session but in different transactions. Because of that
-	 * this test fails, and IMHO it should not. I am not quite sure if this is a bug.
+	
+	/**
+	 * Objects should be the same in different transactions within the 
+	 * same conversation.
 	 */
+	@Test	
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testReaccessingTheSameObjectInTwoDifferentTransactions(){
 
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		conversationHolder1.bind();
 		TransactionStatus tx1 = conversationHolder1.startTransaction();
 		TaxonBase t1 = taxonService.find(taxonUuid1);
 
-		TransactionStatus tx2 = conversationHolder1.commit(true);
-
-		// I wonder if this breaks
+		TransactionStatus tx2 = conversationHolder1.commit(true);	
 		TaxonBase t2 = taxonService.find(taxonUuid1);
 
-		assertSame(t1, t2);// TODO this fails, why????
+		assertSame(t1, t2);
 		assertNotSame(tx1, tx2);
 
 	}
 
+	/**
+	 * Objects should be the same in the same transaction within the 
+	 * same conversation.
+	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testReaccessingTheSameObjectInSameTransaction(){
 
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		TaxonBase t1 = taxonService.find(taxonUuid1);
@@ -282,14 +374,15 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testSavingAndReaccessingTheSameObject(){
-
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		TestConversationEnabled testConversationEnabled = new TestConversationEnabled();
 
 		conversationHolder1.registerForDataStoreChanges(testConversationEnabled);
 
 		conversationHolder1.bind();
 		TransactionStatus txStatusOne = conversationHolder1.startTransaction();
-//		Session sessionFirstTransaction = conversationHolder1.getSession();
+//		Session sessionFirstTransaction = conversationHolder11.getSession();
 		TaxonBase taxonBase = taxonService.find(taxonUuid1);
 		TaxonNameBase newTaxonName = BotanicalName.NewInstance(null);
 
@@ -303,44 +396,44 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 
 		conversationHolder1.bind();
 		TransactionStatus txStatusTwo = conversationHolder1.startTransaction();
-//		Session sessionSecondTransaction = conversationHolder1.getSession();
+
 		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
 		conversationHolder1.commit();
 
 		assertEquals("The taxa should be equal.", taxonBase, taxonBase2);
 
-
-//		assertSame("The taxa should be the same.", taxonBase, taxonBase2);
-//		assertSame("The sessions should be the same.", sessionFirstTransaction, sessionSecondTransaction);
-
 		assertEquals("The name objects should be the same.", taxonBase.getName(), taxonBase2.getName());
 
-
-//		assertSame("The name objects should be the same.", taxonBase.getName(), taxonBase2.getName());
 	}
+	
+
 
 	/**
 	 * We load the same taxon in two different sessions. The reference of the first
 	 * taxon gets manipulated and the taxon saved afterwards.  When trying to persist the other
 	 * taxon we would expect some form of exception.
 	 *
-	 * TODO it is not quite clear to me what really should happen here. Right now it seems like
-	 * we do not have any locking at all. Needs further investigation.
-	 *
-	 * UPDATE we indeed have no locking. Last write wins!
 	 */
-	@Test
-	@Ignore
+	@Test(expected=HibernateSystemException.class)	
+	
 	@DataSet("ConcurrentSessionTest.xml")
+	
 	public void testWhatHappensWhenEncounteringStaleData(){
-		conversationHolder1.bind();
+
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder3 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
+		conversationHolder1.bind();		
 		TransactionStatus txStatusOne = conversationHolder1.startTransaction();
 		TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
 
+		
 		conversationHolder2.bind();
 		TransactionStatus txStatusTwo = conversationHolder2.startTransaction();
 		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
 
+		
 		conversationHolder1.bind();
 		Reference reference1 = referenceService.find(referenceUuid1);
 		assertSame("This should be the sec", taxonBase1.getSec(), reference1);
@@ -351,55 +444,27 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		conversationHolder1.commit();
 
 		conversationHolder2.bind();
-		taxonBase2.setSec(null);
+		taxonBase2.setSec(reference1);
 		taxonService.save(taxonBase2);
 		conversationHolder2.commit();
 
 		conversationHolder3.bind();
+		TransactionStatus txStatusThree = conversationHolder3.startTransaction();
 		TaxonBase taxonBase3 = taxonService.find(taxonUuid1);
 		assertNull(taxonBase3.getSec());
 	}
 
-	/**
-	 * We want to know if the data really gets persisted.
-	 */
-	@Test
-	@DataSet("ConcurrentSessionTest.xml")
-	public void testProofOfDataPersistency(){
-		// first conversation
-		conversationHolder1.bind();
-		conversationHolder1.startTransaction();
-		// get a taxon
-		TaxonBase taxonBase = taxonService.find(taxonUuid1);
-		// get a reference
-		Reference reference = referenceService.find(referenceUuid2);
-		// make sure
-		assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
-		// set the reference as the taxons new sec
-		taxonBase.setSec(reference);
-		// save and commit
-		taxonService.save(taxonBase);
-		conversationHolder1.commit();
 
-
-		// second conversation
-		conversationHolder2.bind();
-		conversationHolder2.startTransaction();
-		// load the same taxon in a different session
-		TaxonBase taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
-		// load the reference
-		Reference referenceInSecondTransaction = referenceService.find(referenceUuid2);
-		// we assume that
-		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
-		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);
-	}
 
 	/**
-	 * The same test as before but uses the conversation managers transaction
+	 * Persist data in two different , successive transactions from different conversations
 	 */
-	@Test
+	@Test	
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testProofOfDataPersistencyNewTransactionModel(){
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		// first conversation
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
@@ -413,7 +478,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		taxonBase.setSec(reference);
 		// save and commit
 		taxonService.save(taxonBase);
-		conversationHolder1.commit();
+		conversationHolder1.commit(false);
 
 
 		// second conversation
@@ -426,15 +491,19 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// we assume that
 		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
 		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);
+		
 	}
 
 	/**
 	 * We manipulate an object in one session and see how these change get propagated to the other session.
 	 */
-//	@Ignore
+
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testIfDataGetsPersistedWhenFiringCommit(){
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		// first conversation
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
@@ -452,6 +521,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 
 		// second conversation
 		conversationHolder2.bind();
+		conversationHolder2.startTransaction();
 		// load the same taxon in a different session, since we did not commit the first transaction,
 		// the reference change did not make its way to the database and the references should be distinct
 		TaxonBase taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
@@ -475,24 +545,37 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	}
 
 	/**
-	 * This should not throw exceptions
+	 * Testing multiple transaction in a single conversation (session)
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
-	public void testMultipleTransactionsInOneSession(){
+	public void testMultipleTransactionsInOneSession() {
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
 		conversationHolder1.commit();
 
 		conversationHolder1.startTransaction();
-		TaxonBase taxonBase2 = taxonService.find(taxonUuid2);
+		TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
 		conversationHolder1.commit();
+		
+		assertSame("The objects should be the same", taxonBase1, taxonBase2);
+		assertEquals("The objects should be equal", taxonBase1, taxonBase2);
 	}
 
+	/**
+	 * Testing multiple transaction in a multiple conversations (session)
+	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testMultipleTransactionsInMultipleSessions(){
+
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder3 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 
@@ -503,10 +586,14 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		conversationHolder3.startTransaction();
 	}
 
-
+	/**
+	 * Testing inserting new data.
+	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testInsert(){
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		TestConversationEnabled testConversationEnabled = new TestConversationEnabled();
 
 		conversationHolder1.registerForDataStoreChanges(testConversationEnabled);
@@ -518,9 +605,15 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		conversationHolder1.commit();
 	}
 
+	/**
+	 * Testing updating already existing data.
+	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testUpdate(){
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
 		TestConversationEnabled testConversationEnabled = new TestConversationEnabled();
 
 		conversationHolder1.registerForDataStoreChanges(testConversationEnabled);
@@ -534,84 +627,103 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		conversationHolder1.commit();
 	}
 
+	/**
+	 * Switch sessions randomly and expect retrieved objects to be same but not equal.
+	 */	
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testMultipleSessionSwitching(){
-//		conversationHolder1.bind();
-//		TaxonBase taxon1 = taxonService.find(taxonUuid1);
-//		assertSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
-//		conversationHolder2.bind();
-//		TaxonBase taxon2 = taxonService.find(taxonUuid2);
-//		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
-//		conversationHolder3.bind();
-//		TaxonBase taxon3 = taxonService.find(taxonUuid1);
-//		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
-//		conversationHolder2.bind();
-//		TaxonNameBase name2 = taxon2.getName();
-//		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
-//		conversationHolder3.bind();
-//		TaxonNameBase name3 = taxon3.getName();
-//		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
-//		// Lazy loading somehow works without binding the session first
-//		TaxonNameBase name1 = taxon1.getName();
-//		assertNotSame(name1, name3);
-//		assertEquals(name1, name3);
-//		assertNotSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder3 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
+		conversationHolder1.bind();
+		TaxonBase taxon1 = taxonService.find(taxonUuid1);
+		assertSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
+		conversationHolder2.bind();
+		TaxonBase taxon2 = taxonService.find(taxonUuid2);
+		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
+		conversationHolder3.bind();
+		TaxonBase taxon3 = taxonService.find(taxonUuid1);
+		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
+		conversationHolder2.bind();
+		TaxonNameBase name2 = taxon2.getName();
+		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
+		conversationHolder3.bind();
+		TaxonNameBase name3 = taxon3.getName();
+		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
+		// Lazy loading somehow works without binding the session first
+		TaxonNameBase name1 = taxon1.getName();
+		assertNotSame(name1, name3);
+		assertEquals(name1, name3);
+		assertNotSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
 
 	}
 
+	/**
+	 * Switch sessions with multiple transactions randomly and expect retrieved objects to be same but not equal.
+	 */	
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testMultipleSessionSwitchingInTransactions(){
-//		conversationHolder1.bind();
-//		conversationHolder1.startTransaction();
-//		TaxonBase taxon1 = taxonService.find(taxonUuid1);
-//		assertSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//		conversationHolder1.commit();
-//
-//		conversationHolder2.bind();
-//		conversationHolder2.startTransaction();
-//		TaxonBase taxon2 = taxonService.find(taxonUuid2);
-//		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//		conversationHolder2.commit();
-//
-//		conversationHolder3.bind();
-//		conversationHolder3.startTransaction();
-//		TaxonBase taxon3 = taxonService.find(taxonUuid1);
-//		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//		conversationHolder3.commit();
-//
-//		conversationHolder2.bind();
-//		conversationHolder2.startTransaction();
-//		TaxonNameBase name2 = taxon2.getName();
-//		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//		conversationHolder2.commit();
-//
-//		conversationHolder3.bind();
-//		conversationHolder3.startTransaction();
-//		TaxonNameBase name3 = taxon3.getName();
-//		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
-//		// Lazy loading somehow works without binding the session first
-//		TaxonNameBase name1 = taxon1.getName();
-//		assertNotSame(name1, name3);
-//		assertEquals(name1, name3);
-//		assertNotSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
-//
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder3 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		
+		conversationHolder1.bind();
+		conversationHolder1.startTransaction();
+		TaxonBase taxon1 = taxonService.find(taxonUuid1);
+		assertSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+		conversationHolder1.commit();
+
+		conversationHolder2.bind();
+		conversationHolder2.startTransaction();
+		TaxonBase taxon2 = taxonService.find(taxonUuid2);
+		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+		conversationHolder2.commit();
+
+		conversationHolder3.bind();
+		conversationHolder3.startTransaction();
+		TaxonBase taxon3 = taxonService.find(taxonUuid1);
+		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+		conversationHolder3.commit();
+
+		conversationHolder2.bind();
+		conversationHolder2.startTransaction();
+		TaxonNameBase name2 = taxon2.getName();
+		assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+		conversationHolder2.commit();
+
+		conversationHolder3.bind();
+		conversationHolder3.startTransaction();
+		TaxonNameBase name3 = taxon3.getName();
+		assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
+		// Lazy loading somehow works without binding the session first
+		TaxonNameBase name1 = taxon1.getName();
+		assertNotSame(name1, name3);
+		assertEquals(name1, name3);
+		assertNotSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+
 	}
 
 
 	/**
-	 * this is a locking playground
+	 * Testing of locking mechanism 
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testLocking(){
+		
+		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
+		conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		conversationHolder1.bind();
 		// first session, first transaction
 		conversationHolder1.startTransaction();
