@@ -483,6 +483,7 @@
         <xsl:when test="name/rank/uuid='af5f2481-3192-403f-ae65-7c957a0f02b6'">
           <fo:block font-weight="bold" text-align="center" text-transform="uppercase">
             <xsl:apply-templates select="name/genusOrUninomial"/>
+            <xsl:text> FAMILY</xsl:text>
           </fo:block>
         </xsl:when>
         <!-- genus -->
@@ -677,19 +678,20 @@
   
   <xsl:template match="uri">
     <!--xsl:template name="uri"-->
-      
+    
     <xsl:param name="uri-node"/>
     <xsl:variable name="graphic" select="."/>
     <xsl:variable name="title" select="../../../../../title_L10n"/>
     <!--fo:block text-align="center"-->
-    
+    <fo:block keep-together.within-page="always"> 
+
       <!--xsl:variable name="graphic" select="e/representations/e/parts/e/uri"/-->
 
       <!-- Is there a description element of type Figure for this TaxonNode?-->
    
-      <xsl:choose>
-        
+      <xsl:choose>        
         <!--xsl:when test="contains($graphic,'jpg')"-->
+        <!-- this is temporary to include the Maps as images for Quentin, in the longer term we'll generate the maps using the web service-->
         <xsl:when test="starts-with($title,'Map')">
           <fo:block keep-with-next="always" text-align="center">
             
@@ -718,7 +720,7 @@
         </xsl:otherwise>
       </xsl:choose>
 
-    <fo:block>
+    <!--fo:block-->
 
       <!--fo:leader leader-pattern="rule" leader-length="120mm"/-->
       <fo:inline font-size="{$taxon-name-size-font}">
@@ -767,10 +769,11 @@
     <xsl:variable name="closing-tag">
       <xsl:value-of select="concat('&lt;/', $tag-name, '&gt;')"> </xsl:value-of>
     </xsl:variable>
+    <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
     
     <xsl:choose>
       <xsl:when test="contains($str, $opening-tag)">
-        <xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/>
+        <!--xsl:variable name="before-tag" select="substring-before($str, $opening-tag)"/-->
         <xsl:variable name="inside-tag"
           select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
         <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
@@ -1007,10 +1010,11 @@
         Quentin's GIS software -->
       <xsl:if test="uuid='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
         
-        <!-- get the map attached to the feature 'Figures' -->
-        <xsl:apply-templates
-          select="../feature/feature/representation_L10n[.='Figures']/../descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/>
-        <!--media/e/representations/e/parts/e/uri media/e/title_L10n[.='Map']/../representations/e/parts/e/uri"/-->
+        <!-- get the map attached to the feature 'Figures' - temporary solution - we will generatee the map using the web service-->
+        <xsl:if test="starts-with(../feature/feature/representation_L10n[.='Figures']/../descriptionelements/descriptionelement[1]/media/e/title_L10n,'Map')">
+          <xsl:apply-templates select="../feature/feature/representation_L10n[.='Figures']/../descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/>
+        </xsl:if>
+        
       </xsl:if>
       
     </fo:block>
@@ -1204,8 +1208,10 @@
             
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
+              <xsl:if test="citationMicroReference != ''">
             <xsl:text>: </xsl:text>
             <xsl:value-of select="citationMicroReference"/>
+              </xsl:if>
             <xsl:text>)</xsl:text>
             </xsl:when>
   <xsl:otherwise>
