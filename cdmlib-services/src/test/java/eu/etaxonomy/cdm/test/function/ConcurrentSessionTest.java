@@ -226,14 +226,14 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 	@DataSet("ConcurrentSessionTest.xml")
 	public void interveaveConversations(){		
 		TaxonBase<?> taxonBase1 = taxonService.find(taxonUuid1);		
-		Session h4Session = taxonService.getSession();
+		Session h4Session1 = taxonService.getSession();
 		
 		assertNull(TransactionSynchronizationManager.getResource(sessionFactory));
 					
 		conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
 		SessionHolder sessionHolder1 = (SessionHolder)TransactionSynchronizationManager.getResource(sessionFactory);		
 		Session session1 = sessionHolder1.getSession();	
-		assertNotSame("The sessions should not be the same", h4Session, session1);
+		assertNotSame("The sessions should not be the same", h4Session1, session1);
 		TaxonBase<?> taxonBase2 = taxonService.find(taxonUuid1);
 		SessionHolder sessionHolder2 = (SessionHolder)TransactionSynchronizationManager.getResource(sessionFactory);		
 		Session session2 = sessionHolder2.getSession();	
@@ -241,11 +241,12 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 		assertEquals("The sessions should be equal", session1, session2);
 		conversationHolder1.close();
 				
-		h4Session = taxonService.getSession();
-		assertNotSame("The sessions should not be the same", h4Session, session2);
+		h4Session1 = taxonService.getSession();
+		assertNotSame("The sessions should not be the same", h4Session1, session2);
 		TaxonBase<?> taxonBase3 = taxonService.find(taxonUuid1);
-		h4Session = taxonService.getSession();
+		Session h4Session2 = taxonService.getSession();
 		TaxonBase<?> taxonBase4 = taxonService.find(taxonUuid1);
+		assertNotSame("The sessions should not be the same", h4Session1, h4Session2);
 
 	}
 	
