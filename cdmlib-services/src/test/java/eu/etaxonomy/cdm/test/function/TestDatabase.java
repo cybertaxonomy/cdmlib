@@ -136,52 +136,6 @@ public class TestDatabase {
 	}
 
 
-	public void testFacts(){
-
-		String server = "192.168.2.10";
-		String database = "cdm_test_andreasM";
-		String username = "edit";
-		String password = CdmUtils.readInputLine("Password: ");
-		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-
-		Rank genus = Rank.GENUS();
-		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
-		botanicalName.setGenusOrUninomial("GenusName");
-
-		IJournal journal = ReferenceFactory.newJournal();
-		journal.setTitleCache("Afro+Doc", true);
-
-		Taxon taxon = Taxon.NewInstance(botanicalName,(Reference)journal);
-		appCtr.getTaxonService().save(taxon);
-
-		TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-		taxon.addDescription(taxonDescription);
-
-		//textData
-		TextData textData = TextData.NewInstance();
-		textData.putText(Language.DEFAULT(), "XXX");
-		taxonDescription.addElement(textData);
-
-		//commonNames
-		String commonNameString;
-		if (taxon.getName() != null){
-			commonNameString = "Common " + taxon.getName().getTitleCache();
-		}else{
-			commonNameString = "Common (null)";
-		}
-		CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, Language.DEFAULT());
-		taxonDescription.addElement(commonName);
-
-		//save
-		appCtr.getTaxonService().save(taxon);
-
-
-		appCtr.close();
-	}
-
-
 	public void testHybridRelationships(){
 
 //			String database = "cdm";
