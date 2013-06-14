@@ -168,6 +168,14 @@ public class ExcelRecordStream  implements IItemStream{
 			return TermUri.DC_LANGUAGE.getUriString();
 		}else if (key.equalsIgnoreCase("TDWG_1")){
 			return TermUri.DWC_COUNTRY_CODE.getUriString();
+		}else if (key.equalsIgnoreCase("VernacularName")){
+			return TermUri.DWC_VERNACULAR_NAME.getUriString();
+		}else if (key.equalsIgnoreCase("ExternalId_sysCode")){
+			return TermUri.CDM_SOURCE_IDINSOURCE.getUriString();
+		}else if (key.equalsIgnoreCase("External_source")){
+			return TermUri.CDM_SOURCE_REFERENCE.getUriString();
+		}else if (key.equalsIgnoreCase("IdNamespace")){
+			return TermUri.CDM_SOURCE_IDNAMESPACE.getUriString();
 		}else{
 			//TODO fire Event
 			String message = "Key '%s' does not (yet) exist for import";

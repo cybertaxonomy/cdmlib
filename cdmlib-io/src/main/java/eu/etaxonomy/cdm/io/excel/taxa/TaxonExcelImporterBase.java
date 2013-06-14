@@ -53,6 +53,8 @@ public abstract class TaxonExcelImporterBase extends ExcelTaxonOrSpecimenImportB
 	protected static final String IMAGE_COLUMN = "Image";
 	protected static final String TDWG_COLUMN = "TDWG";
 	protected static final String COUNTRY_COLUMN = "Country";
+	
+	protected static final String SYNONYM_COLUMN = "Synonym";
 
 }
 

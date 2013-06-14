@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -127,7 +129,11 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		//TDWG_1
 		handleTdwgArea(csvTaxonRecord, taxonBase);
 		
+		//VernecularName
+		handleCommonNames(csvTaxonRecord, taxonBase);
 
+		//External Sources, ID's and References
+		handleIdentifiableObjects(csvTaxonRecord, taxonBase);
 		
 		
 		//		    <!-- Top level group; listed as kingdom but may be interpreted as domain or superkingdom
@@ -181,6 +187,43 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	
 	/**
+	 * @param item
+	 * @param taxonBase
+	 */
+	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+		//TODO: Finish properly
+		String id = item.get(TermUri.CDM_SOURCE_IDINSOURCE);
+		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
+		String reference = item.get(TermUri.CDM_SOURCE_REFERENCE);
+		if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(idNamespace) && StringUtils.isNotBlank(reference)){
+			Reference<?> ref = ReferenceFactory.newGeneric();
+			ref.setTitle(reference);
+			Taxon taxon = (Taxon) taxonBase;
+			taxon.addSource(id, idNamespace, ref, null);
+		}
+	}
+
+
+	/**
+	 * @param item
+	 * @param taxonBase
+	 */
+	private void handleCommonNames(StreamItem item,TaxonBase<?> taxonBase) {
+		//TODO: handle comma separated values
+		String commonName = item.get(TermUri.DWC_VERNACULAR_NAME);
+		Language language = getLanguage(item);	
+		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonName, language);
+		if(taxonBase instanceof Taxon){
+			Taxon taxon = (Taxon) taxonBase;
+			TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+			taxonDescription.addElement(commonTaxonName);
+			logger.info("Common name " + commonName + " added to " + taxon.getTitleCache());
+		}
+	}
+
+
+
+	/**
 	 * @param csvTaxonRecord
 	 * @param taxonBase
 	 */
@@ -230,16 +273,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 */
 	private void handleTaxonRemarks(StreamItem item,TaxonBase<?> taxonBase) {
 		String comment = item.get(TermUri.DWC_TAXON_REMARKS);
-		String langItem = item.get(TermUri.DC_LANGUAGE);
-		Language language = null;
-
-		if(StringUtils.equalsIgnoreCase(langItem, "de")){
-			language = Language.GERMAN();
-		}else if(StringUtils.equalsIgnoreCase(langItem, "en")){
-			language = Language.ENGLISH();
-		}else{
-			language = Language.DEFAULT();
-		}	
+		Language language = getLanguage(item);	
 		if(StringUtils.isNotBlank(comment)){
 				Annotation annotation = Annotation.NewInstance(comment, language);
 				taxonBase.addAnnotation(annotation);
@@ -614,6 +648,25 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	}
 	
+
+	/**
+	 * @param item
+	 * @return
+	 */
+	private Language getLanguage(StreamItem item) {
+		String langItem = item.get(TermUri.DC_LANGUAGE);
+		Language language = null;
+
+		if(StringUtils.equalsIgnoreCase(langItem, "de")){
+			language = Language.GERMAN();
+		}else if(StringUtils.equalsIgnoreCase(langItem, "en")){
+			language = Language.ENGLISH();
+		}else{
+			language = Language.DEFAULT();
+		}
+		return language;
+	}
+
 // ********************** PARTITIONABLE ****************************************/
 
 
@@ -672,6 +725,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 	result.add(TermUri.DWC_DATASET_NAME.toString());
 	 	return result;
 	}
+	
+	
+	
 	
 //** ***************************** TO STRING *********************************************/
 	

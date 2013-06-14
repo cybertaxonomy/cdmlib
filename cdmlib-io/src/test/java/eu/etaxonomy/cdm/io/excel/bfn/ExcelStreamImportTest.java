@@ -32,18 +32,25 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -54,6 +61,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -79,6 +87,9 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
 	IClassificationService classificationService;
+	
+	@SpringBeanByType
+	IDescriptionService descriptionService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;
@@ -86,11 +97,12 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	@Before
 	public void setUp() throws URISyntaxException {
 		//TODO create own test file
-		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
+		String inputFile = "/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport-TestInput.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		configurator = ExcelStreamImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN, null);
 		assertNotNull("Configurator could not be created", configurator);
+		configurator.addObserver(new LoggingIoObserver());
 		
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
@@ -109,58 +121,86 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@DataSet
 	public void testDoInvoke() {
-		//printDataSet(System.out);
+//		printDataSet(System.out, new String[]{"ANNOTATION"});
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
+		commitAndStartNewTransaction(new String[]{"TAXONNAMEBASE", "ANNOTATION"});
+		assertEquals("Number of TaxonNames should be 10", 10 /*TODO */, nameService.count(null));
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
 		assertEquals("Number of classifications should be 1", 1, treeList.size());
 		Classification tree = treeList.get(0);
 		Set<TaxonNode> rootNodes = tree.getChildNodes();
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
 		TaxonNode rootNode = rootNodes.iterator().next();
-		assertEquals("Root taxon name should be Animalia", "Animalia", rootNode.getTaxon().getName().getTitleCache());
-		TaxonNode arthropodaNode = rootNode.getChildNodes().iterator().next();
-		assertEquals("Arthropoda node taxon name should be Arthropoda", "Arthropoda", arthropodaNode.getTaxon().getName().getTitleCache());
-		TaxonNode insectaNode = arthropodaNode.getChildNodes().iterator().next();
-		TaxonNode lepidopteraNode = insectaNode.getChildNodes().iterator().next();
-		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
-		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
-		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
 		
-		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
-		TaxonNode childNode1 = it.next();
-		TaxonNode childNode2 = it.next();
+//		printDataSet(System.out, new String[]{"ANNOTATION"});
+		Set<Annotation> annotationSet = rootNode.getTaxon().getAnnotations();
+		assertTrue("Annotation is set for first Taxon", !annotationSet.isEmpty()); 
+
+		assertEquals("Root taxon name should be Metazoa", "Metazoa", rootNode.getTaxon().getName().getTitleCache());
+		TaxonNode secondTaxon = rootNode.getChildNodes().iterator().next();
+
+		Set<Annotation> secondAnnotation = secondTaxon.getTaxon().getAnnotations();
+		assertTrue("Annotation is empty for second Taxon", secondAnnotation.isEmpty()); 
 		
-		TaxonNode noctuaPronubaNode;
-		if (childNode1.getTaxon().getName().getTitleCache().startsWith("Noctua pronuba")){
-			noctuaPronubaNode = childNode1;
-		}else{
-			noctuaPronubaNode = childNode2;
+		Set<TaxonDescription> taxonSet = secondTaxon.getTaxon().getDescriptions();
+		assertTrue("Description is not Empty", !taxonSet.isEmpty());
+		assertEquals("Number of Distributions should be 7", 7, descriptionService.listDescriptionElements(null, null, Distribution.class, null, null, null).size());
+//		assertEquals("Number of Vernecular Names should be 7", 6, descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null).size());
+		List<DescriptionElementBase> list = descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null);
+		for(DescriptionElementBase db : list){
+			System.out.println(db.toString());
+		}
+		//TODO: write test for Refences Sources
+		Set<IdentifiableSource> sourcesSet = secondTaxon.getTaxon().getSources();
+		assertTrue("Sources are set for second Taxon", !sourcesSet.isEmpty());
+		for(IdentifiableSource s : sourcesSet){
+			System.out.println(s.getId());
+			System.out.println(s.getIdInSource());
+			System.out.println(s.getIdNamespace());
+			System.out.println(s.getCitation().toString());
 		}
 		
-		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
-		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
-		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
-		assertEquals("Number of synonyms should be 1", 1, synonyms.size());
-		Synonym synonym = synonyms.iterator().next();
-		assertEquals("Synonym name should be ", "Noctua atlantica", ((NonViralName)synonym.getName()).getNameCache());
-		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
-		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
-		TaxonDescription taxonDescription = descriptions.iterator().next();
-		Set<DescriptionElementBase> elements = taxonDescription.getElements();
-		List<CommonTaxonName> commonNames = new ArrayList<CommonTaxonName>();
-		for (DescriptionElementBase element : elements){
-			if (element.isInstanceOf(CommonTaxonName.class)){
-				commonNames.add((CommonTaxonName)element);
-			}
-		}
-		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
-		Set<String> commonNameStrings = new HashSet<String>();
-		commonNameStrings.add(commonNames.get(0).getName());
-		commonNameStrings.add(commonNames.get(1).getName());
-		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
-		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
+		//		assertEquals("Arthropoda node taxon name should be Arthropoda", "Arthropoda", arthropodaNode.getTaxon().getName().getTitleCache());
+//		TaxonNode insectaNode = arthropodaNode.getChildNodes().iterator().next();
+//		TaxonNode lepidopteraNode = insectaNode.getChildNodes().iterator().next();
+//		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
+//		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
+//		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
+//		
+//		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
+//		TaxonNode childNode1 = it.next();
+//		TaxonNode childNode2 = it.next();
+//		
+//		TaxonNode noctuaPronubaNode;
+//		if (childNode1.getTaxon().getName().getTitleCache().startsWith("Noctua pronuba")){
+//			noctuaPronubaNode = childNode1;
+//		}else{
+//			noctuaPronubaNode = childNode2;
+//		}
+//		
+//		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
+//		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
+//		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
+//		assertEquals("Number of synonyms should be 1", 3 /*TODO*/, synonyms.size());
+//		Synonym synonym = synonyms.iterator().next();
+//		assertEquals("Synonym name should be ", "Noctua atlantica", (CdmBase.deproxy(synonym.getName(), NonViralName.class )).getNameCache());
+//		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
+//		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
+//		TaxonDescription taxonDescription = descriptions.iterator().next();
+//		Set<DescriptionElementBase> elements = taxonDescription.getElements();
+//		List<CommonTaxonName> commonNames = new ArrayList<CommonTaxonName>();
+//		for (DescriptionElementBase element : elements){
+//			if (element.isInstanceOf(CommonTaxonName.class)){
+//				commonNames.add((CommonTaxonName)element);
+//			}
+//		}
+//		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
+//		Set<String> commonNameStrings = new HashSet<String>();
+//		commonNameStrings.add(commonNames.get(0).getName());
+//		commonNameStrings.add(commonNames.get(1).getName());
+//		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
+//		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
 	}
 	
 //	@Test
