@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.awt.Dimension;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +25,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -503,12 +511,15 @@ public class TaxonXExtractor {
     /**
      * @param name
      * @return
+     * @throws TransformerException
+     * @throws TransformerFactoryConfigurationError
      */
-    protected String getScientificName(String fullname,String atomised,String classificationName, String fullParagraph) {
+    protected String getScientificName(String fullname,String atomised,String classificationName, Node fullParagraph) throws TransformerFactoryConfigurationError, TransformerException {
         //        logger.info("getScientificName for "+ fullname);
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JTextArea textArea = new JTextArea("The names in the free text and in the xml tags do not match : "+fullname+", or "+atomised+"\n"+fullParagraph);
+        JTextArea textArea = new JTextArea("The names in the free text and in the xml tags do not match : "+fullname+
+                ", or "+atomised+"\n"+formatNode(fullParagraph));
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
@@ -528,8 +539,10 @@ public class TaxonXExtractor {
     /**
      * @param name
      * @return
+     * @throws TransformerException
+     * @throws TransformerFactoryConfigurationError
      */
-    protected String askFeatureName(String paragraph) {
+    protected String askFeatureName(String paragraph){
         //        logger.info("getScientificName for "+ fullname);
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -590,7 +603,15 @@ public class TaxonXExtractor {
         return cR;
     }
 
-    protected String askMultiple(String fullParagraph){
+    /**
+     * ask user to specify what kind of paragraph the current "multiple" section is
+     * default possibilities are "synonyms","material examined","distribution","image caption","other"
+     * could make sense to replace this list with the CDM-Feature list
+     * if "other" is selected, a second pop-up will be prompted to ask user to specify a new Feature name.
+     * @param fullParagraph : the current Node
+     * @return the section name
+     * */
+    protected String askMultiple(Node fullParagraph){
         JTextArea textArea = new JTextArea("What category is it for this paragraph \n"+fullParagraph);
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
@@ -610,17 +631,25 @@ public class TaxonXExtractor {
                 null);
 
         if (s.equalsIgnoreCase("other")) {
-            s=askFeatureName(fullParagraph);
+            try {
+                s=askFeatureName(formatNode(fullParagraph));
+            } catch (TransformerFactoryConfigurationError e) {
+                logger.warn(e);
+            } catch (TransformerException e) {
+                logger.warn(e);
+            }
         }
         return s;
 
     }
 
 
+
     /**
-     * @param t
+     * asks for the hierarchical parent, based on the current classification
+     * @param taxon
      * @param classification
-     * @return
+     * @return Taxon, the parent Taxon
      */
     protected Taxon askParent(Taxon taxon,Classification classification ) {
         //        logger.info("ask Parent "+taxon.getTitleCache());
@@ -654,6 +683,13 @@ public class TaxonXExtractor {
         return returnTaxon;
     }
 
+
+    /**
+     *
+     * @param r: the rank as string (with dwc tags)
+     * @return Rank : the Rank object corresponding to the current string
+     *
+     */
     protected Rank getRank(String r){
         if (r==null) {
             r=Rank.UNKNOWN_RANK().toString();
@@ -750,6 +786,24 @@ public class TaxonXExtractor {
         //popUp(rank.getTitleCache());
         return rank;
     }
+
+    /**
+     * Format a XML node for a clean (screen) output with tags
+     * @param Node : the node to format
+     * @return String : the XML section formated for a screen output
+     * */
+
+    protected String formatNode(Node node) throws TransformerFactoryConfigurationError, TransformerException{
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        //initialize StreamResult with File object to save to file
+        StreamResult result = new StreamResult(new StringWriter());
+        DOMSource source = new DOMSource(node);
+        transformer.transform(source, result);
+        String xmlString = result.getWriter().toString();
+        return xmlString;
+    }
+
 
 }
 

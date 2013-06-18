@@ -71,10 +71,10 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
     }
 
     /**
-     * getClassification : get the classification declared in the ImportState
-     *
-     * @param state
-     * @return
+     * getClassification
+     * asks for user interaction for decision
+     * @param classificationName : the name of the classification we are looking for
+     * @set the global classification object
      */
     private void setClassification(String classificationName) {
         logger.info("SET CLASSIFICATION "+classification);
@@ -82,11 +82,23 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
         List<Classification> classifList = getClassificationService().list(Classification.class, null, null, null, null);
         Map<String,Classification> classifDic = new HashMap<String,Classification>();
         ArrayList<String> nodeList = new ArrayList<String>();
+        String citation ="";
+        String title ="";
         for (Classification cla:classifList){
-            nodeList.add(cla.getTitleCache());
-            classifDic.put(cla.getTitleCache(), cla);
+            citation = cla.getCitation().toString();
+            title=cla.getTitleCache().toString();
+            if (citation.length()>title.length()){
+                nodeList.add(citation);
+                classifDic.put(citation, cla);
+            }
+            else{
+                nodeList.add(title);
+                classifDic.put(title, cla);
+            }
         }
-        nodeList.add(classificationName);
+        if (nodeList.indexOf(classificationName)<0) {
+            nodeList.add(classificationName);
+        }
         nodeList.add("Other classification - add a new one");
 
         JTextArea textArea = new JTextArea("Which classification do you want to use ? \nThe current value is "+classificationName);
@@ -102,9 +114,10 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 nodeList.toArray(),
-                null);
+                classificationName);
 
         if (!classifDic.containsKey(s)){
+            System.out.println("Classif inconnue ?? "+s+", "+classifDic);
             if (s.equalsIgnoreCase("Other classification - add a new one")){
                 classificationName = askForValue("classification name ?",classificationName);
             }
@@ -133,10 +146,12 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
     }
 
     /**
-     * @param string
+     * asks users for decision
+     * @param string : the parameter name we are looking at
+     * @param defaultValue : the default value
      * @return
      */
-    private String askForValue(String string, String classificationName) {
+    private String askForValue(String string, String defaultValue) {
         JTextArea textArea = new JTextArea(string);
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
@@ -150,7 +165,7 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
-                classificationName);
+                defaultValue);
 
         return s;
 
@@ -165,8 +180,8 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
         logger.info("INVOKE TaxonXImport ");
         URI sourceName = this.taxonXstate.getConfig().getSource();
 
-//        this.taxonXstate.getConfig().getClassificationName();
-//        this.taxonXstate.getConfig().getClassificationUuid();
+        //        this.taxonXstate.getConfig().getClassificationName();
+        //        this.taxonXstate.getConfig().getClassificationUuid();
 
         ref = taxonXstate.getConfig().getSourceReference();
 
@@ -188,27 +203,30 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             Document document = builder.parse(is);
 
             taxonXFieldGetter = new TaxonXXMLFieldGetter(dataHolder, prefix,document, this,taxonXstate,classification);
+            /*parse the Mods from the TaxonX file
+             *create the appropriate Reference object
+             */
             ref = taxonXFieldGetter.parseMods();
-            logger.info("REF : "+ref.getTitleCache());
-            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
+//            logger.info("REF : "+ref.getCitation());
+//            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
             setClassification(taxonXstate.getConfig().getClassificationName());
             taxonXFieldGetter.updateClassification(classification);
-            logger.info("classif :"+classification);
+//            logger.info("classif :"+classification);
             taxonXFieldGetter.parseTreatment(ref,sourceName);
 
-//        } catch (MalformedURLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (SAXException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (ParserConfigurationException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+            //        } catch (MalformedURLException e) {
+            //            // TODO Auto-generated catch block
+            //            e.printStackTrace();
+            //        } catch (SAXException e) {
+            //            // TODO Auto-generated catch block
+            //            e.printStackTrace();
+            //        } catch (IOException e) {
+            //            // TODO Auto-generated catch block
+            //            e.printStackTrace();
+            //        } catch (ParserConfigurationException e) {
+            //            // TODO Auto-generated catch block
+            //            e.printStackTrace();
+            //        }
         }catch(Exception e){
             e.printStackTrace();
             logger.warn(e);

@@ -38,7 +38,11 @@ public class TaxonXXMLFieldGetter {
     }
 
 
-
+    /**
+     * parse the Mods from the TaxonX file
+     *
+    *@return the created Reference object
+    **/
     public Reference<?> parseMods(){
 //        System.out.println("PARSEMODS");
         //taxonx
@@ -63,7 +67,7 @@ public class TaxonXXMLFieldGetter {
             }
         }
         if (ref!=null) {
-            taxonXstate.getConfig().setClassificationName(ref.getTitleCache());
+            taxonXstate.getConfig().setClassificationName(ref.getCitation());
         } else {
             taxonXstate.getConfig().setClassificationName( "no reference title");
         }
@@ -71,6 +75,11 @@ public class TaxonXXMLFieldGetter {
     }
 
 
+    /**
+     * Foreach treatment section, launches the treatment "extractor"
+     * @param ref : the current reference, extracted from the mods
+     * @param sourcename: the URI of the TaxonX document
+     */
     public void parseTreatment(Reference<?> ref, URI sourceName){
         System.out.println("PARSETREATMENT "+ref);
         //taxonx
@@ -95,6 +104,7 @@ public class TaxonXXMLFieldGetter {
 
 
     /**
+     * updates the classification in the treatment extractor
      * @param classification2
      */
     public void updateClassification(Classification classification2) {

@@ -53,12 +53,9 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         content=tmp.item(j).getTextContent().trim();
                         if (!content.isEmpty()) {
                             modsMap.put("mainTitle",content);
-                            ref.setTitleCache(content,true);
+//                            ref.setTitleCache(content,true);
                             ref.setTitle(content);
-                            ref.generateTitle();
-
-
-//                            System.out.println("REFERENCE "+ref.getTitleCache());
+//                            ref.generateTitle();
                         }
                     }
                 }
@@ -117,11 +114,15 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
         List<Reference> references = importer.getReferenceService().list(Reference.class, 0, 0, null, null);
         for(Reference<?> refe:references){
-            if (refe.getTitleCache().equalsIgnoreCase(ref.getTitleCache())) {
+            if (refe.getCitation().equalsIgnoreCase(ref.getCitation())) {
                 ref=refe;
             }
         }
 //        System.out.println(modsMap);
+//
+//        System.out.println("REFERENCE "+ref.getCitation());
+//        System.out.println("REFERENCE "+ref.getTitle());
+//        System.out.println("REFERENCE "+ref.getTitleCache());
         return ref;
     }
 
@@ -270,14 +271,13 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         }
                         if (!refFound){
                             book = ReferenceFactory.newBook();
-                            book.setTitleCache(content,true);
+//                            book.setTitleCache(content,true);
                             book.setTitle(content);
-                            book.generateTitle();
+//                            book.generateTitle();
                         }
                         if (ref.getInBook() == null || !ref.getInBook().equals(book)) {
                             ref.setInBook(book);
-                            ref.generateTitle();
-                            logger.info("REFERENCE : "+ref.getTitleCache());
+//                            ref.generateTitle();
                         }
                     }
                 }

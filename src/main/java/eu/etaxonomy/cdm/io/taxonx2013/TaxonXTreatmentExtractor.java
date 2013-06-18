@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -62,6 +64,11 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
  * @date 2 avr. 2013
  *
  */
+/**
+ * @author pkelbert
+ * @date 17 juin 2013
+ *
+ */
 public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private static final Logger logger = Logger.getLogger(TaxonXTreatmentExtractor.class);
@@ -78,15 +85,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     /**
      * @param nomenclaturalCode
-     * @param nameService
-     * @param taxonService
-     * @param referenceService
-     * @param descriptionService
+     * @param classification
      * @param importer
      * @param configState
-     * @param state
      */
-    public TaxonXTreatmentExtractor(NomenclaturalCode nomenclaturalCode, Classification classification, TaxonXImport importer, TaxonXImportState configState) {
+    public TaxonXTreatmentExtractor(NomenclaturalCode nomenclaturalCode, Classification classification, TaxonXImport importer,
+            TaxonXImportState configState) {
         this.nomenclaturalCode=nomenclaturalCode;
         this.classification = classification;
         this.importer=importer;
@@ -95,9 +99,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
     /**
-     * @param item
-     * @param tosave
-     * @param sourceName
+     * extracts all the treament information and save them
+     * @param treatmentnode: the XML Node
+     * @param tosave: the list of object to save into the CDM
+     * @param refMods: the reference extracted from the MODS
+     * @param sourceName: the URI of the document
      */
     @SuppressWarnings({ "rawtypes", "unused" })
     protected void extractTreatment(Node treatmentnode, List<Object> tosave, Reference<?> refMods, URI sourceName) {
@@ -108,16 +114,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         Taxon defaultTaxon =null;
         boolean refgroup=false;
 
-        IdentifiableSource source =null;
-        if (!refMods.getSources().isEmpty()) {
-            source = refMods.getSources().iterator().next();
-        }
-        //        if (source==null){
-        //            source=IdentifiableSource.NewInstance(refMods, null);
-        //        }
-        //        importer.getCommonService().saveOrUpdate(source);
-
-        logger.info("SOURCE :"+source);
         for (int i=0;i<children.getLength();i++){
             if(children.item(i).getNodeName().equalsIgnoreCase("tax:ref_group")) {
                 refgroup=true;
@@ -139,13 +135,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
                 if (containsName){
                     reloadClassification();
-                    acceptedTaxon = extractNomenclature(children.item(i),nametosave,refMods,source);
+                    //extract "main" the scientific name
+                    acceptedTaxon = extractNomenclature(children.item(i),nametosave,refMods);
                 }
             }
             else if (children.item(i).getNodeName().equalsIgnoreCase("tax:ref_group")){
                 reloadClassification();
-                extractReferences(children.item(i),nametosave,acceptedTaxon,source,nametosave, refMods);
-
+                //extract the References within the document
+                extractReferences(children.item(i),nametosave,acceptedTaxon,refMods);
             }
             else if (children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("multiple")){
@@ -160,108 +157,85 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
-                String multiple = askMultiple(children.item(i).getTextContent());
+                String multiple = askMultiple(children.item(i));
                 if (multiple.equalsIgnoreCase("synonyms")) {
                     extractSynonyms(children.item(i),nametosave, acceptedTaxon,refMods);
                 }
                 else
                     if(multiple.equalsIgnoreCase("material examined")){
-                        extractMaterials(children.item(i),acceptedTaxon,source, refMods);
+                        extractMaterials(children.item(i),acceptedTaxon, refMods);
                     }
                     else
                         if (multiple.equalsIgnoreCase("distribution")){
-                            extractDistribution(children.item(i),acceptedTaxon,defaultTaxon,refMods,source);
+                            extractDistribution(children.item(i),acceptedTaxon,defaultTaxon,refMods);
                         }
                         else {
-                            extractSpecificFeature(children.item(i),acceptedTaxon,defaultTaxon,source,nametosave, refMods,multiple);
+                            extractSpecificFeature(children.item(i),acceptedTaxon,defaultTaxon,nametosave, refMods,multiple);
                         }
             }
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("biology_ecology")){
-                extractBiologyEcology(children.item(i),acceptedTaxon,defaultTaxon, source,nametosave, refMods);
+                extractFeature(children.item(i),acceptedTaxon,defaultTaxon, nametosave, refMods, Feature.BIOLOGY_ECOLOGY());
             }
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("description")){
-                extractDescription(children.item(i),acceptedTaxon,defaultTaxon,source,nametosave, refMods);
+                extractFeature(children.item(i),acceptedTaxon,defaultTaxon,nametosave, refMods, Feature.DESCRIPTION());
             }
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("diagnosis")){
-                extractDiagnosis(children.item(i),acceptedTaxon,defaultTaxon,source,nametosave, refMods);
+                extractFeature(children.item(i),acceptedTaxon,defaultTaxon,nametosave, refMods,Feature.DIAGNOSIS());
             }
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("discussion")){
-                extractDiscussion(children.item(i),acceptedTaxon,defaultTaxon,source,nametosave, refMods);
+                extractFeature(children.item(i),acceptedTaxon,defaultTaxon,nametosave, refMods, Feature.DISCUSSION());
             }
 
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("distribution")){
-                extractDistribution(children.item(i),acceptedTaxon,defaultTaxon,refMods,source);
+                extractDistribution(children.item(i),acceptedTaxon,defaultTaxon,refMods);
             }
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("etymology")){
-                extractEtymology(children.item(i),acceptedTaxon,defaultTaxon,source,nametosave, refMods);
+                extractFeature(children.item(i),acceptedTaxon,defaultTaxon,nametosave,refMods,Feature.ETYMOLOGY());
             }
 
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("materials_examined")){
-                extractMaterials(children.item(i),acceptedTaxon,source, refMods);
+                extractMaterials(children.item(i),acceptedTaxon, refMods);
             }
-
 
             else if(children.item(i).getNodeName().equalsIgnoreCase("tax:div") &&
                     children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("key")){
                 //TODO IGNORE keys for the moment
                 //extractKey(children.item(i),acceptedTaxon, nametosave,source, refMods);
-                extractSpecificFeature(children.item(i),acceptedTaxon,defaultTaxon,source,nametosave, refMods,"Keys - unparsed");
+                extractSpecificFeature(children.item(i),acceptedTaxon,defaultTaxon,nametosave, refMods,"Keys - unparsed");
             }
             else{
-                logger.info("ANOTHER KIND OF NODES : "+children.item(i).getNodeName()+", "+children.item(i).getAttributes());
+                logger.info("ANOTHER KIND OF NODES: "+children.item(i).getNodeName()+", "+children.item(i).getAttributes());
                 if (children.item(i).getAttributes() !=null) {
                     logger.info(children.item(i).getAttributes().item(0));
                 }
             }
-
         }
         //        logger.info("saveUpdateNames");
         importer.getNameService().saveOrUpdate(nametosave);
         importer.getClassificationService().saveOrUpdate(classification);
         logger.info("saveUpdateNames-ok");
-
-
     }
 
-    /**
-     * @param item
-     * @param acceptedTaxon
-     * @param defaultTaxon
-     * @param source
-     * @param nametosave
-     * @param refMods
-     */
-    private void extractDiscussion(Node discussion, Taxon acceptedTaxon, Taxon defaultTaxon, IdentifiableSource modsSource,
-            List<TaxonNameBase> nametosave, Reference<?> refMods ) {
-
-        NodeList children = discussion.getChildNodes();
-        String fullContent = discussion.getTextContent();
-
-        List<String> fullDescription= parseParagraph(children, nametosave, acceptedTaxon, modsSource, refMods, fullContent);
-
-        if (!fullDescription.isEmpty()) {
-            setParticularDescription(StringUtils.join(fullDescription,"<br/>"),acceptedTaxon,defaultTaxon, modsSource,Feature.DISCUSSION());
-        }
-
-    }
 
     /**
-     * @param item
-     * @param acceptedTaxon
+     * @param keys
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param nametosave: the list of objects to save into the CDM
+     * @param refMods: the current reference extracted from the MODS
      */
     @SuppressWarnings("rawtypes")
-    private void extractKey(Node keys, Taxon acceptedTaxon,List<TaxonNameBase> nametosave, IdentifiableSource modsSource, Reference<?> refMods) {
+    private void extractKey(Node keys, Taxon acceptedTaxon,List<TaxonNameBase> nametosave, Reference<?> refMods) {
         NodeList children = keys.getChildNodes();
         String key="";
         PolytomousKey poly =  PolytomousKey.NewInstance();
-        poly.addSource(modsSource);
+        poly.addSource(null,null,refMods,null);
         poly.addTaxonomicScope(acceptedTaxon);
         poly.setTitleCache("bloup");
         //        poly.addCoveredTaxon(acceptedTaxon);
@@ -270,7 +244,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         Taxon taxonKey=null;
         List<PolytomousKeyNode> polyNodes = new ArrayList<PolytomousKeyNode>();
 
-        String fullContent = keys.getTextContent();
+        //        String fullContent = keys.getTextContent();
         for (int i=0;i<children.getLength();i++){
             if (children.item(i).getNodeName().equalsIgnoreCase("tax:p")){
                 NodeList paragraph = children.item(i).getChildNodes();
@@ -280,11 +254,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (paragraph.item(j).getNodeName().equalsIgnoreCase("#text")){
                         if (! paragraph.item(j).getTextContent().trim().isEmpty()){
                             key+=paragraph.item(j).getTextContent().trim();
-                            //                            logger.info("KEY : "+j+"--"+key);
+                            //                            logger.info("KEY: "+j+"--"+key);
                         }
                     }
                     if(paragraph.item(j).getNodeName().equalsIgnoreCase("tax:name")){
-                        taxonKey=getTaxonFromXML(paragraph.item(j),nametosave,acceptedTaxon,modsSource, refMods, fullContent);
+                        taxonKey=getTaxonFromXML(paragraph.item(j),nametosave,acceptedTaxon,refMods);
                     }
                 }
                 //                logger.info("keypattern.matcher(key).matches(): "+keypattern.matcher(key).matches());
@@ -315,41 +289,47 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                     }
                 }
-
-
             }
         }
         importer.getPolytomousKeyNodeService().saveOrUpdate(polyNodes);
         importer.getPolytomousKeyService().saveOrUpdate(poly);
-
     }
 
     /**
-     * @param item
-     * @return
+     * @param taxons: the XML Nodegroup
+     * @param nametosave: the list of objects to save into the CDM
+     * @param acceptedTaxon: the current accepted Taxon
+     * @param refMods: the current reference extracted from the MODS
+     *
+     * @return Taxon object built
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Taxon getTaxonFromXML(Node taxons, List<TaxonNameBase> nametosave, Taxon acceptedTaxon,
-            IdentifiableSource modsSource, Reference<?> refMods, String fullContent) {
+    private Taxon getTaxonFromXML(Node taxons, List<TaxonNameBase> nametosave, Taxon acceptedTaxon,  Reference<?> refMods) {
         //        logger.info("getTaxonFromXML");
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         TaxonNameBase nameToBeFilled = null;
-        String name;
+        String name="";
 
-        String[] enames = extractScientificName(taxons,fullContent);
-        if (enames[1].isEmpty()) {
-            name=enames[0];
-        } else {
-            name=enames[1];
-        }
+        String[] enames = null;
+        Rank rank = Rank.UNKNOWN_RANK();
+        String original="";
 
-        String original=enames[0];
-        Rank rank;
         try {
+            enames = extractScientificName(taxons);
+            if (enames[1].isEmpty()) {
+                name=enames[0];
+            } else {
+                name=enames[1];
+            }
+            original=enames[0];
             rank = Rank.getRankByName(enames[2]);
+        } catch (TransformerFactoryConfigurationError e1) {
+            logger.warn(e1);
+        } catch (TransformerException e1) {
+            logger.warn(e1);
         } catch (UnknownCdmTypeException e) {
             logger.warn("Rank problem!");
-            rank=null;
+            rank=Rank.UNKNOWN_RANK();
         }
         INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 
@@ -368,7 +348,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if (t.getSec() == null) {
                 t.setSec(refMods);
             }
-            t.addSource(modsSource);
+            t.addSource(null,null,refMods,null);
             nametosave.add(nameToBeFilled);
             Taxon parentTaxon = askParent(t, classification);
             if (parentTaxon ==null){
@@ -381,32 +361,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 classification.addParentChild(parentTaxon, t, refMods, null);
             }
         }
-
         return t;
     }
 
-
-
-    /**
-     * @param item
-     * @param acceptedTaxon
-     */
-    private void extractDiagnosis(Node diagnosis, Taxon acceptedTaxon, Taxon defaultTaxon,IdentifiableSource modsSource,
-            List<TaxonNameBase> nametosave, Reference<?> refMods) {
-        //        logger.info("extractDiagnosis");
-        //        logger.info("acceptedTaxon: "+acceptedTaxon);
-        //        logger.info("defaultTaxon: "+defaultTaxon);
-        NodeList children = diagnosis.getChildNodes();
-
-        String fullContent = diagnosis.getTextContent();
-        List<String> fullDescription= parseParagraph(children, nametosave, acceptedTaxon, modsSource, refMods, fullContent);
-
-        if (!fullDescription.isEmpty()) {
-            setParticularDescription(StringUtils.join(fullDescription,"<br/>"),acceptedTaxon,defaultTaxon, modsSource,Feature.DIAGNOSIS());
-        }
-
-
-    }
 
 
     /**
@@ -424,25 +381,29 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
     /**
+     * Create a Taxon for the current NameBase, based on the current reference
      * @param taxonNameBase
-     * @return
+     * @param refMods: the current reference extracted from the MODS
+     * @return Taxon
      */
     @SuppressWarnings({ "unused", "rawtypes" })
-    private Taxon getTaxon(TaxonNameBase taxonNameBase, Reference<?> refMods, IdentifiableSource modsSource) {
+    private Taxon getTaxon(TaxonNameBase taxonNameBase, Reference<?> refMods) {
         Taxon t = new Taxon(taxonNameBase,null );
         if (t.getSec() == null) {
             t.setSec(refMods);
         }
-        t.addSource(modsSource);
+        t.addSource(null,null,refMods,null);
         return t;
     }
 
     /**
-     * @param item
+     * @param distribution: the XML node group
+     * @param acceptedTaxon: the current accepted Taxon
+     * @param defaultTaxon: the current defaultTaxon, only used if there is no accepted name
+     * @param refMods: the current reference extracted from the MODS
      */
     @SuppressWarnings("rawtypes")
-    private void extractDistribution(Node distribution, Taxon acceptedTaxon, Taxon defaultTaxon, Reference<?> refMods,
-            IdentifiableSource modsSource) {
+    private void extractDistribution(Node distribution, Taxon acceptedTaxon, Taxon defaultTaxon, Reference<?> refMods) {
         //        logger.info("DISTRIBUTION");
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         NodeList children = distribution.getChildNodes();
@@ -500,7 +461,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             for (int k=0;k<=m;k++){
                 if (descriptionsFulltext.keySet().contains(k)){
                     if (!descriptionsFulltext.get(k).isEmpty() && (descriptionsFulltext.get(k).startsWith("Hab.") || descriptionsFulltext.get(k).startsWith("Habitat"))){
-                        setParticularDescription(descriptionsFulltext.get(k),acceptedTaxon,defaultTaxon, modsSource, Feature.HABITAT());
+                        setParticularDescription(descriptionsFulltext.get(k),acceptedTaxon,defaultTaxon, refMods, Feature.HABITAT());
                         break;
                     }
                     else{
@@ -520,7 +481,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
 
                 if (descriptionsFulltext.keySet().contains(k) || specimenOrObservations.keySet().contains(k)){
-                    td.addSource(modsSource);
+                    td.addSource(null,null,refMods,null);
                     acceptedTaxon.addDescription(td);
                     importer.getDescriptionService().saveOrUpdate(td);
                     importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -533,22 +494,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
 
-
-
-
-    /*
-     * <tax:collection_event><tax:xmldata><dwc:Country>Argentina</dwc:Country>
-     * <dwc:StateProvince>Chubut</dwc:StateProvince><dwc:Locality>Depto</dwc:Locality><dwc:Collector>Soriano</dwc:Collector>
-     * </tax:xmldata>Exsiccata; Prov. Chubut : Depto Cushamen : Leleque , Soriano2350 ( BAA )</tax:collection_event>
-     * */
-
-
-
     /**
-     * @param item
+     * @param materials: the XML node group
+     * @param acceptedTaxon: the current accepted Taxon
+     * @param refMods: the current reference extracted from the MODS
      */
     @SuppressWarnings("rawtypes")
-    private void extractMaterials(Node materials, Taxon acceptedTaxon, IdentifiableSource modsSource, Reference<?> modsRef) {
+    private void extractMaterials(Node materials, Taxon acceptedTaxon, Reference<?> refMods) {
         //        logger.info("EXTRACTMATERIALS");
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         NodeList children = materials.getChildNodes();
@@ -568,7 +520,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         derivedUnitBase = myspecimenOrObservation.getDerivedUnitBase();
                         descr=myspecimenOrObservation.getDescr();
 
-                        derivedUnitBase.addSource(modsSource);
+                        derivedUnitBase.addSource(null,null,refMods,null);
 
                         importer.getOccurrenceService().saveOrUpdate(derivedUnitBase);
 
@@ -584,11 +536,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         }
                         indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
                         indAssociation.setFeature(feature);
-                        indAssociation.addSource(null, null, modsRef, null);
+                        indAssociation.addSource(null, null, refMods, null);
 
                         taxonDescription.addElement(indAssociation);
                         taxonDescription.setTaxon(acceptedTaxon);
-                        taxonDescription.addSource(modsSource);
+                        taxonDescription.addSource(null,null,refMods,null);
 
                         importer.getDescriptionService().saveOrUpdate(taxonDescription);
                         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -598,7 +550,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         if (rawAssociation.length()>1){
                             DerivedUnitFacade derivedUnitFacade = getFacade(rawAssociation);
                             derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
-                            derivedUnitBase.addSource(modsSource);
+                            derivedUnitBase.addSource(null,null,refMods,null);
                             importer.getOccurrenceService().saveOrUpdate(derivedUnitBase);
 
 
@@ -613,11 +565,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             }
                             indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
                             indAssociation.setFeature(feature);
-                            indAssociation.addSource(null, null, modsRef, null);
+                            indAssociation.addSource(null, null, refMods, null);
 
                             taxonDescription.addElement(indAssociation);
                             taxonDescription.setTaxon(acceptedTaxon);
-                            taxonDescription.addSource(modsSource);
+                            taxonDescription.addSource(null,null,refMods,null);
 
                             importer.getDescriptionService().saveOrUpdate(taxonDescription);
                             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -629,14 +581,22 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
 
-    private void extractSpecificFeature(Node description, Taxon acceptedTaxon, Taxon defaultTaxon, IdentifiableSource modsSource,
+    /**
+     * @param description: the XML node group
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param defaultTaxon: the current defaultTaxon, only used if there is no accepted name
+     * @param nametosave: the list of objects to save into the CDM
+     * @param refMods: the current reference extracted from the MODS
+     * @param featureName: the feature name
+     */
+    private void extractSpecificFeature(Node description, Taxon acceptedTaxon, Taxon defaultTaxon,
             List<TaxonNameBase> nametosave, Reference<?> refMods, String featureName ) {
         NodeList children = description.getChildNodes();
         NodeList insideNodes ;
         String descr ="";
         String localdescr="";
 
-        String fullContent = description.getTextContent();
+        //        String fullContent = description.getTextContent();
         for (int i=0;i<children.getLength();i++){
             localdescr="";
             if (children.item(i).getNodeName().equalsIgnoreCase("#text") && !children.item(i).getTextContent().trim().isEmpty()){
@@ -647,7 +607,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 List<String> blabla= new ArrayList<String>();
                 for (int j=0;j<insideNodes.getLength();j++){
                     if (insideNodes.item(j).getNodeName().equalsIgnoreCase("tax:name")){
-                        Taxon linkedTaxon = getTaxonFromXML(insideNodes.item(j), nametosave,acceptedTaxon,modsSource, refMods,fullContent);//TODO NOT IMPLEMENTED IN THE CDM YET
+                        Taxon linkedTaxon = getTaxonFromXML(insideNodes.item(j), nametosave,acceptedTaxon,refMods);//TODO NOT IMPLEMENTED IN THE CDM YET
                         blabla.add(linkedTaxon.getTitleCache());
                     }
                     if (insideNodes.item(j).getNodeName().equalsIgnoreCase("#text")) {
@@ -670,30 +630,28 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         currentFeature=Feature.NewInstance(featureName, featureName, featureName);
                         importer.getTermService().saveOrUpdate(currentFeature);
                     }
-                    setParticularDescription(StringUtils.join(blabla," "),acceptedTaxon,defaultTaxon, modsSource,currentFeature);
+                    setParticularDescription(StringUtils.join(blabla," "),acceptedTaxon,defaultTaxon, refMods,currentFeature);
                 }
             }
 
         }
 
     }
-    private void extractBiologyEcology(Node description, Taxon acceptedTaxon, Taxon defaultTaxon, IdentifiableSource modsSource,
-            List<TaxonNameBase> nametosave, Reference<?> refMods ) {
-        //        logger.info("extractBiologyEcology");
-        //        logger.info("acceptedTaxon: "+acceptedTaxon);
-        //        logger.info("defaultTaxon: "+defaultTaxon);
-        NodeList children = description.getChildNodes();
-        String fullContent = description.getTextContent();
-        List<String> fullDescription= parseParagraph(children, nametosave, acceptedTaxon, modsSource, refMods, fullContent);
-
-        if (!fullDescription.isEmpty()) {
-            setParticularDescription(StringUtils.join(fullDescription,"<br/>"),acceptedTaxon,defaultTaxon, modsSource,Feature.BIOLOGY_ECOLOGY());
-        }
 
 
-    }
 
-    private List<String> parseParagraph(NodeList children, List<TaxonNameBase> nametosave, Taxon acceptedTaxon, IdentifiableSource modsSource, Reference<?> refMods, String fullContent){
+
+    /**
+     * @param children: the XML node group
+     * @param nametosave: the list of objects to save into the CDM
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param refMods: the current reference extracted from the MODS
+     * @param fullContent :the parsed XML content
+     * @return a list of description (text)
+     */
+    @SuppressWarnings("unused")
+    private List<String> parseParagraph(NodeList children, List<TaxonNameBase> nametosave, Taxon acceptedTaxon,
+            Reference<?> refMods, Node fullContent){
         List<String> fullDescription=  new ArrayList<String>();
         String localdescr;
         String descr="";
@@ -710,7 +668,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 List<String> blabla= new ArrayList<String>();
                 for (int j=0;j<insideNodes.getLength();j++){
                     if (insideNodes.item(j).getNodeName().equalsIgnoreCase("tax:name")){
-                        Taxon linkedTaxon = getTaxonFromXML(insideNodes.item(j), nametosave,acceptedTaxon,modsSource, refMods,fullContent);//TODO NOT IMPLEMENTED IN THE CDM YET
+                        Taxon linkedTaxon = getTaxonFromXML(insideNodes.item(j), nametosave,acceptedTaxon,refMods);//TODO NOT IMPLEMENTED IN THE CDM YET
                         blabla.add(linkedTaxon.getTitleCache());
                     }
                     if (insideNodes.item(j).getNodeName().equalsIgnoreCase("#text")) {
@@ -722,64 +680,41 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     }
                 }
                 if (!blabla.isEmpty()) {
-                        fullDescription.add(StringUtils.join(blabla," "));
+                    fullDescription.add(StringUtils.join(blabla," "));
                 }
             }
-
         }
-
         return fullDescription;
     }
 
-    private void extractEtymology(Node description, Taxon acceptedTaxon, Taxon defaultTaxon, IdentifiableSource modsSource,
-            List<TaxonNameBase> nametosave, Reference<?> refMods ) {
-        //        logger.info("extractBiologyEcology");
-        //        logger.info("acceptedTaxon: "+acceptedTaxon);
-        //        logger.info("defaultTaxon: "+defaultTaxon);
-        NodeList children = description.getChildNodes();
-        NodeList insideNodes ;
-        String descr ="";
-        String localdescr="";
 
-        String fullContent = description.getTextContent();
-        List<String> fullDescription= parseParagraph(children, nametosave, acceptedTaxon, modsSource, refMods, fullContent);
-
-
-        if (!fullDescription.isEmpty()) {
-            setParticularDescription(StringUtils.join(fullDescription,"<br/>"),acceptedTaxon,defaultTaxon, modsSource,Feature.ETYMOLOGY());
-        }
-
-
-    }
     /**
-     * @param item
-     * @param acceptedTaxon
-     * @param defaultTaxon
+     * @param description: the XML node group
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param defaultTaxon: the current defaultTaxon, only used if there is no accepted name
+     * @param nametosave: the list of objects to save into the CDM
+     * @param refMods: the current reference extracted from the MODS
+     * @param feature: the feature to link the data with
      */
-    private void extractDescription(Node description, Taxon acceptedTaxon, Taxon defaultTaxon, IdentifiableSource modsSource,
-            List<TaxonNameBase> nametosave, Reference<?> refMods) {
-        //        logger.info("extractDescription");
-        //        logger.info("acceptedTaxon: "+acceptedTaxon);
-        //        logger.info("defaultTaxon: "+defaultTaxon);
+    private void extractFeature(Node description, Taxon acceptedTaxon, Taxon defaultTaxon, List<TaxonNameBase> nametosave, Reference<?> refMods, Feature feature){
         NodeList children = description.getChildNodes();
-        String fullContent = description.getTextContent();
-        List<String> fullDescription= parseParagraph(children, nametosave, acceptedTaxon, modsSource, refMods, fullContent);
+        List<String> fullDescription= parseParagraph(children, nametosave, acceptedTaxon, refMods, description);
 
         if (!fullDescription.isEmpty()) {
-            setParticularDescription(StringUtils.join(fullDescription,"<br/>"),acceptedTaxon,defaultTaxon, modsSource,Feature.DESCRIPTION());
+            setParticularDescription(StringUtils.join(fullDescription,"<br/>"),acceptedTaxon,defaultTaxon, refMods,feature);
         }
     }
 
 
-    /**
-     * @param descr
-     * @param acceptedTaxon
-     * @param defaultTaxon
-     * @param modsSource
-     * @param currentFeature
+     /**
+     * @param descr: the XML Nodegroup to parse
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param defaultTaxon: the current defaultTaxon, only used if there is no accepted name
+     * @param refMods: the current reference extracted from the MODS
+     * @param currentFeature: the feature name
      * @return
      */
-    private void setParticularDescription(String descr, Taxon acceptedTaxon, Taxon defaultTaxon, IdentifiableSource modsSource,Feature currentFeature) {
+    private void setParticularDescription(String descr, Taxon acceptedTaxon, Taxon defaultTaxon, Reference<?> refMods, Feature currentFeature) {
         //        logger.info("setParticularDescription "+currentFeature);
         //        logger.info("acceptedTaxon: "+acceptedTaxon);
         TextData textData = TextData.NewInstance();
@@ -790,7 +725,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if(! descr.isEmpty() && acceptedTaxon!=null){
             TaxonDescription td =importer.getTaxonDescription(acceptedTaxon, false, true);
             td.addElement(textData);
-            td.addSource(modsSource);
+            td.addSource(null,null,refMods,null);
             acceptedTaxon.addDescription(td);
             importer.getDescriptionService().saveOrUpdate(td);
             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -811,7 +746,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             TaxonDescription td =importer.getTaxonDescription(defaultTaxon, false, true);
             defaultTaxon.addDescription(td);
             td.addElement(textData);
-            td.addSource(modsSource);
+            td.addSource(null,null,refMods,null);
             importer.getDescriptionService().saveOrUpdate(td);
             importer.getTaxonService().saveOrUpdate(defaultTaxon);
         }
@@ -820,17 +755,19 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
 
     /**
-     * @param item
-     * @param nametosave
+     * @param synonyms: the XML Nodegroup to parse
+     * @param nametosave: the list of objects to save into the CDM
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param refMods: the current reference extracted from the MODS
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void extractSynonyms(Node synonnyms, List<TaxonNameBase> nametosave,Taxon acceptedTaxon, Reference<?> modsRef) {
+    private void extractSynonyms(Node synonyms, List<TaxonNameBase> nametosave,Taxon acceptedTaxon, Reference<?> refMods) {
         //        logger.info("extractSynonyms: "+acceptedTaxon);
         Taxon ttmp = (Taxon) importer.getTaxonService().find(acceptedTaxon.getUuid());
         if (ttmp != null) {
             acceptedTaxon = ttmp;
         }
-        NodeList children = synonnyms.getChildNodes();
+        NodeList children = synonyms.getChildNodes();
         TaxonNameBase nameToBeFilled = null;
         List<String> names = new ArrayList<String>();
 
@@ -838,15 +775,23 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         for (int i=0;i<children.getLength();i++){
             if (children.item(i).getNodeName().equalsIgnoreCase("tax:p")){
                 NodeList tmp = children.item(i).getChildNodes();
-                String fullContent = children.item(i).getTextContent();
+                //                String fullContent = children.item(i).getTextContent();
                 for (int j=0; j< tmp.getLength();j++){
                     if(tmp.item(j).getNodeName().equalsIgnoreCase("tax:name")){
-                        String[] enames = extractScientificName(tmp.item(j),fullContent);
-                        if (enames[1].isEmpty()) {
-                            names.add(enames[0]+"---"+enames[2]);
-                        } else {
-                            names.add(enames[1]+"---"+enames[2]);
+                        String[] enames;
+                        try {
+                            enames = extractScientificName(tmp.item(j));
+                            if (enames[1].isEmpty()) {
+                                names.add(enames[0]+"---"+enames[2]);
+                            } else {
+                                names.add(enames[1]+"---"+enames[2]);
+                            }
+                        } catch (TransformerFactoryConfigurationError e) {
+                            logger.warn(e);
+                        } catch (TransformerException e) {
+                            logger.warn(e);
                         }
+
                     }
                 }
             }
@@ -871,7 +816,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 nameToBeFilled = solveNameProblem(original, name, parser);
             }
             nametosave.add(nameToBeFilled);
-            Synonym synonym = Synonym.NewInstance(nameToBeFilled, modsRef);
+            Synonym synonym = Synonym.NewInstance(nameToBeFilled, refMods);
 
             acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -884,13 +829,15 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
 
     /**
-     * @param item
-     * @param tosave
-     * @param refMods
-     * @param nametosave
+     * @param refgroup: the XML nodes
+     * @param nametosave: the list of objects to save into the CDM
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param nametosave: the list of objects to save into the CDM
+     * @param refMods: the current reference extracted from the MODS
+     * @return the acceptedTaxon (why?)
      */
     @SuppressWarnings({ "null", "unused" ,"rawtypes" })
-    private Taxon extractReferences(Node refgroup, List<TaxonNameBase> tosave, Taxon acceptedTaxon, IdentifiableSource refSource, List<TaxonNameBase> nametosave, Reference<?> refMods) {
+    private Taxon extractReferences(Node refgroup, List<TaxonNameBase> nametosave, Taxon acceptedTaxon, Reference<?> refMods) {
         //        logger.info("extractReferences");
         NodeList children = refgroup.getChildNodes();
         NonViralName<?> nameToBeFilled = null;
@@ -921,7 +868,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                         boolean makeEmpty = false;
                         //                        Rank rank = null;
-                        //                        logger.info("TREATMENTMAINNAME : "+treatmentMainName);
+                        //                        logger.info("TREATMENTMAINNAME: "+treatmentMainName);
                         //                        logger.info("ref: "+ref);
                         if (nbRef==0) {
                             accepted=true;
@@ -939,17 +886,17 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         if (accepted){
                             acceptedTaxon.getName().setNomenclaturalReference(reference);
                             nameToBeFilled.setNomenclaturalReference(reference);
-                            acceptedTaxon.addSource(refSource);
+                            acceptedTaxon.addSource(null,null,refMods,null);
                         }else{
                             TaxonDescription td =importer.getTaxonDescription(acceptedTaxon, false, true);
                             acceptedTaxon.addDescription(td);
-                            acceptedTaxon.addSource(refSource);
+                            acceptedTaxon.addSource(null,null,refMods,null);
 
                             TextData textData = TextData.NewInstance(Feature.CITATION());
 
                             textData.addSource(null, null, reference, null, acceptedTaxon.getName(), ref);
                             td.addElement(textData);
-                            td.addSource(refSource);
+                            td.addSource(null,null,refMods,null);
 
                             importer.getDescriptionService().saveOrUpdate(td);
                         }
@@ -965,12 +912,20 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         //no bibref tag inside
                         logger.info("references.item(j).getNodeName()"+references.item(j).getNodeName());
                         if (references.item(j).getNodeName().equalsIgnoreCase("tax:name")){
-                            String[] enames =  extractScientificName(references.item(j), references.item(j).getTextContent());
-                            if (enames[1].isEmpty()) {
-                                name=enames[0]+"---"+enames[2];
-                            } else {
-                                name=enames[1]+"---"+enames[2];
+                            String[] enames;
+                            try {
+                                enames = extractScientificName(references.item(j));
+                                if (enames[1].isEmpty()) {
+                                    name=enames[0]+"---"+enames[2];
+                                } else {
+                                    name=enames[1]+"---"+enames[2];
+                                }
+                            } catch (TransformerFactoryConfigurationError e) {
+                                logger.warn(e);
+                            } catch (TransformerException e) {
+                                logger.warn(e);
                             }
+
                             name=name.trim();
                         }
                         if (references.item(j).getNodeName().equalsIgnoreCase("#text")){
@@ -1046,10 +1001,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
     /**
-     * @param original
-     * @param name
+     * try to solve a parsing problem for a scientific name
+     * @param original : the name from the OCR document
+     * @param name : the tagged version
      * @param parser
-     * @return
+     * @return the corrected TaxonNameBase
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private TaxonNameBase<?,?> solveNameProblem(String original, String name, INonViralNameParser parser) {
@@ -1083,11 +1039,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
     /**
-     * @param item
-     * @param tosave
+     * @param nomenclatureNode: the XML nodes
+     * @param nametosave: the list of objects to save into the CDM
+     * @param refMods: the current reference extracted from the MODS
+     * @return
      */
     @SuppressWarnings({ "rawtypes", "unused" })
-    private Taxon extractNomenclature(Node nomenclatureNode,  List<TaxonNameBase> tosave, Reference<?> refMods, IdentifiableSource modsSource) {
+    private Taxon extractNomenclature(Node nomenclatureNode,  List<TaxonNameBase> nametosave, Reference<?> refMods) {
         //        logger.info("extractNomenclature");
         NodeList children = nomenclatureNode.getChildNodes();
         String freetext;
@@ -1095,23 +1053,28 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         Taxon acceptedTaxon = null;
         INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 
-
-        String fullContent = nomenclatureNode.getTextContent();
+        Rank rank = Rank.UNKNOWN_RANK();
+        //        String fullContent = nomenclatureNode.getTextContent();
         for (int i=0;i<children.getLength();i++){
             if (children.item(i).getNodeName().equalsIgnoreCase("#text")) {
                 freetext=children.item(i).getTextContent();
             }
             if(children.item(i).getNodeName().equalsIgnoreCase("tax:name")){
-                String[]names = extractScientificName(children.item(i),fullContent);
-                treatmentMainName = names[1];
-                originalTreatmentName = names[0];
-                Rank rank;
+                String[] names;
                 try {
+                    names = extractScientificName(children.item(i));
+                    treatmentMainName = names[1];
+                    originalTreatmentName = names[0];
                     rank = Rank.getRankByName(names[2]);
+
+                } catch (TransformerFactoryConfigurationError e1) {
+                    logger.warn(e1);
+                } catch (TransformerException e1) {
+                    logger.warn(e1);
                 } catch (UnknownCdmTypeException e) {
-                    logger.warn("Rank problem!");
-                    rank=null;
+                    logger.warn(e);
                 }
+
 
                 if (nomenclaturalCode.equals(NomenclaturalCode.ICBN)){
                     nameToBeFilled = BotanicalName.NewInstance(null);
@@ -1132,13 +1095,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         td.setTitleCache(originalTreatmentName);
                         nameToBeFilled.addDescription(td);
                     }
-                    nameToBeFilled.addSource(modsSource);
-                    tosave.add(nameToBeFilled);
+                    nameToBeFilled.addSource(null,null,refMods,null);
+                    nametosave.add(nameToBeFilled);
                     acceptedTaxon= new Taxon(nameToBeFilled,(Reference<?>) nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
                     if (acceptedTaxon.getSec() == null) {
                         acceptedTaxon.setSec(refMods);
                     }
-                    acceptedTaxon.addSource(modsSource);
+                    acceptedTaxon.addSource(null,null,refMods,null);
                     importer.getTaxonService().saveOrUpdate(acceptedTaxon);
                     Taxon parentTaxon = askParent(acceptedTaxon, classification);
                     if (parentTaxon ==null){
@@ -1168,9 +1131,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         //        importer.getClassificationService().saveOrUpdate(classification);
         return acceptedTaxon;
     }
+
     /**
-     * @param acceptedTaxon
-     * @return
+     * @param acceptedTaxon: the current acceptedTaxon
+     * @param ref: the current reference extracted from the MODS
+     * @return the parent for the current accepted taxon
      */
     private Taxon createParent(Taxon acceptedTaxon, Reference<?> ref) {
         JFrame frame = new JFrame("I have a question");
@@ -1247,7 +1212,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
 
 
-        //        logger.info("RETURN : "+tax );
+        //        logger.info("RETURN: "+tax );
         return tax;
 
     }
@@ -1255,10 +1220,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
 
     /**
-     * @param item
-     * @param tosave
+     * @param name
+     * @throws TransformerFactoryConfigurationError
+     * @throws TransformerException
+     * @return a list of possible names
      */
-    private String[] extractScientificName(Node name, String fullContent) {
+    private String[] extractScientificName(Node name) throws TransformerFactoryConfigurationError, TransformerException {
         //        logger.info("extractScientificName");
         Rank rank = Rank.UNKNOWN_RANK();
         NodeList children = name.getChildNodes();
@@ -1319,7 +1286,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         if (fullName != null){
             if (!fullName.equalsIgnoreCase(atomisedNameStr)) {
-                newName=getScientificName(fullName,atomisedNameStr,classification.getTitleCache(),fullContent);
+                newName=getScientificName(fullName,atomisedNameStr,classification.getTitleCache(),name);
             } else {
                 newName=fullName;
             }
