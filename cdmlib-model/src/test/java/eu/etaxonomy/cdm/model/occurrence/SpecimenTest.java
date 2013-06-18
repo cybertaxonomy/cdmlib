@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 /**
  * @author a.mueller
  * @created 28.10.2008
- * @version 1.0
  */
 public class SpecimenTest {
 	private static final Logger logger = Logger.getLogger(SpecimenTest.class);
