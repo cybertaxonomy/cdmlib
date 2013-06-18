@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
  * @author a.kohlbecker
@@ -38,7 +39,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
 
     public abstract void setService(SERVICE service);
 
-    protected static final Integer DEFAULT_PAGE_SIZE = 30;
+    protected static final Integer DEFAULT_PAGE_SIZE = PagerParameters.DEFAULT_PAGESIZE;
 
     /**
      * Default thread priority for long term processes which are running in
