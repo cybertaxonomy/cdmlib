@@ -101,7 +101,7 @@ public class TermLoader implements ITermLoader {
 			}
 			
 			// Ugly, I know, but I don't think we can use a static method here . . 
-			T termInstance = ((Class<T>)termClass).newInstance(); 
+			T classDefiningTermInstance = ((Class<T>)termClass).newInstance(); 
 			
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
@@ -109,7 +109,7 @@ public class TermLoader implements ITermLoader {
 					continue;
 				}
 
-				T term = (T) termInstance.readCsvLine(termClass,arrayedLine(nextLine), terms);
+				T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms);
 				terms.put(term.getUuid(), term);
 				voc.addTerm(term);
 			}
