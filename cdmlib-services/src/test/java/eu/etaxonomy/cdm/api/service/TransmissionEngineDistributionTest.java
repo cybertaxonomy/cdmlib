@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -108,19 +107,19 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
     public void setUp() {
 
         superAreas = Arrays.asList(new NamedArea[]{
-                TdwgArea.getAreaByTdwgAbbreviation("YUG")
+        		termService.getAreaByTdwgAbbreviation("YUG")
         });
         lowerRank = Rank.SPECIES();
         upperRank = Rank.GENUS();
 
         classification = classificationService.load(CLASSIFICATION_UUID);
 
-        yug = TdwgArea.getAreaByTdwgAbbreviation("YUG");
-        yug_bh = TdwgArea.getAreaByTdwgAbbreviation("YUG-BH");
-        yug_cr = TdwgArea.getAreaByTdwgAbbreviation("YUG-CR");
-        yug_ko = TdwgArea.getAreaByTdwgAbbreviation("YUG-KO");
-        yug_ma = TdwgArea.getAreaByTdwgAbbreviation("YUG-MA");
-        yug_mn = TdwgArea.getAreaByTdwgAbbreviation("YUG-MN");
+        yug = termService.getAreaByTdwgAbbreviation("YUG");
+        yug_bh = termService.getAreaByTdwgAbbreviation("YUG-BH");
+        yug_cr = termService.getAreaByTdwgAbbreviation("YUG-CR");
+        yug_ko = termService.getAreaByTdwgAbbreviation("YUG-KO");
+        yug_ma = termService.getAreaByTdwgAbbreviation("YUG-MA");
+        yug_mn = termService.getAreaByTdwgAbbreviation("YUG-MN");
 
         engine.updatePriorities();
     }

@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -211,7 +210,7 @@ public class Datasource {
 			Taxon taxon = Taxon.NewInstance(name, ref);
 			TaxonDescription description = TaxonDescription.NewInstance();
 			taxon.addDescription(description);
-			NamedArea area1 = TdwgArea.getAreaByTdwgAbbreviation("GER");
+			NamedArea area1 = appCtr.getTermService().getAreaByTdwgAbbreviation("GER");
 			Distribution distribution = Distribution.NewInstance(area1, PresenceTerm.PRESENT());
 			description.addElement(distribution);
 			

@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -447,7 +446,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testAddGetRemoveCollectingArea() {
         String tdwgLabel = "GER";
-        NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgLabel);
+        NamedArea tdwgArea = termService.getAreaByTdwgAbbreviation(tdwgLabel);
         NamedArea newCollectingArea = NamedArea.NewInstance("A nice area",
                 "nice", "n");
         specimenFacade.addCollectingArea(newCollectingArea);
@@ -478,16 +477,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testAddCollectingAreas() {
         NamedArea firstArea = NamedArea.NewInstance("A nice area", "nice", "n");
-        Assert.assertEquals("No area must exist", 0, specimenFacade
-                .getCollectingAreas().size());
+        Assert.assertEquals("No area must exist", 0, specimenFacade.getCollectingAreas().size());
         specimenFacade.addCollectingArea(firstArea);
-        Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade
-                .getCollectingAreas().size());
+        Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
 
         String tdwgLabel = "GER";
-        NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgLabel);
-        NamedArea secondArea = NamedArea
-                .NewInstance("A nice area", "nice", "n");
+        NamedArea tdwgArea = termService.getAreaByTdwgAbbreviation(tdwgLabel);
+        NamedArea secondArea = NamedArea.NewInstance("A nice area", "nice", "n");
 
         java.util.Collection<NamedArea> areaCollection = new HashSet<NamedArea>();
         areaCollection.add(secondArea);
