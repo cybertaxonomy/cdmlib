@@ -236,5 +236,15 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
     public Set<Media> getMedia() {
 		return new HashSet<Media>();
 	}
+	
+	@Override
+	public String getIdInVocabulary() {
+		return this.toString();
+	}
+
+	@Override
+	public void setIdInVocabulary(String idInVocabulary) {
+		//not applicable
+	}
 
 }

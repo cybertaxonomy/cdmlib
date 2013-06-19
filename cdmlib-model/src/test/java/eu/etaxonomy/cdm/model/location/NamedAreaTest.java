@@ -68,7 +68,7 @@ public class NamedAreaTest {
 	public void labelWithLevelTest(){
 		Assert.assertEquals("Named Area 1 - Level 1", NamedArea.labelWithLevel(namedArea1, Language.DEFAULT()));
 		Assert.assertEquals("Germany - WaterbodyOrCountry", NamedArea.labelWithLevel(WaterbodyOrCountry.GERMANY(), Language.DEFAULT()));
-		Assert.assertEquals("Germany - TDWG Level 3", NamedArea.labelWithLevel(TdwgArea.getAreaByTdwgAbbreviation("GER"), Language.DEFAULT()));
+		Assert.assertEquals("Germany - TDWG Level 3", NamedArea.labelWithLevel(getAreaByTdwgAbbreviation("GER"), Language.DEFAULT()));
 		NamedArea namedArea2 = NamedArea.NewInstance("Description for Named Area 2", "", "NA2");
 		Assert.assertEquals("NA2 - NamedArea", NamedArea.labelWithLevel(namedArea2, Language.DEFAULT()));
 		NamedArea namedArea3 = NamedArea.NewInstance("Description for Named Area 3", null, " ");
@@ -81,18 +81,18 @@ public class NamedAreaTest {
 	public void getHiearchieListTest(){
 		//Create example data
 		List<NamedArea> list = new ArrayList<NamedArea>(); 
-		NamedArea germanyL4 = TdwgArea.getAreaByTdwgAbbreviation("GER-OO");
+		NamedArea germanyL4 = getAreaByTdwgAbbreviation("GER-OO");
 		Assert.assertNotNull("Prerequisite: Germany should not be null", germanyL4);
 		list.add(germanyL4);
-		NamedArea franceL3 = TdwgArea.getAreaByTdwgAbbreviation("FRA");
+		NamedArea franceL3 = getAreaByTdwgAbbreviation("FRA");
 		Assert.assertNotNull("Prerequisite: France should not be null", germanyL4);
 		list.add(franceL3);
-		NamedArea europe = TdwgArea.getAreaByTdwgAbbreviation("1");
-		NamedArea middleEurope = TdwgArea.getAreaByTdwgAbbreviation("11");
+		NamedArea europe = getAreaByTdwgAbbreviation("1");
+		NamedArea middleEurope = getAreaByTdwgAbbreviation("11");
 //		System.out.println(middleEurope.getLabel());
-		NamedArea southWestEurope = TdwgArea.getAreaByTdwgAbbreviation("12");
+		NamedArea southWestEurope = getAreaByTdwgAbbreviation("12");
 //		System.out.println(southWestEurope.getLabel());
-		NamedArea germanyL3 = TdwgArea.getAreaByTdwgAbbreviation("GER");
+		NamedArea germanyL3 = getAreaByTdwgAbbreviation("GER");
 		
 		NamedArea newArea1 = NamedArea.NewInstance("New Area1 Description", "New Area1", "NA1");
 		list.add(newArea1);
@@ -170,10 +170,11 @@ public class NamedAreaTest {
 				
 			
 		
-		System.out.println(root.toString(true, 0));
-		
-		
+		System.out.println(root.toString(true, 0));	
 	}
 	
+	private NamedArea getAreaByTdwgAbbreviation(String tdwgAbbrev){
+		return NamedArea.getAreaByTdwgAbbreviation(tdwgAbbrev);
+	}
 
 }

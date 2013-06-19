@@ -48,6 +48,8 @@ public class Language extends DefinedTermBase<Language> {
     private static final long serialVersionUID = -5030610079904074217L;
     private static final Logger logger = Logger.getLogger(Language.class);
 
+    public static final UUID uuidLanguageVocabulary = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de");
+    
     public static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
     private static final UUID uuidAfar = UUID.fromString("b3ad88e2-0080-466f-9bf4-b01ba4122563");
@@ -541,6 +543,8 @@ public class Language extends DefinedTermBase<Language> {
 
     protected static Map<UUID, Language> termMap = null;
 
+// *************************** Factory MEthods ********************************/    
+    
     public static Language NewInstance(){
         return new Language();
     }
@@ -572,7 +576,8 @@ public class Language extends DefinedTermBase<Language> {
         return result;
     }
 
-
+//**************** Attributes *************************************/    
+    
     @XmlAttribute(name = "iso639_1")
     //TODO create userDefinedType ?
     @Column(length=2)
@@ -583,6 +588,8 @@ public class Language extends DefinedTermBase<Language> {
     @Column(length=3)
     private String iso639_2;
 
+//***** CONSTRUCTOR ***************************************/    
+    
     public Language() {
     }
     public Language(UUID uuid) {
@@ -1193,6 +1200,9 @@ public class Language extends DefinedTermBase<Language> {
             }
 
             newInstance.setIso639_2(csvLine.get(4).trim());
+            newInstance.setIdInVocabulary(csvLine.get(4).trim());
+            
+            
             newInstance.setIso639_1(csvLine.get(5).trim());
             //TODO could replace with generic validation
             if(iso639_1 != null && iso639_1.length() > 2){

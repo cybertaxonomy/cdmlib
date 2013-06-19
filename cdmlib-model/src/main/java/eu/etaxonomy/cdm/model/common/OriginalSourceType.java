@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 
 /**
- * The original source type is used to define the type of an {@link OriginalSourceBasesource original source}.<BR>
+ * The original source type is used to define the type of an {@link OriginalSourceBase original source}.<BR>
  * It is used to distinguish e.g. data lineage when importing data from one database to another from e.g. content oriented
  * sources such as the citation in a book.
  * In future they may come further source types. 
@@ -185,6 +185,16 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	@Override
     public Set<Media> getMedia() {
 		return new HashSet<Media>();
+	}
+	
+	@Override
+	public String getIdInVocabulary() {
+		return this.toString();
+	}
+
+	@Override
+	public void setIdInVocabulary(String idInVocabulary) {
+		//not applicable
 	}
 
 }

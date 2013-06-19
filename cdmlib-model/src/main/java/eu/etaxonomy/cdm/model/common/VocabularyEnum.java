@@ -26,10 +26,10 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -73,7 +73,7 @@ public enum VocabularyEnum {
 	NamedAreaLevel("49034253-27c8-4219-97e8-f8d987d3d122", NamedAreaLevel.class),
 	Feature("b187d555-f06f-4d65-9e53-da7c93f8eaa8", Feature.class),
 	NameFeature("a7ca3eef-4092-49e1-beec-ed5096193e5e", Feature.class),
-	TdwgArea("1fb40504-d1d7-44b0-9731-374fbe6cac77", TdwgArea.class),
+	TdwgArea("1fb40504-d1d7-44b0-9731-374fbe6cac77", NamedArea.class),
 	PresenceTerm("adbbbe15-c4d3-47b7-80a8-c7d104e53a05", PresenceTerm.class),
 	AbsenceTerm("5cd438c8-a8a1-4958-842e-169e83e2ceee", AbsenceTerm.class),
 	Sex("9718b7dd-8bc0-4cad-be57-3c54d4d432fe", Sex.class),

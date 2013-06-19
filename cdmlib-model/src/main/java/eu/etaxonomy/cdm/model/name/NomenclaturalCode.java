@@ -292,6 +292,16 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 			logger.error("Not implemented yet");
 			return "synonym";
 		}
+	}
+
+	@Override
+	public String getIdInVocabulary() {
+		return this.toString();
+	}
+
+	@Override
+	public void setIdInVocabulary(String idInVocabulary) {
+		//not applicable
 	}	
 }
 

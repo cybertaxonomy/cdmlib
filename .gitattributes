@@ -807,7 +807,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaLevel.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Point.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/ReferenceSystem.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/TdwgArea.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/TdwgArea_Old.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/WaterbodyOrCountry.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text

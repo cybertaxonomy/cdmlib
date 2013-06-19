@@ -15,12 +15,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -43,6 +46,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
     "uri",
+    "termType",
     "representations"
 })
 @XmlSeeAlso({
@@ -62,7 +66,14 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @Type(type="uriUserType")
     private URI uri;
     
-//    private int termType;
+	/**
+	 * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term} 
+	 * and in it's {@link TermVocabulary vocabulary}.
+	 */
+	@XmlAttribute(name ="TermType")
+//	@Column(name="termType")
+//	@NotNull
+	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")
     @XmlElement(name = "Representation")
@@ -71,19 +82,33 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 
+//******************* CONSTRUCTOR *************************************/    
+    
     public TermBase(){
         super();
         initCacheStrategy();
 
     }
-    private void initCacheStrategy() {
-        this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
-    }
-    public TermBase(String term, String label, String labelAbbrev) {
+
+    protected TermBase(String term, String label, String labelAbbrev) {
         super();
         initCacheStrategy();
         this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
     }
+
+    private void initCacheStrategy() {
+        this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
+    }
+    
+//******************** GETTER /SETTER ********************************/
+    
+	public TermType getTermType() {
+		return termType;
+	}
+	public void setTermType(TermType termType) {
+		this.termType = termType;
+	}
+
 
     public Set<Representation> getRepresentations() {
         return this.representations;
@@ -272,10 +297,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
             result.representations.add((Representation)rep.clone());
         }
 
-
-
         return result;
-
     }
 
 }

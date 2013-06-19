@@ -81,5 +81,18 @@ public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 //	public void setVocabulary(TermVocabulary<T> newVocabulary);
+	
+	/**
+	 * Returns the label of this term used (and unique) in the term's vocabulary.
+	 * @see #setIdInVocabulary(String)
+	 */
+	public String getIdInVocabulary();
+	
+	/**
+	 * Sets the label of this term used (and unique) in the term's vocabulary.
+	 * @see #getIdInVocabulary()
+	 * @param idInVocabulary
+	 */
+	public void setIdInVocabulary(String idInVocabulary);
 
 }

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,21 +43,21 @@ import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Parameter;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:36
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -74,7 +75,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 })
 @XmlRootElement(name = "NamedArea")
 @XmlSeeAlso({
-    TdwgArea.class,
     Continent.class,
     WaterbodyOrCountry.class
 })
@@ -86,9 +86,17 @@ import eu.etaxonomy.cdm.model.media.Media;
 })
 public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private static final long serialVersionUID = 6248434369557403036L;
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
+    public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
+
+
+    private static Map<String, UUID> tdwgAbbrevMap = null;
+    private static Map<String, UUID> tdwglabelMap = null;
+
+    protected static Map<UUID, NamedArea> tdwgTermMap = null;
+
+    
     private static Map<UUID, NamedArea> termMap = null;
 
 //************************* FACTORY METHODS ****************************************/
@@ -322,14 +330,130 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     @Override
     public void resetTerms(){
         termMap = null;
+        tdwgAbbrevMap = null;
+   		tdwglabelMap = null;
+   		tdwgTermMap = null;
     }
+    
+    @Deprecated //preliminary, will be removed in future
+    protected static NamedArea getTdwgTermByUuid(UUID uuid){
+        if (tdwgTermMap == null){
+            DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+            vocabularyStore.initialize();
+        }
+        return tdwgTermMap.get(uuid);
+    }
+    
+    @Deprecated //preliminary, will be removed in future
+    public static NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation){
+        if (tdwgAbbrevMap == null){
+        	initTdwgMaps();
+        }
+        UUID uuid = tdwgAbbrevMap.get(tdwgAbbreviation);
+        if (uuid == null){
+            logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgAbbreviation));
+            return null;
+        }
+        return NamedArea.getTdwgTermByUuid(uuid);
+    }
+
+    @Deprecated //preliminary, will be removed in future
+    public static NamedArea getAreaByTdwgLabel(String tdwgLabel){
+        if (tdwglabelMap == null){
+            initTdwgMaps();
+        }
+        tdwgLabel = tdwgLabel.toLowerCase();
+        UUID uuid = tdwglabelMap.get(tdwgLabel);
+        if (uuid == null){
+            logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
+            return null;
+        }
+        return NamedArea.getTdwgTermByUuid(uuid);
+    }
+
+    @Deprecated //preliminary, will be removed in future
+    public static boolean isTdwgAreaLabel(String label){
+        label = (label == null? null : label.toLowerCase());
+        if (tdwglabelMap.containsKey(label)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Deprecated //preliminary, will be removed in future
+    public static boolean isTdwgAreaAbbreviation(String abbrev){
+        if (tdwgAbbrevMap.containsKey(abbrev)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
+        tdwgTermMap = new HashMap<UUID, NamedArea>();
+        for (NamedArea term : tdwgTermVocabulary.getTerms()){
+            tdwgTermMap.put(term.getUuid(), term);  //TODO casting
+            addTdwgArea(term);
+        }
+
+	}
+	
+   protected static void addTdwgArea(NamedArea area){
+        if (area == null){
+            logger.warn("tdwg area is null");
+            return;
+        }
+        Language lang = Language.DEFAULT();
+        Representation representation = area.getRepresentation(lang);
+        String tdwgAbbrevLabel = representation.getAbbreviatedLabel();
+        String tdwgLabel = representation.getLabel().toLowerCase();
+        if (tdwgAbbrevLabel == null){
+            logger.warn("tdwgLabel = null");
+            return;
+        }
+        //init map
+        if (tdwgAbbrevMap == null){
+        	tdwgAbbrevMap = new HashMap<String, UUID>();
+        }
+        if (tdwglabelMap == null){
+        	tdwglabelMap = new HashMap<String, UUID>();
+        }
+        //add to map
+        tdwgAbbrevMap.put(tdwgAbbrevLabel, area.getUuid());
+        tdwglabelMap.put(tdwgLabel, area.getUuid());
+        //add type
+        area.setType(NamedAreaType.ADMINISTRATION_AREA());
+        //add level
+        if (tdwgAbbrevLabel.trim().length()== 1){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL1());
+        }else if (tdwgAbbrevLabel.trim().length()== 2){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL2());
+        }else if (tdwgAbbrevLabel.trim().length()== 3){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL3());
+        }else if (tdwgAbbrevLabel.trim().length()== 6){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL4());
+        }else {
+            logger.warn("Unknown TDWG Level " + tdwgAbbrevLabel + "! Unvalid string length (" +  tdwgAbbrevLabel.length() +")");
+        }
+    }
+
+    private static void initTdwgMaps(){
+    	tdwglabelMap = new HashMap<String, UUID>();
+    	tdwgAbbrevMap = new HashMap<String, UUID>();
+    }
+
 
 
     @Override
     protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-        termMap = new HashMap<UUID, NamedArea>();
-        for (NamedArea term : termVocabulary.getTerms()){
-            termMap.put(term.getUuid(), term);
+        if (termVocabulary.getUuid().equals(this.uuidTdwgAreaVocabulary)){
+        	this.setTdwgDefaultTerms(termVocabulary);
+        }else{
+	    	termMap = new HashMap<UUID, NamedArea>();
+	        for (NamedArea term : termVocabulary.getTerms()){
+	            termMap.put(term.getUuid(), term);
+	        }
         }
     }
 
@@ -379,6 +503,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return null;
         }
 
+///****************** toString ***********************************************/        
+        
         @Override
         public String toString() {
             return toString(false, 0);

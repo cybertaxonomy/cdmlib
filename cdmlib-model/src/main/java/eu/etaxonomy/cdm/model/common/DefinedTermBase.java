@@ -68,7 +68,8 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTermBase", propOrder = {
     "media",
-    "vocabulary"
+    "vocabulary",
+    "idInVocabulary"
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
@@ -153,6 +154,12 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
     protected TermVocabulary<T> vocabulary;
+    
+  //the unique tabel this term uses in its given vocabulary #3479
+   //open issues: is null allowed? If not, implement unique constraint
+    
+    @XmlElement(name = "idInVocabulary")
+    private String idInVocabulary;  //the unique tabel this term uses in its given vocabulary #3479
 
 //***************************** CONSTRUCTOR *******************************************/
 
@@ -163,8 +170,142 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         super(term, label, labelAbbrev);
     }
 
-//******************************* METHODS ******************************************************/
 
+//********************** GETTER /SETTER *************************************    
+    
+  	/* (non-Javadoc)
+  	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIdInVocabulary()
+  	 */
+  	@Override
+  	public String getIdInVocabulary() {
+  		return idInVocabulary;
+  	}
+  	
+  	/* (non-Javadoc)
+  	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIdInVocabulary(java.lang.String)
+  	 */
+  	@Override
+  	public void setIdInVocabulary(String idInVocabulary) {
+  		this.idInVocabulary = idInVocabulary;
+  	}
+      
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
+       */
+      public T getKindOf(){
+          return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
+      }
+
+      public void setKindOf(T kindOf){
+          this.kindOf = kindOf;
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
+       */
+      public Set<T> getGeneralizationOf(){
+          return this.generalizationOf;
+      }
+
+      protected void setGeneralizationOf(Set<T> value) {
+          this.generalizationOf = value;
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addGeneralizationOf(T)
+       */
+      public void addGeneralizationOf(T generalization) {
+          generalization.setKindOf(this);
+          this.generalizationOf.add(generalization);
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeGeneralization(T)
+       */
+      public void removeGeneralization(T generalization) {
+          if(generalizationOf.contains(generalization)){
+              generalization.setKindOf(null);
+              this.generalizationOf.remove(generalization);
+          }
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
+       */
+      public T getPartOf(){
+          return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setPartOf(T)
+       */
+      public void setPartOf(T partOf){
+          this.partOf = partOf;
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
+       */
+      public Set<T> getIncludes(){
+          return this.includes;
+      }
+
+      protected void setIncludes(Set<T> includes) {
+          this.includes = includes;
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addIncludes(T)
+       */
+      public void addIncludes(T includes) {
+          includes.setPartOf(this);
+          this.includes.add(includes);
+      }
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeIncludes(T)
+       */
+      public void removeIncludes(T includes) {
+          if(this.includes.contains(includes)) {
+              includes.setPartOf(null);
+              this.includes.remove(includes);
+          }
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
+       */
+      public Set<Media> getMedia(){
+          return this.media;
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addMedia(eu.etaxonomy.cdm.model.media.Media)
+       */
+      public void addMedia(Media media) {
+          this.media.add(media);
+      }
+      public void removeMedia(Media media) {
+          this.media.remove(media);
+      }
+
+      /**
+       * @return
+       */
+      public TermVocabulary<T> getVocabulary() {
+          return this.vocabulary;
+      }
+
+      //for bedirectional use only, use vocabulary.addTerm instead
+      /**
+       * @param newVocabulary
+       */
+      protected void setVocabulary(TermVocabulary<T> newVocabulary) {
+          this.vocabulary = newVocabulary;
+      }
+
+//******************************* METHODS ******************************************************/
+   
+    
     public abstract void resetTerms();
 
     protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
@@ -193,6 +334,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
             String label = csvLine.get(2).trim();
             String text = csvLine.get(3);
             String abbreviatedLabel = csvLine.get(4);
+            newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
             newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
             return newInstance;
     }
@@ -217,119 +359,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         return this.vocabulary.findTermByUuid(uuid);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
-     */
-    public T getKindOf(){
-        return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
-    }
-
-    public void setKindOf(T kindOf){
-        this.kindOf = kindOf;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
-     */
-    public Set<T> getGeneralizationOf(){
-        return this.generalizationOf;
-    }
-
-    protected void setGeneralizationOf(Set<T> value) {
-        this.generalizationOf = value;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addGeneralizationOf(T)
-     */
-    public void addGeneralizationOf(T generalization) {
-        generalization.setKindOf(this);
-        this.generalizationOf.add(generalization);
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeGeneralization(T)
-     */
-    public void removeGeneralization(T generalization) {
-        if(generalizationOf.contains(generalization)){
-            generalization.setKindOf(null);
-            this.generalizationOf.remove(generalization);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
-     */
-    public T getPartOf(){
-        return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setPartOf(T)
-     */
-    public void setPartOf(T partOf){
-        this.partOf = partOf;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
-     */
-    public Set<T> getIncludes(){
-        return this.includes;
-    }
-
-    protected void setIncludes(Set<T> includes) {
-        this.includes = includes;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addIncludes(T)
-     */
-    public void addIncludes(T includes) {
-        includes.setPartOf(this);
-        this.includes.add(includes);
-    }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeIncludes(T)
-     */
-    public void removeIncludes(T includes) {
-        if(this.includes.contains(includes)) {
-            includes.setPartOf(null);
-            this.includes.remove(includes);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
-     */
-    public Set<Media> getMedia(){
-        return this.media;
-    }
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addMedia(eu.etaxonomy.cdm.model.media.Media)
-     */
-    public void addMedia(Media media) {
-        this.media.add(media);
-    }
-    public void removeMedia(Media media) {
-        this.media.remove(media);
-    }
-
-    /**
-     * @return
-     */
-    public TermVocabulary<T> getVocabulary() {
-        return this.vocabulary;
-    }
-
-    //for bedirectional use only, use vocabulary.addTerm instead
-    /**
-     * @param newVocabulary
-     */
-    protected void setVocabulary(TermVocabulary<T> newVocabulary) {
-        this.vocabulary = newVocabulary;
-    }
 
 //*********************** CLONE ********************************************************/
 
@@ -369,10 +398,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
             result.addMedia(media);
         }
 
-
-
-
         return result;
-
     }
+
 }
