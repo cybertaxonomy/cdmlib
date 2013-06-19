@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.database;
 
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,15 +21,12 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITable;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.TransactionStatus;
-import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
-import org.unitils.dbunit.util.MultiSchemaDataSet;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
@@ -90,8 +86,16 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 
 //                logger.info("loading data base schema from " + termsDtd.getFile().getAbsolutePath());
 //                logger.info("loading data set from " + termsDataSet.getFile().getAbsolutePath());
-                IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
-//				ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
+
+                
+                //old: IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
+
+                IDataSet dataSet = new FlatXmlDataSetBuilder()
+                	.setMetaDataSetFromDtd(termsDtd.getInputStream())
+                	.build(termsDataSet.getInputStream());
+                
+                
+                //ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
 //				for(int rowId = 0; rowId < definedTermBase.getRowCount(); rowId++) {
 //					System.err.println(rowId + " : " + definedTermBase.getValue(rowId, "CREATEDBY_ID"));
 //				}
