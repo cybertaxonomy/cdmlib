@@ -14,6 +14,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/StreamUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/Tree.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/TreeNode.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/UTF8.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/UriUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/media/AudioInfo.java -text

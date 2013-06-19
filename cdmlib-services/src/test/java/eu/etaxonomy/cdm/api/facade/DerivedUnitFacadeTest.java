@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -63,6 +64,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+
 
 
 /**
@@ -529,11 +531,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.setAbsoluteElevationRange(30, 36);
         Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("", "30 - 36",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", "30 " + UTF8.EN_DASH + " 36",specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        Assert.assertEquals("Odd range should not throw an exception anymore", "30 - 35",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("Odd range should not throw an exception anymore", String.format("30 %s 35", UTF8.EN_DASH),specimenFacade.absoluteElevationToString());
         
         specimenFacade.setAbsoluteElevationRange(41, null);
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());

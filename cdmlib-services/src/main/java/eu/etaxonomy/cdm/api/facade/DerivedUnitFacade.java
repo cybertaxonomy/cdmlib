@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -1057,7 +1058,7 @@ public class DerivedUnitFacade {
 			}else{
 				String min = getAbsoluteElevation() == null? null : String.valueOf(getAbsoluteElevation());
 				String max = getAbsoluteElevationMaximum() == null? null : String.valueOf(getAbsoluteElevationMaximum());
-				String result = CdmUtils.concat(" - ", min, max);
+				String result = CdmUtils.concat(" " + UTF8.EN_DASH + " ", min, max);
 				return result;
 			}
 		}
