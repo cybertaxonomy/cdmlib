@@ -11,20 +11,24 @@
 package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.api.service.ITermService;
 
 /**
  * @author a.kohlbecker
  * @date 30.06.2009
- * TODO only TDWG areas supported for now
  */
 @Component
 public class NamedAreaPropertyEditor extends PropertyEditorSupport  {
 	
+	@Autowired
+	private ITermService termService;
+	
 	public void setAsText(String text) {
-			setValue(TdwgArea.getAreaByTdwgAbbreviation(text));  	
+			setValue(termService.load(UUID.fromString(text)));  	
 	}
 }
