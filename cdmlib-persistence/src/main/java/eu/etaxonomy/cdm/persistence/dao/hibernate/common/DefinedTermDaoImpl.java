@@ -15,6 +15,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -49,7 +50,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
@@ -101,7 +101,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		indexedClasses[17] = NamedAreaLevel.class;
 		indexedClasses[18] = NamedAreaType.class;
 		indexedClasses[19] = ReferenceSystem.class;
-		indexedClasses[20] = TdwgArea.class;
 		indexedClasses[21] = WaterbodyOrCountry.class;
 		indexedClasses[22] = RightsTerm.class;
 		indexedClasses[23] = HybridRelationshipType.class;
@@ -235,6 +234,36 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return ((Number)criteria.uniqueResult()).intValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getDefinedTermByIdInVocabulary(java.lang.String, java.util.UUID, java.lang.Class, java.lang.Integer, java.lang.Integer)
+	 */
+	@Override
+	public <T extends DefinedTermBase> List<T> getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
+
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type);
+		} else {
+			criteria = getSession().createCriteria(clazz);
+		}
+
+		criteria.createAlias("vocabulary", "voc").add(Restrictions.like("voc.uuid", vocUuid))
+			.add(Restrictions.like("idInVocabulary", label, org.hibernate.criterion.MatchMode.EXACT));
+
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+
+		List<T> result = criteria.list();
+		return result;
+	}
+
+	
+	
 	@Override
 	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
@@ -286,15 +315,20 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			logger.warn("Invalid length " + iso639.length() + " of ISO code. Length must be 2 or 3.");
 			return null;
 		}
-		String isoStandart = "iso639_" + (iso639.length() - 1);
+		String attrName;
+		if (iso639.length() == 2){
+			attrName = "iso639_1";
+		}else{
+			attrName = "idInVocabulary";
+		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("from Language where " + isoStandart + "= :isoCode");
+		    Query query = getSession().createQuery("from Language where " + attrName + "= :isoCode");
 		    query.setParameter("isoCode", iso639);
 		    return (Language) query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Language.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.property(isoStandart).eq(iso639));
+			query.add(AuditEntity.property(attrName).eq(iso639));
 			return (Language)query.getSingleResult();
 		}
 	}

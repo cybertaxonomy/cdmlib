@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -34,7 +33,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 /**
  * @author a.babadshanjan
  * @created 10.02.2009
- * @version 1.0
  */
 public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
@@ -65,13 +63,11 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		assertEquals("There should be 3 vocabularies (TdwgAreas, Continents, WaterbodyOrCountries)", 3, subclassedSize);
 		
 		List<TermVocabulary<? extends NamedArea>> namedAreaOnlyVocabularies = dao.listByTermClass(NamedArea.class, false, false, null, null, null, null);
-		List<TermVocabulary<? extends TdwgArea>> tdwgVocabularies = dao.listByTermClass(TdwgArea.class, false, false, null, null, null, null);
 		List<TermVocabulary<? extends WaterbodyOrCountry>> countryVocabularies = dao.listByTermClass(WaterbodyOrCountry.class, false, false, null, null, null, null);
 		List<TermVocabulary<? extends Continent>> continentVocabularies = dao.listByTermClass(Continent.class, false, false, null, null, null, null);
-		int sumOfSingleSizes = namedAreaOnlyVocabularies.size() + tdwgVocabularies.size() + countryVocabularies.size() + continentVocabularies.size();
+		int sumOfSingleSizes = namedAreaOnlyVocabularies.size() + countryVocabularies.size() + continentVocabularies.size();
 		assertEquals("number of NamedArea and subclasses should be same as sum of all single vocabularies", subclassedSize, sumOfSingleSizes);
-		
-		
+
 	}
 	
 	@Test

@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -162,4 +163,15 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	public DefinedTermBase findByUri(URI uri);
 
 	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * Returns a term or a list of terms depending of the label/id used in its vocabulary. 
+	 * @param idInVoc
+	 * @param vocUuid
+	 * @param clazz
+	 * @param pageSize
+	 * @param pageNumber
+	 * @return
+	 */
+	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 }

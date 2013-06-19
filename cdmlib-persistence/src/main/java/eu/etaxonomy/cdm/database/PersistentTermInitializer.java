@@ -120,11 +120,11 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     protected void secondPass(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms) {
         logger.debug("Initializing vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 
-        TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
+        TermVocabulary<?> persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 
         if (persistedVocabulary != null){
             for(Object object : persistedVocabulary.getTerms()) {
-                DefinedTermBase definedTermBase = (DefinedTermBase) object;
+                DefinedTermBase<?> definedTermBase = (DefinedTermBase) object;
                 Hibernate.initialize(definedTermBase.getRepresentations());
                 for(Representation r : definedTermBase.getRepresentations()) {
                     Hibernate.initialize(r.getLanguage());

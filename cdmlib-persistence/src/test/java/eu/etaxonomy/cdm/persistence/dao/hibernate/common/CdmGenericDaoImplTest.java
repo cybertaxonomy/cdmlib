@@ -97,7 +97,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -152,6 +151,7 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -160,7 +160,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -195,7 +194,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 
 	
 	@SpringBeanByType
-	private ITaxonNameDao nameDao;
+	private ITaxonNameDao nameDao; 
 
 	@SpringBeanByType
 	private IAgentDao agentDao;
@@ -234,8 +233,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@Ignore
 	public void testDelete(){
-		Reference ref1 = ReferenceFactory.newBook();
-		Reference ref2 = ReferenceFactory.newBook();
+		Reference<?> ref1 = ReferenceFactory.newBook();
+		Reference<?> ref2 = ReferenceFactory.newBook();
 		Annotation annotation = Annotation.NewInstance("Anno1", null);
 		ref1.addAnnotation(annotation);
 		cdmGenericDao.saveOrUpdate(ref1);
@@ -397,7 +396,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				NamedAreaLevel.class, 
 				NamedAreaType.class, 
 				ReferenceSystem.class, 
-				TdwgArea.class, 
 				WaterbodyOrCountry.class, 
 				AudioFile.class, 
 				ImageFile.class, 
