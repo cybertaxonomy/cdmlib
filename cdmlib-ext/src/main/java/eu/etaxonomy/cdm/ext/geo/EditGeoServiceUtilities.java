@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
@@ -55,7 +54,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
  *
  * @author a.mueller
  * @created 17.11.2008
- * @version 1.0
  */
 public class EditGeoServiceUtilities {
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
@@ -481,7 +479,7 @@ public class EditGeoServiceUtilities {
 		NamedArea area = distribution.getArea();
 		TermVocabulary<NamedArea> voc = area.getVocabulary();
 		String result = null;
-		if (voc !=  null && voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary) || voc.getUuid().equals(uuidCyprusDivisionsVocabulary) ){
+		if (voc !=  null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary) || voc.getUuid().equals(uuidCyprusDivisionsVocabulary) ){
 			Representation representation = area.getRepresentation(Language.DEFAULT());
 			result = representation.getAbbreviatedLabel();
 			if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
@@ -514,7 +512,7 @@ public class EditGeoServiceUtilities {
         String matchedLayerName = null;
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         //TDWG areas
-        if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
+        if (voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
             NamedAreaLevel level = area.getLevel();
             if (level != null) {
                 //TODO integrate into CDM
@@ -553,7 +551,7 @@ public class EditGeoServiceUtilities {
 	private static String getWMSLayerName(NamedArea area, IGeoServiceAreaMapping mapping){
 		TermVocabulary<NamedArea> voc = area.getVocabulary();
 		//TDWG areas
-		if (voc.getUuid().equals(TdwgArea.uuidTdwgAreaVocabulary)){
+		if (voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
 			NamedAreaLevel level = area.getLevel();
 			if (level != null) {
 				//TODO integrate into CDM

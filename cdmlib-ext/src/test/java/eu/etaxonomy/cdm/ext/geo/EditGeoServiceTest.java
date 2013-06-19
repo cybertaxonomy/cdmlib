@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -48,14 +49,12 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 08.10.2008
- * @version 1.0
  */
 public class EditGeoServiceTest extends CdmIntegrationTest {
     @SuppressWarnings("unused")
@@ -66,6 +65,9 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
 
     //@SpringBeanByType
     private IDefinedTermDao termDao;
+    
+    @SpringBeanByType
+    private ITermService termService;
 
     @SpringBeanByType
     private GeoServiceAreaAnnotatedMapping mapping;
@@ -109,12 +111,12 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
         Set<Distribution> distributions = new HashSet<Distribution>();
-        distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("SPA"), PresenceTerm.PRESENT()));
-        distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("GER"), PresenceTerm.INTRODUCED()));
-        distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("14"), PresenceTerm.CULTIVATED()));
-        distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("BGM"), AbsenceTerm.ABSENT()));
-        distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("FRA"), AbsenceTerm.ABSENT()));
-        distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("IND-AP"), PresenceTerm.PRESENT()));
+        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("SPA"), PresenceTerm.PRESENT()));
+        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("GER"), PresenceTerm.INTRODUCED()));
+        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("14"), PresenceTerm.CULTIVATED()));
+        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("BGM"), AbsenceTerm.ABSENT()));
+        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("FRA"), AbsenceTerm.ABSENT()));
+        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("IND-AP"), PresenceTerm.PRESENT()));
 
         Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
         presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
