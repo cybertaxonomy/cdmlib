@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.common;
 import java.util.ArrayList;
 import java.util.List;
 
-//import eu.etaxonomy.cdm.model.location.TdwgAreaTest.NamedAreaTree;
 
 public class Tree<T> {
 	 
