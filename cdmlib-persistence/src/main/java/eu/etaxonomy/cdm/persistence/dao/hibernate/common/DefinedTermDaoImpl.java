@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -174,17 +175,17 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 
 	@Override
-    public WaterbodyOrCountry getCountryByIso(String iso639) {
+    public WaterbodyOrCountry getCountryByIso(String iso3166) {
 		// If iso639 = "" query returns non-unique result. We prevent this here:
-		if (iso639.equals("") ) { return null; }
+		if (StringUtils.isBlank(iso3166)) { return null; }
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		  Query query = getSession().createQuery("from WaterbodyOrCountry where iso3166_A2 = :isoCode");
-		  query.setParameter("isoCode", iso639);
+		  query.setParameter("isoCode", iso3166);
 		  return (WaterbodyOrCountry) query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(WaterbodyOrCountry.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.property("iso3166_A2").eq(iso639));
+			query.add(AuditEntity.property("iso3166_A2").eq(iso3166));
 			return (WaterbodyOrCountry) query.getSingleResult();
 		}
 	}
@@ -315,20 +316,31 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			logger.warn("Invalid length " + iso639.length() + " of ISO code. Length must be 2 or 3.");
 			return null;
 		}
-		String attrName;
-		if (iso639.length() == 2){
-			attrName = "iso639_1";
+		boolean isIso639_1 = iso639.length() == 2;
+		
+		String queryStr;
+		if (isIso639_1){
+			queryStr = "from Language where iso639_1 = :isoCode";
 		}else{
-			attrName = "idInVocabulary";
+			queryStr = "from Language where idInVocabulary = :isoCode and vocabulary.uuid = :vocUuid";
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query query = getSession().createQuery("from Language where " + attrName + "= :isoCode");
+		    Query query = getSession().createQuery(queryStr);
 		    query.setParameter("isoCode", iso639);
+		    if (! isIso639_1){
+		    	query.setParameter("vocUuid", Language.uuidLanguageVocabulary);
+			}
 		    return (Language) query.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Language.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.property(attrName).eq(iso639));
+			if (isIso639_1){
+				query.add(AuditEntity.property("iso639_1").eq(iso639));
+			}else{
+				query.add(AuditEntity.property("iso639_2").eq(iso639));
+				query.add(AuditEntity.property("vocabulary.uuid").eq(Language.uuidLanguageVocabulary));
+			}
+			
 			return (Language)query.getSingleResult();
 		}
 	}
