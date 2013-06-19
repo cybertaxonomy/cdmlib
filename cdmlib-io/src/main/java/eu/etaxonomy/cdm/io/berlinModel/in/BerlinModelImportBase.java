@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.io.common.DbImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.io.common.IPartitionedIO;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -32,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -313,13 +313,13 @@ public abstract class BerlinModelImportBase extends DbImportBase<BerlinModelImpo
 		
 		//E+M
 		else if("EUR".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("1");
+			return TdwgAreaProvider.getAreaByTdwgAbbreviation("1");
 		}else if("14".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("14");
+			return TdwgAreaProvider.getAreaByTdwgAbbreviation("14");
 		}else if("21".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("21");  // Macaronesia
+			return TdwgAreaProvider.getAreaByTdwgAbbreviation("21");  // Macaronesia
 		}else if("33".equals(em)){
-			return TdwgArea.getAreaByTdwgAbbreviation("33");
+			return TdwgAreaProvider.getAreaByTdwgAbbreviation("33");
 		
 		}else if("SM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.uuidSerbiaMontenegro, "Serbia & Montenegro", "Euro+Med area 'Serbia & Montenegro'", "SM", NamedAreaType.ADMINISTRATION_AREA(), null);

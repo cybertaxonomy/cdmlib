@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.SourceDataHolder;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -44,7 +45,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -325,9 +325,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				//tdwg label
 				for (String tdwg : taxonDataHolder.getDistributions()){
 					TaxonDescription td = this.getTaxonDescription(acceptedTaxon, state.getConfig().getSourceReference() ,false, true);
-					NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg);
+					NamedArea area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwg);
 					if (area == null){
-						area = TdwgArea.getAreaByTdwgLabel(tdwg);
+						area = TdwgAreaProvider.getAreaByTdwgLabel(tdwg);
 					}
 					if (area != null){
 						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());

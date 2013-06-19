@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
 /**
@@ -42,7 +41,7 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	private PresenceAbsenceTermBase<?> occurrenceStatus;
 	private String threadStatus;
 	
-	private PresenceAbsenceTermBase establishmentMeans;
+	private PresenceAbsenceTermBase<?> establishmentMeans;
 	private String appendixCITES;
 	private TimePeriod eventDate;
 	
@@ -165,8 +164,8 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 	}
 
 	public void setLocationId(NamedArea area) {
-		if (area.isInstanceOf(TdwgArea.class)){
-			String locationId = "TDWG:" + area.getRepresentation(Language.ENGLISH()).getAbbreviatedLabel();
+		if (area.getVocabulary().getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
+			String locationId = "TDWG:" + area.getIdInVocabulary();
 			this.locationIdString = locationId;
 		}else if (area.isInstanceOf(WaterbodyOrCountry.class)){
 			WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);

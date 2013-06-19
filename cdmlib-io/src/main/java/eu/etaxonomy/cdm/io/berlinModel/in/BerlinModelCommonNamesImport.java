@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelCommonNamesImpor
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -44,7 +45,6 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -585,7 +585,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		}else if (tdwgCode.equalsIgnoreCase("Gg")){
 			area = WaterbodyOrCountry.GEORGIA();
 		}else{
-			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
+			area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwgCode);
 		}
 		if (area == null){
 			logger.warn("Area is null for " + tdwgCode);

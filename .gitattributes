@@ -189,6 +189,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetPartitioner.java -te
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ResultSetProxy.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/TdwgAreaProvider.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlImportBase.java -text

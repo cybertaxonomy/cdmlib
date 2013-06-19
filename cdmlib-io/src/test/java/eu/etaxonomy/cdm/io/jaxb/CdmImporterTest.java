@@ -13,13 +13,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.dbunit.Assertion;
@@ -28,10 +24,6 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
-import org.dbunit.dataset.filter.ExcludeTableFilter;
-import org.dbunit.dataset.filter.IncludeTableFilter;
-import org.dbunit.dataset.xml.FlatDtdProducer;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -40,7 +32,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class CdmImporterTest extends CdmTransactionalIntegrationTest{
@@ -71,7 +62,7 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@DataSet
 	@ExpectedDataSet("CdmImporterTest.testImport-result.xml")
-//	@Ignore
+	@Ignore
 	// 	     => create new dataset with void eu.etaxonomy.cdm.database.TestingTermInitializerTest.testPrintDataSet()
 	//		 this method has some problem though
 	/**

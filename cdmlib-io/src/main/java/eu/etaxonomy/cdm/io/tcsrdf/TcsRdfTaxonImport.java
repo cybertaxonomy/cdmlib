@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -35,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -275,8 +275,8 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			
 			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
 			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
-			NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(strGeoRegion);
-			PresenceAbsenceTermBase status = PresenceTerm.PRESENT();
+			NamedArea namedArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(strGeoRegion);
+			PresenceAbsenceTermBase<?> status = PresenceTerm.PRESENT();
 			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
 			distribution.setFeature(Feature.DISTRIBUTION());
 			//System.out.println(namedArea);
